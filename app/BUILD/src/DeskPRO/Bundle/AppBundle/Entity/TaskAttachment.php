@@ -72,6 +72,7 @@ class TaskAttachment implements EntityInterface, NotifyPropertyChanged
      *
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id", onDelete="CASCADE")
+     *
      * @Assert\NotNull()
      * @Assert\Valid()
      *
@@ -85,7 +86,7 @@ class TaskAttachment implements EntityInterface, NotifyPropertyChanged
      * @JMS\Expose()
      * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\TaskComment>")
      *
-     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskComment")
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskComment", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="task_comment_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
      *
      * @var TaskComment
@@ -101,6 +102,8 @@ class TaskAttachment implements EntityInterface, NotifyPropertyChanged
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
      *
+     * @Assert\Valid()
+     *
      * @var Person
      */
     protected $person;
@@ -113,6 +116,8 @@ class TaskAttachment implements EntityInterface, NotifyPropertyChanged
      *
      * @ORM\OneToOne(targetEntity="Application\DeskPRO\Entity\Blob")
      * @ORM\JoinColumn(name="blob_id", referencedColumnName="id")
+     *
+     * @Assert\Valid()
      *
      * @var Blob
      */
@@ -132,13 +137,10 @@ class TaskAttachment implements EntityInterface, NotifyPropertyChanged
 
     /**
      * Constructor.
-     *
-     * @param Person $person
      */
-    public function __construct(Person $person)
+    public function __construct()
     {
         $this->setDateCreated(new \DateTime());
-        $this->setPerson($person);
     }
 
     /**
@@ -176,7 +178,7 @@ class TaskAttachment implements EntityInterface, NotifyPropertyChanged
     /**
      * @param TaskComment $comment
      */
-    public function setComment(TaskComment $comment)
+    public function setComment(TaskComment $comment = null)
     {
         $this->setModelField('comment', $comment);
     }

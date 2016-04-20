@@ -1,4 +1,4 @@
-@tasks-nav
+@tasks-nav @tasks
 Feature: /projects endpoint
   To CRUD DeskPRO projects
   As a developer
@@ -48,7 +48,7 @@ Feature: /projects endpoint
     And the JSON node "meta" should exist
     And the JSON node "data" should exist
     And the JSON node "data[0].title" should be equal to "First project"
-    And the JSON node "data[3].title" should be equal to "My test project"
+    And the JSON node "data[3].title" should be equal to "Third project"
 
   Scenario: I modify a project
     When I send a PUT request to "/api/v2/task_projects/4" with body:

@@ -22,10 +22,11 @@ export class Labels extends React.Component {
                 <span className="labelCharacter">{char}</span>
 
                 {labels.map((label, index) =>
-                  <ListItemContainer key={index}
-                                     urlHash={`label-${label.get('label')}`}
-                                     listOptions={{ label: [label.get('label')] }}>
-
+                  <ListItemContainer
+                    key={index}
+                    urlHash={`label-${label.get('label')}`}
+                    listOptions={{ label: [label.get('label')] }}
+                    >
                     <LabelItem label={label} />
                   </ListItemContainer>
                 )}

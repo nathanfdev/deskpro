@@ -26,29 +26,21 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\ApiBundle\Traits\Filters\DateFiltersTrait;
+use DeskPRO\Bundle\ApiBundle\Traits\Filters\LabelFiltersTrait;
+use DeskPRO\Bundle\ApiBundle\Traits\Filters\QueryFilterContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\DataService\Tasks\TasksSelectCriteria;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
-use DeskPRO\Bundle\AppBundle\Form\Type\TaskType;
-use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
-use Doctrine\ORM\Query;
+use DeskPRO\Bundle\AppBundle\Form\Type\Task\TaskType;
+use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\View\View;
-use Pagerfanta\Adapter\ArrayAdapter;
-use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\OptionsResolver\Exception\InvalidArgumentException;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class TasksController.
@@ -56,77 +48,53 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * @ApiModes("all")
  * @Rest\Route("/tasks")
  * @ApiDoc(target="all", section="Tasks", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Task")
+ * @ApiDoc(
+ *     target="listAction",
+ *     section="Tasks",
+ *     description="get a list of tasks",
+ *     filters={
+ *         {"name"="page", "pattern"="\d+", "description"="the page you are requesting", "dataType"="integer"},
+ *         {"name"="count", "pattern"="\d+", "description"="results per page", "dataType"="integer"},
+ *         {"name"="label", "pattern"="(\w,)+", "description"="filter by labels", "dataType"="string"},
+ *         {"name"="label_mode", "pattern"="+d+", "description"="additional filter for label, select where labels count > then you specified", "dataType"="string"},
+ *         {"name"="project", "pattern"="(\d+),+", "description"="filter by project", "dataType"="string"},
+ *         {"name"="creator", "pattern"="(\d+),+", "description"="filter by project", "dataType"="string"},
+ *         {"name"="no_assignments", "pattern"="1|0", "description"="select only unassigned", "dataType"="boolean"},
+ *         {"name"="assigned_agent", "pattern"="(\d+,)+", "description"="only where assigned agent has id", "dataType"="string"},
+ *         {"name"="not_assigned_agent", "pattern"="(\d+,)+", "description"="only where assigned agent has no id", "dataType"="string"},
+ *         {"name"="assigned_team", "pattern"="(\d+,)+", "description"="only where assigned team has id", "dataType"="string"},
+ *         {"name"="not_assigned_team", "pattern"="(\d+,)+", "description"="only where assigned team has no id", "dataType"="string"},
+ *         {"name"="assigned_department", "pattern"="(\d+,)+", "description"="only where assigned department has id", "dataType"="string"},
+ *         {"name"="not_assigned_department", "pattern"="(\d+,)+", "description"="only where assigned department has no id", "dataType"="string"},
+ *         {"name"="created_from", "pattern"="[a-zA-Z0-9\s-:]+", "description"="start of range to filter by created date", "dataType"="string"},
+ *         {"name"="created_to", "pattern"="[a-zA-Z0-9\s-:]+", "description"="end of range to filter by created date", "dataType"="string"},
+ *         {"name"="due_from", "pattern"="[a-zA-Z0-9\s-:]+", "description"="start of range to filter by due date", "dataType"="string"},
+ *         {"name"="due_to", "pattern"="[a-zA-Z0-9\s-:]+", "description"="end of range to filter by due date", "dataType"="string"},
+ *         {"name"="done_from", "pattern"="[a-zA-Z0-9\s-:]+", "description"="start of range to filter by done date", "dataType"="string"},
+ *         {"name"="done_to", "pattern"="[a-zA-Z0-9\s-:]+", "description"="end of range to filter by done date", "dataType"="string"},
+ *         {"name"="done", "pattern"="done", "description"="select only done|undone tasks", "dataType"="string"},
+ *         {"name"="order_by", "pattern"="id|title|list|project|date_due|date_done|date_created|assignee", "description"="how to order", "dataType"="string"},
+ *         {"name"="order_dir", "pattern"="asc|desc", "description"="order direction", "dataType"="string"},
+ *
+ *     },
+ *     statusCodes={
+ *         200="Returned if success"
+ *     }
+ * )
  */
 class TasksController extends CrudController
 {
-    public static $entity = Task::class;
-    public static $type   = TaskType::class;
+    use LabelFiltersTrait, DateFiltersTrait;
 
-    /**
-     * You can provide additionaly "me" as value for creator, team, agent or department to fetch list of task related to
-     * you, your command or department.
-     *
-     * @ApiDoc(
-     *     section="Tasks",
-     *     description="get a list of tasks",
-     *     filters={
-     *         {"name"="page", "pattern"="\d+", "description"="the page you are requesting", "dataType"="integer"},
-     *         {"name"="count", "pattern"="\d+", "description"="results per page", "dataType"="integer"},
-     *         {"name"="label", "pattern"="(\w,)+", "description"="filter by labels", "dataType"="string"},
-     *         {"name"="label_mode", "pattern"="+d+", "description"="additional filter for label, select where labels count > then you specified", "dataType"="string"},
-     *         {"name"="project", "pattern"="(\d+),+", "description"="filter by project", "dataType"="string"},
-     *         {"name"="creator", "pattern"="(\d+),+", "description"="filter by project", "dataType"="string"},
-     *         {"name"="no_assignments", "pattern"="1|0", "description"="select only unassigned", "dataType"="boolean"},
-     *         {"name"="assigned_agent", "pattern"="(\d+,)+", "description"="only where assigned agent has id", "dataType"="string"},
-     *         {"name"="not_assigned_agent", "pattern"="(\d+,)+", "description"="only where assigned agent has no id", "dataType"="string"},
-     *         {"name"="assigned_team", "pattern"="(\d+,)+", "description"="only where assigned team has id", "dataType"="string"},
-     *         {"name"="not_assigned_team", "pattern"="(\d+,)+", "description"="only where assigned team has no id", "dataType"="string"},
-     *         {"name"="assigned_department", "pattern"="(\d+,)+", "description"="only where assigned department has id", "dataType"="string"},
-     *         {"name"="not_assigned_department", "pattern"="(\d+,)+", "description"="only where assigned department has no id", "dataType"="string"},
-     *         {"name"="created_from", "pattern"="[a-zA-Z0-9\s-:]+", "description"="start of range to filter by created date", "dataType"="string"},
-     *         {"name"="created_to", "pattern"="[a-zA-Z0-9\s-:]+", "description"="end of range to filter by created date", "dataType"="string"},
-     *         {"name"="due_from", "pattern"="[a-zA-Z0-9\s-:]+", "description"="start of range to filter by due date", "dataType"="string"},
-     *         {"name"="due_to", "pattern"="[a-zA-Z0-9\s-:]+", "description"="end of range to filter by due date", "dataType"="string"},
-     *         {"name"="done_from", "pattern"="[a-zA-Z0-9\s-:]+", "description"="start of range to filter by done date", "dataType"="string"},
-     *         {"name"="done_to", "pattern"="[a-zA-Z0-9\s-:]+", "description"="end of range to filter by done date", "dataType"="string"},
-     *         {"name"="done", "pattern"="done", "description"="select only done|undone tasks", "dataType"="string"},
-     *         {"name"="order_by", "pattern"="id|title|list|project|date_due|date_done|date_created|assignee", "description"="how to order", "dataType"="string"},
-     *         {"name"="order_dir", "pattern"="asc|desc", "description"="order direction", "dataType"="string"},
-     *
-     *     },
-     *     statusCodes={
-     *         200="Returned if success",
-     *         400="Returned if your request was malformed",
-     *     },
-     *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Task>"
-     * )
-     * @Rest\Get("", name="api_tasks")
-     *
-     * @param Request $request
-     *
-     * @return View
-     */
-    public function listAction(Request $request)
-    {
-        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW_LIST, $this->getPermissionGroupContext($request));
-
-        try {
-            $params = $request->query->all();
-            if (isset($params['include'])) {
-                unset($params['include']);
-            }
-            $criteria = TasksSelectCriteria::fromParameters($params, new OptionsResolver(), [$this->getUser()]);
-        } catch (InvalidArgumentException $e) {
-            throw new BadRequestHttpException($e->getMessage());
-        }
-
-        $page  = $request->query->get('page', 1);
-        $count = $request->query->get('count', 50);
-
-        $tasks = $this->get('data.tasks')->selectTasks($criteria, $page, $count);
-
-        return View::create($this->wrap($tasks), Response::HTTP_OK);
-    }
+    public static $entity      = Task::class;
+    public static $type        = TaskType::class;
+    public static $sortOptions = [
+        'id'           => 'id',
+        'title'        => 'title',
+        'date_due'     => 'date_due',
+        'date_done'    => 'date_done',
+        'date_created' => 'date_created',
+    ];
 
     /**
      * @param HttpKernelInterface $kernel
@@ -146,243 +114,182 @@ class TasksController extends CrudController
     }
 
     /**
-     * Get subtasks for task with given id.
-     *
-     * @ApiDoc(
-     *     section="Tasks",
-     *     description="get subtasks for a task",
-     *     requirements={
-     *         {"name"="id", "requirement"="\d+", "description"="the id of the task", "dataType"="integer"}
-     *     },
-     *     statusCodes={
-     *          200="Returned if everything is ok",
-     *          404="We will return this status if task with specified id was not found"
-     *     },
-     *     output="array<DeskPRO\Bundle\AppBundle\Entity\TaskSubtask>"
-     * )
-     *
-     * @Rest\Get("/{id}/subtasks", name="api_tasks_subtasks_get")
-     *
-     * @param int     $id
-     * @param Request $request
-     *
-     * @return View
+     * {@inheritdoc}
      */
-    public function getSubtasksAction($id, Request $request)
+    protected function handleForm($model, Request $request, array $options = [])
     {
-        $task = $this->findEntity($id, $request);
-        if (empty($task)) {
-            throw $this->createNotFoundException();
-        }
+        $options = array_merge($options, [
+            'person' => $this->getUser(),
+        ]);
 
-        $sub_tasks = $task->getSubtasks();
-
-        return View::create($this->wrap($sub_tasks), Response::HTTP_OK);
-    }
-
-    /**
-     * Get comments for task with given id.
-     *
-     * @ApiDoc(
-     *     section="Tasks",
-     *     description="get comments for a task",
-     *     requirements={
-     *         {"name"="id", "requirement"="\d+", "description"="the id of the task", "dataType"="integer"}
-     *     },
-     *     filters={
-     *         {"name"="page", "pattern"="\d+", "description"="the page you are requesting", "dataType"="integer"},
-     *         {"name"="count", "pattern"="\d+", "description"="results per page", "dataType"="integer"}
-     *     },
-     *     statusCodes={
-     *         200="Returned if success",
-     *         404="We will return this status if task with specified id was not found"
-     *     },
-     *     output="array<DeskPRO\Bundle\AppBundle\Entity\TaskComment>"
-     * )
-     *
-     * @Rest\Get("/{id}/comments", name="api_tasks_comments_get")
-     *
-     * @param Request $request
-     * @param int     $id
-     *
-     * @return View
-     */
-    public function getCommentsAction(Request $request, $id)
-    {
-        $task = $this->findEntity($id, $request);
-        if (empty($task)) {
-            throw $this->createNotFoundException();
-        }
-
-        $comments = $task->getComments();
-
-        $page  = $request->query->get('page', 1);
-        $count = $request->query->get('count', 10);
-
-        $pager = new Pagerfanta(new ArrayAdapter($comments->toArray()));
-        $pager->setMaxPerPage($count);
-        $pager->setCurrentPage($page);
-
-        return View::create($this->wrap($pager), Response::HTTP_OK);
-    }
-
-    /**
-     * Get attachments for task with given id.
-     *
-     * @ApiDoc(
-     *     section="Tasks",
-     *     description="get attachments for a task",
-     *     requirements={
-     *         { "name"="id", "requirement"="\d+", "description"="the id of the task", "dataType"="integer"}
-     *     },
-     *     filters={
-     *         {"name"="page", "pattern"="\d+", "description"="the page you are requesting", "dataType"="integer"},
-     *         {"name"="count", "pattern"="\d+", "description"="results per page", "dataType"="integer"}
-     *     },
-     *     statusCodes={
-     *         200="Returned if you request was successful",
-     *         404="Returned if task with given id was't found"
-     *     },
-     *     output="array<DeskPRO\Bundle\AppBundle\Entity\TaskAttachment>"
-     * )
-     *
-     * @Rest\Get("/{id}/attachments", name="api_tasks_attachments_get")
-     *
-     * @param Request $request
-     * @param int     $id
-     *
-     * @return View
-     */
-    public function getAttachmentsAction(Request $request, $id)
-    {
-        $task = $this->findEntity($id, $request);
-        if (empty($task)) {
-            throw $this->createNotFoundException();
-        }
-
-        $comments = $task->getAttachments();
-
-        $page  = $request->query->get('page', 1);
-        $count = $request->query->get('count', 10);
-
-        $pager = new Pagerfanta(new ArrayAdapter($comments->toArray()));
-        $pager->setMaxPerPage($count);
-        $pager->setCurrentPage($page);
-
-        return View::create($this->wrap($pager), Response::HTTP_OK);
-    }
-
-    /**
-     * Get attached tickets for the task with specified id.
-     *
-     * @ApiDoc(
-     *     section="Tasks",
-     *     description="get attached tickets",
-     *     requirements={
-     *         {"name"="id", "requirement"="\d+", "description"="the id of the task", "dataType"="integer"}
-     *     },
-     *     statusCodes={
-     *         200="Returned if you request was successful",
-     *         404="Returned if task with given id was't found"
-     *     },
-     *     output="array<DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket>"
-     * )
-     *
-     * @Rest\Get("/{id}/linked_items/tickets", name="api_tasks_linked_tickets_get")
-     *
-     * @param Request $request
-     * @param int     $id
-     *
-     * @return View
-     */
-    public function getLinkedTicketsAction(Request $request, $id)
-    {
-        return $this->getLinked($request, $id, 'tickets');
-    }
-
-    /**
-     * Get attached chats for the task with specified id.
-     *
-     * @ApiDoc(
-     *     section="Tasks",
-     *     description="get attached chats",
-     *     requirements={
-     *         {"name"="id", "requirement"="\d+", "description"="the id of the task", "dataType"="integer"}
-     *     },
-     *     statusCodes={
-     *         200="Returned if you request was successful",
-     *         404="Returned if task with given id was't found"
-     *     },
-     *     input={"class"="task", "name"=""},
-     *     output="array<DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat>"
-     * )
-     *
-     * @Rest\Get("/{id}/linked_items/chats", name="api_tasks_linked_chats_get")
-     *
-     * @param Request $request
-     * @param int     $id
-     *
-     * @return View
-     */
-    public function getLinkedChatsAction(Request $request, $id)
-    {
-        return $this->getLinked($request, $id, 'chats');
-    }
-
-    /**
-     * Get attached chats for the task with specified id.
-     *
-     * @ApiDoc(
-     *     section="Tasks",
-     *     description="get attached articles",
-     *     section="Tasks",
-     *     description="get attached links for a task",
-     *     requirements={
-     *         {"name"="id", "requirement"="\d+", "description"="the id of the task", "dataType"="integer"}
-     *     },
-     *     statusCodes={
-     *         200="Returned if you request was successful",
-     *         404="Returned if task with given id was't found"
-     *     },
-     *     output="array<DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle>"
-     * )
-     *
-     * @Rest\Get("/{id}/linked_items/articles", name="api_tasks_linked_articles_get")
-     *
-     * @param Request $request
-     * @param int     $id
-     *
-     * @return View
-     */
-    public function getLinkedArticlesAction(Request $request, $id)
-    {
-        return $this->getLinked($request, $id, 'articles');
-    }
-
-    /**
-     * @param Request $request
-     * @param int     $id
-     * @param string  $type
-     *
-     * @return View
-     */
-    protected function getLinked(Request $request, $id, $type)
-    {
-        $task = $this->findEntity($id, $request);
-        if (empty($task)) {
-            throw $this->createNotFoundException();
-        }
-        $method = 'getLinked'.ucfirst($type);
-        $links  = $task->$method();
-
-        return View::create($this->wrap($links), Response::HTTP_OK);
+        return parent::handleForm($model, $request, $options);
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function instantiateEntity(Request $request)
+    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        return new Task($this->getUser());
+        $done = $request->get('done');
+        if ($request->query->has('done')) {
+            $qb
+                ->andWhere("$alias.is_done = :is_done")
+                ->setParameter('is_done', (int) $done)
+            ;
+        }
+
+        $project = $request->get('project');
+        if ($project) {
+            $qb
+                ->andWhere("$alias.project IN (:project)")
+                ->setParameter('project', $project)
+            ;
+        }
+
+        $creator = $request->get('creator');
+        if ($creator) {
+            if ($creator === 'me') {
+                $creator = $this->getUser()->getId();
+            }
+
+            $qb
+                ->andWhere("$alias.creator IN (:creator)")
+                ->setParameter('creator', $creator)
+            ;
+        }
+
+        $context = new QueryFilterContext($qb, $alias, $request);
+
+        if ($request->get('no_assignments')) {
+            $qb
+                ->leftJoin("$alias.assigned", 'ta')
+                ->andWhere('ta.person IS NULL')
+                ->andWhere('ta.team IS NULL')
+                ->andWhere('ta.department IS NULL')
+            ;
+        } else {
+            $this->applyAssignedFilter($context, 'person', 'assigned_agent');
+            $this->applyAssignedFilter($context, 'person', 'not_assigned_agent');
+
+            $this->applyAssignedFilter($context, 'team', 'assigned_team');
+            $this->applyAssignedFilter($context, 'team', 'not_assigned_team');
+
+            $this->applyAssignedFilter($context, 'department', 'assigned_department');
+            $this->applyAssignedFilter($context, 'department', 'not_assigned_department');
+        }
+
+        $this->applyLabelFilters($context, Task::class);
+
+        $this->applyDateRangeFilters($context, 'date_created', 'created_from', 'created_to');
+        $this->applyDateRangeFilters($context, 'date_due', 'due_from', 'due_to');
+        $this->applyDateRangeFilters($context, 'date_done', 'done_from', 'done_to');
+
+        $qb->andWhere("$alias.for_del <> 1");
+        $qb->addGroupBy("$alias.id");
+    }
+
+    /**
+     * @param QueryFilterContext $context
+     * @param string             $property
+     * @param string             $queryParam
+     */
+    protected function applyAssignedFilter(QueryFilterContext $context, $property, $queryParam)
+    {
+        $alias = $context->getAlias();
+        $value = $context->getRequest()->get($queryParam);
+        $value = (array) $value;
+
+        if (($key = array_search('me', $value)) !== false) {
+            $user = $this->getUser();
+            unset($value[$key]);
+
+            switch ($property) {
+                case 'person':
+                    $value[] = $user->getId();
+                    break;
+                case 'team':
+                    $user->loadHelper('AgentTeam');
+                    $value = array_merge($value, $user->getAgentTeamIds() ?: []);
+                    break;
+                case 'department':
+                    $user->loadHelper('AgentPermissions');
+                    $value = array_merge($value, $user->getAllowedDepartments() ?: []);
+                    break;
+            }
+        }
+
+        if (!empty($value)) {
+            $qb = $context->getQb();
+
+            if (strpos($queryParam, 'not_') === 0) {
+                $subAlias     = $queryParam;
+                $subJoinAlias = $queryParam.'ta';
+
+                $qb2 = $this->getManager()->createQueryBuilder();
+                $qb2
+                    ->select($subAlias)
+                    ->from(static::$entity, $subAlias)
+                    ->leftJoin("$subAlias.assigned", $subJoinAlias)
+                    ->where(
+                        "$alias.id = $subAlias.id",
+                        "$subJoinAlias.$property IN (:$queryParam)"
+                    )
+                ;
+
+                $qb->andWhere("NOT EXISTS ({$qb2->getDQL()})");
+            } else {
+                if (!in_array('ta', $qb->getAllAliases())) {
+                    $qb->leftJoin("$alias.assigned", 'ta');
+                }
+
+                $qb->andWhere("ta.$property IN (:$queryParam)");
+            }
+
+            $qb->setParameter($queryParam, $value);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function applySorting(QueryBuilder $qb, $alias, Request $request)
+    {
+        $orderBy  = $request->get('order_by');
+        $orderDir = $request->get('order_dir');
+
+        if ($orderDir && !in_array($orderDir, ['asc', 'desc'])) {
+            throw $this->createBadRequestException('Unknown order value');
+        }
+
+        switch ($orderBy) {
+            case 'list':
+                $qb
+                    ->leftJoin("$alias.list", 'list')
+                    ->orderBy('list.title', $orderDir)
+                    ->addOrderBy("$alias.display_order", 'ASC')
+                ;
+
+                break;
+            case 'project':
+                $qb
+                    ->leftJoin("$alias.project", 'p')
+                    ->orderBy('p.title', $orderDir)
+                ;
+
+                break;
+            case 'assignee':
+                $qb
+                    ->leftJoin('ta.person', 'person')
+                    ->leftJoin('ta.team', 'team')
+                    ->leftJoin('ta.department', 'department')
+                    ->orderBy('person.name', $orderDir)
+                    ->addOrderBy('team.name', $orderDir)
+                    ->addOrderBy('department.title', $orderDir)
+                ;
+
+                break;
+            default:
+                parent::applySorting($qb, $alias, $request);
+        }
     }
 }

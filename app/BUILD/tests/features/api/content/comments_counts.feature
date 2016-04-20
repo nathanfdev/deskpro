@@ -1,4 +1,4 @@
-@counts @publish-nav
+@counts @publish-nav @basic
 Feature: Comment counts endpoints (/article_comments/counts, /news_comments/counts, /download_comments/counts)
   To retrieve counts of DeskPRO comments
   As a developer
@@ -8,7 +8,12 @@ Feature: Comment counts endpoints (/article_comments/counts, /news_comments/coun
     Given I install the api data set
     And my request is authenticated
 
-  @basic
+  @reinstall
+  Scenario: I select comment counts
+    When I send a GET request to "/api/v2/article_comments/counts"
+    Then the response should be in JSON
+    And the response status code should be 200
+
   Scenario Outline: I select comment counts grouping them by status
     When I send a GET request to "/api/v2/<target>_comments/counts?group_by=status"
     Then the response should be in JSON

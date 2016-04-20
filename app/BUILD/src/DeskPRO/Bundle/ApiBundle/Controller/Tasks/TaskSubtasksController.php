@@ -26,40 +26,25 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\TaskSubtask;
-use DeskPRO\Bundle\AppBundle\Form\Type\TaskSubtaskType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Task\TaskSubtaskType;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class TaskSubtasksController.
  *
  * @ApiModes("all")
- * @Rest\Route("/subtasks")
+ * @Rest\Route("/tasks/{parentId}/subtasks")
  * @ApiDoc(target="all", section="Tasks", output="DeskPRO\Bundle\AppBundle\Entity\TaskSubtask")
  */
-class TaskSubtasksController extends CrudController
+class TaskSubtasksController extends AbstractTaskSubController
 {
     public static $entity    = TaskSubtask::class;
     public static $type      = TaskSubtaskType::class;
     public static $listOrder = 'asc';
     public static $listSort  = 'display_order';
-
-    /**
-     * @param Request $request
-     *
-     * @return TaskSubtask
-     */
-    protected function instantiateEntity(Request $request)
-    {
-        return new TaskSubtask($this->getUser());
-    }
 }

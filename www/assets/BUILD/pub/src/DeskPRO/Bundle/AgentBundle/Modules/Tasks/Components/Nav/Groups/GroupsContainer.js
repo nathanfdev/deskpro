@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Groups } from './Groups';
-import { groupsCountSelector } from '../../../Selectors/nav';
+import { groupsCountMapSelector } from '../../../Selectors/nav';
 
 const options = {
   my:         { filter: { assigned_agent: ['me'] }, label: 'My Tasks' },
@@ -13,7 +13,7 @@ const options = {
 };
 
 @connect(state => ({
-  count: groupsCountSelector(state)
+  groupsCountMap: groupsCountMapSelector(state)
 }))
 export class GroupsContainer extends React.Component {
 

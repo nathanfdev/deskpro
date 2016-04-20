@@ -136,7 +136,7 @@ class TaskSubtask implements EntityInterface, NotifyPropertyChanged
      * @JMS\Expose()
      * @JMS\Type("integer")
      *
-     * @Orm\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      *
      * @var int
      */
@@ -156,13 +156,10 @@ class TaskSubtask implements EntityInterface, NotifyPropertyChanged
 
     /**
      * Constructor.
-     *
-     * @param Person $person
      */
-    public function __construct(Person $person)
+    public function __construct()
     {
         $this->setModelField('date_created', new \DateTime());
-        $this->setCreator($person);
     }
 
     /**
@@ -183,10 +180,14 @@ class TaskSubtask implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param Person $creator
+     *
+     * @return $this
      */
     public function setCreator(Person $creator)
     {
         $this->setModelField('creator', $creator);
+
+        return $this;
     }
 
     /**
@@ -232,10 +233,14 @@ class TaskSubtask implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param Task $task
+     *
+     * @return $this
      */
     public function setTask($task)
     {
         $this->setModelField('task', $task);
+
+        return $this;
     }
 
     /**

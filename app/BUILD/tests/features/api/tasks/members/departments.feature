@@ -1,4 +1,5 @@
-Feature: /projects/{id}/members/departments endpoint
+@tasks
+Feature: /task_projects/{id}/members/departments endpoint
   To CRUD DeskPRO department project_members
   As a developer
   I want an API endpoint

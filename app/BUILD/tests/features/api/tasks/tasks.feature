@@ -1,4 +1,4 @@
-@tasks-nav @tasks
+@tasks-nav @tasks @basic
 Feature: /tasks endpoint
   To CRUD DeskPRO tasks
   As a developer
@@ -39,13 +39,17 @@ Feature: /tasks endpoint
     When I send a GET request to "/api/v2/tasks"
     Then the response should be in JSON
     And the response status code should be 200
-    And the JSON node "meta" should exist
+
     And the JSON node "meta.pagination.count" should be equal to 3
     And the JSON node "meta.pagination.current_page" should be equal to 1
     And the JSON node "meta.pagination.total_pages" should be equal to 1
     And the JSON node "meta.pagination.total" should be equal to 3
-    And the JSON node "data" should exist
-    And the JSON node "data[2].title" should be equal to "My test task"
+
+    And the JSON node "data[0].id" should be equal to 3
+    And the JSON node "data[0].title" should be equal to "My test task"
+
+    And the JSON node "data[1].id" should be equal to 2
+    And the JSON node "data[1].title" should be equal to "An unassigned task"
 
   Scenario: I modify a task
     When I send a PUT request to "/api/v2/tasks/3" with body:

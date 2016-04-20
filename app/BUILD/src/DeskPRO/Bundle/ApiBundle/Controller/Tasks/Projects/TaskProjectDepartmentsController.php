@@ -26,31 +26,34 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks\Projects;
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
-
-use Application\DeskPRO\Entity\FeedbackCategory;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
- * API access to feedback types.
- *
- * **Note that current model called as Category, so don't be fooled with this - it's type**
+ * Class TaskProjectDepartmentsController.
  *
  * @ApiModes("all")
- * @Rest\Route("/feedback_types")
- * @ApiDoc(target="all", section="Feedback", output="Application\DeskPRO\Entity\FeedbackCategory")
+ * @Rest\Route("/task_projects/{parentId}/members/departments")
+ * @ApiDoc(target="all", section="TaskProjects", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Department")
  */
-class FeedbackTypeController extends CrudController
+class TaskProjectDepartmentsController extends AbstractTaskProjectMembersController
 {
-    public static $exposeOnly = ['get', 'list'];
-    public static $entity     = FeedbackCategory::class;
-    public static $listSort   = 'title';
-    public static $listOrder  = 'asc';
+    /**
+     * {@inheritdoc}
+     */
+    protected function getType()
+    {
+        return 'department';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getTaskCriteriaParam()
+    {
+        return 'assigned_department';
+    }
 }

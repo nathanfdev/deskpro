@@ -26,47 +26,24 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Entity\TaskList;
+use DeskPRO\Bundle\AppBundle\Form\Type\Task\TaskListType;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class TaskListController.
  *
  * @ApiModes("all")
+ * @Rest\Route("/task_lists")
+ * @ApiDoc(target="all", section="Tasks", output="DeskPRO\Bundle\AppBundle\Entity\TaskList")
  */
-class TaskListController extends BaseController
+class TaskListController extends CrudController
 {
-    /**
-     * With this endpoint you can fetch task list entities.
-     *
-     * @ApiDoc(
-     *     section="Tasks",
-     *     description="Fetch tasks lists",
-     *     resourceDescription="Operation about tasks",
-     *     statusCodes={
-     *         200="Returned if everything is OK"
-     *     },
-     *     output="array<DeskPRO\Bundle\AppBundle\Entity\TaskList>"
-     *
-     * )
-     * @Rest\Get("/task_lists", name="api_task_lists")
-     *
-     * @return View
-     */
-    public function listAction()
-    {
-        $lists = $this->getDoctrine()->getRepository('App:TaskList')->findAll();
-
-        return View::create($this->wrap($lists), Response::HTTP_OK);
-    }
+    public static $entity = TaskList::class;
+    public static $type   = TaskListType::class;
 }

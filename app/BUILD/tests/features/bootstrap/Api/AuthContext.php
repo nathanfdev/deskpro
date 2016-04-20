@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,7 +31,6 @@ namespace DpBehat\Api;
 use Application\DeskPRO\Entity\ApiKey;
 use Application\DeskPRO\Entity\ApiToken;
 use Application\DeskPRO\Entity\Session;
-use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use DeskPRO\Bundle\AppBundle\Entity\ApiKeyAction;
 use DeskPRO\Bundle\AppBundle\Entity\ApiKeyLimit;
@@ -126,7 +125,7 @@ class AuthContext extends BaseContext implements RebootableContextInterface
         $user = $this->user_details->getWho($who);
 
         session_start();
-        $_SESSION['_sf2_attributes'] = array('auth_person_id' => $user->getId());
+        $_SESSION['_sf2_attributes'] = ['auth_person_id' => $user->getId()];
         $data                        = session_encode();
         unset($_SESSION['_sf2_attributes']);
         session_destroy();
@@ -172,10 +171,28 @@ class AuthContext extends BaseContext implements RebootableContextInterface
      */
     public function myRequestIsAuthenticated()
     {
-        $key_repo = $this->em->getRepository('DeskPRO:ApiKey');
-        if (!$key = $key_repo->find(1)) {
-            $this->aValidApiKeyExistsWithTheCodeAndIdForUser('MyCode', 1, 'admin');
-            $key = $key_repo->find(1);
+        $this->myRequestIsAuthenticatedTo('admin');
+    }
+
+    /**
+     * @Given my request is authenticated to :who
+     *
+     * @param string $who
+     */
+    public function myRequestIsAuthenticatedTo($who)
+    {
+        $repository = $this->em->getRepository(ApiKey::class);
+
+        $key = $repository->find(1);
+        if ($key) {
+            $person = $this->user_details->getWho($who);
+            if ($key->person !== $person) {
+                $key->person = $person;
+                $this->persistAndFlush($key);
+            }
+        } else {
+            $this->aValidApiKeyExistsWithTheCodeAndIdForUser('MyCode', 1, $who);
+            $key = $repository->find(1);
         }
 
         $this->rest_context->iAddHeaderEqualTo('Authorization', 'key '.$key->getKeyString());

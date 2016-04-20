@@ -26,34 +26,58 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks\Projects;
+/**
+ * DeskPRO.
+ */
 
+namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
+
+use Application\DeskPRO\Entity\CustomDataFeedback;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\View\View;
 
 /**
- * Class ProjectAgentsController.
+ * Class FeedbackCategoriesController.
  *
  * @ApiModes("all")
- * @Rest\Route("/task_projects/{parentId}/members/agents")
- * @ApiDoc(target="all", section="TaskProjects", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
+ * @Rest\Route("/feedback_categories")
  */
-class ProjectAgentsController extends AbstractProjectMembersController
+class FeedbackCategoriesController extends BaseController
 {
     /**
-     * {@inheritdoc}
+     * Fetch feedback categories list.
+     * Proper output coming soon.
+     *
+     * @ApiDoc(
+     *     section="Feedback",
+     *     resourceDescription="Operations about feedback",
+     *     description="get list of feedback categories",
+     *     statusCodes={
+     *         200="Returned if request was successful"
+     *     },
+     * )
+     *
+     * @Rest\Get("")
+     * @Rest\View("list")
+     *
+     * @return View
      */
-    protected function getType()
+    public function listAction()
     {
-        return 'person';
-    }
+        $qb = $this->getManager()->createQueryBuilder();
+        $qb
+            ->select('category.id', 'category.input')
+            ->from(CustomDataFeedback::class, 'category')
+            ->leftJoin('category.field', 'field')
+            ->where('field.title = :title')
+            ->setParameter('title', 'Category')
+            ->groupBy('category.input')
+            ->orderBy('category.input', 'asc')
+        ;
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function getTaskCriteriaParam()
-    {
-        return 'assigned_agent';
+        return View::create($this->wrap($qb->getQuery()->getResult()));
     }
 }

@@ -6,27 +6,23 @@ import { ListItemContainer } from '../ListItemContainer';
 export class Agents extends React.Component {
 
   static propTypes = {
-    agents:      PropTypes.object.isRequired,
-    agentsCount: PropTypes.object.isRequired
+    agents:         PropTypes.object.isRequired,
+    agentsCountMap: PropTypes.object.isRequired
   };
 
   render() {
-    const { agents, agentsCount = [] } = this.props;
-    const countMap = [];
-    agentsCount.forEach(agentCount => {
-      countMap[agentCount.get('agent_id')] = parseInt(agentCount.get('tasks_count'), 10);
-    });
-
+    const { agents, agentsCountMap = [] } = this.props;
     return (
       <Section>
         <SectionHeader>Agents</SectionHeader>
         <ul>
           {agents.map((agent, index) =>
-            <ListItemContainer key={index}
-                               urlHash={`agent-${agent.get('id')}-${agent.get('name')}`}
-                               listOptions={{assigned_agent: [agent.get('id')]}}>
-
-              <ListItem count={countMap[agent.get('id')] || 0}>
+            <ListItemContainer
+              key={index}
+              urlHash={`agent-${agent.get('id')}-${agent.get('name')}`}
+              listOptions={{ assigned_agent: [agent.get('id')] }}
+              >
+              <ListItem count={agentsCountMap[agent.get('id')] || 0}>
                 <div part="label">
                   <PersonAvatar person={agent} size={16} /> {agent.get('name')}
                 </div>

@@ -26,93 +26,25 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\TaskComment;
-use DeskPRO\Bundle\AppBundle\Form\Type\TaskCommentType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Task\TaskCommentType;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\View\View;
-use Pagerfanta\Adapter\ArrayAdapter;
-use Pagerfanta\Pagerfanta;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class TaskCommentsController.
  *
  * @ApiModes("all")
- * @Rest\Route("/task_comments")
+ * @Rest\Route("/tasks/{parentId}/comments")
  * @ApiDoc(target="all", section="Tasks", output="DeskPRO\Bundle\AppBundle\Entity\TaskComment")
  */
-class TaskCommentsController extends CrudController
+class TaskCommentsController extends AbstractTaskSubController
 {
     public static $entity    = TaskComment::class;
     public static $type      = TaskCommentType::class;
     public static $listSort  = 'date_created';
     public static $listOrder = 'asc';
-
-    /**
-     * @ApiDoc(
-     *     section="Tasks",
-     *     description="get attachments for a comment",
-     *     requirements={
-     *         {"name"="id", "requirement"="\d+", "description"="the id of the comment", "dataType"="integer"}
-     *     },
-     *     filters={
-     *         {"name"="page", "pattern"="\d+", "description"="the page you are requesting", "dataType"="integer", "required"=false},
-     *         {"name"="count", "pattern"="\d+", "description"="results per page", "dataType"="integer"}
-     *     },
-     *     statusCodes={
-     *         200="Returned with fetched attachments list",
-     *         404="Returned if we can't find task comment with given ID"
-     *     },
-     *     output="DeskPRO\Bundle\AppBundle\Entity\TaskAttachment"
-     * )
-     *
-     * @Rest\Get("/{id}/attachments", name="api_task_comments_attachments_get")
-     *
-     * @param Request $request
-     * @param int     $id
-     *
-     * @return View
-     */
-    public function getAttachmentsAction(Request $request, $id)
-    {
-        /** @var TaskComment $comment */
-        $comment = $this->findEntity($id, $request);
-
-        if (empty($comment)) {
-            throw $this->createNotFoundException();
-        }
-
-        $attachments = $comment->getAttachments();
-
-        $page  = $request->query->get('page', 1);
-        $count = $request->query->get('count', 10);
-
-        $pager = new Pagerfanta(new ArrayAdapter($attachments->toArray()));
-        $pager->setMaxPerPage($count);
-        $pager->setCurrentPage($page);
-
-        return View::create(
-            $this->wrap($pager),
-            Response::HTTP_OK
-        );
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return TaskComment
-     */
-    protected function instantiateEntity(Request $request)
-    {
-        return new static::$entity($this->getUser());
-    }
 }

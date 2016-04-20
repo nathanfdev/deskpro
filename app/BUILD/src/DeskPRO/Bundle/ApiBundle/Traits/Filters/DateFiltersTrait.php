@@ -26,34 +26,39 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks\Projects;
-
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations as Rest;
+namespace DeskPRO\Bundle\ApiBundle\Traits\Filters;
 
 /**
- * Class ProjectDepartmentsController.
- *
- * @ApiModes("all")
- * @Rest\Route("/task_projects/{parentId}/members/departments")
- * @ApiDoc(target="all", section="TaskProjects", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Department")
+ * Class DateFiltersTrait.
  */
-class ProjectDepartmentsController extends AbstractProjectMembersController
+trait DateFiltersTrait
 {
     /**
-     * {@inheritdoc}
+     * @param QueryFilterContext $context
+     * @param string             $property
+     * @param string             $minQueryParam
+     * @param string             $maxQueryParam
      */
-    protected function getType()
+    public function applyDateRangeFilters(QueryFilterContext $context, $property, $minQueryParam, $maxQueryParam)
     {
-        return 'department';
-    }
+        $qb      = $context->getQb();
+        $alias   = $context->getAlias();
+        $request = $context->getRequest();
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function getTaskCriteriaParam()
-    {
-        return 'assigned_department';
+        $minValue = $request->get($minQueryParam);
+        if ($minValue) {
+            $qb
+                ->andWhere("$alias.$property >= DATE(:$minQueryParam)")
+                ->setParameter($minQueryParam, $minValue)
+            ;
+        }
+
+        $maxValue = $request->get($maxQueryParam);
+        if ($maxValue) {
+            $qb
+                ->andWhere("$alias.$property <= DATE(:$maxQueryParam)")
+                ->setParameter($maxQueryParam, $maxValue)
+            ;
+        }
     }
 }

@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -51,6 +52,7 @@ class LabelDef extends DomainObject
 {
     const DEFAULT_COLOR = '#cccccc';
 
+    const TYPE_TASKS     = 'task';
     const TYPE_TICKETS   = 'tickets';
     const TYPE_PEOPLE    = 'people';
     const TYPE_ORGS      = 'organizations';

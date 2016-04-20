@@ -1,5 +1,5 @@
 @feedback-nav @feedback
-Feature: /feedback/ endpoint
+Feature: /feedback endpoint
   To obtain filtered list of feedback
   As a developer
   I want an endpoint for feedback select

@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks\Projects;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -44,13 +41,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class ProjectsController.
+ * Class TaskProjectsController.
  *
  * @ApiModes("all")
  * @Rest\Route("/task_projects")
  * @ApiDoc(target="all", section="TaskProjects", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\TaskProject")
  */
-class ProjectsController extends CrudController
+class TaskProjectsController extends CrudController
 {
     public static $entity    = TaskProject::class;
     public static $type      = TaskProjectType::class;
