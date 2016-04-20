@@ -55,6 +55,10 @@ class GeneralPortalSettings
 
         'iface_portal' => array('core.iface_portal', 'bool'),
         'iface_widget' => array('core.iface_widget', 'bool'),
+
+        'show_ratings'           => array('user.show_ratings', 'bool'),
+        'show_ratings_min_votes' => array('user.show_ratings_min_votes', 'int'),
+        'publish_comments'       => array('user.publish_comments', 'bool'),
     );
 
     /**
@@ -108,6 +112,21 @@ class GeneralPortalSettings
     public $iface_widget;
 
     /**
+     * @var bool
+     */
+    public $show_ratings;
+
+    /**
+     * @var int
+     */
+    public $show_ratings_min_votes;
+
+    /**
+     * @var bool
+     */
+    public $publish_comments;
+
+    /**
      * @param Settings $settings
      */
     public function __construct(Settings $settings)
@@ -127,6 +146,9 @@ class GeneralPortalSettings
                 case 'bool':
                     $this->$name = (bool) $v;
                     break;
+                case 'int':
+                    $this->$name = (int) $v;
+                    break;
                 default:
                     $this->$name = $v ? (($v.'') ?: '') : '';
             }
@@ -144,6 +166,9 @@ class GeneralPortalSettings
             switch ($info[1]) {
                 case 'bool':
                     $export_settings[$name] = (bool) $this->$name;
+                    break;
+                case 'int':
+                    $export_settings[$name] = (int) $this->$name;
                     break;
                 default:
                     $export_settings[$name] = $this->$name ? (($this->$name.'') ?: '') : '';
@@ -181,6 +206,9 @@ class GeneralPortalSettings
             switch ($info[1]) {
                 case 'bool':
                     $this->$name = (bool) $v;
+                    break;
+                case 'int':
+                    $this->$name = (int) $v;
                     break;
                 default:
                     $this->$name = $v ? (($v.'') ?: '') : '';
