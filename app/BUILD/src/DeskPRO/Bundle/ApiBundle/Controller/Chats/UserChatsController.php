@@ -74,7 +74,7 @@ class UserChatsController extends CrudController
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
         $context = new QueryFilterContext($qb, $alias, $request);
-        $this->applyDateRangeFilters($context, 'date_created', 'created_from', 'created_to');
+        $this->applyDateRangeFilter($context, 'date_created', 'created_from', 'created_to');
 
         $datePeriod = $request->get('date_period');
         if ($datePeriod) {

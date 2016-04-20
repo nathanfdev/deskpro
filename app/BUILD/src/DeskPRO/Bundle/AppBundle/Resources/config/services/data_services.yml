@@ -4,10 +4,6 @@ services:
     class: DeskPRO\Bundle\AppBundle\DataService\PersonDataService
     arguments: ["@doctrine.orm.default_entity_manager"]
 
-  data.people_counts:
-    class: DeskPRO\Bundle\AppBundle\DataService\People\PeopleCountsDataService
-    arguments: ["@doctrine.orm.default_entity_manager"]
-
   data.tickets:
     class: DeskPRO\Bundle\AppBundle\DataService\TicketsDataService
     arguments: ["@doctrine.orm.default_entity_manager"]
@@ -43,10 +39,6 @@ services:
   data.feedback:
     class: DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackDataService
     arguments: ["@doctrine.orm.default_entity_manager", "@permissions_manager"]
-
-  data.feedback_comments:
-    class: DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackCommentsDataService
-    arguments: ["@doctrine.orm.default_entity_manager"]
 
   data.rating:
     class: DeskPRO\Bundle\AppBundle\DataService\RatingsDataService
@@ -92,10 +84,6 @@ services:
     class: DeskPRO\Bundle\AppBundle\DataService\AgentTeams\AgentTeamsDataService
     arguments: ["@doctrine.orm.default_entity_manager"]
 
-  data.content:
-    class: DeskPRO\Bundle\AppBundle\DataService\Content\ContentSelect\ContentDataService
-    arguments: ["@doctrine.orm.default_entity_manager"]
-
   data.content_counts:
     class: DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount\ContentCountsDataService
     arguments: ["@doctrine.orm.default_entity_manager", "@data.categories"]
@@ -119,10 +107,6 @@ services:
   data.tickets.ticket_counts:
     class: DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketCountsDataService
     arguments: ["@doctrine.orm.entity_manager", "@term_engine.dbal_ticket_filters.engine", "@security.token_storage"]
-
-  data.tasks:
-    class: DeskPRO\Bundle\AppBundle\DataService\Tasks\TasksDataService
-    arguments: ["@doctrine.orm.entity_manager", "@security.token_storage"]
 
   data.task_counts:
     class: DeskPRO\Bundle\AppBundle\DataService\Tasks\TasksCountsDataService

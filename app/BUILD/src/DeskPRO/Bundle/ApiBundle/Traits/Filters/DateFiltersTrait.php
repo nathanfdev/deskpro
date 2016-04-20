@@ -28,6 +28,8 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Traits\Filters;
 
+use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
+
 /**
  * Class DateFiltersTrait.
  */
@@ -39,7 +41,7 @@ trait DateFiltersTrait
      * @param string             $minQueryParam
      * @param string             $maxQueryParam
      */
-    public function applyDateRangeFilters(QueryFilterContext $context, $property, $minQueryParam, $maxQueryParam)
+    protected function applyDateRangeFilter(QueryFilterContext $context, $property, $minQueryParam, $maxQueryParam)
     {
         $qb      = $context->getQb();
         $alias   = $context->getAlias();
@@ -56,5 +58,23 @@ trait DateFiltersTrait
             $qb->andWhere("$alias.$property <= DATE(:$maxQueryParam)");
             $qb->setParameter($maxQueryParam, $maxValue);
         }
+    }
+
+    /**
+     * @param QueryFilterContext $context
+     * @param string             $property
+     * @param string             $queryParam
+     */
+    protected function applyDatePeriodFilter(QueryFilterContext $context, $property, $queryParam)
+    {
+        $value = $context->getRequest()->get($queryParam);
+        if (!$value) {
+            return;
+        }
+
+        $periodDql = DatePeriods::getDatePeriodCaseWhenDql("{$context->getAlias()}.$property");
+
+        $context->getQb()->andWhere("$periodDql = :$queryParam");
+        $context->getQb()->setParameter($queryParam, $value);
     }
 }

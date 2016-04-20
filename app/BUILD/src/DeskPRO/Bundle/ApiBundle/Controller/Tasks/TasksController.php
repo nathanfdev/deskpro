@@ -174,9 +174,9 @@ class TasksController extends CrudController
 
         $this->applyLabelFilters($context, Task::class);
 
-        $this->applyDateRangeFilters($context, 'date_created', 'created_from', 'created_to');
-        $this->applyDateRangeFilters($context, 'date_due', 'due_from', 'due_to');
-        $this->applyDateRangeFilters($context, 'date_done', 'done_from', 'done_to');
+        $this->applyDateRangeFilter($context, 'date_created', 'created_from', 'created_to');
+        $this->applyDateRangeFilter($context, 'date_due', 'due_from', 'due_to');
+        $this->applyDateRangeFilter($context, 'date_done', 'done_from', 'done_to');
 
         $qb->andWhere("$alias.for_del <> 1");
         $qb->addGroupBy("$alias.id");

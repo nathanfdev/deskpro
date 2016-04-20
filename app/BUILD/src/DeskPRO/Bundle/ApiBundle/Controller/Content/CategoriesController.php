@@ -60,7 +60,7 @@ class CategoriesController extends BaseController
      *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\Content\CategoriesList",
      * )
      * @Rest\View(serializerGroups={"list"})
-     * @Rest\Get("/content_categories", name="api_content_categories")
+     * @Rest\Get("/content_categories")
      */
     public function getCategoriesGroupedByContentTypeAction()
     {
