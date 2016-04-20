@@ -29,11 +29,11 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\LabelDef;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketSla;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -151,6 +151,7 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         $this->loadTicketsForManager();
         $this->loadTicketMessages();
         $this->loadTicketProps();
+        $this->loadTicketSlas();
     }
 
     private function initIds()
@@ -551,5 +552,27 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         if ($fielddata_batch) {
             $this->db->batchInsert('custom_data_ticket', $fielddata_batch, true);
         }
+    }
+
+    private function loadTicketSlas()
+    {
+        $batch = [];
+
+        foreach ($this->ticket_ids as $ticketId) {
+            $status = $this->faker
+                ->randomElement([TicketSla::STATUS_OK, TicketSla::STATUS_WARNING, TicketSla::STATUS_FAIL]);
+            $batch[] = [
+                'ticket_id'  => $ticketId,
+                'sla_id'     => 1,
+                'sla_status' => $status,
+                'warn_date'  => $status === TicketSla::STATUS_WARNING ?
+                    $this->faker->dateTimeBetween('-14 days', '-10 days')->format('Y-m-d H:i:s') : null,
+                'fail_date' => $status === TicketSla::STATUS_FAIL ?
+                    $this->faker->dateTimeBetween('-14 days', '-10 days')->format('Y-m-d H:i:s') : null,
+                'is_completed'         => 1,
+                'completed_time_taken' => $this->faker->numberBetween(60 * 60 * 24, 60 * 60 * 24 * 10),
+            ];
+        }
+        $this->db->batchInsert('ticket_slas', $batch, true);
     }
 }
