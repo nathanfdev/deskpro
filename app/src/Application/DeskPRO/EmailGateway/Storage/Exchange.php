@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\EmailGateway\Storage;
 
 use EWSType_BodyTypeResponseType;
@@ -239,11 +240,17 @@ class Exchange
      */
     public function getRawHeaders($message_id)
     {
-        $rawHeader = '';
+        $source = $this->getRawMessage($message_id);
 
-        foreach ($this->getEmailParts($message_id)->InternetMessageHeaders->InternetMessageHeader as $header) {
-            $rawHeader .= $header->HeaderName.':'.$header->_.PHP_EOL;
+        $pos = strpos($source, "\r\n\r\n");
+        if ($pos === false) {
+            $pos = strpos($source, "\n\n");
         }
+        if ($pos === false) {
+            return '';
+        }
+
+        $rawHeader = substr($source, 0, $pos);
 
         return $rawHeader;
     }
