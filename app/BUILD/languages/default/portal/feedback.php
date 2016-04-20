@@ -50,7 +50,7 @@ return array(
     'portal.feedback.rate_forbidden'       => 'You are not allowed to vote',
     'portal.feedback.recent-feedback'      => 'Recent Feedback',
     'portal.feedback.search-title'         => 'Feedback',
-    'portal.feedback.section-desc'         => 'These suggestions have been submitted by customers like you; we encourage you to discuss and vote on those you agree with and to submit your own suggestions if the idea is not already listed.',
+    'portal.feedback.section-desc'         => 'These feedback items have been submitted by customers like you; we encourage you to discuss and vote on those you agree with, and to submit your own feedback if the idea is not already listed.',
     'portal.feedback.section-title'        => 'Feedback',
     'portal.feedback.sort_comments'        => 'Comments',
     'portal.feedback.sort_date'            => 'Date',

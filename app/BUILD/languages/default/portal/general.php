@@ -62,7 +62,7 @@ return array(
     'portal.general.everything'                  => 'Everything',
     'portal.general.get-in-touch'                => 'Get in touch',
     'portal.general.get-in-touch-desc'           => 'Send us an email',
-    'portal.general.impersonation_mode'          => 'Impersonation Mode',
+    'portal.general.impersonation_mode'          => 'Impersonation mode',
     'portal.general.in'                          => 'in',
     'portal.general.label-search-enter-label'    => 'Please provide a label to search for',
     'portal.general.lang-change-to-current'      => 'Make <span class="italics">{{ lang }}</span> my default language',

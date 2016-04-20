@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,7 +28,7 @@
 
 return array(
     'portal.error.contact'       => 'If you feel that this is an error, please contact us.',
-    'portal.error.general-title' => 'An Error Occured',
+    'portal.error.general-title' => 'An Error Occurred',
     'portal.error.general-desc'  => 'Sorry, but an error occurred. Please try again later or contact us.',
     'portal.error.403-title'     => 'No Access',
     'portal.error.403-desc'      => 'Sorry, but you do not have access to view this page.',
