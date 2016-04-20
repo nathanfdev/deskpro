@@ -111,9 +111,23 @@ class PortalEmailSender
     {
         $this->sendTo(
             $emailTo,
-            'EmailBundle:Portal:email-validation.html.twig',
+            'DeskPRO:emails_user:email-validation.html.twig',
             [
                 'verify_url' => $verifyUrl,
+                'new_email'  => $emailTo->getEmailAddress(),
+            ]
+        );
+    }
+
+    public function sendAddEmailValidation(EmailTo $emailTo, $verifyUrl, Person $person)
+    {
+        $this->sendTo(
+            $emailTo,
+            'DeskPRO:emails_user:add-email-validation.html.twig',
+            [
+                'verify_url' => $verifyUrl,
+                'new_email'  => $emailTo->getEmailAddress(),
+                'orig_email' => $person->getEmailAddress(),
             ]
         );
     }
@@ -197,7 +211,7 @@ class PortalEmailSender
         );
     }
 
-    public function sendTicketAddedCC($person, Ticket $ticket)
+    public function sendTicketAddedCC(Person $person, Ticket $ticket)
     {
         $author = $ticket->getPerson();
 
@@ -214,6 +228,7 @@ class PortalEmailSender
 
     public function sendTo(EmailTo $emailTo, $template, $vars)
     {
+        $vars['site_name'] = $this->getSetting('site_name');
         /** @var \Application\DeskPRO\Mail\Message $message */
         $message = $this->container->get('mailer')->createMessage();
         if ($person = $emailTo->getPerson()) {

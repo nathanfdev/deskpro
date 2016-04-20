@@ -27,8 +27,11 @@
  */
 
 return array(
-    'portal.emails.validate-email'  => 'Please confirm that this email address is yours by clicking the link below.',
-    'portal.emails.ticket-reminder' => 'Your ticket is awaiting email validation. Please click the link below to submit your ticket and verify your email address. Your ticket will be deleted without being seen by an agent if you do not click this link before {{ expire_date }}.',
+    'portal.emails.end_greeting'       => 'Regards,<br /><br />{{site_name}}\'s',
+    'portal.emails.ticket_cc-added'    => '{{author_name}}, {{author_email}}, has added you to the ticket {{ticket.subject}}.',
+    'portal.emails.ticket-reminder'    => 'Your ticket is awaiting email validation. Please click the link below to submit your ticket and verify your email address. Your ticket will be deleted without being seen by an agent if you do not click this link before {{ expire_date }}.',
+    'portal.emails.validate-email'     => 'Please confirm that this email address is yours by clicking the link below.',
+    'portal.emails.validate-add-email' => 'We have had a request from {{orig_email}} to add this email {{new_email}} to your account at {{site_name}}\'s helpdesk.<br /><br />If you initiated this request, please click the link below. If you did not, please delete this email.',
 
     // older clones:
     'portal.emails.auto-close'                      => 'Your ticket "{{ticket.subject}}" will soon automatically be marked as resolved because you have not updated it lately. If you do not want the ticket to be resolved, please reply so our agents can help you further.',
@@ -85,7 +88,6 @@ return array(
     'portal.emails.remind_unresolved_final'         => 'We haven\'t heard from you recently about this ticket.<br />If you still need help, simply reply to this email.<br />If you don\'t need any further help with this issue, please click the link below to let us know:<br /><a href="{{ resolve_url }}">{{ resolve_url }}</a>',
     'portal.emails.ticket_access_ticket_online'     => 'View and manage this ticket online:',
     'portal.emails.ticket_cc-new'                   => 'You have been included in a ticket started by {{name}}.',
-    'portal.emails.ticket_cc-added'                 => '{{author_name}}, {{author_email}}, has added you to the ticket {{ticket.subject}}.',
     'portal.emails.ticket_flood'                    => 'You recently sent an email to our helpdesk. We have detected that you sent many messages in rapid succession that were most likely automated.<br /><br />To prevent an endless loop of automatic emails, our helpdesk will not send any more automatic notification emails to you.',
     'portal.emails.ticket_message_title'            => 'On {{date}} at {{time}}, {{author}} wrote:',
     'portal.emails.ticket_no-autoresponse'          => 'Warning: Confirmation emails turned off',

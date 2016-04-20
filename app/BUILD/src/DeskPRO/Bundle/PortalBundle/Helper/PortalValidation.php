@@ -148,16 +148,12 @@ class PortalValidation
 
         switch ($type) {
             case self::REGISTRATION:
-                $this->mailer->sendEmailValidation($email_to, $verify_url);
-                break;
             case self::COMMENT:
+            case self::NEW_FEEDBACK:
                 $this->mailer->sendEmailValidation($email_to, $verify_url);
                 break;
             case self::ADD_EMAIL:
-                $this->mailer->sendEmailValidation($email_to, $verify_url);
-                break;
-            case self::NEW_FEEDBACK:
-                $this->mailer->sendEmailValidation($email_to, $verify_url);
+                $this->mailer->sendAddEmailValidation($email_to, $verify_url, $saved_form->getPerson());
                 break;
             case self::NEW_TICKET:
                 throw new \Exception('use sendTicketVerificationEmail instead of sendVerificationEmail for a ticket.');
