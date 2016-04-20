@@ -14,7 +14,7 @@ export class ProjectForm extends Component {
     project:    PropTypes.object,
     tasksCount: PropTypes.number,
     dispatch:   PropTypes.func.isRequired,
-    onSubmit:   PropTypes.func
+    onSubmit:   PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -72,12 +72,10 @@ export class ProjectForm extends Component {
 
     if (isNew) {
       dispatch(createProject(submitData));
+      this.props.onSubmit();
     } else {
       dispatch(editProject(project.get('id'), submitData));
-    }
-
-    if (this.props.onSubmit) {
-      this.props.onSubmit();
+      this.props.onSubmit(project.merge(Immutable.Map({ title, departments, teams, agents })));
     }
   };
 

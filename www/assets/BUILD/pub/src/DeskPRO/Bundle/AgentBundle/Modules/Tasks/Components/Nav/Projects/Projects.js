@@ -16,23 +16,19 @@ export class Projects extends React.Component {
     super(props);
 
     this.state = {
-      project: null
+      project:  null,
+      projects: props.projects
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (!this.state.project) return;
-    const id = this.state.project.get('id');
+  componentWillReceiveProps(props) {
+    this.setState({
+      projects: props.projects
+    });
+  }
 
-    if (id) {
-      // on edit
-      if (nextProps.projects.get(id)) return;
-    } else {
-      // on create
-      if (nextProps.projects.size === this.props.projects.size) return;
-    }
-
-    this.setState({ project: null });
+  shouldComponentUpdate(props, state) {
+    return !Immutable.is(this.state.project, state.project) || !Immutable.is(this.state.projects, state.projects);
   }
 
   onCoverClick = (event) => {
@@ -49,6 +45,17 @@ export class Projects extends React.Component {
       event.preventDefault();
     }
     this.setState({ project });
+
+    console.info('start edit', project.toJS());
+  };
+
+  onSubmit = (project) => {
+    if (!project) return;
+
+    this.setState({
+      project:  null,
+      projects: this.state.projects.set(project.get('id'), project)
+    });
   };
 
   getCount(project) {
@@ -74,15 +81,14 @@ export class Projects extends React.Component {
   };
 
   render() {
-    const { projects } = this.props;
-    const { project } = this.state;
+    const { project, projects } = this.state;
 
     return (
       <Section>
         <SectionHeader>
           Projects &nbsp;
           <a href="#" onClick={() => this.onEdit(Immutable.fromJS({}))}>
-            <i className="fa fa-plus"/>
+            <i className="fa fa-plus" />
           </a>
         </SectionHeader>
 
@@ -93,7 +99,7 @@ export class Projects extends React.Component {
         <Detached>
           {this.state.project
             ? <div className="dpw-site-cover with-popup" onClick={this.onCoverClick}>
-            <ProjectForm project={project} tasksCount={this.getCount(project)} onSubmit={() => this.onEdit(null)}/>
+            <ProjectForm project={project} tasksCount={this.getCount(project)} onSubmit={this.onSubmit} />
           </div>
             : null
           }
