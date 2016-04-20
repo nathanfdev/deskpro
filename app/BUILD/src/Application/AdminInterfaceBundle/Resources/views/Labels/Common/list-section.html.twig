@@ -7,7 +7,7 @@
             </dp-order-menu>
         </nav>
 
-        <h3 ng-pluralize count="countDefinitions()" when="{{ ng_plural_phrase('adm.general.count_labels') }}"></h3>
+        <h3>{{ name|default('Labels') }}</h3>
     </header>
     <article>
         <ul class="dp-item-list" dp-max-height>

@@ -18,9 +18,9 @@
 
 	{{ nav.list() }}
 		{{ nav.list_item_group('Setup', 'fa-th-large', ng_href('portal.setup'), 'portal.setup') }}
-			{{ nav.list_subitem('Knowledgebase', ng_href('portal.kb_settings'), 'portal.app_kb', 'fa-book', null, '{"is-disabled": !Ctrl.settings.apps_kb || Ctrl.settings.portal_mode !== "publish"}') }}
-			{{ nav.list_subitem('News', ng_href('portal.news_settings'), 'portal.app_news', 'fa-clock-o', null, '{"is-disabled": !Ctrl.settings.apps_news || Ctrl.settings.portal_mode !== "publish"}') }}
-			{{ nav.list_subitem('Downloads', ng_href('portal.downloads_settings'), 'portal.app_downloads', 'fa-download', null, '{"is-disabled": !Ctrl.settings.apps_downloads || Ctrl.settings.portal_mode !== "publish"}') }}
+			{{ nav.list_subitem_regex_statemark('Knowledgebase', ng_href('portal.kb_settings'), 'kb', 'fa-book', null, '{"is-disabled": !Ctrl.settings.apps_kb || Ctrl.settings.portal_mode !== "publish"}') }}
+			{{ nav.list_subitem_regex_statemark('News', ng_href('portal.news_settings'), 'news', 'fa-clock-o', null, '{"is-disabled": !Ctrl.settings.apps_news || Ctrl.settings.portal_mode !== "publish"}') }}
+			{{ nav.list_subitem_regex_statemark('Downloads', ng_href('portal.downloads_settings'), 'downloads', 'fa-download', null, '{"is-disabled": !Ctrl.settings.apps_downloads || Ctrl.settings.portal_mode !== "publish"}') }}
 			{{ nav.list_subitem_regex_statemark('Feedback', ng_href('portal.feedback_settings'), 'feedback', 'fa-thumbs-up', null, '{"is-disabled": !Ctrl.settings.apps_feedback || Ctrl.settings.portal_mode !== "publish"}') }}
 		{{ nav.list_item_group_end() }}
 		{{ nav.list_item('Portal', ng_href('portal.portal_editor'), 'portal.portal_editor', 'fa-home') }}
