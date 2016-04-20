@@ -132,18 +132,14 @@ class TasksController extends CrudController
     {
         $done = $request->get('done');
         if ($request->query->has('done')) {
-            $qb
-                ->andWhere("$alias.is_done = :is_done")
-                ->setParameter('is_done', (int) $done)
-            ;
+            $qb->andWhere("$alias.is_done = :is_done");
+            $qb->setParameter('is_done', (int) $done);
         }
 
         $project = $request->get('project');
         if ($project) {
-            $qb
-                ->andWhere("$alias.project IN (:project)")
-                ->setParameter('project', $project)
-            ;
+            $qb->andWhere("$alias.project IN (:project)");
+            $qb->setParameter('project', $project);
         }
 
         $creator = $request->get('creator');
@@ -152,10 +148,8 @@ class TasksController extends CrudController
                 $creator = $this->getUser()->getId();
             }
 
-            $qb
-                ->andWhere("$alias.creator IN (:creator)")
-                ->setParameter('creator', $creator)
-            ;
+            $qb->andWhere("$alias.creator IN (:creator)");
+            $qb->setParameter('creator', $creator);
         }
 
         $context = new QueryFilterContext($qb, $alias, $request);

@@ -61,7 +61,7 @@ class Count
     /**
      * Entity identity.
      *
-     * @JMS\Type("integer")
+     * @JMS\Type("string")
      *
      * @var string
      */

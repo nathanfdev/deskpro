@@ -33,6 +33,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
@@ -55,6 +56,7 @@ abstract class CrudController extends BaseController
 {
     public static $methods = [
         'list'   => true,
+        'count'  => true,
         'get'    => true,
         'post'   => true,
         'put'    => false,
@@ -115,6 +117,58 @@ abstract class CrudController extends BaseController
     }
 
     /**
+     * @ApiDoc(
+     *      description="Count list",
+     *      tags={"CRUD"="#ffa500"},
+     *      statusCodes={
+     *         200="Returned if successful request",
+     *         400="Returned if you filter set was malformed"
+     *      },
+     *      output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
+     * )
+     *
+     * @Rest\Get("/counts")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function countAction(Request $request)
+    {
+        $this->checkExposed(__METHOD__);
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW_LIST, $this->getPermissionGroupContext($request));
+
+        $qb = $this->getManager()->createQueryBuilder();
+        $qb->from(static::$entity, 'e');
+
+        $this->applyListFilters($qb, 'e', $request);
+        // reset group by if it was set in applyListFilters()
+        $qb->resetDQLPart('groupBy');
+
+        $groupBy = $request->get('group_by');
+        if ($groupBy) {
+            $this->applyListGroupBy($qb, 'e', $groupBy, $request);
+            if (!$qb->getDQLPart('groupBy')) {
+                throw $this->createBadRequestException('Unknown group_by option');
+            }
+        }
+
+        if (empty($qb->getDQLPart('groupBy'))) {
+            $result = $qb->select('count(e.id)')->getQuery()->getSingleScalarResult();
+            $count  = Count::fromValue($result);
+        } else {
+            $result = $qb->addSelect('count(e.id) as value')->getQuery()->getArrayResult();
+            $count  = Count::fromGroupedBy($groupBy);
+
+            foreach ($result as $group) {
+                $count->addNested($group['value'], $group['group_name'], $groupBy, $group['title'], true);
+            }
+        }
+
+        return new View($this->wrap($count));
+    }
+
+    /**
      * Entities list.
      *
      * Selects entities based on the provided "ids" parameter or returns paginated list of no IDs provided.
@@ -145,10 +199,8 @@ abstract class CrudController extends BaseController
         $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW_LIST, $this->getPermissionGroupContext($request));
 
         $qb = $this->getManager()->createQueryBuilder();
-        $qb
-            ->select('e')
-            ->from(static::$entity, 'e')
-        ;
+        $qb->select('e');
+        $qb->from(static::$entity, 'e');
 
         $this->applyListFilters($qb, 'e', $request);
         $this->applySorting($qb, 'e', $request);
@@ -164,10 +216,8 @@ abstract class CrudController extends BaseController
                 throw $this->createBadRequestException('You can select maximum '.static::$listMaxResults.' entities');
             }
 
-            $qb
-                ->andWhere('e.id IN (:ids)')
-                ->setParameters(compact('ids'))
-            ;
+            $qb->andWhere('e.id IN (:ids)');
+            $qb->setParameters(compact('ids'));
         }
 
         // return QueryBuilder result or Pagerfanta depending on if pagination is enabled for the controller
@@ -308,6 +358,16 @@ abstract class CrudController extends BaseController
      * @param Request      $request
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
+    {
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     * @param string       $alias
+     * @param string       $groupBy
+     * @param Request      $request
+     */
+    protected function applyListGroupBy(QueryBuilder $qb, $alias, $groupBy, Request $request)
     {
     }
 

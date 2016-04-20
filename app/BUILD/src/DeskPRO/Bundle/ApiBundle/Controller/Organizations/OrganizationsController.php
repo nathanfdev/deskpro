@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Organizations;
 
 use Application\DeskPRO\Entity\Organization;
@@ -36,7 +33,6 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -84,30 +80,6 @@ class OrganizationsController extends CrudController
     public function getTicketsAction(Request $request, $id)
     {
         return TicketsController::subRequestSearch($this->getKernel(), $request, ['organization' => $id]);
-    }
-
-    /**
-     * @ApiDoc(
-     *     section="Organizations",
-     *     description="Count Organizations",
-     *     statusCodes={
-     *         200="Returned in case of successful response"
-     *     },
-     *     output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
-     * )
-     * @Rest\Get("/counts", name="api_organizations_counts")
-     *
-     * @return View
-     */
-    public function getCountAction()
-    {
-        $qb = $this->getManager()->createQueryBuilder();
-        $qb
-            ->select('count(o)')
-            ->from(Organization::class, 'o')
-        ;
-
-        return View::create($this->wrap(Count::fromValue($qb->getQuery()->getSingleScalarResult())));
     }
 
     /**

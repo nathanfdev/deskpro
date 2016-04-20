@@ -602,11 +602,11 @@ SQL
 
             VALUES
 
-                (1, 1, 'Test chat 1', 'test', 'test', 'test', '', 1, 1, '2010-08-01 10:19:00', 1, 1, 'test'),
-                (1, 1, 'Test chat 2', 'test', 'test', 'test', '', 1, 1, '2011-08-02 10:19:00', 1, 1, 'test'),
-                (1, 2, 'Test chat 3', 'test', 'test', 'test', '', 1, 1, '2015-08-03 10:19:00', 1, 1, 'test'),
-                (2, 2, 'Test chat 4', 'test', 'test', 'test', '', 1, 1, '2015-08-04 10:19:00', 1, 1, 'test'),
-                (2, 2, 'Test chat 5', 'test', 'test', 'test', '', 1, 1, '2015-08-05 10:19:00', 1, 1, 'test')
+                (1, 1, 'Test chat 1', 'test', 'test', 'test', '', 0, 1, '2010-08-01 10:19:00', 1, 1, 'test'),
+                (1, 1, 'Test chat 2', 'test', 'test', 'test', '', 0, 1, '2011-08-02 10:19:00', 1, 1, 'test'),
+                (1, 2, 'Test chat 3', 'test', 'test', 'test', '', 0, 1, '2015-08-03 10:19:00', 1, 1, 'test'),
+                (2, 2, 'Test chat 4', 'test', 'test', 'test', '', 0, 1, '2015-08-04 10:19:00', 1, 1, 'test'),
+                (2, 2, 'Test chat 5', 'test', 'test', 'test', '', 0, 1, '2015-08-05 10:19:00', 1, 1, 'test')
             ;
         "
         );
