@@ -154,6 +154,17 @@ class PortalController extends AbstractController
         }
         $usersources_view = $this->get('usersources_view_helper')->createUsersourceViewList();
 
+        $destination = $request->query->get('_destination', false);
+        if (!$destination || !is_string($destination)) {
+            if ($destination = $request->server->get('HTTP_REFERER')) {
+                if (false !== stripos($destination, '/login')) {
+                    $destination = null;
+                }
+            } else {
+                $destination = null;
+            }
+        }
+
         return $this->renderThemeView(
             'Theme:Portal:User/login.html.twig',
             array(
@@ -170,7 +181,7 @@ class PortalController extends AbstractController
                 'breadcrumbs'          => $this->getBreadcrumbGenerator()->buildLogin(),
                 'page_title'           => $this->createPageTitle()->loginPage(),
                 'usersources_view'     => $usersources_view,
-                'destination'          => $request->query->get('_destination', false),
+                'destination'          => $destination,
             )
         );
     }
