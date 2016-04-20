@@ -153,7 +153,7 @@ class PortalValidation
                 $this->mailer->sendEmailValidation($email_to, $verify_url);
                 break;
             case self::ADD_EMAIL:
-                $this->mailer->sendAddEmailValidation($email_to, $verify_url, $saved_form->getPerson());
+                $this->mailer->sendNewEmailValidate($email_to, $verify_url, $saved_form->getPerson());
                 break;
             case self::NEW_TICKET:
                 throw new \Exception('use sendTicketVerificationEmail instead of sendVerificationEmail for a ticket.');

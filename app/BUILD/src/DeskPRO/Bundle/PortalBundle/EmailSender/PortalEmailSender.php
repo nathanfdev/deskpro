@@ -57,7 +57,7 @@ class PortalEmailSender
     {
         $this->sendTo(
             new EmailTo($person),
-            'EmailBundle:Portal:reset-password.html.twig',
+            'DeskPRO:emails_user:reset-password.html.twig',
             [
                 'person'    => $person,
                 'reset_url' => $this->getRouter()->generate(
@@ -75,7 +75,7 @@ class PortalEmailSender
     {
         $this->sendTo(
             new EmailTo($person),
-            'EmailBundle:Portal:set-password.html.twig',
+            'DeskPRO:emails_user:set-password.html.twig',
             [
                 'person'    => $person,
                 'reset_url' => $this->getRouter()->generate(
@@ -119,11 +119,11 @@ class PortalEmailSender
         );
     }
 
-    public function sendAddEmailValidation(EmailTo $emailTo, $verifyUrl, Person $person)
+    public function sendNewEmailValidate(EmailTo $emailTo, $verifyUrl, Person $person)
     {
         $this->sendTo(
             $emailTo,
-            'DeskPRO:emails_user:add-email-validation.html.twig',
+            'DeskPRO:emails_user:new-email-validate.html.twig',
             [
                 'verify_url' => $verifyUrl,
                 'new_email'  => $emailTo->getEmailAddress(),
@@ -166,7 +166,7 @@ class PortalEmailSender
 
         $this->sendTo(
             new EmailTo($person),
-            'EmailBundle:Portal:new-ticket-guest.html.twig',
+            'DeskPRO:emails_user:new-ticket-guest.html.twig',
             [
                 'ticket_view_url' => $this->getRouter()->generate(
                     'portal_tickets_guest_view',
@@ -204,7 +204,7 @@ class PortalEmailSender
     {
         $this->sendTo(
             new EmailTo($person),
-            'EmailBundle:Portal:login-alert.html.twig',
+            'DeskPRO:emails_user:login-alert.html.twig',
             [
                 'success' => $success,
             ]
