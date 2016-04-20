@@ -1,5 +1,13 @@
 {% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
 {% block listpane_content %}
+
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('portal.feedback_settings') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Settings</h3>
+		</a>
+	</section>
+
 	<section class="dp-paneblock dp-listpane">
 		<header>
 			<nav>
@@ -43,6 +51,25 @@
 				<a class="btn btn-default" ng-class="{'active': isStateActive('.create', {type: closedType}) }" href="{{ ng_href('portal.feedback_statuses.gocreate', '{type: closedType}') }}"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a>
 			</div>
 		</article>
+	</section>
+
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('portal.feedback_types') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Types</h3>
+		</a>
+	</section>
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('portal.feedback_categories') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Categories</h3>
+		</a>
+	</section>
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('portal.feedback_labels') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Labels</h3>
+		</a>
 	</section>
 
 	<div dp-register-message="saved_settings">{{ phrase('adm.general.save_settings_success') }}</div>

@@ -1,0 +1,48 @@
+<div class="dp-layout-list">
+    <div class="dp-layout-list-listpane">
+        <div class="dp-pane">
+
+            <section class="dp-paneblock dp-listpane">
+                <header>
+                    <h3>Settings</h3>
+                </header>
+                <article>
+                    <ul class="dp-item-list" ui-sortable="FeedbackCategoriesList.sortedListOptions">
+                        <li dp-state-mark="portal.feedback_settings">
+                            <a href="{{ ng_href('portal.feedback_settings') }}">
+                                <h4>Feedback Settings</h4>
+                            </a>
+                        </li>
+                    </ul>
+                </article>
+            </section>
+
+            <section class="dp-paneblock dp-panelink">
+                <a href="{{ ng_href('portal.feedback_statuses') }}">
+                    <em><i class="fa fa-chevron-down"></i></em>
+                    <h3>Statuses</h3>
+                </a>
+            </section>
+
+            <section class="dp-paneblock dp-panelink">
+                <a href="{{ ng_href('portal.feedback_types') }}">
+                    <em><i class="fa fa-chevron-down"></i></em>
+                    <h3>Types</h3>
+                </a>
+            </section>
+            <section class="dp-paneblock dp-panelink">
+                <a href="{{ ng_href('portal.feedback_categories') }}">
+                    <em><i class="fa fa-chevron-down"></i></em>
+                    <h3>Categories</h3>
+                </a>
+            </section>
+            <section class="dp-paneblock dp-panelink">
+                <a href="{{ ng_href('portal.feedback_labels') }}">
+                    <em><i class="fa fa-chevron-down"></i></em>
+                    <h3>Labels</h3>
+                </a>
+            </section>
+        </div>
+    </div>
+    <div class="dp-layout-list-editpane">{% block content %}{% endblock %}</div>
+</div>
