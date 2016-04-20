@@ -241,7 +241,8 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
         # Ticket
         #------------------------------
 
-        $subj = $this->faker->realText($this->faker->numberBetween(40, 60));
+        $subj = $this->faker->sentence(4);
+        $date = $this->faker->dateTimeBetween('-2 months', '-2days');
 
         $ticket = new Ticket();
         $ticket->disableAutoTicketProcess();
@@ -254,65 +255,11 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
         $ticket->status               = $status;
         $ticket->subject              = $subj;
         $ticket->original_subject     = $subj;
-        $ticket->date_created         = $this->faker->dateTimeThisYear;
+        $ticket->date_created         = $date;
         $ticket->date_last_user_reply = $ticket->date_created;
 
         $this->em->persist($ticket);
         $this->em->flush();
-
-        #------------------------------
-        # Messages
-        #------------------------------
-
-        $num   = $this->faker->numberBetween(1, 8);
-        $batch = [];
-        for ($i = 0; $i < $num; ++$i) {
-            $as_agent = $this->faker->boolean(50);
-
-            $text   = [];
-            $text[] = $this->faker->realText($this->faker->numberBetween(100, 300));
-
-            if ($this->faker->boolean(50)) {
-                $text[] = $this->faker->realText($this->faker->numberBetween(100, 300));
-            }
-            if ($this->faker->boolean(20)) {
-                $text[] = '<img src="'.$this->faker->imageUrl(200, 100, 'cats').'" />';
-            }
-            if ($this->faker->boolean(50)) {
-                $text[] = '<strong>'.$this->faker->realText($this->faker->numberBetween(10, 150)).'</strong>';
-            }
-            if ($this->faker->boolean(10)) {
-                $text[] = $this->faker->realText($this->faker->numberBetween(150, 800));
-            }
-
-            $text = implode('<br/><br/>', $text);
-
-            if ($as_agent) {
-                $author = $this->faker->randomElement($this->agents);
-            } else {
-                $author = $person;
-            }
-
-            $is_note = ($as_agent && $this->faker->boolean(10));
-
-            $batch[] = [
-                'ticket_id'    => $ticket->getId(),
-                'person_id'    => $author->getId(),
-                'date_created' => date(
-                    'Y-m-d H:i:s',
-                    $ticket->date_created->getTimestamp() + $this->faker->numberBetween(900, 14400)
-                ),
-                'creation_system' => 'web',
-                'is_agent_note'   => (int) $is_note,
-                'ip_address'      => $this->faker->ipv4,
-                'hostname'        => $this->faker->domainName,
-                'geo_country'     => $this->faker->countryCode,
-                'message_hash'    => sha1(uniqid('', true)),
-                'message'         => $text,
-            ];
-        }
-
-        $this->db->batchInsert('tickets_messages', $batch, true);
 
         #------------------------------
         # Field Data

@@ -288,7 +288,7 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
                 }
             }
 
-            $subj    = $this->faker->realText($this->faker->numberBetween(10, 20));
+            $subj    = $this->faker->sentence(4);
             $batch[] = [
                 'department_id' => $this->faker->randomElement($this->department_ids),
                 'language_id'   => $this->faker->randomElement($this->language_ids),
@@ -424,7 +424,8 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         $batch = [];
 
         foreach ($this->ticket_ids as $ticket_id) {
-            $num = $this->faker->numberBetween(1, $this->ticket_max_messages);
+            $num  = $this->faker->numberBetween(1, $this->ticket_max_messages);
+            $date = $this->faker->dateTimeBetween('-2 months', '-2days');
             for ($i = 0; $i < $num; ++$i) {
                 $as_agent = $this->faker->boolean(50);
 
@@ -451,7 +452,7 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
                     'person_id' => $as_agent
                         ? $this->faker->randomElement($this->agent_ids)
                         : $this->faker->randomElement($this->people_ids),
-                    'date_created'    => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                    'date_created'    => $date->add(new \DateInterval('PT1H'))->format('Y-m-d H:i:s'),
                     'creation_system' => 'web',
                     'is_agent_note'   => (int) ($as_agent && $this->faker->boolean(10)),
                     'ip_address'      => $this->faker->ipv4,
