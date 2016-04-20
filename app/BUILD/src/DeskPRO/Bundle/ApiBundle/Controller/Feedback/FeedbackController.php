@@ -61,8 +61,8 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiDoc(
  *     target="listAction",
  *     filters={
- *         {"name"="order_dir", "pattern"="date_created|total_rating|num_ratings|id|title|status|category|person", "description"="how to order result", "dataType"="string"},
- *         {"name"="order_by", "pattern"="asc|desc", "description"="order direction", "dataType"="string"}
+ *         {"name"="order_by", "pattern"="date_created|total_rating|num_ratings|id|title|status|category|person", "description"="how to order result", "dataType"="string"},
+ *         {"name"="order_dir", "pattern"="asc|desc", "description"="order direction", "dataType"="string"}
  *     }
  * )
  * @ApiDoc(
