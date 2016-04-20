@@ -101,9 +101,16 @@ class TicketMessageType extends AbstractType
             $builder->add('attachments', 'ticket_message_attachment_collection', [
                 'required'       => false,
                 'person'         => $options['person'],
-                'ticket_message' => $builder->getData(),
+                'ticket_message' => $options['ticket_message'],
             ]);
         }
+
+        $builder->add('inline_attachments', 'ticket_message_inline_attachment_collection', [
+            'required'       => false,
+            'person'         => $options['person'],
+            'ticket_message' => $options['ticket_message'],
+            'mapped'         => false,
+        ]);
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onChangeMessageFormat']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations']);
@@ -122,6 +129,7 @@ class TicketMessageType extends AbstractType
                 'error_bubbling'      => false,
                 'ticket'              => null,
                 'person'              => null,
+                'ticket_message'      => null,
                 'render_is_note'      => true,
                 'has_attachments'     => false,
                 'format'              => '',
@@ -137,8 +145,9 @@ class TicketMessageType extends AbstractType
                 'person',
             ])
             ->setAllowedTypes([
-                'person' => Person::class,
-                'ticket' => Ticket::class,
+                'person'         => Person::class,
+                'ticket'         => Ticket::class,
+                'ticket_message' => TicketMessage::class,
             ])
             ->setAllowedValues([
                 'format' => ['', 'html', 'text'],

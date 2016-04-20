@@ -9,11 +9,11 @@
   <div class="ticket-message-content">
     {{ render_message(msg) }}
   </div>
-  {% if msg.attachments|length > 0 %}
+  {% if msg.getAttachmentsList()|length > 0 %}
     <div class="ticket-message-files">
       <h1>{{ phrase('portal.tickets.timeline_attached') }}</h1>
       <ul>
-        {% for attachment in msg.attachments %}
+        {% for attachment in msg.getAttachmentsList() %}
           <li>
             {{ macros.attachment_full(attachment) }}
           </li>

@@ -6,6 +6,7 @@ import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { DragOverlayListener } from 'DeskPRO/Component/Uploader/DragOverlayListener';
 import { portalUrlGenerator } from '../../Http/PortalUrlGenerator';
 import { pageWidgetEmitter } from 'DeskPRO/Component/PageWidget/PageWidgetEmitter';
+import uniqueId from 'lodash/utility/uniqueId';
 import $ from 'jquery';
 
 export class PortalRte extends React.Component {
@@ -14,16 +15,17 @@ export class PortalRte extends React.Component {
     className: PropTypes.string,
     widgetOptions: PropTypes.object,
     $toolbarContainer: PropTypes.object,
-    $textarea: PropTypes.object
+    $textarea: PropTypes.object,
+
+    // Inline attachment form prototype must be suppled
+    // if inline attachments (e.g. pasting, dragging images etc) is to be supported.
+    $inlineAttachProto: PropTypes.object
   };
 
   constructor(props) {
     super(props);
 
     this.fileCounter = 0;
-    this.state = {
-      blobs: []
-    };
   }
 
   componentDidMount() {
@@ -32,19 +34,11 @@ export class PortalRte extends React.Component {
 
     $textarea.closest('form').on('reset', () => {
       editor.setContent('');
-      this.setState({
-        blobs: []
-      });
     });
     $textarea.on('change', () => {
       if (editor.getContent() !== $textarea.val()) {
         editor.setContent($textarea.val());
       }
-    });
-    $textarea.on('setBlobs', (event, blobs) => {
-      this.setState({
-        blobs: blobs
-      });
     });
   }
 
@@ -84,16 +78,14 @@ export class PortalRte extends React.Component {
     const blob = response.result && response.result.blob;
 
     if (blob) {
-      const newBlobs = this.state.blobs.slice();
-      newBlobs.push(blob);
-
       $image.removeAttr('data-paste-id').attr('src', blob.url);
-      $textarea.trigger('blobs', [newBlobs]);
-
       this.onChangeMessage(editor.getContent());
-      this.setState({
-        blobs: newBlobs
-      });
+
+      if (this.props.$inlineAttachProto) {
+        const $inlineField = $(this.props.$inlineAttachProto.data('prototype').replace(/__name__/g, uniqueId('inline_field_')));
+        $inlineField.find('input').val(blob.authcode);
+        $inlineField.insertAfter(this.props.$textarea);
+      }
     } else {
       $image.remove();
       this.onChangeMessage(editor.getContent());
@@ -124,7 +116,6 @@ export class PortalRte extends React.Component {
 
     const ownerDocument = $textarea.context.ownerDocument;
     const contentWindow = ownerDocument.defaultView;
-    const blobPath = $textarea.data('blob-path');
 
     const params = {};
     if (window.dp_get_csrf_token) {
@@ -153,13 +144,6 @@ export class PortalRte extends React.Component {
             targetBlank: true,
             buttonLabels: 'fontawesome'
           }}/>
-
-        {blobPath && this.state.blobs.map((blob, key) =>
-          <div key={key}>
-            <input type="hidden" name={`${blobPath}[${blob.id}][blob_auth]`} value={blob.authcode} />
-            <input type="hidden" name={`${blobPath}[${blob.id}][is_inline]`} value="1" />
-          </div>
-        )}
 
         <input type="submit" ref="fileUpload" name="file[blob]" style={{display: 'none'}} />
         <DropZone

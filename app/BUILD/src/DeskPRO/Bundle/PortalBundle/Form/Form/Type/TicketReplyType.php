@@ -35,8 +35,6 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -69,6 +67,7 @@ class TicketReplyType extends AbstractType
             ->add('ticket_message', 'ticket_message', [
                 'ticket'              => $options['ticket'],
                 'person'              => $options['person'],
+                'ticket_message'      => $options['ticket_message'],
                 'message_label'       => $options['message_label'],
                 'label'               => false,
                 'render_is_note'      => false,
@@ -90,19 +89,6 @@ class TicketReplyType extends AbstractType
                 'label' => $this->language_manager->phrase('portal.tickets.add-reply'),
             ])
         ;
-
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
-    }
-
-    /**
-     * @param FormEvent $event
-     */
-    public function onPostSubmit(FormEvent $event)
-    {
-        /* @var \Application\DeskPRO\Entity\TicketMessage $message */
-        $data                 = $event->getData();
-        $message              = $data['ticket_message'];
-        $message->attachments = $data['attachments'];
     }
 
     /**
