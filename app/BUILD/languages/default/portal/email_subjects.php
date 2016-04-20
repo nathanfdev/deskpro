@@ -62,6 +62,7 @@ return array(
     'portal.email_subjects.ticket-rate'                     => 'Rate your support experience for your ticket "{{ticket.subject}}"',
     'portal.email_subjects.ticket_new-participant'          => 'A new person has been added to your ticket',
     'portal.email_subjects.new-ticket-guest'                => 'Thank you for contacting us',
+    'portal.email_subjects.ticket_added_cc'                 => 'You have been added to the ticket "{{ticket.subject}}"',
     'portal.email_subjects.tickets_re'                      => 'RE: {{ticket.subject}}',
     'portal.email_subjects.validate-email'                  => 'Validate your email address',
     'portal.email_subjects.too-many-emails'                 => 'NOTICE: You have sent too many emails',

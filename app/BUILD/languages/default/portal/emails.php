@@ -85,6 +85,7 @@ return array(
     'portal.emails.remind_unresolved_final'         => 'We haven\'t heard from you recently about this ticket.<br />If you still need help, simply reply to this email.<br />If you don\'t need any further help with this issue, please click the link below to let us know:<br /><a href="{{ resolve_url }}">{{ resolve_url }}</a>',
     'portal.emails.ticket_access_ticket_online'     => 'View and manage this ticket online:',
     'portal.emails.ticket_cc-new'                   => 'You have been included in a ticket started by {{name}}.',
+    'portal.emails.ticket_cc-added'                 => '{{author_name}}, {{author_email}}, has added you to the ticket {{ticket.subject}}.',
     'portal.emails.ticket_flood'                    => 'You recently sent an email to our helpdesk. We have detected that you sent many messages in rapid succession that were most likely automated.<br /><br />To prevent an endless loop of automatic emails, our helpdesk will not send any more automatic notification emails to you.',
     'portal.emails.ticket_message_title'            => 'On {{date}} at {{time}}, {{author}} wrote:',
     'portal.emails.ticket_no-autoresponse'          => 'Warning: Confirmation emails turned off',
