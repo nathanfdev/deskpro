@@ -25,7 +25,7 @@ export const projectsCountSelector = createSelector(
 export const groupsCountMapSelector = createSelector(
   groupsCountSelector,
   groupsCount => {
-    const countMap = [];
+    const countMap = {};
     groupsCount.get('nested').forEach(groupCount => {
       countMap[groupCount.get('type')] = parseInt(groupCount.get('count'), 10);
     });
@@ -37,7 +37,7 @@ export const groupsCountMapSelector = createSelector(
 export const agentsCountMapSelector = createSelector(
   agentsCountSelector,
   agentsCount => {
-    const countMap = [];
+    const countMap = {};
     agentsCount.get('nested').forEach(agentCount => {
       countMap[agentCount.get('id')] = parseInt(agentCount.get('count'), 10);
     });
@@ -49,7 +49,7 @@ export const agentsCountMapSelector = createSelector(
 export const projectsCountMapSelector = createSelector(
   projectsCountSelector,
   projectsCount => {
-    const countMap = [];
+    const countMap = {};
     projectsCount.get('nested').forEach(projectCount => {
       countMap[projectCount.get('id')] = parseInt(projectCount.get('count'), 10);
     });

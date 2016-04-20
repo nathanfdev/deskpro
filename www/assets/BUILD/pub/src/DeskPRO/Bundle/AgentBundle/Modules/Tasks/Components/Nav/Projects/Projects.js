@@ -8,8 +8,8 @@ import Immutable from 'immutable';
 export class Projects extends React.Component {
 
   static propTypes = {
-    projects:      PropTypes.object.isRequired,
-    projectsCount: PropTypes.object.isRequired
+    projects:         PropTypes.object.isRequired,
+    projectsCountMap: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -18,8 +18,6 @@ export class Projects extends React.Component {
     this.state = {
       project: null
     };
-
-    this.countMap = [];
   }
 
   componentWillReceiveProps(nextProps) {
@@ -34,17 +32,7 @@ export class Projects extends React.Component {
       if (nextProps.projects.size === this.props.projects.size) return;
     }
 
-    this.setState({
-      project: null
-    });
-  }
-
-  componentWillUpdate() {
-    const { projectsCount = [] } = this.props;
-    this.countMap = [];
-    projectsCount.forEach(projectCount => {
-      this.countMap[projectCount.get('project_id')] = parseInt(projectCount.get('tasks_count'), 10);
-    });
+    this.setState({ project: null });
   }
 
   onCoverClick = (event) => {
@@ -64,18 +52,16 @@ export class Projects extends React.Component {
   };
 
   getCount(project) {
-    return project && project.get('id') && this.countMap[project.get('id')] || 0;
+    const { projectsCountMap = {} } = this.props;
+    return project && project.get('id') && projectsCountMap[project.get('id')] || 0;
   }
 
   renderProject = (project, index) => {
     const urlHash = `project-${project.get('id')}-${project.get('title')}`;
 
     return (
-      <ListItemContainer key={index}
-        urlHash={urlHash}
-        listOptions={{ project: [project.get('id')] }}>
-
-        <ListItem count={this.countMap[project.get('id')] || 0} onEdit={() => this.onEdit(project)}>
+      <ListItemContainer key={index} urlHash={urlHash} listOptions={{ project: [project.get('id')] }}>
+        <ListItem count={this.getCount(project)} onEdit={() => this.onEdit(project)}>
           <div part="label" className="section-list-title">
             <i className="fa fa-book" />
             <div className="cutted">
@@ -96,7 +82,7 @@ export class Projects extends React.Component {
         <SectionHeader>
           Projects &nbsp;
           <a href="#" onClick={() => this.onEdit(Immutable.fromJS({}))}>
-            <i className="fa fa-plus" />
+            <i className="fa fa-plus"/>
           </a>
         </SectionHeader>
 
@@ -107,8 +93,8 @@ export class Projects extends React.Component {
         <Detached>
           {this.state.project
             ? <div className="dpw-site-cover with-popup" onClick={this.onCoverClick}>
-                <ProjectForm project={project} tasksCount={this.getCount(project)} onSubmit={() => this.onEdit(null)} />
-              </div>
+            <ProjectForm project={project} tasksCount={this.getCount(project)} onSubmit={() => this.onEdit(null)}/>
+          </div>
             : null
           }
         </Detached>
