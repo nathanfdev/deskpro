@@ -33,9 +33,15 @@
 		{{ nav.list_item('SLAs', ng_href('tickets.slas'), 'tickets.slas', 'fa-clock-o') }}
 		{{ nav.list_item('Labels', ng_href('tickets.labels'), 'tickets.labels', 'fa-tags') }}
 		{{ nav.list_item('Round Robin', ng_href('tickets.roundrobin'), 'tickets.roundrobin', 'fa-refresh') }}
-		{#{{ nav.list_item('Time Log & Billing', ng_href('tickets.timelog_billing'), 'tickets.timelog_billing', 'fa-usd') }}#}
+
+		{{ nav.list_item_group('Time Log & Billing', 'fa-usd') }}
+			{{ nav.list_item('Settings', ng_href('tickets.timelog_billing_settings'), 'tickets.timelog_billing_settings', 'fa-cog') }}
+			{{ nav.list_item('Fields', ng_href('tickets.timelog_billing_fields'), 'tickets.timelog_billing_fields', 'fa-terminal') }}
+		{{ nav.list_item_group_end() }}
+
 		{{ nav.list_item('Email Templates', ng_href('tickets.email_templates'), 'tickets.email_templates', 'fa-file-text') }}
 		{{ nav.list_item('Forward Settings', ng_href('tickets.fwd_settings'), 'tickets.fwd_settings', 'fa-mail-forward') }}
+		{{ nav.list_item(phrase('adm.problems.title'), ng_href('tickets.problems'), 'tickets.problems', 'fa-bullhorn') }}
 		{{ nav.list_item('Settings', ng_href('tickets.settings'), 'tickets.settings', 'fa-cog') }}
 	{{ nav.list_end() }}
 {% endblock %}

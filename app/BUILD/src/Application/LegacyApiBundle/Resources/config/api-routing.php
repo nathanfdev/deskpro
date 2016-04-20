@@ -5993,6 +5993,22 @@ $collection->create(
 );
 
 ########################################################################################################################
+# Problems
+########################################################################################################################
+
+$collection->create('api_problems_settings_get', array(
+    'path'       => '/problems/settings',
+    'controller' => 'LegacyApiBundle:Problems:settings',
+    'methods'    => array('GET'),
+));
+
+$collection->create('api_problems_settings_set', array(
+    'path'       => '/problems/settings',
+    'controller' => 'LegacyApiBundle:Problems:updateSettings',
+    'methods'    => array('PUT'),
+));
+
+########################################################################################################################
 # CRM User Fields
 ########################################################################################################################
 
@@ -7215,5 +7231,55 @@ $collection->create(
         'methods'    => array('GET'),
     )
 );
+
+##############################################################################################
+# Billing Fields
+##############################################################################################
+
+$collection->create('api_billing_fields_get', array(
+    'path'         => '/billing_fields/{id}',
+    'controller'   => 'LegacyApiBundle:BillingFields:getCustomField',
+    'requirements' => array('id' => '\\d+'),
+    'methods'      => array('GET'),
+));
+
+$collection->create('api_billing_fields_create', array(
+    'path'       => '/billing_fields',
+    'controller' => 'LegacyApiBundle:BillingFields:saveCustomField',
+    'defaults'   => array('id' => '0'),
+    'methods'    => array('PUT'),
+));
+
+$collection->create('api_billing_fields_save', array(
+    'path'         => '/billing_fields/{id}',
+    'controller'   => 'LegacyApiBundle:BillingFields:saveCustomField',
+    'requirements' => array('id' => '\\d+'),
+    'methods'      => array('POST'),
+));
+
+$collection->create('api_billing_fields_delete', array(
+    'path'         => '/billing_fields/{id}',
+    'controller'   => 'LegacyApiBundle:BillingFields:deleteCustomField',
+    'requirements' => array('id' => '\\d+'),
+    'methods'      => array('DELETE'),
+));
+
+$collection->create('api_billing_fields', array(
+    'path'       => '/billing_fields',
+    'controller' => 'LegacyApiBundle:BillingFields:list',
+    'methods'    => array('GET'),
+));
+
+$collection->create('api_billing_fields_setenabled', array(
+    'path'       => '/billing_fields/set-enabled/{field_id}/{is_enabled}',
+    'controller' => 'LegacyApiBundle:BillingFields:toggleField',
+    'methods'    => array('POST'),
+));
+
+$collection->create('api_billing_fields_update_order', array(
+    'path'       => '/billing_fields/display-order',
+    'controller' => 'LegacyApiBundle:BillingFields:saveDisplayOrder',
+    'methods'    => array('POST'),
+));
 
 return $collection;
