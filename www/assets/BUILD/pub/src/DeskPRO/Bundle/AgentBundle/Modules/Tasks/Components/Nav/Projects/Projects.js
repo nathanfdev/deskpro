@@ -3,32 +3,22 @@ import { Detached } from 'DeskPRO/Component/Detached';
 import { Section, SectionHeader, ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { ProjectForm } from './ProjectForm/ProjectForm';
 import { ListItemContainer } from '../ListItemContainer';
+import { pureRender } from 'Ampliflux';
+import { addToCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import Immutable from 'immutable';
 
+@pureRender
 export class Projects extends React.Component {
 
   static propTypes = {
     projects:         PropTypes.object.isRequired,
-    projectsCountMap: PropTypes.object.isRequired
+    projectsCountMap: PropTypes.object.isRequired,
+    dispatch:         PropTypes.func.isRequired
   };
 
   constructor(props) {
     super(props);
-
-    this.state = {
-      project:  null,
-      projects: props.projects
-    };
-  }
-
-  componentWillReceiveProps(props) {
-    this.setState({
-      projects: props.projects
-    });
-  }
-
-  shouldComponentUpdate(props, state) {
-    return !Immutable.is(this.state.project, state.project) || !Immutable.is(this.state.projects, state.projects);
+    this.state = { project: null };
   }
 
   onCoverClick = (event) => {
@@ -50,10 +40,8 @@ export class Projects extends React.Component {
   onSubmit = (project) => {
     if (!project) return;
 
-    this.setState({
-      project:  null,
-      projects: this.state.projects.set(project.get('id'), project)
-    });
+    this.setState({ project: null });
+    this.props.dispatch(addToCollection('Project', 'all', Immutable.List([project])));
   };
 
   getCount(project) {
@@ -79,7 +67,8 @@ export class Projects extends React.Component {
   };
 
   render() {
-    const { project, projects } = this.state;
+    const { project } = this.state;
+    const { projects } = this.props;
 
     return (
       <Section>

@@ -123,6 +123,7 @@ export const addTask = createAction(
 export const getTask = createAction(
   'TASKS_LIST_GET_TASK',
   (id) => dispatch => api.sendGet(`DP_API/tasks/${id}`).success(response => {
+    if (!response.data) return;
     const task = Immutable.fromJS(response.data);
     dispatch(addToCollection('Task', recordStoresId, Immutable.List([task])));
   })

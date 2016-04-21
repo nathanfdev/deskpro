@@ -109,8 +109,6 @@ export class TaskCardEditContainer extends React.Component {
     const { children } = props;
     const childProps = children.props;
 
-    console.info('task is_done', this.state.task.get('id'), this.state.task.get('is_done'));
-
     return React.cloneElement(children, {
       ...childProps,
       ...props,

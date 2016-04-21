@@ -72,7 +72,7 @@ export default createReducer(storeInitialState, {
     let collection = state.getIn([recordName, 'collections', collectionName]);
     collection = collection.withMutations(list => {
       for (const i of ids) {
-        const index = collection.indexOf(i);
+        const index = list.indexOf(i);
         if (index === -1) continue;
         list.delete(index);
       }
