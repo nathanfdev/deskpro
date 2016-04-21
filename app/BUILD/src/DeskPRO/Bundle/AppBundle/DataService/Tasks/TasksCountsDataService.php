@@ -26,17 +26,50 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\DataService\Tasks;
+
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\Task;
+use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 /**
  * Class TasksCountsDataService.
  */
-class TasksCountsDataService extends AbstractTasksDataService
+class TasksCountsDataService
 {
+    /**
+     * @var EntityManager
+     */
+    protected $em;
+
+    /**
+     * @var Person
+     */
+    protected $user;
+
+    /**
+     * @param EntityManager $em
+     * @param TokenStorage  $tokenStorage
+     */
+    public function __construct(EntityManager $em, TokenStorage $tokenStorage)
+    {
+        $this->em   = $em;
+        $this->user = $tokenStorage->getToken()->getUser();
+    }
+
+    /**
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    protected function getBaseQueryBuilder()
+    {
+        $qb = $this->em->createQueryBuilder();
+        $qb->from(Task::class, 't');
+
+        return $qb;
+    }
+
     /**
      * @return int
      */
@@ -45,7 +78,8 @@ class TasksCountsDataService extends AbstractTasksDataService
         $qb = $this->getBaseQueryBuilder();
         $qb
             ->select('COUNT(t.id)')
-            ->andWhere('t.for_del <> 1');
+            ->andWhere('t.for_del <> 1')
+        ;
 
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
@@ -60,7 +94,8 @@ class TasksCountsDataService extends AbstractTasksDataService
             ->select('COUNT(t.id)')
             ->join('t.assigned', 'ta')
             ->andWhere('t.for_del <> 1')
-            ->andWhere($qb->expr()->eq('ta.person', $this->user->getId()));
+            ->andWhere($qb->expr()->eq('ta.person', $this->user->getId()))
+        ;
 
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
@@ -71,8 +106,8 @@ class TasksCountsDataService extends AbstractTasksDataService
     public function getTeamCount()
     {
         $this->user->loadHelper('AgentTeam');
-        $team_ids = $this->user->getAgentTeamIds();
-        if (!$team_ids) {
+        $ids = $this->user->getAgentTeamIds();
+        if (!$ids) {
             return 0;
         }
 
@@ -81,7 +116,8 @@ class TasksCountsDataService extends AbstractTasksDataService
             ->select('COUNT(t.id)')
             ->join('t.assigned', 'ta')
             ->andWhere('t.for_del <> 1')
-            ->andWhere($qb->expr()->in('ta.team', $team_ids));
+            ->andWhere($qb->expr()->in('ta.team', $ids))
+        ;
 
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
@@ -92,8 +128,8 @@ class TasksCountsDataService extends AbstractTasksDataService
     public function getDepartmentCount()
     {
         $this->user->loadHelper('AgentPermissions');
-        $department_ids = $this->user->getAllowedDepartments();
-        if (!$department_ids) {
+        $ids = $this->user->getAllowedDepartments();
+        if (!$ids) {
             return 0;
         }
 
@@ -102,7 +138,8 @@ class TasksCountsDataService extends AbstractTasksDataService
             ->select('COUNT(t.id)')
             ->join('t.assigned', 'ta')
             ->andWhere('t.for_del <> 1')
-            ->andWhere($qb->expr()->in('ta.department', $department_ids));
+            ->andWhere($qb->expr()->in('ta.department', $ids))
+        ;
 
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
@@ -120,7 +157,8 @@ class TasksCountsDataService extends AbstractTasksDataService
             ->andWhere(
                 $qb->expr()->neq('ta.person', $this->user->getId()),
                 $qb->expr()->eq('t.creator', $this->user->getId())
-            );
+            )
+        ;
 
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
@@ -139,7 +177,8 @@ class TasksCountsDataService extends AbstractTasksDataService
                 $qb->expr()->isNull('ta.person'),
                 $qb->expr()->isNull('ta.team'),
                 $qb->expr()->isNull('ta.department')
-            );
+            )
+        ;
 
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
@@ -151,12 +190,13 @@ class TasksCountsDataService extends AbstractTasksDataService
     {
         $qb = $this->em->createQueryBuilder();
         $qb
-            ->select('p.id AS agent_id, COALESCE(COUNT(t.id), 0) AS tasks_count')
-            ->from('DeskPRO:Person', 'p')
+            ->select('p.id, p.name, COALESCE(COUNT(t.id), 0) AS tasks_count')
+            ->from(Person::class, 'p')
             ->leftJoin('p.assigned_tasks', 'ta')
             ->leftJoin('ta.task', 't')
             ->where($qb->expr()->eq('p.is_agent', 1))
-            ->groupBy('p.id');
+            ->groupBy('p.id')
+        ;
 
         return $qb->getQuery()->getResult();
     }
@@ -168,10 +208,11 @@ class TasksCountsDataService extends AbstractTasksDataService
     {
         $qb = $this->em->createQueryBuilder();
         $qb
-            ->select('p.id AS project_id, COALESCE(COUNT(t.id), 0) AS tasks_count')
-            ->from('App:TaskProject', 'p')
+            ->select('p.id, p.title, COALESCE(COUNT(t.id), 0) AS tasks_count')
+            ->from(TaskProject::class, 'p')
             ->leftJoin('p.tasks', 't')
-            ->groupBy('p.id');
+            ->groupBy('p.id')
+        ;
 
         return $qb->getQuery()->getResult();
     }
