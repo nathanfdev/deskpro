@@ -7,15 +7,15 @@ import {
   SubTasks,
   Comments,
   AssigneeName
-} from '../../../TaskCard/index';
+} from '../../../TaskCard';
 import classNames from 'classnames';
 
 export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
     className: PropTypes.string,
-    moving:    PropTypes.bool,
-    dragging:  PropTypes.bool
+    moving: PropTypes.bool,
+    dragging: PropTypes.bool
   };
 
   render() {
@@ -23,14 +23,24 @@ export class TaskCard extends BaseTaskCard {
     const { onToggleSelected, onChange } = this.props;
 
     return (
-      <div className={classNames('card', 'task-card', { moving, 'dragging-item': dragging })}>
-        <div className="card-status-bar status-bar-left"></div>
-        <div className="card-status-bar status-bar-right"></div>
+      <div className={classNames(
+        'card',
+        'task-card',
+        {
+          'moving': moving,
+          'dragging-item': dragging
+        }
+      )}>
+
+        <div className="card-status-bar status-bar-left" />
+        <div className="card-status-bar status-bar-right" />
 
         <KanbanCheckbox selected={selected} onClick={onToggleSelected} />
 
         <div className="content">
-          <Title value={task.get('title')} isDone={task.get('is_done')} onSubmit={value => onChange('title', value)} />
+          <Title value={task.get('title')}
+                 isDone={task.get('is_done')}
+                 onSubmit={onChange.bind(null, 'title')} />
 
           <div className="card-line task-details">
             <div className="top-right-box">
@@ -39,14 +49,16 @@ export class TaskCard extends BaseTaskCard {
                 </span>
             </div>
             <div>
-              <DateDue value={task.get('date_due')} onChange={value => onChange('date_due', value)} />
+              <DateDue value={task.get('date_due')}
+                       onChange={onChange.bind(null, 'date_due')} />
             </div>
           </div>
-          <hr />
+          <hr/>
           <div className="card-line task-properties">
             <Comments count={this.state.comments} />
             {task.get('subtasks_total') > 0 &&
-              <SubTasks current={task.get('subtasks_done')} total={task.get('subtasks_total')} />
+              <SubTasks current={task.get('subtasks_done')}
+                        total={task.get('subtasks_total')} />
             }
           </div>
         </div>

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { CardProject } from './CardProject';
 
-@connect(state => ({projects: allSelectorFactory('Project')(state)}))
+@connect(state => ({ projects: allSelectorFactory('Project')(state) }))
 
 export class CardProjectContainer extends React.Component {
 

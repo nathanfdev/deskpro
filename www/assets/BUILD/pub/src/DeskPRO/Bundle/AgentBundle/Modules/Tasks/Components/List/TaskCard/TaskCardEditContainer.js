@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { toggleSelectedAction } from '../../../../Application/Actions/massActions';
 import { editTask } from '../../../Actions/listActions';
 import { selectedSelector } from '../../../../Application/Selectors/massActions';
+import Immutable from 'immutable';
 import {
   cardVisibleFieldsSelector,
   tableVisibleFieldsSelector,
@@ -11,34 +12,53 @@ import {
   calendarVisibleFieldsSelector,
   currentOrderBySelector
 } from '../../../Selectors/list';
-import $ from 'jquery';
+import jQuery from 'jquery';
 
 @connect(state => ({
-  selectedTasks:         selectedSelector(state),
-  cardVisibleFields:     cardVisibleFieldsSelector(state),
-  tableVisibleFields:    tableVisibleFieldsSelector(state),
-  kanbanVisibleFields:   kanbanVisibleFieldsSelector(state),
+  selectedTasks: selectedSelector(state),
+  cardVisibleFields: cardVisibleFieldsSelector(state),
+  tableVisibleFields: tableVisibleFieldsSelector(state),
+  kanbanVisibleFields: kanbanVisibleFieldsSelector(state),
   calendarVisibleFields: calendarVisibleFieldsSelector(state),
-  currentOrderBy:        currentOrderBySelector(state)
+  currentOrderBy: currentOrderBySelector(state)
 }))
 
 export class TaskCardEditContainer extends React.Component {
 
   static propTypes = {
-    dispatch:      PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
     selectedTasks: PropTypes.object.isRequired,
-    task:          PropTypes.object.isRequired,
-    children:      PropTypes.node.isRequired,
-    onUpdate:      PropTypes.func
+    task: PropTypes.object.isRequired,
+    children: PropTypes.node.isRequired,
+    onUpdate: PropTypes.func
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      editing:  false,
+      editing: false,
       selected: props.selectedTasks.indexOf(props.task.get('id')) !== -1,
-      task:     props.task
+      task: props.task
     };
+  }
+
+  componentWillReceiveProps(props) {
+    this.setState({
+      selected: props.selectedTasks.indexOf(props.task.get('id')) !== -1,
+      task: props.task
+    });
+  }
+
+  shouldComponentUpdate(props, state) {
+    if (state.selected !== this.state.selected) {
+      return true;
+    }
+
+    return !Immutable.is(this.state.task, state.task);
+  }
+
+  componentWillUpdate(props, state) {
+    this.props.onUpdate && this.props.onUpdate(state.task);
   }
 
   onToggleSelected = () => {
@@ -57,9 +77,14 @@ export class TaskCardEditContainer extends React.Component {
       const agents = value.get('agent') ? [value.get('agent')] : [];
       const teams = value.get('team') ? [value.get('team')] : [];
       const departments = value.get('department') ? [value.get('department')] : [];
-      params = { agents, teams, departments };
+      params = {
+        agents: agents,
+        teams: teams,
+        departments: departments
+      };
       task = task.mergeWith(value);
-    } else if (prop === 'linked_items') {
+    } else if ('linked_items' === prop) {
+
       task = task.withMutations(map => {
         map
           .set('linked_tickets', value.get('linked_tickets'))
@@ -68,16 +93,17 @@ export class TaskCardEditContainer extends React.Component {
       });
 
       params = {
-        linked_tickets:  value.get('linked_tickets').toArray(),
+        linked_tickets: value.get('linked_tickets').toArray(),
         linked_articles: value.get('linked_articles').toArray(),
-        linked_chats:    value.get('linked_chats').toArray()
+        linked_chats: value.get('linked_chats').toArray()
       };
+
     } else {
       params = { [prop]: value };
       task = task.set(prop, value);
     }
 
-    this.setState({ task });
+    this.setState({ task: task });
     dispatch(editTask(task.get('id'), params));
   };
 
@@ -90,10 +116,10 @@ export class TaskCardEditContainer extends React.Component {
       ...childProps,
       ...props,
 
-      task:             this.state.task,
-      selected:         this.state.selected,
+      task: this.state.task,
+      selected: this.state.selected,
       onToggleSelected: this.onToggleSelected,
-      onChange:         this.onChange
+      onChange: this.onChange
     });
   }
 }
@@ -101,8 +127,8 @@ export class TaskCardEditContainer extends React.Component {
 export const cardSourceSpec = {
   beginDrag({ task }, {}, component) {
     return {
-      id:    task.get('id'),
-      width: $(ReactDOM.findDOMNode(component)).width()
+      id: task.get('id'),
+      width: jQuery(ReactDOM.findDOMNode(component)).width()
     };
   },
   canDrag({ editing, updateData = {} }) {
@@ -111,9 +137,9 @@ export const cardSourceSpec = {
 };
 
 export const cardSourceCollect = (dragConnect, monitor) => ({
-  connectDragSource:  dragConnect.dragSource(),
+  connectDragSource: dragConnect.dragSource(),
   connectDragPreview: dragConnect.dragPreview(),
-  isDragging:         monitor.isDragging()
+  isDragging: monitor.isDragging()
 });
 
 export const cardTargetSpec = {
@@ -124,12 +150,13 @@ export const cardTargetSpec = {
 };
 
 export const groupTargetSpec = {
-  drop({ group, onChangeGroup }, monitor) {
-    onChangeGroup(monitor.getItem().id, group.get('updateData'));
+  drop({ updateData, onChangeGroup }, monitor) {
+    const item = monitor.getItem();
+    onChangeGroup(item.id, updateData);
   }
 };
 
 export const targetCollect = (dragConnect, monitor) => ({
   connectDropTarget: dragConnect.dropTarget(),
-  isOver:            monitor.isOver()
+  isOver: monitor.isOver()
 });

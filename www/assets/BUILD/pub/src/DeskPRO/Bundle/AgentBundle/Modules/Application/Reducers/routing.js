@@ -33,14 +33,13 @@ export default createReducer(initialState, {
 
     return next;
   },
-  [actions.updateRoutingState]: (state, { component, option, value }) => {
+  [actions.updateRoutingState]: (state, {component, option, value}) => {
     let next = state;
 
     if (!next.hasIn(['hash', component])) {
       next = next.mergeIn(['hash'], Immutable.fromJS({ [component]: {} }));
     }
-
-    next = next.setIn(['hash', component, option], value);
+    next = next.setIn(['hash', component], Immutable.fromJS({ [option]: value }));
 
     window.location.hash = stateToString(next.get('hash'));
 

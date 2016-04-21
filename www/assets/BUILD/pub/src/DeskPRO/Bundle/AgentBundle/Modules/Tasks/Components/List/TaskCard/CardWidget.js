@@ -2,44 +2,42 @@ import React, { PropTypes } from 'react';
 
 export class CardWidget extends React.Component {
 
-  static propTypes = {
-    value:        PropTypes.any,
-    isOpen:       PropTypes.bool,
-    onChange:     PropTypes.func,
-    onSetEditing: PropTypes.func
-  };
-
   constructor(props) {
     super(props);
     this.state = {
       isOpen: props.isOpen,
-      value:  props.value
+      value: props.value
     };
   }
 
-  onChange = value => {
-    this.setState({ value });
+  shouldComponentUpdate(props, state) {
+    return this.state.isOpen !== state.isOpen || this.state.value !== state.value;
+  }
+
+  componentWillReceiveProps(props) {
+    let state = {
+      value: props.value
+    };
+    if (undefined !== props.isOpen) {
+      state.isOpen = props.isOpen;
+    }
+    this.setState(state);
+  }
+
+  onChange = (val) => {
+    this.setState({value: val});
+    this.props.onChange && this.props.onChange(val);
   };
 
   onOpen = () => {
-    const { onSetEditing } = this.props;
-    if (onSetEditing) {
-      onSetEditing(true);
-    }
-
-    this.setState({
-      isOpen: true
-    });
+    if (this.state.isOpen) return;
+    this.setState({isOpen: true});
+    this.props.onSetEditing && this.props.onSetEditing(true);
   };
 
-  onClose = () => {
-    const { onSetEditing } = this.props;
-    if (onSetEditing) {
-      onSetEditing(false);
-    }
-
-    this.setState({
-      isOpen: false
-    });
+  onClose = event => {
+    if (!this.state.isOpen) return;
+    this.setState({isOpen: false});
+    this.props.onSetEditing && this.props.onSetEditing(false);
   };
 }

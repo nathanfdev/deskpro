@@ -4,8 +4,8 @@ import classNames from 'classnames';
 export class LabelItem extends React.Component {
 
   static propTypes = {
-    active:  PropTypes.bool,
-    label:   PropTypes.object.isRequired,
+    active: PropTypes.bool,
+    label: PropTypes.object.isRequired,
     onClick: PropTypes.func
   };
 

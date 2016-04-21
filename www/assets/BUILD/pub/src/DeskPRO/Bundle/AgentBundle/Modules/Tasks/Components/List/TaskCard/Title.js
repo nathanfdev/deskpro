@@ -7,15 +7,36 @@ import { CardWidget } from './CardWidget';
 export class Title extends CardWidget {
 
   static propTypes = {
-    value:    PropTypes.string,
-    isDone:   PropTypes.bool,
+    value: PropTypes.string,
+    isDone: PropTypes.bool,
+    onChange: PropTypes.func,
     onSubmit: PropTypes.func
   };
 
-  onSubmit = value => {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isOpen: false,
+      value: props.value,
+      isDone: props.isDone
+    };
+  }
+
+  componentWillReceiveProps(props) {
+    this.setState({
+      isOpen: false,
+      value: props.value,
+      isDone: props.isDone
+    });
+  }
+
+  shouldComponentUpdate(props, state) {
+    return this.state.isOpen !== state.isOpen || this.state.value !== state.value || this.state.isDone !== state.isDone;
+  }
+
+  onSubmit = () => {
     this.onClose();
-    this.props.onSubmit(value);
-    this.setState({ value });
+    this.props.onSubmit && this.props.onSubmit(this.state.value);
   };
 
   renderHeader() {
@@ -29,7 +50,7 @@ export class Title extends CardWidget {
   renderForm() {
     return (
       <ClickOut onClickOut={this.onClose}>
-        <TitleForm value={this.state.value} onSubmit={this.onSubmit} />
+        <TitleForm value={this.state.value} onChange={this.onChange} onSubmit={this.onSubmit} />
       </ClickOut>
     );
   }
@@ -37,7 +58,11 @@ export class Title extends CardWidget {
   render() {
     return (
       <div className="card-title">
-        <div className={classNames('dpwd--card-title', { strikethrough: this.props.isDone && !this.state.isOpen })}>
+        <div className={classNames(
+          'dpwd--card-title',
+          {'strikethrough': this.props.isDone && !this.state.isOpen}
+        )}>
+
           {this.state.isOpen ? this.renderForm() : this.renderHeader()}
         </div>
       </div>

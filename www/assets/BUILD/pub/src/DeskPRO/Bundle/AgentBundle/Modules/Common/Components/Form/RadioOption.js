@@ -1,29 +1,30 @@
-import React, { PropTypes } from 'react';
+import React, {Component, PropTypes} from 'react';
 import classNames from 'classnames';
 
-export class RadioOption extends React.Component {
+export class RadioOption extends Component {
 
   static propTypes = {
-    onClick:  PropTypes.func.isRequired,
-    param:    PropTypes.string.isRequired,
+    onClick: PropTypes.func.isRequired,
+    param: PropTypes.string.isRequired,
     isActive: PropTypes.bool,
-    label:    PropTypes.any.isRequired,
-    value:    PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    label: PropTypes.any.isRequired,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     children: PropTypes.any
   };
 
   render() {
-    const { label, isActive, param, value, onClick, children } = this.props;
+    const {label, isActive, param, value, onClick} = this.props;
+    const classes = classNames('dpwd-radio-button', { 'active': isActive });
 
     return (
-      <li onClick={() => onClick(param, value, isActive)}>
+      <li onClick={onClick.bind(this, param, value, isActive)}>
         <div className="dpw--popup-item-box">
-        <span className={classNames('dpwd-radio-button', { active: isActive })}>
-          <span className="dpwd-radio-button-disc" />
+        <span className={classes}>
+          <span className="dpwd-radio-button-disc"></span>
           <span className="radio-button-title">{label}</span>
         </span>
         </div>
-        {children}
+        {this.props.children}
       </li>
     );
   }

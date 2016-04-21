@@ -11,15 +11,15 @@ import classNames from 'classnames';
 export class TaskDragCard extends React.Component {
 
   static propTypes = {
-    selected:           PropTypes.bool,
-    onToggleSelected:   PropTypes.func,
-    task:               PropTypes.object,
-    currentSort:        PropTypes.string,
-    connectDragSource:  PropTypes.func.isRequired,
+    selected: PropTypes.bool,
+    onToggleSelected: PropTypes.func,
+    task: PropTypes.object,
+    currentSort: PropTypes.string,
+    connectDragSource: PropTypes.func.isRequired,
     connectDragPreview: PropTypes.func.isRequired,
-    connectDropTarget:  PropTypes.func.isRequired,
-    isOver:             PropTypes.bool,
-    isDragging:         PropTypes.bool
+    connectDropTarget: PropTypes.func.isRequired,
+    isOver: PropTypes.bool,
+    isDragging: PropTypes.bool
   };
 
   componentDidMount() {
@@ -35,7 +35,7 @@ export class TaskDragCard extends React.Component {
     let result = connectDragSource(
       <div>
         <TaskCard dragging={isDragging} {...this.props} />
-        <div className={classNames('placeholder', { 'is-over': isOver })}></div>
+        <div className={classNames('placeholder', {'is-over': isOver})} />
       </div>
     );
 

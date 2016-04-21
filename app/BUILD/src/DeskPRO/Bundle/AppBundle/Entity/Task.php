@@ -239,17 +239,14 @@ class Task implements EntityInterface
     protected $for_del = false;
 
     /**
-     * Constructor.
+     * @param Person $creator
      */
-    public function __construct()
+    public function __construct(Person $creator)
     {
-        $this->subtasks        = new ArrayCollection();
-        $this->labels          = new ArrayCollection();
-        $this->assigned        = new ArrayCollection();
-        $this->linked_articles = new ArrayCollection();
-        $this->linked_chats    = new ArrayCollection();
-        $this->linked_tickets  = new ArrayCollection();
-
+        $this->subtasks = new ArrayCollection();
+        $this->labels   = new ArrayCollection();
+        $this->assigned = new ArrayCollection();
+        $this->setCreator($creator);
         $this->setDateCreated(new \DateTime());
     }
 
@@ -446,16 +443,14 @@ class Task implements EntityInterface
     }
 
     /**
-     * @param bool $isDone
-     *
-     * @return $this
+     * @param bool $is_done
      */
-    public function setIsDone($isDone = true)
+    public function setIsDone($is_done = true)
     {
-        $date_done = $isDone ? new \DateTime() : null;
+        $date_done = $is_done ? new \DateTime() : null;
 
         $this->setDateDone($date_done);
-        $this->is_done = $isDone;
+        $this->is_done = $is_done;
 
         return $this;
     }
@@ -623,6 +618,71 @@ class Task implements EntityInterface
     }
 
     /**
+     * Re order display positions of related tasks.
+     *
+     * @ORM\PrePersist
+     *
+     * @param LifecycleEventArgs $args
+     */
+    public function onSetDisplayOrder(LifecycleEventArgs $args)
+    {
+        if ($this->display_order) {
+            return;
+        }
+
+        $qb = $args
+            ->getObjectManager()
+            ->getRepository('App:Task')
+            ->createQueryBuilder('t')
+            ->select('MAX(t.display_order)');
+
+        $this->display_order = (int) $qb->getQuery()->getSingleScalarResult() + 1;
+    }
+
+    /**
+     * Re order display positions of related tasks.
+     *
+     * @ORM\PreUpdate
+     *
+     * @param PreUpdateEventArgs $args
+     */
+    public function onReOrderTasks(PreUpdateEventArgs $args)
+    {
+        if (!$args->hasChangedField('display_order')) {
+            return;
+        }
+
+        $old_order = $args->getOldValue('display_order');
+        $new_order = $args->getNewValue('display_order');
+
+        if ($old_order !== $new_order) {
+            $qb = $args->getEntityManager()->createQueryBuilder();
+            $qb
+                ->update()
+                ->from('App:Task', 't')
+                ->set('t.display_order', sprintf('t.display_order + %d', ($new_order > $old_order ? -1 : 1)))
+                ->where(
+                    't.id != :task_id',
+                    't.display_order > :min_order',
+                    't.display_order <= :max_order'
+                )
+                ->setParameters(
+                    [
+                        'task_id'   => $this->getId(),
+                        'min_order' => min($old_order, $new_order),
+                        'max_order' => max($old_order, $new_order),
+                    ]
+                );
+
+            $qb->getQuery()->execute();
+
+            if ($old_order > $new_order) {
+                ++$this->display_order;
+            }
+        }
+    }
+
+    /**
      * Get isDone.
      *
      * @return bool
@@ -707,7 +767,7 @@ class Task implements EntityInterface
      *
      * @param int $percentComplete
      *
-     * @return $this
+     * @return Task
      */
     public function setPercentComplete($percentComplete)
     {
@@ -721,7 +781,7 @@ class Task implements EntityInterface
      *
      * @param \DateTime $dateCreated
      *
-     * @return $this
+     * @return Task
      */
     public function setDateCreated($dateCreated)
     {
@@ -735,7 +795,7 @@ class Task implements EntityInterface
      *
      * @param string $taskType
      *
-     * @return $this
+     * @return Task
      */
     public function setTaskType($taskType)
     {
@@ -749,7 +809,7 @@ class Task implements EntityInterface
      *
      * @param \DateTime $dateDue
      *
-     * @return $this
+     * @return Task
      */
     public function setDateDue($dateDue)
     {
@@ -763,7 +823,7 @@ class Task implements EntityInterface
      *
      * @param \DateTime $dateEventStart
      *
-     * @return $this
+     * @return Task
      */
     public function setDateEventStart($dateEventStart)
     {
@@ -777,7 +837,7 @@ class Task implements EntityInterface
      *
      * @param \DateTime $dateEventEnd
      *
-     * @return $this
+     * @return Task
      */
     public function setDateEventEnd($dateEventEnd)
     {
@@ -791,7 +851,7 @@ class Task implements EntityInterface
      *
      * @param string $visibility
      *
-     * @return $this
+     * @return Task
      */
     public function setVisibility($visibility)
     {
@@ -805,7 +865,7 @@ class Task implements EntityInterface
      *
      * @param int $urgency
      *
-     * @return $this
+     * @return Task
      */
     public function setUrgency($urgency)
     {
@@ -819,7 +879,7 @@ class Task implements EntityInterface
      *
      * @param \DateTime $dateDone
      *
-     * @return $this
+     * @return Task
      */
     public function setDateDone($dateDone)
     {
@@ -833,7 +893,7 @@ class Task implements EntityInterface
      *
      * @param int $displayOrder
      *
-     * @return $this
+     * @return Task
      */
     public function setDisplayOrder($displayOrder)
     {
@@ -847,7 +907,7 @@ class Task implements EntityInterface
      *
      * @param Person $creator
      *
-     * @return $this
+     * @return Task
      */
     public function setCreator(Person $creator = null)
     {
@@ -861,7 +921,7 @@ class Task implements EntityInterface
      *
      * @param TaskProject $project
      *
-     * @return $this
+     * @return Task
      */
     public function setProject(TaskProject $project = null)
     {
@@ -875,7 +935,7 @@ class Task implements EntityInterface
      *
      * @param TaskList $list
      *
-     * @return $this
+     * @return Task
      */
     public function setList(TaskList $list = null)
     {
@@ -889,7 +949,7 @@ class Task implements EntityInterface
      *
      * @param TaskSubtask $subtask
      *
-     * @return $this
+     * @return Task
      */
     public function addSubtask(TaskSubtask $subtask)
     {
@@ -903,7 +963,7 @@ class Task implements EntityInterface
      *
      * @param LabelTask $label
      *
-     * @return $this
+     * @return Task
      */
     public function addLabel(LabelTask $label)
     {
@@ -927,7 +987,7 @@ class Task implements EntityInterface
      *
      * @param TaskComment $comment
      *
-     * @return $this
+     * @return Task
      */
     public function addComment(TaskComment $comment)
     {
@@ -941,7 +1001,7 @@ class Task implements EntityInterface
      *
      * @param TaskAttachment $attachment
      *
-     * @return $this
+     * @return Task
      */
     public function addAttachment(TaskAttachment $attachment)
     {
@@ -955,7 +1015,7 @@ class Task implements EntityInterface
      *
      * @param TaskLinkedArticle $linkedArticle
      *
-     * @return $this
+     * @return Task
      */
     public function addLinkedArticle(TaskLinkedArticle $linkedArticle)
     {
@@ -969,7 +1029,7 @@ class Task implements EntityInterface
      *
      * @param TaskLinkedChat $linkedChat
      *
-     * @return $this
+     * @return Task
      */
     public function addLinkedChat(TaskLinkedChat $linkedChat)
     {
@@ -983,7 +1043,7 @@ class Task implements EntityInterface
      *
      * @param TaskLinkedTicket $linkedTicket
      *
-     * @return $this
+     * @return Task
      */
     public function addLinkedTicket(TaskLinkedTicket $linkedTicket)
     {
@@ -1000,70 +1060,5 @@ class Task implements EntityInterface
     public function getAssigned()
     {
         return $this->assigned;
-    }
-
-    /**
-     * Set display order for a new task.
-     *
-     * @ORM\PrePersist
-     *
-     * @param LifecycleEventArgs $args
-     */
-    public function onSetDisplayOrder(LifecycleEventArgs $args)
-    {
-        if ($this->display_order) {
-            return;
-        }
-
-        $qb = $args
-            ->getObjectManager()
-            ->getRepository(self::class)
-            ->createQueryBuilder('t')
-            ->select('MAX(t.display_order)')
-        ;
-
-        $this->display_order = (int) $qb->getQuery()->getSingleScalarResult() + 1;
-    }
-
-    /**
-     * Re order display positions of related tasks.
-     *
-     * @ORM\PreUpdate
-     *
-     * @param PreUpdateEventArgs $args
-     */
-    public function onReOrderTasks(PreUpdateEventArgs $args)
-    {
-        if (!$args->hasChangedField('display_order')) {
-            return;
-        }
-
-        $old_order = $args->getOldValue('display_order');
-        $new_order = $args->getNewValue('display_order');
-
-        if ($old_order !== $new_order) {
-            $qb = $args->getEntityManager()->createQueryBuilder();
-            $qb
-                ->update()
-                ->from(self::class, 't')
-                ->set('t.display_order', sprintf('t.display_order + %d', ($new_order > $old_order ? -1 : 1)))
-                ->where(
-                    't.id != :task_id',
-                    't.display_order > :min_order',
-                    't.display_order <= :max_order'
-                )
-                ->setParameters([
-                    'task_id'   => $this->getId(),
-                    'min_order' => min($old_order, $new_order),
-                    'max_order' => max($old_order, $new_order),
-                ])
-            ;
-
-            $qb->getQuery()->execute();
-
-            if ($old_order > $new_order) {
-                ++$this->display_order;
-            }
-        }
     }
 }

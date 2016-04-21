@@ -1,37 +1,39 @@
 import React, { PropTypes } from 'react';
+import jQuery from 'jquery';
 import { CardWidget } from './CardWidget';
-import $ from 'jquery';
 
 export class TitleForm extends CardWidget {
 
   static propTypes = {
-    value:    PropTypes.string,
+    value: PropTypes.string,
     onChange: PropTypes.func,
     onSubmit: PropTypes.func
   };
 
   componentDidMount() {
-    $(this.refs.input).focus();
+    jQuery(this.refs.input).focus();
   }
 
-  componentWillUnmount() {
-    this.props.onSubmit(this.state.value);
-  }
-
-  onInputChange = event => {
-    this.onChange(event.target.value);
+  onChange = event => {
+    const val = event.target.value;
+    this.setState({value: val});
+    this.props.onChange && this.props.onChange(val);
   };
 
   onSubmit = event => {
     event.preventDefault();
-    this.props.onSubmit(this.state.value);
+    this.props.onSubmit && this.props.onSubmit();
   };
 
   render() {
     const { value } = this.state;
     return (
       <form className="inline-form" onSubmit={this.onSubmit}>
-        <input type="text" ref="input" name="title" value={value} onChange={this.onInputChange} />
+        <input type="text"
+               ref="input"
+               name="title"
+               value={value}
+               onChange={this.onChange} />
       </form>
     );
   }

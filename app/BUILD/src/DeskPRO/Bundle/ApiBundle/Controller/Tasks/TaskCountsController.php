@@ -26,12 +26,18 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Counts\AgentGrouped;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Counts\Grouped;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Counts\ProjectGrouped;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,7 +46,6 @@ use Symfony\Component\HttpFoundation\Response;
  * Class TaskCountsContrller.
  *
  * @ApiModes("all")
- * @Rest\Route("/tasks/counts")
  */
 class TaskCountsController extends BaseController
 {
@@ -54,26 +59,25 @@ class TaskCountsController extends BaseController
      *     statusCodes={
      *         200="Returned if everything is ok"
      *     },
-     *     output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
+     *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Counts\Grouped"
      * )
      *
-     * @Rest\Get("/groups")
+     * @Rest\Get("/tasks/group_counts", name="api_task_group_counts")
      */
     public function getGroupCountsAction()
     {
-        $dataService = $this->get('data.task_counts');
+        $count_service = $this->get('data.task_counts');
+        $counts        = new Grouped();
 
-        $count = Count::fromGroupedBy('group');
-        $count
-            ->addNested($dataService->getAllCount(), null, 'all', null, true)
-            ->addNested($dataService->getMyCount(), null, 'my')
-            ->addNested($dataService->getTeamCount(), null, 'team')
-            ->addNested($dataService->getDepartmentCount(), null, 'department')
-            ->addNested($dataService->getDelegatedCount(), null, 'delegated')
-            ->addNested($dataService->getUnassignedCount(), null, 'unassigned')
-        ;
+        $counts
+            ->setAll($count_service->getAllCount())
+            ->setMy($count_service->getMyCount())
+            ->setTeam($count_service->getTeamCount())
+            ->setDepartment($count_service->getDepartmentCount())
+            ->setDelegated($count_service->getDelegatedCount())
+            ->setUnassigned($count_service->getUnassignedCount());
 
-        return View::create($this->wrap($count));
+        return View::create($this->wrap($counts), Response::HTTP_OK);
     }
 
     /**
@@ -86,19 +90,20 @@ class TaskCountsController extends BaseController
      *     statusCodes={
      *         200="Returned if everything is ok"
      *     },
-     *     output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
+     *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Counts\AgentGrouped>"
      * )
      *
-     * @Rest\Get("/agents")
+     * @Rest\Get("/tasks/agent_counts", name="api_task_agent_counts")
      */
     public function getAgentCountsAction()
     {
-        $count = Count::fromGroupedBy('agent');
-        foreach ($this->get('data.task_counts')->getAgentsCounts() as $agentCount) {
-            $count->addNested($agentCount['tasks_count'], $agentCount['id'], null, $agentCount['name'], true);
+        $counts_res = $this->get('data.task_counts')->getAgentsCounts();
+        $counts     = [];
+        foreach ($counts_res as $count) {
+            $counts[] = new AgentGrouped($count['agent_id'], $count['tasks_count']);
         }
 
-        return View::create($this->wrap($count));
+        return View::create($this->wrap($counts), Response::HTTP_OK);
     }
 
     /**
@@ -111,18 +116,19 @@ class TaskCountsController extends BaseController
      *     statusCodes={
      *         200="Returned if everything is ok"
      *     },
-     *     output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
+     *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Counts\ProjectGrouped>"
      * )
      *
-     * @Rest\Get("/projects")
+     * @Rest\Get("/tasks/project_counts", name="api_task_project_counts")
      */
     public function getProjectCountsAction()
     {
-        $count = Count::fromGroupedBy('project');
-        foreach ($this->get('data.task_counts')->getProjectsCounts() as $projectCount) {
-            $count->addNested($projectCount['tasks_count'], $projectCount['id'], null, $projectCount['title'], true);
+        $counts_res = $this->get('data.task_counts')->getProjectsCounts();
+        $counts     = [];
+        foreach ($counts_res as $count) {
+            $counts[] = new ProjectGrouped($count['project_id'], $count['tasks_count']);
         }
 
-        return View::create($this->wrap($count), Response::HTTP_OK);
+        return View::create($this->wrap($counts), Response::HTTP_OK);
     }
 }

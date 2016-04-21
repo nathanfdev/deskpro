@@ -7,7 +7,7 @@ import { groupTargetSpec, targetCollect } from '../../../TaskCard/TaskCardEditCo
 export class TaskCardDragTarget extends React.Component {
 
   static propTypes = {
-    children:          PropTypes.any,
+    children: PropTypes.any,
     connectDropTarget: PropTypes.func.isRequired
   };
 
