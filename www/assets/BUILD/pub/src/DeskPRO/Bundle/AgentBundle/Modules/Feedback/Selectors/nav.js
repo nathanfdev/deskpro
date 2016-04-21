@@ -1,39 +1,38 @@
 import { createSelector } from 'reselect';
-import { reduceImmutableToProperty } from 'DeskPRO/Component/Util/Map';
 
 const stateSelector = state => state.Feedback.nav;
 
 export const isLoadedSelector = createSelector(
   stateSelector,
-    state => state.getIn(['async', 'done'])
+  state => state.getIn(['async', 'done'])
 );
 
 export const typeCountersSelector = createSelector(
   stateSelector,
-    state => state.get('types')
+  state => state.get('types')
 );
 
 export const categoryCountersSelector = createSelector(
   stateSelector,
-    state => state.get('categories')
+  state => state.get('categories')
 );
 
 export const statusCountersSelector = createSelector(
   stateSelector,
-    state => state.get('statuses')
+  state => state.get('statuses')
 );
 
 export const feedbackLabelsSelector = createSelector(
   stateSelector,
-    state => state.get('labels')
+  state => state.get('labels')
 );
 
 export const feedbackToReviewCountSelector = createSelector(
   stateSelector,
-    state => state.get('feedbackToReviewCount')
+  state => state.get('feedbackToReviewCount')
 );
 
 export const commentsToReviewCountSelector = createSelector(
   stateSelector,
-    state => state.get('commentsToReviewCount')
+  state => state.get('commentsToReviewCount')
 );
