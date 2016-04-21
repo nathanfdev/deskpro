@@ -33,6 +33,7 @@ return array(
     'portal.account.email-add'                      => 'Add Email',
     'portal.account.email-add-description'          => 'Add additional email addresses to your account. You can submit tickets from these email addresses and the system will track them under a single account.',
     'portal.account.email-btn-make-primary'         => 'Make Primary',
+    'portal.account.email-btn-resend-validation'    => 'Resend validation email',
     'portal.account.email-btn-remove'               => 'Remove Email',
     'portal.account.email-btn-usersource-set'       => 'Add Email Address',
     'portal.account.email-managment'                => 'Manage Emails',
@@ -95,4 +96,5 @@ return array(
     'portal.account.usersource-set-email-desc'      => 'Before you can login we need your email address. Please provide us your email address below. We will send you an email with a verification link.',
     'portal.account.welcome-back'                   => 'Welcome back',
     'portal.account.your-emails'                    => 'Your Email Addresses',
+    'portal.account.your-pending-email-addresses'   => 'Your Pending Email Addresses',
 );

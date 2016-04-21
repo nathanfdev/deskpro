@@ -76,6 +76,36 @@
                 </table>
             </section>
 
+            {%  if pending_emails|length  > 0 %}
+
+                <div class="titled-header minor" style="margin-top: 25px;">
+                    <h1>{{ phrase('portal.account.your-pending-email-addresses') }}</h1>
+                </div>
+
+                <section class="padded">
+                    <table>
+                        {% for saved_form_id, email in pending_emails %}
+                            <tr>
+                                <td nowrap>{{ email }}</td>
+                                <td nowrap style="white-space: nowrap;">
+                                    <a class="button button-secondary button-small"
+                                       href="{{ path('portal_user_profile_emails_resend_validation', { id: saved_form_id}) }}">
+                                        {{ phrase('portal.account.email-btn-resend-validation') }}
+                                    </a>
+                                </td>
+                                <td nowrap style="white-space: nowrap;">
+                                    <a class="button button-small cancel"
+                                       href="{{ path('portal_user_profile_emails_remove_pending', { id: saved_form_id}) }}">
+                                        {{ phrase('portal.account.email-btn-remove') }}
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </section>
+
+            {% endif %}
+
             <div class="titled-header minor" style="margin-top: 25px;">
                 <h1>{{ phrase('portal.account.email-add') }}</h1>
             </div>

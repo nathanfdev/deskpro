@@ -67,6 +67,10 @@ class SavedFormController extends AbstractController
             throw new NotFoundHttpException('this saved form does not exist, it may have expired');
         }
 
+        if ($saved_form->getIntentionType() == SavedForm::INTENTION_VERIFY_EMAIL) {
+            throw $this->createAccessDeniedException('this saved form can not be submitted');
+        }
+
         $response = $this->submitSavedForm($saved_form, $request);
 
         return $response;

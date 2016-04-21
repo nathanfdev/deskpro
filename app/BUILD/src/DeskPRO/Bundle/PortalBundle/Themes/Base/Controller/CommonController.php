@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
@@ -37,6 +38,7 @@ use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\People\PersonGuest;
+use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
 use DeskPRO\Bundle\PortalBundle\Annotation\Tag;
 use DeskPRO\Bundle\PortalBundle\Annotation\TagOptions;
@@ -141,6 +143,10 @@ class CommonController extends AbstractController
         $saved_forms = array();
         if ($user && $all_saved = $this->getFormSaver()->getSavedForms($user)) {
             foreach ($all_saved as $saved) {
+                // We don't want people to validate their email address without going through their mailbox
+                if ($saved->getIntentionType() == SavedForm::INTENTION_VERIFY_EMAIL) {
+                    continue;
+                }
                 $saved_forms[] = array(
                     'message' => $this->getFormSaver()->getMessage($saved),
                     'link'    => $this->generateUrl('saved_form_auto_submit', array('auth_code' => $saved->getExternalCode())),

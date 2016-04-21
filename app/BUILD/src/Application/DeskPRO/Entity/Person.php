@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -2181,6 +2182,21 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             }
             if ($email->is_validated) {
                 $arr[] = $email->email;
+            }
+        }
+
+        return $arr;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPendingEmails()
+    {
+        $arr = array();
+        foreach ($this->emails as $email) {
+            if (!$email->is_validated) {
+                $arr[] = $email;
             }
         }
 
