@@ -63,7 +63,7 @@ class PersonFieldsFixture extends AbstractCustomDefFixture
         $fields[] = $this->createField(
             'radio',
             'Owner',
-            ['Mine', "Don't mine", "I don't know"]
+            ['Mine', 'Not mine', "I don't know"]
         );
 
         self::$fields['default'] = $fields;

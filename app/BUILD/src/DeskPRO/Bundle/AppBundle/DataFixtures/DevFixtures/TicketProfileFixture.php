@@ -62,7 +62,7 @@ use Orb\Types\JsonObjectSerializer;
  */
 class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
 {
-    private static $ref_cnt = 1;
+    private static $refCnt = 1;
 
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -77,17 +77,17 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
     /**
      * @var int[]
      */
-    private $agent_teams;
+    private $agentTeams;
 
     /**
      * @var RandomFileFromDir
      */
-    private $ava_files;
+    private $avaFiles;
 
     /**
      * @var array
      */
-    private $known_users = [
+    private $knownUsers = [
         ['first_name' => 'Scott', 'last_name' => 'Jordan', 'email' => 'demo-user1@example.com'],
         ['first_name' => 'Berk', 'last_name' => 'Clarke', 'email' => 'demo-user2@example.com'],
         ['first_name' => 'Denton', 'last_name' => 'Pace', 'email' => 'demo-user3@example.com'],
@@ -126,7 +126,7 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
         $this->manager = $manager;
         $this->em      = $this->container->get('doctrine.orm.entity_manager');
 
-        $this->ava_files = new RandomFileFromDir(DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/avatars');
+        $this->avaFiles = new RandomFileFromDir(DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/avatars');
 
         $this->initRecords();
         $this->initLayouts();
@@ -137,7 +137,7 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
     {
         $this->agents = $this->em->createQuery('SELECT p FROM DeskPRO:Person p WHERE p.is_agent = TRUE')
             ->execute();
-        $this->agent_teams = $this->em->createQuery('SELECT t FROM DeskPRO:AgentTeam t')->execute();
+        $this->agentTeams = $this->em->createQuery('SELECT t FROM DeskPRO:AgentTeam t')->execute();
     }
 
     protected function initLayouts()
@@ -204,20 +204,21 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
         $this->setupPerson($org);
     }
 
-    private function setupPerson(Organization $org, array $person_info = [])
+    private function setupPerson(Organization $org, array $personInfo = [])
     {
-        $person_info                 = array_merge(array_shift($this->known_users), $person_info);
-        $person_info['organization'] = $org;
+        $personInfo                 = array_merge(array_shift($this->knownUsers), $personInfo);
+        $personInfo['organization'] = $org;
 
-        $person = Person::newContactPerson($person_info);
+        $person = Person::newContactPerson($personInfo);
         $person->setPassword('password');
 
-        $ava_file = $this->ava_files->next();
-        $ava      = $this->container->get('deskpro.blob_storage')->createBlobRecordFromFile(
-            $ava_file->getRealPath(),
-            $ava_file->getFilename(),
-            ContentTypes::getContentTypeFromFilename($ava_file->getFilename())
-        );
+        $avaFile = $this->avaFiles->next();
+        $ava     = $this->container->get('deskpro.blob_storage')
+            ->createBlobRecordFromFile(
+                $avaFile->getRealPath(),
+                $avaFile->getFilename(),
+                ContentTypes::getContentTypeFromFilename($avaFile->getFilename())
+            );
         $person->picture_blob = $ava;
 
         $this->em->persist($person);
@@ -233,9 +234,9 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
         $this->makeTicket($person, 'hotdogs', 'awaiting_user');
     }
 
-    private function makeTicket(Person $person, $department_ref, $status)
+    private function makeTicket(Person $person, $departmentRef, $status)
     {
-        $department = $this->getReference('department.'.$department_ref);
+        $department = $this->getReference('department.'.$departmentRef);
 
         #------------------------------
         # Ticket
@@ -248,9 +249,9 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
         $ticket->disableAutoTicketProcess();
         $ticket->person               = $person;
         $ticket->department           = $department;
-        $ticket->ref                  = 'DEMO-'.self::$ref_cnt++;
+        $ticket->ref                  = 'DEMO-'.self::$refCnt++;
         $ticket->agent                = $this->faker->randomElement($this->agents);
-        $ticket->agent_team           = $this->faker->randomElement($this->agent_teams);
+        $ticket->agent_team           = $this->faker->randomElement($this->agentTeams);
         $ticket->urgency              = $this->faker->numberBetween(1, 10);
         $ticket->status               = $status;
         $ticket->subject              = $subj;
@@ -266,7 +267,7 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
         #------------------------------
 
         /** @var CustomDefTicket[] $fields */
-        $fields = TicketFieldsFixture::$fields[$department_ref];
+        $fields = TicketFieldsFixture::$fields[$departmentRef];
 
         $batch = [];
         foreach ($fields as $f) {
@@ -276,7 +277,7 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
             }
 
             for ($x = 0; $x < $num; ++$x) {
-                $row_data = [
+                $rowData = [
                     'ticket_id'     => $ticket->getId(),
                     'field_id'      => $f->getId(),
                     'root_field_id' => $f->getId(),
@@ -285,26 +286,26 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
                 ];
                 switch ($f->getTypeName()) {
                     case 'text':
-                        $row_data['input'] = $this->faker->realText($this->faker->numberBetween(10, 80));
+                        $rowData['input'] = $this->faker->realText($this->faker->numberBetween(10, 80));
                         break;
                     case 'textarea':
-                        $row_data['input'] = $this->faker->realText($this->faker->numberBetween(20, 500));
+                        $rowData['input'] = $this->faker->realText($this->faker->numberBetween(20, 500));
                         break;
                     case 'date':
                     case 'datetime':
-                        $row_data['value'] = time();
+                        $rowData['value'] = time();
                         break;
                     case 'choice':
-                        $opt                  = $this->faker->randomElement($f->getChildren()->toArray());
-                        $row_data['field_id'] = $opt->getId();
-                        $row_data['value']    = 1;
+                        $opt                 = $this->faker->randomElement($f->getChildren()->toArray());
+                        $rowData['field_id'] = $opt->getId();
+                        $rowData['value']    = 1;
                         break;
                     default:
                         throw new \InvalidArgumentException();
                 }
 
-                if ($row_data) {
-                    $batch[] = $row_data;
+                if ($rowData) {
+                    $batch[] = $rowData;
                 }
             }
         }
