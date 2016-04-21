@@ -17,14 +17,13 @@ export class ListGroup extends BaseListGroup {
     const { isOver, elements, title, updateData } = this.state;
 
     return connectDropTarget(
-      <div className={classNames({'list-group-hover': isOver})}>
+      <div className={classNames({ 'list-group-hover': isOver })}>
         <CardGroupDivider title={title} />
 
         {elements.map((task, key) =>
-          <TaskCardEditContainer key={key}
-                                 task={task}
-                                 updateData={updateData}
-                                 onUpdate={this.onUpdate.bind(this, key)}>
+          <TaskCardEditContainer key={key} task={task} updateData={updateData}
+            onUpdate={(value) => this.onUpdate(key, value)}
+            >
             <TaskDragCard />
           </TaskCardEditContainer>
         )}

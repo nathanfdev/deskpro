@@ -33,7 +33,9 @@ export class ListGroupContainer extends React.Component {
   };
 
   onChangeGroup = (taskId, updateData) => {
-    this.props.dispatch(editTask(taskId, updateData));
+    if (updateData) {
+      this.props.dispatch(editTask(taskId, updateData));
+    }
   };
 
   render() {

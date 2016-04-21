@@ -15,7 +15,7 @@ import { Detached as Positioned }  from 'DeskPRO/Component/Positioned/Detached';
 export class CalendarView extends React.Component {
 
   static propTypes = {
-    tasks: PropTypes.object,
+    tasks:         PropTypes.object,
     onChangeGroup: PropTypes.func
   };
 
@@ -25,13 +25,6 @@ export class CalendarView extends React.Component {
       task: null
     };
   }
-
-  createNewTask = (date, targetElement) => {
-    this.newTaskTarget = targetElement;
-    this.setState({
-      task: Immutable.fromJS({date_due: date.format('YYYY-MM-DDTHH:mm:ssZ')})
-    });
-  };
 
   resetNewTask = (force) => {
     if (!force && this.isEditing) return;
@@ -45,23 +38,30 @@ export class CalendarView extends React.Component {
     this.isEditing = isEditing;
   };
 
+  createNewTask = (date, targetElement) => {
+    this.newTaskTarget = targetElement;
+    this.setState({
+      task: Immutable.fromJS({ date_due: date.format('YYYY-MM-DDTHH:mm:ssZ') })
+    });
+  };
+
   render() {
     const { tasks, onChangeGroup } = this.props;
     const config = {
-      elements: tasks,
-      elementName: 'task',
-      dateField: 'date_due',
+      elements:         tasks,
+      elementName:      'task',
+      dateField:        'date_due',
       additionalPrefix: 'Tasks for',
-      card: (
-        <TaskCardEditContainer>
-          <TaskCard />
-        </TaskCardEditContainer>
-      ),
-      draggable: {
+      card:             (
+                          <TaskCardEditContainer>
+                            <TaskCard />
+                          </TaskCardEditContainer>
+                        ),
+      draggable:        {
         source: <TaskDragCard />,
         target: <TaskCardDragTarget onChangeGroup={onChangeGroup} />
       },
-      onDoubleClick: (date, event) => {
+      onDoubleClick:    (date, event) => {
         this.createNewTask(date, event.target);
       }
     };
@@ -70,13 +70,11 @@ export class CalendarView extends React.Component {
       <div>
         <Calendar {...config} />
 
-        <Positioned positionTarget={this.newTaskTarget}
-                    positionAt="center center"
-                    isOpen={!!this.state.task}>
-          <ClickOut onClickOut={this.resetNewTask.bind(this, false)}>
-            <TaskCardNew task={this.state.task}
-                         onSetEditing={this.onSetEditing}
-                         onClose={this.resetNewTask.bind(this, true)} />
+        <Positioned positionTarget={this.newTaskTarget} positionAt="center center" isOpen={!!this.state.task}>
+          <ClickOut onClickOut={() => this.resetNewTask(false)}>
+            <TaskCardNew task={this.state.task} onSetEditing={this.onSetEditing}
+              onClose={() => this.resetNewTask(true)}
+              />
           </ClickOut>
         </Positioned>
 

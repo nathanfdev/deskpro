@@ -8,11 +8,11 @@ import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStor
 export class TaskCardPreviewContainer extends React.Component {
 
   static propTypes = {
-    item: PropTypes.shape({
-      id: PropTypes.number.isRequired,
+    item:     PropTypes.shape({
+      id:    PropTypes.number.isRequired,
       width: PropTypes.number
     }),
-    tasksMap: PropTypes.object.isRequired,
+    tasks:    PropTypes.object.isRequired,
     children: PropTypes.node.isRequired
   };
 
@@ -24,7 +24,7 @@ export class TaskCardPreviewContainer extends React.Component {
     return React.cloneElement(children, {
       ...childProps,
 
-      task: tasks.get(item.id),
+      task:  tasks.get(item.id),
       width: item.width
     });
   }

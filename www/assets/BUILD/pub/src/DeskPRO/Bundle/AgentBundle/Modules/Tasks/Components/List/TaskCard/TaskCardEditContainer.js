@@ -127,8 +127,8 @@ export const cardSourceSpec = {
       width: jQuery(ReactDOM.findDOMNode(component)).width()
     };
   },
-  canDrag({ editing, updateData = {} }) {
-    return !editing && !updateData.date_created && !updateData.date_done;
+  canDrag({ editing, updateData = Immutable.Map() }) {
+    return !editing && !updateData.get('date_created') && !updateData.get('date_done');
   }
 };
 
@@ -147,6 +147,7 @@ export const cardTargetSpec = {
 
 export const groupTargetSpec = {
   drop({ updateData, onChangeGroup }, monitor) {
+    if (!updateData) return;
     const item = monitor.getItem();
     onChangeGroup(item.id, updateData);
   }
