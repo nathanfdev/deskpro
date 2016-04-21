@@ -26,36 +26,28 @@ function gc(state, recordName) {
 
 function handleSetCollection(state, { recordName, collectionName, records, ids, noUpdates }) {
   if (noUpdates) return state;
-  let newRecords = records instanceof Immutable.Map ? records : mapKeyedFromArray(records, 'id');
+  const newRecords = Immutable.Map.isMap(records) ? records : mapKeyedFromArray(records, 'id');
 
   // count ids BEFORE we will update records. So we just insert new records in records and replace collection ids
-  let newIds = ids;
-  if (!newIds) {
-    newIds = newRecords.keySeq().toArray();
-  }
-  newRecords = mergeRecords(state, recordName, newRecords);
-
-  return state.mergeDeep({
-    [recordName]: {
-      records:     newRecords,
-      collections: { [collectionName]: newIds },
-      statuses:    { [collectionName]: { success: true, loading: false } }
-    }
+  const newIds = ids ? Immutable.Set(ids) : newRecords.keySeq().toSet();
+  return state.withMutations(map => {
+    map.mergeIn([recordName, 'records'], newRecords);
+    map.setIn([recordName, 'collections', collectionName], newIds);
+    map.mergeIn([recordName, 'statuses', collectionName], { success: true, loading: false });
   });
 }
 
 function handleAddToCollection(state, { recordName, collectionName, records }) {
-  let newRecords = records instanceof Immutable.Map ? records : mapKeyedFromArray(records, 'id');
-  // count ids AFTER we will update records. So we just insert new records in records and replace collection ids
-  newRecords = mergeRecords(state, recordName, newRecords);
-  const newIds = newRecords.keySeq().toArray();
+  const newRecords = Immutable.Map.isMap(records) ? records : mapKeyedFromArray(records, 'id');
 
-  return state.mergeDeep({
-    [recordName]: {
-      records:     newRecords,
-      collections: { [collectionName]: newIds },
-      statuses:    { [collectionName]: { success: true, loading: false } }
-    }
+  // count ids AFTER we will update records. So we just insert new records in records and replace collection ids
+  // nope, BEFORE
+  const oldIds = Immutable.Set(state.getIn([recordName, 'collections', collectionName]));
+  const newIds = newRecords.keySeq().toSet().union(oldIds);
+  return state.withMutations(map => {
+    map.mergeIn([recordName, 'records'], newRecords);
+    map.setIn([recordName, 'collections', collectionName], newIds);
+    map.mergeIn([recordName, 'statuses', collectionName], { success: true, loading: false });
   });
 }
 
@@ -86,7 +78,7 @@ export default createReducer(storeInitialState, {
       }
     });
 
-    let next = state.setIn([recordName, 'collections', collectionName], collection);
+    const next = state.setIn([recordName, 'collections', collectionName], collection);
     return gc(next, recordName);
   },
 
