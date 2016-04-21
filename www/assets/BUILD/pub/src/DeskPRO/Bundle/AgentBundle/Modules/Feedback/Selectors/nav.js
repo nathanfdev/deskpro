@@ -25,7 +25,7 @@ export const statusCountersSelector = createSelector(
 
 export const feedbackLabelsSelector = createSelector(
   stateSelector,
-    state => reduceImmutableToProperty('label', state.get('labels'))
+    state => state.get('labels')
 );
 
 export const feedbackToReviewCountSelector = createSelector(

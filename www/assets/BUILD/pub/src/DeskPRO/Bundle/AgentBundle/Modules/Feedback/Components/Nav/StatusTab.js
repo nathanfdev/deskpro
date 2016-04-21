@@ -15,9 +15,9 @@ export class StatusTab extends Component {
 
     // @todo Turn it in form of NestedList in the reducer
     const items = [
-      { ...active, group: 'active' },
-      { ...closed, group: 'closed' },
-      { ...hidden, group: 'hidden' }
+      { ...active, title: 'active' },
+      { ...closed, title: 'closed' },
+      { ...hidden, title: 'hidden' }
     ];
 
     return (
