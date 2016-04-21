@@ -26,7 +26,7 @@ Feature: /people/counts endpoint
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist
-    And the JSON node "data.count" should be equal to 3
+    And the JSON node "data.count" should be equal to 1
     And the JSON node "data.nested" should exist
     And the JSON node "data.nested[0].title" should be equal to "Everyone"
     And the JSON node "data.nested[0].count" should be equal to 1
