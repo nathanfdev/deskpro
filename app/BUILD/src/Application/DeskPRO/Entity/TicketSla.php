@@ -39,15 +39,15 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * @property int $id
- * @property string $sla_status
+ * @property int       $id
+ * @property string    $sla_status
  * @property \DateTime $warn_date
  * @property \DateTime $fail_date
- * @property bool $is_completed
- * @property bool $is_completed_set
- * @property int $completed_time_taken
- * @property Ticket $ticket
- * @property Sla $sla
+ * @property bool      $is_completed
+ * @property bool      $is_completed_set
+ * @property int       $completed_time_taken
+ * @property Ticket    $ticket
+ * @property Sla       $sla
  *
  * @JMS\ExclusionPolicy("all")
  */
@@ -139,11 +139,14 @@ class TicketSla extends DomainObject
         $this->setModelField('sla_status', $s);
 
         if ($this->ticket) {
-            $this->ticket->getStateChangeRecorder()->recordData('ticket_slas_status', array(
-                'sla'        => $this->sla,
-                'old_status' => $old,
-                'new_status' => $s,
-            ));
+            $this->ticket->getStateChangeRecorder()->recordData(
+                'ticket_slas_status',
+                array(
+                    'sla'        => $this->sla,
+                    'old_status' => $old,
+                    'new_status' => $s,
+                )
+            );
         }
     }
 
@@ -161,7 +164,10 @@ class TicketSla extends DomainObject
                 $date = new \DateTime();
             }
             if ($date) {
-                $this->setModelField('completed_time_taken', $this->sla->getCalculator()->calculateTimeUntil($this->ticket, $date));
+                $this->setModelField(
+                    'completed_time_taken',
+                    $this->sla->getCalculator()->calculateTimeUntil($this->ticket, $date)
+                );
             } else {
                 $this->setModelField('completed_time_taken', null);
             }
@@ -174,7 +180,7 @@ class TicketSla extends DomainObject
      * Same as setIsCompleted but the completed status is set forever (unless its overriden with a trigger etc).
      * Usually when status changes, the SLA is re-calculated.
      *
-     * @param $value
+     * @param      $value
      * @param null $date
      */
     public function setIsCompletedSet($value, $date = null)
@@ -198,7 +204,11 @@ class TicketSla extends DomainObject
             $times[] = $this->warn_date->getTimestamp();
         }
 
-        if (in_array($this->sla_status, array(self::STATUS_OK, self::STATUS_WARNING)) && $this->fail_date && $this->fail_date->getTimestamp() > time()) {
+        if (in_array(
+                $this->sla_status,
+                array(self::STATUS_OK, self::STATUS_WARNING)
+            ) && $this->fail_date && $this->fail_date->getTimestamp() > time()
+        ) {
             $times[] = $this->fail_date->getTimestamp();
         }
 
@@ -230,80 +240,105 @@ class TicketSla extends DomainObject
         $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketSla';
 
-        $metadata->setPrimaryTable(array(
-            'name'    => 'ticket_slas',
-            'indexes' => array(
-                'status_completed_warn_date_idx' => array('columns' => array('sla_status', 'is_completed', 'warn_date')),
-                'status_completed_fail_date_idx' => array('columns' => array('sla_status', 'is_completed', 'fail_date')),
-            ),
-        ));
+        $metadata->setPrimaryTable(
+            [
+                'name'    => 'ticket_slas',
+                'indexes' => [
+                    'status_completed_warn_date_idx' => ['columns' => ['sla_status', 'is_completed', 'warn_date']],
+                    'status_completed_fail_date_idx' => ['columns' => ['sla_status', 'is_completed', 'fail_date']],
+                ],
+                'uniqueConstraints' => ['unique_idx' => ['columns' => ['ticket_id', 'sla_id']]],
+            ]
+        );
 
-        $metadata->mapField(array(
-            'id'         => true,
-            'fieldName'  => 'id',
-            'columnName' => 'id',
-            'type'       => 'integer',
-            'nullable'   => false,
-        ));
-        $metadata->mapField(array(
-            'fieldName'  => 'sla_status',
-            'columnName' => 'sla_status',
-            'type'       => 'string',
-            'length'     => 20,
-            'nullable'   => false,
-        ));
-        $metadata->mapField(array(
-            'fieldName'  => 'warn_date',
-            'columnName' => 'warn_date',
-            'type'       => 'datetime',
-            'nullable'   => true,
-        ));
-        $metadata->mapField(array(
-            'fieldName'  => 'fail_date',
-            'columnName' => 'fail_date',
-            'type'       => 'datetime',
-            'nullable'   => true,
-        ));
-        $metadata->mapField(array(
-            'fieldName'  => 'is_completed',
-            'columnName' => 'is_completed',
-            'type'       => 'boolean',
-            'nullable'   => false,
-        ));
-        $metadata->mapField(array(
-            'fieldName'  => 'is_completed_set',
-            'columnName' => 'is_completed_set',
-            'type'       => 'boolean',
-            'nullable'   => false,
-        ));
-        $metadata->mapField(array(
-            'fieldName'  => 'completed_time_taken',
-            'columnName' => 'completed_time_taken',
-            'type'       => 'integer',
-            'nullable'   => true,
-        ));
+        $metadata->mapField(
+            array(
+                'id'         => true,
+                'fieldName'  => 'id',
+                'columnName' => 'id',
+                'type'       => 'integer',
+                'nullable'   => false,
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'sla_status',
+                'columnName' => 'sla_status',
+                'type'       => 'string',
+                'length'     => 20,
+                'nullable'   => false,
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'warn_date',
+                'columnName' => 'warn_date',
+                'type'       => 'datetime',
+                'nullable'   => true,
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'fail_date',
+                'columnName' => 'fail_date',
+                'type'       => 'datetime',
+                'nullable'   => true,
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'is_completed',
+                'columnName' => 'is_completed',
+                'type'       => 'boolean',
+                'nullable'   => false,
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'is_completed_set',
+                'columnName' => 'is_completed_set',
+                'type'       => 'boolean',
+                'nullable'   => false,
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'completed_time_taken',
+                'columnName' => 'completed_time_taken',
+                'type'       => 'integer',
+                'nullable'   => true,
+            )
+        );
 
-        $metadata->mapManyToOne(array(
-            'fieldName'    => 'ticket',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket',
-            'joinColumns'  => array(array(
-                'name'                 => 'ticket_id',
-                'referencedColumnName' => 'id',
-                'nullable'             => true,
-                'onDelete'             => 'cascade',
-            )),
-        ));
-        $metadata->mapManyToOne(array(
-            'fieldName'    => 'sla',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\Sla',
-            'joinColumns'  => array(array(
-                'name'                 => 'sla_id',
-                'referencedColumnName' => 'id',
-                'nullable'             => true,
-                'onDelete'             => 'cascade',
-                'columnDefinition'     => null,
-            )),
-            'dpApi' => true,
-        ));
+        $metadata->mapManyToOne(
+            array(
+                'fieldName'    => 'ticket',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket',
+                'joinColumns'  => array(
+                    array(
+                        'name'                 => 'ticket_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'cascade',
+                    ),
+                ),
+            )
+        );
+        $metadata->mapManyToOne(
+            array(
+                'fieldName'    => 'sla',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Sla',
+                'joinColumns'  => array(
+                    array(
+                        'name'                 => 'sla_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'cascade',
+                        'columnDefinition'     => null,
+                    ),
+                ),
+                'dpApi' => true,
+            )
+        );
     }
 }

@@ -52,6 +52,7 @@ class TicketSlasController extends CrudSubController
     public static $parentProperty = 'ticket';
     public static $entity         = TicketSla::class;
     public static $type           = TicketSlaType::class;
+//    public static $exposeOnly     = ['list', 'getSingleSla', 'deleteSingleSla', 'postSingleSla', 'putSingleSla'];
 
     /**
      * Retrieve single SLA for ticket by parent SLA's ID.
@@ -136,6 +137,23 @@ class TicketSlasController extends CrudSubController
     /**
      * Create Ticket SLA.
      *
+     * @ApiDoc(
+     *    requirements={
+     *        {
+     *              "name"="parentId",
+     *              "requirement"="\d+",
+     *              "description"="the id of parent ticket",
+     *              "dataType"="integer"
+     *        },
+     *        {
+     *              "name"="sla",
+     *              "requirement"="\d+",
+     *              "description"="the id of parent SLA",
+     *              "dataType"="integer"
+     *        }
+     *     }
+     * )
+     *
      * @Rest\Post("", name="api_ticket_sla_single_create")
      *
      * @param Request $request
@@ -156,6 +174,23 @@ class TicketSlasController extends CrudSubController
 
     /**
      * Update Ticket SLA.
+     *
+     * @ApiDoc(
+     *    requirements={
+     *        {
+     *              "name"="parentId",
+     *              "requirement"="\d+",
+     *              "description"="the id of parent ticket",
+     *              "dataType"="integer"
+     *        },
+     *        {
+     *              "name"="sla",
+     *              "requirement"="\d+",
+     *              "description"="the id of parent SLA",
+     *              "dataType"="integer"
+     *        }
+     *     }
+     * )
      *
      * @Rest\Put("", name="api_ticket_sla_single_update")
      *
