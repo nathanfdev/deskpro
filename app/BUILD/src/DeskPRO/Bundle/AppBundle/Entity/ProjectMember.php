@@ -53,7 +53,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      @ORM\UniqueConstraint(name="department_unique", columns={"project_id", "department_id"})
  *  }
  * )
- * @AppAssert\ProjectMember()
+ * @AppAssert\Task\ProjectMember()
  * @JMS\ExclusionPolicy("all")
  *
  * @UniqueEntity(fields={"project", "person"}, errorPath="person")

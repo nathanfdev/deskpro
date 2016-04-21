@@ -26,63 +26,46 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
-namespace DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Task\LinkedItem;
 
 use Application\DeskPRO\Entity\Article;
-use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
-use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation as JMS;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Validator\Constraints as Assert;
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * @JMS\ExclusionPolicy("all")
- * @ORM\Entity
- *
- * @UniqueEntity(fields={"task", "article"}, errorPath="article")
+ * Class TaskLinkedArticleType.
  */
-class TaskLinkedArticle extends TaskLinkedItem
+class TaskLinkedArticleType extends AbstractType
 {
-    use NotifyPropertyChangedTrait;
-
     /**
-     * The article attached to the task.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Article>")
-     *
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Article")
-     * @ORM\JoinColumn(name="article_id", referencedColumnName="id", nullable=true)
-     *
-     * @Assert\NotBlank()
-     *
-     * @var Article
+     * {@inheritdoc}
      */
-    protected $article;
-
-    /**
-     * @return Article
-     */
-    public function getArticle()
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        return $this->article;
+        $builder->add('item', EntityType::class, [
+            'property_path' => 'article',
+            'class'         => Article::class,
+        ]);
     }
 
     /**
-     * @param Article $article
-     *
-     * @return $this
+     * {@inheritdoc}
      */
-    public function setArticle(Article $article)
+    public function getParent()
     {
-        $this->article = $article;
+        return TaskLinkedItemType::class;
+    }
 
-        return $this;
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => TaskLinkedArticle::class,
+        ]);
     }
 }

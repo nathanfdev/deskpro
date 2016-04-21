@@ -61,7 +61,22 @@ services:
       - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.task_project_member:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TaskProjectMemberHandler
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tasks\TaskProjectMemberHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.task_linked_article:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tasks\LinkedItems\TaskLinkedArticleHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.task_linked_chat:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tasks\LinkedItems\TaskLinkedChatHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.task_linked_ticket:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tasks\LinkedItems\TaskLinkedTicketHandler
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 

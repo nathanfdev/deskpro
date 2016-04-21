@@ -26,14 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Task\LinkedItem;
 
-use Application\DeskPRO\Entity\AgentTeam;
-use Application\DeskPRO\Entity\Department;
-use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
-use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use DeskPRO\Bundle\AppBundle\Entity\Task;
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedItem;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -41,23 +37,16 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class ProjectMemberType.
+ * Class TaskLinkedItemType.
  */
-class ProjectMemberType extends AbstractType
+class TaskLinkedItemType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $type = $options['type'];
-
-        $builder->add($type, EntityType::class, [
-            'class'    => $this->getMemberClass($type),
-            'required' => false,
-        ]);
-
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetProject']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetTask']);
     }
 
     /**
@@ -66,15 +55,9 @@ class ProjectMemberType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver
-            ->setRequired(['project', 'type'])
-            ->setDefaults([
-                'data_class' => ProjectMember::class,
-            ])
+            ->setRequired(['task'])
             ->setAllowedTypes([
-                'project' => TaskProject::class,
-            ])
-            ->setAllowedValues([
-                'type' => ['person', 'team', 'department'],
+                'task' => Task::class,
             ])
         ;
     }
@@ -82,31 +65,10 @@ class ProjectMemberType extends AbstractType
     /**
      * @param FormEvent $event
      */
-    public function onSetProject(FormEvent $event)
+    public function onSetTask(FormEvent $event)
     {
-        $form = $event->getForm();
-
-        /** @var ProjectMember $data */
+        /** @var TaskLinkedItem $data */
         $data = $event->getData();
-        $data->setProject($form->getConfig()->getOption('project'));
-    }
-
-    /**
-     * @param string $type
-     *
-     * @return mixed
-     */
-    protected function getMemberClass($type)
-    {
-        switch ($type) {
-            case 'person':
-                return Person::class;
-            case 'team':
-                return AgentTeam::class;
-            case 'department':
-                return Department::class;
-        }
-
-        return false;
+        $data->setTask($event->getForm()->getConfig()->getOption('task'));
     }
 }

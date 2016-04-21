@@ -81,7 +81,6 @@ final class ErrorsCodes
     const TOO_LOW                     = 'too_low';
     const EMAIL_ALREADY_VALIDATED     = 'email_already_validated';
     const EMAIL_WRONG_VALIDATION_CODE = 'email_wrong_validation_code';
-    const EXACTLY_ONE_SHOULD_BE_SET   = 'exactly_one_value_should_be_set';
     const NO_PERSON                   = 'person_not_found';
     const NOT_AGENT                   = 'person_not_agent';
     const NOT_USER                    = 'person_not_user';

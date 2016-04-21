@@ -26,39 +26,24 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks\LinkedItems;
 
-use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
-use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle;
+use DeskPRO\Bundle\AppBundle\Form\Type\Task\LinkedItem\TaskLinkedArticleType;
+use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
- * Class TaskProjectMemberHandler.
+ * Class TaskLinkedArticlesController.
+ *
+ * @ApiModes("all")
+ * @Rest\Route("/tasks/{parentId}/linked_items/articles")
+ * @ApiDoc(target="all", section="Tasks", output="Application\DeskPRO\Entity\Article")
  */
-class TaskProjectMemberHandler extends AbstractEntityHandler
+class TaskLinkedArticlesController extends AbstractTaskLinkedItemController
 {
-    /**
-     * {@inheritdoc}
-     */
-    public static function getClassNames()
-    {
-        return ProjectMember::class;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @param ProjectMember $entity
-     */
-    protected function createModel($entity, SideloadSerializationContext $context)
-    {
-        if ($entity->getPerson()) {
-            return $entity->getPerson();
-        } elseif ($entity->getTeam()) {
-            return $entity->getTeam();
-        } elseif ($entity->getDepartment()) {
-            return $entity->getDepartment();
-        } else {
-            throw new \RuntimeException('Unable to get project member');
-        }
-    }
+    public static $linkedType = 'article';
+    public static $entity     = TaskLinkedArticle::class;
+    public static $type       = TaskLinkedArticleType::class;
 }

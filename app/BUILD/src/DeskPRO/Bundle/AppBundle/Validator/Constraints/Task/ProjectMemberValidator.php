@@ -26,10 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Task;
 
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember as ProjectMemberEntity;
 use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
@@ -56,13 +57,20 @@ class ProjectMemberValidator extends ConstraintValidator
             'person'     => $object->getPerson() ? 1 : 0,
         ];
 
-        if (array_sum($fields) !== 1) {
-            /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
-            $context = $this->context;
+        /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
+        $context = $this->context;
+
+        if (array_sum($fields) > 1) {
             $context
-                ->buildViolation($constraint->message)
+                ->buildViolation($constraint->tooManyValuesMessage)
                 ->setParameter('{{ values }}', $this->formatValue(implode(', ', array_keys($fields))))
-                ->setCode(ProjectMember::EXACTLY_ONE_SHOULD_BE_SET)
+                ->setCode(ProjectMember::ONLY_ONE_VALUE)
+                ->addViolation()
+            ;
+        } elseif (array_sum($fields) === 0) {
+            $context
+                ->buildViolation($constraint->blankMessage)
+                ->setCode(NotBlank::IS_BLANK_ERROR)
                 ->addViolation()
             ;
         }

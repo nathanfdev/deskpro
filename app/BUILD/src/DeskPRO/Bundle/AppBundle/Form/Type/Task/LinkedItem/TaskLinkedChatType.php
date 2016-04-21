@@ -26,63 +26,46 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
-namespace DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Task\LinkedItem;
 
 use Application\DeskPRO\Entity\ChatConversation;
-use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
-use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation as JMS;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Validator\Constraints as Assert;
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * @JMS\ExclusionPolicy("all")
- * @ORM\Entity
- *
- * @UniqueEntity(fields={"task", "chat"}, errorPath="chat")
+ * Class TaskLinkedChatType.
  */
-class TaskLinkedChat extends TaskLinkedItem
+class TaskLinkedChatType extends AbstractType
 {
-    use NotifyPropertyChangedTrait;
-
     /**
-     * Chat linked to task.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\ChatConversation>")
-     *
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\ChatConversation")
-     * @ORM\JoinColumn(name="chat_id", referencedColumnName="id", nullable=true)
-     *
-     * @Assert\NotBlank()
-     *
-     * @var ChatConversation
+     * {@inheritdoc}
      */
-    protected $chat;
-
-    /**
-     * @return ChatConversation
-     */
-    public function getChat()
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        return $this->chat;
+        $builder->add('item', EntityType::class, [
+            'property_path' => 'chat',
+            'class'         => ChatConversation::class,
+        ]);
     }
 
     /**
-     * @param ChatConversation $chat
-     *
-     * @return $this
+     * {@inheritdoc}
      */
-    public function setChat(ChatConversation $chat)
+    public function getParent()
     {
-        $this->chat = $chat;
+        return TaskLinkedItemType::class;
+    }
 
-        return $this;
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => TaskLinkedChat::class,
+        ]);
     }
 }

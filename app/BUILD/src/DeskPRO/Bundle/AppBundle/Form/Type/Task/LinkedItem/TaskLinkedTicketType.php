@@ -26,60 +26,46 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
-namespace DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Task\LinkedItem;
 
 use Application\DeskPRO\Entity\Ticket;
-use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation as JMS;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Validator\Constraints as Assert;
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * @JMS\ExclusionPolicy("all")
- * @ORM\Entity
- *
- * @UniqueEntity(fields={"task", "ticket"}, errorPath="ticket")
+ * Class TaskLinkedTicketType.
  */
-class TaskLinkedTicket extends TaskLinkedItem
+class TaskLinkedTicketType extends AbstractType
 {
     /**
-     * The ticket attached to the task.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Ticket>")
-     *
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Ticket")
-     * @ORM\JoinColumn(name="ticket_id", referencedColumnName="id", nullable=true)
-     *
-     * @Assert\NotBlank()
-     *
-     * @var Ticket
+     * {@inheritdoc}
      */
-    protected $ticket;
-
-    /**
-     * @return Ticket
-     */
-    public function getTicket()
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        return $this->ticket;
+        $builder->add('item', EntityType::class, [
+            'property_path' => 'ticket',
+            'class'         => Ticket::class,
+        ]);
     }
 
     /**
-     * @param Ticket $ticket
-     *
-     * @return $this
+     * {@inheritdoc}
      */
-    public function setTicket(Ticket $ticket)
+    public function getParent()
     {
-        $this->ticket = $ticket;
+        return TaskLinkedItemType::class;
+    }
 
-        return $this;
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => TaskLinkedTicket::class,
+        ]);
     }
 }

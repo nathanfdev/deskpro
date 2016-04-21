@@ -33,7 +33,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tasks\TasksController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
-use DeskPRO\Bundle\AppBundle\Form\Type\ProjectMemberType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Task\TaskProjectMemberType;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -49,7 +49,7 @@ use Symfony\Component\HttpFoundation\Request;
 abstract class AbstractTaskProjectMembersController extends CrudSubController
 {
     public static $entity         = ProjectMember::class;
-    public static $type           = ProjectMemberType::class;
+    public static $type           = TaskProjectMemberType::class;
     public static $parentProperty = 'project';
     public static $exposeOnly     = ['get', 'list', 'post', 'delete'];
 

@@ -26,60 +26,32 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tasks\LinkedItems;
 
-namespace DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem;
-
-use Application\DeskPRO\Entity\Ticket;
-use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation as JMS;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Validator\Constraints as Assert;
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle;
+use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
 /**
- * @JMS\ExclusionPolicy("all")
- * @ORM\Entity
- *
- * @UniqueEntity(fields={"task", "ticket"}, errorPath="ticket")
+ * Class TaskLinkedArticleHandler.
  */
-class TaskLinkedTicket extends TaskLinkedItem
+class TaskLinkedArticleHandler extends AbstractEntityHandler
 {
     /**
-     * The ticket attached to the task.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Ticket>")
-     *
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Ticket")
-     * @ORM\JoinColumn(name="ticket_id", referencedColumnName="id", nullable=true)
-     *
-     * @Assert\NotBlank()
-     *
-     * @var Ticket
+     * {@inheritdoc}
      */
-    protected $ticket;
-
-    /**
-     * @return Ticket
-     */
-    public function getTicket()
+    public static function getClassNames()
     {
-        return $this->ticket;
+        return TaskLinkedArticle::class;
     }
 
     /**
-     * @param Ticket $ticket
+     * {@inheritdoc}
      *
-     * @return $this
+     * @param TaskLinkedArticle $entity
      */
-    public function setTicket(Ticket $ticket)
+    protected function createModel($entity, SideloadSerializationContext $context)
     {
-        $this->ticket = $ticket;
-
-        return $this;
+        return $entity->getArticle();
     }
 }
