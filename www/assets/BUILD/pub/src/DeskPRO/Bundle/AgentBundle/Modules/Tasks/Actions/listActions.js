@@ -6,6 +6,7 @@ import { listParamsNavSelector, listParamsFiltersSelector, currentOrderBySelecto
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { addToCollection, setCollection, releaseCollection, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import invariant from 'invariant';
 
 /**
  * Used to identify requests within record stores
@@ -119,37 +120,36 @@ export const addTask = createAction(
   })
 );
 
-let updateRequests = 0;
+export const getTask = createAction(
+  'TASKS_LIST_GET_TASK',
+  (id) => dispatch => api.sendGet(`DP_API/tasks/${id}`).success(response => {
+    const task = Immutable.fromJS(response.data);
+    dispatch(addToCollection('Task', recordStoresId, Immutable.List([task])));
+  })
+);
+
+const updates = {};
+
 export const editTask = createAction(
   'TASKS_LIST_EDIT_TASK',
-  (taskId, data) => (dispatch, getState) => {
-    let tasks = collectionSelectorFactory('Task', recordStoresId)(getState());
-    const oldTask = tasks.get(taskId);
-    let newTask = tasks.get(taskId);
+  (id, data) => (dispatch, getState) => {
+    invariant(!!data, 'Where are the data?');
 
-    newTask = newTask.withMutations(map => {
-      for (const key of Object.keys(data)) {
-        const value = Immutable.fromJS(data[key]);
-        map.set(key, value);
-      }
-    });
+    const tasks = collectionSelectorFactory('Task', recordStoresId)(getState());
+    const oldTask = tasks.get(id);
 
-    if (Immutable.is(newTask, oldTask)) {
-      return;
-    }
-
-    const promise = api.sendPut(`DP_API/tasks/${taskId}`, data);
-    updateRequests++;
+    const promise = api.sendPut(`DP_API/tasks/${id}`, data);
+    updates[id] = promise;
 
     // todo show errors (alert?)
     promise.success(() => {
-      if (--updateRequests > 1) return;
-      tasks = collectionSelectorFactory('Task', recordStoresId)(getState()).set(taskId, newTask);
-      dispatch(setCollection('Task', recordStoresId, tasks));
+      if (updates[id] !== promise) return;
+      delete updates[id];
+      dispatch(getTask(id));
     }).error(() => {
-      if (--updateRequests > 1) return;
-      tasks = collectionSelectorFactory('Task', recordStoresId)(getState()).set(taskId, oldTask);
-      dispatch(setCollection('Task', recordStoresId, tasks));
+      if (updates[id] !== promise) return;
+      delete updates[id];
+      dispatch(addToCollection('Task', recordStoresId, Immutable.List([oldTask])));
     });
   }
 );

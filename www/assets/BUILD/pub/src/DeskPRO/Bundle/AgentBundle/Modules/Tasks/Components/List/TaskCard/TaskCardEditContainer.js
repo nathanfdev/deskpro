@@ -5,6 +5,7 @@ import { toggleSelectedAction } from '../../../../Application/Actions/massAction
 import { editTask } from '../../../Actions/listActions';
 import { selectedSelector } from '../../../../Application/Selectors/massActions';
 import Immutable from 'immutable';
+import { addToCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import {
   cardVisibleFieldsSelector,
   tableVisibleFieldsSelector,
@@ -29,8 +30,7 @@ export class TaskCardEditContainer extends React.Component {
     dispatch:      PropTypes.func.isRequired,
     selectedTasks: PropTypes.object.isRequired,
     task:          PropTypes.object.isRequired,
-    children:      PropTypes.node.isRequired,
-    onUpdate:      PropTypes.func
+    children:      PropTypes.node.isRequired
   };
 
   constructor(props) {
@@ -100,6 +100,7 @@ export class TaskCardEditContainer extends React.Component {
     }
 
     this.setState({ task });
+    dispatch(addToCollection('Task', 'all', Immutable.List([task])));
     dispatch(editTask(task.get('id'), params));
   };
 
@@ -107,6 +108,8 @@ export class TaskCardEditContainer extends React.Component {
     const props = this.props;
     const { children } = props;
     const childProps = children.props;
+
+    console.info('task is_done', this.state.task.get('id'), this.state.task.get('is_done'));
 
     return React.cloneElement(children, {
       ...childProps,

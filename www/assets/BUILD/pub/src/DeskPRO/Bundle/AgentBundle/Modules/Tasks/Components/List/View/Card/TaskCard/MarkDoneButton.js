@@ -1,47 +1,37 @@
 import React, { PropTypes } from 'react';
+import { pureRender } from 'Ampliflux';
 
+@pureRender
 export class MarkDoneButton extends React.Component {
 
   static propTypes = {
-    isDone: PropTypes.bool,
+    isDone:   PropTypes.bool,
     onToggle: PropTypes.func
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      isDone: props.isDone
+  onToggle = () => {
+    if (this.props.onToggle) {
+      this.props.onToggle(!this.props.isDone);
     }
-  }
-
-  componentWillReceiveProps(props) {
-    this.setState({isDone: props.isDone});
-  }
-
-  shouldComponentUpdate(props, state) {
-    return this.state.isDone !== state.isDone;
-  }
+  };
 
   render() {
-    const { onToggle } = this.props;
-    const { isDone } = this.state;
+    const { isDone } = this.props;
 
     if (isDone) {
       return (
-        <div className="dpw--single-card-mark-done dpw--single-card-mark-done-minimized"
-             onClick={onToggle}>
+        <div className="dpw--single-card-mark-done dpw--single-card-mark-done-minimized" onClick={this.onToggle}>
 
           <span>Done</span>
-          <i className="fa fa-check"/>
+          <i className="fa fa-check" />
         </div>
       );
     }
 
     return (
-      <div className="dpw--single-card-mark-done"
-           onClick={onToggle}>
+      <div className="dpw--single-card-mark-done" onClick={this.onToggle}>
 
-        <i className="fa fa-check"/>
+        <i className="fa fa-check" />
         <span>Mark Done</span>
       </div>
     );

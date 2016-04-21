@@ -40,14 +40,13 @@ export class TaskCard extends BaseTaskCard {
     );
   }
 
-  // todo: new card lines, move styles to css
   render() {
     const { task, moving, selected } = this.props;
     const { onToggleSelected, onChange } = this.props;
 
     return (
       <Card moving={moving} minimized={this.isMinimized()} type="task">
-        <MarkDoneButton isDone={task.get('is_done')} onToggle={() => onChange('is_done', !task.get('is_done'))} />
+        <MarkDoneButton isDone={task.get('is_done')} onToggle={value => onChange('is_done', value)} />
         <CardCheckbox selected={selected} onClick={onToggleSelected} />
         <div className="title-line">
           <Title value={task.get('title')} isDone={task.get('is_done')} onSubmit={value => onChange('title', value)} />
