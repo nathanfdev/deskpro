@@ -538,7 +538,7 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
                             <div class="radio-button dpx-radio-button">
                         {% endif %}
                         {{- form_widget(child) -}}
-                        {{- form_label(child, null, { dp_no_validation_indicator: true }) -}}
+                        {{- form_label(child, null, { dp_no_validation_indicator: true, required: false }) -}}
                         {% if not multiple %}
                             </div>
                         {% endif %}
