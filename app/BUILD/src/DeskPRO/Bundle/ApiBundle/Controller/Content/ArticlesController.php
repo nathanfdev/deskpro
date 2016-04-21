@@ -57,7 +57,7 @@ use Symfony\Component\HttpFoundation\Request;
  *     }
  * )
  * @ApiDoc(
- *     target="countAction",
+ *     target="listAction",
  *     filters={
  *          {"name"="order_by", "dataType"="integer", "pattern"="date_created|date_updated|person", "description"="how to order"}
  *     }

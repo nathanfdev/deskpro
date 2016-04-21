@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter;
+namespace DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish;
 
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Person;

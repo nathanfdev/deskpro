@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,49 +26,40 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AppBundle\DataService\Content\Category;
+namespace DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish;
 
-use Application\DeskPRO\Entity\CategoryAbstract as Category;
-use Doctrine\ORM\EntityManagerInterface as EntityManager;
+use Application\DeskPRO\Entity\ArticleComment;
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\PermissionGroupEntityVoterInterface;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 
 /**
- * Class CategoriesDataService.
+ * Class ArticleCommentsVoter.
  */
-class CategoriesDataService
+class ArticleCommentsVoter implements PermissionGroupEntityVoterInterface
 {
     /**
-     * @var EntityManager
+     * {@inheritdoc}
      */
-    private $em;
-
-    /**
-     * PeopleDataService constructor.
-     *
-     * @param EntityManager $em
-     */
-    public function __construct(EntityManager $em)
+    public static function getEntityClass()
     {
-        $this->em = $em;
+        return ArticleComment::class;
     }
 
     /**
-     * @param string $class Category concrete class
-     *
-     * @return Category[]
+     * {@inheritdoc}
      */
-    public function getRoots($class)
+    public function voteOnAttributeForAgent($attribute, PermissionGroupContext $context, Person $user)
     {
-        // load all within a single query
-        $categories = $this->em->getRepository($class)->findAll();
+        return $user->hasPerm('articles.use');
+    }
 
-        // reduce to roots only
-        $roots = array_filter($categories, function (Category $category) {
-            return !$category->getParent();
-        });
-
-        return $roots;
+    /**
+     * {@inheritdoc}
+     */
+    public function voteOnAttributeForUser($attribute, PermissionGroupContext $context, Person $user)
+    {
+        // no access for now
+        return false;
     }
 }

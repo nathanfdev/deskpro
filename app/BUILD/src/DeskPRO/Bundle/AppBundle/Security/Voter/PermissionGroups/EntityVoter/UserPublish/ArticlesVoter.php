@@ -26,23 +26,23 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter;
+namespace DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish;
 
-use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 
 /**
- * Class NewsVoter.
+ * Class ArticlesVoter.
  */
-class NewsVoter extends AbstractUserPublishVoter
+class ArticlesVoter extends AbstractUserPublishVoter
 {
     /**
      * {@inheritdoc}
      */
     public static function getEntityClass()
     {
-        return News::class;
+        return Article::class;
     }
 
     /**
@@ -50,17 +50,17 @@ class NewsVoter extends AbstractUserPublishVoter
      */
     public function voteOnAttributeForAgent($attribute, PermissionGroupContext $context, Person $user)
     {
-        if (!$user->hasPerm('news.use')) {
+        if (!$user->hasPerm('articles.use')) {
             return false;
         }
 
-        /** @var News $news */
-        $news = $context->getParent();
-        if ($news) {
-            if (!$this->getUserPublishChecker($user)->canViewNews($news)) {
+        /** @var Article $article */
+        $article = $context->getParent();
+        if ($article) {
+            if (!$this->getUserPublishChecker($user)->canViewArticle($article)) {
                 return false;
             }
-            if (!$this->checkModify($attribute, $user, $news)) {
+            if (!$this->checkModify($attribute, $user, $article)) {
                 return false;
             }
         }

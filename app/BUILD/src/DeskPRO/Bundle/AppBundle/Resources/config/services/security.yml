@@ -122,8 +122,13 @@ services:
     tags:
       - { name: security.voter }
 
-  security.voter.permission_groups.article:
-    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\ArticlesVoter
+  security.voter.permission_groups.articles:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\ArticlesVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
+  security.voter.permission_groups.article_comments:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\ArticleCommentsVoter
     tags:
       - { name: security.voter.permission_groups }
 
@@ -133,22 +138,32 @@ services:
       - { name: security.voter.permission_groups }
 
   security.voter.permission_groups.downloads:
-    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\DownloadsVoter
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\DownloadsVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
+  security.voter.permission_groups.download_comments:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\DownloadCommentsVoter
     tags:
       - { name: security.voter.permission_groups }
 
   security.voter.permission_groups.feedback:
-    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\FeedbackVoter
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\FeedbackVoter
     tags:
       - { name: security.voter.permission_groups }
 
   security.voter.permission_groups.feedback_comments:
-    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\FeedbackCommentsVoter
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\FeedbackCommentsVoter
     tags:
       - { name: security.voter.permission_groups }
 
   security.voter.permission_groups.news:
-    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\NewsVoter
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\NewsVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
+  security.voter.permission_groups.news_comments:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\NewsCommentsVoter
     tags:
       - { name: security.voter.permission_groups }
 
