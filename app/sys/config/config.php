@@ -215,6 +215,7 @@ $container->setDefinition('deskpro.search_manager.doctrine', $definition);
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\NewSearch\\Transformer\\TicketToElasticaTransformer');
 $container->setDefinition('deskpro.search.ticket_to_elastica_transformer', $definition);
+$definition->addMethodCall('setApacheTika', array(new Reference('deskpro.apache_tika.client_manager')));
 
 // deskpro.search.person_to_elastica_transformer
 $definition = new Definition();
@@ -646,6 +647,7 @@ $container->loadFromExtension(
                             'messages'        => array(),
                             'date_created'    => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
                             'date_active'     => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
+                            'attachment'      => array('type' => 'nested'),
                         ),
                         'persistence' => array(
                             'driver'                        => 'orm',

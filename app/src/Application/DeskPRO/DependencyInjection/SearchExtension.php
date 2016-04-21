@@ -54,6 +54,9 @@ class SearchExtension extends Extension
 
         $definition = new Definition('Application\\DeskPRO\\Elastica\\ClientFactory', array(new Reference('deskpro.core.settings')));
         $container->setDefinition('deskpro.elastica.client_factory', $definition);
+        
+        $definition = new Definition('Application\\DeskPRO\\ApacheTika\\ClientManager', array(new Reference('deskpro.core.settings')));
+        $container->setDefinition('deskpro.apache_tika.client_manager', $definition);
     }
 
     public function getXsdValidationBasePath()

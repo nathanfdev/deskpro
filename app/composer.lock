@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "3e544764936b9eac1f08652d1a3723e5",
-    "content-hash": "9f62123952bd360412e6ae357d27e6be",
+    "hash": "2b05bec39ad33499104eec4e3238342f",
+    "content-hash": "8b55ab3784a80b0de620be49906a2172",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -443,7 +443,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DeskPRO/deskpro-api-php/zipball/e1b38aa839402225ad8da5c70803bfc244ac241e",
+                "url": "https://api.github.com/repos/DeskPRO/deskpro-api-php/zipball/60c2cc427e872e2508be307135552317eb9cbf89",
                 "reference": "e1b38aa839402225ad8da5c70803bfc244ac241e",
                 "shasum": ""
             },
@@ -2688,7 +2688,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/1308a458d9483eccdb217f2a85a419ef495b7454",
+                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/ee34d416f13cf218d460db250eebd96e56cb021a",
                 "reference": "1308a458d9483eccdb217f2a85a419ef495b7454",
                 "shasum": ""
             },
@@ -4288,6 +4288,60 @@
                 "templating"
             ],
             "time": "2015-09-09 05:28:51"
+        },
+        {
+            "name": "vaites/php-apache-tika",
+            "version": "v0.3.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vaites/php-apache-tika.git",
+                "reference": "226ec0d6f9c26fe612d6a43a82e967ff45f2a7b4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vaites/php-apache-tika/zipball/226ec0d6f9c26fe612d6a43a82e967ff45f2a7b4",
+                "reference": "226ec0d6f9c26fe612d6a43a82e967ff45f2a7b4",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "fabpot/php-cs-fixer": "^1.11",
+                "phpunit/phpunit": ">=4.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Vaites\\ApacheTika\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "David Martínez",
+                    "email": "contacto@davidmartinez.net"
+                }
+            ],
+            "description": "Apache Tika bindings for PHP: extracts text from documents and images (with OCR), metadata and more...",
+            "keywords": [
+                "OCR",
+                "apache",
+                "doc",
+                "documents",
+                "docx",
+                "odt",
+                "office",
+                "pdf",
+                "ppt",
+                "pptx",
+                "tika"
+            ],
+            "time": "2016-02-28 12:25:44"
         },
         {
             "name": "zendesk/zendesk_api_client_php",
