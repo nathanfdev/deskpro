@@ -78,13 +78,60 @@ Feature: /tasks endpoint
     Then the response status code should be 204
     And the response should be empty
 
-  Scenario: I verify that the labels have been added
     When I send a GET request to "/api/v2/tasks/3"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist
     And the JSON node "data.labels" should exist
     And the JSON node "data.labels[0]" should be equal to "test"
+
+  Scenario: I modify linked items
+    When I send a PUT request to "/api/v2/tasks/3" with body:
+    """
+{
+  "linked_articles": [1,2],
+  "linked_chats": [2],
+  "linked_tickets": [1, 3]
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/tasks/3"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data.linked_articles" should have 2 elements
+    And the JSON node "data.linked_articles[0]" should be equal to 1
+    And the JSON node "data.linked_articles[1]" should be equal to 2
+
+    And the JSON node "data.linked_chats" should have 1 element
+    And the JSON node "data.linked_chats[0]" should be equal to 2
+
+    And the JSON node "data.linked_tickets" should have 2 elements
+    And the JSON node "data.linked_tickets[0]" should be equal to 1
+    And the JSON node "data.linked_tickets[1]" should be equal to 3
+
+    When I send a PUT request to "/api/v2/tasks/3" with body:
+    """
+{
+  "linked_articles": [2],
+  "linked_chats": [1],
+  "linked_tickets": [2, 4]
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/tasks/3"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data.linked_articles" should have 1 elements
+    And the JSON node "data.linked_articles[0]" should be equal to 2
+
+    And the JSON node "data.linked_chats" should have 1 element
+    And the JSON node "data.linked_chats[0]" should be equal to 1
+
+    And the JSON node "data.linked_tickets" should have 2 elements
+    And the JSON node "data.linked_tickets[0]" should be equal to 2
+    And the JSON node "data.linked_tickets[1]" should be equal to 4
 
   Scenario: I DELETE a single task
     When I send a DELETE request to "/api/v2/tasks/3"

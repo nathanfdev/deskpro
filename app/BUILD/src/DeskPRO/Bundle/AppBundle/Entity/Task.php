@@ -35,8 +35,11 @@
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle;
 use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat;
 use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket;
@@ -398,27 +401,33 @@ class Task implements EntityInterface
     }
 
     /**
-     * @return TaskLinkedArticle[]|ArrayCollection
+     * @return Article[]|ArrayCollection
      */
     public function getLinkedArticles()
     {
-        return $this->linked_articles;
+        return $this->linked_articles->map(function (TaskLinkedArticle $item) {
+            return $item->getArticle();
+        });
     }
 
     /**
-     * @return TaskLinkedChat[]|ArrayCollection
+     * @return ChatConversation[]|ArrayCollection
      */
     public function getLinkedChats()
     {
-        return $this->linked_chats;
+        return $this->linked_chats->map(function (TaskLinkedChat $item) {
+            return $item->getChat();
+        });
     }
 
     /**
-     * @return TaskLinkedTicket[]|ArrayCollection
+     * @return Ticket[]|ArrayCollection
      */
     public function getLinkedTickets()
     {
-        return $this->linked_tickets;
+        return $this->linked_tickets->map(function (TaskLinkedTicket $item) {
+            return $item->getTicket();
+        });
     }
 
     /**
@@ -675,31 +684,43 @@ class Task implements EntityInterface
     /**
      * Remove linkedArticle.
      *
-     * @param TaskLinkedArticle $linkedArticle
+     * @param Article $article
      */
-    public function removeLinkedArticle(TaskLinkedArticle $linkedArticle)
+    public function removeLinkedArticle(Article $article)
     {
-        $this->linked_articles->removeElement($linkedArticle);
+        foreach ($this->linked_articles as $linked) {
+            if ($linked->getArticle() === $article) {
+                $this->linked_articles->removeElement($linked);
+            }
+        }
     }
 
     /**
      * Remove linkedChat.
      *
-     * @param TaskLinkedChat $linkedChat
+     * @param ChatConversation $chat
      */
-    public function removeLinkedChat(TaskLinkedChat $linkedChat)
+    public function removeLinkedChat(ChatConversation $chat)
     {
-        $this->linked_chats->removeElement($linkedChat);
+        foreach ($this->linked_chats as $linked) {
+            if ($linked->getChat() === $chat) {
+                $this->linked_chats->removeElement($linked);
+            }
+        }
     }
 
     /**
      * Remove linkedTicket.
      *
-     * @param TaskLinkedTicket $linkedTicket
+     * @param Ticket $ticket
      */
-    public function removeLinkedTicket(TaskLinkedTicket $linkedTicket)
+    public function removeLinkedTicket(Ticket $ticket)
     {
-        $this->linked_tickets->removeElement($linkedTicket);
+        foreach ($this->linked_tickets as $linked) {
+            if ($linked->getTicket() === $ticket) {
+                $this->linked_tickets->removeElement($linked);
+            }
+        }
     }
 
     /**
@@ -953,13 +974,17 @@ class Task implements EntityInterface
     /**
      * Add linkedArticle.
      *
-     * @param TaskLinkedArticle $linkedArticle
+     * @param Article $article
      *
      * @return $this
      */
-    public function addLinkedArticle(TaskLinkedArticle $linkedArticle)
+    public function addLinkedArticle(Article $article)
     {
-        $this->linked_articles[] = $linkedArticle;
+        $linked = new TaskLinkedArticle();
+        $linked->setTask($this);
+        $linked->setArticle($article);
+
+        $this->linked_articles->add($linked);
 
         return $this;
     }
@@ -967,13 +992,17 @@ class Task implements EntityInterface
     /**
      * Add linkedChat.
      *
-     * @param TaskLinkedChat $linkedChat
+     * @param ChatConversation $chat
      *
      * @return $this
      */
-    public function addLinkedChat(TaskLinkedChat $linkedChat)
+    public function addLinkedChat(ChatConversation $chat)
     {
-        $this->linked_chats[] = $linkedChat;
+        $linked = new TaskLinkedChat();
+        $linked->setTask($this);
+        $linked->setChat($chat);
+
+        $this->linked_chats->add($linked);
 
         return $this;
     }
@@ -981,13 +1010,17 @@ class Task implements EntityInterface
     /**
      * Add linkedTicket.
      *
-     * @param TaskLinkedTicket $linkedTicket
+     * @param Ticket $ticket
      *
      * @return $this
      */
-    public function addLinkedTicket(TaskLinkedTicket $linkedTicket)
+    public function addLinkedTicket(Ticket $ticket)
     {
-        $this->linked_tickets[] = $linkedTicket;
+        $linked = new TaskLinkedTicket();
+        $linked->setTask($this);
+        $linked->setTicket($ticket);
+
+        $this->linked_tickets->add($linked);
 
         return $this;
     }

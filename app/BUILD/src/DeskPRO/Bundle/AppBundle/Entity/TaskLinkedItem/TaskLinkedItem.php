@@ -89,11 +89,6 @@ class TaskLinkedItem implements EntityInterface
      */
     protected $task;
 
-    public function __construct(Task $task = null)
-    {
-        $this->task = $task;
-    }
-
     /**
      * @return int
      */
