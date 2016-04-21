@@ -1801,6 +1801,9 @@ $search-btn-height: $search-height - 24;
         }
 
         &:hover {
+          i {
+            color: #333;
+          }
           color: #333;
           text-decoration: underline;
         }
