@@ -29,17 +29,15 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
+use Application\DeskPRO\Entity\Sla;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
 class SlasFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
 {
-    const NUM_SLAS = 5;
-
     /**
      * {@inheritdoc}
      */
@@ -53,24 +51,31 @@ class SlasFixture extends DeskProAbstractFixture implements OrderedFixtureInterf
      */
     public function load(ObjectManager $manager)
     {
-        $batch = [];
-
-        for ($i = 0; $i < self::NUM_SLAS; ++$i) {
-            $batch[] = [
-                'title'          => $this->faker->word,
-                'sla_type'       => $this->faker->randomElement(['first_response', 'resolution', 'waiting_time']),
-                'active_time'    => $this->faker->randomElement(['default', 'all', 'work_hours']),
-                'work_start'     => 60 * 60 * 10,
-                'work_end'       => 60 * 60 * 18,
-                'work_days'      => '1,2,3,4,5,6',
-                'work_timezone'  => $this->faker->timezone,
-                'apply_type'     => $this->faker->randomElement(['all', 'auto', 'manual']),
-                'warn_time'      => $this->faker->randomElement([1, 2, 3]),
-                'warn_time_unit' => $this->faker->randomElement(['hours', 'days']),
-                'fail_time'      => $this->faker->randomElement([1, 2, 3]),
-                'fail_time_unit' => $this->faker->randomElement(['hours', 'days']),
-            ];
+        $options = [
+            [
+                'title'      => 'First',
+                'sla_type'   => 'first_response',
+                'apply_type' => 'all',
+            ],
+            [
+                'title'      => 'Second',
+                'sla_type'   => 'resolution',
+                'apply_type' => 'manual',
+            ],
+            [
+                'title'      => 'Third',
+                'sla_type'   => 'waiting_time',
+                'apply_type' => 'manual',
+            ],
+        ];
+        foreach ($options as $item) {
+            $sla = new Sla();
+            $sla
+                ->setTitle($item['title'])
+                ->setSlaType($item['sla_type'])
+                ->setApplyType($item['apply_type']);
+            $manager->persist($sla);
         }
-        $this->db->batchInsert(self::TABLE_SLAS, $batch);
+        $manager->flush();
     }
 }

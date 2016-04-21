@@ -62,8 +62,8 @@ class OrganizationFieldsFixture extends AbstractCustomDefFixture
         $fields   = [];
         $fields[] = $this->createField(
             'select',
-            'Flumdiggler',
-            ['Agree', 'Disagree', 'I\'d rather not say']
+            'Countries',
+            ['GB', 'USA', 'USSR']
         );
 
         self::$fields['default'] = $fields;
@@ -85,34 +85,35 @@ class OrganizationFieldsFixture extends AbstractCustomDefFixture
         $fields   = [];
         $fields[] = $this->createField(
             'radio',
-            'Reason for Complaint',
-            ['Nuisance', 'Dangerous', 'Smelly', 'Ugly', 'Mean', 'Other']
+            'Branches',
+            ['London', 'Paris', 'Moscow', 'Madrid', 'Tokyo', 'Other']
         );
 
         $fields[] = $this->createField(
-            'multiselect',
-            'Suggested Actions',
-            ['Eviction', 'Shun', 'Fire them off to the moon', 'Strongly worded letter']
+            'select',
+            'Official position',
+            ['CEO', 'Finance Director', 'Senior Developer', 'Useless Man']
         );
 
         self::$fields['regulation'] = $fields;
         self::$fields['control']    = $fields;
 
         #------------------------------
-        # Hotdogs
+        # Products
         #------------------------------
         $fields   = [];
         $fields[] = $this->createField(
             'select',
-            'Hotdog Kind',
+            'Product',
             [
-                'Normal',
-                ['German', ['Bratwurst', 'Extrawurst', ['Frankfurter', ['Rindswurst', 'Würstchen']]]],
-                'Large',
+                'Book',
+                ['Smartphone', ['Apple', ['Samsung', ['Galaxy A5', 'Galaxy Ace']]]],
+                ['Car', ['Toyota', 'Honda', ['Infinity', ['Q50', 'QX70']]]],
+                'Airplane',
             ]
         );
 
-        $fields[] = $this->createField('datetime', 'Delivery Time');
+        $fields[] = $this->createField('textarea', 'Comment');
 
         self::$fields['hotdogs'] = $fields;
     }
