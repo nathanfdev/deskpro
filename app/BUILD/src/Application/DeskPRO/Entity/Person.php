@@ -2189,21 +2189,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     }
 
     /**
-     * @return array
-     */
-    public function getPendingEmails()
-    {
-        $arr = array();
-        foreach ($this->emails as $email) {
-            if (!$email->is_validated) {
-                $arr[] = $email;
-            }
-        }
-
-        return $arr;
-    }
-
-    /**
      * @param array $emails
      *
      * @return $this
