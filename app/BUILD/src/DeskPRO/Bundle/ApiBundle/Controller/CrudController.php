@@ -147,24 +147,22 @@ abstract class CrudController extends BaseController
         // reset group by if it was set in applyListFilters()
         $qb->resetDQLPart('groupBy');
 
-        $groupBy = $request->get('group_by');
-        if ($groupBy) {
+        $totalCount = $qb->select('count(e.id) as value')->getQuery()->getSingleScalarResult();
+        $groupBy    = $request->get('group_by');
+
+        if (!$groupBy) {
+            $count = Count::fromValue($totalCount);
+        } else {
             $this->applyListGroupBy($qb, 'e', $groupBy, $request);
             if (!$qb->getDQLPart('groupBy')) {
                 throw $this->createBadRequestException('Unknown group_by option');
             }
-        }
 
-        if (empty($qb->getDQLPart('groupBy'))) {
-            $result = $qb->select('count(e.id)')->getQuery()->getSingleScalarResult();
-            $count  = Count::fromValue($result);
-        } else {
-            $result = $qb->addSelect('count(e.id) as value')->getQuery()->getArrayResult();
+            $result = $qb->getQuery()->getArrayResult();
             $count  = Count::fromGroupedBy($groupBy);
 
-            foreach ($result as $group) {
-                $count->addNested($group['value'], $group['group_name'], $groupBy, $group['title'], true);
-            }
+            $this->addGroupByNestedCounts($count, $result);
+            $count->setCount($totalCount);
         }
 
         return new View($this->wrap($count));
@@ -406,6 +404,17 @@ abstract class CrudController extends BaseController
         }
 
         $qb->orderBy($alias.'.'.$orderBy, $orderDir);
+    }
+
+    /**
+     * @param Count $count
+     * @param array $result
+     */
+    protected function addGroupByNestedCounts(Count $count, array $result)
+    {
+        foreach ($result as $group) {
+            $count->addNested($group['value'], $group['group_name'], $count->getGroupedBy(), $group['title'], true);
+        }
     }
 
     /**

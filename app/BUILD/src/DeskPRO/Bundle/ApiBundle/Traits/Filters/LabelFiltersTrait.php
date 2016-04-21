@@ -41,7 +41,7 @@ trait LabelFiltersTrait
      * @param QueryFilterContext $context
      * @param string             $entityClass
      */
-    public function applyLabelFilters(QueryFilterContext $context, $entityClass)
+    protected function applyLabelFilters(QueryFilterContext $context, $entityClass)
     {
         $qb      = $context->getQb();
         $alias   = $context->getAlias();

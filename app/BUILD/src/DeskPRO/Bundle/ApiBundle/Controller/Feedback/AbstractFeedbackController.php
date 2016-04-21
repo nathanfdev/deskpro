@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Traits\Filters\DateFiltersTrait;
 use DeskPRO\Bundle\ApiBundle\Traits\Filters\LabelFiltersTrait;
+use DeskPRO\Bundle\ApiBundle\Traits\Filters\ListFiltersTrait;
 use DeskPRO\Bundle\ApiBundle\Traits\Filters\QueryFilterContext;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,7 +42,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 abstract class AbstractFeedbackController extends CrudController
 {
-    use LabelFiltersTrait, DateFiltersTrait;
+    use LabelFiltersTrait, DateFiltersTrait, ListFiltersTrait;
 
     /**
      * @param QueryBuilder $qb
@@ -62,7 +63,7 @@ abstract class AbstractFeedbackController extends CrudController
      */
     protected function applyDateCreatedFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        $this->applyDateRangeFilters(
+        $this->applyDateRangeFilter(
             new QueryFilterContext($qb, $alias, $request),
             'date_created', 'created_from', 'created_to'
         );
@@ -73,7 +74,8 @@ abstract class AbstractFeedbackController extends CrudController
      */
     protected function applyFeedbackListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        $this->applyLabelFilters(new QueryFilterContext($qb, $alias, $request), Feedback::class);
+        $context = new QueryFilterContext($qb, $alias, $request);
+        $this->applyLabelFilters($context, Feedback::class);
 
         $category = $request->get('category');
         if (!empty($category)) {
@@ -102,20 +104,7 @@ abstract class AbstractFeedbackController extends CrudController
             ;
         }
 
-        $status = $request->get('status');
-        if (!empty($status)) {
-            $qb
-                ->andWhere("$alias.status IN (:status)")
-                ->setParameter('status', $status)
-            ;
-        }
-
-        $hiddenStatus = $request->get('hidden_status');
-        if (!empty($hiddenStatus)) {
-            $qb
-                ->andWhere("$alias.hidden_status = :hidden_status")
-                ->setParameter('hidden_status', $hiddenStatus)
-            ;
-        }
+        $this->applyInListFilter($context, 'status');
+        $this->applyInListFilter($context, 'hidden_status');
     }
 }
