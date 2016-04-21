@@ -119,7 +119,9 @@ abstract class BaseKernel extends Kernel
 
         // Symfony sets error_reporting to 0 if not in the Debug mode, resetting this to E_ALL regardless
         // the current mode to catch all errors in the prod mode too.
-        error_reporting(E_ALL);
+        if (!$isCli) {
+            error_reporting(E_ALL);
+        }
 
         if ($this->container instanceof DeskproContainer) {
             $this->container->kernel = $this;
