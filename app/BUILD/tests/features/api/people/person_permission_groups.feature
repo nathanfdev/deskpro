@@ -94,5 +94,7 @@ Feature: /people endpoint
     When I send a PUT request to "/api/v2/people/1"
     Then the response status code should be 204
 
-    When I send a DELETE request to "/api/v2/people/1"
+    # Testing against non-agent person #3 because agents removing via /people
+    # endpoint is always forbidden (agents need to be soft-deleted via /agents)
+    When I send a DELETE request to "/api/v2/people/3"
     Then the response status code should be 200
