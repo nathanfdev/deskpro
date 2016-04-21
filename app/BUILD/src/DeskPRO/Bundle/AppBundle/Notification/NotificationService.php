@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Notification;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\Entity\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationClient;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationConfiguration;
 use Doctrine\ORM\EntityManager;
@@ -68,7 +69,7 @@ class NotificationService
      */
     public function getLastActionAlerts($last, Person $user)
     {
-        $actionAlertRepo = $this->em->getRepository('App:ActionAlert');
+        $actionAlertRepo = $this->em->getRepository(ActionAlert::class);
         $qb              = $actionAlertRepo->createQueryBuilder('aa');
         $date            = new \DateTime('@'.$last);
         $result          = $qb->where('aa.date_created > (:last)')

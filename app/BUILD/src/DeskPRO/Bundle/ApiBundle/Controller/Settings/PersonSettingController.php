@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Settings;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -121,7 +120,7 @@ class PersonSettingController extends BaseController
         $em      = $this->getDoctrine()->getManager();
         $name    = $request->request->get('name');
         $value   = $request->request->get('value');
-        $setting = $this->getDoctrine()->getManager()->getRepository('App:PersonSetting')
+        $setting = $this->getRepository(PersonSetting::class)
             ->find(['name' => $name, 'person' => $this->getUser()]);
         $setting->setValue($value);
         $em->flush();

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -41,8 +41,8 @@ use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\EveryoneChat;
-use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChat as AgentChatRepository;
-use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChatMessage as AgentChatMessageRepository;
+use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChatMessageRepository;
+use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChatRepository;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\MarkMessageEvent;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\PersistentCollection;
@@ -308,7 +308,7 @@ class Messenger
     public function markMessages(array $ids, $status, Person $user)
     {
         /** @var AgentChatMessageRepository $repo */
-        $repo = $this->em->getRepository('App:AgentChatMessage');
+        $repo = $this->em->getRepository(AgentChatMessage::class);
         if ($messages = $repo->findBy(['id' => $ids])) {
             foreach ($messages as $message) {
                 /** @var AgentChatMessage $message */

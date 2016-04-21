@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
+use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle;
 use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat;
 use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket;
@@ -331,7 +332,7 @@ class TasksFixture extends DeskProAbstractFixture implements OrderedFixtureInter
         $i        = 0;
         while ($i++ < $this->num_links) {
             /** @var \DeskPRO\Bundle\AppBundle\Entity\Task $task */
-            $task = $this->manager->getRepository('App:Task')->find($this->faker->randomElement($this->task_ids));
+            $task = $this->manager->getRepository(Task::class)->find($this->faker->randomElement($this->task_ids));
             if (rand(1, 100) < 25) {
                 /* @var \Application\DeskPRO\Entity\Article $article */
                 $articleId     = $this->faker->randomElement($articles);

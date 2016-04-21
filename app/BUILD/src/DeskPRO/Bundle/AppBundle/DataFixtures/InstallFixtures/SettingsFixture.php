@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
 use Application\DeskPRO\Entity\Setting;
@@ -80,7 +79,7 @@ class SettingsFixture extends AbstractFixture implements OrderedFixtureInterface
      */
     private function findOrCreate($name, ObjectManager $manager)
     {
-        $setting = $manager->getRepository('Application\DeskPRO\Entity\Setting')->findBy(array('name' => $name));
+        $setting = $manager->getRepository(Setting::class)->findBy(array('name' => $name));
         if (!$setting) {
             $setting       = new Setting();
             $setting->name = $name;

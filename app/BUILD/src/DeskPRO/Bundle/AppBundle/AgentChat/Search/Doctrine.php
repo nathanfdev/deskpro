@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,12 +29,12 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\AgentChat\Search;
 
 use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\HistorySearcher;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
-use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChatMessage;
+use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
+use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChatMessageRepository;
 use Doctrine\ORM\EntityManager;
 
 class Doctrine implements HistorySearcher
@@ -57,8 +57,8 @@ class Doctrine implements HistorySearcher
      */
     public function searchInChat(AgentChat $chat, $searchString)
     {
-        /** @var AgentChatMessage $repo */
-        $repo = $this->em->getRepository('App:AgentChatMessage');
+        /** @var AgentChatMessageRepository $repo */
+        $repo = $this->em->getRepository(AgentChatMessage::class);
 
         return $repo->searchString($chat, $searchString);
     }
