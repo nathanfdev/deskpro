@@ -23,7 +23,6 @@ Feature: /slas endpoint
     When I send a GET request to "/api/v2/slas/1"
     Then the response should be in JSON
     And the response status code should be 200
-    And print last JSON response
     And the JSON node "data" should exist
     And the JSON node "data.title" should be equal to "First"
     And the JSON node "data.apply_terms" should exist

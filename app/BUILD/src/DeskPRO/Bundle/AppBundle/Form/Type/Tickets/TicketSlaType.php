@@ -38,6 +38,9 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TicketSlaType extends AbstractType
 {
@@ -47,18 +50,45 @@ class TicketSlaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('ticket', EntityType::class, ['class' => Ticket::class])
             ->add('sla', EntityType::class, ['class' => Sla::class])
             ->add(
                 'sla_status',
                 ChoiceType::class,
                 [
                     'choices' => [
-                            TicketSla::STATUS_OK      => 'OK',
-                            TicketSla::STATUS_WARNING => 'Warning',
-                            TicketSla::STATUS_FAIL    => 'Fail',
-                        ],
+                        TicketSla::STATUS_OK      => 'OK',
+                        TicketSla::STATUS_WARNING => 'Warning',
+                        TicketSla::STATUS_FAIL    => 'Fail',
+                    ],
                 ]
-            );
+            )
+            ->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetRelations']);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver
+            ->setRequired(['ticket'])
+            ->setDefaults(['data_class' => TicketSla::class])
+            ->setAllowedTypes(['ticket' => Ticket::class]);
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onSetRelations(FormEvent $event)
+    {
+        $form   = $event->getForm();
+        $config = $form->getConfig();
+
+        /** @var TicketSla $data */
+        $data = $form->getData();
+
+        $ticket = $config->getOption('ticket');
+
+        $data->setTicket($ticket);
     }
 }

@@ -129,26 +129,4 @@ abstract class CrudSubController extends CrudController
     {
         return new PermissionGroupContext($this->findParentOr404(), $this->findEntity($id, $request));
     }
-
-    /**
-     * It's useful for replacing content.
-     *
-     * @param Request $request
-     *
-     * @return mixed
-     */
-    protected function getRequestContent(Request $request)
-    {
-        $parentProperty = $this
-                                        ->getManager()
-                                        ->getClassMetadata(trim(static::$entity, '\\'))
-                                        ->getAssociationMapping(static::$parentProperty)['fieldName'];
-        $content = json_decode(
-            $request->getContent(),
-            true // convert to assoc arrays instead of stdClass instances
-        );
-        $content[$parentProperty] = $request->get('parentId');
-
-        return $content;
-    }
 }

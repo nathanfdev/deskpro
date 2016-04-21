@@ -129,6 +129,13 @@ class TicketSla extends DomainObject
      */
     protected $sla;
 
+    public function setTicket(Ticket $ticket)
+    {
+        $this->ticket = $ticket;
+
+        return $this;
+    }
+
     public function setSlaStatus($s)
     {
         $old = $this->sla_status;

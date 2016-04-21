@@ -52,7 +52,18 @@ class TicketSlasController extends CrudSubController
     public static $parentProperty = 'ticket';
     public static $entity         = TicketSla::class;
     public static $type           = TicketSlaType::class;
-//    public static $exposeOnly     = ['list', 'getSingleSla', 'deleteSingleSla', 'postSingleSla', 'putSingleSla'];
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleForm($model, Request $request, array $options = [])
+    {
+        $options = array_merge($options, [
+            'ticket' => $this->findParentOr404(),
+        ]);
+
+        return parent::handleForm($model, $request, $options);
+    }
 
     /**
      * Retrieve single SLA for ticket by parent SLA's ID.
