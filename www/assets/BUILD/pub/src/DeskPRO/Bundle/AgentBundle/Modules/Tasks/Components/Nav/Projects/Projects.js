@@ -45,8 +45,6 @@ export class Projects extends React.Component {
       event.preventDefault();
     }
     this.setState({ project });
-
-    console.info('start edit', project.toJS());
   };
 
   onSubmit = (project) => {

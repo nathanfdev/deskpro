@@ -15,37 +15,37 @@ import {
 import jQuery from 'jquery';
 
 @connect(state => ({
-  selectedTasks: selectedSelector(state),
-  cardVisibleFields: cardVisibleFieldsSelector(state),
-  tableVisibleFields: tableVisibleFieldsSelector(state),
-  kanbanVisibleFields: kanbanVisibleFieldsSelector(state),
+  selectedTasks:         selectedSelector(state),
+  cardVisibleFields:     cardVisibleFieldsSelector(state),
+  tableVisibleFields:    tableVisibleFieldsSelector(state),
+  kanbanVisibleFields:   kanbanVisibleFieldsSelector(state),
   calendarVisibleFields: calendarVisibleFieldsSelector(state),
-  currentOrderBy: currentOrderBySelector(state)
+  currentOrderBy:        currentOrderBySelector(state)
 }))
 
 export class TaskCardEditContainer extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
+    dispatch:      PropTypes.func.isRequired,
     selectedTasks: PropTypes.object.isRequired,
-    task: PropTypes.object.isRequired,
-    children: PropTypes.node.isRequired,
-    onUpdate: PropTypes.func
+    task:          PropTypes.object.isRequired,
+    children:      PropTypes.node.isRequired,
+    onUpdate:      PropTypes.func
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      editing: false,
+      editing:  false,
       selected: props.selectedTasks.indexOf(props.task.get('id')) !== -1,
-      task: props.task
+      task:     props.task
     };
   }
 
   componentWillReceiveProps(props) {
     this.setState({
       selected: props.selectedTasks.indexOf(props.task.get('id')) !== -1,
-      task: props.task
+      task:     props.task
     });
   }
 
@@ -58,7 +58,9 @@ export class TaskCardEditContainer extends React.Component {
   }
 
   componentWillUpdate(props, state) {
-    this.props.onUpdate && this.props.onUpdate(state.task);
+    if (this.props.onUpdate) {
+      this.props.onUpdate(state.task);
+    }
   }
 
   onToggleSelected = () => {
@@ -74,17 +76,12 @@ export class TaskCardEditContainer extends React.Component {
     let params;
 
     if (prop === 'assignee') {
-      const agents = value.get('agent') ? [value.get('agent')] : [];
-      const teams = value.get('team') ? [value.get('team')] : [];
-      const departments = value.get('department') ? [value.get('department')] : [];
-      params = {
-        agents: agents,
-        teams: teams,
-        departments: departments
-      };
+      const agents = value.get('agents').toArray();
+      const teams = value.get('teams').toArray();
+      const departments = value.get('departments').toArray();
+      params = { agents, teams, departments };
       task = task.mergeWith(value);
-    } else if ('linked_items' === prop) {
-
+    } else if (prop === 'linked_items') {
       task = task.withMutations(map => {
         map
           .set('linked_tickets', value.get('linked_tickets'))
@@ -93,17 +90,16 @@ export class TaskCardEditContainer extends React.Component {
       });
 
       params = {
-        linked_tickets: value.get('linked_tickets').toArray(),
+        linked_tickets:  value.get('linked_tickets').toArray(),
         linked_articles: value.get('linked_articles').toArray(),
-        linked_chats: value.get('linked_chats').toArray()
+        linked_chats:    value.get('linked_chats').toArray()
       };
-
     } else {
       params = { [prop]: value };
       task = task.set(prop, value);
     }
 
-    this.setState({ task: task });
+    this.setState({ task });
     dispatch(editTask(task.get('id'), params));
   };
 
@@ -116,10 +112,10 @@ export class TaskCardEditContainer extends React.Component {
       ...childProps,
       ...props,
 
-      task: this.state.task,
-      selected: this.state.selected,
+      task:             this.state.task,
+      selected:         this.state.selected,
       onToggleSelected: this.onToggleSelected,
-      onChange: this.onChange
+      onChange:         this.onChange
     });
   }
 }
@@ -127,7 +123,7 @@ export class TaskCardEditContainer extends React.Component {
 export const cardSourceSpec = {
   beginDrag({ task }, {}, component) {
     return {
-      id: task.get('id'),
+      id:    task.get('id'),
       width: jQuery(ReactDOM.findDOMNode(component)).width()
     };
   },
@@ -137,9 +133,9 @@ export const cardSourceSpec = {
 };
 
 export const cardSourceCollect = (dragConnect, monitor) => ({
-  connectDragSource: dragConnect.dragSource(),
+  connectDragSource:  dragConnect.dragSource(),
   connectDragPreview: dragConnect.dragPreview(),
-  isDragging: monitor.isDragging()
+  isDragging:         monitor.isDragging()
 });
 
 export const cardTargetSpec = {
@@ -158,5 +154,5 @@ export const groupTargetSpec = {
 
 export const targetCollect = (dragConnect, monitor) => ({
   connectDropTarget: dragConnect.dropTarget(),
-  isOver: monitor.isOver()
+  isOver:            monitor.isOver()
 });

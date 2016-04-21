@@ -11,10 +11,10 @@ import { setListParamsNav, loadList } from '../../Actions/listActions';
 export class ListItemContainer extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
+    dispatch:     PropTypes.func.isRequired,
     activeItemId: PropTypes.string,
-    urlHash: PropTypes.string.isRequired,
-    listOptions: PropTypes.object.isRequired
+    urlHash:      PropTypes.string.isRequired,
+    listOptions:  PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -31,7 +31,7 @@ export class ListItemContainer extends React.Component {
 
   loadList = () => {
     const { listOptions, dispatch } = this.props;
-console.log('List options', listOptions);
+
     dispatch(setListParamsNav(listOptions));
     dispatch(loadList());
   };
@@ -42,7 +42,7 @@ console.log('List options', listOptions);
       ...props,
       groupId: 'nav',
       onClick: this.loadList,
-      itemId: this.itemId
+      itemId:  this.itemId
     };
 
     return (

@@ -28,6 +28,13 @@ export const setListParamsFilters = createAction(
   'TASKS_LIST_SET_PARAMS_FILTERS',
   (overwrite) => (dispatch, getState) => {
     const current = listParamsFiltersSelector(getState()).toJS();
+    if (overwrite.order_by) {
+      dispatch(updateRoutingState('list', 'order_by', overwrite.order_by));
+    }
+    if (overwrite.order_dir) {
+      dispatch(updateRoutingState('list', 'order_dir', overwrite.order_dir));
+    }
+
     return { ...current, ...overwrite };
   }
 );
