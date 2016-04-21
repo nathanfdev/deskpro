@@ -18,8 +18,7 @@ export class WidgetApp {
   }
 
   start() {
-    window.DP_ENABLE_ACTION_LOGGER = true;
-    window.DP_DEV_MODE = true;
+    window.DP_DEV_MODE = __DEV__;
 
     // - NOTICE: The widget_loader creates an iframe on the host page
     // and includes this app into the frame.

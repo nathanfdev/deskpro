@@ -107,8 +107,10 @@ abstract class BaseKernel extends Kernel
         // Boot kernel, compile the container
         parent::boot();
 
+        $isCli = php_sapi_name() === 'cli';
+
         // Registering error handlers right after container is compiled and we can access the logger service
-        if ($this->dpEnv->isDebug()) {
+        if ($this->dpEnv->isDebug() || $isCli) {
             \Symfony\Component\Debug\Debug::enable(true, true);
         } else {
             \Monolog\ErrorHandler::register($this->container->get('logger'));
@@ -117,7 +119,9 @@ abstract class BaseKernel extends Kernel
 
         // Symfony sets error_reporting to 0 if not in the Debug mode, resetting this to E_ALL regardless
         // the current mode to catch all errors in the prod mode too.
-        error_reporting(E_ALL);
+        if (!$isCli) {
+            error_reporting(E_ALL);
+        }
 
         if ($this->container instanceof DeskproContainer) {
             $this->container->kernel = $this;

@@ -23,7 +23,7 @@ function jsValue(val) {
 
 export function loggerMiddleware({ getState }) {
   return next => action => {
-    if (!window.DP_ENABLE_ACTION_LOGGER) {
+    if (!window.DP_DEV_MODE) {
       return next(action);
     }
 
