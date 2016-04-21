@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle;
 
 use DeskPRO\Bundle\AppBundle\Command\Configure\ConfigElasticCommand;
@@ -40,6 +39,7 @@ use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\DbalConnectionPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\DoctrineCacheClassPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\FormOrderExtensionsPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\LazyWarmersPass;
+use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\MongoConnectionPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\PermissionGroupsCompilerPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\RegisterQuickSearchEventsPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\TermEnginePass;
@@ -75,6 +75,7 @@ class AppBundle extends Bundle
         $container->addCompilerPass(new TermEnginePass());
         $container->addCompilerPass(new RegisterQuickSearchEventsPass());
         $container->addCompilerPass(new DbalConnectionPass());
+        $container->addCompilerPass(new MongoConnectionPass());
         $container->addCompilerPass(new PermissionGroupsCompilerPass());
 
         /** @var \Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension $security */

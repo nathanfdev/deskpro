@@ -26,40 +26,25 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DpSys\Kernel;
+namespace DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler;
 
-use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\ExpressionLanguage\Expression;
 
-class InstallKernel extends BaseKernel
+class MongoConnectionPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function registerBundles()
+    public function process(ContainerBuilder $container)
     {
-        $bundles = [
-            new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
-            new \Symfony\Bundle\MonologBundle\MonologBundle(),
-            new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
-            new \Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
-            new \DeskPRO\Bundle\InstallBundle\InstallBundle(),
-        ];
+        $connections = $container->getParameter('doctrine_mongodb.odm.connections');
 
-        if ('dev' === $this->getEnvironment() || 'test' === $this->getEnvironment()) {
-            $bundles[] = new \Symfony\Bundle\DebugBundle\DebugBundle();
+        foreach ($connections as $id => $serviceId) {
+            $def     = $container->getDefinition($serviceId);
+            $args    = $def->getArguments();
+            $args[0] = new Expression("service('deskpro.mongo_config_reader').getParams('$id')");
+            $args[1] = new Expression("service('deskpro.mongo_config_reader').getParams('$id', 'options')");
+
+            $def->setArguments($args);
         }
-
-        return $bundles;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function registerContainerConfiguration(LoaderInterface $loader)
-    {
-        $loader->load(DP_ROOT.'/sys/config/install/install_config_'.$this->getEnvironment().'.yml');
     }
 }

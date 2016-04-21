@@ -5,7 +5,7 @@ imports:
 # Keeping all parameter changes here rather than in various bundles
 parameters:
   portal.session.name: sess_data
-  doctrine.orm.proxy_dir: %kernel.cache_dir%/doctrine-proxies
+  doctrine.orm.proxy_dir: "%kernel.cache_dir%/doctrine-proxies"
   fos_rest.routing.loader.reader.controller.class: DeskPRO\Bundle\ApiBundle\Routing\ApiRestControllerReader
   monolog.logger.class: DeskPRO\Bundle\AppBundle\Logging\NoExceptionsLogger
   file_locator.class: DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator
@@ -160,17 +160,7 @@ doctrine:
                  group_concat: DoctrineExtensions\Query\Mysql\GroupConcat
                  regexp: DoctrineExtensions\Query\Mysql\Regexp
 
-doctrine_mongodb:
-    connections:
-        audit:
-            server: mongodb://localhost:27017
-            options: {}
-    default_database: dp_audit
-    default_document_manager: audit
-    default_connection: audit
-    document_managers:
-        audit:
-            auto_mapping: true
+
 #rms_push_notifications:
 #  ios:
 #    timeout: 60 # Seconds to wait for connection timeout, default is 60

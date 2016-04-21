@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpSys\Kernel;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -113,6 +112,7 @@ class DpKernel extends BaseKernel
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new \Symfony\Bundle\TwigBundle\TwigBundle(),
             new \Symfony\Bundle\MonologBundle\MonologBundle(),
+            new \Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
             new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
             new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new \FOS\ElasticaBundle\FOSElasticaBundle(),

@@ -43,6 +43,7 @@ class ConfigReader implements ConfigReaderInterface
         'settings'          => 'SETTINGS',
         'database_advanced' => 'DB_CONFIG',
         'env'               => 'ENV_CONFIG',
+        'mongo'             => 'MONGO_CONFIG',
     ];
 
     /**
@@ -54,6 +55,7 @@ class ConfigReader implements ConfigReaderInterface
         'logs'              => 'advanced',
         'settings'          => 'advanced',
         'database_advanced' => 'advanced',
+        'mongo'             => 'advanced',
     ];
 
     /**

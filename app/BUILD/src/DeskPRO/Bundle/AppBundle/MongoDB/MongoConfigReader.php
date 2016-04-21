@@ -26,40 +26,47 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DpSys\Kernel;
+namespace DeskPRO\Bundle\AppBundle\MongoDB;
 
-use Symfony\Component\Config\Loader\LoaderInterface;
+use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
+use DpRun\LowUtil;
 
-class InstallKernel extends BaseKernel
+class MongoConfigReader
 {
+    const DEFAULT_ID = 'default';
+
     /**
-     * {@inheritdoc}
+     * @var \DpRun\DpEnv
      */
-    public function registerBundles()
+    private $appEnv;
+
+    /**
+     * DbConfigReader constructor.
+     *
+     * @param AppEnvInterface $appEnv
+     */
+    public function __construct(AppEnvInterface $appEnv)
     {
-        $bundles = [
-            new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
-            new \Symfony\Bundle\MonologBundle\MonologBundle(),
-            new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
-            new \Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
-            new \DeskPRO\Bundle\InstallBundle\InstallBundle(),
-        ];
-
-        if ('dev' === $this->getEnvironment() || 'test' === $this->getEnvironment()) {
-            $bundles[] = new \Symfony\Bundle\DebugBundle\DebugBundle();
-        }
-
-        return $bundles;
+        $this->appEnv = $appEnv;
     }
 
     /**
-     * {@inheritdoc}
+     * Given a connection ID, get params from config.
+     *
+     * @param string $id
+     * @param string $type
+     *
+     * @return array
      */
-    public function registerContainerConfiguration(LoaderInterface $loader)
+    public function getParams($id, $type = 'server')
     {
-        $loader->load(DP_ROOT.'/sys/config/install/install_config_'.$this->getEnvironment().'.yml');
+        switch ($id) {
+            case self::DEFAULT_ID:
+            default:
+                $conf_array_raw = $this->appEnv->getConfig('mongo');
+                break;
+        }
+
+        return LowUtil::getMongoConfigFromArray($conf_array_raw)[$type];
     }
 }
