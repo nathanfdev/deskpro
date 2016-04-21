@@ -33,12 +33,10 @@ use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tasks\TasksController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
-use DeskPRO\Bundle\AppBundle\Form\Type\TaskProjectType;
-use Doctrine\ORM\QueryBuilder;
+use DeskPRO\Bundle\AppBundle\Form\Type\Task\TaskProjectType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class TaskProjectsController.
@@ -73,7 +71,7 @@ class TaskProjectsController extends CrudController
      *     },
      *     output="array<DeskPRO\Bundle\AppBundle\Entity\Task>"
      * )
-     * @Rest\Get("/{id}/tasks", name="api_projects_tasks_get")
+     * @Rest\Get("/{id}/tasks")
      *
      * @param Request $request
      * @param int     $id
@@ -106,23 +104,6 @@ class TaskProjectsController extends CrudController
      */
     public function getListsAction(TaskProject $project)
     {
-        return View::create($this->wrap($project->getLists()), Response::HTTP_OK);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function applyListFilters(QueryBuilder $qb, $alias, Request $request)
-    {
-        parent::applyListFilters($qb, $alias, $request);
-
-        $project_ids = $request->query->get('ids', []);
-        $project_ids = array_map(function ($value) {
-            return (int) $value;
-        }, $project_ids);
-
-        if (!empty($project_ids)) {
-            $qb->andWhere("{$alias}.id IN (:project_ids)")->setParameter('project_ids', $project_ids);
-        }
+        return View::create($this->wrap($project->getLists()));
     }
 }
