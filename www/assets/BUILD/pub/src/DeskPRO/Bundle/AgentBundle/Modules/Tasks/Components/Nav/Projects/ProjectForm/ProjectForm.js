@@ -20,25 +20,25 @@ export class ProjectForm extends Component {
   constructor(props) {
     super(props);
 
-    const project = props.project || Immutable.fromJS({});
-    const set = Immutable.Set();
+    const project = props.project || Immutable.Map();
+    const list = Immutable.List();
 
     this.state = {
       title:       project.get('title'),
-      agents:      project.get('agents', set),
-      teams:       project.get('teams', set),
-      departments: project.get('departments', set)
+      agents:      project.get('agents', list),
+      teams:       project.get('teams', list),
+      departments: project.get('departments', list)
     };
   }
 
   componentWillReceiveProps(props) {
-    const { project = Immutable.fromJS({}) } = props;
-    const set = Immutable.Set([]);
+    const { project = Immutable.Map() } = props;
+    const list = Immutable.List();
     this.setState({
       title:       project.get('title'),
-      agents:      project.get('agents', set),
-      teams:       project.get('teams', set),
-      departments: project.get('departments', set)
+      agents:      project.get('agents', list),
+      teams:       project.get('teams', list),
+      departments: project.get('departments', list)
     });
   }
 
@@ -119,15 +119,15 @@ export class ProjectForm extends Component {
           </div>
 
           <AssignForm title="Project Permissions">
-            <AssignAgentContainer selected={agents.toSet()}
+            <AssignAgentContainer selected={agents}
               onChange={(value) => this.onChange('agents', value)}
               />
 
-            <AssignTeamContainer selected={teams.toSet()}
+            <AssignTeamContainer selected={teams}
               onChange={(value) => this.onChange('teams', value)}
               />
 
-            <AssignDepartmentContainer selected={departments.toSet()}
+            <AssignDepartmentContainer selected={departments}
               onChange={(value) => this.onChange('departments', value)}
               />
           </AssignForm>

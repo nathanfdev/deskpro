@@ -14,23 +14,23 @@ export class AssignForm extends Component {
     super(props);
 
     const { task = Immutable.Map() } = props;
-    const set = Immutable.Set();
+    const list = Immutable.List();
 
     this.state = {
-      agents:      task.get('agents', set),
-      teams:       task.get('teams', set),
-      departments: task.get('departments', set)
+      agents:      task.get('agents', list),
+      teams:       task.get('teams', list),
+      departments: task.get('departments', list)
     };
   }
 
   componentWillReceiveProps(props) {
     const { task = Immutable.Map() } = props;
-    const set = Immutable.Set();
+    const list = Immutable.List();
 
     this.setState({
-      agents:      task.get('agents', set),
-      teams:       task.get('teams', set),
-      departments: task.get('departments', set)
+      agents:      task.get('agents', list),
+      teams:       task.get('teams', list),
+      departments: task.get('departments', list)
     });
   }
 
@@ -48,9 +48,7 @@ export class AssignForm extends Component {
 
     this.dirty = false;
     const { agents, teams, departments } = this.state;
-    this.props.onChange(Immutable.fromJS({
-      agents, teams, departments
-    }));
+    this.props.onChange(Immutable.Map({ agents, teams, departments }));
   }
 
   onChange = (prop, value) => {
@@ -69,15 +67,15 @@ export class AssignForm extends Component {
 
         <div className="dpw--popup-content">
           <Form>
-            <AssignAgentContainer selected={agents.toSet()}
+            <AssignAgentContainer selected={agents}
               onChange={(value) => this.onChange('agents', value)}
               />
 
-            <AssignTeamContainer selected={teams.toSet()}
+            <AssignTeamContainer selected={teams}
               onChange={(value) => this.onChange('teams', value)}
               />
 
-            <AssignDepartmentContainer selected={departments.toSet()}
+            <AssignDepartmentContainer selected={departments}
               onChange={(value) => this.onChange('departments', value)}
               />
           </Form>

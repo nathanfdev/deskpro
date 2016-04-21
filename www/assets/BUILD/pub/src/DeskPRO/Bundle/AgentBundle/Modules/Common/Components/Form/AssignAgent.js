@@ -20,7 +20,7 @@ export class AssignAgent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selected:         props.selected,
+      selected:         props.selected.toSet(),
       showOnlySelected: props.showOnlySelected,
       filter:           props.filter
     };
@@ -28,7 +28,7 @@ export class AssignAgent extends Component {
 
   componentWillReceiveProps(props) {
     this.setState({
-      selected:         props.selected,
+      selected:         props.selected.toSet(),
       showOnlySelected: props.showOnlySelected,
       filter:           props.filter
     });
@@ -44,7 +44,7 @@ export class AssignAgent extends Component {
   onChange = (selected) => {
     this.setState({ selected });
     if (this.props.onChange) {
-      this.props.onChange(selected);
+      this.props.onChange(selected.toList());
     }
   };
 

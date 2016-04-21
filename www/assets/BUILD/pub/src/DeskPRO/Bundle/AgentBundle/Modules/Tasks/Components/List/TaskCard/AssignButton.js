@@ -43,10 +43,10 @@ export class AssignButton extends CardWidget {
 
   hasAvatar() {
     const { value } = this.state;
-    const set = Immutable.Set();
-    return value.get('agents', set).size
-      || value.get('teams', set).size
-      || value.get('departments', set).size;
+    const list = Immutable.List();
+    return value.get('agents', list).size
+      || value.get('teams', list).size
+      || value.get('departments', list).size;
   }
 
   onChange = (value) => {
