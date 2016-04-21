@@ -55,7 +55,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  *     }
  * )
  * @ApiDoc(
- *     target="countAction",
+ *     target="listAction",
  *     filters={
  *          {"name"="order_by", "dataType"="integer", "pattern"="date_created|date_updated|person", "description"="how to order"}
  *     }

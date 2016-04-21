@@ -26,23 +26,24 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter;
+namespace DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish;
 
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\DownloadComment;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\PermissionGroupEntityVoterInterface;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 
 /**
- * Class FeedbackVoter.
+ * Class DownloadCommentsVoter.
  */
-class FeedbackVoter extends AbstractUserPublishVoter
+class DownloadCommentsVoter implements PermissionGroupEntityVoterInterface
 {
     /**
      * {@inheritdoc}
      */
     public static function getEntityClass()
     {
-        return Feedback::class;
+        return DownloadComment::class;
     }
 
     /**
@@ -50,22 +51,7 @@ class FeedbackVoter extends AbstractUserPublishVoter
      */
     public function voteOnAttributeForAgent($attribute, PermissionGroupContext $context, Person $user)
     {
-        if (!$user->hasPerm('feedback.use')) {
-            return false;
-        }
-
-        /** @var Feedback $feedback */
-        $feedback = $context->getParent();
-        if ($feedback) {
-            if (!$this->getUserPublishChecker($user)->canViewFeedback($feedback)) {
-                return false;
-            }
-            if (!$this->checkModify($attribute, $user, $feedback)) {
-                return false;
-            }
-        }
-
-        return true;
+        return $user->hasPerm('downloads.use');
     }
 
     /**
