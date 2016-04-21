@@ -53,6 +53,7 @@ return array(
     'portal.account.login-saved-form'               => 'Your {{ type }} has not been submitted yet. Please login to continue.',
     'portal.account.login-stay-logged-in'           => 'Stay Logged In?',
     'portal.account.logout-btn'                     => 'Logout',
+    'portal.account.logout-confirm'                 => 'Are you sure you want to log out?',
     'portal.account.profile-btn-save'               => 'Save Profile',
     'portal.account.profile-delete-picture'         => 'Delete or replace picture?',
     'portal.account.register-btn'                   => 'Register',
