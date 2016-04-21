@@ -107,8 +107,10 @@ abstract class BaseKernel extends Kernel
         // Boot kernel, compile the container
         parent::boot();
 
+        $isCli = php_sapi_name() === 'cli';
+
         // Registering error handlers right after container is compiled and we can access the logger service
-        if ($this->dpEnv->isDebug()) {
+        if ($this->dpEnv->isDebug() || $isCli) {
             \Symfony\Component\Debug\Debug::enable(true, true);
         } else {
             \Monolog\ErrorHandler::register($this->container->get('logger'));
