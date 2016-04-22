@@ -408,6 +408,9 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
         $category_tree = [];
 
         $permission_bag = $this->getPermissionBagForCurrentUser();
+        if (!$cat) {
+            return [];
+        }
         foreach ($cat->getTreeParents() as $c) {
             if ($permission_bag->hasContentCategoryAccess($c)) {
                 $category_tree[] = $c;
