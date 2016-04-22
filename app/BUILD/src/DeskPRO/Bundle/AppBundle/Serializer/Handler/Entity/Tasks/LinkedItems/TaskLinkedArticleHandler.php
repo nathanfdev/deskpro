@@ -26,40 +26,32 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tasks\LinkedItems;
+
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle;
+use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+
 /**
- * DeskPRO.
+ * Class TaskLinkedArticleHandler.
  */
-
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Task;
-
-use Application\DeskPRO\Entity\ChatConversation;
-use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-
-class LinkedChatType extends LinkedItemType
+class TaskLinkedArticleHandler extends AbstractEntityHandler
 {
-    protected function getProperty()
-    {
-        return 'chat';
-    }
-
     /**
-     * @return \Doctrine\ORM\EntityRepository
+     * {@inheritdoc}
      */
-    protected function getRepository()
+    public static function getClassNames()
     {
-        return $this->manager->getRepository(ChatConversation::class);
+        return TaskLinkedArticle::class;
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @param TaskLinkedArticle $entity
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    protected function createModel($entity, SideloadSerializationContext $context)
     {
-        parent::setDefaultOptions($resolver);
-
-        $resolver->setDefaults([
-            'data_class' => TaskLinkedChat::class,
-        ]);
+        return $entity->getArticle();
     }
 }

@@ -26,56 +26,27 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Task\LinkedItem;
 
-use Application\DeskPRO\Entity\AgentTeam;
-use Application\DeskPRO\Entity\Department;
-use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use DeskPRO\Bundle\AppBundle\Entity\Task;
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedItem;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class ProjectType.
+ * Class TaskLinkedItemType.
  */
-class TaskProjectType extends AbstractType
+class TaskLinkedItemType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'project';
-    }
-
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('title', TextType::class, [
-                'description' => 'the project title',
-            ])
-            ->add('departments', EntityType::class, [
-                'class'    => Department::class,
-                'multiple' => true,
-                'required' => false,
-            ])
-            ->add('teams', EntityType::class, [
-                'class'    => AgentTeam::class,
-                'multiple' => true,
-                'required' => false,
-            ])
-            ->add('agents', EntityType::class, [
-                'class'    => Person::class,
-                'multiple' => true,
-                'required' => false,
-            ])
-        ;
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetTask']);
     }
 
     /**
@@ -83,8 +54,21 @@ class TaskProjectType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => TaskProject::class,
-        ]);
+        $resolver
+            ->setRequired(['task'])
+            ->setAllowedTypes([
+                'task' => Task::class,
+            ])
+        ;
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onSetTask(FormEvent $event)
+    {
+        /** @var TaskLinkedItem $data */
+        $data = $event->getData();
+        $data->setTask($event->getForm()->getConfig()->getOption('task'));
     }
 }

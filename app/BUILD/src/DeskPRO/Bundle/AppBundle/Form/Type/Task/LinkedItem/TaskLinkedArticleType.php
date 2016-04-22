@@ -26,39 +26,46 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Task\LinkedItem;
 
-use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
-use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use Application\DeskPRO\Entity\Article;
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class TaskProjectMemberHandler.
+ * Class TaskLinkedArticleType.
  */
-class TaskProjectMemberHandler extends AbstractEntityHandler
+class TaskLinkedArticleType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
-    public static function getClassNames()
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        return ProjectMember::class;
+        $builder->add('item', EntityType::class, [
+            'property_path' => 'article',
+            'class'         => Article::class,
+        ]);
     }
 
     /**
      * {@inheritdoc}
-     *
-     * @param ProjectMember $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function getParent()
     {
-        if ($entity->getPerson()) {
-            return $entity->getPerson();
-        } elseif ($entity->getTeam()) {
-            return $entity->getTeam();
-        } elseif ($entity->getDepartment()) {
-            return $entity->getDepartment();
-        } else {
-            throw new \RuntimeException('Unable to get project member');
-        }
+        return TaskLinkedItemType::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => TaskLinkedArticle::class,
+        ]);
     }
 }

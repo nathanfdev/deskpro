@@ -26,55 +26,37 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Task\LinkedItem;
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Task;
-
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket;
-use DeskPRO\Bundle\AppBundle\Form\DataTransformer\EntityToIdTransformer;
-use Doctrine\ORM\EntityManager;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-abstract class LinkedItemType extends AbstractType
+/**
+ * Class TaskLinkedTicketType.
+ */
+class TaskLinkedTicketType extends AbstractType
 {
-    protected $manager;
-
-    public function __construct(EntityManager $manager)
-    {
-        $this->manager = $manager;
-    }
-
     /**
-     * @param FormBuilderInterface $builder
-     * @param array                $options
+     * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('item', TextType::class, [
-                'invalid_message' => 'That is not a valid ID',
-                'property_path'   => $this->getProperty(),
-            ])
-        ;
-
-        $builder->get('item')->addModelTransformer(
-            new EntityToIdTransformer($this->getRepository())
-        );
-
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
+        $builder->add('item', EntityType::class, [
+            'property_path' => 'ticket',
+            'class'         => Ticket::class,
+        ]);
     }
 
-    public function onPreSubmit(FormEvent $event)
+    /**
+     * {@inheritdoc}
+     */
+    public function getParent()
     {
-        $data = $event->getData();
-        $event->setData(['item' => $data]);
+        return TaskLinkedItemType::class;
     }
 
     /**
@@ -82,19 +64,8 @@ abstract class LinkedItemType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setRequired(['empty_data']);
-
         $resolver->setDefaults([
             'data_class' => TaskLinkedTicket::class,
         ]);
     }
-
-    public function getName()
-    {
-        return 'task_linked_'.$this->getProperty();
-    }
-
-    abstract protected function getRepository();
-
-    abstract protected function getProperty();
 }

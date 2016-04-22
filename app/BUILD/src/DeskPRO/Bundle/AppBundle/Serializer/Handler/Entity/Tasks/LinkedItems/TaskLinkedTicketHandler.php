@@ -26,26 +26,32 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tasks\LinkedItems;
 
-use Symfony\Component\Validator\Constraint;
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket;
+use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
 /**
- * Class ProjectMember.
- *
- * @Annotation
+ * Class TaskLinkedTicketHandler.
  */
-class ProjectMember extends Constraint
+class TaskLinkedTicketHandler extends AbstractEntityHandler
 {
-    const EXACTLY_ONE_SHOULD_BE_SET = 'exactly_one_value_should_be_set';
-
-    public $message = 'You should set exactly only one of {{ values }}';
-
     /**
      * {@inheritdoc}
      */
-    public function getTargets()
+    public static function getClassNames()
     {
-        return self::CLASS_CONSTRAINT;
+        return TaskLinkedTicket::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param TaskLinkedTicket $entity
+     */
+    protected function createModel($entity, SideloadSerializationContext $context)
+    {
+        return $entity->getTicket();
     }
 }

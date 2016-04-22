@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Task;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Department;
@@ -41,20 +41,18 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class ProjectMemberType.
+ * Class TaskProjectMemberType.
  */
-class ProjectMemberType extends AbstractType
+class TaskProjectMemberType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $type = $options['type'];
-
-        $builder->add($type, EntityType::class, [
-            'class'    => $this->getMemberClass($type),
-            'required' => false,
+        $builder->add('member', EntityType::class, [
+            'property_path' => $options['type'],
+            'class'         => $this->getMemberClass($options['type']),
         ]);
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetProject']);
@@ -84,11 +82,9 @@ class ProjectMemberType extends AbstractType
      */
     public function onSetProject(FormEvent $event)
     {
-        $form = $event->getForm();
-
         /** @var ProjectMember $data */
         $data = $event->getData();
-        $data->setProject($form->getConfig()->getOption('project'));
+        $data->setProject($event->getForm()->getConfig()->getOption('project'));
     }
 
     /**

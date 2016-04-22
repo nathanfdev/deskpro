@@ -26,40 +26,24 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks\LinkedItems;
+
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle;
+use DeskPRO\Bundle\AppBundle\Form\Type\Task\LinkedItem\TaskLinkedArticleType;
+use FOS\RestBundle\Controller\Annotations as Rest;
+
 /**
- * DeskPRO.
+ * Class TaskLinkedArticlesController.
+ *
+ * @ApiModes("all")
+ * @Rest\Route("/tasks/{parentId}/linked_items/articles")
+ * @ApiDoc(target="all", section="Tasks", output="Application\DeskPRO\Entity\Article")
  */
-
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Task;
-
-use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-
-class LinkedTicketType extends LinkedItemType
+class TaskLinkedArticlesController extends AbstractTaskLinkedItemController
 {
-    protected function getProperty()
-    {
-        return 'ticket';
-    }
-
-    /**
-     * @return \Doctrine\ORM\EntityRepository
-     */
-    protected function getRepository()
-    {
-        return $this->manager->getRepository(Ticket::class);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        parent::setDefaultOptions($resolver);
-
-        $resolver->setDefaults([
-            'data_class' => TaskLinkedTicket::class,
-        ]);
-    }
+    public static $linkedType = 'article';
+    public static $entity     = TaskLinkedArticle::class;
+    public static $type       = TaskLinkedArticleType::class;
 }

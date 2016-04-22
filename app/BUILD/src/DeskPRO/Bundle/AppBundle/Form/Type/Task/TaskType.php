@@ -29,18 +29,17 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Task;
 
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Entity\LabelTask;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
-use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle;
-use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat;
-use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket;
 use DeskPRO\Bundle\AppBundle\Entity\TaskList;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
-use DeskPRO\Bundle\AppBundle\Form\Type\SetCollectionType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -50,7 +49,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
@@ -76,12 +74,13 @@ class TaskType extends AbstractType
                 'description' => 'the percentage of the task complete',
             ])
             ->add('task_type', ChoiceType::class, [
-                'description' => 'the type of task',
-                'required'    => false,
-                'empty_data'  => Task::TYPE_TASK,
-                'choices'     => [
-                    Task::TYPE_TASK  => 'Task',
-                    Task::TYPE_EVENT => 'Event',
+                'description'       => 'the type of task',
+                'required'          => false,
+                'empty_data'        => Task::TYPE_TASK,
+                'choices_as_values' => true,
+                'choices'           => [
+                    Task::TYPE_TASK,
+                    Task::TYPE_EVENT,
                 ],
             ])
             ->add('date_due', CoreDateTimeType::class, [
@@ -103,13 +102,14 @@ class TaskType extends AbstractType
                 'description' => 'the event end datetime',
             ])
             ->add('visibility', ChoiceType::class, [
-                'required'    => false,
-                'description' => 'the task visibility',
-                'empty_data'  => Task::VISIBILITY_PRIVATE,
-                'choices'     => [
-                    Task::VISIBILITY_PUBLIC  => 'Public',
-                    Task::VISIBILITY_PROJECT => 'Project',
-                    Task::VISIBILITY_PRIVATE => 'Private',
+                'required'          => false,
+                'description'       => 'the task visibility',
+                'empty_data'        => Task::VISIBILITY_PRIVATE,
+                'choices_as_values' => true,
+                'choices'           => [
+                    Task::VISIBILITY_PUBLIC,
+                    Task::VISIBILITY_PROJECT,
+                    Task::VISIBILITY_PRIVATE,
                 ],
             ])
             ->add('urgency', IntegerType::class, [
@@ -149,32 +149,23 @@ class TaskType extends AbstractType
                 'multiple' => true,
                 'required' => false,
             ])
-            ->add('linked_tickets', new SetCollectionType(), [
-                'entry_property_path' => 'ticket.id',
-                'entry_type'          => LinkedTicketType::class,
-                'entry_options'       => [
-                    'empty_data' => function (FormInterface $form) use ($builder) {
-                        return new TaskLinkedTicket($builder->getData());
-                    },
-                ],
+            ->add('linked_tickets', EntityType::class, [
+                'class'        => Ticket::class,
+                'multiple'     => true,
+                'required'     => false,
+                'by_reference' => false,
             ])
-            ->add('linked_articles', new SetCollectionType(), [
-                'entry_property_path' => 'article.id',
-                'entry_type'          => LinkedArticleType::class,
-                'entry_options'       => [
-                    'empty_data' => function (FormInterface $form) use ($builder) {
-                        return new TaskLinkedArticle($builder->getData());
-                    },
-                ],
+            ->add('linked_articles', EntityType::class, [
+                'class'        => Article::class,
+                'multiple'     => true,
+                'required'     => false,
+                'by_reference' => false,
             ])
-            ->add('linked_chats', new SetCollectionType(), [
-                'entry_property_path' => 'chat.id',
-                'entry_type'          => LinkedChatType::class,
-                'entry_options'       => [
-                    'empty_data' => function (FormInterface $form) use ($builder) {
-                        return new TaskLinkedChat($builder->getData());
-                    },
-                ],
+            ->add('linked_chats', EntityType::class, [
+                'class'        => ChatConversation::class,
+                'multiple'     => true,
+                'required'     => false,
+                'by_reference' => false,
             ])
         ;
 

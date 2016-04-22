@@ -26,29 +26,48 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Task;
 
-use Application\DeskPRO\Entity\Article;
-use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle;
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class LinkedArticleType extends LinkedItemType
+/**
+ * Class ProjectType.
+ */
+class TaskProjectType extends AbstractType
 {
-    protected function getProperty()
-    {
-        return 'article';
-    }
-
     /**
-     * @return \Doctrine\ORM\EntityRepository
+     * {@inheritdoc}
      */
-    protected function getRepository()
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        return $this->manager->getRepository(Article::class);
+        $builder
+            ->add('title', TextType::class, [
+                'description' => 'the project title',
+            ])
+            ->add('departments', EntityType::class, [
+                'class'    => Department::class,
+                'multiple' => true,
+                'required' => false,
+            ])
+            ->add('teams', EntityType::class, [
+                'class'    => AgentTeam::class,
+                'multiple' => true,
+                'required' => false,
+            ])
+            ->add('agents', EntityType::class, [
+                'class'    => Person::class,
+                'multiple' => true,
+                'required' => false,
+            ])
+        ;
     }
 
     /**
@@ -56,10 +75,8 @@ class LinkedArticleType extends LinkedItemType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        parent::setDefaultOptions($resolver);
-
         $resolver->setDefaults([
-            'data_class' => TaskLinkedArticle::class,
+            'data_class' => TaskProject::class,
         ]);
     }
 }

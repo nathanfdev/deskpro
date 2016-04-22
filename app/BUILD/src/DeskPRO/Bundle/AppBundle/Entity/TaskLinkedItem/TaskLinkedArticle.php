@@ -38,10 +38,14 @@ use Application\DeskPRO\Entity\Article;
 use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @JMS\ExclusionPolicy("all")
  * @ORM\Entity
+ *
+ * @UniqueEntity(fields={"task", "article"}, errorPath="article")
  */
 class TaskLinkedArticle extends TaskLinkedItem
 {
@@ -55,6 +59,8 @@ class TaskLinkedArticle extends TaskLinkedItem
      *
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Article")
      * @ORM\JoinColumn(name="article_id", referencedColumnName="id", nullable=true)
+     *
+     * @Assert\NotBlank()
      *
      * @var Article
      */
