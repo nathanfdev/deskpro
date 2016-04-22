@@ -35,10 +35,7 @@ namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\Data\Criteria\GroupableCriteriaInterface;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
-use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
@@ -48,16 +45,6 @@ use Pagerfanta\Pagerfanta;
  */
 class ChatDataService
 {
-    public static $datePeriodLabels = [
-        'today'      => 'Today',
-        'yesterday'  => 'Yesterday',
-        'this_week'  => 'This Week',
-        'this_month' => 'This Month',
-        'last_month' => 'Last Month',
-        'this_year'  => 'This Year',
-        'ever'       => 'Ever',
-    ];
-
     /**
      * @var EntityManager
      */
@@ -71,16 +58,6 @@ class ChatDataService
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
-    }
-
-    /**
-     * @param GroupableCriteriaInterface $criteria
-     *
-     * @return Count
-     */
-    public function countChats(GroupableCriteriaInterface $criteria)
-    {
-        return $criteria->hasGroupBy() ? $this->countGrouped($criteria) : $this->countFlat($criteria);
     }
 
     /**
@@ -131,26 +108,6 @@ class ChatDataService
     }
 
     /**
-     * Gets a ChatConversation.
-     *
-     * @param int|Chatconversation $chat
-     *
-     * @return ChatConversation|null
-     */
-    public function getChat($chat)
-    {
-        if (!$chat) { // we need some input
-            return false;
-        }
-
-        if ($chat instanceof ChatConversation) { // already have what you seek
-            return $chat;
-        }
-
-        return $this->getChatConversationRepo()->find($chat);
-    }
-
-    /**
      * @param Organization $organization
      *
      * @return int
@@ -167,14 +124,6 @@ class ChatDataService
             ->setParameter('organization', $organization->getId());
 
         return $qb->getQuery()->getSingleScalarResult();
-    }
-
-    /**
-     * @return \Application\DeskPRO\EntityRepository\ChatConversation
-     */
-    private function getChatConversationRepo()
-    {
-        return $this->em->getRepository('DeskPRO:ChatConversation');
     }
 
     /**
@@ -205,53 +154,5 @@ class ChatDataService
             default:
                 throw new \Exception('Invalid type');
         }
-    }
-
-    /**
-     * @param GroupableCriteriaInterface $criteria
-     *
-     * @return Count
-     */
-    private function countFlat(GroupableCriteriaInterface $criteria)
-    {
-        $qb = $this->em->createQueryBuilder();
-
-        $qb->select('count(c)')
-            ->from('DeskPRO:ChatConversation', 'c');
-        $criteria->applyFilters($qb);
-
-        try {
-            $count = $qb->getQuery()->getSingleScalarResult();
-        } catch (NoResultException $e) {
-            $count = 0;
-        }
-
-        return Count::fromValue($count);
-    }
-
-    /**
-     * @param GroupableCriteriaInterface $criteria
-     *
-     * @return Count
-     */
-    private function countGrouped(GroupableCriteriaInterface $criteria)
-    {
-        $qb = $this->em->createQueryBuilder();
-
-        $qb->select('count(c) as value')
-            ->from('DeskPRO:ChatConversation', 'c');
-        $criteria->applyFilters($qb);
-        $criteria->applyGroupBy($qb);
-
-        $result    = $qb->getQuery()->getArrayResult();
-        $groupedBy = $criteria->getGroupBy();
-        $count     = Count::fromGroupedBy($groupedBy);
-        foreach ($result as $group) {
-            $title = $groupedBy === 'date_period' ? self::$datePeriodLabels[$group['group_name']] : $group['title'];
-            $count->add($group['value']);
-            $count->addNested($group['value'], $group['group_name'], $groupedBy, $title);
-        }
-
-        return $count;
     }
 }

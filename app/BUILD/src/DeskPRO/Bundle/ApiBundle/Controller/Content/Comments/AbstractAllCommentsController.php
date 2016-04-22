@@ -29,10 +29,9 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Content\Comments;
 
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use DeskPRO\Bundle\ApiBundle\Traits\Filters\DateFiltersTrait;
-use DeskPRO\Bundle\ApiBundle\Traits\Filters\ListFiltersTrait;
-use DeskPRO\Bundle\ApiBundle\Traits\Filters\QueryFilterContext;
-use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\DateHelper;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -41,8 +40,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 abstract class AbstractAllCommentsController extends CrudController
 {
-    use DateFiltersTrait, ListFiltersTrait;
-
     public static $contentType;
     public static $exposeOnly  = ['get', 'list', 'count', 'delete'];
     public static $sortOptions = [
@@ -55,10 +52,10 @@ abstract class AbstractAllCommentsController extends CrudController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        $context = new QueryFilterContext($qb, $alias, $request);
-        $this->applyDatePeriodFilter($context, 'date_created', 'period_created');
-        $this->applyInListFilter($context, 'status');
-        $this->applyInListFilter($context, static::$contentType);
+        $context = new RequestQueryContext($qb, $alias, $request);
+        DateHelper::applyDatePeriodFilter($context, 'date_created', 'period_created');
+        ListHelper::applyInListFilter($context, 'status');
+        ListHelper::applyInListFilter($context, static::$contentType);
 
         $isReviewed = $request->get('is_reviewed');
         if ($request->query->has('is_reviewed')) {
@@ -82,12 +79,8 @@ abstract class AbstractAllCommentsController extends CrudController
 
                 break;
             case 'period_created':
-                $periodDql = DatePeriods::getDatePeriodCaseWhenDql("$alias.date_created");
-                $qb
-                    ->addSelect("$periodDql as group_name")
-                    ->addSelect("$periodDql as title")
-                    ->groupBy('group_name')
-                ;
+                $context = new RequestQueryContext($qb, $alias, $request);
+                DateHelper::applyDatePeriodGroupBy($context, 'date_created');
 
                 break;
             case static::$contentType:

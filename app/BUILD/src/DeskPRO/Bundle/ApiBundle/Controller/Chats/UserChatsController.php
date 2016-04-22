@@ -31,10 +31,10 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Chats;
 use Application\DeskPRO\Entity\ChatConversation;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use DeskPRO\Bundle\ApiBundle\Traits\Filters\DateFiltersTrait;
-use DeskPRO\Bundle\ApiBundle\Traits\Filters\QueryFilterContext;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\DateHelper;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
@@ -63,8 +63,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class UserChatsController extends CrudController
 {
-    use DateFiltersTrait;
-
     public static $exposeOnly = ['get', 'list', 'count', 'delete'];
     public static $entity     = ChatConversation::class;
 
@@ -73,15 +71,11 @@ class UserChatsController extends CrudController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        $context = new QueryFilterContext($qb, $alias, $request);
-        $this->applyDateRangeFilter($context, 'date_created', 'created_from', 'created_to');
+        $context = new RequestQueryContext($qb, $alias, $request);
 
-        $datePeriod = $request->get('date_period');
-        if ($datePeriod) {
-            $datePeriodCaseWhen = DatePeriods::getDatePeriodCaseWhenDql("$alias.date_created");
-            $qb->andWhere("$datePeriodCaseWhen = :date_period");
-            $qb->setParameter('date_period', $datePeriod);
-        }
+        DateHelper::applyDateRangeFilter($context, 'date_created', 'created_from', 'created_to');
+        DateHelper::applyDatePeriodFilter($context, 'date_created', 'date_period');
+        ListHelper::applyInListFilter($context, 'department');
 
         $agent = $request->get('agent');
         if ($agent) {
@@ -91,12 +85,6 @@ class UserChatsController extends CrudController
 
             $qb->andWhere($qb->expr()->eq("$alias.agent", ':agent'));
             $qb->setParameter('agent', $agent);
-        }
-
-        $department = $request->get('department');
-        if ($department) {
-            $qb->andWhere($qb->expr()->eq("$alias.department", ':department'));
-            $qb->setParameter('department', $department);
         }
 
         // only user chats
@@ -118,14 +106,8 @@ class UserChatsController extends CrudController
 
                 break;
             case 'date_period':
-                $datePeriodsDql = DatePeriods::getDatePeriodCaseWhenDql("$alias.date_created");
-                $qb
-                    ->addSelect("$datePeriodsDql as group_name")
-                    ->addSelect("$datePeriodsDql as title")
-                    ->addSelect("FIELD($datePeriodsDql, 'today', 'yesterday', 'this_month', 'last_month', 'this_year', 'ever') as HIDDEN group_order")
-                    ->orderBy('group_order')
-                    ->groupBy('group_name')
-                ;
+                $context = new RequestQueryContext($qb, $alias, $request);
+                DateHelper::applyDatePeriodGroupBy($context, 'date_created');
 
                 break;
             case 'agent':

@@ -1,4 +1,4 @@
-@chats
+@chats @counts
 Feature: /user_chats/counts endpoint
   To retrieve DeskPRO agents
   As a developer

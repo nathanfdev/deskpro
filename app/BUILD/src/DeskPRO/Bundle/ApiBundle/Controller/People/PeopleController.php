@@ -36,9 +36,10 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\DateHelper;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
 use DeskPRO\Bundle\ApiBundle\Traits\Labels\LabelsHelper;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
 use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonType;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -97,6 +98,8 @@ class PeopleController extends CrudController
         die('v 20151231');
     }
 
+    // #################################################################################################################
+
     /**
      * @ApiDoc(
      *     section="People",
@@ -118,13 +121,14 @@ class PeopleController extends CrudController
         $this->getManager()->flush();
     }
 
-    // #################################################################################################################
-
     /**
      * {@inheritdoc}
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
+        $context = new RequestQueryContext($qb, $alias, $request);
+        DateHelper::applyDatePeriodFilter($context, 'date_created', 'period_created');
+
         if (null !== $request->get('is_agent')) {
             $qb->andWhere("$alias.is_agent = :is_agent");
             $qb->setParameter('is_agent', (int) $request->get('is_agent'));
@@ -138,13 +142,6 @@ class PeopleController extends CrudController
         if ($request->get('not_me')) {
             $qb->andWhere("$alias.id != :id");
             $qb->setParameter('id', $this->getUser()->getId());
-        }
-
-        $period = $request->get('period_created');
-        if ($period) {
-            $datePeriodCaseWhen = DatePeriods::getDatePeriodCaseWhenDql("$alias.date_created");
-            $qb->andWhere("$datePeriodCaseWhen = :period_created");
-            $qb->setParameter('period_created', $period);
         }
 
         $userGroups = $request->get('user_group');
@@ -193,22 +190,19 @@ class PeopleController extends CrudController
      */
     protected function applySorting(QueryBuilder $qb, $alias, Request $request)
     {
-        if (is_array(static::$sortOptions)) {
-            $sortParam = strtolower($request->get('order_by'));
-            if ($sortParam && !array_key_exists($sortParam, static::$sortOptions)) {
-                throw $this->createBadRequestException('Unknown sort field');
+        $sortParam = strtolower($request->get('order_by'));
+        if ($sortParam === 'organization') {
+            $sort  = 'organization.name';
+            $order = strtolower($request->get('order_dir'));
+
+            if ($order && !in_array($order, ['asc', 'desc'])) {
+                throw $this->createBadRequestException('Unknown order value');
             }
-            if ($sortParam === 'organization') {
-                $qb->leftJoin("$alias.organization", 'organization');
-                $sort  = 'organization.name';
-                $order = strtolower($request->get('order_dir'));
-                if ($order && !in_array($order, ['asc', 'desc'])) {
-                    throw $this->createBadRequestException('Unknown order value');
-                }
-                $qb->orderBy($sort, $order);
-            } else {
-                parent::applySorting($qb, $alias, $request);
-            }
+
+            $qb->leftJoin("$alias.organization", 'organization');
+            $qb->orderBy($sort, $order);
+        } else {
+            parent::applySorting($qb, $alias, $request);
         }
     }
 
@@ -247,6 +241,7 @@ class PeopleController extends CrudController
         if ($entity->isAgent()) {
             throw $this->createBadRequestException("You can't delete an agent via 'people' API endpoint, use 'agents'");
         }
+
         parent::deleteEntity($entity);
     }
 }

@@ -30,11 +30,10 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Content;
 
 use Application\DeskPRO\Entity\CategoryAbstract;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use DeskPRO\Bundle\ApiBundle\Traits\Filters\DateFiltersTrait;
-use DeskPRO\Bundle\ApiBundle\Traits\Filters\ListFiltersTrait;
-use DeskPRO\Bundle\ApiBundle\Traits\Filters\QueryFilterContext;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\DateHelper;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -43,8 +42,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 abstract class AbstractContentController extends CrudController
 {
-    use ListFiltersTrait, DateFiltersTrait;
-
     public static $category;
     public static $exposeOnly  = ['get', 'list', 'count', 'delete'];
     public static $sortOptions = [
@@ -59,16 +56,16 @@ abstract class AbstractContentController extends CrudController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        $context = new QueryFilterContext($qb, $alias, $request);
+        $context = new RequestQueryContext($qb, $alias, $request);
 
-        $this->applyInListFilter($context, 'status');
-        $this->applyInListFilter($context, 'hidden_status');
-        $this->applyInListFilter($context, 'person', 'author');
+        ListHelper::applyInListFilter($context, 'status');
+        ListHelper::applyInListFilter($context, 'hidden_status');
+        ListHelper::applyInListFilter($context, 'person', 'author');
 
-        $this->applyDatePeriodFilter($context, 'date_created', 'period_created');
-        $this->applyDatePeriodFilter($context, 'date_updated', 'period_updated');
-        $this->applyDatePeriodFilter($context, 'date_published', 'period_published');
-        $this->applyDatePeriodFilter($context, 'date_last_comment', 'period_last_comment');
+        DateHelper::applyDatePeriodFilter($context, 'date_created', 'period_created');
+        DateHelper::applyDatePeriodFilter($context, 'date_updated', 'period_updated');
+        DateHelper::applyDatePeriodFilter($context, 'date_published', 'period_published');
+        DateHelper::applyDatePeriodFilter($context, 'date_last_comment', 'period_last_comment');
     }
 
     /**
@@ -87,17 +84,13 @@ abstract class AbstractContentController extends CrudController
 
                 break;
             case 'period_created':
-                $periodDql = DatePeriods::getDatePeriodCaseWhenDql("$alias.date_created");
-                $qb->addSelect("$periodDql as group_name");
-                $qb->addSelect("$periodDql as title");
-                $qb->groupBy('group_name');
+                $context = new RequestQueryContext($qb, $alias, $request);
+                DateHelper::applyDatePeriodGroupBy($context, 'date_created');
 
                 break;
             case 'period_updated':
-                $periodDql = DatePeriods::getDatePeriodCaseWhenDql("COALESCE($alias.date_updated, $alias.date_created)");
-                $qb->addSelect("$periodDql as group_name");
-                $qb->addSelect("$periodDql as title");
-                $qb->groupBy('group_name');
+                $context = new RequestQueryContext($qb, $alias, $request);
+                DateHelper::applyDatePeriodGroupBy($context, ['date_created', 'date_updated']);
 
                 break;
         }

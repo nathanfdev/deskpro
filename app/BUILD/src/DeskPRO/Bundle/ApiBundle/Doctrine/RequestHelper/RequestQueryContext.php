@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,38 +26,66 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AppBundle\Data\Criteria;
+namespace DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper;
 
 use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Interface CriteriaInterface.
+ * Class RequestQueryContext.
  */
-interface CriteriaInterface
+class RequestQueryContext
 {
     /**
+     * @var QueryBuilder
+     */
+    private $qb;
+
+    /**
+     * @var string
+     */
+    private $alias;
+
+    /**
+     * @var Request
+     */
+    private $request;
+
+    /**
+     * Constructor.
+     *
      * @param QueryBuilder $qb
+     * @param string       $alias
+     * @param Request      $request
      */
-    public function applyFilters(QueryBuilder $qb);
+    public function __construct(QueryBuilder $qb, $alias, Request $request)
+    {
+        $this->qb      = $qb;
+        $this->alias   = $alias;
+        $this->request = $request;
+    }
 
     /**
-     * Criteria factory method.
-     *
-     * @param array           $params
-     * @param OptionsResolver $resolver
-     * @param array           $data     OptionsResolver dependencies
-     *
-     * @return CriteriaInterface
+     * @return QueryBuilder
      */
-    public static function fromParameters(array $params, OptionsResolver $resolver, array $data = []);
+    public function getQb()
+    {
+        return $this->qb;
+    }
 
     /**
-     * @param OptionsResolver $resolver
-     * @param array           $data     Configurator dependencies
+     * @return mixed
      */
-    public static function configureResolver(OptionsResolver $resolver, array $data = []);
+    public function getAlias()
+    {
+        return $this->alias;
+    }
+
+    /**
+     * @return Request
+     */
+    public function getRequest()
+    {
+        return $this->request;
+    }
 }

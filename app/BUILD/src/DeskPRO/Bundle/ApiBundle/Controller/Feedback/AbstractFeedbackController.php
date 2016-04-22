@@ -30,10 +30,10 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use DeskPRO\Bundle\ApiBundle\Traits\Filters\DateFiltersTrait;
-use DeskPRO\Bundle\ApiBundle\Traits\Filters\LabelFiltersTrait;
-use DeskPRO\Bundle\ApiBundle\Traits\Filters\ListFiltersTrait;
-use DeskPRO\Bundle\ApiBundle\Traits\Filters\QueryFilterContext;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\DateHelper;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\LabelHelper;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -42,8 +42,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 abstract class AbstractFeedbackController extends CrudController
 {
-    use LabelFiltersTrait, DateFiltersTrait, ListFiltersTrait;
-
     /**
      * @param QueryBuilder $qb
      * @param string       $alias
@@ -63,10 +61,8 @@ abstract class AbstractFeedbackController extends CrudController
      */
     protected function applyDateCreatedFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        $this->applyDateRangeFilter(
-            new QueryFilterContext($qb, $alias, $request),
-            'date_created', 'created_from', 'created_to'
-        );
+        $context = new RequestQueryContext($qb, $alias, $request);
+        DateHelper::applyDateRangeFilter($context, 'date_created', 'created_from', 'created_to');
     }
 
     /**
@@ -74,8 +70,8 @@ abstract class AbstractFeedbackController extends CrudController
      */
     protected function applyFeedbackListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        $context = new QueryFilterContext($qb, $alias, $request);
-        $this->applyLabelFilters($context, Feedback::class);
+        $context = new RequestQueryContext($qb, $alias, $request);
+        LabelHelper::applyLabelFilters($context, Feedback::class);
 
         $category = $request->get('category');
         if (!empty($category)) {
@@ -89,22 +85,22 @@ abstract class AbstractFeedbackController extends CrudController
         $statusCategory = $request->get('status_category');
         if (!empty($statusCategory)) {
             $qb
-                ->leftJoin("$alias.status_category", 'statusCategory')
-                ->andWhere('statusCategory.id IN (:statusCategory)')
-                ->setParameter('statusCategory', $statusCategory)
+                ->leftJoin("$alias.status_category", 'status_category')
+                ->andWhere('status_category.id IN (:status_category)')
+                ->setParameter('status_category', $statusCategory)
             ;
         }
 
         $customCategory = $request->get('custom_category');
         if (!empty($customCategory)) {
             $qb
-                ->leftJoin("$alias.custom_data", 'customCat')
-                ->andWhere('customCat.input IN (:custom_category)')
+                ->leftJoin("$alias.custom_data", 'custom_category')
+                ->andWhere('custom_category.input IN (:custom_category)')
                 ->setParameter('custom_category', $customCategory)
             ;
         }
 
-        $this->applyInListFilter($context, 'status');
-        $this->applyInListFilter($context, 'hidden_status');
+        ListHelper::applyInListFilter($context, 'status');
+        ListHelper::applyInListFilter($context, 'hidden_status');
     }
 }

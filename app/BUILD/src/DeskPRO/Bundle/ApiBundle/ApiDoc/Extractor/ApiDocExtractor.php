@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor;
 
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
@@ -41,6 +42,15 @@ use Symfony\Component\Routing\Route;
  */
 class ApiDocExtractor extends BaseApiDocExtractor
 {
+    public static $methods = [
+        'list'   => true,
+        'count'  => true,
+        'get'    => true,
+        'post'   => true,
+        'put'    => false,
+        'delete' => false,
+    ];
+
     /**
      * @return Route[]
      */
@@ -81,7 +91,7 @@ class ApiDocExtractor extends BaseApiDocExtractor
      */
     protected function getExposedActions($action, \ReflectionClass $reflection)
     {
-        if (!in_array($action, array_keys(CrudController::$methods))) {
+        if (!in_array($action, array_keys(self::$methods))) {
             // This method is custom for crud - e.g. getMySuperListAction, shouldn't process it
             return false;
         }
