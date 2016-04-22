@@ -61,8 +61,6 @@ class Count
     /**
      * Entity identity.
      *
-     * @JMS\Type("string")
-     *
      * @var string
      */
     private $id;
