@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -61,7 +60,7 @@ class DocsController extends AbstractController
 
     public function aboutAction()
     {
-        return $this->render('ApiBundle:SwaggerUi:about.html.twig');
+        return $this->render('LegacyApiBundle:SwaggerUi:about.html.twig');
     }
 
     ####################################################################################################################
@@ -70,7 +69,7 @@ class DocsController extends AbstractController
 
     public function apiAction()
     {
-        return $this->render('ApiBundle:SwaggerUi:api.html.twig');
+        return $this->render('LegacyApiBundle:SwaggerUi:api.html.twig');
     }
 
     ####################################################################################################################
@@ -121,7 +120,7 @@ class DocsController extends AbstractController
 
     private function getResourcePath($res)
     {
-        return DP_ROOT.'/src/Application/ApiBundle/Resources/views/SwaggerDocs/'.ltrim($res, '/').'.json';
+        return DP_ROOT.'/src/Application/LegacyApiBundle/Resources/views/SwaggerDocs/'.ltrim($res, '/').'.json';
     }
 
     private function serveResource($res)
