@@ -135,19 +135,22 @@ class TaskType extends AbstractType
                 'owner_property' => 'task',
             ])
             ->add('departments', EntityType::class, [
-                'class'    => Department::class,
-                'multiple' => true,
-                'required' => false,
+                'class'        => Department::class,
+                'multiple'     => true,
+                'required'     => false,
+                'choice_value' => null,
             ])
             ->add('teams', EntityType::class, [
-                'class'    => AgentTeam::class,
-                'multiple' => true,
-                'required' => false,
+                'class'        => AgentTeam::class,
+                'multiple'     => true,
+                'required'     => false,
+                'choice_value' => null,
             ])
             ->add('agents', EntityType::class, [
-                'class'    => Person::class,
-                'multiple' => true,
-                'required' => false,
+                'class'        => Person::class,
+                'multiple'     => true,
+                'required'     => false,
+                'choice_value' => null,
             ])
             ->add('linked_tickets', EntityType::class, [
                 'class'        => Ticket::class,

@@ -89,7 +89,7 @@ Feature: /tasks endpoint
     When I send a PUT request to "/api/v2/tasks/3" with body:
     """
 {
-  "linked_articles": [1,2],
+  "linked_articles": [1, 2],
   "linked_chats": [2],
   "linked_tickets": [1, 3]
 }
@@ -132,6 +132,42 @@ Feature: /tasks endpoint
     And the JSON node "data.linked_tickets" should have 2 elements
     And the JSON node "data.linked_tickets[0]" should be equal to 2
     And the JSON node "data.linked_tickets[1]" should be equal to 4
+
+  Scenario: I select unknown agent
+    When I send a PUT request to "/api/v2/tasks/3" with body:
+    """
+{
+  "agents": [1, 10000]
+}
+    """
+    And the response status code should be 400
+    And the JSON node "errors.fields.agents.errors[0].code" should be equal to "invalid_data_type"
+    And the JSON node "errors.fields.agents.errors[0].message" should be equal to "This data type is not is data type that was expected."
+
+  Scenario: I modify assigned items
+    When I send a PUT request to "/api/v2/tasks/3" with body:
+    """
+{
+  "agents": [1, 3],
+  "departments": [2],
+  "teams": [1, 2]
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/tasks/3"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data.agents" should have 2 elements
+    And the JSON node "data.agents[0]" should be equal to 1
+    And the JSON node "data.agents[1]" should be equal to 3
+
+    And the JSON node "data.departments" should have 1 element
+    And the JSON node "data.departments[0]" should be equal to 2
+
+    And the JSON node "data.teams" should have 2 elements
+    And the JSON node "data.teams[0]" should be equal to 1
+    And the JSON node "data.teams[1]" should be equal to 2
 
   Scenario: I DELETE a single task
     When I send a DELETE request to "/api/v2/tasks/3"
