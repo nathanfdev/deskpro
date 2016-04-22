@@ -140,7 +140,7 @@ class DateHelper
         $periodDql = self::getDatePeriodCaseWhenDql($property);
 
         $qb->addSelect("$periodDql as group_name");
-        $qb->addSelect("$periodDql as title");
+        $qb->addSelect("$periodDql as date_title");
         $qb->addSelect("FIELD($periodDql, 'today', 'yesterday', 'this_month', 'last_month', 'this_year', 'ever') as HIDDEN group_order");
         $qb->groupBy('group_name');
         $qb->orderBy('group_order');

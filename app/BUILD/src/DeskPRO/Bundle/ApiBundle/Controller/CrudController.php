@@ -33,6 +33,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\DateHelper;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
@@ -404,6 +405,10 @@ abstract class CrudController extends BaseController
     protected function addGroupByNestedCounts(Count $count, array $result)
     {
         foreach ($result as $group) {
+            if (isset($group['date_title'])) {
+                $group['title'] = DateHelper::$datePeriodLabels[$group['date_title']];
+            }
+
             $count->addNested($group['value'], $group['group_name'], $count->getGroupedBy(), $group['title'], true);
         }
     }
