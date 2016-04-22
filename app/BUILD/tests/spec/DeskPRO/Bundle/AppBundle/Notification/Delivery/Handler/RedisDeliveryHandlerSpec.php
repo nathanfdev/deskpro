@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -42,11 +42,9 @@ class RedisDeliveryHandlerSpec extends ObjectBehavior
     public function let(Client $client)
     {
         $this->beConstructedWith($client);
-        /*
-         * @see comment for commented code below
-         * $client->publish(Argument::any(), Argument::any())->willReturn(1);
-         * $client->connect()->willReturn(Argument::any());
-         */
+        $client->publish(Argument::any(), Argument::any())->willReturn(1);
+
+        $client->connect()->willReturn(Argument::any());
     }
 
     public function it_can_deliver_message(ActionAlert $actionAlert, Client $client)
@@ -55,16 +53,13 @@ class RedisDeliveryHandlerSpec extends ObjectBehavior
         $actionAlert->getData()->willReturn([]);
         $actionAlert->getDate()->willReturn(new \DateTime());
         $actionAlert->getType()->willReturn('test.action.alert');
-        /*
-         * @see https://github.com/phpspec/prophecy/pull/247
-         * @todo we should uncomment this when above noticed pull request will be merged
-         * $actionAlert->getTarget()->shouldBeCalled();
-         * $actionAlert->getDate()->shouldBeCalled();
-         * $actionAlert->getId()->shouldBeCalled();
-         * $actionAlert->getType()->shouldBeCalled();
-         * $actionAlert->getData()->shouldBeCalled();
-         * $client->publish(RedisDeliveryHandler::CHANNEL_ACTION_ALERT, Argument::any())->shouldBeCalled();
-         * $this->deliver($actionAlert);
-         */
+
+        $actionAlert->getTarget()->shouldBeCalled();
+        $actionAlert->getDate()->shouldBeCalled();
+        $actionAlert->getId()->shouldBeCalled();
+        $actionAlert->getType()->shouldBeCalled();
+        $actionAlert->getData()->shouldBeCalled();
+        $client->publish(RedisDeliveryHandler::CHANNEL_ACTION_ALERT, Argument::any())->shouldBeCalled();
+        $this->deliver($actionAlert);
     }
 }
