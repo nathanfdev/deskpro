@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,37 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\ApiBundle\Controller\Usergroups;
 
-namespace DpTest\Bundle\AppBundle\DataService\UserGroups;
-
-use DeskPRO\Bundle\AppBundle\DataService\UserGroups\UserGroupsDataService;
-use Doctrine\ORM\EntityManager;
-use DpTest\DeskProTestCase;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
- * Class UserGroupsDataServiceTest.
+ * Class UserGroupsController.
+ *
+ * @ApiModes("all")
+ * @Rest\Route("/user_groups")
+ * @ApiDoc(target="all", section="Usergroups", output="Application\DeskPRO\Entity\Usergroup")
  */
-class UserGroupsDataServiceTest extends DeskProTestCase
+class UserGroupsController extends AbstractUserGroupsController
 {
-    /**
-     * @test
-     */
-    public function it_should_be_instantiable()
-    {
-        $this->assertInstanceOf(UserGroupsDataService::class, $this->instance());
-    }
-
-    /**
-     * @return UserGroupsDataService
-     */
-    private function instance()
-    {
-        /** @var EntityManager $em */
-        $em = $this->mockQueryBuildingEntityManager(EntityManager::class)->reveal();
-
-        return new UserGroupsDataService($em);
-    }
+    public static $isAgentGroup = false;
 }
