@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { toggleSelectedAction } from '../../../../Application/Actions/massActions';
 import { editTask } from '../../../Actions/listActions';
 import { selectedSelector } from '../../../../Application/Selectors/massActions';
+import Immutable from 'immutable';
+import { addToCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import {
   cardVisibleFieldsSelector,
   tableVisibleFieldsSelector,
@@ -11,7 +13,7 @@ import {
   calendarVisibleFieldsSelector,
   currentOrderBySelector
 } from '../../../Selectors/list';
-import $ from 'jquery';
+import jQuery from 'jquery';
 
 @connect(state => ({
   selectedTasks:         selectedSelector(state),
@@ -28,8 +30,7 @@ export class TaskCardEditContainer extends React.Component {
     dispatch:      PropTypes.func.isRequired,
     selectedTasks: PropTypes.object.isRequired,
     task:          PropTypes.object.isRequired,
-    children:      PropTypes.node.isRequired,
-    onUpdate:      PropTypes.func
+    children:      PropTypes.node.isRequired
   };
 
   constructor(props) {
@@ -39,6 +40,27 @@ export class TaskCardEditContainer extends React.Component {
       selected: props.selectedTasks.indexOf(props.task.get('id')) !== -1,
       task:     props.task
     };
+  }
+
+  componentWillReceiveProps(props) {
+    this.setState({
+      selected: props.selectedTasks.indexOf(props.task.get('id')) !== -1,
+      task:     props.task
+    });
+  }
+
+  shouldComponentUpdate(props, state) {
+    if (state.selected !== this.state.selected) {
+      return true;
+    }
+
+    return !Immutable.is(this.state.task, state.task);
+  }
+
+  componentWillUpdate(props, state) {
+    if (this.props.onUpdate) {
+      this.props.onUpdate(state.task);
+    }
   }
 
   onToggleSelected = () => {
@@ -54,9 +76,9 @@ export class TaskCardEditContainer extends React.Component {
     let params;
 
     if (prop === 'assignee') {
-      const agents = value.get('agent') ? [value.get('agent')] : [];
-      const teams = value.get('team') ? [value.get('team')] : [];
-      const departments = value.get('department') ? [value.get('department')] : [];
+      const agents = value.get('agents').toArray();
+      const teams = value.get('teams').toArray();
+      const departments = value.get('departments').toArray();
       params = { agents, teams, departments };
       task = task.mergeWith(value);
     } else if (prop === 'linked_items') {
@@ -78,6 +100,7 @@ export class TaskCardEditContainer extends React.Component {
     }
 
     this.setState({ task });
+    dispatch(addToCollection('Task', 'all', Immutable.List([task])));
     dispatch(editTask(task.get('id'), params));
   };
 
@@ -102,11 +125,11 @@ export const cardSourceSpec = {
   beginDrag({ task }, {}, component) {
     return {
       id:    task.get('id'),
-      width: $(ReactDOM.findDOMNode(component)).width()
+      width: jQuery(ReactDOM.findDOMNode(component)).width()
     };
   },
-  canDrag({ editing, updateData = {} }) {
-    return !editing && !updateData.date_created && !updateData.date_done;
+  canDrag({ editing, updateData = Immutable.Map() }) {
+    return !editing && !updateData.get('date_created') && !updateData.get('date_done');
   }
 };
 
@@ -124,8 +147,10 @@ export const cardTargetSpec = {
 };
 
 export const groupTargetSpec = {
-  drop({ group, onChangeGroup }, monitor) {
-    onChangeGroup(monitor.getItem().id, group.get('updateData'));
+  drop({ updateData, onChangeGroup }, monitor) {
+    if (!updateData) return;
+    const item = monitor.getItem();
+    onChangeGroup(item.id, updateData);
   }
 };
 

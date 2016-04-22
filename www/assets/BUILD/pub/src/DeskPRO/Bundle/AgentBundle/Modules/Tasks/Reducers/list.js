@@ -7,21 +7,20 @@ import invariant from 'invariant';
 
 const initialState = {
   listParams: {
-    nav:     null,
+    nav: null,
     filters: {
       label_mode: 'any'
     }
   },
   visibleFields: {
-    [constants.VIEW_MODE_CARD]:     ['title', 'project', 'date_due', 'assignee'],
-    [constants.VIEW_MODE_TABLE]:    ['id', 'project', 'date_due', 'assignee'],
-    [constants.VIEW_MODE_KANBAN]:   ['title', 'project', 'date_due', 'assignee'],
+    [constants.VIEW_MODE_CARD]: ['title', 'project', 'date_due', 'assignee'],
+    [constants.VIEW_MODE_TABLE]: ['id', 'project', 'date_due', 'assignee'],
+    [constants.VIEW_MODE_KANBAN]: ['title', 'project', 'date_due', 'assignee'],
     [constants.VIEW_MODE_CALENDAR]: ['title', 'project', 'date_due', 'assignee']
   },
   elements: {},
   selected: [],
-  view:     'card',
-
+  view: 'card',
   async: {
     done: null
   }
@@ -29,19 +28,15 @@ const initialState = {
 
 export default createReducer(initialState, {
   [actions.loadIndicator]: setValue('async.done', false),
-
-  [actions.setListParamsNav]:     setFullPayload('listParams.nav'),
+  [actions.setListParamsNav]: setFullPayload('listParams.nav'),
   [actions.setListParamsFilters]: setFullPayload('listParams.filters'),
-
-  [actions.toggleCardFieldVisibility]:     togglePayloadInCollection(['visibleFields', constants.VIEW_MODE_CARD]),
-  [actions.toggleTableFieldVisibility]:    togglePayloadInCollection(['visibleFields', constants.VIEW_MODE_TABLE]),
-  [actions.toggleKanbanFieldVisibility]:   togglePayloadInCollection(['visibleFields', constants.VIEW_MODE_KANBAN]),
+  [actions.toggleCardFieldVisibility]: togglePayloadInCollection(['visibleFields', constants.VIEW_MODE_CARD]),
+  [actions.toggleTableFieldVisibility]: togglePayloadInCollection(['visibleFields', constants.VIEW_MODE_TABLE]),
+  [actions.toggleKanbanFieldVisibility]: togglePayloadInCollection(['visibleFields', constants.VIEW_MODE_KANBAN]),
   [actions.toggleCalendarFieldVisibility]: togglePayloadInCollection(['visibleFields', constants.VIEW_MODE_CALENDAR]),
-
   [actions.toggleSelected]: togglePayloadInCollection('selected'),
-  [actions.toggleAll]:      handleMassAction('elements', 'selected'),
-
-  [actions.unload]:   setValue('elements', []),
+  [actions.toggleAll]: handleMassAction('elements', 'selected'),
+  [actions.unload]: setValue('elements', []),
   [actions.loadList]: async({
     success: (state, payload) => {
       invariant(
@@ -59,7 +54,7 @@ export default createReducer(initialState, {
         .set('pagination', Immutable.fromJS(payload.pagination));
     },
     start: setValue('async.done', false),
-    done:  setValue('async.done', true)
+    done: setValue('async.done', true)
   }),
   [actions.addTask]: async({
     success: pushPayloadToCollection('elements')

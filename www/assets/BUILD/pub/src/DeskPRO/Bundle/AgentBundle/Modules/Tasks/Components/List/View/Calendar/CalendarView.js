@@ -10,7 +10,7 @@ import { TaskCardPreviewContainer } from '../../TaskCard/TaskCardPreviewContaine
 import { TaskCardPreview } from './TaskCard/TaskCardPreview';
 import { CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
-import { Detached } from 'DeskPRO/Component/Positioned/Detached';
+import { Detached as Positioned }  from 'DeskPRO/Component/Positioned/Detached';
 
 export class CalendarView extends React.Component {
 
@@ -26,6 +26,14 @@ export class CalendarView extends React.Component {
     };
   }
 
+  resetNewTask = (force) => {
+    if (!force && this.isEditing) return;
+    this.newTaskTarget = null;
+    this.setState({
+      task: null
+    });
+  };
+
   onSetEditing = (isEditing) => {
     this.isEditing = isEditing;
   };
@@ -37,14 +45,6 @@ export class CalendarView extends React.Component {
     });
   };
 
-  resetNewTask = (force) => {
-    if (!force && this.isEditing) return;
-    this.newTaskTarget = null;
-    this.setState({
-      task: null
-    });
-  };
-
   render() {
     const { tasks, onChangeGroup } = this.props;
     const config = {
@@ -52,17 +52,16 @@ export class CalendarView extends React.Component {
       elementName:      'task',
       dateField:        'date_due',
       additionalPrefix: 'Tasks for',
-
-      card: (
-        <TaskCardEditContainer>
-          <TaskCard />
-        </TaskCardEditContainer>
-      ),
-      draggable: {
+      card:             (
+                          <TaskCardEditContainer>
+                            <TaskCard />
+                          </TaskCardEditContainer>
+                        ),
+      draggable:        {
         source: <TaskDragCard />,
         target: <TaskCardDragTarget onChangeGroup={onChangeGroup} />
       },
-      onDoubleClick: (date, event) => {
+      onDoubleClick:    (date, event) => {
         this.createNewTask(date, event.target);
       }
     };
@@ -70,15 +69,14 @@ export class CalendarView extends React.Component {
     return (
       <div>
         <Calendar {...config} />
-        <Detached positionTarget={this.newTaskTarget} positionAt="center center" isOpen={!!this.state.task}>
+
+        <Positioned positionTarget={this.newTaskTarget} positionAt="center center" isOpen={!!this.state.task}>
           <ClickOut onClickOut={() => this.resetNewTask(false)}>
-            <TaskCardNew
-              task={this.state.task}
-              onSetEditing={this.onSetEditing}
+            <TaskCardNew task={this.state.task} onSetEditing={this.onSetEditing}
               onClose={() => this.resetNewTask(true)}
               />
           </ClickOut>
-        </Detached>
+        </Positioned>
 
         <CustomCardDragLayer>
           <TaskCardPreviewContainer>

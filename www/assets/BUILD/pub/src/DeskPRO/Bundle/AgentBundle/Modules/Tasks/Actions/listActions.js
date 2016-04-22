@@ -6,6 +6,7 @@ import { listParamsNavSelector, listParamsFiltersSelector, currentOrderBySelecto
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { addToCollection, setCollection, releaseCollection, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import invariant from 'invariant';
 
 /**
  * Used to identify requests within record stores
@@ -63,7 +64,6 @@ export const loadList = createAction(
     const params = {
       ...navParams,
       ...filtersParams,
-
       order_by:  currentOrderBySelector(state),
       order_dir: currentOrderDirSelector(state),
       include:   'ticket,chat_conversation,article'
@@ -81,10 +81,10 @@ export const loadList = createAction(
 
         dispatch(releaseCollection('Task', recordStoresId));
         dispatch(setCollection('Task', recordStoresId, res.data));
-
-        return { ids, pagination: res.meta.pagination };
+        const { pagination } = res.meta;
+        return { ids, pagination };
       }
-    );
+      );
   }
 );
 
@@ -120,49 +120,37 @@ export const addTask = createAction(
   })
 );
 
-let latestPromise;
-let latestTasks;
+export const getTask = createAction(
+  'TASKS_LIST_GET_TASK',
+  (id) => dispatch => api.sendGet(`DP_API/tasks/${id}`).success(response => {
+    if (!response.data) return;
+    const task = Immutable.fromJS(response.data);
+    dispatch(addToCollection('Task', recordStoresId, Immutable.List([task])));
+  })
+);
+
+const updates = {};
 
 export const editTask = createAction(
   'TASKS_LIST_EDIT_TASK',
-  (taskId, data) => (dispatch, getState) => {
-    const tasks = latestTasks || collectionSelectorFactory('Task', recordStoresId)(getState());
+  (id, data) => (dispatch, getState) => {
+    invariant(!!data, 'Where are the data?');
 
-    // Update task props
-    const oldTask = tasks.get(taskId);
-    let newTask = tasks.get(taskId);
-    const changedProps = Object.keys(data).filter(taskProp => newTask.get(taskProp) !== data[taskProp]);
+    const tasks = collectionSelectorFactory('Task', recordStoresId)(getState());
+    const oldTask = tasks.get(id);
 
-    changedProps.forEach(changedProp => {
-      let newValue = data[changedProp];
-      if (Array.isArray(newValue)) {
-        newValue = Immutable.fromJS(newValue);
-      }
-      newTask = newTask.set(changedProp, newValue);
-    });
-
-    if (Immutable.is(newTask, oldTask)) {
-      return;
-    }
-
-    const promise = api.sendPut(`DP_API/tasks/${taskId}`, data);
-    latestPromise = promise;
-    latestTasks = tasks;
+    const promise = api.sendPut(`DP_API/tasks/${id}`, data);
+    updates[id] = promise;
 
     // todo show errors (alert?)
     promise.success(() => {
-      latestTasks = (latestTasks || collectionSelectorFactory('Task', recordStoresId)(getState())).set(taskId, newTask);
-      if (latestPromise !== promise) return;
-
-      console.time('set collections');
-      dispatch(setCollection('Task', recordStoresId, latestTasks));
-      latestTasks = null;
-      console.timeEnd('set collections');
+      if (updates[id] !== promise) return;
+      delete updates[id];
+      dispatch(getTask(id));
     }).error(() => {
-      latestTasks = (latestTasks || collectionSelectorFactory('Task', recordStoresId)(getState())).set(taskId, oldTask);
-      if (latestPromise !== promise) return;
-      dispatch(setCollection('Task', recordStoresId, latestTasks));
-      latestTasks = null;
+      if (updates[id] !== promise) return;
+      delete updates[id];
+      dispatch(addToCollection('Task', recordStoresId, Immutable.List([oldTask])));
     });
   }
 );

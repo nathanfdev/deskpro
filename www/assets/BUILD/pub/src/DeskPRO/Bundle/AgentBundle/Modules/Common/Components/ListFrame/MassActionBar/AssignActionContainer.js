@@ -1,20 +1,20 @@
 import React, { Component, PropTypes } from 'react';
 import { paramsSelector } from '../../../../Application/Selectors/massActions';
 import { AgentsListContainer, TeamsListContainer, DepartmentsListContainer }
-  from '../../../../Common/Components/Form/Lists/index';
-import { FieldGroup, Popup } from '../../../../Common/Components/Popup/index';
-import { connect } from 'react-redux';
+  from '../../../../Common/Components/Form/Lists';
+import { FieldGroup, Popup} from '../../../../Common/Components/Popup';
 
+import { connect } from 'react-redux';
 @connect(state => ({
   currentParams: paramsSelector(state)
 }))
-export class AssignActionContainer extends Component {
 
+export class AssignActionContainer extends Component {
   static propTypes = {
-    dispatch:          PropTypes.func.isRequired,
-    setParams:         PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    setParams: PropTypes.func.isRequired,
     resetSingleAction: PropTypes.func.isRequired,
-    currentParams:     PropTypes.object
+    currentParams: PropTypes.object
   };
 
   onClick = (param, value) => {

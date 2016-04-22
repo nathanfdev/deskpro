@@ -1,28 +1,27 @@
-import React, { PropTypes } from 'react';
-import { QuickFilter } from './QuickFilter';
+import React, {Component, PropTypes} from 'react';
+import {QuickFilter} from './QuickFilter';
 import classNames from 'classnames';
 
-export class ChoiceMenu extends React.Component {
+export class ChoiceMenu extends Component {
 
   static propTypes = {
-    title:       PropTypes.string,
+    title: PropTypes.string,
     quickFilter: PropTypes.bool,
-    submenu:     PropTypes.bool,
-    children:    PropTypes.any.isRequired
+    submenu: PropTypes.bool,
+    children: PropTypes.any.isRequired
   };
 
   render() {
     const { title, quickFilter, children, submenu } = this.props;
     const classes = classNames('dpw-navigation-dropdown-panel', { 'dpw-navigation-dropdown-panel-corner-left': submenu });
-
     return (
       <div className={classes}>
         <div className="dpw-navigation-dropdown-panel-content">
           <div className="dpw-navigation-dropdown-panel-content-line">
             <div className="dpw-navigation-dropdown-panel-content-full">
-              { title && <ChoiceMenuHeader title={title} /> }
+              { title && <ChoiceMenuHeader title={title}/> }
               <div className="dpw-departments-long-list">
-                {quickFilter && <QuickFilter />}
+                {quickFilter && <QuickFilter/>}
                 <div className="dpw--popup-item-collection">
                   {children}
                 </div>
@@ -35,7 +34,7 @@ export class ChoiceMenu extends React.Component {
   }
 }
 
-export class ChoiceMenuHeader extends React.Component {
+export class ChoiceMenuHeader extends Component {
 
   static propTypes = {
     title: PropTypes.string.isRequired

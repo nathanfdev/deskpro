@@ -40,12 +40,13 @@ export class ListItemContainer extends React.Component {
     const props = this.props;
     const newProps = {
       ...props,
-
       groupId: 'nav',
       onClick: this.loadList,
       itemId:  this.itemId
     };
 
-    return <ListItemStatefulContainer {...newProps} />;
+    return (
+      <ListItemStatefulContainer {...newProps} />
+    );
   }
 }

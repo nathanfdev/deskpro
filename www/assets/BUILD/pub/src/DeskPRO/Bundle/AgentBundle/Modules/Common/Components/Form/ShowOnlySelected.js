@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 export class ShowOnlySelected extends React.Component {
 
   static propTypes = {
-    value:    PropTypes.bool,
+    value: PropTypes.bool,
     onChange: PropTypes.func.isRequired
   };
 
@@ -15,10 +15,10 @@ export class ShowOnlySelected extends React.Component {
     return (
       <div className="dpw-popup-content-item-show-only-selected">
         <a href="#" className="checkbox-link" onClick={this.onClick}>
-          <span>Show only Selected</span>
           {this.props.value &&
-            <span className="dpw--checkbox-boxy"><i className="fa fa-check" /></span>
+          <span className="dpw--checkbox-boxy"><i className="fa fa-check"/></span>
           }
+          <span>Show only Selected</span>
         </a>
       </div>
     );

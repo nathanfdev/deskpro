@@ -1,3 +1,17 @@
+.dpw-site-cover {
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.dpw-site-cover.with-popup {
+  overflow-y: auto;
+  z-index: 1005;
+}
+
 .dpw--modal {
   &::after {
     clear: both;

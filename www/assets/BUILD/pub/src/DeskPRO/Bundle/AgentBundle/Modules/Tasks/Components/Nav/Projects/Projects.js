@@ -1,88 +1,95 @@
 import React, { PropTypes } from 'react';
-import { Detached } from 'DeskPRO/Component/Positioned/Detached';
+import { Detached } from 'DeskPRO/Component/Detached';
 import { Section, SectionHeader, ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
-import { ClickOut } from 'DeskPRO/Component/ClickOut';
-import { ProjectFormContainer } from './ProjectForm/ProjectFormContainer';
+import { ProjectForm } from './ProjectForm/ProjectForm';
 import { ListItemContainer } from '../ListItemContainer';
+import { pureRender } from 'Ampliflux';
+import { addToCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import Immutable from 'immutable';
 
+@pureRender
 export class Projects extends React.Component {
 
   static propTypes = {
     projects:         PropTypes.object.isRequired,
-    projectsCountMap: PropTypes.array.isRequired
+    projectsCountMap: PropTypes.object.isRequired,
+    dispatch:         PropTypes.func.isRequired
   };
 
   constructor(props) {
     super(props);
-
-    this.state = {
-      project: null
-    };
+    this.state = { project: null };
   }
 
-  onNewProject = event => {
-    event.preventDefault();
-    this.setState({
-      project: Immutable.fromJS({})
-    });
+  onCoverClick = (event) => {
+    event.stopPropagation();
+    event.nativeEvent.stopImmediatePropagation();
+
+    if (event.target.className.indexOf('dpw-site-cover') !== -1) {
+      this.onEdit(null, event);
+    }
   };
 
-  onEdit = project => {
+  onEdit = (project, event) => {
+    if (event) {
+      event.preventDefault();
+    }
     this.setState({ project });
   };
 
-  onCloseEditing = () => {
-    this.setState({
-      project: null
-    });
+  onSubmit = (project) => {
+    if (!project) return;
+
+    this.setState({ project: null });
+    this.props.dispatch(addToCollection('Project', 'all', Immutable.List([project])));
   };
 
-  renderProjects() {
-    const { projects, projectsCountMap } = this.props;
+  getCount(project) {
+    const { projectsCountMap = {} } = this.props;
+    return project && project.get('id') && projectsCountMap[project.get('id')] || 0;
+  }
+
+  renderProject = (project, index) => {
+    const urlHash = `project-${project.get('id')}-${project.get('title')}`;
 
     return (
-      <ul>
-        {projects.map((project, index) =>
-          <ListItemContainer
-            key={index}
-            urlHash={`project-${project.get('id')}-${project.get('title')}`}
-            listOptions={{ project: [project.get('id')] }}
-            >
-            <ListItem count={projectsCountMap[project.get('id')] || 0} onEdit={() => this.onEdit(project)}>
-              <div part="label">
-                <i className="fa fa-book" /> {project.get('title')}
-              </div>
-            </ListItem>
-          </ListItemContainer>
-        )}
-      </ul>
+      <ListItemContainer key={index} urlHash={urlHash} listOptions={{ project: [project.get('id')] }}>
+        <ListItem count={this.getCount(project)} onEdit={() => this.onEdit(project)}>
+          <div part="label" className="section-list-title">
+            <i className="fa fa-book" />
+            <div className="cutted">
+              {project.get('title')}
+            </div>
+          </div>
+        </ListItem>
+      </ListItemContainer>
     );
-  }
+  };
 
   render() {
     const { project } = this.state;
+    const { projects } = this.props;
 
     return (
       <Section>
         <SectionHeader>
           Projects &nbsp;
-          <a href="#" onClick={this.onNewProject}>
+          <a href="#" onClick={() => this.onEdit(Immutable.fromJS({}))}>
             <i className="fa fa-plus" />
           </a>
         </SectionHeader>
 
-        {this.renderProjects()}
+        <ul>
+          {projects.map(this.renderProject)}
+        </ul>
 
-        <Detached
-          isOpen={this.state.project}
-          positionTarget={this}
-          positionAt="right+5 top-6"
-          collision="fit"
-          >
-          <ClickOut onClickOut={this.onCloseEditing}>
-            <ProjectFormContainer project={project} />
-          </ClickOut>
+        <Detached>
+          {this.state.project
+            ? <div className="dpw-site-cover with-popup" onClick={this.onCoverClick}>
+            <ProjectForm project={project} tasksCount={this.getCount(project)} onSubmit={this.onSubmit} />
+          </div>
+            : null
+          }
         </Detached>
       </Section>
     );

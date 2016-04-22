@@ -1,15 +1,15 @@
 import React, { PropTypes } from 'react';
-import { BaseList } from './BaseList';
+import { DepartmentsListItem } from './DepartmentsListItem';
+import { EntityList } from './EntityList';
 
-export class DepartmentsList extends BaseList {
+export class DepartmentsList extends EntityList {
 
-  renderLabel(value) {
-    return (
-      value.get('title')
-    );
+  constructor(props) {
+    super(props);
+    this.item = DepartmentsListItem;
   }
 
-  getKeyword(value) {
+  keyword(value) {
     return value.get('title');
   }
 }

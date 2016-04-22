@@ -1,14 +1,15 @@
-import { BaseList } from './BaseList';
+import React, { PropTypes } from 'react';
+import { AgentTeamsListItem } from './AgentTeamsListItem';
+import { EntityList } from './EntityList';
 
-export class AgentTeamsList extends BaseList {
+export class AgentTeamsList extends EntityList {
 
-  renderLabel(value) {
-    return (
-      value.get('name')
-    );
+  constructor(props) {
+    super(props);
+    this.item = AgentTeamsListItem;
   }
 
-  getKeyword(value) {
+  keyword(value) {
     return value.get('name');
   }
 }

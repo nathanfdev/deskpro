@@ -1,13 +1,16 @@
 import React, { PropTypes } from 'react';
+import { pureRender } from 'Ampliflux';
 
+@pureRender
 export class BaseListGroup extends React.Component {
 
   static propTypes = {
     group:             PropTypes.object.isRequired,
     isOver:            PropTypes.bool,
-    connectDropTarget: PropTypes.func.isRequired,
-    onUpdate:          PropTypes.func
+    connectDropTarget: PropTypes.func.isRequired
   };
 
-  hasElements = () => this.props.group.get('elements').size > 0;
+  render() {
+    return <div />;
+  }
 }

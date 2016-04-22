@@ -6,12 +6,12 @@ import { pureRender } from 'Ampliflux';
 export class ListItem extends React.Component {
 
   static propTypes = {
-    children: PropTypes.node,
-    count: PropTypes.any,
-    label: PropTypes.string,
-    active: PropTypes.bool,
-    onClick: PropTypes.func,
-    onEdit: PropTypes.func,
+    children:           PropTypes.node,
+    count:              PropTypes.any,
+    label:              PropTypes.string,
+    active:             PropTypes.bool,
+    onClick:            PropTypes.func,
+    onEdit:             PropTypes.func,
     onItemControlClick: PropTypes.func
   };
 
@@ -35,24 +35,31 @@ export class ListItem extends React.Component {
     });
   };
 
-  renderEditButton() {
-    const onClick = event => {
-      event.preventDefault();
-      this.props.onEdit(event);
-    };
+  onEditClick = event => {
+    event.preventDefault();
+    this.props.onEdit(event);
+  };
 
-    return (
-      <a href="#" className="edit-icon" onClick={onClick}>
-        <i className="fa fa-cog" />
-      </a>
-    );
-  }
+  onItemControlClick = event => {
+    event.preventDefault();
+    if (this.props.onItemControlClick) {
+      this.props.onItemControlClick(event);
+    }
+  };
 
   renderCountIcon() {
     const { count = 0 } = this.props;
 
     return (
-      <a className="list-counter active" href="#">{count ? count : 0}</a>
+      <a className="list-counter active" href="#">{count}</a>
+    );
+  }
+
+  renderEditButton() {
+    return (
+      <a href="#" className="edit-icon" onClick={this.onEditClick}>
+        <i className="fa fa-cog" />
+      </a>
     );
   }
 
@@ -63,13 +70,8 @@ export class ListItem extends React.Component {
       return '';
     }
 
-    const onClick = event => {
-      event.preventDefault();
-      onItemControlClick(event);
-    };
-
     return (
-      <a href="" className="list-counter-dropdown active" onClick={onClick}>
+      <a href="" className="list-counter-dropdown active" onClick={this.onItemControlClick}>
         <span>&nbsp;</span>
         <i className="fa fa-angle-down"></i>
       </a>
@@ -97,19 +99,13 @@ export class ListItem extends React.Component {
     }
 
     return (
-      <li className="counter-display">
-        <div className="list-counter-bucket"
-             onMouseEnter={this.onShowEditIcon}
-             onMouseLeave={this.onHideEditIcon}>
-
+      <li className="counter-display" onMouseEnter={this.onShowEditIcon} onMouseLeave={this.onHideEditIcon}>
+        <div className="list-counter-bucket">
           {this.renderItemControl()}
           {this.state.showEditIcon && onEdit ? this.renderEditButton() : this.renderCountIcon()}
         </div>
 
-        <a href="#"
-           className={classNames('item', { 'active': active })}
-           onClick={onClick}>
-
+        <a href="#" className={classNames('item', { active })} onClick={onClick}>
           {label}
         </a>
 

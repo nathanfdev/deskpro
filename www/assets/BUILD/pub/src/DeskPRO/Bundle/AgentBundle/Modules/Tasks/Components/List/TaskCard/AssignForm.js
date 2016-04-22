@@ -1,117 +1,85 @@
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import Immutable from 'immutable';
-import { FieldGroup, Popup } from '../../../../Common/Components/Popup/index';
-import { QuickFilter } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/QuickFilter';
-import {
-  BaseForm,
-  Header,
-  FullField,
-  FloatField,
-  Unassign
-} from '../../Form/index';
-import { AgentsListContainer, TeamsListContainer, DepartmentsListContainer }
-  from '../../../../Common/Components/Form/Lists/index';
+import { Popup } from '../../../../Common/Components/Popup';
+import { AssignForm as Form, AssignAgentContainer, AssignTeamContainer, AssignDepartmentContainer } from '../../../../Common/Components/Form';
 
-export class AssignForm extends BaseForm {
+export class AssignForm extends Component {
 
   static propTypes = {
     task:     PropTypes.object.isRequired,
-    onSubmit: PropTypes.func.isRequired
+    onChange: PropTypes.func.isRequired
   };
 
   constructor(props) {
     super(props);
 
-    const localState = this.state;
-    const task = props.task;
-    let assign = {};
-    if (task.get('agents')) {
-      assign = { agent: task.get('agents').toArray()[0] };
-    } else if (task.get('teams')) {
-      assign = { team: task.get('teams').toArray()[0] };
-    } else if (task.get('departments')) {
-      assign = { department: task.get('departments').toArray()[0] };
-    }
+    const { task = Immutable.Map() } = props;
+    const list = Immutable.List();
 
-    this.state = { ...localState, assign };
+    this.state = {
+      agents:      task.get('agents', list),
+      teams:       task.get('teams', list),
+      departments: task.get('departments', list)
+    };
   }
 
-  componentWillReceiveProps(nextProps) {
-    const task = nextProps.task;
-    let assign = {};
-    if (task.get('agents')) {
-      assign = { agent: task.get('agents').toArray()[0] };
-    } else if (task.get('teams')) {
-      assign = { team: task.get('teams').toArray()[0] };
-    } else if (task.get('departments')) {
-      assign = { department: task.get('departments').toArray()[0] };
-    }
+  componentWillReceiveProps(props) {
+    const { task = Immutable.Map() } = props;
+    const list = Immutable.List();
 
-    this.state = { assign };
+    this.setState({
+      agents:      task.get('agents', list),
+      teams:       task.get('teams', list),
+      departments: task.get('departments', list)
+    });
   }
 
-  onClick = (param, value, isActive) => {
-    if (isActive) {
-      this.setState({ assign: {} });
-    } else {
-      this.setState({ assign: { [param]: value } });
-    }
-  };
+  shouldComponentUpdate(props, state) {
+    const { agents, teams, departments } = state;
 
-  onSubmit = event => {
-    event.preventDefault();
+    return !Immutable.is(this.state.agents, agents)
+      || !Immutable.is(this.state.teams, teams)
+      || !Immutable.is(this.state.departments, departments)
+      ;
+  }
 
-    const submitData = Immutable.fromJS(this.state.assign);
-    this.props.onSubmit(submitData);
+  componentDidUpdate() {
+    if (!this.dirty) return;
+
+    this.dirty = false;
+    const { agents, teams, departments } = this.state;
+    this.props.onChange(Immutable.Map({ agents, teams, departments }));
+  }
+
+  onChange = (prop, value) => {
+    this.setState({ [prop]: value });
+    this.dirty = true;
   };
 
   render() {
-    const { task } = this.props;
+    const { agents, teams, departments } = this.state;
 
     return (
       <Popup additionalClassNames="assign-form">
-        <Header>Assign to Task</Header>
+        <div className="dpw--popup-header">
+          <i className="fa fa-tags" /> Assign to Task
+        </div>
 
-        <form>
-          <div className="dpw--popup-content">
-            <FieldGroup>
-              <FloatField align="left">
-                <QuickFilter value={this.state.quickFilter} onChange={this.onChangeQuickFilter} />
-              </FloatField>
+        <div className="dpw--popup-content">
+          <Form>
+            <AssignAgentContainer selected={agents}
+              onChange={(value) => this.onChange('agents', value)}
+              />
 
-              <FloatField align="right">
-                <Unassign onClick={this.onUnassignAll} />
-              </FloatField>
-            </FieldGroup>
+            <AssignTeamContainer selected={teams}
+              onChange={(value) => this.onChange('teams', value)}
+              />
 
-            <FieldGroup>
-              <AgentsListContainer
-                selected={this.state.assign.agent}
-                filter={this.state.quickFilter}
-                selfAssign={this.onAssignSelf}
-                onClick={this.onClick}
-                />
-              <TeamsListContainer
-                selected={this.state.assign.team}
-                filter={this.state.quickFilter}
-                onClick={this.onClick}
-                />
-              <DepartmentsListContainer
-                selected={this.state.assign.department}
-                filter={this.state.quickFilter}
-                onClick={this.onClick}
-                />
-            </FieldGroup>
-
-            <FieldGroup>
-              <FullField>
-                <button type="submit" value="Save" className="dpw--popup-button" onClick={this.onSubmit}>
-                  {task.get('id') ? 'Save' : 'Ok'}
-                </button>
-              </FullField>
-            </FieldGroup>
-          </div>
-        </form>
+            <AssignDepartmentContainer selected={departments}
+              onChange={(value) => this.onChange('departments', value)}
+              />
+          </Form>
+        </div>
       </Popup>
     );
   }

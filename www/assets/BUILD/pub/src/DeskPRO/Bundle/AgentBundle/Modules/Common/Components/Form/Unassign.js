@@ -10,8 +10,7 @@ export class Unassign extends React.Component {
     return (
       <div className="dpw-popup-content-item-unassign-all">
         <a href="#" className="checkbox-link" onClick={this.props.onClick}>
-          <span>Unassign</span>
-          <span className="unassign-all-icon"><span /></span>
+          <span>Unassign All</span>
         </a>
       </div>
     );

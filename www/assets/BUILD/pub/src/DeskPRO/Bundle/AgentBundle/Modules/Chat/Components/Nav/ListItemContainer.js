@@ -12,16 +12,15 @@ import { applyParams } from '../../Actions/chatListActions.js';
 export class ListItemContainer extends Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    count: PropTypes.number.isRequired,
-    group: PropTypes.string.isRequired,
-    groupBy: PropTypes.string.isRequired,
-    label: PropTypes.string.isRequired,
+    dispatch:    PropTypes.func.isRequired,
+    count:       PropTypes.number.isRequired,
+    group:       PropTypes.string.isRequired,
+    groupBy:     PropTypes.string.isRequired,
+    label:       PropTypes.string.isRequired,
     listOptions: PropTypes.object.isRequired,
-    hash: PropTypes.object,
-    onClick: PropTypes.func.isRequired
+    hash:        PropTypes.object,
+    onClick:     PropTypes.func.isRequired
   };
-
 
   constructor(props) {
     super(props);
@@ -29,7 +28,7 @@ export class ListItemContainer extends Component {
   }
 
   componentDidMount() {
-    const {hash, listOptions, dispatch } = this.props;
+    const { hash, listOptions, dispatch } = this.props;
     const activeItemId = hash.get('nav') ? hash.get('nav').get('active') : null;
 
     if (activeItemId === this.itemId) {
@@ -47,8 +46,8 @@ export class ListItemContainer extends Component {
     const props = {
       groupId: 'nav',
       onClick: this.loadList,
-      itemId: this.itemId,
-      label: label
+      itemId:  this.itemId,
+      label
     };
 
     return (

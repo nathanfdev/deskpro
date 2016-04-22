@@ -65,7 +65,8 @@ export class CalendarCellContentItem extends React.Component {
 
         <Detached isOpen={this.state.cardOpened}
                   positionTarget={this.refs.button}
-                  positionAt="right top-5"
+                  positionAt="left top-5"
+                  collision="fit"
                   zIndex={1001}>
 
           <ClickOut onClickOut={this.onCloseTaskCard}

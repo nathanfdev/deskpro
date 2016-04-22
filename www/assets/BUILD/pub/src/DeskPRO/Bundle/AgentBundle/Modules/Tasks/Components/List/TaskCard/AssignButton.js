@@ -43,19 +43,15 @@ export class AssignButton extends CardWidget {
 
   hasAvatar() {
     const { value } = this.state;
-
-    return value.get('agents') && value.get('agents').size
-      || value.get('teams') && value.get('teams').size
-      || value.get('departments') && value.get('departments').size;
+    const list = Immutable.List();
+    return value.get('agents', list).size
+      || value.get('teams', list).size
+      || value.get('departments', list).size;
   }
 
-  onChange = (val) => {
-    this.setState({
-      value:  val,
-      isOpen: false
-    });
-
-    this.props.onChange(val);
+  onChange = (value) => {
+    this.setState({ value });
+    this.props.onChange(value);
   };
 
   render() {
@@ -66,19 +62,20 @@ export class AssignButton extends CardWidget {
           {this.hasAvatar()
             ? <AssigneeAvatar task={this.state.value} />
             : <div className="dpw--avatar-face" style={{ position: 'relative' }}>
-                <i className="fa fa-caret-down" />
-              </div>
+            <i className="fa fa-caret-down" />
+          </div>
           }
         </div>
 
         <Positioned isOpen={this.state.isOpen}
-                    positionTarget={this}
-                    positionAt="right+5 top-10"
-                    collision="fit"
-                    zIndex={1002}>
+          positionTarget={this.refs.button}
+          positionAt="right+5 top-10"
+          collision="fit"
+          zIndex={1002}
+          >
 
           <ClickOut onClickOut={this.onClose} additionalNodes={[this.refs.button, '.assign-form', '.fa-check']}>
-            <AssignForm task={this.state.value} onSubmit={this.onChange} />
+            <AssignForm task={this.state.value} onChange={this.onChange} />
           </ClickOut>
         </Positioned>
       </div>

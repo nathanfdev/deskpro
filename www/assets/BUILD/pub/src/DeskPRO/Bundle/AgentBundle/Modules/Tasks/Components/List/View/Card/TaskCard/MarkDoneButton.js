@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
-import classNames from 'classnames';
+import { pureRender } from 'Ampliflux';
 
+@pureRender
 export class MarkDoneButton extends React.Component {
 
   static propTypes = {
@@ -8,16 +9,30 @@ export class MarkDoneButton extends React.Component {
     onToggle: PropTypes.func
   };
 
+  onToggle = () => {
+    if (this.props.onToggle) {
+      this.props.onToggle(!this.props.isDone);
+    }
+  };
+
   render() {
-    const { onToggle, isDone } = this.props;
+    const { isDone } = this.props;
+
+    if (isDone) {
+      return (
+        <div className="dpw--single-card-mark-done dpw--single-card-mark-done-minimized" onClick={this.onToggle}>
+
+          <span>Done</span>
+          <i className="fa fa-check" />
+        </div>
+      );
+    }
 
     return (
-      <div
-        className={classNames('dpw--single-card-mark-done', { 'dpw--single-card-mark-done-minimized': isDone })}
-        onClick={onToggle}
-        >
-        <span>{isDone ? 'Done' : 'Mark Done'}</span>
+      <div className="dpw--single-card-mark-done" onClick={this.onToggle}>
+
         <i className="fa fa-check" />
+        <span>Mark Done</span>
       </div>
     );
   }

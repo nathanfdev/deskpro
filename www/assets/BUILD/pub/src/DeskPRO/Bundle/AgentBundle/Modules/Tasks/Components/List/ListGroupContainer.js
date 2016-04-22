@@ -6,6 +6,7 @@ import { currentOrderBySelector, elementsSelector } from '../../Selectors/list';
 import { collectionSelectorFactory, allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import { editTask } from '../../Actions/listActions';
+import { pureRender } from 'Ampliflux';
 
 @connect(state => ({
   ids:         elementsSelector(state),
@@ -17,6 +18,8 @@ import { editTask } from '../../Actions/listActions';
   agentTeams:  allSelectorFactory('AgentTeam')(state),
   departments: allSelectorFactory('Department')(state)
 }))
+
+@pureRender
 export class ListGroupContainer extends React.Component {
 
   static propTypes = {
@@ -33,12 +36,13 @@ export class ListGroupContainer extends React.Component {
   };
 
   onChangeGroup = (taskId, updateData) => {
-    this.props.dispatch(editTask(taskId, updateData));
+    if (updateData) {
+      this.props.dispatch(editTask(taskId, updateData));
+    }
   };
 
   render() {
-    const { orderBy, lists, projects, agents, agentTeams, departments } = this.props;
-    const { ids, tasks, children } = this.props;
+    const { orderBy, lists, projects, agents, agentTeams, departments, ids, tasks, children } = this.props;
     const childProps = children.props;
 
     const groupConfig = {
@@ -104,7 +108,6 @@ export class ListGroupContainer extends React.Component {
 
     return React.cloneElement(children, {
       ...childProps,
-
       ids,
       tasks,
       taskGroups:    Immutable.fromJS(groupCollection(groupConfig, tasks)),

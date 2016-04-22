@@ -1,3 +1,3 @@
 export { AgentsListContainer } from './AgentsListContainer';
-export { TeamsListContainer } from './TeamsListContainer';
+export { AgentTeamsListContainer } from './AgentTeamsListContainer';
 export { DepartmentsListContainer } from './DepartmentsListContainer';

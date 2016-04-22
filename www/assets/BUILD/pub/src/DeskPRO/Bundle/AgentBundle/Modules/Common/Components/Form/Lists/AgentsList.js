@@ -1,21 +1,15 @@
-import React from 'react';
-import { BaseList } from './BaseList';
-import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar';
+import React, { PropTypes } from 'react';
+import { AgentsListItem } from './AgentsListItem';
+import { EntityList } from './EntityList';
 
-export class AgentsList extends BaseList {
+export class AgentsList extends EntityList {
 
-  renderLabel(value) {
-    return (
-      <span className="name">
-          <span style={{ position: 'relative' }}>
-            <PersonAvatar person={value} size={16} />
-          </span>
-          {value.get('name')}
-      </span>
-    );
+  constructor(props) {
+    super(props);
+    this.item = AgentsListItem;
   }
 
-  getKeyword(value) {
+  keyword(value) {
     return value.get('name');
   }
 }

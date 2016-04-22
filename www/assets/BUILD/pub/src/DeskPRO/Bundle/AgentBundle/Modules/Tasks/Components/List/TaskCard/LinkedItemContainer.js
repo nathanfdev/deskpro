@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { LinkedItem } from './LinkedItem';
 
 @connect(state => ({
-  tickets:  allSelectorFactory('Ticket')(state),
+  tickets: allSelectorFactory('Ticket')(state),
   articles: allSelectorFactory('Article')(state),
-  chats:    allSelectorFactory('UserChat')(state)
+  chats: allSelectorFactory('UserChat')(state)
 }))
+
 export class LinkedItemContainer extends React.Component {
 
   render() {
@@ -15,4 +17,5 @@ export class LinkedItemContainer extends React.Component {
       <LinkedItem {...this.props} />
     );
   }
+
 }
