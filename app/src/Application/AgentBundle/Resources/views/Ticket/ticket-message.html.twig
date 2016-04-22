@@ -128,8 +128,10 @@
 						{% if message.email_source.parsed_headers.cc %}
 						<tr>
 							<th>{{ phrase('agent.general.ccs') }}:</th>
-							<td>
-								{{ message.email_source.parsed_headers.cc }}
+							<td style="overflow: hidden;">
+								{% for email in message.email_source.parsed_headers.cc|split(',') %}
+									<span title="{{ email|trim }}">{{ email|trim }}</span><br />
+								{% endfor %}
 							</td>
 						</tr>
 						{% endif %}
