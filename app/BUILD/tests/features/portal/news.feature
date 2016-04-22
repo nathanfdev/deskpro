@@ -15,7 +15,6 @@ Feature: News
     Then I should be on "/news"
     And the response status code should be 200
 
-  @reinstall
   Scenario: I visit a category from the News page
     Given I am on "/news"
     When I follow "General"

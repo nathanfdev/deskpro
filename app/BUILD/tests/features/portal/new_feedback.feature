@@ -21,7 +21,6 @@ Feature: submitting new feedback
     And I should see a "success" flash message with the phrase "portal.flashes.new_feedback_posted"
     And I should receive an email with the subject "Thank you for submitting your feedback"
 
-  @reinstall
   Scenario: A logged in user submits invalid feedback
     Given I login with user credentials
     And I am on "/feedback"
@@ -30,7 +29,6 @@ Feature: submitting new feedback
     Then I should be on "/feedback"
     Then I should see a form error with "This value is required"
 
-  @reinstall
   Scenario: A guest submits invalid feedback
     Given I am on "/feedback"
     When I select "Suggestion" from "new_feedback_category"
