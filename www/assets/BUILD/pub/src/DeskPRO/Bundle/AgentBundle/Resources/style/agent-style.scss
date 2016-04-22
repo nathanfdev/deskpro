@@ -116,3 +116,16 @@ hr {
 .p-5 {
   padding: 5px;
 }
+}
+
+$app-width: 55px;
+$report-list-width: 555px;
+$content-width: $app-width + $sidebar-width;
+
+.app-bar-wrapper {
+  float: left;
+  width: $app-width;
+  background: #2b2f34;
+  position: relative;
+  z-index: 299;
+}
