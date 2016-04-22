@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,7 +37,6 @@ use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
 class ContentSubscriptionsHelper
 {
@@ -47,11 +46,6 @@ class ContentSubscriptionsHelper
     private $em;
 
     /**
-     * @var AuthorizationChecker
-     */
-    private $authorization_checker;
-
-    /**
      * @var BrandStack
      */
     private $brand_stack;
@@ -59,6 +53,21 @@ class ContentSubscriptionsHelper
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
+    }
+
+    /**
+     * @param string $content_type
+     * @param Person $person
+     *
+     * @return bool
+     */
+    public function isSubscribedRootCategory($content_type, Person $person)
+    {
+        return (bool) $this->getDb()->fetchColumn("
+                SELECT id
+                FROM {$this->getSubscriptionsTableName($content_type)}
+                WHERE person_id = ? AND root_category = 1
+            ", [$person->getId()]);
     }
 
     /**
@@ -73,7 +82,7 @@ class ContentSubscriptionsHelper
                 SELECT id
                 FROM {$this->getSubscriptionsTableName($category)}
                 WHERE person_id = ? AND category_id = ?
-            ", array($person->getId(), $category->getId()));
+            ", [$person->getId(), $category->getId()]);
     }
 
     /**
@@ -88,7 +97,43 @@ class ContentSubscriptionsHelper
                 SELECT id
                 FROM {$this->getSubscriptionsTableName($content)}
                 WHERE person_id = ? AND {$this->getSubscriptionsIdName($content)} = ?
-            ", array($person->getId(), $content->getId()));
+            ", [$person->getId(), $content->getId()]);
+    }
+
+    /**
+     * @param string $content_type
+     * @param Person $person
+     *
+     * @return bool
+     */
+    public function subscribeToRootCategory($content_type, Person $person)
+    {
+        if ($this->isSubscribedRootCategory($content_type, $person)) {
+            return true;
+        }
+
+        return (bool) $this->getDb()->insert($this->getSubscriptionsTableName($content_type), [
+            'person_id'     => $person->getId(),
+            'root_category' => 1,
+        ]);
+    }
+
+    /**
+     * @param string $content_type
+     * @param Person $person
+     *
+     * @return bool
+     */
+    public function unsubscribeFromRootCategory($content_type, Person $person)
+    {
+        if ($this->isSubscribedRootCategory($content_type, $person)) {
+            return (bool) $this->getDb()->delete($this->getSubscriptionsTableName($content_type), [
+                'person_id'     => $person->getId(),
+                'root_category' => 1,
+            ]);
+        }
+
+        return true;
     }
 
     /**
@@ -103,12 +148,10 @@ class ContentSubscriptionsHelper
             return true;
         }
 
-        $this->getDb()->insert($this->getSubscriptionsTableName($category), array(
+        return (bool) $this->getDb()->insert($this->getSubscriptionsTableName($category), [
             'person_id'   => $person->getId(),
             'category_id' => $category->getId(),
-        ));
-
-        return true;
+        ]);
     }
 
     /**
@@ -120,12 +163,10 @@ class ContentSubscriptionsHelper
     public function unsubscribeFromCategory(CategoryAbstract $category, Person $person)
     {
         if ($this->isSubscribedCategory($category, $person)) {
-            $this->getDb()->delete($this->getSubscriptionsTableName($category), array(
+            return (bool) $this->getDb()->delete($this->getSubscriptionsTableName($category), [
                 'person_id'   => $person->getId(),
                 'category_id' => $category->getId(),
-            ));
-
-            return true;
+            ]);
         }
 
         return true;
@@ -143,12 +184,10 @@ class ContentSubscriptionsHelper
             return true;
         }
 
-        $this->getDb()->insert($this->getSubscriptionsTableName($content), array(
+        return (bool) $this->getDb()->insert($this->getSubscriptionsTableName($content), [
             'person_id'                             => $person->getId(),
             $this->getSubscriptionsIdName($content) => $content->getId(),
-        ));
-
-        return true;
+        ]);
     }
 
     /**
@@ -160,24 +199,24 @@ class ContentSubscriptionsHelper
     public function unsubscribeFromContent(ContentAbstract $content, Person $person)
     {
         if ($this->isSubscribedContent($content, $person)) {
-            $this->getDb()->delete($this->getSubscriptionsTableName($content), array(
+            return (bool) $this->getDb()->delete($this->getSubscriptionsTableName($content), [
                 'person_id'                             => $person->getId(),
                 $this->getSubscriptionsIdName($content) => $content->getId(),
-            ));
-
-            return true;
+            ]);
         }
 
         return true;
     }
 
     /**
-     * @param $content_type
+     * @param        $content_type
      * @param Person $person
+     * 
+     * @return bool
      */
     public function unsubscribeFromAll($content_type, Person $person)
     {
-        $this->getDb()->delete($this->getSubscriptionsTableName($content_type), array('person_id' => $person->getId()));
+        return (bool) $this->getDb()->delete($this->getSubscriptionsTableName($content_type), ['person_id' => $person->getId()]);
     }
 
     protected function getSubscriptionsTableName($input)
@@ -253,7 +292,7 @@ class ContentSubscriptionsHelper
     }
 
     /**
-     * @param $setting
+     * @param      $setting
      * @param null $default
      *
      * @return mixed

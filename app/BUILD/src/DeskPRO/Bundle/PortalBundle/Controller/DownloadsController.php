@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Download;
@@ -82,7 +83,7 @@ class DownloadsController extends AbstractController
                 'page_title' => $this->createPageTitle()->downloads(),
             ]);
         }
-        $rss_link = $this->generateUrl(
+        $rssLink = $this->generateUrl(
             'portal_downloads',
             ['_format' => 'rss']
         );
@@ -91,6 +92,17 @@ class DownloadsController extends AbstractController
         // BREADCRUMBS
         //
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildDownloads();
+
+        //
+        // SUBSCRIPTION
+        //
+        $isSubscribed = false;
+        if (
+        $this->getBrandSetting('user.downloads_subscriptions', false)
+        ) {
+            // waiting info regarding article category subscriptions
+            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('downloads', $this->getUser());
+        }
 
         //
         // RENDER THEME
@@ -103,7 +115,8 @@ class DownloadsController extends AbstractController
                 'breadcrumbs'        => $breadcrumbs,
                 'show_category_link' => true,
                 'page_title'         => $this->createPageTitle()->downloads(),
-                'rss_link'           => $rss_link,
+                'rss_link'           => $rssLink,
+                'is_subscribed'      => $isSubscribed,
             ]
         );
     }
@@ -143,7 +156,7 @@ class DownloadsController extends AbstractController
                 'page_title' => $this->createPageTitle()->downloads($category),
             ]);
         }
-        $rss_link = $this->generateUrl('portal_downloads_browse', ['slug' => $category->getSlug(), '_format' => 'rss']);
+        $rssLink = $this->generateUrl('portal_downloads_browse', ['slug' => $category->getSlug(), '_format' => 'rss']);
 
         //
         // BREADCRUMBS
@@ -157,12 +170,12 @@ class DownloadsController extends AbstractController
         //
         // SUBSCRIBE
         //
-        $is_subscribed = false;
+        $isSubscribed = false;
         if (
             $this->getBrandSetting('user.downloads_subscriptions', false)
             && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOAD_CATEGORY, $category)
         ) {
-            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
+            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
         }
 
         //
@@ -182,9 +195,9 @@ class DownloadsController extends AbstractController
                 'count'         => $count,
                 'page'          => $page,
                 'pager'         => $pager,
-                'is_subscribed' => $is_subscribed,
+                'is_subscribed' => $isSubscribed,
                 'page_title'    => $this->createPageTitle()->downloads($category),
-                'rss_link'      => $rss_link,
+                'rss_link'      => $rssLink,
             ]
         );
     }
@@ -211,14 +224,14 @@ class DownloadsController extends AbstractController
         //
         // COMMENT FORM
         //
-        $new_comment_form = null;
+        $newCommentForm = null;
         if ($this->isGranted(ContentCommentVoter::COMMENT_DOWNLOAD, $file)) {
-            $form_handler = $this->get('form_handler.comment');
-            $comment      = new DownloadComment();
+            $formHandler = $this->get('form_handler.comment');
+            $comment     = new DownloadComment();
             $comment->setVisitorId($visitor_id);
             $comment->setIpAddress($request->getClientIp());
-            $new_comment_form = $form_handler->createForm($comment, $request);
-            $form_result      = $form_handler->handle($new_comment_form, $request, $file, $comment);
+            $newCommentForm = $formHandler->createForm($comment, $request);
+            $form_result    = $formHandler->handle($newCommentForm, $request, $file, $comment);
             if ($form_result instanceof Response) {
                 return $form_result;
             }
@@ -237,17 +250,17 @@ class DownloadsController extends AbstractController
         //
         // NUM RATINGS
         //
-        list($show_rating_counts, $rating_counts) = $this->determineRatingCounts($file);
+        list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($file);
 
         //
         // SUBSCRIPTION
         //
-        $is_subscribed = false;
+        $isSubscribed = false;
         if (
             $this->getBrandSetting('user.downloads_subscriptions', false)
             && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOAD, $file)
         ) {
-            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($file, $this->getUser());
+            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedContent($file, $this->getUser());
         }
 
         //
@@ -259,13 +272,13 @@ class DownloadsController extends AbstractController
                 'file'               => $file,
                 'content_type'       => Download::CONTENT_TYPE,
                 'content_id'         => $file->getId(),
-                'new_comment_form'   => $new_comment_form ? $new_comment_form->createView() : null,
+                'new_comment_form'   => $newCommentForm ? $newCommentForm->createView() : null,
                 'breadcrumbs'        => $breadcrumbs,
                 'rating'             => $rating,
-                'is_subscribed'      => $is_subscribed,
+                'is_subscribed'      => $isSubscribed,
                 'page_title'         => $this->createPageTitle()->downloads($file),
-                'show_rating_counts' => $show_rating_counts,
-                'rating_counts'      => $rating_counts,
+                'show_rating_counts' => $showRatingCounts,
+                'rating_counts'      => $ratingCounts,
             ]
         );
     }
@@ -335,14 +348,14 @@ class DownloadsController extends AbstractController
      */
     public function downloadsSubscriptionAction(Download $file)
     {
-        $person               = $this->getUser();
-        $subscriptions_helper = $this->getSubscriptionsHelper();
+        $person              = $this->getUser();
+        $subscriptionsHelper = $this->getSubscriptionsHelper();
 
-        if ($subscriptions_helper->isSubscribedContent($file, $person)) {
-            $subscriptions_helper->unsubscribeFromContent($file, $person);
+        if ($subscriptionsHelper->isSubscribedContent($file, $person)) {
+            $subscriptionsHelper->unsubscribeFromContent($file, $person);
             $this->addFlash('success', $this->phrase('portal.flashes.download_unsubscribe'));
         } else {
-            $subscriptions_helper->subscribeToContent($file, $person);
+            $subscriptionsHelper->subscribeToContent($file, $person);
             $this->addFlash('success', $this->phrase('portal.flashes.download_subscribe'));
         }
 
@@ -361,18 +374,41 @@ class DownloadsController extends AbstractController
      */
     public function downloadsCategorySubscriptionAction(DownloadCategory $category)
     {
-        $person               = $this->getUser();
-        $subscriptions_helper = $this->getSubscriptionsHelper();
+        $person              = $this->getUser();
+        $subscriptionsHelper = $this->getSubscriptionsHelper();
 
-        if ($subscriptions_helper->isSubscribedCategory($category, $person)) {
-            $subscriptions_helper->unsubscribeFromCategory($category, $person);
+        if ($subscriptionsHelper->isSubscribedCategory($category, $person)) {
+            $subscriptionsHelper->unsubscribeFromCategory($category, $person);
             $this->addFlash('success', $this->phrase('portal.flashes.download_cat_unsubscribe'));
         } else {
-            $subscriptions_helper->subscribeToCategory($category, $person);
+            $subscriptionsHelper->subscribeToCategory($category, $person);
             $this->addFlash('success', $this->phrase('portal.flashes.download_cat_subscribe'));
         }
 
         return $this->redirectToRoute('portal_downloads_browse', ['slug' => $category->getSlug()]);
+    }
+
+    /**
+     * @Route("/downloads/root/toggle-subscription", name="portal_downloads_root_category_toggle_subscription")
+     * @Security("is_granted('USE_DOWNLOADS')")
+     * @AutoPostOnGetRequest()
+     *
+     * @return Response
+     */
+    public function downloadsRootCategorySubscriptionAction()
+    {
+        $person              = $this->getUser();
+        $subscriptionsHelper = $this->getSubscriptionsHelper();
+
+        if ($subscriptionsHelper->isSubscribedRootCategory('downloads', $person)) {
+            $subscriptionsHelper->unsubscribeFromRootCategory('downloads', $person);
+            $this->addFlash('success', $this->phrase('portal.flashes.download_cat_unsubscribe'));
+        } else {
+            $subscriptionsHelper->subscribeToRootCategory('downloads', $person);
+            $this->addFlash('success', $this->phrase('portal.flashes.download_cat_subscribe'));
+        }
+
+        return $this->redirectToRoute('portal_downloads');
     }
 
     /**

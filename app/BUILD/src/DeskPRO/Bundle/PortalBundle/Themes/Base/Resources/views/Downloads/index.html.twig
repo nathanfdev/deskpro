@@ -6,7 +6,10 @@
     </div>
     <div class="downloads main-downloads">
         <header class="large-title">
-            <div class="header-buttons">{% show rss_link %}</div>
+            <div class="header-buttons">
+                {% show rss_link %}
+                {% show download_root_subscription_link %}
+            </div>
             <h1>{{ phrase('portal.downloads.section-title') }}</h1>
             <p>{{ phrase('portal.downloads.section-desc') }}</p>
         </header>
