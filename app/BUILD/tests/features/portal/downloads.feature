@@ -6,23 +6,21 @@ Feature: Downloads
     And the following languages are enabled:
       | default |
     And the default brand is using the standard theme
-    And the "download" category "General" exists with content titled "Example Download"
 
   @reinstall
   Scenario: I visit the Downloads from the homepage
-    Given I am on "/"
+    Given the "download" category "General" exists with content titled "Example Download"
+    And I am on "/"
     When I follow "Downloads"
     Then I should be on "/downloads"
     And the response status code should be 200
 
-  @reinstall
   Scenario: I visit a category from the Downloads page
     Given I am on "/downloads"
     When I follow "General"
     Then I should be on "/downloads/general"
     And the response status code should be 200
 
-  @reinstall
   Scenario: I visit a download from the browse page
     Given I am on "/downloads/general"
     When I follow "Example Download"
