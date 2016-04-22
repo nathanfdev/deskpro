@@ -29,7 +29,7 @@
 namespace DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor\Handler;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc as DpApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor\ApiDocExtractor;
 use DeskPRO\Component\Util\ControllerUtils;
 use Doctrine\Common\Annotations\Reader;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -89,7 +89,7 @@ class OverrideHandler implements HandlerInterface
     private function getMethodsWithOutput()
     {
         $return = [];
-        foreach (CrudController::$methods as $action => $creative) {
+        foreach (ApiDocExtractor::$methods as $action => $creative) {
             if ($creative) {
                 $return[] = $action;
             }
