@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -411,7 +412,9 @@ class Ticket extends AbstractEntityRepository
      */
     public function countTicketsForPerson(Entity\Person $person, $status = null)
     {
-        $status = $status ? (' AND tickets.status IN ("'.implode('","', (array) $status).'") ') : (' AND tickets.status NOT IN ("'.implode('","', array('hidden')).'") ');
+        $status = $status
+            ? (' AND tickets.status IN ("'.implode('","', (array) $status).'") ')
+            : (' AND tickets.status NOT IN ("'.implode('","', array('hidden')).'") ');
 
         $excludeNotesCondition = '';
         if (defined('DP_INTERFACE') && 'user' === DP_INTERFACE) {

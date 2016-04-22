@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -38,6 +39,7 @@ use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonFile;
 use Application\DeskPRO\Entity\PersonNote;
+use Application\DeskPRO\EntityRepository\Ticket;
 use Application\DeskPRO\Form\Type\PhoneNumberType;
 use Application\DeskPRO\Log\Event\UserMerged;
 use Application\DeskPRO\Mail\Mailer;
@@ -97,9 +99,14 @@ class PersonController extends AbstractController
         # Misc info needed
         #------------------------------
 
-        $notes                = $this->em->getRepository('DeskPRO:PersonNote')->getNotesForPerson($person);
-        $person_tickets       = $this->em->getRepository('DeskPRO:Ticket')->getPersonTickets($person, 251, 'status');
-        $person_tickets_count = $this->em->getRepository('DeskPRO:Ticket')->countTicketsForPerson($person);
+        $notes = $this->em->getRepository('DeskPRO:PersonNote')->getNotesForPerson($person);
+        /** @var Ticket $rep */
+        $rep                  = $this->em->getRepository('DeskPRO:Ticket');
+        $person_tickets       = $rep->getPersonTickets($person, 251, 'status');
+        $person_tickets_count = $rep->countTicketsForPerson(
+            $person,
+            array('awaiting_agent', 'awaiting_user', 'resolved', 'archived', 'hidden')
+        );
 
         $person_files       = $this->em->getRepository('DeskPRO:PersonFile')->getFilesForPerson($person);
         $person_files_count = count($person_files);
@@ -236,7 +243,6 @@ class PersonController extends AbstractController
             $vcard->setFormattedName($person->name);
             $vcard->setName($person->last_name, $person->first_name, '', '', '');
             //$vcard->setPhoto($person->gravatar_url);
-
 
             if ($person->organization) {
                 $vcard->addOrganization($person->organization->name);
