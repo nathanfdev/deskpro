@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Security\Firewall;
 
 use Application\DeskPRO\Auth\LoginProcessor;
@@ -74,13 +75,13 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
 
     protected function requiresAuthentication(Request $request)
     {
-        $security_routes = array(
+        $security_routes = [
             'portal_login_submit',
             'portal_login_authenticate',
             'portal_login_callback',
             'portal_login_usersource_sso',
             'portal_agent_login',
-        );
+        ];
 
         return in_array($request->attributes->get('_route'), $security_routes);
     }
@@ -92,7 +93,8 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
      *
      * @throws AuthenticationException if the authentication fails
      *
-     * @return TokenInterface|Response|null The authenticated token, null if full authentication is not possible, or a Response
+     * @return TokenInterface|Response|null The authenticated token, null if full authentication is not possible,
+     *                                      or a Response
      */
     protected function attemptAuthentication(Request $request)
     {
@@ -235,7 +237,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
             throw new NotFoundHttpException();
         }
 
-        $usersource_test = $session->getFlashBag()->get(self::USERSOURCE_TEST, array());
+        $usersource_test = $session->getFlashBag()->get(self::USERSOURCE_TEST, []);
         if (!$usersource_test) {
             $usersource_test = $request->get(self::USERSOURCE_TEST);
         }
@@ -277,19 +279,19 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
             if ($usersource_test) {
                 // test result
                 return $this->container->get('templating')->renderResponse(
-                    'DeskPRO:Auth:_sso_test_verified.html.twig', array(
+                    'DeskPRO:Auth:_sso_test_verified.html.twig', [
                         'person' => $person,
                         'log'    => $arr_writer->getMessagesAsString(),
-                    )
+                    ]
                 );
             }
 
             return $this->createTokenFromPerson($person);
         } elseif ($usersource_test) {
             return $this->container->get('templating')->renderResponse(
-                'DeskPRO:Auth:_sso_test_failed.html.twig', array(
+                'DeskPRO:Auth:_sso_test_failed.html.twig', [
                     'log' => implode("\n", $arr_writer->getMessages()),
-                )
+                ]
             );
         }
 
@@ -320,7 +322,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
         }
 
         $arr_writer = new ArrayWriter();
-        if (!$usersource_test = $session->getFlashBag()->get(self::USERSOURCE_TEST, array())) {
+        if (!$usersource_test = $session->getFlashBag()->get(self::USERSOURCE_TEST, [])) {
             $usersource_test = $request->get(self::USERSOURCE_TEST);
         }
         if (!$usersource_test && !$auth_manager->isUsableUsersource($usersource)) {
@@ -342,18 +344,18 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
 
             if ($usersource_test) {
                 // test result
-                return $this->container->get('templating')->renderResponse('DeskPRO:Auth:_sso_test_verified.html.twig', array(
+                return $this->container->get('templating')->renderResponse('DeskPRO:Auth:_sso_test_verified.html.twig', [
                         'person' => $token->getUser(),
                         'log'    => $arr_writer->getMessagesAsString(),
-                    )
+                    ]
                 );
             }
 
             return $token;
         } elseif ($usersource_test) {
-            return $this->container->get('templating')->renderResponse('DeskPRO:Auth:_sso_test_failed.html.twig', array(
+            return $this->container->get('templating')->renderResponse('DeskPRO:Auth:_sso_test_failed.html.twig', [
                     'log' => implode("\n", $arr_writer->getMessages()),
-                )
+                ]
             );
         }
 
@@ -362,10 +364,10 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
 
     protected function redirect($url)
     {
-        return new RedirectResponse($url, 302, array(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER => '1'));
+        return new RedirectResponse($url, 302, [RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER => '1']);
     }
 
-    protected function redirectRoute($route, $params = array())
+    protected function redirectRoute($route, $params = [])
     {
         return new RedirectResponse($this->container->get('router')->generate($route, $params));
     }
@@ -413,7 +415,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
      */
     protected function createTokenFromPerson(Person $person)
     {
-        return new DpFormLoginToken($person, $person->getPassword(), array_merge(array('ROLE_USER'), $person->getRoles()));
+        return new DpFormLoginToken($person, $person->getPassword(), array_merge(['ROLE_USER'], $person->getRoles()));
     }
 
     private function logLoginFailure($email, $ip)
@@ -424,7 +426,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
         if ($attempt_person) {
             $this->container->get('doctrine.dbal.default_connection')->insert(
                 'login_log',
-                array(
+                [
                     'person_id'    => $attempt_person->getId(),
                     'area'         => defined('DP_INTERFACE') ? DP_INTERFACE : 'unknown',
                     'is_success'   => 0,
@@ -432,7 +434,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
                     'hostname'     => @gethostbyaddr($ip) ?: '',
                     'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
                     'date_created' => date('Y-m-d H:i:s'),
-                )
+                ]
             );
         }
     }
