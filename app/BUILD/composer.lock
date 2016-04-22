@@ -1256,7 +1256,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/56db77e995e8f6e469a05f2a7fd09b3f5f5d3fa4",
+                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/fd51907c6c76acaa8a5234822a4f901c1500afc1",
                 "reference": "56db77e995e8f6e469a05f2a7fd09b3f5f5d3fa4",
                 "shasum": ""
             },
@@ -4312,7 +4312,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/ee34d416f13cf218d460db250eebd96e56cb021a",
+                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/3669bf6bc341fef4020fe58f25b0b4e78944315d",
                 "reference": "ee34d416f13cf218d460db250eebd96e56cb021a",
                 "shasum": ""
             },

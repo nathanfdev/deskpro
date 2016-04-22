@@ -135,43 +135,37 @@ class TaskType extends AbstractType
                 'owner_property' => 'task',
             ])
             ->add('departments', EntityType::class, [
-                'class'        => Department::class,
-                'multiple'     => true,
-                'required'     => false,
-                'choice_value' => null,
+                'class'    => Department::class,
+                'multiple' => true,
+                'required' => false,
             ])
             ->add('teams', EntityType::class, [
-                'class'        => AgentTeam::class,
-                'multiple'     => true,
-                'required'     => false,
-                'choice_value' => null,
+                'class'    => AgentTeam::class,
+                'multiple' => true,
+                'required' => false,
             ])
             ->add('agents', EntityType::class, [
-                'class'        => Person::class,
-                'multiple'     => true,
-                'required'     => false,
-                'choice_value' => null,
+                'class'    => Person::class,
+                'multiple' => true,
+                'required' => false,
             ])
             ->add('linked_tickets', EntityType::class, [
                 'class'        => Ticket::class,
                 'multiple'     => true,
                 'required'     => false,
                 'by_reference' => false,
-                'choice_value' => null,
             ])
             ->add('linked_articles', EntityType::class, [
                 'class'        => Article::class,
                 'multiple'     => true,
                 'required'     => false,
                 'by_reference' => false,
-                'choice_value' => null,
             ])
             ->add('linked_chats', EntityType::class, [
                 'class'        => ChatConversation::class,
                 'multiple'     => true,
                 'required'     => false,
                 'by_reference' => false,
-                'choice_value' => null,
             ])
         ;
 
