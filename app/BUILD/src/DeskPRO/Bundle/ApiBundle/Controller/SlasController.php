@@ -39,11 +39,11 @@ use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * API access to languages.
+ * API access to SLAs.
  *
  * @ApiModes("all")
  * @Rest\Route("/slas")
- * @ApiDoc(target="all", section="Slas", output="Application\DeskPRO\Entity\Sla")
+ * @ApiDoc(target="all", section="SLAs", output="Application\DeskPRO\Entity\Sla")
  */
 class SlasController extends CrudController
 {
@@ -81,6 +81,14 @@ class SlasController extends CrudController
      *     resourceDescription="Operations about SLAs",
      *     tags={"CRUD"="#ffa500"},
      *     description="get SLA",
+     *     requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="the id of SLA",
+     *              "dataType"="integer"
+     *          }
+     *      },
      *     statusCodes={
      *         200="Returned if everything is OK",
      *     },

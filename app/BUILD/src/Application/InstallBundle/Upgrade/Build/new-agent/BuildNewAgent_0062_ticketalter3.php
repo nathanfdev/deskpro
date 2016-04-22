@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,27 +29,14 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\DataService;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\EntityRepository\Person as PersonRepo;
-
-class TicketSlasDataService extends AbstractDataService
+class BuildNewAgent_0062_ticketalter3 extends AbstractBuild
 {
-    public function loadForTicket($ticket_id)
+    public function run()
     {
-        return $this->getRepo()->findBy(['ticket' => $ticket_id]);
-    }
-
-    public function loadSingleForTicket($ticket_id, $sla_id)
-    {
-        return $this->getRepo()->findBy(['ticket' => $ticket_id, 'sla_id' => $sla_id]);
-    }
-
-    /**
-     * @return PersonRepo
-     */
-    public function getRepo()
-    {
-        return $this->em->getRepository('DeskPRO:TicketSla');
+        $this->execDbQueryQuiet('default', 'ALTER TABLE `ticket_slas` ADD UNIQUE INDEX unique_ticket_sla (`ticket_id`, `sla_id`)');
     }
 }
+
+//[[build:1460678403]]
