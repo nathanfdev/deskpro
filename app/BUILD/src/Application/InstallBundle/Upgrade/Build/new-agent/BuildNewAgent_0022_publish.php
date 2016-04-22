@@ -56,6 +56,14 @@ class BuildNewAgent_0022_publish extends AbstractBuild
         $this->execMutateSql("UPDATE feedback SET is_reviewed = 1 WHERE hidden_status != 'validating'");
         $this->execMutateSql('ALTER TABLE feedback ADD INDEX date_updated_idx (date_updated), ADD INDEX date_last_comment_idx (date_last_comment)');
 
+        $this->out('Modify knowledge base subscription table');
+        $this->execMutateSql('ALTER TABLE kb_susbcriptions ADD root_category TINYINT(1) DEFAULT NULL');
+        $this->execMutateSql('ALTER TABLE kb_susbcriptions ADD INDEX root_category_idx (root_category)');
+
+        $this->out('Modify news subscription table');
+        $this->execMutateSql('ALTER TABLE news_susbcriptions ADD root_category TINYINT(1) DEFAULT NULL');
+        $this->execMutateSql('ALTER TABLE news_susbcriptions ADD INDEX root_category_idx (root_category)');
+
         foreach ([
             'article_comments',
             'download_comments',

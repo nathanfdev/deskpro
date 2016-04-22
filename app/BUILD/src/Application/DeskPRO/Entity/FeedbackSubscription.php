@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -54,11 +55,32 @@ class FeedbackSubscription extends \Application\DeskPRO\Domain\DomainObject
     protected $feedback;
 
     /**
+     * @var bool
+     */
+    protected $root_category;
+
+    /**
      * @param Feedback $feedback
      */
     public function setFeedback(Feedback $feedback = null)
     {
         $this->setModelField('feedback', $feedback);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRootCategory()
+    {
+        return $this->root_category;
+    }
+
+    /**
+     * @param bool $root_category
+     */
+    public function setRootCategory($root_category)
+    {
+        $this->setModelField('root_category', $root_category);
     }
 
     ############################################################################
@@ -70,16 +92,18 @@ class FeedbackSubscription extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\FeedbackSubscription';
         $metadata->setPrimaryTable(
-            array(
+            [
                 'name'    => 'feedback_subscriptions',
-                'indexes' => array(),
-            )
+                'indexes' => [
+                    'root_category_idx' => ['columns' => ['root_category']],
+                ],
+            ]
         );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'id',
                 'type'       => 'integer',
                 'precision'  => 0,
@@ -87,42 +111,53 @@ class FeedbackSubscription extends \Application\DeskPRO\Domain\DomainObject
                 'nullable'   => false,
                 'columnName' => 'id',
                 'id'         => true,
-            )
+            ]
         );
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'person',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
                 'mappedBy'     => null,
                 'inversedBy'   => null,
-                'joinColumns'  => array(
-                    0 => array(
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'person_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
-                    ),
-                ),
+                    ],
+                ],
                 'dpApi' => true,
-            )
+            ]
         );
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'feedback',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Feedback',
                 'mappedBy'     => null,
                 'inversedBy'   => null,
-                'joinColumns'  => array(
-                    0 => array(
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'feedback_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
-                    ),
-                ),
-            )
+                    ],
+                ],
+            ]
+        );
+
+        $metadata->mapField(
+            [
+                'fieldName'  => 'root_category',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'root_category',
+            ]
         );
     }
 }
