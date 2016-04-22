@@ -1,0 +1,29 @@
+services:
+
+  audit_log.service:
+    class: DeskPRO\Bundle\AuditBundle\Log\AuditLogService
+    arguments:
+      - "@audit_log.storage"
+      - "@audit_log.transformer"
+
+  audit_log.storage.factory:
+    class: DeskPRO\Bundle\AuditBundle\Storage\StorageFactory
+    arguments:
+      - "@settings_resolver"
+      - "@service_container"
+
+  audit_log.storage:
+    class: DeskPRO\Bundle\AuditBundle\Storage\StorageInterface
+    factory: ["@audit_log.storage.factory", createStorage]
+
+  audit_log.transformer:
+    class: DeskPRO\Bundle\AuditBundle\Storage\TransformerInterface
+    factory: ["@audit_log.storage.factory", createTransformer]
+
+  audit_log.storage.mongodb:
+    class: DeskPRO\Bundle\AuditBundle\Storage\MongoDB\MongoDBStorage
+    arguments:
+      - "@doctrine_mongodb.odm.default_document_manager"
+
+  audit_log.transformer.mongodb:
+    class: DeskPRO\Bundle\AuditBundle\Storage\MongoDB\MongoDBTransformer

@@ -26,33 +26,17 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\DevBundle\Command;
+namespace DeskPRO\Bundle\AuditBundle\DependencyInjection;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use DeskPRO\Bundle\AppBundle\DependencyInjection\YamlDirectoryLoader;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
-class DevTestCommand extends ContainerAwareCommand
+class AuditExtension extends Extension
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure()
+    public function load(array $configs, ContainerBuilder $container)
     {
-        $this->setName('dpdev:test');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        echo __FILE__;
-        echo "\n";
-
-        return 0;
+        $loader = new YamlDirectoryLoader($container);
+        $loader->loadDir(__DIR__.'/../Resources/config/services');
     }
 }

@@ -35,7 +35,7 @@ $SETTINGS['disable_outgoing_email'] = false;
 ######################################################
 # Basic settings for notification system             #
 ######################################################
-# Provide an strategies and pusher settings here     #
+# Provide strategies and pusher settings here        #
 ######################################################
 $SETTINGS['notification.settings.pusher_client.appKey'] = '';
 $SETTINGS['notification.settings.pusher_client.secret'] = '';
@@ -72,6 +72,8 @@ $SETTINGS['notification.settings.default_strategy'] = [
 ];
 
 $SETTINGS['notification.settings.polling_client.polling_interval'] = 500000;
+
+$SETTINGS['audit_log.storage'] = "mongodb";
 
 ######################################################
 # Disable API response caching                       #

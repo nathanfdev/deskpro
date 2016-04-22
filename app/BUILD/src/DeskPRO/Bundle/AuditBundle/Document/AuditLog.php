@@ -26,8 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Document;
+namespace DeskPRO\Bundle\AuditBundle\Document;
 
+use DeskPRO\Bundle\AuditBundle\Log\LoggableInterface;
 use DeskPRO\Component\MongoDB\Annotations\Polyfill as PODM;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 
@@ -36,7 +37,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
  *
  * @ODM\Document()
  */
-class AuditLog
+class AuditLog implements LoggableInterface
 {
     /**
      * @ODM\Id(strategy="INCREMENT")

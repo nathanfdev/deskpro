@@ -26,33 +26,33 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\DevBundle\Command;
+namespace DeskPRO\Bundle\AuditBundle\Storage\MongoDB;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use DeskPRO\Bundle\AuditBundle\Document\AuditLog as AuditLogDocument;
+use DeskPRO\Bundle\AuditBundle\Log\AuditLog;
+use DeskPRO\Bundle\AuditBundle\Log\LoggableInterface;
+use DeskPRO\Bundle\AuditBundle\Storage\AbstractTransformer;
 
-class DevTestCommand extends ContainerAwareCommand
+class MongoDBTransformer extends AbstractTransformer
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure()
+    public function transform(AuditLog $log)
     {
-        $this->setName('dpdev:test');
+        $doc = new AuditLogDocument();
+        $doc->setName($log->getName())->setValue($log->getValue());
+
+        return $doc;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function reverseTransform(LoggableInterface $loggable)
     {
-        echo __FILE__;
-        echo "\n";
+        /** @var AuditLogDocument $loggable */
+        $log = new AuditLog();
 
-        return 0;
+        $log
+            ->setId($loggable->getId())
+            ->setName($loggable->getName())
+            ->setValue($loggable->getValue());
+
+        return $log;
     }
 }

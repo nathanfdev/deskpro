@@ -26,33 +26,31 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\DevBundle\Command;
+namespace DeskPRO\Bundle\AuditBundle\Storage;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use DeskPRO\Bundle\AuditBundle\Log\AuditLog;
+use DeskPRO\Bundle\AuditBundle\Log\LoggableInterface;
 
-class DevTestCommand extends ContainerAwareCommand
+interface TransformerInterface
 {
     /**
-     * {@inheritdoc}
+     * @param AuditLog $log
+     *
+     * @return LoggableInterface
      */
-    protected function configure()
-    {
-        $this->setName('dpdev:test');
-    }
+    public function transform(AuditLog $log);
 
     /**
-     * {@inheritdoc}
+     * @param LoggableInterface $loggable
+     *
+     * @return AuditLog
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        echo __FILE__;
-        echo "\n";
+    public function reverseTransform(LoggableInterface $loggable);
 
-        return 0;
-    }
+    /**
+     * @param LoggableInterface[] $collection
+     *
+     * @return AuditLog
+     */
+    public function reverseTransformCollection(array $collection);
 }

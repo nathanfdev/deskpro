@@ -29,30 +29,21 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\DevBundle\Command;
+namespace DeskPRO\Bundle\AuditBundle;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class DevTestCommand extends ContainerAwareCommand
+/**
+ * Class AuditBundle.
+ */
+class AuditBundle extends Bundle
 {
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    public function build(ContainerBuilder $container)
     {
-        $this->setName('dpdev:test');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        echo __FILE__;
-        echo "\n";
-
-        return 0;
+        parent::build($container);
     }
 }

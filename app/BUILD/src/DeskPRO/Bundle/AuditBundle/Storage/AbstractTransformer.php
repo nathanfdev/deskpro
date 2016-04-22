@@ -26,33 +26,25 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\AuditBundle\Storage;
+
 /**
- * DeskPRO.
+ * Class AbstractTransformer.
  */
-namespace DeskPRO\Bundle\DevBundle\Command;
-
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-class DevTestCommand extends ContainerAwareCommand
+abstract class AbstractTransformer implements TransformerInterface
 {
     /**
-     * {@inheritdoc}
+     * @param array $collection
+     *
+     * @return array
      */
-    protected function configure()
+    public function reverseTransformCollection(array $collection)
     {
-        $this->setName('dpdev:test');
-    }
+        $transformed = [];
+        foreach ($collection as $item) {
+            $transformed[] = $this->reverseTransform($item);
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        echo __FILE__;
-        echo "\n";
-
-        return 0;
+        return $transformed;
     }
 }

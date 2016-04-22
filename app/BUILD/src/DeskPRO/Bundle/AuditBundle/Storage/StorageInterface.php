@@ -26,33 +26,34 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\AuditBundle\Storage;
+
+use DeskPRO\Bundle\AuditBundle\Log\LoggableInterface;
+
 /**
- * DeskPRO.
+ * Interface StorageInterface.
  */
-namespace DeskPRO\Bundle\DevBundle\Command;
-
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-class DevTestCommand extends ContainerAwareCommand
+interface StorageInterface
 {
     /**
-     * {@inheritdoc}
+     * @param LoggableInterface $log
+     *
+     * @return mixed
      */
-    protected function configure()
-    {
-        $this->setName('dpdev:test');
-    }
+    public function write(LoggableInterface $log);
 
     /**
-     * {@inheritdoc}
+     * @param mixed $id
+     *
+     * @return LoggableInterface
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        echo __FILE__;
-        echo "\n";
+    public function find($id);
 
-        return 0;
-    }
+    /**
+     * @param int $offset
+     * @param int $limit
+     *
+     * @return LoggableInterface[]
+     */
+    public function read($offset, $limit);
 }

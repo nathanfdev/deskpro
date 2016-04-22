@@ -26,33 +26,85 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\AuditBundle\Log;
+
 /**
- * DeskPRO.
+ * Class AuditLog.
  */
-namespace DeskPRO\Bundle\DevBundle\Command;
-
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-class DevTestCommand extends ContainerAwareCommand
+class AuditLog
 {
     /**
-     * {@inheritdoc}
+     * @var
      */
-    protected function configure()
+    private $id;
+
+    /**
+     * @var
+     */
+    private $name;
+
+    /**
+     * @var
+     */
+    private $value;
+
+    /**
+     * @return mixed
+     */
+    public function getId()
     {
-        $this->setName('dpdev:test');
+        return $this->id;
     }
 
     /**
-     * {@inheritdoc}
+     * @param mixed $id
+     *
+     * @return $this
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function setId($id)
     {
-        echo __FILE__;
-        echo "\n";
+        $this->id = $id;
 
-        return 0;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param mixed $name
+     *
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    /**
+     * @param mixed $value
+     *
+     * @return $this
+     */
+    public function setValue($value)
+    {
+        $this->value = $value;
+
+        return $this;
     }
 }

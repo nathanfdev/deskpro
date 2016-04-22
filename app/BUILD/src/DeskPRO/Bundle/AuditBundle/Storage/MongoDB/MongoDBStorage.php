@@ -26,33 +26,35 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\DevBundle\Command;
+namespace DeskPRO\Bundle\AuditBundle\Storage\MongoDB;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use DeskPRO\Bundle\AuditBundle\Document\AuditLog;
+use DeskPRO\Bundle\AuditBundle\Log\LoggableInterface;
+use DeskPRO\Bundle\AuditBundle\Storage\StorageInterface;
+use Doctrine\ODM\MongoDB\DocumentManager;
 
-class DevTestCommand extends ContainerAwareCommand
+class MongoDBStorage implements StorageInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure()
+    private $dm;
+
+    public function __construct(DocumentManager $dm)
     {
-        $this->setName('dpdev:test');
+        $this->dm = $dm;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function write(LoggableInterface $log)
     {
-        echo __FILE__;
-        echo "\n";
+        $this->dm->persist($log);
+        $this->dm->flush();
+    }
 
-        return 0;
+    public function find($id)
+    {
+        return $this->dm->getRepository(AuditLog::class)->find($id);
+    }
+
+    public function read($offset, $limit)
+    {
+        return $this->dm->getRepository(AuditLog::class)->findBy([], [], $limit, $offset);
     }
 }
