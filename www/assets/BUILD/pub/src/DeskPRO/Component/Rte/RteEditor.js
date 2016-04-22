@@ -56,6 +56,9 @@ export class RteEditor extends React.Component {
     this.medium.subscribe('editableClick', () => {
       setTimeout(() => this.medium.startSelectionUpdates(), 1);
     });
+    this.mousePresent = false;
+    document.addEventListener('mousemove', this.onMouseMove, true);
+    node.addEventListener('focus', this.showToolbar, true);
   }
 
   componentWillReceiveProps(newProps) {
@@ -166,11 +169,25 @@ export class RteEditor extends React.Component {
   prepareFocusContent() {
     const node = this.getNode();
     const $p = $('p', node);
-
-    if (!$p.length || node.innerHTML === '<p><br></p>') {
-      node.innerHTML = '<p></p>';
-    }
+    
+    // This seems to cause this bug https://trello.com/c/8RBekuHd
+    // if (!$p.length || node.innerHTML === '<p><br></p>') {
+    //   node.innerHTML = '<p></p>';
+    // }
   }
+
+  onMouseMove = () => {
+    this.mousePresent = true;
+    document.removeEventListener('mousemove', this.onMouseMove, true);
+  };
+
+  showToolbar = () => {
+    if (this.mousePresent) {
+      $('.medium-editor-toolbar').show();
+      $('.dp-medium-rte').addClass('with-toolbar');
+      this.getNode().removeEventListener('focus', this.showToolbar, true);
+    }
+  };
 
   render() {
     const { tag = 'div' } = this.props;

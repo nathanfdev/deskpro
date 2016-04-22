@@ -9028,6 +9028,11 @@ body.with-agent-bar {
   display: none;
 }
 
+.with-dpui .medium-editor-toolbar {
+  display: none;
+}
+
+
 .attach-file-active {
   @extend .attach-file;
   border: 1px solid black;
@@ -9689,7 +9694,9 @@ input[type="text"], input[type="email"], input[type="password"], textarea, .dp-m
 
   .dp-medium-rte {
     min-height: 125px;
-    padding-top: 38px; // padding to make room for the fixed toolbar
+    &.with-toolbar {
+      padding-top: 38px; // padding to make room for the fixed toolbar
+    }
 
     &.medium-editor-placeholder:after {
       padding: 0.75em 1em;
