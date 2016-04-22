@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\Form\CustomField\Type\PersonStartType;
@@ -443,7 +444,7 @@ class SettingsController extends AbstractController implements ProtectedControll
         $rate_limit_settings->setArray($this->in->getArrayValue('rate_limit_settings'));
         $rate_limit_settings->saveSettings();
 
-        return $this->createSuccessResponse();
+        return $this->passwordSettingsAction();
     }
 
     ############################################################################
