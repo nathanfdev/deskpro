@@ -104,7 +104,6 @@ services:
   api_serializer.handler.ticket:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets\TicketHandler
     arguments:
-      - "@tickets.linker"
       - "@ticket_layout_factory"
       - "@doctrine.orm.default_entity_manager"
     tags:

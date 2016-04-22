@@ -31,16 +31,15 @@ namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket;
 use Symfony\Component\Validator\Constraint;
 
 /**
- * Class TicketLayout.
+ * Class TicketLink.
+ *
+ * @Annotation
  */
-class TicketLayout extends Constraint
+class TicketLink extends Constraint
 {
-    /**
-     * Could be "agent" or "user".
-     *
-     * @var string
-     */
-    public $context = 'agent';
+    const LINK_ITSELF = 'link_itself';
+
+    public $message = 'Ticket is linked to itself.';
 
     /**
      * {@inheritdoc}
@@ -48,13 +47,5 @@ class TicketLayout extends Constraint
     public function getTargets()
     {
         return self::CLASS_CONSTRAINT;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAgent()
-    {
-        return $this->context === 'agent';
     }
 }

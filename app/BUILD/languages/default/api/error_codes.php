@@ -80,6 +80,7 @@ return array(
     'api.error_codes.too_many_elements'           => 'This collection should contain {{ limit }} elements or less.',
     'api.error_codes.too_low'                     => 'This value should be greater than or equal to {{ compared_value }}.',
     'api.error_codes.only_one_value'              => 'You should set exactly only one of {{ values }}',
+    'api.error_codes.link_itself'                 => 'The object should not link itself.',
     # Term Engine Specific
     'api.error_codes.op_not_supported'         => 'Op "{{ op }}" not supported. Supported ops are: {{ ops }}',
     'api.error_codes.term_type_does_not_exist' => 'You tried to create a term with the type code "{{ type }}", but it does not exist. Please check your term types.',
