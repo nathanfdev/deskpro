@@ -154,18 +154,21 @@ class TaskType extends AbstractType
                 'multiple'     => true,
                 'required'     => false,
                 'by_reference' => false,
+                'choice_value' => null,
             ])
             ->add('linked_articles', EntityType::class, [
                 'class'        => Article::class,
                 'multiple'     => true,
                 'required'     => false,
                 'by_reference' => false,
+                'choice_value' => null,
             ])
             ->add('linked_chats', EntityType::class, [
                 'class'        => ChatConversation::class,
                 'multiple'     => true,
                 'required'     => false,
                 'by_reference' => false,
+                'choice_value' => null,
             ])
         ;
 
