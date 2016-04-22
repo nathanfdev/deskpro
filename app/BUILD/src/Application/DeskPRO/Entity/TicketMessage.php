@@ -41,6 +41,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
 use Orb\Html\Html2Text;
 use Orb\Util\Strings;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -480,14 +481,10 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         // An email might have inline attachments and we tokenize them with these
         // codes so we can now turn them into inline images or attachment links
         $fn = function ($m, $before = '') use ($resizeInlines) {
-            $download_url = App::getSetting('core.deskpro_url');
-            $download_url .= ltrim(
-                App::getRouter()->getGenerator()->generatePath(
-                    'serve_blob',
-                    array('blob_auth_id' => $m[2], 'filename' => $m[3]),
-                    false
-                ),
-                '/'
+            $download_url = App::getRouter()->getGenerator()->generate(
+                'serve_blob',
+                array('blob_auth_id' => $m[2], 'filename' => $m[3]),
+                UrlGeneratorInterface::ABSOLUTE_URL
             );
 
             $extra = 'data-downloadurl="'.$download_url.'" data-blob-authid="'.$m[2].'"';
@@ -510,30 +507,22 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
             }
 
             if ($m[1] == 'signature_image') {
-                $url = App::getSetting('core.deskpro_url');
-                $url .= ltrim(
-                    App::getRouter()->getGenerator()->generatePath(
-                        'serve_blob',
-                        array('blob_auth_id' => $m[2], 'filename' => $m[3], 'sc' => $sc_code),
-                        false
-                    ),
-                    '/'
+                $url = App::getRouter()->getGenerator()->generate(
+                    'serve_blob',
+                    array('blob_auth_id' => $m[2], 'filename' => $m[3], 'sc' => $sc_code),
+                    UrlGeneratorInterface::ABSOLUTE_URL
                 );
 
                 $replace = sprintf('<img src="%s" title="%s" />', $url, $m[3]);
             } elseif ($m[1] == 'image') {
-                $url = App::getSetting('core.deskpro_url');
-                $_p  = array('blob_auth_id' => $m[2], 'filename' => $m[3], 'sc' => $sc_code);
+                $_p = array('blob_auth_id' => $m[2], 'filename' => $m[3], 'sc' => $sc_code);
                 if ($resizeInlines) {
                     $_p['s'] = 350;
                 }
-                $url .= ltrim(
-                    App::getRouter()->getGenerator()->generatePath(
-                        'serve_blob',
-                        $_p,
-                        false
-                    ),
-                    '/'
+                $url = App::getRouter()->getGenerator()->generate(
+                    'serve_blob',
+                    $_p,
+                    UrlGeneratorInterface::ABSOLUTE_URL
                 );
 
                 $do_link = true;
@@ -728,7 +717,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * Get a collection of attachments suitable for display in an attach list (that is, excluding inlined ones).
-     * 
+     *
      * @return \Doctrine\Common\Collections\Collection
      */
     public function getAttachmentsList()
