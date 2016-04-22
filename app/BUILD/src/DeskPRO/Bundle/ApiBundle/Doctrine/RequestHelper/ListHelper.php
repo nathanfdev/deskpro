@@ -26,66 +26,26 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Traits\Filters;
-
-use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\HttpFoundation\Request;
+namespace DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper;
 
 /**
- * Class QueryFilterContext.
+ * Class ListHelper.
  */
-class QueryFilterContext
+class ListHelper
 {
     /**
-     * @var QueryBuilder
+     * @param RequestQueryContext $context
+     * @param string              $property
+     * @param string|null         $queryParam
      */
-    private $qb;
-
-    /**
-     * @var string
-     */
-    private $alias;
-
-    /**
-     * @var Request
-     */
-    private $request;
-
-    /**
-     * Constructor.
-     *
-     * @param QueryBuilder $qb
-     * @param string       $alias
-     * @param Request      $request
-     */
-    public function __construct(QueryBuilder $qb, $alias, Request $request)
+    public static function applyInListFilter(RequestQueryContext $context, $property, $queryParam = null)
     {
-        $this->qb      = $qb;
-        $this->alias   = $alias;
-        $this->request = $request;
-    }
+        $queryParam = $queryParam ?: $property;
+        $value      = $context->getRequest()->get($queryParam);
 
-    /**
-     * @return QueryBuilder
-     */
-    public function getQb()
-    {
-        return $this->qb;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getAlias()
-    {
-        return $this->alias;
-    }
-
-    /**
-     * @return Request
-     */
-    public function getRequest()
-    {
-        return $this->request;
+        if ($value) {
+            $context->getQb()->andWhere("{$context->getAlias()}.$property IN (:$queryParam)");
+            $context->getQb()->setParameter($queryParam, $value);
+        }
     }
 }

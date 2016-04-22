@@ -28,7 +28,8 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Content;
 
-use DeskPRO\Bundle\ApiBundle\Traits\Filters\QueryFilterContext;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -43,9 +44,7 @@ abstract class AbstractSingleCategoryContentController extends AbstractContentCo
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
         parent::applyListFilters($qb, $alias, $request);
-
-        $context = new QueryFilterContext($qb, $alias, $request);
-        $this->applyInListFilter($context, 'category');
+        ListHelper::applyInListFilter(new RequestQueryContext($qb, $alias, $request), 'category');
     }
 
     /**

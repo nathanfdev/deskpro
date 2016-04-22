@@ -30,9 +30,9 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use DeskPRO\Bundle\ApiBundle\Traits\Filters\DateFiltersTrait;
-use DeskPRO\Bundle\ApiBundle\Traits\Filters\LabelFiltersTrait;
-use DeskPRO\Bundle\ApiBundle\Traits\Filters\QueryFilterContext;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\DateHelper;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\LabelHelper;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Form\Type\Task\TaskType;
@@ -84,8 +84,6 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  */
 class TasksController extends CrudController
 {
-    use LabelFiltersTrait, DateFiltersTrait;
-
     public static $entity      = Task::class;
     public static $type        = TaskType::class;
     public static $sortOptions = [
@@ -152,7 +150,7 @@ class TasksController extends CrudController
             $qb->setParameter('creator', $creator);
         }
 
-        $context = new QueryFilterContext($qb, $alias, $request);
+        $context = new RequestQueryContext($qb, $alias, $request);
 
         if ($request->get('no_assignments')) {
             $qb
@@ -172,22 +170,22 @@ class TasksController extends CrudController
             $this->applyAssignedFilter($context, 'department', 'not_assigned_department');
         }
 
-        $this->applyLabelFilters($context, Task::class);
+        LabelHelper::applyLabelFilters($context, Task::class);
 
-        $this->applyDateRangeFilter($context, 'date_created', 'created_from', 'created_to');
-        $this->applyDateRangeFilter($context, 'date_due', 'due_from', 'due_to');
-        $this->applyDateRangeFilter($context, 'date_done', 'done_from', 'done_to');
+        DateHelper::applyDateRangeFilter($context, 'date_created', 'created_from', 'created_to');
+        DateHelper::applyDateRangeFilter($context, 'date_due', 'due_from', 'due_to');
+        DateHelper::applyDateRangeFilter($context, 'date_done', 'done_from', 'done_to');
 
         $qb->andWhere("$alias.for_del <> 1");
         $qb->addGroupBy("$alias.id");
     }
 
     /**
-     * @param QueryFilterContext $context
-     * @param string             $property
-     * @param string             $queryParam
+     * @param RequestQueryContext $context
+     * @param string              $property
+     * @param string              $queryParam
      */
-    protected function applyAssignedFilter(QueryFilterContext $context, $property, $queryParam)
+    protected function applyAssignedFilter(RequestQueryContext $context, $property, $queryParam)
     {
         $alias = $context->getAlias();
         $value = $context->getRequest()->get($queryParam);

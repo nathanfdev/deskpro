@@ -26,26 +26,66 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Traits\Filters;
+namespace DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper;
+
+use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Trait ListFiltersTrait.
+ * Class RequestQueryContext.
  */
-trait ListFiltersTrait
+class RequestQueryContext
 {
     /**
-     * @param QueryFilterContext $context
-     * @param string             $property
-     * @param string|null        $queryParam
+     * @var QueryBuilder
      */
-    protected function applyInListFilter(QueryFilterContext $context, $property, $queryParam = null)
-    {
-        $queryParam = $queryParam ?: $property;
-        $value      = $context->getRequest()->get($queryParam);
+    private $qb;
 
-        if ($value) {
-            $context->getQb()->andWhere("{$context->getAlias()}.$property IN (:$queryParam)");
-            $context->getQb()->setParameter($queryParam, $value);
-        }
+    /**
+     * @var string
+     */
+    private $alias;
+
+    /**
+     * @var Request
+     */
+    private $request;
+
+    /**
+     * Constructor.
+     *
+     * @param QueryBuilder $qb
+     * @param string       $alias
+     * @param Request      $request
+     */
+    public function __construct(QueryBuilder $qb, $alias, Request $request)
+    {
+        $this->qb      = $qb;
+        $this->alias   = $alias;
+        $this->request = $request;
+    }
+
+    /**
+     * @return QueryBuilder
+     */
+    public function getQb()
+    {
+        return $this->qb;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAlias()
+    {
+        return $this->alias;
+    }
+
+    /**
+     * @return Request
+     */
+    public function getRequest()
+    {
+        return $this->request;
     }
 }

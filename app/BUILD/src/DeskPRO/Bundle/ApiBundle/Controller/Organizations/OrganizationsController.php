@@ -32,8 +32,9 @@ use Application\DeskPRO\Entity\Organization;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\DateHelper;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Data\DatePeriods;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -87,11 +88,7 @@ class OrganizationsController extends CrudController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        $period = $request->get('period_created');
-        if ($period) {
-            $datePeriodCaseWhen = DatePeriods::getDatePeriodCaseWhenDql("$alias.date_created");
-            $qb->andWhere("$datePeriodCaseWhen = :period_created");
-            $qb->setParameter('period_created', $period);
-        }
+        $context = new RequestQueryContext($qb, $alias, $request);
+        DateHelper::applyDatePeriodFilter($context, 'date_created', 'period_created');
     }
 }

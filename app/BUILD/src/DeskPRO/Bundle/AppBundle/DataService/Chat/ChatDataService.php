@@ -45,16 +45,6 @@ use Pagerfanta\Pagerfanta;
  */
 class ChatDataService
 {
-    public static $datePeriodLabels = [
-        'today'      => 'Today',
-        'yesterday'  => 'Yesterday',
-        'this_week'  => 'This Week',
-        'this_month' => 'This Month',
-        'last_month' => 'Last Month',
-        'this_year'  => 'This Year',
-        'ever'       => 'Ever',
-    ];
-
     /**
      * @var EntityManager
      */
@@ -118,26 +108,6 @@ class ChatDataService
     }
 
     /**
-     * Gets a ChatConversation.
-     *
-     * @param int|Chatconversation $chat
-     *
-     * @return ChatConversation|null
-     */
-    public function getChat($chat)
-    {
-        if (!$chat) { // we need some input
-            return false;
-        }
-
-        if ($chat instanceof ChatConversation) { // already have what you seek
-            return $chat;
-        }
-
-        return $this->getChatConversationRepo()->find($chat);
-    }
-
-    /**
      * @param Organization $organization
      *
      * @return int
@@ -154,14 +124,6 @@ class ChatDataService
             ->setParameter('organization', $organization->getId());
 
         return $qb->getQuery()->getSingleScalarResult();
-    }
-
-    /**
-     * @return \Application\DeskPRO\EntityRepository\ChatConversation
-     */
-    private function getChatConversationRepo()
-    {
-        return $this->em->getRepository('DeskPRO:ChatConversation');
     }
 
     /**

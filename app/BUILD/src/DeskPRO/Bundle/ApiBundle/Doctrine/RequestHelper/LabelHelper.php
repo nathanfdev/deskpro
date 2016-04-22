@@ -26,22 +26,18 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Traits\Filters;
-
-use Doctrine\ORM\EntityManager;
+namespace DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper;
 
 /**
- * Trait LabelFiltersTrait.
- *
- * @method EntityManager getManager()
+ * Class LabelHelper.
  */
-trait LabelFiltersTrait
+class LabelHelper
 {
     /**
-     * @param QueryFilterContext $context
-     * @param string             $entityClass
+     * @param RequestQueryContext $context
+     * @param string              $entityClass
      */
-    protected function applyLabelFilters(QueryFilterContext $context, $entityClass)
+    public static function applyLabelFilters(RequestQueryContext $context, $entityClass)
     {
         $qb      = $context->getQb();
         $alias   = $context->getAlias();
@@ -55,7 +51,7 @@ trait LabelFiltersTrait
             $label = (array) $label;
 
             if ($labelsMode === 'all') {
-                $qb2 = $this->getManager()->createQueryBuilder();
+                $qb2 = $qb->getEntityManager()->createQueryBuilder();
                 $qb2
                     ->select('labelSubQuery.id')
                     ->from($entityClass, 'labelSubQuery')
