@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -365,10 +366,18 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         if (false !== $pos = strpos($this->headers, "\r\n\r\n")) {
             $headers = substr($this->headers, 0, $pos);
         }
+
+        $current = null;
         $headers = explode("\n", $headers);
         foreach ($headers as $str) {
-            $parts                                       = explode(':', $str);
-            $this->parsed_headers[strtolower($parts[0])] = trim($parts[1]);
+            if (preg_match('/^[A-Za-z]/', $str[0])) {
+                $parts                         = explode(':', $str);
+                $header                        = strtolower($parts[0]);
+                $this->parsed_headers[$header] = trim($parts[1]);
+                $current                       = $header;
+            } elseif ($current) {
+                $this->parsed_headers[$current] .= substr($str, 1);
+            }
         }
 
         return $this->parsed_headers;
