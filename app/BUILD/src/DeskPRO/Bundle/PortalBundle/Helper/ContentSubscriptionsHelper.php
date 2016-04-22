@@ -48,7 +48,7 @@ class ContentSubscriptionsHelper
     /**
      * @var BrandStack
      */
-    private $brand_stack;
+    private $brandStack;
 
     public function __construct(EntityManager $em)
     {
@@ -56,16 +56,16 @@ class ContentSubscriptionsHelper
     }
 
     /**
-     * @param string $content_type
+     * @param string $contentType
      * @param Person $person
      *
      * @return bool
      */
-    public function isSubscribedRootCategory($content_type, Person $person)
+    public function isSubscribedRootCategory($contentType, Person $person)
     {
         return (bool) $this->getDb()->fetchColumn("
                 SELECT id
-                FROM {$this->getSubscriptionsTableName($content_type)}
+                FROM {$this->getSubscriptionsTableName($contentType)}
                 WHERE person_id = ? AND root_category = 1
             ", [$person->getId()]);
     }
@@ -101,33 +101,33 @@ class ContentSubscriptionsHelper
     }
 
     /**
-     * @param string $content_type
+     * @param string $contentType
      * @param Person $person
      *
      * @return bool
      */
-    public function subscribeToRootCategory($content_type, Person $person)
+    public function subscribeToRootCategory($contentType, Person $person)
     {
-        if ($this->isSubscribedRootCategory($content_type, $person)) {
+        if ($this->isSubscribedRootCategory($contentType, $person)) {
             return true;
         }
 
-        return (bool) $this->getDb()->insert($this->getSubscriptionsTableName($content_type), [
+        return (bool) $this->getDb()->insert($this->getSubscriptionsTableName($contentType), [
             'person_id'     => $person->getId(),
             'root_category' => 1,
         ]);
     }
 
     /**
-     * @param string $content_type
+     * @param string $contentType
      * @param Person $person
      *
      * @return bool
      */
-    public function unsubscribeFromRootCategory($content_type, Person $person)
+    public function unsubscribeFromRootCategory($contentType, Person $person)
     {
-        if ($this->isSubscribedRootCategory($content_type, $person)) {
-            return (bool) $this->getDb()->delete($this->getSubscriptionsTableName($content_type), [
+        if ($this->isSubscribedRootCategory($contentType, $person)) {
+            return (bool) $this->getDb()->delete($this->getSubscriptionsTableName($contentType), [
                 'person_id'     => $person->getId(),
                 'root_category' => 1,
             ]);
@@ -209,14 +209,16 @@ class ContentSubscriptionsHelper
     }
 
     /**
-     * @param        $content_type
+     * @param        $contentType
      * @param Person $person
      * 
      * @return bool
      */
-    public function unsubscribeFromAll($content_type, Person $person)
+    public function unsubscribeFromAll($contentType, Person $person)
     {
-        return (bool) $this->getDb()->delete($this->getSubscriptionsTableName($content_type), ['person_id' => $person->getId()]);
+        return (bool) $this->getDb()->delete($this->getSubscriptionsTableName($contentType), [
+            'person_id' => $person->getId(),
+        ]);
     }
 
     protected function getSubscriptionsTableName($input)
@@ -299,7 +301,7 @@ class ContentSubscriptionsHelper
      */
     protected function getBrandSetting($setting, $default = null)
     {
-        return $this->brand_stack->getActive()->getSetting($setting, $default);
+        return $this->brandStack->getActive()->getSetting($setting, $default);
     }
 
     /**
