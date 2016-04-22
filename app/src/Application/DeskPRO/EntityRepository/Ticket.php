@@ -949,11 +949,6 @@ class Ticket extends AbstractEntityRepository
         if (!$person->is_agent) {
             $parts[]  = '(SELECT ticket_id FROM tickets_participants WHERE person_id = ? ORDER BY ticket_id DESC LIMIT 2000)';
             $params[] = $person->id;
-
-            if ($person->organization && $person->organization_manager) {
-                $parts[]  = '(SELECT id FROM tickets WHERE organization_id = ? ORDER BY id DESC LIMIT 2000)';
-                $params[] = $person->organization->id;
-            }
         }
 
         $parts_union = implode("\nUNION\n", $parts);
