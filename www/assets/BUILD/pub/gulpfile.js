@@ -340,7 +340,6 @@ function getWebpackConfig(mode, isProd) {
 
     config.entry['DeskPRO_PortalBundle_style'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-ltr-style.scss'];
     config.entry['DeskPRO_PortalBundle_rtl_style'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-rtl-style.scss'];
-//    config.entry['DeskPRO_PortalBundle_rtl_style'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-ltr-style.scss'];
 
     config.entry['DeskPRO_PortalBundle_iestyle'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/ie-overrides.scss'];
     config.entry['DeskPRO_PortalBundle_ie8style'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/ie8-overrides.scss'];
