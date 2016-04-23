@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Person;
 
-use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Person as PersonEntity;
 use DeskPRO\Bundle\AppBundle\Content\Avatar;
 use JMS\Serializer\Annotation as JMS;
 
@@ -81,12 +81,12 @@ class WidgetPerson
     private $avatar;
 
     /**
-     * WidgetPerson constructor.
+     * PersonEntity constructor.
      *
-     * @param Person $person
-     * @param        $avatar
+     * @param PersonEntity $person
+     * @param Avatar       $avatar
      */
-    public function __construct(Person $person, Avatar $avatar)
+    public function __construct(PersonEntity $person, Avatar $avatar)
     {
         $this->id                    = $person->getId();
         $this->display_name          = $person->getDisplayName();
