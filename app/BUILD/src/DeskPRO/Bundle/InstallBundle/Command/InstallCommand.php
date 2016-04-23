@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -74,8 +74,8 @@ class InstallCommand extends ContainerAwareCommand
         /* @var \DpRun\DpEnv $DP_ENV */
         global $DP_ENV;
 
-        $force_restart = false;
-        $profile       = new InstallProfile();
+        $forceRestart = false;
+        $profile      = new InstallProfile();
 
         if ($input->getOption('dev')) {
             $input->setOption('restart', true);
@@ -101,7 +101,7 @@ class InstallCommand extends ContainerAwareCommand
             if (count($opt) === 3) {
                 $input->setOption('opt_user_name', $opt[0]);
                 $input->setOption('opt_user_email', $opt[1]);
-                $input->setOption('opt_user_password', $opt[3]);
+                $input->setOption('opt_user_password', $opt[2]);
             } elseif (count($opt) === 2) {
                 $input->setOption('opt_user_email', $opt[0]);
                 $input->setOption('opt_user_password', $opt[1]);
@@ -122,28 +122,28 @@ class InstallCommand extends ContainerAwareCommand
         }
 
         if ($input->getOption('profile')) {
-            $force_restart = true;
+            $forceRestart = true;
             $profile->readAnswersFile($input->getOption('profile'));
         }
         $profile->readAnswersInput($input);
 
-        $app_env = $this->getContainer()->get('deskpro.app_env');
+        $appEnv  = $this->getContainer()->get('deskpro.app_env');
         $sm      = $this->getContainer()->get('install.session_manager');
-        $session = $sm->getLastInstallSession($input->getOption('restart') || $force_restart);
+        $session = $sm->getLastInstallSession($input->getOption('restart') || $forceRestart);
 
-        $restart_step = $input->getOption('redo-step');
+        $restartStep = $input->getOption('redo-step');
 
-        $list_mode = $input->getOption('list-steps');
-        $skip_list = array_map(function ($step_id) {
-            $step_id = preg_replace('/Step$/', '', $step_id);
-            $step_id = Strings::camelCaseToUnderscore($step_id);
-            $step_id = strtolower($step_id);
+        $listMode = $input->getOption('list-steps');
+        $skipList = array_map(function ($stepId) {
+            $stepId = preg_replace('/Step$/', '', $stepId);
+            $stepId = Strings::camelCaseToUnderscore($stepId);
+            $stepId = strtolower($stepId);
 
-            return $step_id;
+            return $stepId;
         }, $input->getOption('skip'));
 
         #------------------------------
-        # Make sure we can save the session ifo
+        # Make sure we can save the session info
         #------------------------------
 
         try {
@@ -156,15 +156,15 @@ class InstallCommand extends ContainerAwareCommand
 
             $sm->saveInstallSession($session);
         } catch (FileWriteException $e) {
-            $var_dir = realpath($app_env->getUserTmpDir().'/../');
+            $varDir = realpath($appEnv->getUserTmpDir().'/../');
 
             $output->writeln('<error>Please ensure that the DeskPRO var/ directory exists and is writable, and all sub-directories are writable.</error>');
-            $output->writeln(sprintf('<info>Path to var: %s</info>', $var_dir));
+            $output->writeln(sprintf('<info>Path to var: %s</info>', $varDir));
             $output->writeln('');
 
             if (!EnvUtils::isWindows()) {
                 $output->writeln('On Linux, you can recursively chmod the directory with this command:');
-                $output->writeln(sprintf('<comment>chmod -R 0777 %s</comment>', $var_dir));
+                $output->writeln(sprintf('<comment>chmod -R 0777 %s</comment>', $varDir));
                 $output->writeln('');
             }
 
@@ -214,41 +214,41 @@ class InstallCommand extends ContainerAwareCommand
         if ($input->getOption('skip-wizard')) {
             array_unshift($steps, new InstallStep\SkipWizardStep($context));
 
-            $skip_list[] = 'file_integrity';
-            $skip_list[] = 'own_requirements';
-            $skip_list[] = 'check_existing';
-            $skip_list[] = 'accept_paths';
-            $skip_list[] = 'accept_web_url';
-            $skip_list[] = 'accept_database';
-            $skip_list[] = 'install_config';
-            $skip_list[] = 'install_cron';
+            $skipList[] = 'file_integrity';
+            $skipList[] = 'own_requirements';
+            $skipList[] = 'check_existing';
+            $skipList[] = 'accept_paths';
+            $skipList[] = 'accept_web_url';
+            $skipList[] = 'accept_database';
+            $skipList[] = 'install_config';
+            $skipList[] = 'install_cron';
         }
 
         /** @var InstallStep\AbstractStep $step */
         foreach ($steps as $num => $step) {
-            $step_num = $num + 1;
+            $stepNum = $num + 1;
 
-            $step_id = TypeUtils::getBaseTypeName($step);
-            $step_id = preg_replace('/Step$/', '', $step_id);
-            $step_id = Strings::camelCaseToUnderscore($step_id);
-            $step_id = strtolower($step_id);
+            $stepId = TypeUtils::getBaseTypeName($step);
+            $stepId = preg_replace('/Step$/', '', $stepId);
+            $stepId = Strings::camelCaseToUnderscore($stepId);
+            $stepId = strtolower($stepId);
 
-            if ($skip_list && in_array($step_id, $skip_list)) {
-                if ($list_mode) {
-                    $output->writeln(sprintf('Step %02d: %-28s <comment>(skipped)</comment>', $step_num, $step_id));
+            if ($skipList && in_array($stepId, $skipList)) {
+                if ($listMode) {
+                    $output->writeln(sprintf('Step %02d: %-28s <comment>(skipped)</comment>', $stepNum, $stepId));
                 }
                 continue;
             }
 
-            if (!($restart_step && $restart_step === $step_id) && $step->isComplete()) {
-                if ($list_mode) {
-                    $output->writeln(sprintf('Step %02d: %-28s <info>(done)</info>', $step_num, $step_id));
+            if (!($restartStep && $restartStep === $stepId) && $step->isComplete()) {
+                if ($listMode) {
+                    $output->writeln(sprintf('Step %02d: %-28s <info>(done)</info>', $stepNum, $stepId));
                 }
                 continue;
             }
 
-            if ($list_mode) {
-                $output->writeln(sprintf('Step %02d: %s', $step_num, $step_id));
+            if ($listMode) {
+                $output->writeln(sprintf('Step %02d: %s', $stepNum, $stepId));
                 continue;
             }
 

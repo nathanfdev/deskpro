@@ -261,12 +261,11 @@ $container->loadFromExtension(
                 'audit' => [
                     'connection' => 'audit',
                     'mappings'   => [
-                        'AppBundle' => [
+                        'AuditBundle' => [
                             'type'      => 'annotation',
-                            'alias'     => 'App',
                             'is_bundle' => false,
-                            'dir'       => '%kernel.root_dir%/../src/DeskPRO/Bundle/AppBundle/Entity',
-                            'prefix'    => 'DeskPRO\Bundle\AppBundle\Entity',
+                            'dir'       => '%kernel.root_dir%/../src/DeskPRO/Bundle/AuditBundle/Entity',
+                            'prefix'    => 'DeskPRO\Bundle\AuditBundle\Entity',
                         ],
                     ],
                 ],

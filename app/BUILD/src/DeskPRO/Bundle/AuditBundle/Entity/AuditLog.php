@@ -26,65 +26,92 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AuditBundle\Log;
+namespace DeskPRO\Bundle\AuditBundle\Entity;
+
+use DeskPRO\Bundle\AuditBundle\Log\LoggableInterface;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 
 /**
- * Class AuditLog.
+ * Class Test.
+ *
+ * @ODM\Document()
  */
-class AuditLog
+class AuditLog implements LoggableInterface
 {
     /**
+     * @ODM\Id(strategy="INCREMENT")
+     *
      * @var int
      */
     protected $id;
 
     /**
-     * @var string
+     * @ODM\Field(type="string")
+     *
+     * @var
      */
     protected $action;
 
     /**
+     * @ODM\Field(type="date")
+     *
      * @var \DateTime
      */
     protected $dateCreated;
 
     /**
+     * @ODM\Field(type="string")
+     *
      * @var string
      */
     protected $performerName;
 
     /**
+     * @ODM\Field(type="int")
+     *
      * @var int
      */
     protected $performerId;
 
     /**
+     * @ODM\Field(type="string")
+     *
      * @var string
      */
     protected $objectName;
 
     /**
+     * @ODM\Field(type="string")
+     *
      * @var string
      */
     protected $objectType;
 
     /**
+     * @ODM\Field(type="int")
+     *
      * @var int
      */
     protected $objectId;
 
     /**
+     * @ODM\Field(type="string")
+     *
      * @var string
      */
     protected $description;
 
     /**
+     * @ODM\Field(type="int")
+     *
      * @var int
      */
     protected $apiKey;
 
     /**
-     * @var array
+     * @ODM\EmbedOne(targetDocument="DeskPRO\Bundle\AuditBundle\Document\AuditLogData")
+     *
+     * @var AuditLogData
      */
     protected $data;
 
@@ -109,6 +136,26 @@ class AuditLog
     }
 
     /**
+     * @return mixed
+     */
+    public function getAction()
+    {
+        return $this->action;
+    }
+
+    /**
+     * @param mixed $action
+     *
+     * @return $this
+     */
+    public function setAction($action)
+    {
+        $this->action = $action;
+
+        return $this;
+    }
+
+    /**
      * @return \DateTime
      */
     public function getDateCreated()
@@ -124,26 +171,6 @@ class AuditLog
     public function setDateCreated($dateCreated)
     {
         $this->dateCreated = $dateCreated;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAction()
-    {
-        return $this->action;
-    }
-
-    /**
-     * @param string $action
-     *
-     * @return $this
-     */
-    public function setAction($action)
-    {
-        $this->action = $action;
 
         return $this;
     }
@@ -289,7 +316,7 @@ class AuditLog
     }
 
     /**
-     * @return array
+     * @return AuditLogData
      */
     public function getData()
     {
@@ -297,11 +324,11 @@ class AuditLog
     }
 
     /**
-     * @param array $data
+     * @param AuditLogData $data
      *
      * @return $this
      */
-    public function setData(array $data)
+    public function setData(AuditLogData $data)
     {
         $this->data = $data;
 

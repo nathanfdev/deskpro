@@ -81,15 +81,29 @@ class SkipWizardStep extends AbstractStep
         // Try system database, create if doesn't exist
 
         if (!$this->getSession()->getSystemDbInfo()) {
-            $env                  = $this->getContext()->getDpEnv();
-            $sys_dbinfo           = new DbInfo();
-            $sys_dbinfo->host     = $env->getConfig('database.system.host') ?: $env->getConfig('database.host');
-            $sys_dbinfo->user     = $env->getConfig('database.system.user') ?: $env->getConfig('database.user');
-            $sys_dbinfo->password = $env->getConfig('database.system.password') ?: $env->getConfig('database.password');
-            $sys_dbinfo->dbname   = $env->getConfig('database.system.dbname') ?: $env->getConfig('database.dbname');
-            $this->getSession()->setSystemDbInfo($sys_dbinfo);
+            $env                 = $this->getContext()->getDpEnv();
+            $sysDbInfo           = new DbInfo();
+            $sysDbInfo->host     = $env->getConfig('database.system.host') ?: $env->getConfig('database.host');
+            $sysDbInfo->user     = $env->getConfig('database.system.user') ?: $env->getConfig('database.user');
+            $sysDbInfo->password = $env->getConfig('database.system.password') ?: $env->getConfig('database.password');
+            $sysDbInfo->dbname   = $env->getConfig('database.system.dbname') ?: $env->getConfig('database.dbname');
+            $this->getSession()->setSystemDbInfo($sysDbInfo);
         } else {
-            $sys_dbinfo = $this->getSession()->getSystemDbInfo();
+            $sysDbInfo = $this->getSession()->getSystemDbInfo();
+        }
+
+        // Try audit database, create if doesn't exist
+
+        if (!$this->getSession()->getAuditDbInfo()) {
+            $env                   = $this->getContext()->getDpEnv();
+            $auditDbInfo           = new DbInfo();
+            $auditDbInfo->host     = $env->getConfig('database.audit.host') ?: $env->getConfig('database.host');
+            $auditDbInfo->user     = $env->getConfig('database.audit.user') ?: $env->getConfig('database.user');
+            $auditDbInfo->password = $env->getConfig('database.audit.password') ?: $env->getConfig('database.password');
+            $auditDbInfo->dbname   = $env->getConfig('database.audit.dbname') ?: $env->getConfig('database.dbname');
+            $this->getSession()->setAuditDbInfo($auditDbInfo);
+        } else {
+            $auditDbInfo = $this->getSession()->getAuditDbInfo();
         }
 
         try {
@@ -97,7 +111,17 @@ class SkipWizardStep extends AbstractStep
         } catch (\Exception $e) {
             try {
                 $pdo = $this->getSession()->getSystemDbInfo()->getPdo(true);
-                $pdo->exec('CREATE DATABASE `'.$sys_dbinfo->dbname.'`');
+                $pdo->exec('CREATE DATABASE `'.$sysDbInfo->dbname.'`');
+            } catch (\Exception $e) {
+            }
+        }
+
+        try {
+            $this->getSession()->getSystemDbInfo()->getPdo();
+        } catch (\Exception $e) {
+            try {
+                $pdo = $this->getSession()->getSystemDbInfo()->getPdo(true);
+                $pdo->exec('CREATE DATABASE `'.$auditDbInfo->dbname.'`');
             } catch (\Exception $e) {
             }
         }

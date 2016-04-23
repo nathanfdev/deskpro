@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AuditBundle\Storage\MongoDB;
 
-use DeskPRO\Bundle\AuditBundle\Document\AuditLog;
+use DeskPRO\Bundle\AuditBundle\Entity\AuditLog;
 use DeskPRO\Bundle\AuditBundle\Log\LoggableInterface;
 use DeskPRO\Bundle\AuditBundle\Storage\StorageInterface;
 use Doctrine\ODM\MongoDB\DocumentManager;

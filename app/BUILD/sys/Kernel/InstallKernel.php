@@ -44,7 +44,6 @@ class InstallKernel extends BaseKernel
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new \Symfony\Bundle\MonologBundle\MonologBundle(),
             new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
-            new \Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
             new \DeskPRO\Bundle\InstallBundle\InstallBundle(),
         ];
 

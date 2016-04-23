@@ -39,22 +39,22 @@ class InstallConfigStep extends AbstractStep
 
         $fs = new Filesystem();
 
-        $new_config_path = $this->getContext()->getDpEnv()->getAppDir().'/config_new';
+        $newConfigPath = $this->getContext()->getDpEnv()->getAppDir().'/config_new';
 
         if ($this->getSession()->getSource() === 'dev') {
-            $new_config_path = DP_DIR.'/dev/config_dev_new';
+            $newConfigPath = DP_DIR.'/dev/config_dev_new';
         }
 
         $dir = Finder::create()
             ->files()
-            ->in($new_config_path);
+            ->in($newConfigPath);
 
-        $config_path = $this->getConfigPath();
+        $configPath = $this->getConfigPath();
 
-        if (file_exists($config_path.DIRECTORY_SEPARATOR.'config.database.php')) {
-            $backup_dir = $this->backupConfig();
+        if (file_exists($configPath.DIRECTORY_SEPARATOR.'config.database.php')) {
+            $backupDir = $this->backupConfig();
             $this->writeln('<info>Configuration files already exist</info>');
-            $this->writeln("We have MOVED configuration files into a sub-directory:\n<info>$backup_dir</info>");
+            $this->writeln("We have MOVED configuration files into a sub-directory:\n<info>$backupDir</info>");
             $this->writeln('');
         } else {
             // might be non database files as well, just backup anyway
@@ -62,17 +62,17 @@ class InstallConfigStep extends AbstractStep
         }
 
         $this->writeln('Installing configuration files to:');
-        $this->writeln('<info>'.$config_path.'</info>');
+        $this->writeln('<info>'.$configPath.'</info>');
 
         /** @var \SplFileInfo $f */
         foreach ($dir as $f) {
             $path    = str_replace('\\', '/', $f->getRealPath());
-            $relPath = str_replace(str_replace('\\', '/', $new_config_path), '', $path);
+            $relPath = str_replace(str_replace('\\', '/', $newConfigPath), '', $path);
             $relPath = str_replace('/', DIRECTORY_SEPARATOR, $relPath);
 
             $fs->copy(
                 $f->getRealPath(),
-                $config_path.$relPath
+                $configPath.$relPath
             );
         }
 
@@ -82,6 +82,24 @@ class InstallConfigStep extends AbstractStep
             'password' => $this->getSession()->getDbInfo()->password,
             'dbname'   => $this->getSession()->getDbInfo()->dbname,
         ]);
+
+        if ($this->getSession()->getDbInfo() !== $this->getSession()->getSystemDbInfo()) {
+            $this->writeVars('config.database.php', 'DB_CONFIG\[\'system\'\]', [
+                'host'     => $this->getSession()->getSystemDbInfo()->host,
+                'user'     => $this->getSession()->getSystemDbInfo()->user,
+                'password' => $this->getSession()->getSystemDbInfo()->password,
+                'dbname'   => $this->getSession()->getSystemDbInfo()->dbname,
+            ]);
+        }
+
+        if ($this->getSession()->getDbInfo() !== $this->getSession()->getAuditDbInfo()) {
+            $this->writeVars('config.database.php', 'DB_CONFIG\[\'audit\'\]', [
+                'host'     => $this->getSession()->getAuditDbInfo()->host,
+                'user'     => $this->getSession()->getAuditDbInfo()->user,
+                'password' => $this->getSession()->getAuditDbInfo()->password,
+                'dbname'   => $this->getSession()->getAuditDbInfo()->dbname,
+            ]);
+        }
 
         $this->writeVars('config.paths.php', 'PATHS_CONFIG', [
             'php_path'       => $this->getSession()->getPaths()->php_path,
@@ -115,8 +133,8 @@ class InstallConfigStep extends AbstractStep
         $key = preg_quote($name, '#');
 
         return preg_replace(
-            '#^\$'.$varname.'\[\''.$key.'\']\s*=\s*.*?;$#m',
-            '$'.$varname.'[\''.$name.'\'] = '.var_export($value, true).';',
+            '#^(//)?\$'.$varname.'\[\''.$key.'\']\s*=\s*.*?;$#m',
+            '$'.str_replace('\\', '', $varname).'[\''.$name.'\'] = '.var_export($value, true).';',
             $content
         );
     }
@@ -133,31 +151,31 @@ class InstallConfigStep extends AbstractStep
 
     private function backupConfig()
     {
-        $fs          = new Filesystem();
-        $config_path = $this->getConfigPath();
+        $fs         = new Filesystem();
+        $configPath = $this->getConfigPath();
 
-        $backup_basedir = $this->getContext()->getDpEnv()->getUserBackupsDir().DIRECTORY_SEPARATOR.'config_backup';
-        $backup_dir     = $backup_basedir.DIRECTORY_SEPARATOR.date('Ymd_His').'_'.mt_rand(1000, 9999);
-        $any            = false;
+        $backupBasedir = $this->getContext()->getDpEnv()->getUserBackupsDir().DIRECTORY_SEPARATOR.'config_backup';
+        $backupDir     = $backupBasedir.DIRECTORY_SEPARATOR.date('Ymd_His').'_'.mt_rand(1000, 9999);
+        $any           = false;
 
-        $fs->mkdir($backup_dir);
+        $fs->mkdir($backupDir);
 
         $finder = Finder::create()
             ->notName('.gitkeep')
             ->depth(0)
-            ->in($config_path);
+            ->in($configPath);
 
         /** @var \SplFileInfo $f */
         foreach ($finder as $f) {
-            $fs->rename($f->getRealPath(), $backup_dir.DIRECTORY_SEPARATOR.$f->getBasename());
+            $fs->rename($f->getRealPath(), $backupDir.DIRECTORY_SEPARATOR.$f->getBasename());
             $any = true;
         }
 
         if (!$any) {
-            $fs->remove($backup_dir);
+            $fs->remove($backupDir);
         }
 
-        return $backup_dir;
+        return $backupDir;
     }
 
     public function isComplete()

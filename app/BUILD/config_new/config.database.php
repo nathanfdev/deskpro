@@ -33,3 +33,8 @@ $DB_CONFIG['dbname']   = 'deskpro';
 //$DB_CONFIG['system']['user']     = 'root';
 //$DB_CONFIG['system']['password'] = '';
 //$DB_CONFIG['system']['dbname']   = 'deskpro_sys';
+
+//$DB_CONFIG['audit']['host']     = 'localhost';
+//$DB_CONFIG['audit']['user']     = 'root';
+//$DB_CONFIG['audit']['password'] = '';
+//$DB_CONFIG['audit']['dbname']   = 'deskpro_audit';

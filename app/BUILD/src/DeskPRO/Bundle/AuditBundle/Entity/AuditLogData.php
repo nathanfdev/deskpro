@@ -26,12 +26,68 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Component\MongoDB\Annotations\Polyfill;
+namespace DeskPRO\Bundle\AuditBundle\Entity;
 
-use Doctrine\ODM\MongoDB\Mapping\Annotations\AbstractField;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 
-/** @Annotation */
-final class BooleanField extends AbstractField
+/**
+ * Class AuditLogData.
+ *
+ * @ODM\EmbeddedDocument()
+ */
+class AuditLogData
 {
-    public $type = 'boolean';
+    /**
+     * @ODM\Field(type="hash")
+     *
+     * @var array
+     */
+    private $context;
+
+    /**
+     * @ODM\Field(type="hash")
+     *
+     * @var array
+     */
+    private $diff;
+
+    /**
+     * @return mixed
+     */
+    public function getContext()
+    {
+        return $this->context;
+    }
+
+    /**
+     * @param mixed $context
+     *
+     * @return $this
+     */
+    public function setContext($context)
+    {
+        $this->context = $context;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDiff()
+    {
+        return $this->diff;
+    }
+
+    /**
+     * @param mixed $diff
+     *
+     * @return $this
+     */
+    public function setDiff($diff)
+    {
+        $this->diff = $diff;
+
+        return $this;
+    }
 }

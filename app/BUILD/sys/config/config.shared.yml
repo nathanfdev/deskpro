@@ -35,4 +35,9 @@ doctrine_mongodb:
     default_connection: default
     document_managers:
       default:
-        auto_mapping: true
+        mappings:
+          AuditBundle:
+            type: 'annotation'
+            is_bundle: false
+            dir: '%kernel.root_dir%/../src/DeskPRO/Bundle/AuditBundle/Entity'
+            prefix: 'DeskPRO\Bundle\AuditBundle\Entity'

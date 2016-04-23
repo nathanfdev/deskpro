@@ -28,7 +28,8 @@
 
 namespace DeskPRO\Bundle\AuditBundle\Storage\MongoDB;
 
-use DeskPRO\Bundle\AuditBundle\Document\AuditLog as AuditLogDocument;
+use DeskPRO\Bundle\AuditBundle\Entity\AuditLog as AuditLogDocument;
+use DeskPRO\Bundle\AuditBundle\Entity\AuditLogData;
 use DeskPRO\Bundle\AuditBundle\Log\AuditLog;
 use DeskPRO\Bundle\AuditBundle\Log\LoggableInterface;
 use DeskPRO\Bundle\AuditBundle\Storage\AbstractTransformer;
@@ -37,8 +38,23 @@ class MongoDBTransformer extends AbstractTransformer
 {
     public function transform(AuditLog $log)
     {
-        $doc = new AuditLogDocument();
-        $doc->setName($log->getName())->setValue($log->getValue());
+        $doc  = new AuditLogDocument();
+        $data = new AuditLogData();
+        $data->setContext(['a' => 'b'])->setDiff(['c' => 'd']);
+
+        $doc
+            ->setId($log->getId())
+            ->setDateCreated($log->getDateCreated())
+            ->setObjectName($log->getObjectName())
+            ->setObjectId($log->getObjectId())
+            ->setObjectType($log->getObjectType())
+            ->setDescription($log->getDescription())
+            ->setAction($log->getAction())
+            ->setPerformerId($log->getPerformerId())
+            ->setPerformerName($log->getPerformerName())
+            ->setApiKey($log->getApiKey());
+
+        $doc->setData($data);
 
         return $doc;
     }
@@ -50,8 +66,17 @@ class MongoDBTransformer extends AbstractTransformer
 
         $log
             ->setId($loggable->getId())
-            ->setName($loggable->getName())
-            ->setValue($loggable->getValue());
+            ->setDateCreated($loggable->getDateCreated())
+            ->setObjectName($loggable->getObjectName())
+            ->setObjectId($loggable->getObjectId())
+            ->setObjectType($loggable->getObjectType())
+            ->setDescription($loggable->getDescription())
+            ->setAction($loggable->getAction())
+            ->setPerformerId($loggable->getPerformerId())
+            ->setPerformerName($loggable->getPerformerName())
+            ->setApiKey($loggable->getApiKey());
+
+        $log->setData([]);
 
         return $log;
     }
