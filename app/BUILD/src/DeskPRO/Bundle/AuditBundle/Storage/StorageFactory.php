@@ -59,11 +59,12 @@ class StorageFactory
     {
         $type = $this->resolver->getGlobalSettings()->get('audit_log.storage');
 
-        $storageId = 'audit_log.transformer.'.$type;
-        if (!$this->container->has($storageId)) {
+        $transformerId = 'audit_log.transformer.'.$type;
+
+        if (!$this->container->has($transformerId)) {
             throw new \RuntimeException(sprintf('Couldn\'t find audit log transformer with type [ %s ]', $type));
         }
 
-        return $this->container->get($storageId);
+        return $this->container->get($transformerId);
     }
 }

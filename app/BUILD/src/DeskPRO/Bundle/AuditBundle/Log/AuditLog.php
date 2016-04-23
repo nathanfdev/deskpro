@@ -88,6 +88,11 @@ class AuditLog
      */
     protected $data;
 
+    public function __construct()
+    {
+        $this->dateCreated = new \DateTime();
+    }
+
     /**
      * @return int
      */

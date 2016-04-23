@@ -26,16 +26,23 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AuditBundle\Storage\MongoDB;
+namespace DeskPRO\Bundle\AuditBundle\Storage;
 
 use DeskPRO\Bundle\AuditBundle\Entity\AuditLog as AuditLogDocument;
 use DeskPRO\Bundle\AuditBundle\Entity\AuditLogData;
 use DeskPRO\Bundle\AuditBundle\Log\AuditLog;
 use DeskPRO\Bundle\AuditBundle\Log\LoggableInterface;
-use DeskPRO\Bundle\AuditBundle\Storage\AbstractTransformer;
 
-class MongoDBTransformer extends AbstractTransformer
+/**
+ * Class GenericTransformer.
+ */
+class GenericTransformer extends AbstractTransformer
 {
+    /**
+     * @param AuditLog $log
+     *
+     * @return AuditLogDocument
+     */
     public function transform(AuditLog $log)
     {
         $doc  = new AuditLogDocument();
@@ -59,6 +66,11 @@ class MongoDBTransformer extends AbstractTransformer
         return $doc;
     }
 
+    /**
+     * @param LoggableInterface $loggable
+     *
+     * @return AuditLog
+     */
     public function reverseTransform(LoggableInterface $loggable)
     {
         /** @var AuditLogDocument $loggable */

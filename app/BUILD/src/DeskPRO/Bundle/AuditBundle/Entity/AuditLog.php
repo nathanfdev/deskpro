@@ -28,17 +28,31 @@
 
 namespace DeskPRO\Bundle\AuditBundle\Entity;
 
+use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
 use DeskPRO\Bundle\AuditBundle\Log\LoggableInterface;
+use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Class Test.
  *
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChatRepository")
+ * @ORM\Table(name="audit_logs")
+ * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
+ * @ORM\InheritanceType("NONE")
+ *
  * @ODM\Document()
  */
-class AuditLog implements LoggableInterface
+class AuditLog implements LoggableInterface, NotifyPropertyChanged
 {
+    use NotifyPropertyChangedTrait;
+
     /**
+     * @ORM\Id()
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     *
      * @ODM\Id(strategy="INCREMENT")
      *
      * @var int
@@ -46,13 +60,17 @@ class AuditLog implements LoggableInterface
     protected $id;
 
     /**
+     * @ORM\Column(type="string")
+     *
      * @ODM\Field(type="string")
      *
-     * @var
+     * @var string
      */
     protected $action;
 
     /**
+     * @ORM\Column(type="datetime", nullable=false, name="date_created")
+     *
      * @ODM\Field(type="date")
      *
      * @var \DateTime
@@ -60,6 +78,8 @@ class AuditLog implements LoggableInterface
     protected $dateCreated;
 
     /**
+     * @ORM\Column(type="string", name="performer_name")
+     *
      * @ODM\Field(type="string")
      *
      * @var string
@@ -67,6 +87,8 @@ class AuditLog implements LoggableInterface
     protected $performerName;
 
     /**
+     * @ORM\Column(type="integer", name="performer_id", nullable=true)
+     *
      * @ODM\Field(type="int")
      *
      * @var int
@@ -74,6 +96,8 @@ class AuditLog implements LoggableInterface
     protected $performerId;
 
     /**
+     * @ORM\Column(type="string", name="object_name", nullable=true)
+     *
      * @ODM\Field(type="string")
      *
      * @var string
@@ -81,6 +105,8 @@ class AuditLog implements LoggableInterface
     protected $objectName;
 
     /**
+     * @ORM\Column(type="string", name="object_type", nullable=true)
+     *
      * @ODM\Field(type="string")
      *
      * @var string
@@ -88,6 +114,8 @@ class AuditLog implements LoggableInterface
     protected $objectType;
 
     /**
+     * @ORM\Column(type="integer", name="object_id", nullable=true)
+     *
      * @ODM\Field(type="int")
      *
      * @var int
@@ -95,6 +123,8 @@ class AuditLog implements LoggableInterface
     protected $objectId;
 
     /**
+     * @ORM\Column(type="string")
+     *
      * @ODM\Field(type="string")
      *
      * @var string
@@ -102,6 +132,8 @@ class AuditLog implements LoggableInterface
     protected $description;
 
     /**
+     * @ORM\Column(type="integer", name="api_key", nullable=true)
+     *
      * @ODM\Field(type="int")
      *
      * @var int
@@ -109,6 +141,8 @@ class AuditLog implements LoggableInterface
     protected $apiKey;
 
     /**
+     * @ORM\Column(type="dp_json_obj")
+     *
      * @ODM\EmbedOne(targetDocument="DeskPRO\Bundle\AuditBundle\Document\AuditLogData")
      *
      * @var AuditLogData

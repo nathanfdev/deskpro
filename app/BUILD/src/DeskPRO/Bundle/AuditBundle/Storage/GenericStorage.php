@@ -26,35 +26,59 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AuditBundle\Storage\MongoDB;
+namespace DeskPRO\Bundle\AuditBundle\Storage;
 
 use DeskPRO\Bundle\AuditBundle\Entity\AuditLog;
 use DeskPRO\Bundle\AuditBundle\Log\LoggableInterface;
-use DeskPRO\Bundle\AuditBundle\Storage\StorageInterface;
-use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\Common\Persistence\ObjectManager;
 
-class MongoDBStorage implements StorageInterface
+/**
+ * Class GenericStorage.
+ */
+class GenericStorage implements StorageInterface
 {
-    private $dm;
+    /**
+     * @var ObjectManager
+     */
+    private $manager;
 
-    public function __construct(DocumentManager $dm)
+    /**
+     * MongoDBStorage constructor.
+     *
+     * @param ObjectManager $manager
+     */
+    public function __construct(ObjectManager $manager)
     {
-        $this->dm = $dm;
+        $this->manager = $manager;
     }
 
+    /**
+     * @param LoggableInterface $log
+     */
     public function write(LoggableInterface $log)
     {
-        $this->dm->persist($log);
-        $this->dm->flush();
+        $this->manager->persist($log);
+        $this->manager->flush();
     }
 
+    /**
+     * @param mixed $id
+     *
+     * @return AuditLog
+     */
     public function find($id)
     {
-        return $this->dm->getRepository(AuditLog::class)->find($id);
+        return $this->manager->getRepository(AuditLog::class)->find($id);
     }
 
+    /**
+     * @param int $offset
+     * @param int $limit
+     *
+     * @return array|\DeskPRO\Bundle\AuditBundle\Entity\AuditLog[]
+     */
     public function read($offset, $limit)
     {
-        return $this->dm->getRepository(AuditLog::class)->findBy([], [], $limit, $offset);
+        return $this->manager->getRepository(AuditLog::class)->findBy([], [], $limit, $offset);
     }
 }

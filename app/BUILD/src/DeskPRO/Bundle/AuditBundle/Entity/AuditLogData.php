@@ -29,13 +29,14 @@
 namespace DeskPRO\Bundle\AuditBundle\Entity;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Orb\Types\JsonObjectSerializable;
 
 /**
  * Class AuditLogData.
  *
  * @ODM\EmbeddedDocument()
  */
-class AuditLogData
+class AuditLogData implements JsonObjectSerializable
 {
     /**
      * @ODM\Field(type="hash")
@@ -89,5 +90,29 @@ class AuditLogData
         $this->diff = $diff;
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function serializeJsonArray()
+    {
+        return [
+            'context' => $this->context,
+            'diff'    => $this->diff,
+        ];
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return AuditLogData
+     */
+    public static function unserializeJsonArray(array $data)
+    {
+        $obj = new self();
+        $obj->setDiff($data['diff'])->setContext($data['context']);
+
+        return $obj;
     }
 }
