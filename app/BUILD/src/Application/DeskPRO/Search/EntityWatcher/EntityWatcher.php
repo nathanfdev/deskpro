@@ -112,9 +112,11 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
 
         $GLOBALS['DP_HAS_UPDATED_SEARCH_TABLES'] = true;
 
-        /** @var \Application\DeskPRO\Search\SearchIndexer $indexer */
-        $indexer = $this->container->getSystemService('search_indexer');
-        $indexer->handle($updates, $deletes);
+        if ($this->container) {
+            /** @var \Application\DeskPRO\Search\SearchIndexer $indexer */
+            $indexer = $this->container->getSystemService('search_indexer');
+            $indexer->handle($updates, $deletes);
+        }
 
         $this->is_running = false;
     }

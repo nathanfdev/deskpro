@@ -39,6 +39,7 @@ use DeskPRO\Bundle\ApiBundle\ApiBundle;
 use DeskPRO\Bundle\AppBundle\AppBundle;
 use DeskPRO\Bundle\PortalBundle\PortalBundle;
 use Symfony\Component\Config\ConfigCache;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
 
@@ -326,5 +327,57 @@ abstract class BaseKernel extends Kernel
     public function getLogDir()
     {
         return $this->dpEnv->getUserLogsDir();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function shutdown()
+    {
+        if (false === $this->booted) {
+            return;
+        }
+
+        if ($this->environment !== 'test') {
+            parent::shutdown();
+        }
+
+        // In test env clean up all container services from all object references
+        // to prevent memory leaks when sharing the kernel between test scenarios
+        else {
+            $container = $this->container;
+            parent::shutdown();
+            $this->cleanupContainer($container);
+        }
+    }
+
+    /**
+     * Remove all container references from all loaded services.
+     *
+     * @param Container $container
+     */
+    private function cleanupContainer(Container $container)
+    {
+        $containerReflection        = new \ReflectionObject($container);
+        $servicesPropertyReflection = $containerReflection->getProperty('services');
+        $servicesPropertyReflection->setAccessible(true);
+        $services = $servicesPropertyReflection->getValue($container) ?: [];
+        foreach ($services as $id => $service) {
+            if ('kernel' === $id || 'http_kernel' === $id) {
+                continue;
+            }
+            $serviceReflection       = new \ReflectionObject($service);
+            $propertiesReflections   = $serviceReflection->getProperties();
+            $propertiesDefaultValues = $serviceReflection->getDefaultProperties();
+            foreach ($propertiesReflections as $servicePropertyReflection) {
+                $defaultPropertyValue = null;
+                if (isset($propertiesDefaultValues[$servicePropertyReflection->getName()])) {
+                    $defaultPropertyValue = $propertiesDefaultValues[$servicePropertyReflection->getName()];
+                }
+                $servicePropertyReflection->setAccessible(true);
+                $servicePropertyReflection->setValue($service, $defaultPropertyValue);
+            }
+        }
+        $servicesPropertyReflection->setValue($container, []);
     }
 }

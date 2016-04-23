@@ -35,39 +35,18 @@ use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use DeskPRO\Bundle\AppBundle\Entity\ApiKeyAction;
 use DeskPRO\Bundle\AppBundle\Entity\ApiKeyLimit;
 use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
-use Doctrine\ORM\EntityManager;
 use DpBehat\BaseContext;
-use DpBehat\RebootableContextInterface;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 
 /**
  * Defines application features from the specific context.
  */
-class AuthContext extends BaseContext implements RebootableContextInterface
+class AuthContext extends BaseContext
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
-    /**
-     * @var UserDetailsRepo
-     */
-    private $user_details;
     /**
      * @var RestContext
      */
     private $rest_context;
-
-    public function rebootContext()
-    {
-        $this->rebootAuthContext();
-    }
-
-    public function rebootAuthContext()
-    {
-        $this->em           = $this->getKernel()->getContainer()->get('doctrine.orm.default_entity_manager');
-        $this->user_details = $this->getKernel()->getContainer()->get('user_details');
-    }
 
     /**
      * @Given a valid api token exists with the code :token and id :id for :who
@@ -76,7 +55,7 @@ class AuthContext extends BaseContext implements RebootableContextInterface
     {
         $api_token         = new ApiToken();
         $api_token->token  = $token;
-        $api_token->person = $this->user_details->getWho($who);
+        $api_token->person = $this->getUserDetails()->getWho($who);
         $api_token->scope  = ApiToken::SCOPE_CLIENT;
 
         $this->persistAndFlush($api_token);
@@ -93,7 +72,7 @@ class AuthContext extends BaseContext implements RebootableContextInterface
     {
         $key         = new ApiKey();
         $key->code   = $code;
-        $key->person = $this->user_details->getWho($who);
+        $key->person = $this->getUserDetails()->getWho($who);
 
         $key_action = new ApiKeyAction();
         $key_action->setAction('*');
@@ -122,7 +101,7 @@ class AuthContext extends BaseContext implements RebootableContextInterface
      */
     public function theAgentSessionIsValidForPerson($session_id, $who)
     {
-        $user = $this->user_details->getWho($who);
+        $user = $this->getUserDetails()->getWho($who);
 
         session_start();
         $_SESSION['_sf2_attributes'] = ['auth_person_id' => $user->getId()];
@@ -181,11 +160,11 @@ class AuthContext extends BaseContext implements RebootableContextInterface
      */
     public function myRequestIsAuthenticatedTo($who)
     {
-        $repository = $this->em->getRepository(ApiKey::class);
+        $repository = $this->em()->getRepository(ApiKey::class);
 
         $key = $repository->find(1);
         if ($key) {
-            $person = $this->user_details->getWho($who);
+            $person = $this->getUserDetails()->getWho($who);
             if ($key->person !== $person) {
                 $key->person = $person;
                 $this->persistAndFlush($key);
@@ -196,5 +175,13 @@ class AuthContext extends BaseContext implements RebootableContextInterface
         }
 
         $this->rest_context->iAddHeaderEqualTo('Authorization', 'key '.$key->getKeyString());
+    }
+
+    /**
+     * @return UserDetailsRepo
+     */
+    private function getUserDetails()
+    {
+        return $this->getContainer()->get('user_details');
     }
 }

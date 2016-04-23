@@ -34,7 +34,11 @@ namespace DpBehat;
 
 use Behat\MinkExtension\Context\RawMinkContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext as KernelAwareContextInterface;
+use Doctrine\ORM\EntityManager;
 
+/**
+ * Class BaseContext.
+ */
 abstract class BaseContext extends RawMinkContext implements KernelAwareContextInterface
 {
     use KernelAwareTrait;
@@ -44,5 +48,13 @@ abstract class BaseContext extends RawMinkContext implements KernelAwareContextI
         // after any kind of re-install, we need to reboot the kernel to reset references
         $this->kernel->shutdown();
         $this->kernel->boot();
+    }
+
+    /**
+     * @return EntityManager
+     */
+    protected function em()
+    {
+        return $this->getContainer()->get('doctrine.orm.default_entity_manager');
     }
 }

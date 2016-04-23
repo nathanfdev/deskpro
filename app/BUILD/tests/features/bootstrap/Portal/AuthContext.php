@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,26 +29,16 @@
 /**
  * DeskPRO.
  */
+
 namespace DpBehat\Portal;
 
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use DpBehat\RebootableContextInterface;
 use DpTestSrc\TestBundle\UserDetailsRepo;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class AuthContext extends BasePortalContext implements RebootableContextInterface
 {
-    /**
-     * @var UserDetailsRepo
-     */
-    private $user_details;
-
-    /**
-     * @var TokenStorage
-     */
-    private $token_storage;
-
     /** @var  \Application\DeskPRO\Entity\Person */
     private $me;
 
@@ -59,9 +49,7 @@ class AuthContext extends BasePortalContext implements RebootableContextInterfac
 
     public function resetAuthContext()
     {
-        $this->user_details  = $this->getKernel()->getContainer()->get('user_details');
-        $this->token_storage = $this->getKernel()->getContainer()->get('security.token_storage');
-        $this->me            = null;
+        $this->me = null;
     }
 
     /**
@@ -70,11 +58,11 @@ class AuthContext extends BasePortalContext implements RebootableContextInterfac
     public function iLoginUsingTheSidebarWithCredentials($who)
     {
         $this->getPage('Home')->sidebarLogin(
-            $this->user_details->getEmail($who),
-            $this->user_details->getPass($who)
+            $this->getUserDetails()->getEmail($who),
+            $this->getUserDetails()->getPass($who)
         );
 
-        $this->me = $this->user_details->getWho($who);
+        $this->me = $this->getUserDetails()->getWho($who);
     }
 
     /**
@@ -83,11 +71,11 @@ class AuthContext extends BasePortalContext implements RebootableContextInterfac
     public function iLoginWithCredentials($who)
     {
         $this->getPage('Login')->login(
-            $this->user_details->getEmail($who),
-            $this->user_details->getPass($who)
+            $this->getUserDetails()->getEmail($who),
+            $this->getUserDetails()->getPass($who)
         );
 
-        $this->me = $this->user_details->getWho($who);
+        $this->me = $this->getUserDetails()->getWho($who);
     }
 
     /**
@@ -124,9 +112,9 @@ class AuthContext extends BasePortalContext implements RebootableContextInterfac
             $user = $this->getContainer()->get('doctrine.orm.default_entity_manager')->getRepository('DeskPRO:Person')->find($user);
         }
 
-        expect($user->getPrimaryEmailAddress())->toBeEqualTo($this->user_details->getEmail($who));
+        expect($user->getPrimaryEmailAddress())->toBeEqualTo($this->getUserDetails()->getEmail($who));
 
-        $this->me = $this->user_details->getWho($who);
+        $this->me = $this->getUserDetails()->getWho($who);
     }
 
     /**
@@ -155,7 +143,7 @@ class AuthContext extends BasePortalContext implements RebootableContextInterfac
      */
     public function isAnOrganizationManagerOf($who, $org)
     {
-        $person = $this->user_details->getWho($who);
+        $person = $this->getUserDetails()->getWho($who);
         if (!$organization = $this->getOrganization($org)) {
             throw new \Exception('cannot find organization "'.$org.'"');
         }
@@ -200,5 +188,13 @@ class AuthContext extends BasePortalContext implements RebootableContextInterfac
     protected function getOrganization($org)
     {
         return $this->em()->getRepository(Organization::class)->findOneBy(['name' => $org]);
+    }
+
+    /**
+     * @return UserDetailsRepo
+     */
+    private function getUserDetails()
+    {
+        return $this->getContainer()->get('user_details');
     }
 }

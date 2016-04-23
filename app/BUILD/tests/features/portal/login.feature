@@ -20,8 +20,3 @@ Feature: Login
   Scenario: I login as admin
     When I login with admin credentials
     Then I should be authenticated as admin
-
-# disabled for now, but should be re-enabled when the sidebar gets login capabilities
-#  Scenario: I login via the sidebar
-#    When I login using the sidebar with user credentials
-#    Then I should be authenticated as user
