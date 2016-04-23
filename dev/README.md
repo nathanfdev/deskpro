@@ -12,7 +12,6 @@ CODING STANDARDS
 ========================================================================================================================
 
 * PHP: http://symfony.com/doc/current/contributing/code/standards.html
-    * Except: We use `under_scores` for variables
 * JS: https://github.com/airbnb/javascript
 * CSS/SCSS/LESS: https://github.com/styleguide/css
     * Ignore stuff about file structure
