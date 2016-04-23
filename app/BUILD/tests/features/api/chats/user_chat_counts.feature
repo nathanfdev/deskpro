@@ -70,7 +70,7 @@ Feature: /user_chats/counts endpoint
 
     And the JSON node "data.nested[0].id" should be equal to 0
     And the JSON node "data.nested[0].type" should be equal to "date_period"
-    And the JSON node "data.nested[0].title" should be equal to "ever"
+    And the JSON node "data.nested[0].title" should be equal to "Ever"
     And the JSON node "data.nested[0].count" should be equal to 5
 
   Scenario: I group by agent
