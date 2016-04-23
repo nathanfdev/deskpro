@@ -34,11 +34,17 @@ namespace DpBehat\Portal;
 
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
+use Behat\Mink\Driver\BrowserKitDriver;
+use Behat\Mink\Exception\UnsupportedDriverActionException;
 use DpBehat\RebootableContextInterface;
 use DpTestSrc\TestBundle\UserDetailsRepo;
+use Symfony\Component\BrowserKit\Cookie;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class AuthContext extends BasePortalContext implements RebootableContextInterface
 {
+    public static $session;
+
     /** @var  \Application\DeskPRO\Entity\Person */
     private $me;
 
@@ -53,29 +59,25 @@ class AuthContext extends BasePortalContext implements RebootableContextInterfac
     }
 
     /**
-     * @When I login using the sidebar with :who credentials
-     */
-    public function iLoginUsingTheSidebarWithCredentials($who)
-    {
-        $this->getPage('Home')->sidebarLogin(
-            $this->getUserDetails()->getEmail($who),
-            $this->getUserDetails()->getPass($who)
-        );
-
-        $this->me = $this->getUserDetails()->getWho($who);
-    }
-
-    /**
      * @When I login with :who credentials
      */
     public function iLoginWithCredentials($who)
     {
-        $this->getPage('Login')->login(
-            $this->getUserDetails()->getEmail($who),
-            $this->getUserDetails()->getPass($who)
-        );
-
         $this->me = $this->getUserDetails()->getWho($who);
+
+        $driver = $this->getSession()->getDriver();
+        if (!$driver instanceof BrowserKitDriver) {
+            throw new UnsupportedDriverActionException('This step is only supported by the BrowserKitDriver', $driver);
+        }
+
+        $token = new UsernamePasswordToken($this->me, null, 'portal', $this->me->getRoles());
+
+        $client  = $driver->getClient();
+        $session = $client->getContainer()->get('session');
+        $session->set('_security_portal', serialize($token));
+        $session->save();
+        $cookie = new Cookie($session->getName(), $session->getId());
+        $client->getCookieJar()->set($cookie);
     }
 
     /**
