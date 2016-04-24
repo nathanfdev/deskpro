@@ -6,7 +6,6 @@ Feature: API limits
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I'm getting standard API endpoint
     When I send a PUT request to "/api/v2/notify/heartbeat"
     Then the response status code should be 202

@@ -7,7 +7,6 @@ Feature: /organization_custom_fields endpoint
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I retrieve a list of custom fields
     When I send a GET request to "/api/v2/organization_custom_fields"
     Then the response should be in JSON

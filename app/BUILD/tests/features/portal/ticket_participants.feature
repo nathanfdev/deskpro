@@ -10,13 +10,13 @@ Feature: Ticket Participants
     And the organization "walmart" exists
     And the default brand is using the standard theme
     And the following tickets exist:
-      | who | subject | status | participant | organization |
-      | user  | My Ticket   | awaiting_user | agent | walmart |
-      | user  | Is this normal?   | awaiting_agent | agent |  |
-      | agent   | An agent ticket 1   |   awaiting_user  | user |  |
-      | agent   | An agent ticket 2   |   awaiting_user  | user | walmart |
-      | agent   | An agent ticket 3   |   awaiting_agent  | user |  |
-      | agent   | An agent ticket 4   |   awaiting_agent  | user | walmart |
+      | who   | subject           | status         | participant | organization |
+      | user  | My Ticket         | awaiting_user  | agent       | walmart      |
+      | user  | Is this normal?   | awaiting_agent | agent       |              |
+      | agent | An agent ticket 1 | awaiting_user  | user        |              |
+      | agent | An agent ticket 2 | awaiting_user  | user        | walmart      |
+      | agent | An agent ticket 3 | awaiting_agent | user        |              |
+      | agent | An agent ticket 4 | awaiting_agent | user        | walmart      |
 
   @reinstall
   Scenario: An agent does not see the participant tickets in the lists
@@ -44,13 +44,11 @@ Feature: Ticket Participants
     And I should see "3" tickets "awaiting_agent"
     And I should see a header ticket count of "6"
 
-  @reinstall
   Scenario: An agent cant view a ticket they participate in through portal
     Given I login with agent credentials
     When I go to "/tickets/1"
     Then the response status code should be 403
 
-  @reinstall
   Scenario: A user can view a ticket they participate in
     Given I login with user credentials
     When I go to "/tickets/3"

@@ -12,7 +12,6 @@ Feature: /ticket_forms endpoint
     And the setting "core.use_ticket_category" is set to 1
     And the setting "core.use_ticket_workflow" is set to 1
 
-  @reinstall
   Scenario: I create a ticket
     Given I create blob with auth code "AAAAAAAAAAAAAAAAAA"
     And I create blob with auth code "BBBBBBBBBBBBBBBBBB"

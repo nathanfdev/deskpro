@@ -8,7 +8,6 @@ Feature: /task_lists endpoint
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I try to create a new task list with empty request
     When I send a POST request to "/api/v2/task_lists"
     Then the response status code should be 400

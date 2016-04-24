@@ -45,7 +45,35 @@ api:
                 path: ../sys/Kernel/ApiKernel.php
                 class: DpSys\Kernel\ApiKernel
                 env: test
-                debug: true
+                debug: false
+system-api:
+    suites:
+        api:
+            paths:
+                - %paths.base%/features/system-api
+            contexts:
+                - DpBehat\DataSetContext:
+                    dataset_manager: @dataset_manager
+                - Behat\MinkExtension\Context\MinkContext
+                - behatch:json
+                - DpBehat\DoctrineContext
+                - DpBehat\Api\RestContext
+                - DpBehat\Api\AuthContext
+                - DpBehat\System\Alerts\IncidentsContext
+    extensions:
+        Sanpi\Behatch\Extension: ~
+        Behat\MinkExtension:
+            default_session: default
+            sessions:
+                default:
+                    symfony2: ~
+        Behat\Symfony2Extension:
+            kernel:
+                bootstrap: features/bootstrap/boot.php
+                path: ../sys/Kernel/ApiKernel.php
+                class: DpSys\Kernel\ApiKernel
+                env: test
+                debug: false
 
 install:
     suites:

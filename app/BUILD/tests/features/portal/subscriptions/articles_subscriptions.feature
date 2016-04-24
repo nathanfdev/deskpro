@@ -8,7 +8,6 @@ Feature: Articles subscriptions
     And the default brand is using the standard theme
     And I have "Example Article" article
 
-  @reinstall
   Scenario: I subscribe to an article category successfully as a user
     Given I login with user credentials
     And I am on "/kb/general"

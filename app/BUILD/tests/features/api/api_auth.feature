@@ -6,7 +6,6 @@ Feature: API Authentication
   Background:
     Given I install the api data set
 
-  @reinstall
   Scenario: I do not submit any auth credentials
     When I send a GET request to "/api/v2/me"
     And the response status code should be 401
@@ -51,7 +50,6 @@ Feature: API Authentication
     Then the JSON node "code" should be equal to "invalid_api_key"
     And the JSON node "message" should be equal to "Invalid API key."
 
-  @reinstall
   Scenario: I have a valid agent session ID (user "agent" id=2 in the "api" data set)
     Given the agent session auth "HJKLOP" is valid for agent
     When I add cookie named "dpsid-agent" equal to "1-HJKLOP"
@@ -61,7 +59,6 @@ Feature: API Authentication
     And the JSON node "data.person_id" should be equal to 2
     And I should have an authenticated token with the role ROLE_API
 
-  @reinstall
   Scenario: I have a valid agent session ID and it's an app request via X-DeskPRO-App-ID header
     Given the agent session auth "HJKLOP" is valid for agent
     When I add cookie named "dpsid-agent" equal to "1-HJKLOP"
@@ -70,7 +67,6 @@ Feature: API Authentication
     Then the response status code should be 200
     And the JSON node "data.app_id" should be equal to 12
 
-  @reinstall
   Scenario: I have a valid session ID but I am NOT an agent
     Given the agent session auth "UZER" is valid for user
     When I add cookie named "dpsid-agent" equal to "1-UZER"

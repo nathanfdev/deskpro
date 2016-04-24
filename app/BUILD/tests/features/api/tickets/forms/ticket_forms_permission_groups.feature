@@ -8,7 +8,6 @@ Feature: /ticket_forms endpoint
     And I remove "admin" usergroup relation "agent_all_perms"
     And I remove "admin" usergroup relation "agent_all_safe_perms"
 
-  @reinstall
   Scenario: I have no ticket permissions
     When I send a POST request to "/api/v2/ticket_forms/agent"
     Then the response status code should be 403

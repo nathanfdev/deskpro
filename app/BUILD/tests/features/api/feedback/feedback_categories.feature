@@ -8,7 +8,6 @@ Feature: /feedback_categories endpoint
     Given I install the "api" data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I GET all feedback categories
     When I send a GET request to "/api/v2/feedback_categories"
     Then the response should be in JSON

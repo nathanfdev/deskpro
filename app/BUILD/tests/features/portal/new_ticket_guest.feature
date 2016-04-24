@@ -38,7 +38,6 @@ Feature: Guests can submit new tickets
     Then I should be on "/new-ticket"
     And I should see a form error list with the phrase "portal.forms.error_invalid_email"
 
-  @reinstall
   Scenario: Submitting a VALID FORM
     Given I go to "/new-ticket"
     And I select "Sales" from "Department"

@@ -6,7 +6,6 @@ Feature: Editing portal templates
       | default |
     And the default brand is using the standard theme
     
-  @reinstall
   Scenario: I get custom logo data
     Given I am authenticated as admin
     When I send a GET request to "/portal/api/style/edit-theme-set/templates"
@@ -14,7 +13,7 @@ Feature: Editing portal templates
     And the response should contain "Theme::layout.html.twig"
 
   Scenario: I get source of the Theme::layout.html.twig template
-    Given I am authenticated as admin
+    Given I login with admin credentials from the login page
     When I send a GET request to "/portal/api/style/edit-theme-set/template-sources?template=Theme::layout.html.twig"
     Then the response status code should be 200
     And the response should contain "{% show section alerts %}"

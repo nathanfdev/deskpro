@@ -8,7 +8,6 @@ Feature: News ratings
     And the default brand is using the standard theme
     And I have "Example News Post" news
 
-  @reinstall
   Scenario: I rate a news post positively as a user
     Given I login with user credentials
     And I am on "/news/posts/example-news-post"

@@ -8,7 +8,6 @@ Feature: News
     And the default brand is using the standard theme
     And I have "Example News Post" news
 
-  @reinstall
   Scenario: I visit the News from the homepage
     Given I am on "/"
     When I follow "News"
@@ -21,9 +20,8 @@ Feature: News
     Then I should be on "/news/general"
     And the response status code should be 200
 
-  @reinstall
   Scenario: I visit a download from the browse page
     Given I am on "/news/general"
     When I follow "Example News Post"
-    Then I should be on "/news/posts/example-news-post"
+    Then I should be on "/news/posts/example-news-post-3"
     And the response status code should be 200

@@ -4,7 +4,6 @@ Feature: Captcha Anti-Abuse Setup
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I get default configuration
     When I send a GET request to "/api/v2/settings/anti_abuse/captcha"
     Then the response should be in JSON

@@ -81,6 +81,19 @@ class AuthContext extends BasePortalContext implements RebootableContextInterfac
     }
 
     /**
+     * @When I login with :who credentials from the login page
+     */
+    public function iLoginWithCredentialsFromTheLoginPage($who)
+    {
+        $this->getPage('Login')->login(
+            $this->getUserDetails()->getEmail($who),
+            $this->getUserDetails()->getPass($who)
+        );
+
+        $this->me = $this->getUserDetails()->getWho($who);
+    }
+
+    /**
      * @Given I have a verified email :email_address
      */
     public function iHaveAVerifiedEmail($email_address)

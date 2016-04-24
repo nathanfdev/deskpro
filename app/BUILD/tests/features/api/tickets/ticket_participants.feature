@@ -8,7 +8,6 @@ Feature: /tickets/{id}/followers and /tickets/{id}/cc endpoints
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I retrieve lists of participants w/o sideloading
     When I send a GET request to "/api/v2/tickets/1/cc"
     Then the response status code should be 200

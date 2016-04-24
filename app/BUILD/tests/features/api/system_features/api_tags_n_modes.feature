@@ -6,7 +6,6 @@ Feature: Api tags and modes
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I send request to denied for key controller
     Given I set apiModes to "session" for "DeskPRO\Bundle\ApiBundle\Controller\NotificationController"
     And I set tags for my key to "-*"

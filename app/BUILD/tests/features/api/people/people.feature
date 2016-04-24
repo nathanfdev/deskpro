@@ -8,7 +8,6 @@ Feature: /people endpoint
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I get paginated list of people
     When I send a GET request to "/api/v2/people"
     Then the response should be in JSON

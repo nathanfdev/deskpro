@@ -12,7 +12,6 @@ Feature: /ticket_layouts endpoint
     And the setting "core.use_ticket_category" is set to 1
     And the setting "core.use_ticket_workflow" is set to 1
 
-  @reinstall
   Scenario: I want to see ticket layouts without context or with unknown context
     When I send a GET request to "/api/v2/ticket_layouts"
     Then the response status code should be 404

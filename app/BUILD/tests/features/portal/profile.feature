@@ -7,7 +7,6 @@ Feature: User Profile
   Background: Fresh DB
     Given I install the fresh data set
 
-  @reinstall
   Scenario: I visit my profile page but I am not logged in
     When I go to "/profile"
     Then I should be on "/login"
@@ -17,7 +16,6 @@ Feature: User Profile
     When I go to "/profile"
     Then I should be on "/profile"
 
-  @reinstall
   Scenario: A user changes their name
     Given I login with user credentials
     And my name is "Ganon User"
@@ -27,7 +25,6 @@ Feature: User Profile
     Then my name should be "Luke Skywalker"
     Then I should see a "success" flash message with the phrase "portal.flashes.user_updated_profile"
 
-  @reinstall
   Scenario: A user changes their password and then logs in with the new one
     Given I login with user credentials
     And I am on "/profile"
@@ -43,7 +40,6 @@ Feature: User Profile
     And I press "Login"
     Then I should be authenticated as user
 
-  @reinstall
   Scenario: A user tries to add a new email that is already taken by another account
     Given I login with user credentials
     And I am on "/profile/emails"

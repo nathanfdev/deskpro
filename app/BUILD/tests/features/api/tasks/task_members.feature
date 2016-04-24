@@ -8,7 +8,6 @@ Feature: /task_projects/{id}/members/(agents|departments|teams) endpoint
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario Outline: I try to create member with malformed request
     When I send a POST request to "/api/v2/task_projects/1/members/<type>"
     Then the response status code should be 400

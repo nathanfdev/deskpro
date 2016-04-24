@@ -8,7 +8,6 @@ Feature: /feedback_types endpoint
     Given I install the "api" data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I GET all feedback types
     When I send a GET request to "/api/v2/feedback_types"
     Then the response should be in JSON

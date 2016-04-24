@@ -10,13 +10,13 @@ Feature: Login
     And the default brand is using the sidebar theme
 
   Scenario: I login as user
-    When I login with user credentials
+    When I login with user credentials from the login page
     Then I should be authenticated as user
 
   Scenario: I login as agent
-    When I login with agent credentials
+    When I login with agent credentials from the login page
     Then I should be authenticated as agent
 
   Scenario: I login as admin
-    When I login with admin credentials
+    When I login with admin credentials from the login page
     Then I should be authenticated as admin

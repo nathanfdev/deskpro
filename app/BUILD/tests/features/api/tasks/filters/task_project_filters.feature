@@ -8,7 +8,6 @@ Feature: /tasks endpoint
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I prepare tasks
     When I send a POST request to "/api/v2/tasks" with body:
     """

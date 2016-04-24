@@ -9,7 +9,6 @@ Feature: /feedback/counts endpoint
     And my request is authenticated
     And I set permission "feedback.use" = 1 for "registered" usergroup
 
-  @reinstall
   Scenario: I GET count of feedback with hidden_status set to validating
     When I send a GET request to "/api/v2/feedback/counts?awaiting_validation=1"
     Then the response should be in JSON

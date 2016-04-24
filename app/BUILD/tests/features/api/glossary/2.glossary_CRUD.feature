@@ -65,7 +65,6 @@ Feature: /glossary endpoint
   "definition": "New Text"
 }
     """
-    Then print last response
     And the response status code should be 204
     And the response should be empty
 

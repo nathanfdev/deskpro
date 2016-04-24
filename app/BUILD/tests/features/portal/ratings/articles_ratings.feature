@@ -8,7 +8,6 @@ Feature: Article ratings
     And the default brand is using the standard theme
     And I have "Example Article" article
 
-  @reinstall
   Scenario: I rate an article positively as a user
     Given I login with user credentials
     And I am on "/kb/articles/example-article"

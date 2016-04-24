@@ -9,7 +9,6 @@ Feature: /article_pending_creates endpoint
     And my request is authenticated
     And I set permission "articles.use" = 1 for "registered" usergroup
 
-  @reinstall
   Scenario: I retrieve list of ArticlePendingCreate
     When I send a GET request to "/api/v2/article_pending_creates"
     Then the response should be in JSON

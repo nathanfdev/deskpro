@@ -16,7 +16,6 @@ Feature: /user_chats endpoint search (GET)
     And the JSON node "meta.pagination.current_page" should be equal to 1
     And the JSON node "meta.pagination.total_pages" should be equal to 1
     And the JSON node "meta.pagination.total" should be equal to 5
-    And the JSON node "data[0].subject" should be equal to "Test chat 1"
 
   Scenario: I search for chats sorting them by date_created in DESC order
     When I send a GET request to "/api/v2/user_chats?order_by=date_created&order_dir=desc"

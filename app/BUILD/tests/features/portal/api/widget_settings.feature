@@ -3,7 +3,6 @@ Feature: Widget Settings
   Background: Fresh database
     Given I install the fresh data set
 
-  @reinstall
   Scenario: I get settings
     Given the setting "core.site_name" is set to "My helpdesk"
     When I send a GET request to "/portal/api/widget/settings"

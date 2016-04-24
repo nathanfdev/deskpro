@@ -87,7 +87,7 @@ Feature: /tasks endpoint
     And the JSON node "data[3].date_done" should be equal to "2016-04-19T00:00:00+0000"
 
   Scenario: I filter tasks by date due
-    When I send a GET request to "/api/v2/tasks?due_from=2016-04-01&due_to=2016-04-30"
+    When I send a GET request to "/api/v2/tasks?due_from=2016-04-01&due_to=2016-04-30&order_by=id&order_dir=asc"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should have 2 elements
@@ -111,7 +111,7 @@ Feature: /tasks endpoint
     And the JSON node "data[0].date_due" should be equal to "2016-04-21T00:00:00+0000"
 
   Scenario: I filter tasks by date done
-    When I send a GET request to "/api/v2/tasks?done_from=2016-04-01&done_to=2016-04-30"
+    When I send a GET request to "/api/v2/tasks?done_from=2016-04-01&done_to=2016-04-30&order_by=id&order_dir=asc"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should have 2 elements

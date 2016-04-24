@@ -8,7 +8,6 @@ Feature: /me/notifications endpoint
     And my request is authenticated
     And I prepare notifications data
 
-  @reinstall
   Scenario: I get notifications
     When I send a GET request to "/api/v2/me/notifications"
     Then the response status code should be 200

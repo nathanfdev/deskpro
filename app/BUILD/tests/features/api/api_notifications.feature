@@ -5,7 +5,6 @@ Feature: Notifications Api feature
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I get basic settings for action-alerts
     When I send a GET request to "/api/v2/notify/setup/action-alerts"
     Then the response should be in JSON
