@@ -28,6 +28,8 @@
 
 namespace DeskPRO\Bundle\AuditBundle\Log;
 
+use DeskPRO\Bundle\AuditBundle\Entity\AuditLogData;
+
 /**
  * Class AuditLog.
  */
@@ -84,7 +86,7 @@ class AuditLog
     protected $apiKey;
 
     /**
-     * @var array
+     * @var AuditLogData
      */
     protected $data;
 
@@ -294,7 +296,7 @@ class AuditLog
     }
 
     /**
-     * @return array
+     * @return AuditLogData
      */
     public function getData()
     {
@@ -302,11 +304,11 @@ class AuditLog
     }
 
     /**
-     * @param array $data
+     * @param AuditLogData $data
      *
      * @return $this
      */
-    public function setData(array $data)
+    public function setData(AuditLogData $data)
     {
         $this->data = $data;
 

@@ -9,7 +9,6 @@ services:
   audit_log.storage.factory:
     class: DeskPRO\Bundle\AuditBundle\Storage\StorageFactory
     arguments:
-      - "@settings_resolver"
       - "@service_container"
 
   audit_log.storage:
@@ -35,3 +34,4 @@ services:
 
   audit_log.transformer.db:
     class: DeskPRO\Bundle\AuditBundle\Storage\GenericTransformer
+

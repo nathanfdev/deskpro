@@ -29,7 +29,6 @@
 namespace DeskPRO\Bundle\AuditBundle\Storage;
 
 use DeskPRO\Bundle\AuditBundle\Entity\AuditLog as AuditLogDocument;
-use DeskPRO\Bundle\AuditBundle\Entity\AuditLogData;
 use DeskPRO\Bundle\AuditBundle\Log\AuditLog;
 use DeskPRO\Bundle\AuditBundle\Log\LoggableInterface;
 
@@ -45,9 +44,7 @@ class GenericTransformer extends AbstractTransformer
      */
     public function transform(AuditLog $log)
     {
-        $doc  = new AuditLogDocument();
-        $data = new AuditLogData();
-        $data->setContext(['a' => 'b'])->setDiff(['c' => 'd']);
+        $doc = new AuditLogDocument();
 
         $doc
             ->setId($log->getId())
@@ -61,7 +58,7 @@ class GenericTransformer extends AbstractTransformer
             ->setPerformerName($log->getPerformerName())
             ->setApiKey($log->getApiKey());
 
-        $doc->setData($data);
+        $doc->setData($log->getData());
 
         return $doc;
     }
@@ -88,7 +85,7 @@ class GenericTransformer extends AbstractTransformer
             ->setPerformerName($loggable->getPerformerName())
             ->setApiKey($loggable->getApiKey());
 
-        $log->setData([]);
+        $log->setData($loggable->getData());
 
         return $log;
     }

@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AuditBundle\Entity;
 
+use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
 use DeskPRO\Bundle\AuditBundle\Log\LoggableInterface;
 use Doctrine\Common\NotifyPropertyChanged;
@@ -44,7 +45,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ODM\Document()
  */
-class AuditLog implements LoggableInterface, NotifyPropertyChanged
+class AuditLog implements LoggableInterface, NotifyPropertyChanged, EntityInterface
 {
     use NotifyPropertyChangedTrait;
 

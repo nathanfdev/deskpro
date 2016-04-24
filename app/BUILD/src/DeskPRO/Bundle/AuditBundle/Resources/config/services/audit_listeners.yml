@@ -1,0 +1,48 @@
+services:
+
+  audit_log.doctrine_listener:
+    class: DeskPRO\Bundle\AuditBundle\EventListener\AuditListener
+    arguments:
+      - "@event_dispatcher"
+    tags:
+      - { name: doctrine.event_listener, connection: default, event: onFlush }
+
+  audit_log.decide_listener:
+    class: DeskPRO\Bundle\AuditBundle\EventListener\DecideListener
+    tags:
+      - { name: kernel.event_listener, event: audit_log.pre_log, method: onPreLog}
+
+  audit_log.object_listener:
+    class: DeskPRO\Bundle\AuditBundle\EventListener\ObjectListener
+    tags:
+      - { name: kernel.event_listener, event: audit_log.start_log, method: setObject}
+
+  audit_log.action_listener:
+    class: DeskPRO\Bundle\AuditBundle\EventListener\ActionListener
+    tags:
+      - { name: kernel.event_listener, event: audit_log.start_log, method: setAction}
+
+  audit_log.performer_listener:
+    class: DeskPRO\Bundle\AuditBundle\EventListener\PerformerListener
+    arguments:
+      - "@security.token_storage"
+    tags:
+      - { name: kernel.event_listener, event: audit_log.start_log, method: setPerformer}
+
+  audit_log.data_listener:
+    class: DeskPRO\Bundle\AuditBundle\EventListener\DataListener
+    tags:
+      - { name: kernel.event_listener, event: audit_log.start_log, method: setData, priority: -1}
+
+  audit_log.description_listener:
+    class: DeskPRO\Bundle\AuditBundle\EventListener\DescriptionListener
+    tags:
+      - { name: kernel.event_listener, event: audit_log.start_log, method: setDescription, priority: -2}
+
+
+  audit_log.write_listener:
+    class: DeskPRO\Bundle\AuditBundle\EventListener\WriteListener
+    arguments:
+      - "@audit_log.service"
+    tags:
+      - { name: kernel.event_listener, event: audit_log.finish_log, method: onFinish}
