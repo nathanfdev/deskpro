@@ -70,7 +70,7 @@ class SideloadSerializationContext extends SerializationContext
      * @param array                 $includes
      * @param TokenStorageInterface $tokenStorage
      */
-    public function __construct(SideloadStore $sideload_store, array $includes, TokenStorageInterface $tokenStorage)
+    public function __construct(SideloadStore $sideload_store, array $includes, TokenStorageInterface $tokenStorage = null)
     {
         parent::__construct();
 
@@ -171,7 +171,7 @@ class SideloadSerializationContext extends SerializationContext
      */
     public function getUser()
     {
-        return $this->tokenStorage->getToken()->getUser();
+        return $this->tokenStorage ? $this->tokenStorage->getToken()->getUser() : null;
     }
 
     /**
