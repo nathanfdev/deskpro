@@ -1,25 +1,21 @@
-{% extends 'Theme::layout.html.twig' %}
+{% extends 'Theme:Tickets:base_view.html.twig' %}
 
-{% block inner_content %}
-    <div class="breadcrumbs">
-        {% show breadcrumbs %}
+{% block page_header %}
+{% endblock %}
+
+{% block page_sidebar %}
+{% endblock %}
+
+
+{% block page_specific_content %}
+    <div class="container">
+        <article class="ticket-info">
+            <form method="post" novalidate>
+                <p>{{ phrase('portal.tickets.resolve_ticket_explain') }}</p>
+                <br />
+                <button class="button">{{ phrase('portal.tickets.resolve_my_ticket_btn') }}</button>
+                <a class="button" href="{{ portal_path(ticket) }}">{{ phrase('portal.general.btn-cancel') }}</a>
+            </form>
+        </article>
     </div>
-    <article class="ticket-page" id="ticket_view_page">
-        <header>
-            <h1>
-                {{ phrase('portal.tickets.resolve_ticket', {subject: ticket.subject}) }}
-            </h1>
-            <span class="ticket-reference">
-                {{ phrase('portal.tickets.ticket-ref') }} <strong>{{ ticket_public_id(ticket) }}</strong>
-            </span>
-        </header>
-        <div class="container">
-            <article class="ticket-info">
-                <form method="post" novalidate>
-                    <p>{{ phrase('portal.tickets.resolve_ticket_explain') }}</p>
-                    <button class="button">{{ phrase('portal.tickets.resolve_my_ticket_btn') }}</button>
-                </form>
-            </article>
-        </div>
-    </article>
 {% endblock %}

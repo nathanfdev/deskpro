@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\PasswordHistory;
@@ -42,7 +43,9 @@ use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class ProfileController extends AbstractController
 {
@@ -50,6 +53,10 @@ class ProfileController extends AbstractController
      * @Route("/register", name="portal_user_registration")
      * @Route("/register", name="user_register")
      * @PageHttpCache()
+     *
+     * @param Request $request
+     *
+     * @return RedirectResponse|Response
      */
     public function registerAction(Request $request)
     {
@@ -72,11 +79,11 @@ class ProfileController extends AbstractController
         $person = $this->getPersonFactory()->createNewPerson();
 
         // FORM
-        $form = $this->createForm('person_registration', $person, array(
+        $form = $this->createForm('person_registration', $person, [
             'settings'              => $this->getBrandContainer()->getSettings(),
             'saved_form_subrequest' => $this->isSavedFormSubRequest($request),
             'action'                => $this->generateUrl('portal_user_registration'),
-        ));
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
@@ -84,21 +91,22 @@ class ProfileController extends AbstractController
             $this->getAntiAbuseService()->check($event);
             // check if the person already has an account (or is a contact)
             if ($email = $person->getEmailAddress()) {
-                if ($person_check = $this->get('data.person')->getPersonForEmail($email)) {
+                /** @var Person $personCheck */
+                if ($personCheck = $this->get('data.person')->getPersonForEmail($email)) {
                     // uncomment this conditional if the "set password" email should only be sent to accounts
                     // that cannot login. accounts that get here that can login are given a form error instead.
-                    //if (!$person_check->isUser()) {
+                    //if (!$personCheck->isUser()) {
                         // contact, they should now get a "set password" email and a redirection
                         // set the reset code
 
-                        $valid_seconds = $this->getBrandSetting('user.password_reset_code_time_limit', 18000);
-                    $reset             = $this->getPersonDataService()->createPasswordReset($person_check, $valid_seconds);
+                    $validSeconds = $this->getBrandSetting('user.password_reset_code_time_limit', 18000);
+                    $reset        = $this->getPersonDataService()->createPasswordReset($personCheck, $validSeconds);
 
-                    $this->get('portal_email_sender')->sendPasswordSetLink($person_check, $reset);
+                    $this->get('portal_email_sender')->sendPasswordSetLink($personCheck, $reset);
 
-                    return $this->redirectToRoute('portal_user_register_set_password', array(
-                            'email' => $person_check->getPrimaryEmailAddress(),
-                        ));
+                    return $this->redirectToRoute('portal_user_register_set_password', [
+                            'email' => $personCheck->getPrimaryEmailAddress(),
+                        ]);
                     //}
                 }
             }
@@ -121,8 +129,8 @@ class ProfileController extends AbstractController
                 return $this->redirectToRoute('portal_home');
             } else {
                 // this is a normal web request, and we need email validation
-                $saved_form = $this->getFormSaver()->saveForm(SavedForm::TYPE_REGISTER, $form, $request, $person->getEmailAddress(), $person->getDisplayName());
-                $this->get('portal_validation')->sendVerificationEmail(PortalValidation::REGISTRATION, $saved_form);
+                $savedForm = $this->getFormSaver()->saveForm(SavedForm::TYPE_REGISTER, $form, $request, $person->getEmailAddress(), $person->getDisplayName());
+                $this->get('portal_validation')->sendVerificationEmail(PortalValidation::REGISTRATION, $savedForm);
                 $this->addFlash('success', $this->phrase('portal.flashes.user_registered_must_verify'));
             }
 
@@ -134,26 +142,30 @@ class ProfileController extends AbstractController
 
         return $this->renderThemeView(
             'Theme:Portal:User/register.html.twig',
-            array(
+            [
                 'form'        => $form->createView(),
                 'breadcrumbs' => $breadcrumbs,
                 'page_title'  => $this->createPageTitle()->register(),
-            )
+            ]
         );
     }
 
     /**
      * @Route("/register/set-password", name="portal_user_register_set_password")
+     *
+     * @param Request $request
+     *
+     * @return Response
      */
     public function registerSetPasswordAction(Request $request)
     {
         return $this->renderThemeView(
             'Theme:Portal:User/send-set-password-email.html.twig',
-            array(
+            [
                 'email'       => $request->get('email', 'N/A'),
                 'breadcrumbs' => $this->getBreadcrumbGenerator()->buildRegistration(),
                 'page_title'  => $this->createPageTitle()->register(),
-            )
+            ]
         );
     }
 
@@ -161,6 +173,10 @@ class ProfileController extends AbstractController
      * @Route("/profile", name="portal_user_profile")
      * @Route("/profile", name="user_profile")
      * @Security("is_granted('EDIT_PROFILE', user)")
+     *
+     * @param Request $request
+     *
+     * @return RedirectResponse|Response
      */
     public function editAction(Request $request)
     {
@@ -169,15 +185,15 @@ class ProfileController extends AbstractController
         //
         // PROFILE
         //
-        $profile_form = $this->createForm(
+        $profileForm = $this->createForm(
             'person_profile',
             $person,
-            array(
+            [
                 'settings' => $this->getBrandContainer()->getSettings(),
-            )
+            ]
         );
-        $profile_form->handleRequest($request);
-        if ($profile_form->isValid()) {
+        $profileForm->handleRequest($request);
+        if ($profileForm->isValid()) {
             $this->getEm()->flush();
             $this->addFlash('success', $this->phrase('portal.flashes.user_updated_profile'));
 
@@ -187,9 +203,9 @@ class ProfileController extends AbstractController
         //
         // PASSWORD
         //
-        $password_form = $this->createForm('person_change_password', $person, array(
+        $passwordForm = $this->createForm('person_change_password', $person, [
             'settings' => $this->getBrandContainer()->getSettings(),
-        ));
+        ]);
         if ('POST' === $request->getMethod()) {
             $history = null;
             if ($person->password && $person->password_scheme == 'bcrypt') {
@@ -198,8 +214,8 @@ class ProfileController extends AbstractController
                 $history->password_scheme = $person->password_scheme;
                 $history->password        = $person->password;
             }
-            $password_form->handleRequest($request);
-            if ($password_form->isValid()) {
+            $passwordForm->handleRequest($request);
+            if ($passwordForm->isValid()) {
                 if ($history) {
                     $this->getEm()->persist($history);
                 }
@@ -216,35 +232,41 @@ class ProfileController extends AbstractController
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildProfile();
 
         return $this->renderThemeView(
-            'Theme:Portal:User/profile.html.twig', array(
+            'Theme:Portal:User/profile.html.twig', [
                 'person'        => $person,
-                'profile_form'  => $profile_form->createView(),
-                'password_form' => $password_form->createView(),
+                'profile_form'  => $profileForm->createView(),
+                'password_form' => $passwordForm->createView(),
                 'breadcrumbs'   => $breadcrumbs,
                 'page_title'    => $this->createPageTitle()->profile(),
-            )
+            ]
         );
     }
+
     /**
      * @Route("/profile/emails", name="portal_user_profile_emails")
      *
      * @Security("is_granted('EDIT_PROFILE', user)")
+     *
+     * @param Request $request
+     *
+     * @return RedirectResponse|Response
      */
     public function editEmailsAction(Request $request)
     {
         $person = $this->getUser();
 
-        $add_email_form = null;
+        $addEmailForm  = null;
+        $pendingEmails = [];
         if ($person->isConfirmed()) {
 
             //////////////////////////////////////////////////////////////////////////////////////////////
             // CHANGE PRIMARY EMAIL
             //////////////////////////////////////////////////////////////////////////////////////////////
-            if ($email_id = $request->query->get('new_primary')) {
-                /** @var \Application\DeskPRO\Entity\PersonEmail $proposed_new_primary_email */
-                $proposed_new_primary_email = $this->getRepo('DeskPRO:PersonEmail')->find($email_id);
-                if ($proposed_new_primary_email->getPerson()->getId() == $person->getId()) {
-                    $person->setPrimaryEmail($proposed_new_primary_email);
+            if ($emailId = $request->query->get('new_primary')) {
+                /** @var \Application\DeskPRO\Entity\PersonEmail $proposedNewPrimaryEmail */
+                $proposedNewPrimaryEmail = $this->getRepo('DeskPRO:PersonEmail')->find($emailId);
+                if ($proposedNewPrimaryEmail->getPerson()->getId() == $person->getId()) {
+                    $person->setPrimaryEmail($proposedNewPrimaryEmail);
                     $this->getEm()->flush();
                     $this->addFlash('success', $this->phrase('portal.flashes.user_changed_primary_email'));
 
@@ -255,19 +277,19 @@ class ProfileController extends AbstractController
             //////////////////////////////////////////////////////////////////////////////////////////////
             // REMOVE EMAIL
             //////////////////////////////////////////////////////////////////////////////////////////////
-            if ($email_id = $request->query->get('remove_email')) {
-                /** @var \Application\DeskPRO\Entity\PersonEmail $proposed_email_removal */
-                $proposed_email_removal = $this->getRepo('DeskPRO:PersonEmail')->find($email_id);
-                if ($proposed_email_removal->getPerson()->getId() == $person->getId()) {
-                    if (!$proposed_email_removal->isPrimary()) { // cannot remove primary email
-                        $person->removeEmailAddressId($proposed_email_removal->getId());
-                        $this->getEm()->remove($proposed_email_removal);
+            if ($emailId = $request->query->get('remove_email')) {
+                /** @var \Application\DeskPRO\Entity\PersonEmail $proposedEmailRemoval */
+                $proposedEmailRemoval = $this->getRepo('DeskPRO:PersonEmail')->find($emailId);
+                if ($proposedEmailRemoval->getPerson()->getId() == $person->getId()) {
+                    if (!$proposedEmailRemoval->isPrimary()) { // cannot remove primary email
+                        $person->removeEmailAddressId($proposedEmailRemoval->getId());
+                        $this->getEm()->remove($proposedEmailRemoval);
                         $this->getEm()->flush();
                         $this->addFlash(
                             'success',
                             $this->phrase(
                                 'portal.flashes.user_removed_an_email',
-                                array('email' => $proposed_email_removal->email)
+                                ['email' => $proposedEmailRemoval->email]
                             )
                         );
 
@@ -279,36 +301,51 @@ class ProfileController extends AbstractController
             //////////////////////////////////////////////////////////////////////////////////////////////
             // NEW EMAIL
             //////////////////////////////////////////////////////////////////////////////////////////////
-            $new_email      = new PersonEmail();
-            $add_email_form = $this->createForm(
+            $newEmail     = new PersonEmail();
+            $addEmailForm = $this->createForm(
                 PersonEmailType::class,
-                $new_email,
+                $newEmail,
                 [
                     'action'      => $this->generateUrl('portal_user_profile_emails'),
                     'email_label' => 'Email',
                 ]
             );
-            $add_email_form->handleRequest($request);
-            if ($add_email_form->isValid()) {
+            $addEmailForm->handleRequest($request);
+            if ($addEmailForm->isValid()) {
                 if ($this->isSavedFormSubRequest($request)) {
                     // this is coming from a validtion link, so we can actually save the email now
-                    $this->get('user_rule_processor')->newEmail($person, $new_email);
-                    $this->getEm()->persist($new_email);
-                    $new_email->person = $person;
-                    $new_email->setIsValidated(true);
-                    $this->getCurrentPerson()->addEmail($new_email);
+                    $this->get('user_rule_processor')->newEmail($person, $newEmail);
+                    $this->getEm()->persist($newEmail);
+                    $newEmail->person = $person;
+                    $newEmail->setIsValidated(true);
+                    $this->getCurrentPerson()->addEmail($newEmail);
                     $this->getEm()->flush();
                     $this->addFlash('success', $this->phrase('portal.flashes.user_add_email_verified'));
 
                     return $this->redirectToRoute('portal_user_profile_emails');
                 } else {
-                    $this->getEm()->detach($new_email);
+                    $this->getEm()->detach($newEmail);
                     // valid email, but we need email validation before adding it
-                    $saved_form = $this->getFormSaver()->saveForm(SavedForm::TYPE_REGISTER, $add_email_form, $request, $new_email->getEmail(), $person->getDisplayName(), $person);
-                    $this->get('portal_validation')->sendVerificationEmail(PortalValidation::ADD_EMAIL, $saved_form, false);
+                    $savedForm = $this->getFormSaver()->saveForm(SavedForm::TYPE_REGISTER, $addEmailForm, $request, $newEmail->getEmail(), $person->getDisplayName(), $person);
+                    $this->get('portal_validation')->sendVerificationEmail(PortalValidation::ADD_EMAIL, $savedForm, false);
                     $this->addFlash('success', $this->phrase('portal.flashes.user_add_email_verify'));
 
                     return $this->redirectToRoute('portal_user_profile_emails');
+                }
+            }
+
+            //////////////////////////////////////////////////////////////////////////////////////////////
+            // PENDING EMAIL ADDRESSES
+            //////////////////////////////////////////////////////////////////////////////////////////////
+            $savedForms = $this->getRepo('App:SavedForm')->findBy([
+                'person'         => $person,
+                'intention_type' => SavedForm::INTENTION_VERIFY_EMAIL,
+            ]);
+            /** @var SavedForm $savedForm */
+            foreach ($savedForms as $savedForm) {
+                $formData = $savedForm->getFormData();
+                if (isset($formData['person_email']['email'])) {
+                    $pendingEmails[$savedForm->getId()] = $formData['person_email']['email'];
                 }
             }
         }
@@ -319,12 +356,64 @@ class ProfileController extends AbstractController
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildProfileEmails();
 
         return $this->renderThemeView(
-            'Theme:Portal:User/profile-emails.html.twig', array(
+            'Theme:Portal:User/profile-emails.html.twig', [
                 'person'         => $person,
-                'add_email_form' => $add_email_form ? $add_email_form->createView() : null,
+                'pending_emails' => $pendingEmails,
+                'add_email_form' => $addEmailForm ? $addEmailForm->createView() : null,
                 'breadcrumbs'    => $breadcrumbs,
                 'page_title'     => $this->createPageTitle()->profileEmails(),
-            )
+            ]
         );
+    }
+
+    /**
+     * @Route("/profile/emails/resend/{id}", name="portal_user_profile_emails_resend_validation")
+     *
+     * @Security("is_granted('EDIT_PROFILE', user)")
+     *
+     * @param SavedForm $savedForm
+     *
+     * @return RedirectResponse
+     */
+    public function resendValidationAction(SavedForm $savedForm)
+    {
+        if ($savedForm->getPerson() != $this->getUser()) {
+            throw $this->createAccessDeniedException('You are not allowed to access this email address');
+        }
+
+        $this->addFlash('success', $this->phrase('portal.flashes.user_resend_email_verify'));
+
+        $this->get('portal_validation')->sendVerificationEmail(PortalValidation::ADD_EMAIL, $savedForm, false);
+
+        return $this->redirectToRoute('portal_user_profile_emails');
+    }
+
+    /**
+     * @Route("/profile/emails/remove_pending/{id}", name="portal_user_profile_emails_remove_pending")
+     *
+     * @Security("is_granted('EDIT_PROFILE', user)")
+     *
+     * @param SavedForm $savedForm
+     *
+     * @return RedirectResponse
+     */
+    public function removePendingAction(SavedForm $savedForm)
+    {
+        if ($savedForm->getPerson() != $this->getUser()) {
+            throw $this->createAccessDeniedException('You are not allowed to access this email address');
+        }
+
+        $formData     = $savedForm->getFormData();
+        $emailAddress = '';
+        if (isset($formData['person_email']['email'])) {
+            $emailAddress = $formData['person_email']['email'];
+        }
+
+        $this->addFlash('success', $this->phrase('portal.flashes.user_add_email_verify', ['email' => $emailAddress]));
+
+        $this->getEm()->remove($savedForm);
+        $this->getEm()->flush();
+
+        return $this->redirectToRoute('portal_user_profile_emails');
     }
 }

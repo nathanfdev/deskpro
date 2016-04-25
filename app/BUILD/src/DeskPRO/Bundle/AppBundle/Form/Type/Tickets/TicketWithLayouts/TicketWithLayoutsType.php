@@ -576,6 +576,11 @@ class TicketWithLayoutsType extends AbstractType
             'ticket_message' => $context->getMessage(),
             'data'           => $context->getMessage(),
             'format'         => $context->forApi() ? '' : 'html',
+            'required'       => true,
+            'constraints'    => [
+                new Assert\NotBlank(),
+                new Assert\Length(['min' => 10]),
+            ],
         ]);
     }
 

@@ -15,6 +15,7 @@ import { OmniSearchWidget } from './OmniSearchWidget';
 import { LanguageChangerWidget } from './LanguageChangerWidget';
 import { AgentBarWidget } from './AgentBarWidget';
 import { LoginDropdownWidget } from './LoginDropdownWidget';
+import { LogoutButtonWidget } from './LogoutButtonWidget';
 import { SearchResultsPage } from './SearchResultsPage';
 import { MobileTopbarWidget } from './MobileTopbarWidget';
 import { MobileMenuWidget } from './MobileMenuWidget';
@@ -31,6 +32,7 @@ export class PortalPage extends PageWidget {
     this.addWidgetDef(PortalFormWidget, '.dpx-form');
     this.addWidgetDef(OmniSearchWidget, '#omnisearch');
     this.addWidgetDef(LoginDropdownWidget, '#top-login-btn');
+    this.addWidgetDef(LogoutButtonWidget, '#top-logout-btn');
     this.addWidgetDef(LanguageChangerWidget, '#language-changer');
     this.addWidgetDef(TicketForm, '#new_ticket_page');
     this.addWidgetDef(TicketForm, '#edit_ticket_form');

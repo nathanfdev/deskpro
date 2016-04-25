@@ -16,7 +16,16 @@ export class OmniSearchWidget extends PageWidget {
     }), this.$rElement.get(0));
 
     const $input = this.$element.find('input.omnisearch');
+    const $button = this.$element.find('button.search-btn');
     const $x = this.$element.find('.search-clear');
+
+    $button.on('click', function() {
+      if (!$input.val()) {
+        $input.focus();
+        return false;
+      }
+      return true;
+    });
 
     $('.dpx-omnisearch-link').each((i, link) => {
       $(link).click(event => {
