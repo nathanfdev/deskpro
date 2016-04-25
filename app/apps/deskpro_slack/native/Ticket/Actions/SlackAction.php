@@ -119,8 +119,9 @@ class SlackAction extends AbstractContainerAwareAction implements ActionInterfac
         $fallback = '#'.$ticket->id.' ';
         $fallback .= '<'.$this->getContainer()->getSetting('core.deskpro_url').'agent/#app.tickets,t:'.$ticket->id.'|'.htmlspecialchars($ticket->subject).'> ';
 
-        /** @var TicketMessage $message */
-        $message = array_pop($ticket->getDisplayableMessages());
+        /* @var TicketMessage $message */
+        $messages = $ticket->getDisplayableMessages();
+        $message  = array_pop($messages);
 
         $attachment = array(
             'color'      => '#1D7AB2',

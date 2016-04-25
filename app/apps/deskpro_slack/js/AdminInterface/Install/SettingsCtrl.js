@@ -78,7 +78,7 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 
 			postData = {
 				webhook_url: Strings.trim($scope.setting_values.webhook_url || ''),
-				notify: Strings.trim($scope.setting_values.notify || '')
+				notify: $scope.setting_values.notify
 			};
 
 			deferred = $q.defer();
