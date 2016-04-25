@@ -103,8 +103,18 @@ class DpTransferSessionAuthListener implements ListenerInterface
      * @param LoggerInterface|null                   $logger
      * @param EventDispatcherInterface|null          $dispatcher
      */
-    public function __construct(TokenStorageInterface $tokenStorage, AuthenticationManagerInterface $authenticationManager, SessionAuthenticationStrategyInterface $sessionStrategy, HttpUtils $httpUtils, $providerKey, AuthenticationSuccessHandlerInterface $successHandler, AuthenticationFailureHandlerInterface $failureHandler, array $options = array(), LoggerInterface $logger = null, EventDispatcherInterface $dispatcher = null)
-    {
+    public function __construct(
+        TokenStorageInterface $tokenStorage,
+        AuthenticationManagerInterface $authenticationManager,
+        SessionAuthenticationStrategyInterface $sessionStrategy,
+        HttpUtils $httpUtils,
+        $providerKey,
+        AuthenticationSuccessHandlerInterface $successHandler,
+        AuthenticationFailureHandlerInterface $failureHandler,
+        array $options = array(),
+        LoggerInterface $logger = null,
+        EventDispatcherInterface $dispatcher = null
+    ) {
         $this->tokenStorage          = $tokenStorage;
         $this->authenticationManager = $authenticationManager;
         $this->sessionStrategy       = $sessionStrategy;
