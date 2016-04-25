@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Orb\Util\Arrays;
@@ -232,7 +233,7 @@ class Deskpro3RedirectController extends AbstractController
                 $newId = $newId['new_id'];
                 $obj   = $this->getEm()->find('DeskPRO:Ticket', $newId);
                 if ($obj) {
-                    return $this->redirectToRoute('user_tickets_view', ['ticket_ref' => $obj->getRef()], 301);
+                    return $this->redirectToRoute('portal_tickets_view', ['ticket_ref' => $obj->getRef()], 301);
                 }
             }
         }
