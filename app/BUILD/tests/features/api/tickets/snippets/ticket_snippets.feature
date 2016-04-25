@@ -12,7 +12,7 @@ Feature: /ticket_snippets endpoint
   Scenario: I retrieve a list of text snippets
     When I send a GET request to "/api/v2/ticket_snippets"
     Then the response status code should be 200
-    And the JSON node "data" should have 4 elements
+    And the JSON node "data" should have 3 elements
 
     And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[0].title" should be equal to "Ticket Snippet {{ ticket.subject }} (en) 1"
@@ -35,12 +35,14 @@ Feature: /ticket_snippets endpoint
     And the JSON node "data[2].shortcut_code" should be equal to "ticket_snippet3"
     And the JSON node "data[2].is_draft" should be equal to 0
 
-    And the JSON node "data[3].id" should be equal to 5
-    And the JSON node "data[3].title" should be equal to "Ticket Snippet 5"
-    And the JSON node "data[3].category" should be equal to 3
-    And the JSON node "data[3].person" should be equal to 1
-    And the JSON node "data[3].shortcut_code" should be equal to "ticket_snippet5"
-    And the JSON node "data[3].is_draft" should be equal to 1
+    When I send a GET request to "/api/v2/ticket_snippets/1"
+    Then the response status code should be 200
+
+    When I send a GET request to "/api/v2/ticket_snippets/2"
+    Then the response status code should be 200
+
+    When I send a GET request to "/api/v2/ticket_snippets/5"
+    Then the response status code should be 404
 
   Scenario: I retrieve a list of text snippets filtered by category
     When I send a GET request to "/api/v2/ticket_snippets?category=1"
@@ -49,10 +51,10 @@ Feature: /ticket_snippets endpoint
     And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[1].id" should be equal to 2
 
-    When I send a GET request to "/api/v2/ticket_snippets?category=3"
+    When I send a GET request to "/api/v2/ticket_snippets?category=2"
     Then the response status code should be 200
     And the JSON node "data" should have 1 element
-    And the JSON node "data[0].id" should be equal to 5
+    And the JSON node "data[0].id" should be equal to 3
 
   Scenario: I filter by person
     When I send a GET request to "/api/v2/ticket_snippets?global=1"
@@ -62,18 +64,16 @@ Feature: /ticket_snippets endpoint
 
     When I send a GET request to "/api/v2/ticket_snippets?my=1"
     Then the response status code should be 200
-    And the JSON node "data" should have 3 elements
+    And the JSON node "data" should have 2 elements
     And the JSON node "data[0].id" should be equal to 2
     And the JSON node "data[1].id" should be equal to 3
-    And the JSON node "data[2].id" should be equal to 5
 
   Scenario: I filter by draft
     When I send a GET request to "/api/v2/ticket_snippets?draft=1"
     Then the response status code should be 200
-    And the JSON node "data" should have 3 elements
+    And the JSON node "data" should have 2 elements
     And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[1].id" should be equal to 2
-    And the JSON node "data[2].id" should be equal to 5
 
     When I send a GET request to "/api/v2/ticket_snippets?draft=0"
     Then the response status code should be 200
@@ -88,10 +88,9 @@ Feature: /ticket_snippets endpoint
 
     When I send a GET request to "/api/v2/ticket_snippets?language=fre"
     Then the response status code should be 200
-    And the JSON node "data" should have 3 elements
+    And the JSON node "data" should have 2 elements
     And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[1].id" should be equal to 2
-    And the JSON node "data[2].id" should be equal to 5
 
     When I send a GET request to "/api/v2/ticket_snippets?language=3"
     Then the response status code should be 200

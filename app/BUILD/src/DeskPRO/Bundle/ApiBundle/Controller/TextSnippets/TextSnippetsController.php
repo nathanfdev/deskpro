@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\TextSnippets;
 
 use Application\DeskPRO\Entity\TextSnippet;
@@ -143,24 +144,20 @@ class TextSnippetsController extends CrudController
         $qb
             ->join('e.category', 'c')
             ->andWhere('c.typename = :category_type')
+            ->andWhere('c.person = :user_id OR c.is_global = true')
             ->setParameter('category_type', $this->getSnippetTypeName($request))
+            ->setParameter('user_id', $this->getUser()->getId())
         ;
 
         $query = $request->query;
 
         // filter by person
         if ($query->get('my')) {
-            $qb
-                ->andWhere('e.person = :user_id')
-                ->setParameter('user_id', $this->getUser()->getId())
-            ;
+            $qb->andWhere('e.person = :user_id');
         } elseif ($query->get('global')) {
             $qb->andWhere('e.person is null');
         } else {
-            $qb
-                ->andWhere('e.person = :user_id OR e.person is null')
-                ->setParameter('user_id', $this->getUser()->getId())
-            ;
+            $qb->andWhere('e.person = :user_id OR e.person is null');
         }
 
         // filter by category
@@ -204,8 +201,13 @@ class TextSnippetsController extends CrudController
         $entity   = parent::findEntity($id, $request);
         $category = $entity->getCategory();
 
-        if ($category && $category->getTypename() !== $this->getSnippetTypeName($request)) {
-            throw $this->createNotFoundException();
+        if ($category) {
+            if ($category->getTypename() !== $this->getSnippetTypeName($request)) {
+                throw $this->createNotFoundException();
+            }
+            if (!$category->getIsGlobal() && $category->getPerson() !== $this->getUser()) {
+                throw $this->createNotFoundException();
+            }
         }
         if ($entity->getPerson() && $entity->getPerson() !== $this->getUser()) {
             throw $this->createNotFoundException();

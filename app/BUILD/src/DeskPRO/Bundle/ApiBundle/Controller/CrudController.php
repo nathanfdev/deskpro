@@ -372,27 +372,22 @@ abstract class CrudController extends BaseController
      */
     protected function applySorting(QueryBuilder $qb, $alias, Request $request)
     {
-        $orderBy  = static::$listSort;
+        $sortOptions = static::$sortOptions ? static::$sortOptions : ['id' => 'id'];
+        $sortParam   = strtolower($request->get('order_by'));
+        if ($sortParam && !array_key_exists($sortParam, $sortOptions)) {
+            throw $this->createBadRequestException('Unknown sort field');
+        }
+
+        $orderBy  = isset($sortOptions[$sortParam]) ? $sortOptions[$sortParam] : static::$listSort;
         $orderDir = static::$listOrder;
 
-        if (is_array(static::$sortOptions)) {
-            $sortParam = strtolower($request->get('order_by'));
-            if ($sortParam && !array_key_exists($sortParam, static::$sortOptions)) {
-                throw $this->createBadRequestException('Unknown sort field');
+        $requestOrderDir = strtolower($request->get('order_dir'));
+        if ($requestOrderDir) {
+            if (!in_array($requestOrderDir, ['asc', 'desc'])) {
+                throw $this->createBadRequestException('Unknown order value');
             }
 
-            $orderBy = isset(static::$sortOptions[$sortParam])
-                  ? static::$sortOptions[$sortParam]
-                  : static::$listSort;
-
-            $requestOrderDir = strtolower($request->get('order_dir'));
-            if ($requestOrderDir) {
-                if (!in_array($requestOrderDir, ['asc', 'desc'])) {
-                    throw $this->createBadRequestException('Unknown order value');
-                }
-
-                $orderDir = $requestOrderDir;
-            }
+            $orderDir = $requestOrderDir;
         }
 
         $qb->orderBy($alias.'.'.$orderBy, $orderDir);
