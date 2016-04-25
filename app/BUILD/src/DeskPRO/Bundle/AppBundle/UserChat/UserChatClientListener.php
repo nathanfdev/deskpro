@@ -29,11 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\UserChat;
 
 use DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
-use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadStore;
 use JMS\Serializer\Serializer;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -188,10 +188,7 @@ class UserChatClientListener implements EventSubscriberInterface
      */
     protected function getInfo(UserChatEvent $event)
     {
-        $context = new SideloadSerializationContext(new SideloadStore(), []);
-        $data    = $this->serializer->toArray($event->getConversation(), $context);
-
-        return $data;
+        return $this->serializer->toArray($event->getConversation(), new SideloadSerializationContext());
     }
 
     /**

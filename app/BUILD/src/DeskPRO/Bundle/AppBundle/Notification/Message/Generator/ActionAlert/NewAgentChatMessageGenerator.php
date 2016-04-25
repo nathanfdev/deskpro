@@ -36,7 +36,6 @@ use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\AbstractGenerator;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
-use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadStore;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\Serializer;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -122,19 +121,7 @@ class NewAgentChatMessageGenerator extends AbstractGenerator
      */
     protected function getData(NewMessageEvent $event)
     {
-        $message = $this->getChatMessage($event);
-
-        $data = $this->extractData($message, $event);
-
-        return $data;
-    }
-
-    private function extractData(AgentChatMessage $message, NewMessageEvent $event)
-    {
-        $context = new SideloadSerializationContext(new SideloadStore(), []);
-        $data    = $this->serializer->toArray($message, $context);
-
-        return $data;
+        return $this->serializer->toArray($this->getChatMessage($event), new SideloadSerializationContext());
     }
 
     /**

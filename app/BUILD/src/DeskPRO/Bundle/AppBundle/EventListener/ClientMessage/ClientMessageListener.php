@@ -29,11 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\EventListener\ClientMessage;
 
 use Application\DeskPRO\Entity\ClientMessage;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
-use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadStore;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\Serializer;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -80,12 +80,9 @@ class ClientMessageListener implements EventSubscriberInterface
      */
     public function onSendMessage(ClientMessageEvent $event)
     {
-        //todo refactor
-        $context = new SideloadSerializationContext(new SideloadStore(), []);
-
         $data = $event->getData();
         if (is_object($data)) {
-            $data = $this->serializer->toArray($data, $context);
+            $data = $this->serializer->toArray($data, new SideloadSerializationContext());
         }
 
         $client_message = new ClientMessage();

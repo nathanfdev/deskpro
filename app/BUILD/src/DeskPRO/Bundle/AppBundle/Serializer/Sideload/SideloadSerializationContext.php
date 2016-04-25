@@ -66,15 +66,14 @@ class SideloadSerializationContext extends SerializationContext
     /**
      * SideloadSerializationContext constructor.
      *
-     * @param SideloadStore         $sideload_store
      * @param array                 $includes
      * @param TokenStorageInterface $tokenStorage
      */
-    public function __construct(SideloadStore $sideload_store, array $includes, TokenStorageInterface $tokenStorage = null)
+    public function __construct(array $includes = [], TokenStorageInterface $tokenStorage = null)
     {
         parent::__construct();
 
-        $this->sideload_store = $sideload_store;
+        $this->sideload_store = new SideloadStore();
         $this->includes       = $includes;
         $this->tokenStorage   = $tokenStorage;
     }
@@ -86,10 +85,9 @@ class SideloadSerializationContext extends SerializationContext
      */
     public static function createContext(ContainerInterface $container)
     {
-        $raw_includes   = $container->get('request_stack')->getMasterRequest()->query->get('include');
-        $sideload_store = new SideloadStore();
+        $raw_includes = $container->get('request_stack')->getMasterRequest()->query->get('include');
 
-        return new self($sideload_store, self::cleanIncludes($raw_includes), $container->get('security.token_storage'));
+        return new self(self::cleanIncludes($raw_includes), $container->get('security.token_storage'));
     }
 
     /**
