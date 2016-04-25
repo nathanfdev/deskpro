@@ -53,6 +53,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketCategoryType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDepartmentChoiceType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDescriptionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketPriorityType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketProductType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWorkflowType;
@@ -567,7 +568,7 @@ class TicketWithLayoutsType extends AbstractType
             return false;
         }
 
-        return new FormField('ticket_description', [
+        return new FormField(TicketDescriptionType::class, [
             'mapped'         => false,
             'label'          => false,
             'person'         => $context->getPerson(),

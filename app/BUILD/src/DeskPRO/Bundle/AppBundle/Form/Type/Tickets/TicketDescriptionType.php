@@ -44,17 +44,9 @@ class TicketDescriptionType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getName()
-    {
-        return 'ticket_description';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getParent()
     {
-        return 'ticket_message';
+        return TicketMessageType::class;
     }
 
     /**
