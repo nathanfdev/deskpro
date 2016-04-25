@@ -47,6 +47,25 @@ class SuggestionMore extends React.Component {
   }
 }
 
+class SuggestionLess extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <li className="related-list-meta">
+        <a
+          onClick={this.props.showLess}
+          className="show-less-content"
+          >
+          {portalPhrases.get('portal.general.show_less')}
+        </a>
+      </li>
+    );
+  }
+}
+
 
 class Suggestions extends React.Component {
   constructor(props) {
@@ -58,6 +77,11 @@ class Suggestions extends React.Component {
   showMore() {
     this.setState({
       show_all: true
+    });
+  }
+  showLess() {
+    this.setState({
+      show_all: false
     });
   }
   componentWillReceiveProps(newProps) {
@@ -90,6 +114,9 @@ class Suggestions extends React.Component {
         }
         {
           (!this.state.show_all && this.props.results.length > 5) ? (<SuggestionMore alt={visible_results.length % 2 === 0} count={this.props.results.length - 5} showAll={this.showMore.bind(this)} />) : null
+        }
+        {
+          (this.state.show_all && this.props.results.length > 5) ? (<SuggestionLess alt={visible_results.length % 2 === 0} count={this.props.results.length - 5} showLess={this.showLess.bind(this)} />) : null
         }
       </ul>
     );
