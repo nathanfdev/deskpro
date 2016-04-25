@@ -133,14 +133,14 @@ class TicketWithLayoutsType extends AbstractType
      * @param TicketFieldSettings   $field_settings
      */
     public function __construct(
-        CustomFieldManager    $field_manager,
-        TicketLayoutFactory   $ticket_layout_factory,
-        HierarchyGenerator    $hierarchy_generator,
-        EntityManager         $em,
-        LanguageManager       $language_manager,
+        CustomFieldManager $field_manager,
+        TicketLayoutFactory $ticket_layout_factory,
+        HierarchyGenerator $hierarchy_generator,
+        EntityManager $em,
+        LanguageManager $language_manager,
         CustomPerFieldManager $custom_per_field_manager,
-        TicketLayoutHelper    $ticket_layout_helper,
-        TicketFieldSettings   $field_settings
+        TicketLayoutHelper $ticket_layout_helper,
+        TicketFieldSettings $field_settings
     ) {
         $this->field_manager            = $field_manager;
         $this->ticket_layout_factory    = $ticket_layout_factory;
@@ -197,8 +197,7 @@ class TicketWithLayoutsType extends AbstractType
                 'person'        => Person::class,
                 'settings'      => SettingsBag::class,
                 'department_id' => ['null', 'integer'],
-            ])
-        ;
+            ]);
     }
 
     /**
@@ -654,7 +653,10 @@ class TicketWithLayoutsType extends AbstractType
             'options' => [
                 'property_path' => 'person.primary_email',
                 'label'         => $this->phrase('portal.forms.label_email'),
-                'constraints'   => [], // ignore the "unique entity" constraint here
+                // ignore the "unique entity" constraint here
+                'constraints' => [
+                    new Assert\Email(),
+                ],
             ],
         ];
     }

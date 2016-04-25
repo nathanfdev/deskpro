@@ -36,7 +36,7 @@ Feature: Guests can submit new tickets
     And I fill in "Message" with "Here is my ticket message"
     And I press "Submit"
     Then I should be on "/new-ticket"
-    And I should see a "error" flash message with the phrase "portal.forms.error_email_required"
+    And I should see a form error list with the phrase "portal.forms.error_invalid_email"
 
   @reinstall
   Scenario: Submitting a VALID FORM

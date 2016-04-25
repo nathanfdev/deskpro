@@ -62,7 +62,7 @@ return array(
     'portal.forms.error_ticket_msg_length'          => 'Your message must be at least {{ limit }} characters in length',
     'portal.forms.error_ticket_msg_required'        => 'You must provide a message',
     'portal.forms.error_email_required'             => 'You must provide your email address',
-    'portal.forms.error_invalid_email'              => 'This email adddress is not valid',
+    'portal.forms.error_invalid_email'              => 'This email address is not valid',
     'portal.forms.error_required'                   => 'This value is required',
     'portal.forms.error_regex'                      => 'This value does not match the expected format',
     'portal.forms.error_length_too_short'           => 'This value should have {{ limit }} characters or more',
