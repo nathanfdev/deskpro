@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataFixtures;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -80,6 +79,7 @@ abstract class DeskProAbstractFixture extends AbstractFixture implements Contain
     const TABLE_TASK_PROJECTS              = 'task_projects';
     const TABLE_TASK_COMMENTS_NEW          = 'task_comments_new';
     const TABLE_TASK_SUBTASK               = 'task_subtask';
+    const TABLE_TEXT_SNIPPETS              = 'text_snippets';
     const TABLE_TICKETS                    = 'tickets';
     const TABLE_TICKET_CATEGORIES          = 'ticket_categories';
     const TABLE_TICKET_WORKFLOWS           = 'ticket_workflows';

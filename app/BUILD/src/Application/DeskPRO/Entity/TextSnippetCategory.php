@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -155,6 +155,18 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject imple
     }
 
     /**
+     * @param $bool
+     *
+     * @return $this
+     */
+    public function setIsGlobal($bool)
+    {
+        $this->setModelField('is_global', $bool);
+
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function getIsGlobal()
@@ -169,7 +181,11 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject imple
 
         foreach (App::getContainer()->getLanguageData()->getAll() as $lang) {
             $title           = $this->getObjectTranslatable()->getObjectProp('title', $lang);
-            $data['title'][] = array('language_id' => $lang->getId(), 'locale' => $lang->getLocale(), 'value' => $title);
+            $data['title'][] = array(
+                'language_id' => $lang->getId(),
+                'locale'      => $lang->getLocale(),
+                'value'       => $title,
+            );
         }
 
         return $data;
@@ -201,11 +217,56 @@ class TextSnippetCategory extends \Application\DeskPRO\Domain\DomainObject imple
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TextSnippetCategory';
         $metadata->setPrimaryTable(array('name' => 'text_snippet_categories'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'typename', 'type' => 'string', 'length' => 30, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'typename'));
-        $metadata->mapField(array('fieldName' => 'is_global', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_global'));
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'id',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'id',
+                'id'         => true,
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'typename',
+                'type'       => 'string',
+                'length'     => 30,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'typename',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'is_global',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_global',
+            )
+        );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array('fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
+        $metadata->mapManyToOne(
+            array(
+                'fieldName'    => 'person',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => array(
+                    0 => array(
+                        'name'                 => 'person_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ),
+                ),
+            )
+        );
 
         ObjectTranslatable::loadEntityMetadata($metadata);
     }
