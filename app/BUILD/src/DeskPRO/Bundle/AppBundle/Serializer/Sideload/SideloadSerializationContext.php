@@ -165,11 +165,17 @@ class SideloadSerializationContext extends SerializationContext
     }
 
     /**
-     * @return Person
+     * @return Person|null
      */
     public function getUser()
     {
-        return $this->tokenStorage ? $this->tokenStorage->getToken()->getUser() : null;
+        if ($this->tokenStorage) {
+            $person = $this->tokenStorage->getToken()->getUser();
+
+            return $person instanceof Person ? $person : null;
+        }
+
+        return;
     }
 
     /**

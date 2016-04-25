@@ -130,7 +130,7 @@ class TicketHandler extends AbstractEntityHandler
     {
         /** @var \Application\DeskPRO\EntityRepository\TicketMessage $repo */
         $repo    = $this->em->getRepository(TicketMessage::class);
-        $message = $repo->getLastReply($entity, $context->getUser()->isAgent());
+        $message = $repo->getLastReply($entity, $context->getUser() && $context->getUser()->isAgent());
 
         if (!$message) {
             return;
