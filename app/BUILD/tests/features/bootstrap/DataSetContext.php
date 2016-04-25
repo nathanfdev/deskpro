@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpBehat;
 
 use Behat\Behat\Context\Context;
@@ -90,7 +91,13 @@ class DataSetContext extends BaseContext
         if (self::$last_installed_data_set === $set) {
             // the same data set is already loaded
             if (!self::$reinstall) {
-                print 'data set already loaded';
+                echo 'data set already loaded';
+
+                foreach ($this->reset_contexts as $ctx) {
+                    if ($ctx instanceof RebootableContextInterface) {
+                        $ctx->rebootContext();
+                    }
+                }
 
                 return; // this scenario was not tagged as @reinstall, exiting
             }
@@ -108,9 +115,9 @@ class DataSetContext extends BaseContext
         }
 
         if (self::$reinstall) {
-            print 'successfully reinstalled data set (took '.(time() - $install_start).' seconds)';
+            echo 'successfully reinstalled data set (took '.(time() - $install_start).' seconds)';
         } else {
-            print 'successfully installed data set (took '.(time() - $install_start).' seconds)';
+            echo 'successfully installed data set (took '.(time() - $install_start).' seconds)';
         }
     }
 

@@ -26,17 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
-use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadStore;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatMessageType;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatUserTypingType;
@@ -211,9 +206,7 @@ class ChatController extends AbstractApiController
             $chat_messages[] = $chat_message;
         }
 
-        //todo refactor
         $serializer = $this->get('serializer');
-        $context    = new SideloadSerializationContext(new SideloadStore(), []);
 
         // Add blobs to chat conversation
         /** @var Blob[] $attachments */
@@ -243,7 +236,7 @@ class ChatController extends AbstractApiController
                     'is_html'         => true,
                     'type'            => 'file',
                     'blob_id'         => $attachment->getId(),
-                    'blob'            => $serializer->toArray($attachment, $context),
+                    'blob'            => $serializer->toArray($attachment, new SideloadSerializationContext()),
                     'is_user_message' => true,
                 ])
             ;
