@@ -26,25 +26,18 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\DataService\AgentTeams\AgentTeamsDataService;
 use DeskPRO\Bundle\AppBundle\Form\Type\AgentTeamType;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class AgentTeamsController.
@@ -82,27 +75,16 @@ class AgentTeamsController extends CrudController
      *      },
      *      output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person>"
      * )
-     * @Rest\Get("/{id}/agents", name="api_agent_teams_agents")
+     * @Rest\Get("/{id}/agents")
      *
-     * @param int $id
+     * @param Request $request
+     * @param int     $id
      *
      * @return View
      */
-    public function getAgentsAction($id)
+    public function getAgentsAction(Request $request, $id)
     {
-        /** @var AgentTeamsDataService $service */
-        $service = $this->get('data.agent_teams');
-
-        try {
-            return View::create(
-                $this->wrap($service->getAgentsFromTeam((int) $id)),
-                Response::HTTP_OK
-            );
-        } catch (\InvalidArgumentException $e) {
-            throw new NotFoundHttpException($e->getMessage());
-        } catch (\Exception $e) {
-            throw new BadRequestHttpException($e->getMessage());
-        }
+        return PeopleController::subRequestSearch($this->getKernel(), $request, ['agent_team' => $id]);
     }
 
     /**
@@ -110,11 +92,6 @@ class AgentTeamsController extends CrudController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        if ($ids = $request->query->get('ids')) {
-            $qb->where("{$alias}.id IN (:ids)")->setParameter('ids', $ids);
-        }
-
-        /* @var AgentTeam[] $teams */
         if ($request->query->getBoolean('my', false)) {
             $qb
                 ->innerJoin("{$alias}.members", 'p', Join::WITH)
