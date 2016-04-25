@@ -177,12 +177,12 @@ class TicketCategory extends DomainObject implements HasPhraseName
     /**
      * Add a child department.
      *
-     * @param Department $department
+     * @param TicketCategory $category
      */
-    public function addChild(TicketCategory $department)
+    public function addChild(TicketCategory $category)
     {
-        $department['parent'] = $this;
-        $this->children->add($department);
+        $category['parent'] = $this;
+        $this->children->add($category);
     }
 
     /**
@@ -194,7 +194,7 @@ class TicketCategory extends DomainObject implements HasPhraseName
     {
         if ($this->parent) {
             // empty collection
-            return new \Doctrine\Common\Collections\ArrayCollection();
+            return new ArrayCollection();
         }
 
         return $this->children;

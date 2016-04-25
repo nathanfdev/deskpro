@@ -28,45 +28,39 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketLinks\TicketLinkType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketLinks\TicketUnlinkType;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\LinkedTickets;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Class TicketLinkController.
+ * Class TicketLinksController.
  *
  * @ApiModes("all")
+ * @Rest\Route("/tickets/{ticketId}/links")
+ * @ApiDoc(target="all", section="Tickets", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\LinkedTickets")
  */
-class TicketLinkController extends BaseController
+class TicketLinksController extends BaseController
 {
     /**
      * @ApiDoc(
-     *     section="Tickets",
      *     description="link two tickets",
-     *     requirements={
-     *         {"name"="ticketId", "requirement"="\d+", "dataType"="integer", "description"="base ticket"},
-     *         {"name"="link_ticket_id", "requirement"="\d+", "dataType"="integer", "description"="ticket to link"},
-     *         {
-     *             "name"="parent",
-     *             "requirement"="true|false",
-     *             "dataType"="boolean",
-     *             "description"="set true if you want to make link ticket as parent for ticket"
-     *         },
-     *     },
      *     statusCodes={
      *         201="Tickets was linked successfully",
      *         400="You are trying to link ticket to itself",
      *         404={
      *             "Ticket with 'ticketId' wasn't found",
      *             "Ticket with 'link_ticket_id' wasn't found",
-     *         },
-     *     },
+     *         }
+     *     }
      * )
      *
      * @param Request $request
@@ -74,44 +68,15 @@ class TicketLinkController extends BaseController
      
      * @return View
      *
-     * @Rest\Post("/tickets/{ticketId}/link", name="api_tickets_link")
+     * @Rest\Post("")
      */
     public function postAction(Request $request, $ticketId)
     {
-        $linkTicketId = $request->request->get('link_ticket_id');
-
-        $ticketManager = $this->get('ticket_manager');
-        $ticket        = $ticketManager->getTicket($ticketId);
-        $linkTicket    = $ticketManager->getTicket($linkTicketId);
-
-        if ((int) $ticketId === (int) $linkTicketId) {
-            throw new BadRequestHttpException('You can\'t link ticket to itself!');
-        }
-
-        if (!$ticket) {
-            throw new NotFoundHttpException(sprintf('Ticket with id [ %d ] not found', $ticketId));
-        }
-        if (!$linkTicket) {
-            throw new NotFoundHttpException(sprintf('Ticket with id [ %d ] not found', $linkTicketId));
-        }
-
-        $make_parent = $request->request->get('parent', false);
-        $linker      = $this->get('tickets.linker');
-
-        $make_parent ? $linker->linkTickets($ticket, $linkTicket) : $linker->linkTickets($linkTicket, $ticket);
-
-        return View::create(
-            [],
-            Response::HTTP_CREATED,
-            [
-                'Location' => $this->generateUrl('api_tickets_link_list', array('ticketId' => $ticketId)),
-            ]
-        );
+        return $this->handleForm($request, $ticketId, TicketLinkType::class);
     }
 
     /**
      * @ApiDoc(
-     *     section="Tickets",
      *     description="get tickets linked with ticket under provided id",
      *     requirements={
      *         {"name"="ticketId", "requirement"="\d+", "dataType"="integer", "description"="ticket to find id"},
@@ -119,30 +84,18 @@ class TicketLinkController extends BaseController
      *     statusCodes={
      *         200="Returned in case of successful request",
      *         404="Ticket with specified id wasn't found",
-     *     },
-     *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket>"
+     *     }
      * )
      *
      * @param int $ticketId
      *
-     * @Rest\Get("/tickets/{ticketId}/link", name="api_tickets_link_list")
+     * @Rest\Get("", name="api_tickets_link_list")
      *
      * @return View
      */
     public function listAction($ticketId)
     {
-        $ticket = $this->get('ticket_manager')->getTicket($ticketId);
-
-        if (!$ticket) {
-            throw new NotFoundHttpException(sprintf('Ticket with id [ %d ] not found', $ticketId));
-        }
-
-        $linker = $this->get('tickets.linker');
-
-        return View::create(
-            $this->wrap($linker->getLinkedTickets($ticket)),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap(new LinkedTickets($this->getTicket($ticketId))));
     }
 
     /**
@@ -168,40 +121,66 @@ class TicketLinkController extends BaseController
      *             "Ticket with 'ticketId' wasn't found",
      *             "Ticket with 'unlinkTicketId' wasn't found",
      *         },
-     *     },
+     *     }
      * )
      *
      * @param int     $ticketId
-     * @param int     $unlinkTicketId
      * @param Request $request
      *
-     * @Rest\Delete("/tickets/{ticketId}/link/{unlinkTicketId}", name="api_tickets_link_unlink")
+     * @Rest\Delete("")
      *
      * @return View
      */
-    public function deleteAction(Request $request, $ticketId, $unlinkTicketId)
+    public function deleteAction(Request $request, $ticketId)
     {
-        $linkType = $request->query->get('link_type');
-        $linker   = $this->get('tickets.linker');
+        return $this->handleForm($request, $ticketId, TicketUnlinkType::class);
+    }
 
-        if ((int) $ticketId === (int) $unlinkTicketId) {
-            throw new BadRequestHttpException('You can\'t unlink ticket from itself!');
+    /**
+     * @param Request $request
+     * @param int     $ticketId
+     * @param string  $formType
+     *
+     * @return View
+     */
+    protected function handleForm(Request $request, $ticketId, $formType)
+    {
+        $ticket = $this->getTicket($ticketId);
+        $form   = $this->createForm($formType, $ticket);
+
+        $form->submit($request->request->all());
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
         }
 
-        try {
-            $linker->unlinkTickets($ticketId, $unlinkTicketId, $linkType);
-        } catch (\InvalidArgumentException $e) {
-            if ($e->getCode() === 404) {
-                throw new NotFoundHttpException($e->getMessage());
-            } else {
-                throw new BadRequestHttpException($e->getMessage());
-            }
+        $this->saveTicket($ticket);
+
+        return View::create(null, Response::HTTP_NO_CONTENT, [
+            'Location' => $this->generateUrl('api_tickets_link_list', ['ticketId' => $ticketId]),
+        ]);
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return \Application\DeskPRO\Entity\Ticket
+     */
+    protected function getTicket($id)
+    {
+        $ticket = $this->get('ticket_manager')->getTicket($id);
+        if (!$ticket) {
+            throw $this->createNotFoundException();
         }
 
-        return View::create(
-            [],
-            Response::HTTP_OK,
-            ['Location' => $this->generateUrl('api_tickets_link_list', array('ticketId' => $ticketId))]
-        );
+        return $ticket;
+    }
+
+    /**
+     * @param Ticket $ticket
+     */
+    protected function saveTicket(Ticket $ticket)
+    {
+        $context = $this->get('ticket_manager')->createAgentExecutorContext($this->getUser(), 'update', 'api');
+        $this->get('ticket_manager')->saveTicket($ticket, $context);
     }
 }

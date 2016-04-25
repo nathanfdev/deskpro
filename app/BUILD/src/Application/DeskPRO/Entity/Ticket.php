@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -126,6 +127,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @PortalLinkCustom(type="resolve")
  * @PortalLinkCustom(type="unresolve")
  * @PortalLinkCustom(type="add-cc")
+ *
+ * @AppAssert\Ticket\TicketLink()
  */
 class Ticket extends DomainObject implements HighlightableModelInterface, LabelsOwner
 {
@@ -199,6 +202,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      * @var \Application\DeskPRO\Entity\Ticket
      */
     protected $parent_ticket = null;
+
+    /**
+     * @var ArrayCollection|Ticket[]
+     */
+    protected $children_tickets;
 
     /**
      * The language the ticket is in.
@@ -608,19 +616,20 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function __construct()
     {
-        $this->_original_id = null;
-        $this->_is_new      = true;
-        $this->participants = new ArrayCollection();
-        $this->jira_issues  = new ArrayCollection();
-        $this->messages     = new ArrayCollection();
-        $this->sms_messages = new ArrayCollection();
-        $this->custom_data  = new ArrayCollection();
-        $this->labels       = new ArrayCollection();
-        $this->access_codes = new ArrayCollection();
-        $this->attachments  = new ArrayCollection();
-        $this->charges      = new ArrayCollection();
-        $this->ticket_slas  = new ArrayCollection();
-        $this->problems     = new ArrayCollection();
+        $this->_original_id     = null;
+        $this->_is_new          = true;
+        $this->participants     = new ArrayCollection();
+        $this->jira_issues      = new ArrayCollection();
+        $this->messages         = new ArrayCollection();
+        $this->sms_messages     = new ArrayCollection();
+        $this->custom_data      = new ArrayCollection();
+        $this->labels           = new ArrayCollection();
+        $this->access_codes     = new ArrayCollection();
+        $this->attachments      = new ArrayCollection();
+        $this->charges          = new ArrayCollection();
+        $this->ticket_slas      = new ArrayCollection();
+        $this->problems         = new ArrayCollection();
+        $this->children_tickets = new ArrayCollection();
 
         // Default ref (is reset with ref generator)
         $this->ref = DpStrings::random(10, Strings::CHARS_ALPHA_IU).'-'.date('YzB');
@@ -875,6 +884,66 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     public function getParentTicket()
     {
         return $this->parent_ticket;
+    }
+
+    /**
+     * @param Ticket $ticket
+     *
+     * @return $this
+     */
+    public function setParentTicket(Ticket $ticket = null)
+    {
+        $this->setModelField('parent_ticket', $ticket);
+
+        return $this;
+    }
+
+    /**
+     * @return Ticket[]|ArrayCollection
+     */
+    public function getChildrenTickets()
+    {
+        return $this->children_tickets;
+    }
+
+    /**
+     * @param Ticket $ticket
+     *
+     * @return $this
+     */
+    public function addChildrenTicket(Ticket $ticket)
+    {
+        $this->children_tickets->add($ticket);
+        $ticket->setParentTicket($this);
+
+        return $this;
+    }
+
+    /**
+     * @param Ticket $ticket
+     *
+     * @return $this
+     */
+    public function removeChildrenTicket(Ticket $ticket)
+    {
+        $this->children_tickets->removeElement($ticket);
+        $ticket->setParentTicket(null);
+
+        return $this;
+    }
+
+    /**
+     * @return Ticket[]|ArrayCollection
+     */
+    public function getSiblingsTickets()
+    {
+        if ($this->parent_ticket) {
+            return $this->parent_ticket->getChildrenTickets()->filter(function (Ticket $item) {
+                return $item !== $this;
+            });
+        }
+
+        return new ArrayCollection();
     }
 
     /**
@@ -4618,22 +4687,26 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                 'nullable'   => true,
             )
         );
-
-        $metadata->mapManyToOne(
-            array(
-                'fieldName'    => 'parent_ticket',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket',
-                'joinColumns'  => array(
-                    array(
-                        'name'                 => 'parent_ticket_id',
-                        'referencedColumnName' => 'id',
-                        'nullable'             => true,
-                        'onDelete'             => 'set null',
-                    ),
-                ),
-                'dpApi' => true,
-            )
-        );
+        $metadata->mapManyToOne([
+            'fieldName'    => 'parent_ticket',
+            'targetEntity' => self::class,
+            'inversedBy'   => 'children_tickets',
+            'joinColumns'  => [
+                [
+                    'name'                 => 'parent_ticket_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'set null',
+                ],
+            ],
+            'dpApi' => true,
+        ]);
+        $metadata->mapOneToMany([
+            'fieldName'    => 'children_tickets',
+            'targetEntity' => self::class,
+            'mappedBy'     => 'parent_ticket',
+            'fetch'        => 'EXTRA_LAZY',
+        ]);
         $metadata->mapManyToOne(
             array(
                 'fieldName'    => 'language',

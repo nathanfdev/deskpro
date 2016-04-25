@@ -669,13 +669,11 @@ class Ticket
     private $followers;
 
     /**
-     * Ticket constructor.
+     * Constructor.
      *
-     * @param TicketEntity   $ticket
-     * @param TicketEntity[] $children
-     * @param TicketEntity[] $siblings
+     * @param TicketEntity $ticket
      */
-    public function __construct(TicketEntity $ticket, array $children, array $siblings)
+    public function __construct(TicketEntity $ticket)
     {
         $this->id           = $ticket->getId();
         $this->ref          = $ticket->getRef();
@@ -739,8 +737,7 @@ class Ticket
         $this->ticketSlas           = $ticket->getTicketSlas();
         $this->cc                   = $ticket->getUserParticipants();
         $this->followers            = $ticket->getAgentParticipants();
-
-        $this->children = $children;
-        $this->siblings = $siblings;
+        $this->children             = $ticket->getChildrenTickets();
+        $this->siblings             = $ticket->getSiblingsTickets();
     }
 }

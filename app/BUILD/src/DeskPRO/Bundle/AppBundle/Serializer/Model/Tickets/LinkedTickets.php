@@ -51,7 +51,7 @@ class LinkedTickets
     /**
      * Ticket array.
      *
-     * @JMS\Type("array<Application\DeskPRO\Entity\Ticket>")
+     * @JMS\Type("collection<Application\DeskPRO\Entity\Ticket>")
      *
      * @var ArrayCollection
      */
@@ -60,7 +60,7 @@ class LinkedTickets
     /**
      * Ticket array.
      *
-     * @JMS\Type("array<Application\DeskPRO\Entity\Ticket>")
+     * @JMS\Type("collection<Application\DeskPRO\Entity\Ticket>")
      *
      * @var ArrayCollection
      */
@@ -76,16 +76,13 @@ class LinkedTickets
     /**
      * LinkedTickets constructor.
      *
-     * @param TicketEntity|null $parent
-     * @param array             $siblings
-     * @param array             $children
-     * @param int               $count
+     * @param TicketEntity $ticket
      */
-    public function __construct($parent, $siblings, $children, $count)
+    public function __construct(TicketEntity $ticket)
     {
-        $this->parent   = $parent;
-        $this->siblings = $siblings;
-        $this->children = $children;
-        $this->count    = $count;
+        $this->parent   = $ticket->getParentTicket();
+        $this->siblings = $ticket->getSiblingsTickets();
+        $this->children = $ticket->getChildrenTickets();
+        $this->count    = array_sum([$this->parent ? 1 : 0, count($this->siblings), count($this->children)]);
     }
 }

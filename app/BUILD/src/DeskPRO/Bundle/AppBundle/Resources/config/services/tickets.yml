@@ -19,8 +19,3 @@ services:
   tickets.custom_per_field_manager:
     class: DeskPRO\Bundle\AppBundle\CustomField\Context\CustomPerFieldManager
     arguments: ["@doctrine.orm.default_entity_manager"]
-
-  tickets.linker:
-    class: DeskPRO\Bundle\AppBundle\Ticket\TicketLinker
-    arguments:
-      - @doctrine.orm.default_entity_manager

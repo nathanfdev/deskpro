@@ -26,35 +26,46 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketLinks;
 
-use Symfony\Component\Validator\Constraint;
+use Application\DeskPRO\Entity\Ticket;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class TicketLayout.
+ * Class BaseTicketLinkType.
  */
-class TicketLayout extends Constraint
+class BaseTicketLinkType extends AbstractType
 {
     /**
-     * Could be "agent" or "user".
-     *
-     * @var string
+     * {@inheritdoc}
      */
-    public $context = 'agent';
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('link_ticket', EntityType::class, [
+                'class'       => Ticket::class,
+                'mapped'      => false,
+                'constraints' => [
+                    new Assert\NotNull(),
+                ],
+            ])
+        ;
+    }
 
     /**
      * {@inheritdoc}
      */
-    public function getTargets()
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        return self::CLASS_CONSTRAINT;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAgent()
-    {
-        return $this->context === 'agent';
+        $resolver->setDefaults([
+            'error_mapping' => [
+                'parent_ticket'    => 'link_ticket',
+                'children_tickets' => 'link_ticket',
+            ],
+        ]);
     }
 }

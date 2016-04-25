@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;

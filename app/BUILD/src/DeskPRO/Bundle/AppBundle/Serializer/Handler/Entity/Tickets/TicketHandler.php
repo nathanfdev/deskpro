@@ -35,7 +35,6 @@ use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket as TicketModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
-use DeskPRO\Bundle\AppBundle\Ticket\TicketLinker;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\JsonSerializationVisitor;
 
@@ -44,11 +43,6 @@ use JMS\Serializer\JsonSerializationVisitor;
  */
 class TicketHandler extends AbstractEntityHandler
 {
-    /**
-     * @var TicketLinker
-     */
-    private $ticketLinker;
-
     /**
      * @var TicketLayoutFactory
      */
@@ -62,13 +56,11 @@ class TicketHandler extends AbstractEntityHandler
     /**
      * TicketHandler constructor.
      *
-     * @param TicketLinker        $ticketLinker
      * @param TicketLayoutFactory $layoutFactory
      * @param EntityManager       $em
      */
-    public function __construct(TicketLinker $ticketLinker, TicketLayoutFactory $layoutFactory, EntityManager $em)
+    public function __construct(TicketLayoutFactory $layoutFactory, EntityManager $em)
     {
-        $this->ticketLinker  = $ticketLinker;
         $this->layoutFactory = $layoutFactory;
         $this->em            = $em;
     }
@@ -158,10 +150,6 @@ class TicketHandler extends AbstractEntityHandler
      */
     protected function createModel($entity, SideloadSerializationContext $context)
     {
-        return new TicketModel(
-            $entity,
-            array_values($this->ticketLinker->getTicketChildren($entity)),
-            array_values($this->ticketLinker->getTicketSiblings($entity))
-        );
+        return new TicketModel($entity);
     }
 }

@@ -7,31 +7,39 @@ Feature: Ticket link endpoint
     Given I install the api data set
     And my request is authenticated
 
+  @reinstall
   Scenario: I link two tickets
-    When I send a "POST" request to "/api/v2/tickets/1/link" with body:
+    When I send a "POST" request to "/api/v2/tickets/1/links" with body:
     """
 {
   "parent": false,
-  "link_ticket_id": 2
+  "link_ticket": 2
 }
     """
-    Then the response status code should be 201
+    Then the response status code should be 204
     And the response should be in JSON
-    And the header "Location" should be equal to "/api/v2/tickets/1/link"
+    And the header "Location" should be equal to "/api/v2/tickets/1/links"
 
-  Scenario: I'm trying to link ticket to itself
-    When I send a "POST" request to "/api/v2/tickets/1/link" with body:
+  Scenario Outline: I'm trying to link ticket to itself
+    When I send a "POST" request to "/api/v2/tickets/1/links" with body:
     """
 {
-  "parent": false,
-  "link_ticket_id": 1
+  "parent": <parent>,
+  "link_ticket": 1
 }
     """
     Then the response status code should be 400
     And the response should be in JSON
+    And the JSON node "errors.fields.link_ticket.errors[0].code" should be equal to "link_itself"
+    And the JSON node "errors.fields.link_ticket.errors[0].message" should be equal to "The object should not link itself."
+
+    Examples:
+      | parent |
+      | true   |
+      | false  |
 
   Scenario: I'm getting linked tickets list with sideloading
-    When I send a "GET" request to "/api/v2/tickets/1/link?include=person,agent_team,organization"
+    When I send a "GET" request to "/api/v2/tickets/1/links?include=person,agent_team,organization"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "data.parent" should exist
@@ -51,7 +59,7 @@ Feature: Ticket link endpoint
     And the JSON node "linked.person.3.primary_email" should be equal to "user@deskpro.dev"
 
   Scenario: I'm getting linked tickets list w/o sideloading
-    When I send a "GET" request to "/api/v2/tickets/1/link"
+    When I send a "GET" request to "/api/v2/tickets/1/links"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "data.parent" should exist
@@ -62,17 +70,17 @@ Feature: Ticket link endpoint
     And the JSON node "linked" should have 0 elements
 
   Scenario: I link another two tickets
-    When I send a "POST" request to "/api/v2/tickets/1/link" with body:
+    When I send a "POST" request to "/api/v2/tickets/1/links" with body:
     """
 {
   "parent": true,
-  "link_ticket_id": 3
+  "link_ticket": 3
 }
     """
-    Then the response status code should be 201
+    Then the response status code should be 204
     And the response should be in JSON
-    And the header "Location" should be equal to "/api/v2/tickets/1/link"
-    When I send a "GET" request to "/api/v2/tickets/1/link"
+    And the header "Location" should be equal to "/api/v2/tickets/1/links"
+    When I send a "GET" request to "/api/v2/tickets/1/links"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "data.parent" should exist
@@ -81,19 +89,18 @@ Feature: Ticket link endpoint
     And the JSON node "data.parent.id" should exist
     And the JSON node "data.parent.id" should be equal to 3
 
-
   Scenario: I link ticket to made it sibling to 1
-    When I send a "POST" request to "/api/v2/tickets/4/link" with body:
+    When I send a "POST" request to "/api/v2/tickets/4/links" with body:
     """
 {
   "parent": true,
-  "link_ticket_id": 3
+  "link_ticket": 3
 }
     """
-    Then the response status code should be 201
+    Then the response status code should be 204
     And the response should be in JSON
-    And the header "Location" should be equal to "/api/v2/tickets/4/link"
-    When I send a "GET" request to "/api/v2/tickets/1/link"
+    And the header "Location" should be equal to "/api/v2/tickets/4/links"
+    When I send a "GET" request to "/api/v2/tickets/1/links"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "data.parent" should exist
@@ -103,7 +110,7 @@ Feature: Ticket link endpoint
     And the JSON node "data.siblings[0].id" should be equal to 4
 
   Scenario: I check if ticket #3 has children
-    When I send a "GET" request to "/api/v2/tickets/3/link"
+    When I send a "GET" request to "/api/v2/tickets/3/links"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "data.parent" should exist
