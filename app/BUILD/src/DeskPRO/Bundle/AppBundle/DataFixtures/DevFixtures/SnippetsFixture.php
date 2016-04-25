@@ -41,7 +41,11 @@ class SnippetsFixture extends DeskProAbstractFixture implements OrderedFixtureIn
     const NUM_CATEGORIES = 10;
     const NUM_SNIPPETS   = 20;
 
+    /** @var  int[] */
     private $categories;
+
+    /** @var  int[] */
+    private $snippets;
 
     public function getOrder()
     {
@@ -53,6 +57,7 @@ class SnippetsFixture extends DeskProAbstractFixture implements OrderedFixtureIn
         $this->manager = $manager;
         $this->loadSnippetCategories();
         $this->loadSnippets();
+        $this->loadObjectLang();
     }
 
     private function loadSnippetCategories()
@@ -87,5 +92,29 @@ class SnippetsFixture extends DeskProAbstractFixture implements OrderedFixtureIn
             }
         }
         $this->db->batchInsert(self::TABLE_TEXT_SNIPPETS, $batch);
+        $this->snippets = $this->fetchIds(self::TABLE_TEXT_SNIPPETS);
+    }
+
+    private function loadObjectLang()
+    {
+        $batch = [];
+        foreach ($this->snippets as $snippetId) {
+            $batch[] = [
+                'language_id' => 1,
+                'ref'         => self::TABLE_TEXT_SNIPPETS.'.'.$snippetId,
+                'prop_name'   => 'title',
+                'value'       => $this->faker->words(3, true),
+            ];
+
+            $snippetLength = $this->faker->numberBetween(15, 500);
+
+            $batch[] = [
+                'language_id' => 1,
+                'ref'         => self::TABLE_TEXT_SNIPPETS.'.'.$snippetId,
+                'prop_name'   => 'snippet',
+                'value'       => $this->faker->realText($snippetLength),
+            ];
+        }
+        $this->db->batchInsert('object_lang', $batch);
     }
 }
