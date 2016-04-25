@@ -68,14 +68,12 @@ class TicketMessageType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('message', 'html_textarea', [
-                'property_path' => 'message_html',
-                'label'         => $options['message_label'],
-                'required'      => $options['required'],
-                'constraints'   => $options['message_constraints'],
-            ])
-        ;
+        $builder->add('message', 'html_textarea', [
+            'property_path' => 'message_html',
+            'label'         => $options['message_label'],
+            'required'      => $options['required'],
+            'constraints'   => $options['message_constraints'],
+        ]);
 
         if ($options['format']) {
             $builder->add('format', 'deskpro_hidden', [
@@ -92,6 +90,8 @@ class TicketMessageType extends AbstractType
             ]);
         }
 
+        $ticketMessage = $options['ticket_message'] ?: $builder->getData();
+
         if ($options['render_is_note']) {
             $builder->add('is_note', ApiBooleanType::class, [
                 'property_path' => 'is_agent_note',
@@ -101,17 +101,18 @@ class TicketMessageType extends AbstractType
             $builder->add('attachments', 'ticket_message_attachment_collection', [
                 'required'       => false,
                 'person'         => $options['person'],
-                'ticket_message' => $options['ticket_message'],
+                'ticket_message' => $ticketMessage,
             ]);
         }
 
         $builder->add('inline_attachments', 'ticket_message_inline_attachment_collection', [
             'required'       => false,
             'person'         => $options['person'],
-            'ticket_message' => $options['ticket_message'],
+            'ticket_message' => $ticketMessage,
             'mapped'         => false,
         ]);
 
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onSetMessageFromOptions']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onChangeMessageFormat']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations']);
     }
@@ -147,7 +148,7 @@ class TicketMessageType extends AbstractType
             ->setAllowedTypes([
                 'person'         => Person::class,
                 'ticket'         => Ticket::class,
-                'ticket_message' => TicketMessage::class,
+                'ticket_message' => ['null', TicketMessage::class],
             ])
             ->setAllowedValues([
                 'format' => ['', 'html', 'text'],
@@ -161,6 +162,17 @@ class TicketMessageType extends AbstractType
     public function getName()
     {
         return 'ticket_message';
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onSetMessageFromOptions(FormEvent $event)
+    {
+        $config = $event->getForm()->getConfig();
+        if ($config->getOption('ticket_message')) {
+            $event->setData($config->getOption('ticket_message'));
+        }
     }
 
     /**
