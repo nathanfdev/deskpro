@@ -59,9 +59,9 @@ class SnippetsFixture extends DeskProAbstractFixture implements OrderedFixtureIn
     {
         for ($i = 0; $i < self::NUM_CATEGORIES; ++$i) {
             $category = new TextSnippetCategory();
-            if ($i === 1) {
+            if ($i === 0) {
                 $typename = TextSnippetCategory::TYPE_TICKET;
-            } elseif ($i === 2) {
+            } elseif ($i === 1) {
                 $typename = TextSnippetCategory::TYPE_CHAT;
             } else {
                 $typename = $this->faker->word;
@@ -71,7 +71,7 @@ class SnippetsFixture extends DeskProAbstractFixture implements OrderedFixtureIn
         }
         $this->manager->flush();
 
-        $this->categories = $this->fetchIds('text_snippets_categories');
+        $this->categories = $this->fetchIds('text_snippet_categories');
     }
 
     private function loadSnippets()
@@ -81,7 +81,7 @@ class SnippetsFixture extends DeskProAbstractFixture implements OrderedFixtureIn
             for ($i = 0; $i < self::NUM_SNIPPETS; ++$i) {
                 $batch[] = [
                     'category_id'   => $category,
-                    'shortcut_code' => $this->faker->sentence(4),
+                    'shortcut_code' => $this->faker->words(2, true),
                     'is_draft'      => 0,
                 ];
             }
