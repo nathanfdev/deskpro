@@ -16,10 +16,6 @@ export class TypeRow extends React.Component {
                           toggleType={this.props.toggleType}/>
             );
           })}
-          <li className="float-right">
-            <img style={{display: this.props.doSpin ? "inline" : "none", height: "30px", width: "30px"}}
-                 src={ portalUrlGenerator.getSpinnerPath() } />
-          </li>
         </ul>
       </div>
     );
