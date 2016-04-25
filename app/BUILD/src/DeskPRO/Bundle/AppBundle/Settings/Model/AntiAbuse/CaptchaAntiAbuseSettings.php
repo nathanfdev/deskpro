@@ -58,6 +58,15 @@ class CaptchaAntiAbuseSettings
     private $recaptcha2SiteKey = '';
 
     /**
+     * Recaptcha key.
+     *
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    private $recaptcha2SecretKey = '';
+
+    /**
      * Use it for tickets.
      *
      * @var bool|string
@@ -129,6 +138,26 @@ class CaptchaAntiAbuseSettings
     public function setRecaptcha2SiteKey($recaptcha2SiteKey)
     {
         $this->recaptcha2SiteKey = $recaptcha2SiteKey;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRecaptcha2SecretKey()
+    {
+        return $this->recaptcha2SecretKey;
+    }
+
+    /**
+     * @param string $recaptcha2SecretKey
+     *
+     * @return $this
+     */
+    public function setRecaptcha2SecretKey($recaptcha2SecretKey)
+    {
+        $this->recaptcha2SecretKey = $recaptcha2SecretKey;
 
         return $this;
     }

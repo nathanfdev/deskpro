@@ -4,6 +4,7 @@ define [
   'DeskPRO/Directive/DpTimeWithUnit',
   'DeskPRO/Directive/DpFilesizeWithUnit',
   'DeskPRO/Directive/DpStateMark',
+  'DeskPRO/Directive/DpStateMarkRegex',
   'DeskPRO/Directive/DpHelpPage',
   'DeskPRO/Directive/DpNavSubnav',
   'DeskPRO/Directive/DpTabBody',
@@ -62,6 +63,7 @@ define [
   DeskPRO_Directive_DpTimeWithUnit,
   DeskPRO_Directive_DpFilesizeWithUnit,
   DeskPRO_Directive_DpStateMark,
+  DeskPRO_Directive_DpStateMarkRegex,
   DeskPRO_Directive_DpHelpPage,
   DeskPRO_Directive_DpNavSubnav,
   DeskPRO_Directive_DpTabBody,
@@ -121,6 +123,7 @@ define [
     Module.directive('dpTimeWithUnit',                 DeskPRO_Directive_DpTimeWithUnit)
     Module.directive('dpFilesizeWithUnit',             DeskPRO_Directive_DpFilesizeWithUnit)
     Module.directive('dpStateMark',                    DeskPRO_Directive_DpStateMark)
+    Module.directive('dpStateMarkRegex',               DeskPRO_Directive_DpStateMarkRegex)
     Module.directive('dpHelpPage',                     DeskPRO_Directive_DpHelpPage)
     Module.directive('dpNavSubnav',                    DeskPRO_Directive_DpNavSubnav)
     Module.directive('dpTabBody',                      DeskPRO_Directive_DpTabBody)

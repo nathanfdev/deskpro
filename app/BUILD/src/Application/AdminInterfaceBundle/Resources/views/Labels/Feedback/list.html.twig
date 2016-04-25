@@ -1,39 +1,31 @@
 {% extends 'AdminInterfaceBundle:Labels:layout.html.twig' %}
 {% block listpane_content %}
-    {% include 'AdminInterfaceBundle:Labels:Common/list-section.html.twig' with {prefix: 'portal.feedback_labels'} %}
-{% endblock %}
-{% block listpane_help %}
-	<header>
-		<h1>Labeling feedback items helps agents and users find them.</h1>
-<p>Labels are text tags that agents can use to help organize your helpdesk content.</p>
-</header>
-<article>
-<section>
-<p>Labels are used to match items when agents or users search helpdesk content.</p>
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('portal.feedback_settings') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Feedback Settings</h3>
+		</a>
+	</section>
 
-<p>You can rename misspelled or unhelpful labels using this screen.</p>
-</section>
-<section>
-<h2><span>FAQ</span></h2>
-<dl>
-		<dt><em>Q:</em>How do I merge two labels?</dt>
-		<dd><em>A:</em>
-		Edit one label to have the same name as another, and the labels will be merged.
-		</dd>
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('portal.feedback_statuses') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Feedback Statuses</h3>
+		</a>
+	</section>
 
-</dl>
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('portal.feedback_types') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Feedback Types</h3>
+		</a>
+	</section>
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('portal.feedback_categories') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Feedback Categories</h3>
+		</a>
+	</section>
 
-
-
-</section>
-<section class="related-content">
-<h2><span>Related Content</span></h2>
-<ul>
-<li><i class="fa fa-book"></i> <a href="https://manuals.deskpro.com/html/admin/labels/managing-labels.html" target="_blank">Managing labels</a></li>
-</ul>
-    </section>
-
-</article>
-
-	</article>
+	{% include 'AdminInterfaceBundle:Labels:Common/list-section.html.twig' with {prefix: 'portal.feedback_labels', name: 'Feedback Labels'} %}
 {% endblock %}

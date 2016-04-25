@@ -84,6 +84,11 @@ define [
     datepickerPopupConfig.dateFormat = 'dd MMMM yyyy'
   ])
 
+  AdminModule.config(['ngClipProvider', (ngClipProvider) ->
+    ZeroClipboard.config({swfPath: window.DP_ZEROCLIPBOARD_PATH});
+    ngClipProvider.setPath(window.DP_ZEROCLIPBOARD_PATH)
+  ])
+
   AdminModule.run(['uiSelect2Config', (uiSelect2Config) ->
     uiSelect2Config.dropdownAutoWidth = true
   ])

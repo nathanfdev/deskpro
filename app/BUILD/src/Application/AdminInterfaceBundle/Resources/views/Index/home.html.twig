@@ -102,15 +102,14 @@
       <div style="margin-left: 50px;">
         <h3 style="margin-top: 8px;">
           <span style="display: inline-block; border-bottom: 2px dotted #f00;">
-            CRITICAL: Your config.php file is publicly readable
+            DANGER: Your web root contains DeskPRO source files
           </span>
         </h3>
         <p>
-          Your DeskPRO config.php file is publicly readable at the following URL:<br/>
-          <a ng-href="{{ ng_var('config_php_url') }}" target="_blank">{{ ng_var('config_php_url') }}</a>
+          Your web server is not configured properly. We have detected source files that are world-readable.
         </p>
         <p>
-          This is a CRITICAL vulnerability in the way your web server is configured. Your config.php file contains sensitive information such as your MySQL database details (including your password).
+          This is a CRITICAL vulnerability in the way your web server is configured. This could result in leaking of very important details such as your database host and password, log files and other sensitive information like emails or attachments.
         </p>
         <p>
           Do not ignore this notice. This requires IMMEDIATE attention from an administrator.

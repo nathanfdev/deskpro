@@ -478,6 +478,16 @@ class Sla extends DomainObject
      */
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
+        if ($this->apply_terms === null) {
+            $this->apply_terms = new TriggerTerms();
+        }
+        if ($this->warn_actions === null) {
+            $this->warn_actions = new TriggerActions();
+        }
+        if ($this->fail_actions === null) {
+            $this->fail_actions = new TriggerActions();
+        }
+
         $data                 = parent::toApiData($primary, $deep, $visited);
         $data['apply_terms']  = $this->apply_terms->exportToArray();
         $data['warn_actions'] = $this->warn_actions->exportToArray();

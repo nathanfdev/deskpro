@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -528,29 +528,33 @@ class SettingsController extends AbstractController implements ProtectedControll
         switch ($app) {
             case 'news':
                 $settings = array(
-                    'enabled'     => (bool) $this->settings->get('core.apps_news'),
-                    'tab_enabled' => (bool) $this->settings->get('user.portal_tab_news'),
+                    'enabled'       => (bool) $this->settings->get('core.apps_news'),
+                    'tab_enabled'   => (bool) $this->settings->get('user.portal_tab_news'),
+                    'subscriptions' => (bool) $this->settings->get('user.news_subscriptions'),
                 );
                 break;
 
             case 'kb':
                 $settings = array(
-                    'enabled'     => (bool) $this->settings->get('core.apps_kb'),
-                    'tab_enabled' => (bool) $this->settings->get('user.portal_tab_articles'),
+                    'enabled'       => (bool) $this->settings->get('core.apps_kb'),
+                    'tab_enabled'   => (bool) $this->settings->get('user.portal_tab_articles'),
+                    'subscriptions' => (bool) $this->settings->get('user.kb_subscriptions'),
                 );
                 break;
 
             case 'feedback':
                 $settings = array(
-                    'enabled'     => (bool) $this->settings->get('core.apps_feedback'),
-                    'tab_enabled' => (bool) $this->settings->get('user.portal_tab_feedback'),
+                    'enabled'       => (bool) $this->settings->get('core.apps_feedback'),
+                    'tab_enabled'   => (bool) $this->settings->get('user.portal_tab_feedback'),
+                    'subscriptions' => (bool) $this->settings->get('user.feedback_subscriptions'),
                 );
                 break;
 
             case 'downloads':
                 $settings = array(
-                    'enabled'     => (bool) $this->settings->get('core.apps_downloads'),
-                    'tab_enabled' => (bool) $this->settings->get('user.portal_tab_downloads'),
+                    'enabled'       => (bool) $this->settings->get('core.apps_downloads'),
+                    'tab_enabled'   => (bool) $this->settings->get('user.portal_tab_downloads'),
+                    'subscriptions' => (bool) $this->settings->get('user.downloads_subscriptions'),
                 );
                 break;
 
@@ -572,8 +576,9 @@ class SettingsController extends AbstractController implements ProtectedControll
         switch ($app) {
             case 'news':
                 $settings = array(
-                    'core.apps_news'       => $this->in->getBoolInt('settings.enabled'),
-                    'user.portal_tab_news' => (int) ($this->in->getBool('settings.enabled') && $this->in->getBool('settings.tab_enabled')),
+                    'core.apps_news'          => $this->in->getBoolInt('settings.enabled'),
+                    'user.portal_tab_news'    => (int) ($this->in->getBool('settings.enabled') && $this->in->getBool('settings.tab_enabled')),
+                    'user.news_subscriptions' => (int) $this->in->getBool('settings.subscriptions'),
                 );
                 break;
 
@@ -581,20 +586,23 @@ class SettingsController extends AbstractController implements ProtectedControll
                 $settings = array(
                     'core.apps_kb'             => $this->in->getBoolInt('settings.enabled'),
                     'user.portal_tab_articles' => (int) ($this->in->getBoolInt('settings.enabled') && $this->in->getBoolInt('settings.tab_enabled')),
+                    'user.kb_subscriptions'    => (int) $this->in->getBool('settings.subscriptions'),
                 );
                 break;
 
             case 'feedback':
                 $settings = array(
-                    'core.apps_feedback'       => $this->in->getBoolInt('settings.enabled'),
-                    'user.portal_tab_feedback' => (int) ($this->in->getBool('settings.enabled') && $this->in->getBool('settings.tab_enabled')),
+                    'core.apps_feedback'          => $this->in->getBoolInt('settings.enabled'),
+                    'user.portal_tab_feedback'    => (int) ($this->in->getBool('settings.enabled') && $this->in->getBool('settings.tab_enabled')),
+                    'user.feedback_subscriptions' => (int) $this->in->getBool('settings.subscriptions'),
                 );
                 break;
 
             case 'downloads':
                 $settings = array(
-                    'core.apps_downloads'       => $this->in->getBoolInt('settings.enabled'),
-                    'user.portal_tab_downloads' => (int) ($this->in->getBool('settings.enabled') && $this->in->getBool('settings.tab_enabled')),
+                    'core.apps_downloads'          => $this->in->getBoolInt('settings.enabled'),
+                    'user.portal_tab_downloads'    => (int) ($this->in->getBool('settings.enabled') && $this->in->getBool('settings.tab_enabled')),
+                    'user.downloads_subscriptions' => (int) $this->in->getBool('settings.subscriptions'),
                 );
                 break;
 

@@ -1,5 +1,19 @@
 {% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
 {% block listpane_content %}
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('portal.feedback_settings') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Feedback Settings</h3>
+		</a>
+	</section>
+
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('portal.feedback_statuses') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Feedback Statuses</h3>
+		</a>
+	</section>
+
 	<section class="dp-paneblock dp-listpane">
 		<header>
 			<nav>
@@ -22,6 +36,20 @@
 			</div>
 		</article>
 	</section>
+
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('portal.feedback_categories') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Feedback Categories</h3>
+		</a>
+	</section>
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('portal.feedback_labels') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Feedback Labels</h3>
+		</a>
+	</section>
+
 	<div dp-register-message="saved_settings">{{ phrase('adm.general.save_settings_success') }}</div>
 	<div dp-register-message="no_delete_last">{{ phrase('adm.feedback_types.no_delete_last') }}</div>
 {% endblock %}

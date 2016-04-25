@@ -130,7 +130,7 @@ define [
         @$timeout (=> @refreshAgents()), 60 * 1000
 
     loadConfigPhpTest: ->
-      checkUrl = DP_BASE_URL + 'config.php'
+      checkUrl = DP_BASE_URL + 'app/run/test_ping.html'
 
       @$scope.config_php_url = location.protocol+'//'+location.hostname+(if location.port then ':' + location.port else '')+checkUrl
 
@@ -141,7 +141,7 @@ define [
         cache: false
       }).success((res) =>
         return if not res or res.success
-        if typeof res is 'string' and res.indexOf('<?') != -1 and res.indexOf('define') != -1 and res.indexOf('DP_DATABASE_PASSWORD') != -1
+        if typeof res is 'string' and res.indexOf('<?') != -1 and res.indexOf('define') != -1 and res.indexOf('DESKPRO_PONG') != -1
           @$scope.readable_config = true
       )
 

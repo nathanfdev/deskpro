@@ -48,6 +48,7 @@ class CaptchaAntiAbuseType extends AbstractType
         $builder
             ->add('use_recaptcha2', ApiBooleanType::class)
             ->add('recaptcha2_site_key', TextType::class)
+            ->add('recaptcha2_secret_key', TextType::class)
             ->add('tickets', CaptchaSettingChoiceType::class)
             ->add('comments', CaptchaSettingChoiceType::class)
             ->add('feedback', CaptchaSettingChoiceType::class)

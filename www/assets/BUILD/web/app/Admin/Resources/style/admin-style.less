@@ -27,7 +27,7 @@ input[type="checkbox"], input[type="radio"] {
 }
 
 label {
-  font-weight: normal;
+	font-weight: normal;
 }
 
 p:last-of-type {
@@ -36,6 +36,9 @@ p:last-of-type {
 
 .dp-ping-flash {
 	display: none;
+  &.fa {
+    display: none;
+  }
 }
 
 .saved-ping {
@@ -4968,4 +4971,13 @@ input.invisible-copytext {
         bottom: 0;
         opacity: 0;
     }
+}
+
+.angular-ui-tree-handle {
+  cursor: pointer;
+}
+
+.angular-ui-tree-node.collapsed {
+  display: inline-block;
+  margin: 5px;
 }

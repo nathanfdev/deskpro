@@ -24,16 +24,20 @@
                                 <input type="radio" ng-model="settings.use_recaptcha2" value="1">
                                 <h4>Use reCAPTCHA (from Google)</h4>
                             </label>
-                            <span class="help-block">
-                                reCAPTCHA is a service operated by Google. reCAPTCHA uses advanced techniques to detect
-                                abusive users and it may be more effective than DeskPRO's built-in system.
-                            </span>
-                            <span class="help-block">
-                                To use reCAPTCHA, you must register for a free API key <a href="#">here</a>.
-                            </span>
-                            <span class="help-block">
-                                Api key: <input type="text" ng-model="settings.recaptcha2_site_key" />
-                            </span>
+                            <div ng-show="settings.use_recaptcha2 == 1">
+                                <span class="help-block">
+                                    reCAPTCHA is a service operated by Google. reCAPTCHA uses advanced techniques to detect
+                                    abusive users and it may be more effective than DeskPRO's built-in system.
+                                </span>
+                                <span class="help-block">
+                                    To use reCAPTCHA, you must register for a free API key <a href="https://www.google.com/recaptcha/admin" target="_blank">here</a>.
+                                </span>
+                                <span class="help-block">
+                                    Site Key: <input type="text" ng-model="settings.recaptcha2_site_key" />
+                                    &nbsp;&nbsp;&nbsp;
+                                    Secret Key: <input type="text" ng-model="settings.recaptcha2_secret_key" /><br/>
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -202,18 +202,18 @@
                             <div class="col-lg-12">
                                 <div class="inner-group" dp-error-class="form_props.show_ratings">
                                     <label>
-                                        <input type="checkbox" ng-model="show_ratings_opt" />
+                                        <input type="checkbox" ng-model="Ctrl.settings.show_ratings" />
                                         <h4>Show ratings publicly</h4>
                                     </label>
                                     <div ng-show="show_ratings_opt">
                                         Show ratings publicly in the portal after there have been
-                                        <input type="number" name="show_ratings" class="form-control" ng-model="settings.show_ratings"
+                                        <input type="number" name="show_ratings" class="form-control" ng-model="Ctrl.settings.show_ratings_min_votes"
                                                style="width: 80px;" required min="0" /> votes.
                                     </div>
                                 </div>
                                 <div class="inner-group">
                                     <label>
-                                        <input type="checkbox" ng-model="settings.publish_comments" />
+                                        <input type="checkbox" ng-model="Ctrl.settings.publish_comments" />
                                         <h4>Enable comments on published content</h4>
                                     </label>
 								<span class="help-block">
@@ -225,38 +225,6 @@
                     </div>
                 </article>
             </div>
-
-            {##################################################################################################}
-
-            <div class="content-section" ng-hide="Ctrl.settings.portal_mode != 'publish'">
-                <h2 class="with-divider form-header"><span>User Notifications</span></h2>
-
-                <article class="form-horizontal dp-form">
-                    <div class="panel panel-innertable">
-                        <div class="form-group">
-                            <div class="inner-group">
-                                <label>
-                                    <input type="checkbox" ng-model="settings.feedback_notify_comments" />
-                                    <h4>Notify users when feedback is updated</h4>
-                                </label>
-							<span class="help-block">
-								When enabled, any user who participated in a feedback discussion will be notified when it is updated (new replies or status changes).
-							</span>
-                            </div>
-                            <div class="inner-group">
-                                <label>
-                                    <input type="checkbox" ng-model="settings.kb_subscriptions" />
-                                    <h4>Enable knowledgebase subscriptions</h4>
-                                </label>
-							<span class="help-block">
-								When enabled, users can subscribe to knowledgebase categories or specific articles so they can be notified of updates.
-							</span>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-            </div>
-
 
             {##########################################################################################################}
 

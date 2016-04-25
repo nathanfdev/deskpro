@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,29 +29,139 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Security\Firewall;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\AppBundle\Security\DpTransferSessionAuthToken;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Http\Firewall\AbstractAuthenticationListener;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerInterface;
+use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\Security\Http\Firewall\ListenerInterface;
+use Symfony\Component\Security\Http\HttpUtils;
+use Symfony\Component\Security\Http\SecurityEvents;
+use Symfony\Component\Security\Http\Session\SessionAuthenticationStrategyInterface;
 
 /**
  * Handles a session transfer. If you are not logged into portal but you are logged into admin area, for ex,
  * it will detect that (the detection actually occurs in DpAuthListener) and then it will do what it needs
  * to do to transfer the session and authentcate you in the portal.
  */
-class DpTransferSessionAuthListener extends AbstractAuthenticationListener implements ContainerAwareInterface
+class DpTransferSessionAuthListener implements ListenerInterface
 {
     /**
-     * @var ContainerInterface
+     * @var LoggerInterface
      */
-    protected $container;
+    private $logger;
+
+    /**
+     * @var AuthenticationManagerInterface
+     */
+    private $authenticationManager;
+
+    /**
+     * @var TokenStorageInterface
+     */
+    private $tokenStorage;
+
+    /**
+     * @var SessionAuthenticationStrategyInterface
+     */
+    private $sessionStrategy;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $dispatcher;
+
+    /**
+     * DpTransferSessionAuthListener constructor.
+     *
+     * Note: These are the same constructor args used by AbstractAuthenticationListener.
+     * This is just so we don't need to fuss around with a custom SecurityFactoryInterface, we can use the default.
+     *
+     * And we don't simply extend AbstractAuthenticationListener because we need a custom handle() (which is marked final in that class).
+     * We need a custom handle() because we want to transparently transfer the session without causing an annoying redirect.
+     *
+     * @param TokenStorageInterface                  $tokenStorage
+     * @param AuthenticationManagerInterface         $authenticationManager
+     * @param SessionAuthenticationStrategyInterface $sessionStrategy
+     * @param HttpUtils                              $httpUtils
+     * @param                                        $providerKey
+     * @param AuthenticationSuccessHandlerInterface  $successHandler
+     * @param AuthenticationFailureHandlerInterface  $failureHandler
+     * @param array                                  $options
+     * @param LoggerInterface|null                   $logger
+     * @param EventDispatcherInterface|null          $dispatcher
+     */
+    public function __construct(
+        TokenStorageInterface $tokenStorage,
+        AuthenticationManagerInterface $authenticationManager,
+        SessionAuthenticationStrategyInterface $sessionStrategy,
+        HttpUtils $httpUtils,
+        $providerKey,
+        AuthenticationSuccessHandlerInterface $successHandler,
+        AuthenticationFailureHandlerInterface $failureHandler,
+        array $options = array(),
+        LoggerInterface $logger = null,
+        EventDispatcherInterface $dispatcher = null
+    ) {
+        $this->tokenStorage          = $tokenStorage;
+        $this->authenticationManager = $authenticationManager;
+        $this->sessionStrategy       = $sessionStrategy;
+        $this->logger                = $logger;
+        $this->dispatcher            = $dispatcher;
+    }
+
+    /**
+     * Carries an agent session over to portal.
+     *
+     * @param GetResponseEvent $event A GetResponseEvent instance
+     */
+    public function handle(GetResponseEvent $event)
+    {
+        if (null !== $this->tokenStorage->getToken()) {
+            return;
+        }
+
+        $request = $event->getRequest();
+
+        if (!$this->requiresAuthentication($request)) {
+            return;
+        }
+
+        try {
+            $token = $this->attemptAuthentication($request);
+        } catch (\Exception $e) {
+            $token = null;
+        }
+
+        if ($token) {
+            $this->tokenStorage->setToken($token);
+
+            if (null !== $this->dispatcher) {
+                $loginEvent = new InteractiveLoginEvent($request, $token);
+                $this->dispatcher->dispatch(SecurityEvents::INTERACTIVE_LOGIN, $loginEvent);
+            }
+
+            if ($request->hasSession() && $request->getSession()->isStarted()) {
+                $this->sessionStrategy->onAuthentication($request, $token);
+            }
+
+            if (null !== $this->logger) {
+                $this->logger->debug('Populated the token storage with a DpTransferSessionAuthToken');
+            }
+        }
+    }
 
     protected function requiresAuthentication(Request $request)
     {
@@ -69,7 +179,7 @@ class DpTransferSessionAuthListener extends AbstractAuthenticationListener imple
             return false;
         }
 
-        if ($session_id = $this->checkAgentInterfaceAuthNeedsTransfer($request)) {
+        if ($this->checkAgentInterfaceAuthNeedsTransfer($request)) {
             return true;
         }
 
@@ -118,33 +228,22 @@ class DpTransferSessionAuthListener extends AbstractAuthenticationListener imple
         return false;
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return DpTransferSessionAuthToken|null|TokenInterface
+     */
     protected function attemptAuthentication(Request $request)
     {
-        $tokenOrResponse = null;
+        $token = null;
 
-        if ($session_id = $this->checkAgentInterfaceAuthNeedsTransfer($request)) {
+        if ($sessionId = $this->checkAgentInterfaceAuthNeedsTransfer($request)) {
             // transfer a login from agent/admin/reporting to portal
-            $tokenOrResponse = new DpTransferSessionAuthToken(null, $session_id);
+            $token = new DpTransferSessionAuthToken(null, $sessionId);
         }
 
-        if ($tokenOrResponse instanceof Response) {
-            return $tokenOrResponse;
-        }
-
-        $r = $this->authenticationManager->authenticate($tokenOrResponse);
+        $r = $this->authenticationManager->authenticate($token);
 
         return $r;
-    }
-
-    /**
-     * Sets the Container.
-     *
-     * @param ContainerInterface|null $container A ContainerInterface instance or null
-     *
-     * @api
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
     }
 }
