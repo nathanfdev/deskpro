@@ -28,8 +28,10 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Sideload;
 
+use Application\DeskPRO\Entity\Person;
 use JMS\Serializer\SerializationContext;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Class SideloadSerializationContext.
@@ -57,16 +59,24 @@ class SideloadSerializationContext extends SerializationContext
     protected $mapping = [];
 
     /**
+     * @var TokenStorageInterface
+     */
+    protected $tokenStorage;
+
+    /**
      * SideloadSerializationContext constructor.
      *
-     * @param SideloadStore $sideload_store
-     * @param array         $includes
+     * @param SideloadStore         $sideload_store
+     * @param array                 $includes
+     * @param TokenStorageInterface $tokenStorage
      */
-    public function __construct(SideloadStore $sideload_store, array $includes)
+    public function __construct(SideloadStore $sideload_store, array $includes, TokenStorageInterface $tokenStorage)
     {
         parent::__construct();
+
         $this->sideload_store = $sideload_store;
         $this->includes       = $includes;
+        $this->tokenStorage   = $tokenStorage;
     }
 
     /**
@@ -79,7 +89,7 @@ class SideloadSerializationContext extends SerializationContext
         $raw_includes   = $container->get('request_stack')->getMasterRequest()->query->get('include');
         $sideload_store = new SideloadStore();
 
-        return new self($sideload_store, self::cleanIncludes($raw_includes));
+        return new self($sideload_store, self::cleanIncludes($raw_includes), $container->get('security.token_storage'));
     }
 
     /**
@@ -154,6 +164,14 @@ class SideloadSerializationContext extends SerializationContext
         $this->mapping = $mapping;
 
         return $this;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getUser()
+    {
+        return $this->tokenStorage->getToken()->getUser();
     }
 
     /**

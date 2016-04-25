@@ -92,7 +92,7 @@ class TicketHandler extends AbstractEntityHandler
         $sideloads->addCustomSideload(
             'ticket_excerpt',
             $entity->getId(),
-            new CallbackDeferredProperty([$this, 'getExcerpt'], [$entity])
+            new CallbackDeferredProperty([$this, 'getExcerpt'], [$entity, $context])
         );
 
         return parent::serialize($visitor, $entity, $type, $context);
@@ -121,15 +121,16 @@ class TicketHandler extends AbstractEntityHandler
     }
 
     /**
-     * @param TicketEntity $entity
+     * @param TicketEntity                 $entity
+     * @param SideloadSerializationContext $context
      *
      * @return array
      */
-    public function getExcerpt(TicketEntity $entity)
+    public function getExcerpt(TicketEntity $entity, SideloadSerializationContext $context)
     {
         /** @var \Application\DeskPRO\EntityRepository\TicketMessage $repo */
         $repo    = $this->em->getRepository(TicketMessage::class);
-        $message = $repo->getLastReply($entity);
+        $message = $repo->getLastReply($entity, $context->getUser()->isAgent());
 
         if (!$message) {
             return;
