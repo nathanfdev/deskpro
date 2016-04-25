@@ -49,7 +49,7 @@ class DpFormLoginToken extends AbstractToken
      * @param string                             $credentials
      * @param array                              $roles
      */
-    public function __construct(Person $user, $credentials, array $roles = [])
+    public function __construct($user, $credentials, array $roles = [])
     {
         parent::__construct($roles);
 
