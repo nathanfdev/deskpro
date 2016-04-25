@@ -328,6 +328,17 @@ class FeedbackController extends AbstractController
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildFeedback();
 
         //
+        // SUBSCRIPTION
+        //
+        $isSubscribed = false;
+        if (
+        $this->getBrandSetting('user.feedback_subscriptions', false)
+        ) {
+            // waiting info regarding article category subscriptions
+            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('feedback', $this->getUser());
+        }
+
+        //
         // FILTER CATEGORIES
         //
         $feedback_types = $this->get('data.feedback')->getFeedbackCategoriesForPerson($person);
@@ -347,6 +358,7 @@ class FeedbackController extends AbstractController
             'page_title'        => $this->createPageTitle()->feedback(),
             'filter_js'         => $filter_js,
             'rerendering_saved' => false, // wont happen here because we always rerender on index
+            'is_subscribed'     => $isSubscribed,
         ];
 
         if ($request->isXmlHttpRequest()) {
