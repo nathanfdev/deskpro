@@ -96,7 +96,7 @@ install:
                 path: ../sys/Kernel/InstallKernel.php
                 class: DpSys\Kernel\InstallKernel
                 env: test
-                debug: true
+                debug: false
 
 portal:
     suites:
@@ -140,7 +140,7 @@ portal:
                 path: ../sys/Kernel/PortalKernel.php
                 class: DpSys\Kernel\PortalKernel
                 env: test
-                debug: true
+                debug: false
         SensioLabs\Behat\PageObjectExtension:
             namespaces:
                 page: DpBehat\Portal\Page
