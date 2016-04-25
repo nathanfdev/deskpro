@@ -78,8 +78,6 @@ Feature: /agent_teams endpoint
     When I send a GET request to "/api/v2/agent_teams/1/agents"
     Then the response should be in JSON
     And the JSON node "data" should have 2 elements
-    And the JSON node "data[0].primary_email" should be equal to "admin@deskpro.dev"
-    And the JSON node "data[1].primary_email" should be equal to "agent@deskpro.dev"
 
     When I send a PUT request to "/api/v2/agent_teams/1" with body:
     """

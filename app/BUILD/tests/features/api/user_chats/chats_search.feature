@@ -46,11 +46,11 @@ Feature: /user_chats endpoint search (GET)
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "meta.pagination" should exist
-    And the JSON node "meta.pagination.count" should be equal to 2
+    And the JSON node "meta.pagination.count" should be equal to 5
     And the JSON node "meta.pagination.current_page" should be equal to 1
     And the JSON node "meta.pagination.total_pages" should be equal to 1
-    And the JSON node "meta.pagination.total" should be equal to 2
-    And the JSON node "data[0].subject" should be equal to "Test chat 3"
+    And the JSON node "meta.pagination.total" should be equal to 5
+    And the JSON node "data[0].subject" should be equal to "Test chat 5"
 
   Scenario: I search for chats specifying date_period, agent and department
     When I send a GET request to "/api/v2/user_chats?date_period=ever&agent=1&department=1"

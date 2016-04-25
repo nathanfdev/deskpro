@@ -63,6 +63,7 @@ Feature: Guests can submit new tickets
     Then the url should match "/thank-you/[a-zA-Z0-9\-]+"
     And I should see a success flash message with the phrase "portal.flashes.ticket_created"
 
+  @reinstall
   Scenario: Submitting a VALID FORM but needing to validate email before submitting
     Given the setting "core_tickets.web_require_validation" is set to "1"
     And I go to "/new-ticket"
