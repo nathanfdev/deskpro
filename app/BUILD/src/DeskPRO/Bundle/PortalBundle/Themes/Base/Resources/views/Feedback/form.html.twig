@@ -14,11 +14,11 @@
 <div class="feedback-form-expanded as-no-dpui dpx-form"{% if form_was_submitted %} data-do-show="true"{% endif %}>
     {% if is_user() %}
         <div>
-            <a class="user-logged-in" href="#">
-                <i class="fa fa-user"></i> {{ phrase('portal.feedback.form_logged_in_as') }}:
-                <span>{{ user.name }}</span>, {{ phrase('portal.feedback.form_from_email') }}
-                <span>{{ user.primary_email_address }}</span>
-            </a>
+            <div class="user-logged-in" href="#">
+                <i class="fa fa-user"></i> {{ phrase('portal.feedback.form_logged_in_as',
+                {'name': user.name, 'email': user.primary_email_address}) }}
+                <a href="{{ logout_path('portal') }}">{{ phrase('portal.feedback.form_logout') }}</a>
+            </div>
         </div>
     {% endif %}
 
