@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -95,6 +95,15 @@ class GenericContext extends BasePortalContext
     {
         $this->assertSession()->elementExists('css', '.error-large');
         $this->assertSession()->elementTextContains('css', '.error-large', $message);
+    }
+
+    /**
+     * @Then I should see a form error list with the phrase :phrase
+     */
+    public function iShouldSeeAFormErrorListWith($phrase)
+    {
+        $this->assertSession()->elementExists('css', '.form-error-list');
+        $this->assertSession()->elementTextContains('css', '.form-error-list li span', $this->phrase($phrase));
     }
 
     /**
