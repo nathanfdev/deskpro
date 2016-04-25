@@ -39,5 +39,5 @@ Feature: /tickets endpoint
 
   Scenario: I check excerpt
     When I send a GET request to "/api/v2/tickets/5?include=ticket_excerpt"
-    Then the JSON node "linked.ticket_excerpt.5.message_id" should be equal to "Note"
-    And the JSON node "linked.ticket_excerpt.5.excerpt" should be equal to "2"
+    Then the JSON node "linked.ticket_excerpt.5.message_id" should be equal to "2"
+    And the JSON node "linked.ticket_excerpt.5.excerpt" should be equal to "Note"
