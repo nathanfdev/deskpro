@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,40 +26,36 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace spec\DeskPRO\Bundle\AppBundle\Entity;
+namespace DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\Chat;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
-use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
-use PhpSpec\ObjectBehavior;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 
 /**
- * @mixin AgentChatMessage
+ * Class AgentChatVoter.
  */
-class AgentChatMessageSpec extends ObjectBehavior
+class AgentChatVoter extends AbstractAgentChatVoter
 {
-    public function it_is_returns_chat_it_belongs_to(AgentChat $chat)
+    /**
+     * {@inheritdoc}
+     */
+    public static function getEntityClass()
     {
-        $this->setChat($chat);
-        $this->getChat()->shouldBeEqualTo($chat);
+        return AgentChat::class;
     }
-    public function it_work_propper_with_its_setter_and_getters(Person $badSanta, AgentChat $chat)
+
+    /**
+     * {@inheritdoc}
+     */
+    public function voteOnAttributeForAgent($attribute, PermissionGroupContext $context, Person $user)
     {
-        $metadata = array(
-            'key1' => 'value1',
-            'key2' => 'value2',
-        );
-        $badSanta->getDisplayName()->willReturn('Billy Bob Thornton');
-        $this->setChat($chat);
-        $this->setMetadata($metadata);
-        $this->setMessage('test');
-        $this->setPerson($badSanta);
-        $this->getMetadata()->shouldBeArray();
-        $this->getMetadata()->shouldBeEqualTo($metadata);
-        $this->getPerson()->shouldBeEqualTo($badSanta);
-        $this->getPersonName()->shouldBeEqualTo('Billy Bob Thornton');
+        /** @var AgentChat $agentChat */
+        $agentChat = $context->getParent();
+        if ($agentChat) {
+            return $this->isPersonInvolved($agentChat, $user);
+        }
+
+        return true;
     }
 }

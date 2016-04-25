@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,44 +26,54 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\Form\Type\AgentChat;
 
-use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class MessageType.
+ * Class AgentMarkMessageType.
  */
-class MessageType extends AbstractType
+class AgentMarkMessageType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'api_agent_chat_message';
-    }
-
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('message', 'html_textarea')
-            ->add('uuid', 'text')
+            ->add('ids', EntityType::class, [
+                'class'         => AgentChatMessage::class,
+                'multiple'      => true,
+                'query_builder' => function (EntityRepository $er) use ($options) {
+                    return $er
+                        ->createQueryBuilder('u')
+                        ->where('u.chat = :chat')
+                        ->setParameter('chat', $options['chat'])
+                    ;
+                },
+                'constraints' => [
+                    new Assert\Count(['min' => 1]),
+                ],
+            ])
+            ->add('status', ChoiceType::class, [
+                'choices' => [
+                    AgentChatMessage::STATUS_DELIVERED,
+                    AgentChatMessage::STATUS_READ,
+                ],
+                'choices_as_values' => true,
+                'constraints'       => [
+                    new Assert\NotNull(),
+                ],
+            ])
         ;
-
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations'], 100);
     }
 
     /**
@@ -72,36 +82,10 @@ class MessageType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver
-            ->setDefaults([
-                'data_class'                    => 'DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage',
-                'csrf_protection'               => false,
-                'csrf_double_submit_protection' => false,
-                'person'                        => null,
-                'chat'                          => null,
-            ])
+            ->setRequired(['chat'])
             ->setAllowedTypes([
-                'person' => 'Application\\DeskPRO\\Entity\\Person',
-                'chat'   => 'DeskPRO\\Bundle\\AppBundle\\Entity\\AgentChat',
+                'chat' => AgentChat::class,
             ])
         ;
-    }
-
-    /**
-     * @param FormEvent $event
-     */
-    public function onSetRelations(FormEvent $event)
-    {
-        $form   = $event->getForm();
-        $config = $form->getConfig();
-
-        /** @var AgentChatMessage $message */
-        $message = $form->getData();
-        /** @var AgentChat $chat */
-        $chat = $config->getOption('chat');
-        /** @var Person $person */
-        $person = $config->getOption('person');
-
-        $message->setPerson($person);
-        $chat->addMessage($message);
     }
 }

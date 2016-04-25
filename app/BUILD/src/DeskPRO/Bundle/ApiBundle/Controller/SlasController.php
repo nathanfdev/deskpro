@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Sla;
@@ -60,12 +57,11 @@ class SlasController extends CrudController
      *     description="get SLAs collection",
      *     statusCodes={
      *         200="Returned if everything is OK",
-     *     },
-     *     output="array<Application\DeskPRO\Entity\Sla>"
+     *     }
      * )
      *
      * @param Request $request
-     * @Rest\Get("", name="slas_list")
+     * @Rest\Get("")
      * @Rest\View(serializerGroups={"Default"})
      *
      * @return View
@@ -91,15 +87,14 @@ class SlasController extends CrudController
      *      },
      *     statusCodes={
      *         200="Returned if everything is OK",
-     *     },
-     *     output="Application\DeskPRO\Entity\Sla"
+     *     }
      * )
      *
      * @param Request $request
      * @param int     $id
      *
      * @return View
-     * @Rest\Get("/{id}", name="sla_view", requirements={"id": "\d+"})
+     * @Rest\Get("/{id}", requirements={"id": "\d+"})
      * @Rest\View(serializerGroups={"Default", "details"})
      */
     public function getAction(Request $request, $id)

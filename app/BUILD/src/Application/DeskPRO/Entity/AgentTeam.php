@@ -38,7 +38,6 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Avatar\AvatarOwner;
-use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
 use DeskPRO\Bundle\AppBundle\Entity\PersonList;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -57,7 +56,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
  *
  * @JMS\ExclusionPolicy("ALL")
  */
-class AgentTeam extends DomainObject implements PersonList, Chatable, AvatarOwner
+class AgentTeam extends DomainObject implements PersonList, AvatarOwner
 {
     /**
      * The unique ID.
@@ -167,14 +166,6 @@ class AgentTeam extends DomainObject implements PersonList, Chatable, AvatarOwne
     public function hasMember(Person $person)
     {
         return $this->members->matching(new Criteria(Criteria::expr()->eq('id', $person->getId())))->count() > 0;
-    }
-
-    /**
-     * @return int
-     */
-    public function getChatableType()
-    {
-        return Chatable::PARTICIPANT_TYPE_TEAM;
     }
 
     /**

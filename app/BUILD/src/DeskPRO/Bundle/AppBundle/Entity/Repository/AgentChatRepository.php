@@ -31,12 +31,20 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Person as PersonEntity;
+use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat as AgentChatEntity;
 use Doctrine\ORM\EntityRepository;
 
+/**
+ * Class AgentChatRepository.
+ */
 class AgentChatRepository extends EntityRepository
 {
     /**
@@ -49,84 +57,93 @@ class AgentChatRepository extends EntityRepository
     }
 
     /**
-     * @param int $agent_id
-     * @param int $my_id
+     * @param Person $agent
+     * @param Person $me
      *
-     * @return mixed
+     * @return AgentChat
      */
-    public function findChatWithAgent($agent_id, $my_id)
+    public function findChatWithAgent(Person $agent, Person $me)
     {
         $qb = $this->createQueryBuilder('ac');
-        $qb->innerJoin('App:AgentChatParticipant', 'acp', 'WITH', 'ac.id = acp.chat')
+        $qb
+            ->innerJoin('App:AgentChatParticipant', 'acp', 'WITH', 'ac.id = acp.chat')
             ->innerJoin('App:AgentChatParticipant', 'acp2', 'WITH', 'ac.id = acp.chat')
-            ->andWhere('acp.person = :agent_id')
-            ->andWhere('acp2.person = :my_id')
+            ->andWhere('acp.person = :agent')
+            ->andWhere('acp2.person = :me')
             ->andWhere('ac.type = :type')
-            ->setParameter('agent_id', $agent_id)
-            ->setParameter('my_id', $my_id)
-            ->setParameter('type', 'agent');
+            ->setParameter('agent', $agent)
+            ->setParameter('me', $me)
+            ->setParameter('type', 'agent')
+            ->setMaxResults(1)
+        ;
 
-        $results = $qb->getQuery()->getResult();
-
-        return $results;
+        return $qb->getQuery()->getOneOrNullResult();
     }
 
     /**
-     * @param int $team_id
+     * @param AgentTeam $team
      *
-     * @return mixed
+     * @return AgentChat
      */
-    public function findTeamChat($team_id)
+    public function findTeamChat(AgentTeam $team)
     {
         $qb = $this->createQueryBuilder('ac');
-        $qb->innerJoin('App:AgentChatParticipant', 'acp', 'WITH', 'ac.id = acp.chat')
+        $qb
+            ->innerJoin('App:AgentChatParticipant', 'acp', 'WITH', 'ac.id = acp.chat')
             ->andWhere('acp.team = :team_id')
             ->andWhere('ac.type = :type')
-            ->setParameter('team_id', $team_id)
-            ->setParameter('type', 'team');
+            ->setParameter('team_id', $team)
+            ->setParameter('type', 'team')
+            ->setMaxResults(1)
+        ;
 
-        $results = $qb->getQuery()->getResult();
-
-        return $results;
+        return $qb->getQuery()->getOneOrNullResult();
     }
 
     /**
-     * @param int $department_id
+     * @param Department $department
      *
-     * @return mixed
+     * @return AgentChat
      */
-    public function findDepartmentChat($department_id)
+    public function findDepartmentChat(Department $department)
     {
         $qb = $this->createQueryBuilder('ac');
-        $qb->innerJoin('App:AgentChatParticipant', 'acp', 'WITH', 'ac.id = acp.chat')
+        $qb
+            ->innerJoin('App:AgentChatParticipant', 'acp', 'WITH', 'ac.id = acp.chat')
             ->andWhere('acp.department = :department_id')
             ->andWhere('ac.type = :type')
-            ->setParameter('department_id', $department_id)
-            ->setParameter('type', 'department');
+            ->setParameter('department_id', $department)
+            ->setParameter('type', 'department')
+            ->setMaxResults(1)
+        ;
 
-        $results = $qb->getQuery()->getResult();
-
-        return $results;
+        return $qb->getQuery()->getOneOrNullResult();
     }
 
+    /**
+     * @return AgentChat
+     */
     public function findEveryoneChat()
     {
         $qb = $this->createQueryBuilder('ac');
-        $qb->andWhere('ac.type = :type')
-            ->setParameter('type', 'everyone');
+        $qb
+            ->andWhere('ac.type = :type')
+            ->setParameter('type', 'everyone')
+            ->setMaxResults(1)
+        ;
 
-        $results = $qb->getQuery()->getResult();
-
-        return $results;
+        return $qb->getQuery()->getOneOrNullResult();
     }
 
     public function findAllChats(array $ids, array $order)
     {
         $qb = $this->createQueryBuilder('ac');
-        $qb->andWhere('ac.id IN (:ids)')
+        $qb
+            ->andWhere('ac.id IN (:ids)')
             ->orWhere('ac.type = :type')
             ->setParameter('ids', $ids)
-            ->setParameter('type', 'everyone');
+            ->setParameter('type', 'everyone')
+        ;
 
         foreach ($order as $sort => $direction) {
             $qb->addOrderBy('ac.'.$sort, $direction);

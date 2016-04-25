@@ -26,40 +26,46 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AppBundle\AgentChat\Search;
+namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert;
 
-use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\HistorySearcher;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
-use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChatMessageRepository;
-use Doctrine\ORM\EntityManager;
+use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\AbstractMessageEvent;
+use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\AbstractGenerator;
 
-class Doctrine implements HistorySearcher
+/**
+ * Class AbstractAgentChatMessageGenerator.
+ */
+abstract class AbstractAgentChatMessageGenerator extends AbstractGenerator
 {
     /**
-     * @var EntityManager
+     * @param AbstractMessageEvent $event
+     *
+     * @return Person[]
      */
-    protected $em;
-
-    public function __construct(EntityManager $em)
+    protected function getTargets(AbstractMessageEvent $event)
     {
-        $this->em = $em;
+        $chat = $this->getChatMessage($event)->getChat();
+        if ($chat->getType() === AgentChat::TYPE_EVERYONE) {
+            return $this->em->getRepository(Person::class)->findBy(['is_agent' => true]);
+        }
+
+        return $chat->getPersonList();
     }
 
     /**
-     * @param AgentChat $chat
-     * @param string    $searchString
+     * @param AbstractMessageEvent $event
      *
-     * @return array
+     * @return AgentChatMessage
      */
-    public function searchInChat(AgentChat $chat, $searchString)
+    protected function getChatMessage(AbstractMessageEvent $event)
     {
-        /** @var AgentChatMessageRepository $repo */
-        $repo = $this->em->getRepository(AgentChatMessage::class);
+        $message = $this->em->getRepository(AgentChatMessage::class)->findOneBy(['id' => $event->getMessageId()]);
+        if (!$message) {
+            throw new \InvalidArgumentException(sprintf('No message with id [ %s ] was found!', $event->getMessageId()));
+        }
 
-        return $repo->searchString($chat, $searchString);
+        return $message;
     }
 }

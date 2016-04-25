@@ -132,8 +132,20 @@ services:
     tags:
       - { name: security.voter.permission_groups }
 
-  security.voter.permission_groups.chat:
-    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\ChatVoter
+  security.voter.permission_groups.user_chats:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\Chat\UserChatVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
+  security.voter.permission_groups.agent_chats:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\Chat\AgentChatVoter
+    arguments: ["@data.departments"]
+    tags:
+      - { name: security.voter.permission_groups }
+
+  security.voter.permission_groups.agent_chat_messages:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\Chat\AgentChatMessageVoter
+    arguments: ["@data.departments"]
     tags:
       - { name: security.voter.permission_groups }
 

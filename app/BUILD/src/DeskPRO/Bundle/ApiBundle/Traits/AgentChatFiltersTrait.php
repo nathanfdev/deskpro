@@ -26,54 +26,40 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AppBundle\AgentChat;
+namespace DeskPRO\Bundle\ApiBundle\Traits;
 
-use DeskPRO\Bundle\AppBundle\Serializer\Model\AgentChat\MessageCount;
+use Application\DeskPRO\Entity\Person;
+use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class Helper.
+ * Trait AgentChatTrait.
+ *
+ * @method Person getUser()
+ *
+ * @property ContainerInterface $container
  */
-class Helper
+trait AgentChatFiltersTrait
 {
     /**
-     * @var Messenger
+     * @param QueryBuilder $qb
+     * @param string       $alias
      */
-    protected $messenger;
-
-    /**
-     * @param Messenger $messenger
-     */
-    public function __construct(Messenger $messenger)
+    public function applyParticipantFilters(QueryBuilder $qb, $alias)
     {
-        $this->messenger = $messenger;
-    }
+        $person      = $this->getUser();
+        $departments = $this->container->get('data.departments')->getChatDepartmentsForPerson($person);
 
-    /**
-     * @param array $count
-     *
-     * @return array
-     */
-    public function createCountResponse(array $count)
-    {
-        /** @var MessageCount[] $data */
-        $data = [];
-        foreach ($count as $cnt) {
-            $message_count = new MessageCount();
-            $message_count->setChatId($cnt['chat_id']);
-            $message_count->setCnt($cnt['chat_id']);
-            $data[$cnt['chat_id']] = $message_count;
-        }
-        $chat_ids = array_keys($data);
-
-        // this looks like very, VERY dirty hack. Smells :(
-        $chats = $this->messenger->getChats($chat_ids);
-        foreach ($chats as $chat) {
-            $data[$chat->getId()]->setChat($chat);
-        }
-
-        return $data;
+        $qb
+            ->leftJoin("$alias.participants", 'participants')
+            ->andWhere($qb->expr()->orX(
+                'participants.person = :person',
+                'participants.team IN (:agent_teams)',
+                'participants.department IN (:departments)'
+            ))
+            ->setParameter('person', $person)
+            ->setParameter('agent_teams', $person->getTeams())
+            ->setParameter('departments', $departments)
+        ;
     }
 }

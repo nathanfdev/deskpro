@@ -7,11 +7,11 @@ import { replaceSmileCodes } from 'DeskPRO/Component/Rte/Emotions';
 export class Message extends React.Component {
 
   static propTypes = {
-    current: PropTypes.number.isRequired,
-    size: PropTypes.number.isRequired,
-    me: PropTypes.object.isRequired,
-    agents: PropTypes.object.isRequired,
-    message: PropTypes.object.isRequired,
+    current:         PropTypes.number.isRequired,
+    size:            PropTypes.number.isRequired,
+    me:              PropTypes.object.isRequired,
+    agents:          PropTypes.object.isRequired,
+    message:         PropTypes.object.isRequired,
     previousMessage: PropTypes.object.isRequired
   };
 
@@ -41,7 +41,7 @@ export class Message extends React.Component {
     return (
       <li className="chat-divider">
         <span>{fromNow + ' ' + date.format('MMM. D')}</span>
-        <hr/>
+        <hr />
       </li>
     );
   }
@@ -54,10 +54,13 @@ export class Message extends React.Component {
     return (
       <li className={className}>
         <div className="message-read-mark">
-          {(this.props.message.status > 0) ? <i className="fa fa-check"></i> : null}
-          {(this.props.message.status > 1) ? <i className="fa fa-check"></i> : null}
+          {this.props.message.status > 0 && <i className="fa fa-check" />}
+          {this.props.message.status > 1 && <i className="fa fa-check" />}
         </div>
-        <span className="time"><TimeAgo date={this.props.message.timestamp * 1000}/> <i className="fa fa-clock-o"></i></span>
+        <span className="time">
+          <TimeAgo date={this.props.message.timestamp * 1000} />
+          <i className="fa fa-clock-o" />
+        </span>
         <div className="message-content" dangerouslySetInnerHTML={this.getMessage()}></div>
       </li>
     );
@@ -72,9 +75,12 @@ export class Message extends React.Component {
     return (
       <li className={className}>
         <a title={this.props.message.person_name} className="chat-avatar">
-          <PersonAvatar person={author} size="22"/>
+          <PersonAvatar person={author} size="22" />
         </a>
-        <span className="time"><TimeAgo date={this.props.message.date_created}/> <i className="fa fa-clock-o"></i></span>
+        <span className="time">
+          <TimeAgo date={this.props.message.date_created} />
+          <i className="fa fa-clock-o" />
+        </span>
         <div className="message-content" dangerouslySetInnerHTML={this.getMessage()}></div>
       </li>
     );

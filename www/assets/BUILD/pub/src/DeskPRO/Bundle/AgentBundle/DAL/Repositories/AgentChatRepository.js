@@ -11,7 +11,12 @@ export class AgentChatRepository extends ApiRepository {
    * @returns {Promise} promise
    */
   startChat(entityId, type) {
-    return this.api.sendPost(`DP_API/${this.url}/start?follow_redirect`, {type: type, id: entityId});
+    const params = { type };
+    if (Number(entityId)) {
+      params.participant = entityId;
+    }
+
+    return this.api.sendPost(`DP_API/${this.url}?follow_redirect`, params);
   }
 
   /**
@@ -22,7 +27,7 @@ export class AgentChatRepository extends ApiRepository {
    * @returns {Promise} promise
    */
   loadMessages(chatId, search = '', page = 1, order = 'date_created') {
-    return this.api.sendGet(`DP_API/${this.url}/${chatId}/messages?` + this.compileParams({search, page, order}));
+    return this.api.sendGet(`DP_API/${this.url}/${chatId}/messages?` + this.compileParams({ search, page, order }));
   }
 
   /**
@@ -32,22 +37,23 @@ export class AgentChatRepository extends ApiRepository {
    * @returns {Promise} promise
    */
   addMessage(chatId, message, uuid) {
-    return this.api.sendPost(`DP_API/${this.url}/${chatId}/messages`, {message, uuid});
+    return this.api.sendPost(`DP_API/${this.url}/${chatId}/messages`, { message, uuid });
   }
 
   /**
    * @returns {Promise} promise
    */
   loadMessagesCount() {
-    return this.api.sendGet(`DP_API/${this.url}/messages/count`);
+    return this.api.sendGet(`DP_API/${this.url}/messages/counts`);
   }
 
   /**
+   * @param {integer} chatId Chat identity
    * @param {integer[]} ids message ids to mark as status
    * @param {integer} status Message status [0 - new, 1 - sent, 2 - read]
    * @returns {Promise} promise
    */
-  markMessages(ids, status) {
-    return this.api.sendPut(`DP_API/${this.url}/messages/mark`, {ids, status});
+  markMessages(chatId, ids, status) {
+    return this.api.sendPut(`DP_API/${this.url}/${chatId}/messages/mark`, { ids, status });
   }
 }

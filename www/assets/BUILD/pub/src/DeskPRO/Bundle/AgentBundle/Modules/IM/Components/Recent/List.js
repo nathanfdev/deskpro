@@ -24,16 +24,16 @@ import { myDepartmentsSelector, myAgentTeamsSelector, addToCollection, loadFromA
 export class List extends React.Component {
 
   static propTypes = {
-    me: PropTypes.object.isRequired,
-    agents: PropTypes.object.isRequired,
-    teams: PropTypes.object.isRequired,
-    departments: PropTypes.object.isRequired,
-    recentChats: PropTypes.object.isRequired,
-    current: PropTypes.object.isRequired,
-    counts: PropTypes.object.isRequired,
+    me:            PropTypes.object.isRequired,
+    agents:        PropTypes.object.isRequired,
+    teams:         PropTypes.object.isRequired,
+    departments:   PropTypes.object.isRequired,
+    recentChats:   PropTypes.object.isRequired,
+    current:       PropTypes.object.isRequired,
+    counts:        PropTypes.object.isRequired,
     loadingCounts: PropTypes.bool.isRequired,
-    loaded: PropTypes.bool.isRequired,
-    dispatch: PropTypes.func.isRequired
+    loaded:        PropTypes.bool.isRequired,
+    dispatch:      PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -44,7 +44,12 @@ export class List extends React.Component {
   }
 
   componentWillMount() {
-    this.props.dispatch(loadFromApi('AgentChat', 'DP_API/agent_chats/recent', 'recent'));
+    this.props.dispatch(loadFromApi(
+      'AgentChat',
+      'DP_API/agent_chats?order_by=date_last_message&order_dir=desc&count=5',
+      'recent'
+    ));
+
     this.refreshCounts();
   }
 
@@ -87,26 +92,22 @@ export class List extends React.Component {
 
     return (
       <Loader loaded={loaded} opacity={0} width={3} scale={0.5} left="125%" color="#fff" component="span">
-        {
-          sortedChats.toList().map((chat) => {
-            return (
-              <Item
-                current={current}
-                chating={chating}
-                startChat={this.startChat}
-                me={me}
-                counts={counts}
-                loadingCounts={loadingCounts}
-                key={chat.get('id')}
-                chat={chat}
-                teams={teams}
-                agents={agents}
-                departments={departments}
-                dispatch={dispatch}
-                />
-            );
-          })
-        }
+        {sortedChats.toList().map((chat) =>
+          <Item
+            current={current}
+            chating={chating}
+            startChat={this.startChat}
+            me={me}
+            counts={counts}
+            loadingCounts={loadingCounts}
+            key={chat.get('id')}
+            chat={chat}
+            teams={teams}
+            agents={agents}
+            departments={departments}
+            dispatch={dispatch}
+            />
+        )}
       </Loader>
     );
   }

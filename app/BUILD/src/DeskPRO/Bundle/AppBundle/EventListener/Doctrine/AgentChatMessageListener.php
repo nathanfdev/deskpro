@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,14 +26,37 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\AppBundle\EventListener\Doctrine;
+
+use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
+use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\NewMessageEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+
 /**
- * DeskPRO.
+ * Class AgentChatMessageListener.
  */
-
-namespace DeskPRO\Bundle\AppBundle\AgentChat\Exceptions;
-
-use InvalidArgumentException;
-
-class WrongChatableTypeException extends InvalidArgumentException
+class AgentChatMessageListener
 {
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    /**
+     * Constructor.
+     *
+     * @param EventDispatcherInterface $eventDispatcher
+     */
+    public function __construct(EventDispatcherInterface $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
+    /**
+     * @param AgentChatMessage $entity
+     */
+    public function postPersist(AgentChatMessage $entity)
+    {
+        $this->eventDispatcher->dispatch(NewMessageEvent::EVENT_NAME, new NewMessageEvent($entity->getId()));
+    }
 }
