@@ -64,9 +64,11 @@ abstract class CrudController extends BaseController
     public static $exposeOnly = null;
 
     /**
-     * @var array|null Map of sortable entity fields: [request_param_name => entity_filed_name]
+     * @var array|null Map of sortable entity fields: [request_param_name => entity_filed_spec]. You can configure
+     *                 sorting by a relational field if provide ['join' => 'agent', 'as' => 'a', 'sort' => 'a.id']
+     *                 as a sorting option spec.
      */
-    public static $sortOptions = null;
+    public static $sortOptions = ['id' => 'id'];
 
     public static $listSort       = 'id';
     public static $listOrder      = 'desc';
@@ -378,19 +380,23 @@ abstract class CrudController extends BaseController
             throw $this->createBadRequestException('Unknown sort field');
         }
 
-        $orderBy  = isset($sortOptions[$sortParam]) ? $sortOptions[$sortParam] : static::$listSort;
-        $orderDir = static::$listOrder;
+        $orderBy = isset($sortOptions[$sortParam]) ? $sortOptions[$sortParam] : static::$listSort;
 
-        $requestOrderDir = strtolower($request->get('order_dir'));
-        if ($requestOrderDir) {
-            if (!in_array($requestOrderDir, ['asc', 'desc'])) {
-                throw $this->createBadRequestException('Unknown order value');
-            }
-
-            $orderDir = $requestOrderDir;
+        // Add corresponding select and join if $orderBy is a relational field
+        if (is_array($orderBy)) {
+            $qb->join("{$alias}.{$orderBy['join']}", $orderBy['as']);
+            $orderBy = $orderBy['sort'];
         }
 
-        $qb->orderBy($alias.'.'.$orderBy, $orderDir);
+        // prefix with main entity alias if sorting by non-relational field
+        $orderBy = strpos($orderBy, '.') ? $orderBy : $alias.'.'.$orderBy;
+
+        $orderDir = strtolower($request->get('order_dir', static::$listOrder));
+        if (!in_array($orderDir, ['asc', 'desc'])) {
+            throw $this->createBadRequestException('Unknown order value');
+        }
+
+        $qb->orderBy($orderBy, $orderDir);
     }
 
     /**
