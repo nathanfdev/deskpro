@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\EmailSender;
 
 use Application\DeskPRO\App;
@@ -56,17 +57,17 @@ class PortalEmailSender
     {
         $this->sendTo(
             new EmailTo($person),
-            'EmailBundle:Portal:reset-password.html.twig',
-            array(
+            'DeskPRO:emails_user:reset-password.html.twig',
+            [
                 'person'    => $person,
                 'reset_url' => $this->getRouter()->generate(
                     'portal_reset_password_process',
-                    array(
+                    [
                         'code' => $reset['code'],
-                    ),
+                    ],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 ),
-            )
+            ]
         );
     }
 
@@ -74,17 +75,17 @@ class PortalEmailSender
     {
         $this->sendTo(
             new EmailTo($person),
-            'EmailBundle:Portal:set-password.html.twig',
-            array(
+            'DeskPRO:emails_user:set-password.html.twig',
+            [
                 'person'    => $person,
                 'reset_url' => $this->getRouter()->generate(
                     'portal_set_password_process',
-                    array(
+                    [
                         'code' => $reset['code'],
-                    ),
+                    ],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 ),
-            )
+            ]
         );
     }
 
@@ -92,38 +93,52 @@ class PortalEmailSender
     {
         $email = $person->getPrimaryEmail();
 
-        $portal_url = $this->getRouter()->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $portalUrl = $this->getRouter()->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
         $this->sendTo(
             new EmailTo($person),
             'DeskPRO:emails_user:register-welcome.html.twig',
-            array(
+            [
                 'person'     => $person,
                 'email'      => $email,
                 'verify_url' => null, // BC - this may be in old templates and it should always be null
-                'portal_url' => $portal_url,
-            )
-        );
-    }
-
-    public function sendEmailValidation(EmailTo $email_to, $verify_url)
-    {
-        $this->sendTo(
-            $email_to,
-            'EmailBundle:Portal:email-validation.html.twig',
-            [
-                'verify_url' => $verify_url,
+                'portal_url' => $portalUrl,
             ]
         );
     }
 
-    public function sendNewTicketValidationEmail(EmailTo $email_to, $verify_url, Ticket $ticket)
+    public function sendEmailValidation(EmailTo $emailTo, $verifyUrl)
     {
         $this->sendTo(
-            $email_to,
+            $emailTo,
+            'DeskPRO:emails_user:email-validation.html.twig',
+            [
+                'verify_url' => $verifyUrl,
+                'new_email'  => $emailTo->getEmailAddress(),
+            ]
+        );
+    }
+
+    public function sendNewEmailValidate(EmailTo $emailTo, $verifyUrl, Person $person)
+    {
+        $this->sendTo(
+            $emailTo,
+            'DeskPRO:emails_user:new-email-validate.html.twig',
+            [
+                'verify_url' => $verifyUrl,
+                'new_email'  => $emailTo->getEmailAddress(),
+                'orig_email' => $person->getEmailAddress(),
+            ]
+        );
+    }
+
+    public function sendNewTicketValidationEmail(EmailTo $emailTo, $verifyUrl, Ticket $ticket)
+    {
+        $this->sendTo(
+            $emailTo,
             'DeskPRO:emails_user:ticket-new-validate-email.html.twig',
             [
-                'verify_url' => $verify_url,
+                'verify_url' => $verifyUrl,
                 'ticket'     => $ticket,
             ]
         );
@@ -136,12 +151,12 @@ class PortalEmailSender
         $this->sendTo(
             new EmailTo($person),
             'DeskPRO:emails_user:feedback-new.html.twig',
-            array(
+            [
                 'person'     => $person,
                 'feedback'   => $feedback,
                 'verify_url' => null,
                 'validating' => false,
-            )
+            ]
         );
     }
 
@@ -151,16 +166,16 @@ class PortalEmailSender
 
         $this->sendTo(
             new EmailTo($person),
-            'EmailBundle:Portal:new-ticket-guest.html.twig',
-            array(
+            'DeskPRO:emails_user:new-ticket-guest.html.twig',
+            [
                 'ticket_view_url' => $this->getRouter()->generate(
                     'portal_tickets_guest_view',
-                    array(
+                    [
                         'auth' => $ticket->auth,
-                    ),
+                    ],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 ),
-            )
+            ]
         );
     }
 
@@ -170,18 +185,18 @@ class PortalEmailSender
         /** @var \Application\DeskPRO\Entity\ContentAbstract $content */
         $content = $comment->getObject();
 
-        $content_url   = $this->container->get('object_router')->getPortalUrl($content);
-        $content_title = $content->getTitle();
+        $contentUrl   = $this->container->get('object_router')->getPortalUrl($content);
+        $contentTitle = $content->getTitle();
 
         $this->sendTo(
             new EmailTo($person),
             'DeskPRO:emails_user:comment-new.html.twig',
-            array(
-                'content_url'   => $content_url,
-                'content_title' => $content_title,
+            [
+                'content_url'   => $contentUrl,
+                'content_title' => $contentTitle,
                 'comment'       => $comment, // keep for bc ({{ comment.object.permalink }})
                 'validating'    => false, // keep here for BC
-            )
+            ]
         );
     }
 
@@ -189,21 +204,37 @@ class PortalEmailSender
     {
         $this->sendTo(
             new EmailTo($person),
-            'EmailBundle:Portal:login-alert.html.twig',
-            array(
+            'DeskPRO:emails_user:login-alert.html.twig',
+            [
                 'success' => $success,
-            )
+            ]
         );
     }
 
-    public function sendTo(EmailTo $email_to, $template, $vars)
+    public function sendTicketAddedCC(Person $person, Ticket $ticket)
     {
+        $author = $ticket->getPerson();
+
+        $this->sendTo(
+            new EmailTo($person),
+            'DeskPRO:emails_user:ticket-add-cc.html.twig',
+            [
+                'author_email' => $author->getEmailAddress(),
+                'author_name'  => $author->getName(),
+                'ticket'       => $ticket,
+            ]
+        );
+    }
+
+    public function sendTo(EmailTo $emailTo, $template, $vars)
+    {
+        $vars['site_name'] = $this->getSetting('site_name');
         /** @var \Application\DeskPRO\Mail\Message $message */
         $message = $this->container->get('mailer')->createMessage();
-        if ($person = $email_to->getPerson()) {
+        if ($person = $emailTo->getPerson()) {
             $message->setToPerson($person);
         } else {
-            $message->setTo($email_to->getEmailAddress(), $email_to->getName());
+            $message->setTo($emailTo->getEmailAddress(), $emailTo->getName());
         }
         $message->setTemplate($template, $vars);
         $message->addFrom($this->getDefaultOutgoingEmailAddress());

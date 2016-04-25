@@ -1,6 +1,6 @@
-<dp:subject>{{ phrase('user.email_subjects.ticket_new-participant') }}</dp:subject>
+<dp:subject>{{ phrase('portal.email_subjects.ticket_new-participant') }}</dp:subject>
 {% if is_first %}
-	{{ phrase('user.emails.ticket_cc-new', {'name':ticket.person.display_name_user}) }}
+	{{ phrase('portal.emails.ticket_cc-new', {'name':ticket.person.display_name_user}) }}
 	<br /><br />
 {% endif %}
 

@@ -387,6 +387,9 @@ class TicketsController extends AbstractController
             $participant = new TicketParticipant();
             $participant->setPerson($person);
             $ticket->addParticipant($participant);
+
+            $this->getEmailSender()->sendTicketAddedCC($person, $ticket);
+
             $this->getEm()->persist($participant);
             $this->getEm()->flush($ticket);
 
