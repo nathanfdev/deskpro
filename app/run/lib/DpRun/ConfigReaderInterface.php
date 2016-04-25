@@ -39,4 +39,12 @@ interface ConfigReaderInterface
      * @return void
      */
     public function resetCache();
+
+    /**
+     * Array of context vars to make available when including config file.
+     * 
+     * @param array $context
+     * @return void
+     */
+    public function setConfigContext(array $context);
 }

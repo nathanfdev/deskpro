@@ -242,13 +242,26 @@ class DpEnv
         } else {
             $config_dir  = $this->dp_root.DIRECTORY_SEPARATOR.'config';
 
+            // A special file named dir.alias means to use a different config directory
+            if (file_exists($config_dir.DIRECTORY_SEPARATOR.'dir.alias')) {
+                $config_dir = trim(file_get_contents($config_dir.DIRECTORY_SEPARATOR.'dir.alias'));
+            }
+
             // When E2E tests are running, we switch config dirs to the test config
             // See DpBehat\E2E\E2EContext
             if (file_exists($config_dir.DIRECTORY_SEPARATOR.'e2e_running.trigger')) {
                 $config_dir = $this->dp_root.'/app/BUILD/tests/config';
             }
 
+            // Context file can be anything
+            if (file_exists($config_dir.DIRECTORY_SEPARATOR.'context.php')) {
+                $context = require($config_dir.DIRECTORY_SEPARATOR.'context.php');
+            } else {
+                $context = [];
+            }
+
             $this->config_reader = new \DpRun\ConfigReader([$config_dir]);
+            $this->config_reader->setConfigContext($context);
         }
 
         if ($config) {

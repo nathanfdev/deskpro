@@ -77,6 +77,17 @@ class ConfigReader implements ConfigReaderInterface
     private $config_loaders = [];
 
     /**
+     * @var array
+     */
+    private $config_context = [];
+
+    /**
+     * True when getConfig is loading a new file.
+     * @var bool
+     */
+    private $is_reading = false;
+
+    /**
      * ConfigReader constructor.
      *
      * @param string[]   $config_dirs Paths that can contain config.
@@ -99,6 +110,14 @@ class ConfigReader implements ConfigReaderInterface
     public function addConfigLoader($loader)
     {
         $this->config_loaders[] = $loader;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setConfigContext(array $context)
+    {
+        $this->config_context = array_merge($this->config_context, $context);
     }
 
     /**
@@ -125,7 +144,9 @@ class ConfigReader implements ConfigReaderInterface
             $this->getConfig('all');// load all file
         }
 
-        if (!isset($this->config_values[$file_id])) {
+        if (!isset($this->config_values[$file_id]) && !$this->is_reading) {
+            $this->is_reading = true;
+
             foreach ($this->config_dirs as $config_dir) {
                 $config_file_path = $config_dir
                     . DIRECTORY_SEPARATOR
@@ -161,6 +182,8 @@ class ConfigReader implements ConfigReaderInterface
             if ($id !== 'all' && isset($this->config_values['all'][$file_id])) {
                 $this->config_values[$file_id] = array_merge($this->config_values['all'][$file_id], $this->config_values[$file_id]);
             }
+
+            $this->is_reading = false;
         }
 
         $val = $this->_fetchFromArray($this->config_values[$file_id], $parts, $default);
@@ -178,6 +201,9 @@ class ConfigReader implements ConfigReaderInterface
      */
     private function _loadConfigFile($__fp, $__varname)
     {
+        $context = $this->config_context;
+        $context['config_reader'] = $this;
+
         require $__fp;
         if (isset(${$__varname})) {
             return ${$__varname};
