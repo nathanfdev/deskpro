@@ -343,6 +343,15 @@ class WorkerJobsData extends AbstractDefaultData
             'run_interval' => Job\ProcessPersistedEvents::DEFAULT_INTERVAL,
         );
 
+        $jobs[] = array(
+            'id'           => 'system_alerts_process_events',
+            'worker_group' => 'system_alerts',
+            'title'        => 'Process new system alert events',
+            'description'  => 'Process new system alert events to raise new and update existing incidents',
+            'job_class'    => Job\ProcessSystemAlertEvents::class,
+            'run_interval' => Job\ProcessSystemAlertEvents::DEFAULT_INTERVAL,
+        );
+
         #------------------------------
         # Insert jobs
         #------------------------------

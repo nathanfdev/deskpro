@@ -197,8 +197,10 @@ abstract class AbstractIncident implements Incident
      */
     public function addEvent(Event $event)
     {
-        $this->events[]        = $event;
-        $this->subjectUniqueId = $event->getSubjectUniqueId();
+        if (!$this->events->contains($event)) {
+            $this->events[]        = $event;
+            $this->subjectUniqueId = $event->getSubjectUniqueId();
+        }
     }
 
     /**

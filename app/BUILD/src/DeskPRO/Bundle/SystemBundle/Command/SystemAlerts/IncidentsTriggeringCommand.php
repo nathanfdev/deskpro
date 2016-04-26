@@ -128,7 +128,7 @@ class IncidentsTriggeringCommand extends ContainerAwareCommand
         }
 
         $output->writeln(
-            sprintf('Processing of %s bunches of %s events took %s seconds', $iterationsLimit, $batchSize, $totalTime));
+            sprintf('Finished in %s seconds', $iterationsLimit, $batchSize, $totalTime));
 
         return 0;
     }
