@@ -22,28 +22,29 @@ export class HtmlReplyActionContainer extends Component {
           <form>
             <div className="dpw--popup-content">
               <div className="dpw--popup-content-line">
-                <div className="textarea-container">
-                  <RteEditor
-                    inline
-                    ref="editor"
-                    value={message}
-                    onChange={this.onChangeMessage}
-                    onSubmit={this.onSubmit}
-                    className="textarea"
-                    onPasteImage={this.onPasteImage}
-                    options={{
-                      contentWindow: window,
-                      ownerDocument: document,
-                      autoLink:      true,
-                      imageDragging: true,
-                      placeholder:   { text: 'Type your message' },
-                      toolbar:       {
-                        buttons:                ['bold', 'italic', 'underline'],
-                        updateOnEmptySelection: true
-                      }
-                    }}
-                  />
-                </div>
+                <RteEditor
+                  inline
+                  ref="editor"
+                  value={message}
+                  onChange={this.onChangeMessage}
+                  onSubmit={this.onSubmit}
+                  className="textarea"
+                  onPasteImage={this.onPasteImage}
+                  options={{
+                    autoLink:      true,
+                    imageDragging: true,
+                    placeholder:   { text: 'Send a message' },
+                    toolbar:       {
+                      buttons:                ['bold', 'italic', 'underline', 'anchor'],
+                      updateOnEmptySelection: true
+                    },
+                    paste: {
+                      forcePlainText:  false,
+                      cleanPastedHTML: false,
+                      cleanAttrs:      ['style', 'dir']
+                    }
+                  }}
+                />
               </div>
               <div className="dpw--popup-content-line">
                 <div className="dpw--popup-content-left">
