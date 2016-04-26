@@ -216,12 +216,16 @@ class CommentFormHandler
      * @param Request         $request
      * @param ContentAbstract $content
      * @param CommentAbstract $comment
-     * @param $person
+     * @param                 $person
      *
      * @return RedirectResponse
      */
-    protected function handleLoggedInPersonSubmit(Request $request, ContentAbstract $content, CommentAbstract $comment, Person $person)
-    {
+    protected function handleLoggedInPersonSubmit(
+        Request $request,
+        ContentAbstract $content,
+        CommentAbstract $comment,
+        Person $person
+    ) {
         $this->informAntiAbuse($person, $request);
         $this->acceptComment($content, $comment, $request);
 
@@ -237,8 +241,13 @@ class CommentFormHandler
      *
      * @return RedirectResponse
      */
-    protected function handleGuestSubmit(PersonGuest $person, FormInterface $form, Request $request, ContentAbstract $content, CommentAbstract $comment)
-    {
+    protected function handleGuestSubmit(
+        PersonGuest $person,
+        FormInterface $form,
+        Request $request,
+        ContentAbstract $content,
+        CommentAbstract $comment
+    ) {
         // we are dealing with a guest...
         // find if this is already a person
         // if it is, use the auto login feature to submit
@@ -246,9 +255,9 @@ class CommentFormHandler
 
         // comment forms dont put data on the PersonGuest, so we take it from the comment itself:
         $email        = new PersonEmail();
-        $email->email = $comment->email;
+        $email->email = $comment->getEmail();
         $person->setPrimaryEmail($email);
-        $person->setName($comment->name);
+        $person->setName($comment->getName());
         try {
             $this->person_factory->checkGuestForValidation($person, $request->attributes->get('saved-form'));
 
@@ -273,7 +282,13 @@ class CommentFormHandler
         } catch (EmailValidationRequiredException $e) {
             $this->informAntiAbuse($person, $request);
 
-            $saved_form = $this->saver->saveForm(SavedForm::TYPE_COMMENT, $form, $request, $person->getEmailAddress(), $person->getDisplayName());
+            $saved_form = $this->saver->saveForm(
+                SavedForm::TYPE_COMMENT,
+                $form,
+                $request,
+                $person->getEmailAddress(),
+                $person->getDisplayName()
+            );
             $this->portal_validation->sendVerificationEmail(PortalValidation::COMMENT, $saved_form);
             $this->addFlash($request, 'success', 'portal.flashes.guest_content_must_verify');
 
@@ -286,7 +301,8 @@ class CommentFormHandler
         $person   = $comment->getPerson();
         $perm_bag = $this->permissions_manager->getPermissionsBagForPerson($person);
         if (!$perm_bag->get($this->permPrefix($content).'.no_comment_validate')
-            && !($person->isAgent() && $person->hasPerm('agent_publish.validate'))) {
+            && !($person->isAgent() && $person->hasPerm('agent_publish.validate'))
+        ) {
             // hide the comment until its approved
             $comment->setStatus(CommentAbstract::STATUS_HIDDEN);
             $this->addFlash($request, 'success', 'portal.flashes.comment_thank_you_review');
@@ -296,7 +312,7 @@ class CommentFormHandler
         }
         $content->addComment($comment);
         $this->em->persist($comment);
-        $this->em->flush(array($comment, $content));
+        $this->em->flush([$comment, $content]);
 
         $this->email_sender->sendCommentThankYouEmail($comment);
 
