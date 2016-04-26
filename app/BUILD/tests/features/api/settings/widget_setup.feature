@@ -4,7 +4,6 @@ Feature: Widget Setup
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I get initial widget configuration
     When I send a GET request to "/api/v2/widget/setup"
     Then the response should be in JSON

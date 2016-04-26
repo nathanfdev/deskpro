@@ -8,7 +8,6 @@ Feature: User can submit new tickets
     And the default brand is using the standard theme
     And I login with user credentials
 
-  @reinstall
   Scenario: Submitting an invalid form
     Given I go to "/new-ticket"
     And I press "Submit"

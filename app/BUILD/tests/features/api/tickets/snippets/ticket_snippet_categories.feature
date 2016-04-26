@@ -8,7 +8,6 @@ Feature: /ticket_snippet_categories endpoint
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I retrieve a list of ticket snippet categories
     When I send a GET request to "/api/v2/ticket_snippet_categories"
     Then the response status code should be 200

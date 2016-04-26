@@ -4,7 +4,6 @@ Feature: Person profile
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I get profile
     When I send a GET request to "/api/v2/me/profile"
     Then the response should be in JSON

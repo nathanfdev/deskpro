@@ -63,8 +63,12 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class UserChatsController extends CrudController
 {
-    public static $exposeOnly = ['get', 'list', 'count', 'delete'];
-    public static $entity     = ChatConversation::class;
+    public static $exposeOnly  = ['get', 'list', 'count', 'delete'];
+    public static $entity      = ChatConversation::class;
+    public static $sortOptions = [
+        'date_created' => 'date_created',
+        'agent'        => ['join' => 'agent', 'as' => 'a', 'sort' => 'a.id'],
+    ];
 
     /**
      * {@inheritdoc}

@@ -6,13 +6,13 @@ Feature: Widget Chat
     Given I have authorized portal api session with code "BBBBBBBBBBBBBBB" for "user@deskpro.dev"
 
   # Create a new chat
-  @reinstall
   Scenario: I try to create a new chat without session code
     When I send a POST request to "/portal/api/chats/create"
     Then the response status code should be 400
     And the response should be in JSON
     And the JSON node "message" should be equal to "User session not found"
 
+  @reinstall
   Scenario: I create a new chat without person info
     Given the setting "portal.chat.email_validation" is set to 0
     Given the setting "portal.chat.require_login" is set to 0

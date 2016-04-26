@@ -102,27 +102,6 @@ Feature: /tasks endpoint
     And the JSON node "data[3].title" should be equal to "List 1 task"
     And the JSON node "data[4].title" should be equal to "List 2 task"
 
-  Scenario: I order by list
-    When I send a GET request to "/api/v2/tasks?order_by=list&order_dir=desc"
-    Then the response should be in JSON
-    And the response status code should be 200
-    And the JSON node "data" should have 5 elements
-    And the JSON node "data[0].title" should be equal to "List 2 task"
-    And the JSON node "data[1].title" should be equal to "Another list 2 task"
-    And the JSON node "data[2].title" should be equal to "List 1 task"
-    And the JSON node "data[3].title" should be equal to "A demo task"
-    And the JSON node "data[4].title" should be equal to "An unassigned task"
-
-    When I send a GET request to "/api/v2/tasks?order_by=list&order_dir=asc"
-    Then the response should be in JSON
-    And the response status code should be 200
-    And the JSON node "data" should have 5 elements
-    And the JSON node "data[0].title" should be equal to "A demo task"
-    And the JSON node "data[1].title" should be equal to "An unassigned task"
-    And the JSON node "data[2].title" should be equal to "List 1 task"
-    And the JSON node "data[3].title" should be equal to "List 2 task"
-    And the JSON node "data[4].title" should be equal to "Another list 2 task"
-
   Scenario: I check wrong order dir
     When I send a GET request to "/api/v2/tasks?order_by=list&order_dir=unknown"
     Then the response should be in JSON

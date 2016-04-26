@@ -8,7 +8,6 @@ Feature: /ticket_departments endpoint
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I retrieve a list of ticket departments
     When I send a GET request to "/api/v2/ticket_departments"
     Then the response status code should be 200

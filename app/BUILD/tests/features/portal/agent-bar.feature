@@ -14,11 +14,11 @@ Feature: Agent Bar
     Then I should not see the agent bar
 
   Scenario: An agent logs in and sees the agent bar without the admin dropdown
-    When I login with agent credentials
+    When I login with agent credentials from the login page
     Then I should see the agent bar
     And the agent bar should not have the admin dropdown
 
   Scenario: An admin logs in and sees the agent bar with the admin dropdown
-    When I login with admin credentials
+    When I login with admin credentials from the login page
     Then I should see the agent bar
     And the agent bar should have the admin dropdown

@@ -18,6 +18,7 @@ api:
                     dataset_manager: @dataset_manager
                 - Behat\MinkExtension\Context\MinkContext
                 - behatch:json
+                - DpBehat\DoctrineContext
                 - DpBehat\Api\RestContext
                 - DpBehat\Api\AuthContext
                 - DpBehat\TermEngine\TermEngineBehatContext
@@ -44,7 +45,35 @@ api:
                 path: ../sys/Kernel/ApiKernel.php
                 class: DpSys\Kernel\ApiKernel
                 env: test
-                debug: true
+                debug: false
+system-api:
+    suites:
+        api:
+            paths:
+                - %paths.base%/features/system-api
+            contexts:
+                - DpBehat\DataSetContext:
+                    dataset_manager: @dataset_manager
+                - Behat\MinkExtension\Context\MinkContext
+                - behatch:json
+                - DpBehat\DoctrineContext
+                - DpBehat\Api\RestContext
+                - DpBehat\Api\AuthContext
+                - DpBehat\System\Alerts\IncidentsContext
+    extensions:
+        Sanpi\Behatch\Extension: ~
+        Behat\MinkExtension:
+            default_session: default
+            sessions:
+                default:
+                    symfony2: ~
+        Behat\Symfony2Extension:
+            kernel:
+                bootstrap: features/bootstrap/boot.php
+                path: ../sys/Kernel/ApiKernel.php
+                class: DpSys\Kernel\ApiKernel
+                env: test
+                debug: false
 
 install:
     suites:
@@ -67,7 +96,7 @@ install:
                 path: ../sys/Kernel/InstallKernel.php
                 class: DpSys\Kernel\InstallKernel
                 env: test
-                debug: true
+                debug: false
 
 portal:
     suites:
@@ -76,6 +105,7 @@ portal:
                 - %paths.base%/features/portal
             contexts:
                 - Behat\MinkExtension\Context\MinkContext
+                - DpBehat\DoctrineContext
                 - DpBehat\Portal\TestsContext
                 - behatch:json
                 - behatch:rest
@@ -110,7 +140,7 @@ portal:
                 path: ../sys/Kernel/PortalKernel.php
                 class: DpSys\Kernel\PortalKernel
                 env: test
-                debug: true
+                debug: false
         SensioLabs\Behat\PageObjectExtension:
             namespaces:
                 page: DpBehat\Portal\Page

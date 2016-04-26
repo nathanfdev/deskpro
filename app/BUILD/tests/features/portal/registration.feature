@@ -7,14 +7,12 @@ Feature: Registration
       | default |
     And the default brand is using the standard theme
 
-  @reinstall
   Scenario: Submitting an invalid form
     Given I go to "/register"
     And I press "Register"
     Then I should be on "/register"
     And I should see a form error with the phrase "portal.forms.error_required"
 
-  @reinstall
   Scenario: Submitting valid registration and verifying email
     Given I go to "/register"
     And I fill in "Name" with "Test User"
@@ -29,7 +27,6 @@ Feature: Registration
     And I should be on "/"
     And I should see a success flash message with the phrase "portal.flashes.user_registered_verified_authenticated"
 
-  @reinstall
   Scenario: Trying to register with an email that exists will send you to the password
     Given I go to "/register"
     And I fill in "Name" with "Entering an Existing Email"

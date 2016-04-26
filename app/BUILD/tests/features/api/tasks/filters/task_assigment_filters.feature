@@ -45,7 +45,7 @@ Feature: /tasks endpoint
     And the JSON node "data[0].departments" should have 0 elements
 
   Scenario: I filter by assigned agent
-    When I send a GET request to "/api/v2/tasks?assigned_agent[0]=1&assigned_agent[1]=4"
+    When I send a GET request to "/api/v2/tasks?assigned_agent[0]=1&assigned_agent[1]=4&order_by=id&order_dir=asc"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should have 3 elements

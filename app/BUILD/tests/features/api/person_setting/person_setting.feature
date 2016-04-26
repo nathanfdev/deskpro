@@ -8,7 +8,6 @@ Feature: /person_setting endpoint
     Given I install the "api" data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I GET person setting for feedback view fields
     When I send a GET request to "/api/v2/person_setting/feedback_display_fields"
     Then the response should be in JSON

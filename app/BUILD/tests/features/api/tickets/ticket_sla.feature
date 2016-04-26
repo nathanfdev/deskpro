@@ -8,7 +8,6 @@ Feature: /tickets/{id}/slas endpoint
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I create a ticket SLA
     When I send a POST request to "/api/v2/tickets/3/slas" with body:
 """

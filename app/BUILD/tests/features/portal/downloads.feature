@@ -7,7 +7,6 @@ Feature: Downloads
       | default |
     And the default brand is using the standard theme
 
-  @reinstall
   Scenario: I visit the Downloads from the homepage
     Given the "download" category "General" exists with content titled "Example Download"
     And I am on "/"

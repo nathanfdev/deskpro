@@ -13,6 +13,7 @@ Feature: Discover settings
     And the JSON node "data.base_api_url" should exist
     And the JSON node "data.build" should exist
 
+  @reinstall
   Scenario: I get agent client info settings
     When I send a GET request to "/api/v2/helpdesk/agent-client/info"
     Then the response should be in JSON

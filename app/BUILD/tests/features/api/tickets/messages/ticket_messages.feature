@@ -8,7 +8,6 @@ Feature: /tickets/{id}/messages endpoint
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I retrieve a ticket messages
     When I send a GET request to "/api/v2/tickets/1/messages"
     Then the response status code should be 200

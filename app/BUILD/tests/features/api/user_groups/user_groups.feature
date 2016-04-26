@@ -8,7 +8,6 @@ Feature: /user_groups endpoint
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I get list of all user groups
     When I send a GET request to "/api/v2/user_groups"
     Then the response should be in JSON

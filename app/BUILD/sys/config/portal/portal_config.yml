@@ -3,7 +3,6 @@ imports:
     - { resource: ../../../src/DeskPRO/Bundle/AppBundle/Resources/config/notification.yml }
 # Keeping all parameter changes here rather than in various bundles
 parameters:
-  router.options.matcher.cache_class: null
   portal.session.name: sess_data
   doctrine.orm.proxy_dir: "%kernel.cache_dir%/doctrine-proxies"
   templating.globals.class: Application\DeskPRO\Templating\GlobalVariables
@@ -180,6 +179,7 @@ fos_rest:
         jsonp_handler:
             callback_param: callback
         failed_validation: HTTP_BAD_REQUEST
+        exception_wrapper_handler: DeskPRO\Bundle\ApiBundle\Fos\ExceptionWrapperHandler
     routing_loader:
         default_format: json
 

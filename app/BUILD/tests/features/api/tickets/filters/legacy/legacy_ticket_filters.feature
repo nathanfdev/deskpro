@@ -8,7 +8,6 @@ Feature: /ticket_filters endpoint
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I retrieve list of ticket filters
     When I send a GET request to "/api/v2/ticket_filters?count=100"
     Then the response status code should be 200

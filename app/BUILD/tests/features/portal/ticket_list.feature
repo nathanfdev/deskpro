@@ -8,7 +8,6 @@ Feature: Ticket List
       | default |
     And the default brand is using the standard theme
 
-  @reinstall
   Scenario: Viewing the ticket list when unautneticated sends you to the login page
     Given the organization "walmart" exists
     And "user" is an organization manager of "walmart"

@@ -9,7 +9,6 @@ Feature: KB
     And there are no articles in the Knowledge Base
     And I add "Example Article" article
 
-  @reinstall
   Scenario: I visit the KB from the homepage
     Given I am on "/"
     When I follow "Knowledgebase"

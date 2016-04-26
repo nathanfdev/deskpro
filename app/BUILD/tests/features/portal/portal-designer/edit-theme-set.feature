@@ -4,7 +4,6 @@ Feature: Buffering portal changes in the edit ThemeSet
     Given I install the fresh data set
     And I am authenticated as admin
 
-  @reinstall
   Scenario: I check SCSS variable custom value is applied to the portal
     And I send a PUT request to "/portal/api/style/edit-theme-set/variable-values" with body:
     """

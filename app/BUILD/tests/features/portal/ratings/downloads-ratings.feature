@@ -7,7 +7,6 @@ Feature: Downloads ratings
       | default |
     And the default brand is using the standard theme
 
-  @reinstall
   Scenario: I rate a download positively as a user
     Given I login with user credentials
     And the "download" category "General" exists with content titled "Example Download"

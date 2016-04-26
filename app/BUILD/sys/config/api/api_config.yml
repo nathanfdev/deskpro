@@ -4,7 +4,6 @@ imports:
 
 # Keeping all parameter changes here rather than in various bundles
 parameters:
-  router.options.matcher.cache_class: null
   portal.session.name: sess_data
   doctrine.orm.proxy_dir: %kernel.cache_dir%/doctrine-proxies
   fos_rest.routing.loader.reader.controller.class: DeskPRO\Bundle\ApiBundle\Routing\ApiRestControllerReader

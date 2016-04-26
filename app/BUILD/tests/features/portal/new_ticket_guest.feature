@@ -38,7 +38,6 @@ Feature: Guests can submit new tickets
     Then I should be on "/new-ticket"
     And I should see a form error list with the phrase "portal.forms.error_invalid_email"
 
-  @reinstall
   Scenario: Submitting a VALID FORM
     Given I go to "/new-ticket"
     And I select "Sales" from "Department"
@@ -64,6 +63,7 @@ Feature: Guests can submit new tickets
     Then the url should match "/thank-you/[a-zA-Z0-9\-]+"
     And I should see a success flash message with the phrase "portal.flashes.ticket_created"
 
+  @reinstall
   Scenario: Submitting a VALID FORM but needing to validate email before submitting
     Given the setting "core_tickets.web_require_validation" is set to "1"
     And I go to "/new-ticket"

@@ -63,9 +63,10 @@ class IncidentsContext extends BaseContext
      */
     public function gatherContexts(BeforeScenarioScope $scope)
     {
-        $environment = $scope->getEnvironment();
-
+        $environment        = $scope->getEnvironment();
         $this->rest_context = $environment->getContext('DpBehat\Api\RestContext');
+        $this->sysEm()->getConnection()->getConfiguration()->setSQLLogger(null);
+        $this->sysEm()->clear();
     }
 
     /**

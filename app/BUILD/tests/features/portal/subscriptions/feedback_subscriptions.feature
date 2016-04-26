@@ -7,7 +7,6 @@ Feature: Feedback subscriptions
       | default |
     And the default brand is using the standard theme
 
-  @reinstall
   Scenario: I subscribe to a feedback item successfully as a user
     Given I login with user credentials
     And the "feedback" category "Suggestion" exists with content titled "Example Feedback"

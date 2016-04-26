@@ -7,7 +7,6 @@ Feature: submitting new feedback
       | default |
     And the default brand is using the standard theme
 
-  @reinstall
   Scenario: A logged in user submits valid feedback
     Given I login with user credentials
     And I am on "/feedback"

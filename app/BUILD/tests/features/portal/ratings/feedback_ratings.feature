@@ -7,7 +7,6 @@ Feature: Feedback ratings
       | default |
     And the default brand is using the standard theme
 
-  @reinstall
   Scenario: I rate a feedback item positively as a user via I AGREE
     Given I login with user credentials
     And the "feedback" category "Suggestion" exists with content titled "Example Feedback"

@@ -6,7 +6,6 @@ Feature: View Tickets
   Background: Fresh DB
     Given I install the fresh data set
 
-  @reinstall
   Scenario: I visit the tickets page and I am unauthenticated
     When I go to "/tickets"
     Then I should be on "/login"

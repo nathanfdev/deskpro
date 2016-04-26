@@ -7,7 +7,6 @@ Feature: Feedback
       | default |
     And the default brand is using the standard theme
 
-  @reinstall
   Scenario: I visit the Feedback from the homepage
     Given the "feedback" category "Suggestion" exists with content titled "Example Feedback"
     And I am on "/"

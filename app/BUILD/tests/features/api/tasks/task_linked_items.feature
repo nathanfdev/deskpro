@@ -8,7 +8,6 @@ Feature: /tasks/{id}/linked_items/(articles|chats|tickets) endpoints
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario Outline: I try to create item with malformed request
     When I send a POST request to "/api/v2/tasks/1/linked_items/<type>"
     Then the response status code should be 400

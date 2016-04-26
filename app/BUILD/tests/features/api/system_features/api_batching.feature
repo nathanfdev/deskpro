@@ -7,7 +7,6 @@ Feature: API batch requests
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: Invalid input because I do not include the "requests" node
     When I send a POST request to "/api/v2/batch" with body:
     """

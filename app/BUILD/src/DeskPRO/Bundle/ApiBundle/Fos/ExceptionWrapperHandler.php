@@ -30,31 +30,28 @@
  * DeskPRO.
  */
 
-namespace DpBehat;
+namespace DeskPRO\Bundle\ApiBundle\Fos;
 
-use Behat\MinkExtension\Context\RawMinkContext;
-use Behat\Symfony2Extension\Context\KernelAwareContext as KernelAwareContextInterface;
-use Doctrine\ORM\EntityManager;
+use FOS\RestBundle\View\ExceptionWrapperHandlerInterface;
 
 /**
- * Class BaseContext.
+ * Class ExceptionWrapperHandler.
  */
-abstract class BaseContext extends RawMinkContext implements KernelAwareContextInterface
+class ExceptionWrapperHandler implements ExceptionWrapperHandlerInterface
 {
-    use KernelAwareTrait;
-
-    public function resetAllContext()
-    {
-        // after any kind of re-install, we need to reboot the kernel to reset references
-        $this->kernel->shutdown();
-        $this->kernel->boot();
-    }
-
     /**
-     * @return EntityManager
+     * @param array $data
+     *
+     * @return array
      */
-    protected function em()
+    public function wrap($data)
     {
-        return $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        /** @var \Exception $exception */
+        $exception = $data['exception'];
+
+        return [
+            'code'    => array_key_exists('status_code', $data) ? $data['status_code'] : $exception->getCode(),
+            'message' => $exception->getMessage(),
+        ];
     }
 }
