@@ -8,6 +8,7 @@ import { ActionMenuContainer } from './ActionMenuContainer';
 import { MultipleActionChoiceContainer } from './MultipleActionChoiceContainer';
 import { AssignActionContainer } from './AssignActionContainer';
 import { SetDateAction } from './SetDateAction';
+import { HtmlReplyActionContainer } from './HtmlReplyActionContainer';
 
 export class MassActionDropdown extends Component {
   static propTypes = {
@@ -76,10 +77,9 @@ export class MassActionDropdown extends Component {
           resetSingleAction={resetParam}
           />
       );
-    } else if (item.type === 'html_reply') {
+    } else if (item.type === 'mass_reply') {
       return (
         <HtmlReplyActionContainer
-          param={item.param}
           setParams={setMassActionsParams}
           currentParams={currentParams}
           resetSingleAction={resetParam}

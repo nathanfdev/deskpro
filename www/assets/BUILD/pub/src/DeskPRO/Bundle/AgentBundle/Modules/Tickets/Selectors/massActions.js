@@ -53,7 +53,7 @@ export const massActionsSelector = createSelector(
     massActions.push({ label: 'Followers', type: 'select_action', param: 'set_followers', options: followerOptions });
 
     // Reply options
-    massActions.push({ label: 'Reply', type: 'set_action', param: 'reply', options: [] });
+    massActions.push({ label: 'Reply', type: 'mass_reply', param: 'reply', options: [] });
 
     // Other options
     const otherOptions = [
