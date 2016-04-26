@@ -28,23 +28,39 @@
 
 namespace DeskPRO\Bundle\AuditBundle\EventListener;
 
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AuditBundle\Configuration\AuditContext;
 use DeskPRO\Bundle\AuditBundle\Event\LogEvent;
 use DeskPRO\Bundle\AuditBundle\Log\AuditLog;
+use DeskPRO\Bundle\AuditBundle\Log\Performer;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\OnFlushEventArgs;
+use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\UnitOfWork;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Class AuditListener.
  */
 class AuditListener
 {
+    /**
+     *
+     */
     const INSERT = 'insert';
+
+    /**
+     *
+     */
     const UPDATE = 'update';
+
+    /**
+     *
+     */
     const REMOVE = 'remove';
 
     /**
@@ -63,13 +79,35 @@ class AuditListener
     private $dispatcher;
 
     /**
+     * @var TokenStorageInterface
+     */
+    private $tokenStorage;
+
+    /**
+     * @var array
+     */
+    private $insertions = [];
+
+    /**
+     * @var array
+     */
+    private $updates = [];
+
+    /**
+     * @var array
+     */
+    private $deletions = [];
+
+    /**
      * AuditListener constructor.
      *
      * @param EventDispatcherInterface $dispatcher
+     * @param TokenStorageInterface    $tokenStorage
      */
-    public function __construct(EventDispatcherInterface $dispatcher)
+    public function __construct(EventDispatcherInterface $dispatcher, TokenStorageInterface $tokenStorage)
     {
-        $this->dispatcher = $dispatcher;
+        $this->dispatcher   = $dispatcher;
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -80,47 +118,149 @@ class AuditListener
         $this->em  = $eventArgs->getEntityManager();
         $this->uow = $this->em->getUnitOfWork();
 
-        $this->processScheduledInserts();
-        $this->processScheduledUpdates();
+        $this->insertions = $this->uow->getScheduledEntityInsertions();
+        $this->updates    = $this->uow->getScheduledEntityUpdates();
+        $this->deletions  = $this->uow->getScheduledEntityDeletions();
+        $this->processDeletions();
     }
 
     /**
-     *
+     * @param PostFlushEventArgs $event
      */
-    private function processScheduledInserts()
+    public function postFlush(PostFlushEventArgs $event)
     {
-        foreach ($this->uow->getScheduledEntityInsertions() as $entity) {
-            $this->uow->getEntityChangeSet($entity);
+        $this->processInsertions();
+        $this->processUpdates();
+    }
+
+    /**
+     * Because we want to log entities are really inserted into DB to know their ID.
+     */
+    private function processInsertions()
+    {
+        foreach ($this->insertions as $entity) {
+            $this->doProcess(self::INSERT, $entity);
         }
     }
 
     /**
      *
      */
-    private function processScheduledUpdates()
+    private function processDeletions()
     {
-        foreach ($this->uow->getScheduledEntityUpdates() as $entity) {
-            $changeSet = $this->uow->getEntityChangeSet($entity);
+        foreach ($this->deletions as $entity) {
+            $this->doProcess(self::REMOVE, $entity);
+        }
+    }
 
-            $logEvent = new LogEvent($entity, self::UPDATE, $changeSet);
+    /**
+     *
+     */
+    private function processUpdates()
+    {
+        foreach ($this->updates as $entity) {
+            $this->doProcess(self::UPDATE, $entity);
+        }
+    }
 
-            $this->dispatcher->dispatch(LogEvent::PRE_LOG_EVENT, $logEvent);
-            if ($logEvent->isShouldLog()) {
-                $logEvent = new LogEvent($entity, self::UPDATE, $changeSet); // need this, cause propagation is stopped
-                $log      = new AuditLog();
+    /**
+     * @param $action
+     * @param $entity
+     *
+     * @throws \Doctrine\Common\Persistence\Mapping\MappingException
+     */
+    private function doProcess($action, $entity)
+    {
+        $changeSet = $this->getChangesSet($action, $entity);
 
-                /** @var ClassMetadataInfo $metadata */
-                $metadata = $this->em
-                    ->getMetadataFactory()
-                    ->getMetadataFor(ClassUtils::getRealClass(get_class($entity)));
+        $context  = $this->createContext($entity, $action, $changeSet);
+        $logEvent = new LogEvent($context);
 
-                $logEvent->setLog($log)->setMetadata($metadata);
+        $this->dispatcher->dispatch(LogEvent::PRE_LOG_EVENT, $logEvent);
+        if ($logEvent->isShouldLog()) {
+            $logEvent = new LogEvent($context); // need this, cause propagation is stopped
+            $log      = $this->createAuditLog();
 
-                $this->dispatcher->dispatch(LogEvent::START_LOG_EVENT, $logEvent);
-                $log->setApiKey(0);
+            /** @var ClassMetadataInfo $metadata */
+            $metadata = $this->em
+                ->getMetadataFactory()
+                ->getMetadataFor(ClassUtils::getRealClass(get_class($entity)));
 
-                $this->dispatcher->dispatch(LogEvent::FINISH_LOG_EVENT, $logEvent);
-            }
+            $logEvent->setLog($log)->setMetadata($metadata);
+
+            $this->dispatcher->dispatch(LogEvent::START_LOG_EVENT, $logEvent);
+            $log->setApiKey(0);
+
+            $this->dispatcher->dispatch(LogEvent::FINISH_LOG_EVENT, $logEvent);
+        }
+    }
+
+    /**
+     * @param $action
+     * @param $entity
+     *
+     * @return array
+     */
+    private function getChangesSet($action, $entity)
+    {
+        switch ($action) {
+            case self::INSERT:
+            case self::UPDATE:
+                return $this->uow->getEntityChangeSet($entity);
+            case self::REMOVE:
+                $data      = $this->uow->getOriginalEntityData($entity);
+                $changeSet = array_filter(
+                    $data,
+                    function ($item) {
+                        return is_scalar($item);
+                    }
+                );
+                foreach ($changeSet as &$item) {
+                    $item = [$item, null];
+                }
+
+                return $changeSet;
+            default:
+                throw new \LogicException('The action you want to process in unsupported!');
+        }
+    }
+
+    /**
+     * @return AuditLog
+     */
+    private function createAuditLog()
+    {
+        $log       = new AuditLog();
+        $performer = $this->getPerformer();
+        $log->setPerformerId($performer->getId())->setPerformerName($performer->getName());
+
+        return $log;
+    }
+
+    /**
+     * @param object $entity    this could be any object Doctrine trying to persist
+     * @param string $action
+     * @param array  $changeSet
+     *
+     * @return AuditContext
+     */
+    private function createContext($entity, $action, $changeSet = [])
+    {
+        return new AuditContext($action, $this->getPerformer(), $entity, $changeSet);
+    }
+
+    /**
+     * @return Performer
+     */
+    private function getPerformer()
+    {
+        if ($this->tokenStorage && $this->tokenStorage->getToken()
+            && $user = $this->tokenStorage->getToken()->getUser()
+        ) {
+            /* @var Person $user */
+            return new Performer($user->getDisplayName(), $user->getId());
+        } else {
+            return new Performer('System');
         }
     }
 }

@@ -26,16 +26,17 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AuditBundle\EventListener;
+namespace DeskPRO\Bundle\AuditBundle\Log\FieldFilter;
 
-use DeskPRO\Bundle\AuditBundle\Event\LogEvent;
-
-class ActionListener
+/**
+ * Interface FieldFilterInterface.
+ */
+interface FieldFilterInterface
 {
-    public function setAction(LogEvent $event)
-    {
-        $metadata = $event->getMetadata();
-        $log      = $event->getLog();
-        $log->setAction($metadata->table['name'].'.'.$event->getContext()->getAction());
-    }
+    /**
+     * @param mixed $value
+     *
+     * @return mixed
+     */
+    public function filter($value);
 }

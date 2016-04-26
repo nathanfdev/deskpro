@@ -28,8 +28,7 @@
 
 namespace DeskPRO\Bundle\AuditBundle\Event;
 
-use Application\DeskPRO\Domain\DomainObject;
-use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
+use DeskPRO\Bundle\AuditBundle\Configuration\AuditContext;
 use DeskPRO\Bundle\AuditBundle\Log\AuditLog;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\EventDispatcher\Event;
@@ -49,19 +48,9 @@ class LogEvent extends Event
     private $shouldLog = false;
 
     /**
-     * @var EntityInterface|DomainObject
+     * @var AuditContext
      */
-    private $entity;
-
-    /**
-     * @var string
-     */
-    private $action;
-
-    /**
-     * @var array
-     */
-    private $changeSet;
+    private $context;
 
     /**
      * @var AuditLog
@@ -75,16 +64,10 @@ class LogEvent extends Event
 
     /**
      * PreLogEvent constructor.
-     *
-     * @param EntityInterface|DomainObject $entity
-     * @param string                       $action
-     * @param string                       $changeSet
      */
-    public function __construct($entity, $action, $changeSet)
+    public function __construct(AuditContext $context)
     {
-        $this->entity    = $entity;
-        $this->action    = $action;
-        $this->changeSet = $changeSet;
+        $this->context = $context;
     }
 
     /**
@@ -108,27 +91,11 @@ class LogEvent extends Event
     }
 
     /**
-     * @return string
+     * @return AuditContext
      */
-    public function getEntity()
+    public function getContext()
     {
-        return $this->entity;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAction()
-    {
-        return $this->action;
-    }
-
-    /**
-     * @return array
-     */
-    public function getChangeSet()
-    {
-        return $this->changeSet;
+        return $this->context;
     }
 
     /**

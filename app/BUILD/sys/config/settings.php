@@ -1023,7 +1023,8 @@ return [
     /*
      * Here you CAN define strategies for different notifications.
      * E.g. you can deliver messages from IM immediately via pusher application
-     * or ticket updates only via db. Therefore you can use several methods to deliver one event - but you should avoid it,
+     * or ticket updates only via db.
+     * However you can use several methods to deliver one event - but you should avoid it,
      * because it could be unstable just right now.
      */
     'notification.settings.strategies' => [
@@ -1033,14 +1034,15 @@ return [
                 'db',
             ],
         ],
-//        'notification.yet.another.system.event' => [
-//            'strategy' => 'deferred',
-//            'delivery' => [
-//                'db',
-//            ],
-//            'persistance' => 'db',
-//        ],
+        #'notification.yet.another.system.event' => [
+        #    'strategy' => 'deferred',
+        #    'delivery' => [
+        #        'db',
+        #    ],
+        #    'persistance' => 'db',
+        #],
     ],
+
     # Also you MUST provide default strategy. It will be used to handle events that was not described.
     'notification.settings.default_strategy' => [
         'strategy' => 'immediate',
@@ -1048,6 +1050,7 @@ return [
             'db',
         ],
     ],
+
     # You MUST provide pusher application settings if you plan to use it.
     # You SHOULD place it in your config.php file
     'notification.settings.pusher_client.appKey'  => '',
@@ -1067,7 +1070,7 @@ return [
     'portal.chat.require_login'    => false,
 
     ####################################################################################################################
-    # api_logger.settings
+    # api_log
     ####################################################################################################################
 
     // global version id for Etag generating. Change this and whole your api cache would become stale.
@@ -1092,4 +1095,12 @@ return [
     'api_limits.key.hour'    => 100,
     'api_limits.key.day'     => 300,
     'api_limits.key.default' => 50,
+
+    ####################################################################################################################
+    # audit_log
+    ####################################################################################################################
+
+    'audit_log.storage' => 'db',
+
+    'audit_log.configuration' => require('audit_log.settings.php'),
 ];

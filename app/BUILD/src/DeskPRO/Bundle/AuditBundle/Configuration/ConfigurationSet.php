@@ -26,42 +26,26 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AuditBundle\EventListener;
+namespace DeskPRO\Bundle\AuditBundle\Configuration;
 
-use DeskPRO\Bundle\AuditBundle\Configuration\AuditContext;
-use DeskPRO\Bundle\AuditBundle\Configuration\ConfigurationSet;
-use DeskPRO\Bundle\AuditBundle\Event\LogEvent;
+use DeskPRO\Component\Util\TypeUtils;
 
 /**
- * Class DecideListener.
+ * Class ConfigurationSet.
  */
-class DecideListener
+class ConfigurationSet
 {
     /**
-     * @var ConfigurationSet
+     * @var Configuration[]
      */
-    protected $configurationSet;
+    private $configurations;
 
     /**
-     * DecideListener constructor.
-     *
-     * @param ConfigurationSet $configurationSet
+     * @param Configuration $configuration
      */
-    public function __construct(ConfigurationSet $configurationSet)
+    public function registerConfiguration(Configuration $configuration)
     {
-        $this->configurationSet = $configurationSet;
-    }
-
-    /**
-     * @param LogEvent $event
-     */
-    public function onPreLog(LogEvent $event)
-    {
-        $context = $event->getContext();
-        if ($this->supportedEntity($context)) {
-            $event->setShouldLog(true);
-            $event->stopPropagation();
-        }
+        $this->configurations[$configuration->getEntityClass().'::'.$configuration->getAction()] = $configuration;
     }
 
     /**
@@ -69,14 +53,30 @@ class DecideListener
      *
      * @return bool
      */
-    private function supportedEntity(AuditContext $context)
+    public function hasConfigurationFor(AuditContext $context)
     {
-        $result = false;
-        if ($this->configurationSet->hasConfigurationFor($context)) {
-            $configuration = $this->configurationSet->getConfigurationFor($context);
-            $result        = $configuration->calculateConditions();
+        $entityClass = TypeUtils::getEntityClass($context->getEntity());
+
+        return isset($this->configurations[$entityClass.'::'.$context->getAction()]);
+    }
+
+    /**
+     * @param AuditContext $context
+     *
+     * @return Configuration||null
+     */
+    public function getConfigurationFor(AuditContext $context)
+    {
+        $entityClass = TypeUtils::getEntityClass($context->getEntity());
+
+        $key = $entityClass.'::'.$context->getAction();
+        if (isset($this->configurations[$key])) {
+            $configuration = $this->configurations[$key];
+            $configuration->init($context);
+
+            return $configuration;
         }
 
-        return $result;
+        return;
     }
 }

@@ -40,7 +40,7 @@ class ObjectListener
     {
         $log = $event->getLog();
         /** @var EntityInterface|DomainObject $entity */
-        $entity = $event->getEntity();
+        $entity = $event->getContext()->getEntity();
         $log->setObjectId($entity->getId())->setObjectType(TypeUtils::getBaseTypeName($entity));
         $this->writeObjectName($log, $entity);
     }

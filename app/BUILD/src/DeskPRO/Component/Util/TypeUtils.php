@@ -31,6 +31,10 @@
  */
 namespace DeskPRO\Component\Util;
 
+use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
+use Doctrine\Common\Util\ClassUtils;
+
 /**
  * Utility methods working with types.
  */
@@ -86,5 +90,21 @@ class TypeUtils
     public static function getSnakeCaseBaseTypeName($var)
     {
         return StringUtils::toSnakeCase(self::getBaseTypeName($var));
+    }
+
+    /**
+     * @param EntityInterface|DomainObject $entity
+     *
+     * @return string
+     */
+    public static function getEntityClass($entity)
+    {
+        if (!$entity instanceof EntityInterface && !$entity instanceof DomainObject) {
+            throw new \InvalidArgumentException(
+                sprintf('Objects with type [ %s ] are not supported', get_class($entity))
+            );
+        }
+
+        return ClassUtils::getRealClass(get_class($entity));
     }
 }

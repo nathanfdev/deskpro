@@ -26,16 +26,24 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AuditBundle\EventListener;
+namespace DeskPRO\Bundle\AuditBundle\Configuration;
 
-use DeskPRO\Bundle\AuditBundle\Event\LogEvent;
+use Application\DeskPRO\NewSettings\SettingsResolver;
 
-class ActionListener
+class ConfigurationBuilderWrapper
 {
-    public function setAction(LogEvent $event)
+    private $resolver;
+
+    public function __construct(SettingsResolver $resolver, ConfigurationBuilder $builder)
     {
-        $metadata = $event->getMetadata();
-        $log      = $event->getLog();
-        $log->setAction($metadata->table['name'].'.'.$event->getContext()->getAction());
+        $this->resolver = $resolver;
+        $this->builder  = $builder;
+    }
+
+    public function buildConfigurationSet($rebuild = false)
+    {
+        $rawConfig = $this->resolver->getGlobalSettings($rebuild)->get('audit_log.configuration');
+
+        return $this->builder->buildConfigurationSet($rawConfig, $rebuild);
     }
 }

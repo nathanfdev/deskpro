@@ -26,30 +26,23 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AuditBundle\EventListener;
+namespace DeskPRO\Bundle\AuditBundle\Log\FieldFilter;
 
-use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AuditBundle\Event\LogEvent;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-
-class PerformerListener
+class MaskFieldFilter implements FieldFilterInterface
 {
-    private $tokenStorage;
-
-    public function __construct(TokenStorageInterface $tokenStorage)
+    /**
+     * {@inheritdoc}
+     */
+    public function filter($value, $maskChar = '*')
     {
-        $this->tokenStorage = $tokenStorage;
-    }
+        $stringLength = mb_strlen($value);
 
-    public function setPerformer(LogEvent $event)
-    {
-        $log = $event->getLog();
-        if ($token = $this->tokenStorage->getToken()) {
-            /** @var Person $person */
-            $person = $token->getUser();
-            $log->setPerformerName($person->getDisplayName())->setPerformerId($person->getId());
-        } else {
-            $log->setPerformerName('System')->setPerformerId(0);
-        }
+        // mask 60% of string with *
+
+        $start     = mb_substr($value, 0, ceil($stringLength / 5));
+        $end       = mb_substr($value, -ceil($stringLength / 5));
+        $fillCount = $stringLength - mb_strlen($start);
+
+        return sprintf("%s%'{$maskChar}{$fillCount}s", $start, $end);
     }
 }

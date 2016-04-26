@@ -26,16 +26,48 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AuditBundle\EventListener;
+namespace DeskPRO\Bundle\AuditBundle\Log;
 
-use DeskPRO\Bundle\AuditBundle\Event\LogEvent;
-
-class ActionListener
+/**
+ * Class Performer.
+ */
+class Performer
 {
-    public function setAction(LogEvent $event)
+    /**
+     * @var string
+     */
+    private $name;
+
+    /**
+     * @var int
+     */
+    private $id;
+
+    /**
+     * Performer constructor.
+     *
+     * @param string $name
+     * @param int    $id
+     */
+    public function __construct($name, $id = null)
     {
-        $metadata = $event->getMetadata();
-        $log      = $event->getLog();
-        $log->setAction($metadata->table['name'].'.'.$event->getContext()->getAction());
+        $this->name = $name;
+        $this->id   = $id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 }

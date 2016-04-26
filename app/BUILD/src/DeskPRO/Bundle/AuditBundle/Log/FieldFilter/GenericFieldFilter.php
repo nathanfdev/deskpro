@@ -26,16 +26,43 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AuditBundle\EventListener;
+namespace DeskPRO\Bundle\AuditBundle\Log\FieldFilter;
 
-use DeskPRO\Bundle\AuditBundle\Event\LogEvent;
-
-class ActionListener
+/**
+ * Class GenericFieldFilter.
+ */
+class GenericFieldFilter implements FieldFilterInterface
 {
-    public function setAction(LogEvent $event)
+    /**
+     * @var callable
+     */
+    private $callable;
+
+    /**
+     * @var array
+     */
+    private $arguments;
+
+    /**
+     * GenericFieldFilter constructor.
+     *
+     * @param callable $callee
+     * @param array    $arguments
+     */
+    public function __construct(callable $callee, array $arguments = [])
     {
-        $metadata = $event->getMetadata();
-        $log      = $event->getLog();
-        $log->setAction($metadata->table['name'].'.'.$event->getContext()->getAction());
+        $this->callable  = $callee;
+        $this->arguments = $arguments;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function filter($value)
+    {
+        $arguments = $this->arguments;
+        array_unshift($arguments, $value);
+
+        return call_user_func_array($this->callable, $arguments);
     }
 }

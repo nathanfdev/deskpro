@@ -40,14 +40,16 @@ class DescriptionListener
 
     public function setDescription(LogEvent $event)
     {
+        $action = $event->getContext()->getAction();
+
         $description = sprintf(
             'Entity type [ %s ] with id [ %s ] was %s.',
             $event->getLog()->getObjectType(),
             $event->getLog()->getObjectId(),
-            $this->getVerb($event->getAction())
+            $this->getVerb($action)
         );
 
-        if ($event->getAction() === AuditListener::UPDATE) {
+        if ($action === AuditListener::UPDATE) {
             $description .= sprintf(
                 ' Updated fields: %s.',
                 implode(', ', array_keys($event->getLog()->getData()->getDiff()))

@@ -1,0 +1,19 @@
+services:
+   audit_log.configuration_builder:
+     class: DeskPRO\Bundle\AuditBundle\Configuration\ConfigurationBuilder
+     arguments:
+       - "@audit_log.field_filter_service"
+
+   audit_log.configuration_builder_wrapper:
+     class: DeskPRO\Bundle\AuditBundle\Configuration\ConfigurationBuilderWrapper
+     arguments:
+       - "@settings_resolver"
+       - "@audit_log.configuration_builder"
+
+   audit_log.field_filter_service:
+    class: DeskPRO\Bundle\AuditBundle\Log\FieldFilter\FieldFilterService
+    arguments:
+      - "@service_container"
+
+   audit_log.field_filter.mask:
+     class: DeskPRO\Bundle\AuditBundle\Log\FieldFilter\MaskFieldFilter
