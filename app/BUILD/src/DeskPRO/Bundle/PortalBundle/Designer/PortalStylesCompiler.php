@@ -63,7 +63,7 @@ class PortalStylesCompiler
     /**
      * @var string path to the portal SCSS file
      */
-    private $styles_file_path;
+    private $styles_lrt_file_path;
 
     /**
      * @var string path to the portal SCSS file
@@ -78,7 +78,7 @@ class PortalStylesCompiler
     /**
      * @param EntityManager $em
      * @param ThemeSet      $edit_theme_set
-     * @param string        $styles_file_path
+     * @param string        $styles_lrt_file_path
      * @param string        $styles_rtl_file_path
      * @param string        $custom_scss
      *
@@ -87,13 +87,13 @@ class PortalStylesCompiler
     public function __construct(
         EntityManager $em,
         ThemeSet $edit_theme_set,
-        $styles_file_path,
+        $styles_lrt_file_path,
         $styles_rtl_file_path,
         $custom_scss
     ) {
         $this->em = $em;
-        if (!$this->styles_file_path = realpath($styles_file_path)) {
-            throw new \Exception("Can't resolve a file from the given path: {$this->styles_file_path}");
+        if (!$this->styles_lrt_file_path = realpath($styles_lrt_file_path)) {
+            throw new \Exception("Can't resolve a file from the given path: {$this->styles_lrt_file_path}");
         }
         if (!$this->styles_rtl_file_path = realpath($styles_rtl_file_path)) {
             throw new \Exception("Can't resolve a file from the given path: {$this->$styles_rtl_file_path}");
@@ -187,7 +187,7 @@ class PortalStylesCompiler
         $compiler = new StylesheetCompiler();
 
         return $compiler->compile(
-            $direction === 'RTL' ? $this->styles_rtl_file_path : $this->styles_file_path,
+            $direction === 'RTL' ? $this->styles_rtl_file_path : $this->styles_lrt_file_path,
             $variables,
             $this->custom_scss
         );
