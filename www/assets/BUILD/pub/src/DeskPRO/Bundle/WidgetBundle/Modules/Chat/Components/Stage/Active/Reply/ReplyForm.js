@@ -43,9 +43,7 @@ export class ReplyForm extends React.Component {
   }
 
   onChangeMessage = value => {
-    this.setState({
-      message: value
-    });
+    this.setState({ message: value });
 
     if (!this.timeout) {
       const onUserTyping = () => {
@@ -73,9 +71,7 @@ export class ReplyForm extends React.Component {
     event.preventDefault();
 
     this.props.onSendMessage(this.state.message);
-    this.setState({
-      message: ''
-    });
+    this.setState({ message: '' });
   };
 
   renderRte() {
@@ -94,14 +90,16 @@ export class ReplyForm extends React.Component {
             ownerDocument: window.widgetFrame.document,
             autoLink:      true,
             imageDragging: true,
-            placeholder:    {
-              text: portalPhrases.get('portal.chat.message_type', {'{agentName}': this.props.agentName})
+
+            placeholder: {
+              text: portalPhrases.get('portal.chat.message_type', { '{agentName}': this.props.agentName })
             },
             toolbar: {
               buttons:                ['bold', 'italic', 'underline'],
               updateOnEmptySelection: true
             }
-          }} />
+          }}
+        />
       </ScrollArea>
     );
   }
@@ -121,14 +119,14 @@ export class ReplyForm extends React.Component {
           <div className="message-container message-container-with-attached-images">
             {attachedImagesCount
               ? <div>
-                  <AttachmentContainer>
-                    <AttachedImages />
-                  </AttachmentContainer>
+              <AttachmentContainer>
+                <AttachedImages />
+              </AttachmentContainer>
 
-                  <div className="textarea-container">
-                    {this.renderRte()}
-                  </div>
-                </div>
+              <div className="textarea-container">
+                {this.renderRte()}
+              </div>
+            </div>
               : this.renderRte()
             }
 
@@ -154,9 +152,9 @@ export class ReplyForm extends React.Component {
             </span>
 
             {false /* disabled for now */ &&
-              <a href="#" className="dpdesignportal-chat-form-button" onClick={this.onScreenShare}>
-                <i className="fa fa-camera" /> {portalPhrases.get('portal.chat.screen_share')}
-              </a>
+            <a href="#" className="dpdesignportal-chat-form-button" onClick={this.onScreenShare}>
+              <i className="fa fa-camera" /> {portalPhrases.get('portal.chat.screen_share')}
+            </a>
             }
 
             <EmotionButton
@@ -164,7 +162,8 @@ export class ReplyForm extends React.Component {
               context={[parent.document, window.widgetFrame.document]}
               getEditor={() => this.refs.editor}
               popupPositionAt="center top-15"
-              popupPositionMy="center bottom" />
+              popupPositionMy="center bottom"
+            />
           </div>
 
           <EndChatContainer>
@@ -173,9 +172,11 @@ export class ReplyForm extends React.Component {
         </div>
 
         <DropZoneContainer>
-          <DropZone ref="dropZone"
-                    getExternalInput={() => this.refs.fileUpload}
-                    uploadUrl={`${window.DP_HELPDESK_URL}portal/api/blobs/temp`}>
+          <DropZone
+            ref="dropZone"
+            getExternalInput={() => this.refs.fileUpload}
+            uploadUrl={`${window.DP_HELPDESK_URL}portal/api/blobs/temp`}
+          >
 
             <DragOverlayListener context={[parent.document, window.widgetFrame.document]}>
               <DropZoneOverlay />

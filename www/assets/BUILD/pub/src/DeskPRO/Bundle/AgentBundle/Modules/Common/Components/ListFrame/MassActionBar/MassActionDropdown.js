@@ -19,9 +19,7 @@ export class MassActionDropdown extends Component {
   };
 
   componentWillMount() {
-    this.setState({
-      expanded: this.props.isActive
-    });
+    this.setState({ expanded: this.props.isActive });
   }
 
   toggleExpanded = (event) => {
@@ -40,7 +38,7 @@ export class MassActionDropdown extends Component {
           currentParams={currentParams}
           setParams={setMassActionsParams}
           resetSingleAction={resetParam}
-          />
+        />
       );
     } else if (item.type === 'select_action') {
       return (
@@ -49,7 +47,7 @@ export class MassActionDropdown extends Component {
           setParams={setMassActionsParams}
           currentParams={currentParams}
           resetSingleAction={resetParam}
-          />
+        />
       );
     } else if (item.type === 'assign_action') {
       return (
@@ -57,7 +55,7 @@ export class MassActionDropdown extends Component {
           setParams={setMassActionsParams}
           currentParams={currentParams}
           resetSingleAction={resetParam}
-          />
+        />
       );
     } else if (item.type === 'menu') {
       return (
@@ -66,7 +64,7 @@ export class MassActionDropdown extends Component {
           setParams={setMassActionsParams}
           currentParams={currentParams}
           resetSingleAction={resetParam}
-          />
+        />
       );
     } else if (item.type === 'set_date') {
       return (
@@ -75,15 +73,15 @@ export class MassActionDropdown extends Component {
           setParams={setMassActionsParams}
           currentParams={currentParams}
           resetSingleAction={resetParam}
-          />
+        />
       );
     } else if (item.type === 'mass_reply') {
       return (
         <HtmlReplyActionContainer
           setParams={setMassActionsParams}
-          currentParams={currentParams}
+          currentParams={currentParams.get('reply')}
           resetSingleAction={resetParam}
-          />
+        />
       );
     }
     return null;
@@ -91,6 +89,7 @@ export class MassActionDropdown extends Component {
 
   render() {
     const { id, item, currentParams } = this.props;
+
     const checkIfButtonHasValue = () => {
       if (!currentParams) {
         return false;
@@ -127,17 +126,17 @@ export class MassActionDropdown extends Component {
           label={item.label}
           icon={item.icon}
           onClick={this.toggleExpanded}
-          />
+        />
         <Detached
           isOpen={this.state.expanded}
           positionAt="left bottom"
           positionTarget={this.refs[`button${id}`]}
-          >
+        >
           <ClickOut
             onClickOut={this.collapse}
             ignoreNodes={[this.refs.menuItem, '.dpw-navigation-dropdown-panel']}
             additionalNodes={['.dpw-navigation-dropdown-item-clear']}
-            >
+          >
             {this.renderPanel(item)}
           </ClickOut>
         </Detached>
