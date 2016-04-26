@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Templating;
 
 use Application\DeskPRO\App;
@@ -94,32 +95,6 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
     public function getSettingGroup($group)
     {
         $group_vars = App::get('deskpro.core.settings')->getGroup($group);
-
-        if ($group == 'user_style') {
-            if (defined('DPC_IS_CLOUD')) {
-                // Always use https cloud.deskpro.com for css,
-                // it'll always work regardless of how you mess with URLs and ssl certs
-                $group_vars['static_path'] = 'https://cloud.deskpro.com/web'.DPC_SITE_BUILD_NUM;
-            } else {
-                // External blob storage means we need ot use a full URL for assets
-                if (!App::getConfig('static_path') && App::getContainer()->getBlobStorage()->getPreferredAdapterId() == 's3') {
-                    $url = App::getSetting('core.deskpro_url');
-                    $url = str_replace('index.php', '', $url);
-                    $url = trim($url, '/');
-
-                    $group_vars['static_path'] = $url.'/web';
-                } else {
-                    // A custom defined static URL
-                    if (App::getConfig('static_path')) {
-                        $group_vars['static_path'] = rtrim(App::getConfig('static_path'), '/');
-
-                        // Default static path relative to current
-                    } else {
-                        $group_vars['static_path'] = rtrim('../..'.(App::getConfig('static_path') ?: '/web/'), '/');
-                    }
-                }
-            }
-        }
 
         return $group_vars;
     }

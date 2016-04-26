@@ -670,7 +670,7 @@ class Ticket extends AbstractEntityRepository
      */
     public function checkDupeTicket($ticket = null, $secs_ago = 10800 /* 3 hours */)
     {
-        if (App::getConfig('debug.disable_dupe_check')) {
+        if (!App::getSetting('core_tickets.enable_dupe_checking')) {
             return false;
         }
 

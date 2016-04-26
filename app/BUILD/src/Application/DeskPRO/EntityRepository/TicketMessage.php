@@ -203,14 +203,6 @@ class TicketMessage extends AbstractEntityRepository
      */
     public function checkDupeMessage(Entity\TicketMessage $message, $ticket = null, $secs_ago = 10800 /* 3 hours */, \Orb\Log\Logger $logger = null)
     {
-        if (App::getConfig('debug.disable_dupe_check')) {
-            if ($logger) {
-                $logger->logDebug('debug.disable_dupe_check is enabled');
-            }
-
-            return false;
-        }
-
         if (!App::getSetting('core_tickets.enable_dupe_checking')) {
             if ($logger) {
                 $logger->logDebug('core_tickets.enable_dupe_checking is disabled');

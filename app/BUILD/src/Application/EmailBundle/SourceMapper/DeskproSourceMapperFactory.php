@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\SourceMapper;
 
 use Application\EmailBundle\SourceMapper\EmailRateLimit\EmailRateLimitFactory;
@@ -52,7 +53,7 @@ class DeskproSourceMapperFactory
 
         $env = $container->get('deskpro.app_env');
 
-        if ($info = $env->getConfig('sys.sendmail_redis_queue')) {
+        if ($info = $env->getConfig('settings.sendmail_redis_queue')) {
             // see https://github.com/nrk/predis/wiki/Connection-Parameters
             $client       = new Predis\Client($info);
             $redis_queuer = new RedisPendingQueuer($client, 'sendmail_queue');
