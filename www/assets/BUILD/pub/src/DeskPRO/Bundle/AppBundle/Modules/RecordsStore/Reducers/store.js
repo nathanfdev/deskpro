@@ -59,9 +59,7 @@ export default createReducer(storeInitialState, {
       isError:   `${recordName}.statuses.${collectionName}.isError`,
       errorCode: `${recordName}.statuses.${collectionName}.errorCode`
     })),
-    async({
-      success: handleSetCollection
-    })
+    async({ success: handleSetCollection })
   ),
 
   [setCollection]: handleSetCollection,
@@ -70,6 +68,7 @@ export default createReducer(storeInitialState, {
 
   [removeFromCollection]: (state, { recordName, collectionName, ids }) => {
     let collection = state.getIn([recordName, 'collections', collectionName]);
+
     collection = collection.withMutations(list => {
       for (const i of ids) {
         const index = list.indexOf(i);
@@ -92,7 +91,9 @@ export default createReducer(storeInitialState, {
       // delete collection
       next = next.deleteIn([recordName, 'collections', collectionName]);
 
-      next = gc(next, recordName); // clean up records
+      if (state.getIn([recordName, 'records'])) {
+        next = gc(next, recordName); // clean up records
+      }
     }
 
     return next;
