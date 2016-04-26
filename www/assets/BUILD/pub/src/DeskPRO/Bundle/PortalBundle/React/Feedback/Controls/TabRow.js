@@ -19,6 +19,7 @@ export class TabRow extends React.Component {
               setStatus={this.props.setStatus}
               available={this.props.available}
               setStatusCategory={this.props.setStatusCategory}
+              types={this.props.filter.getSelectedTypes()}
               />
           );
         })}

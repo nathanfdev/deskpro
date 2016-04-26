@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Helper;
 
 use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
@@ -77,6 +78,9 @@ class FeedbackFilterUriHelper
                 if (isset($parts[1])) {
                     $filter->setSortDirection($parts[1]);
                 }
+            } elseif ($categories = $this->getIntArrayFromCsv($segment)) {
+                $filter->setStatus(FeedbackFilter::STATUS_ACTIVE);
+                $filter->setStatusCategories($categories);
             } else {
                 throw new \InvalidArgumentException('could not parse feedback uri segment "'.$segment.'"');
             }
