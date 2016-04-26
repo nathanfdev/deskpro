@@ -118,10 +118,6 @@ class FeedbackDataService extends AbstractDataService
                     }
                 }
 
-//                if (empty($types)) {
-//                    $types = $allowed_types;
-//                }
-
                 $filter->setTypes($types);
                 //
                 // end filter types
