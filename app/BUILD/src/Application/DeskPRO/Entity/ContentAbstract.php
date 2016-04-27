@@ -472,7 +472,6 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         }
 
         $this->setModelField('content', $content);
-        $this->setModelField('date_updated', new \DateTime());
 
         return $this;
     }
@@ -727,6 +726,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         if ($comment->getStatus() == CommentAbstract::STATUS_VISIBLE) {
             $this->setModelField('num_comments', $this->num_comments + 1);
+            $this->setDateUpdated();
         }
         $this->setModelField('date_last_comment', new \DateTime());
         $comment->setObject($this);
@@ -815,7 +815,6 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function setRealContent($content)
     {
         $this->setModelField('content', $content);
-        $this->setModelField('date_updated', new \DateTime());
     }
 
     /**
@@ -880,8 +879,23 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         return $content;
     }
 
+    protected function getUpdateFields()
+    {
+        return [
+            'title',
+            'content',
+            'status',
+        ];
+    }
+
     public function _preUpdate()
     {
-        $this->setModelField('date_updated', new \DateTime());
+        foreach ($this->getStateChangeRecorder()->getTouchedFields() as $touched_field) {
+            if (in_array($touched_field, $this->getUpdateFields())) {
+                $this->setDateUpdated(new DateTime());
+
+                return true;
+            }
+        }
     }
 }
