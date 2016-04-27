@@ -160,22 +160,26 @@ class FeedbackDataService extends AbstractDataService
                 // "date", "most-popular", "highest-rating", "most-discussed", "most-viewed"
                 switch ($filter->getSort()) {
                     case FeedbackFilter::SORT_POPULARITY:
+                        $qb->orderBy('f.total_rating*5/DATE_DIFF(CURRENT_TIMESTAMP(),f.date_created)',
+                            $filter->getSortDirection());
+                        $qb->addOrderBy('f.date_created',
+                            $filter->getSortDirection());
+                        break;
                     case FeedbackFilter::SORT_RATING:
-                        $sort_string = 'f.total_rating';
+                        $qb->orderBy('f.total_rating', $filter->getSortDirection());
                         break;
                     case FeedbackFilter::SORT_COMMENTS:
-                        $sort_string = 'f.num_comments';
+                        $qb->orderBy('f.num_comments', $filter->getSortDirection());
                         break;
                     case FeedbackFilter::SORT_VIEWS:
-                        $sort_string = 'f.view_count';
+                        $qb->orderBy('f.view_count', $filter->getSortDirection());
                         break;
                     default:
-                        $sort_string = 'f.date_created';
+                        $qb->orderBy('f.date_created', $filter->getSortDirection());
                 }
 
                 // sort direction
                 // "desc" or "asc"
-                $qb->orderBy($sort_string, $filter->getSortDirection());
 
                 $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
                 $pager->setMaxPerPage($max_per_page);

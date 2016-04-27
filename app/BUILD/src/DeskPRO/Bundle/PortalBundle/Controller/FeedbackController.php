@@ -108,7 +108,8 @@ class FeedbackController extends AbstractController
         //
         // NEW FEEDBACK FORM
         //
-        $rerenderingSaved = $request->attributes->get('rerender-form', false); // true if auto-submit SavedFormController wants us to definitely rerender
+        // true if auto-submit SavedFormController wants us to definitely rerender
+        $rerenderingSaved = $request->attributes->get('rerender-form', false);
         $permissionBag    = $this->getPermissionBagForCurrentUser();
         $newFeedback      = new Feedback();
         $newFeedback->setIsReviewed(false);
@@ -640,7 +641,9 @@ class FeedbackController extends AbstractController
         }
 
         $statusCategories       = [];
-        $statusCategoriesEntity = $this->getRepo('DeskPRO:FeedbackStatusCategory')->findBy(['status_type' => FeedbackFilter::$statuses]);
+        $statusCategoriesEntity = $this->getRepo('DeskPRO:FeedbackStatusCategory')->findBy(
+            ['status_type' => FeedbackFilter::$statuses]
+        );
         foreach ($statusCategoriesEntity as $statusCategory) {
             $statusType = $statusCategory->getStatusType();
             if (!array_key_exists($statusType, $statusCategories)) {
