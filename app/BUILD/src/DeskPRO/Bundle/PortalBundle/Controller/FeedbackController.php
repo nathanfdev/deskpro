@@ -198,7 +198,7 @@ class FeedbackController extends AbstractController
         //
         $isSubscribed = false;
         if (
-        $this->getBrandSetting('user.feedback_subscriptions', false)
+        $this->getBrandSetting('user.feedback_subscriptions', false) && $this->getUser()
         ) {
             // waiting info regarding article category subscriptions
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('feedback', $this->getUser());
@@ -579,7 +579,7 @@ class FeedbackController extends AbstractController
 
     /**
      * @Route("/feedback/root/toggle-subscription", name="portal_feedback_root_toggle_subscription")
-     * @Security("is_granted('USE_FEEDBACK')")
+     * @Security("is_granted('ROLE_USER') and is_granted('USE_FEEDBACK')")
      * @AutoPostOnGetRequest()
      */
     public function articleRootCategorySubscriptionAction()

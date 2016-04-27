@@ -98,7 +98,7 @@ class DownloadsController extends AbstractController
         //
         $isSubscribed = false;
         if (
-        $this->getBrandSetting('user.downloads_subscriptions', false)
+        $this->getBrandSetting('user.downloads_subscriptions', false) && $this->getUser()
         ) {
             // waiting info regarding article category subscriptions
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('downloads', $this->getUser());
@@ -390,7 +390,7 @@ class DownloadsController extends AbstractController
 
     /**
      * @Route("/downloads/root/toggle-subscription", name="portal_downloads_root_category_toggle_subscription")
-     * @Security("is_granted('USE_DOWNLOADS')")
+     * @Security("is_granted('ROLE_USER') and is_granted('USE_DOWNLOADS')")
      * @AutoPostOnGetRequest()
      *
      * @return Response

@@ -90,7 +90,7 @@ class NewsController extends AbstractController
         //
         $isSubscribed = false;
         if (
-        $this->getBrandSetting('user.news_subscriptions', false)
+        $this->getBrandSetting('user.news_subscriptions', false) && $this->getUser()
         ) {
             // waiting info regarding article category subscriptions
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('news', $this->getUser());
@@ -369,7 +369,7 @@ class NewsController extends AbstractController
 
     /**
      * @Route("/news/root/toggle-subscription", name="portal_news_root_category_toggle_subscription")
-     * @Security("is_granted('USE_NEWS')")
+     * @Security("is_granted('ROLE_USER') and is_granted('USE_NEWS')")
      * @AutoPostOnGetRequest()
      */
     public function newsRootCategorySubscriptionAction()

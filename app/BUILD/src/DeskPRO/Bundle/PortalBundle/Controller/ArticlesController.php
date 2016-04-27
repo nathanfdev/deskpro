@@ -91,7 +91,7 @@ class ArticlesController extends AbstractController
         //
         $isSubscribed = false;
         if (
-        $this->getBrandSetting('user.kb_subscriptions', false)
+        $this->getBrandSetting('user.kb_subscriptions', false) && $this->getUser()
         ) {
             // waiting info regarding article category subscriptions
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('kb', $this->getUser());
@@ -345,7 +345,7 @@ class ArticlesController extends AbstractController
 
     /**
      * @Route("/kb/root/toggle-subscription", name="portal_kb_article_root_category_toggle_subscription")
-     * @Security("is_granted('USE_ARTICLES')")
+     * @Security("is_granted('ROLE_USER') and is_granted('USE_ARTICLES')")
      * @AutoPostOnGetRequest()
      */
     public function articleRootCategorySubscriptionAction()
