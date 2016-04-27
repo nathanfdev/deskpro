@@ -280,9 +280,7 @@ class TicketTypeTest extends PortalTestCase
                     'format'  => 'text',
                 ],
                 FormFields::PERSON => [
-                    FormFields::USER_NAME => [
-                        'name' => 'Chris Name',
-                    ],
+                    FormFields::USER_NAME  => 'Chris Name',
                     FormFields::USER_EMAIL => [
                         'email' => 'some@test.email',
                     ],
@@ -319,9 +317,7 @@ class TicketTypeTest extends PortalTestCase
                     'format'  => 'text',
                 ],
                 FormFields::PERSON => [
-                    FormFields::USER_NAME => [
-                        'name' => 'Chris Name',
-                    ],
+                    FormFields::USER_NAME  => 'Chris Name',
                     FormFields::USER_EMAIL => [
                         'email' => 'some@test.email',
                     ],
@@ -345,6 +341,7 @@ class TicketTypeTest extends PortalTestCase
                     'format'  => 'text',
                 ],
                 FormFields::PERSON => [
+                    FormFields::USER_NAME  => 'Chris Name',
                     FormFields::USER_EMAIL => [
                         'email' => 'some@test.email',
                     ],
