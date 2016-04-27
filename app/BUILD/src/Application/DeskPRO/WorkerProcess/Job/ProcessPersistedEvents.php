@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use DeskPRO\Bundle\AppBundle\Entity\Event;
@@ -54,10 +53,10 @@ class ProcessPersistedEvents extends AbstractJob
             $strategy = $event_dispatcher = $this->getContainer()->get('deskpro.notification.strategy_factory')->create($events[0]->getEvent());
             foreach ($events as $event) {
                 $strategy->handlePersistedEvent($event->getEvent());
-//                $event->setIsPorcessed(true);
-//                $em->persist($event);
+                $event->setIsPorcessed(true);
+                $em->persist($event);
             }
-//            $em->flush();
+            $em->flush();
         }
     }
 }

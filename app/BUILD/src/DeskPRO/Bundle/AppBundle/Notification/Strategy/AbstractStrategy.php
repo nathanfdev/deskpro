@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Notification\Strategy;
 
 use DeskPRO\Bundle\AppBundle\Notification\Delivery\DeliveryService;
+use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\NotifyHandlerCollection;
 use DeskPRO\Bundle\AppBundle\Notification\NotifyHandlerInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Persistance\PersistanceAdapterInterface;
@@ -64,5 +65,12 @@ abstract class AbstractStrategy implements NotificationStrategyInterface
         $this->event_handlers->attachHandler($handler);
 
         return $this;
+    }
+
+    public function handlePersistedEvent(SystemEventInterface $event)
+    {
+        // this is just a stub for edge case when someone switched deferred strategy to immediate
+        // and factory returns immediate strategy, that couldn't process persisted events
+        return;
     }
 }
