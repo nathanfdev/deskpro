@@ -34,6 +34,8 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\Traits\Labels\LabelsHelper;
+use DeskPRO\Bundle\ApiBundle\Traits\TicketsPagerTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
@@ -41,8 +43,6 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalTermEngine;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
-use Pagerfanta\Adapter\FixedAdapter;
-use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -56,7 +56,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  */
 class TicketsController extends AbstractTicketsController
 {
-    use \DeskPRO\Bundle\ApiBundle\Traits\Labels\LabelsHelper;
+    use LabelsHelper, TicketsPagerTrait;
 
     public static $type = TicketType::class;
 
@@ -112,10 +112,9 @@ class TicketsController extends AbstractTicketsController
      *      statusCodes={
      *          200="Returned if everything is OK",
      *          400="You request was malformed"
-     *      },
-     *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket>"
+     *      }
      * )
-     * @Rest\Get("", name="api_tickets")
+     * @Rest\Get("")
      *
      * @param Request $request
      *
@@ -126,7 +125,8 @@ class TicketsController extends AbstractTicketsController
         $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW_LIST, $this->getPermissionGroupContext($request));
 
         // if the "ids" param is provided, then just use it to select tickets
-        if ($ids = $request->query->get('ids')) {
+        $ids = $request->query->get('ids');
+        if ($ids) {
             $currentPage = $request->query->getInt('page', 1);
             $maxPerPage  = $request->query->getInt('count', min(count($ids), self::$listMaxResults));
             $ids         = !empty($ids) ? explode(',', $ids) : [];
@@ -177,47 +177,17 @@ class TicketsController extends AbstractTicketsController
             $currentPage = $request->query->getInt('page', 1);
             $maxPerPage  = $request->query->getInt('count', self::$listPerPage);
 
-            /** @var \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalExecutableQuery $tickets_query */
-            $tickets_query = $engine->evaluate($term, $context);
-            $total         = $tickets_query->fetchCount();
-            $tickets_query->setCount($maxPerPage);
-            $tickets_query->setPage($currentPage);
-            $tickets_query->addOrderBy($orderBy, $orderDir);
-            $ids = $tickets_query->fetchIds();
+            /** @var \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalExecutableQuery $ticketsQuery */
+            $ticketsQuery = $engine->evaluate($term, $context);
+            $total        = $ticketsQuery->fetchCount();
+            $ticketsQuery->setCount($maxPerPage);
+            $ticketsQuery->setPage($currentPage);
+            $ticketsQuery->addOrderBy($orderBy, $orderDir);
+
+            $ids = $ticketsQuery->fetchIds();
         }
 
-        $tickets      = $this->selectTickets($ids);
-        $pagerAdapter = new FixedAdapter($total, $tickets);
-        $pager        = new Pagerfanta($pagerAdapter);
-        $pager->setMaxPerPage($maxPerPage);
-        $pager->setCurrentPage($currentPage);
-
-        return View::create(
-            $this->wrap($pager),
-            Response::HTTP_OK
-        );
-    }
-
-    /**
-     * @param array $ids
-     *
-     * @return Ticket[]
-     */
-    protected function selectTickets($ids = [])
-    {
-        $em  = $this->getManager();
-        $ids = array_map(function ($id) { return (int) $id; }, $ids);
-
-        $query = $em
-            ->createQuery('SELECT t from DeskPRO:Ticket t WHERE t.id IN (?0)')
-            ->setParameters([$ids]);
-
-        $tickets = $query->getResult();
-        usort($tickets, function (Ticket $a, Ticket $b) use ($ids) {
-            return array_search($a->getId(), $ids) > array_search($b->getId(), $ids);
-        });
-
-        return $tickets;
+        return View::create($this->wrap($this->getTicketsPager($total, $ids, $maxPerPage, $currentPage)));
     }
 
     /**

@@ -26,22 +26,17 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\LegacyFilters;
 
 use Application\DeskPRO\Entity\LegacyTicketFilter;
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Searcher\SearcherAbstract;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\ApiBundle\Traits\TicketsPagerTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
-use Pagerfanta\Adapter\FixedAdapter;
-use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -57,6 +52,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class TicketFiltersController extends CrudController
 {
+    use TicketsPagerTrait;
+
     public static $exposeOnly = ['list', 'get'];
     public static $entity     = LegacyTicketFilter::class;
     public static $listOrder  = 'asc';
@@ -91,32 +88,13 @@ class TicketFiltersController extends CrudController
         $currentPage = $request->query->getInt('page', 1);
         $maxPerPage  = $request->query->getInt('count', self::$listPerPage);
 
-        $ticketIds = $searcher->getMatches([
+        $total = $searcher->getCount();
+        $ids   = $searcher->getMatches([
             'limit'  => $maxPerPage,
             'offset' => $maxPerPage * ($currentPage - 1),
         ]);
 
-        $tickets = [];
-        if (count($ticketIds)) {
-            $qb = $this
-                ->getManager()
-                ->createQueryBuilder()
-                ->select('t, field(t.id, :ids) as HIDDEN field')
-                ->from(Ticket::class, 't')
-                ->where('t.id IN (:ids)')
-                ->orderBy('field')
-                ->setParameter('ids', $ticketIds)
-            ;
-
-            $tickets = $qb->getQuery()->getResult();
-        }
-
-        $pager = new Pagerfanta(new FixedAdapter($searcher->getCount(), $tickets));
-
-        $pager->setMaxPerPage($maxPerPage);
-        $pager->setCurrentPage($currentPage);
-
-        return View::create($this->wrap($pager));
+        return View::create($this->wrap($this->getTicketsPager($total, $ids, $maxPerPage, $currentPage)));
     }
 
     /**
