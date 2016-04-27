@@ -16,6 +16,10 @@ $secondary-preemptive-background-color: #f8f8f8;
     width: 320px;
   }
 
+  &.hidden-popup {
+    display: none;
+  }
+
   a.preemtive-button {
     position: relative;
     display: inline-block;

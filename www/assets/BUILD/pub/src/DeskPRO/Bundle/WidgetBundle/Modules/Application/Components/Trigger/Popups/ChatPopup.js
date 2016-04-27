@@ -12,11 +12,13 @@ export class ChatPopup extends React.Component {
 
   render() {
     const { small, widgetPosition, backgroundColor, children } = this.props;
+    const parentWidth = $(window.parent.document).width();
 
     return (
       <div className={classNames('dpdesignportal-state-buttons', {
         'dpdesignportal-agent-message': !small,
-        'dpdesignportal-online-agents': small
+        'dpdesignportal-online-agents': small,
+        'hidden-popup': parentWidth < 760
       })}>
         <div
           className={classNames('preemtive-chat', { small, 'position-left': widgetPosition === 'bottom.left' })}
