@@ -45,11 +45,12 @@ class AcceptDatabaseStep extends AbstractStep
         $dbs    = InstallProfile::getDbs();
         $info   = [];
 
+        $advanced = $this->getContext()->getInput()->getOption('advanced');
+
         while (true) {
             foreach ($dbs as $db) {
-                $canUseDefault = $db !== 'db';
-                $info[$db]     = $this->requestDbInfo($dbinfo, $db, $canUseDefault);
-                if (!$canUseDefault && !$info[$db]) {
+                $info[$db] = $this->requestDbInfo($dbinfo, $db, $advanced, $db === 'db');
+                if ($advanced && !$info[$db]) {
                     break;
                 }
             }
@@ -68,22 +69,26 @@ class AcceptDatabaseStep extends AbstractStep
         $this->getSession()->enableFlag('reset_config');
     }
 
-    private function requestDbInfo($dbinfo, $db, $canUseDefault = false)
+    private function requestDbInfo($dbinfo, $db, $advanced, $defaultDb)
     {
         $f = $this->getFormatterHelper();
 
-        if ($canUseDefault) {
-            $this->writeln("Do you want to use default connection for $db?");
-            if ($this->askConfirm(true)) {
-                return $dbinfo;
+        if (!$defaultDb) {
+            if ($advanced) {
+                $this->writeln("Do you want to use default connection for $db?");
+                if ($this->askConfirm(true)) {
+                    return $dbinfo;
+                } else {
+                    $dbinfo = clone $dbinfo;
+                }
             } else {
-                $dbinfo = clone $dbinfo;
+                return $dbinfo;
             }
         }
 
         $this->writeln($f->formatBlock('MySQL Host', 'question', true));
 
-        if (!$canUseDefault) {
+        if ($defaultDb) {
             $this->writeln('Please enter the server/hostname for your MySQL server. Examples:');
             if (!EnvUtils::isWindows()) {
                 $this->writeln('  > localhost                          <info>(host name)</info>');
@@ -121,7 +126,7 @@ class AcceptDatabaseStep extends AbstractStep
 
         $this->writeln($f->formatBlock('Checking database details', 'question', true));
 
-        if (!$this->validateDbInfo($dbinfo, true, $canUseDefault)) {
+        if (!$this->validateDbInfo($dbinfo, true, $advanced)) {
             $this->writeln('');
             $this->writeln('The database details you entered appear to be incorrect. You will be prompted to re-enter your details.');
             $this->writeln('Press any key when you are ready...');

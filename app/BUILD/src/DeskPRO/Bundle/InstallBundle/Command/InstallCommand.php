@@ -58,6 +58,7 @@ class InstallCommand extends ContainerAwareCommand
             ->addOption('profile', 'p', InputOption::VALUE_REQUIRED, 'Get answers from a profile file')
             ->addOption('skip-wizard', null, InputOption::VALUE_NONE, 'Use the existing config files and skip the install wizard (including checks)')
             ->addOption('dev', null, InputOption::VALUE_NONE, 'Shortcut for --restart, --skip-wizard, --opt_skip_recommendations, --install-source dev')
+            ->addOption('advanced', null, InputOption::VALUE_NONE, 'If you want to set up advanced settings')
             ->addOption('user', null, InputOption::VALUE_REQUIRED, 'Shortcut for specifying all user info at once. It must be a comma-separated value of "name, email, password" or "email, password". Ex: --user "John Doe, foo@bar.com, mypassword"')
             ->addOption('install-source', null, InputOption::VALUE_REQUIRED, 'From where this installer is being called from (internally used)');
 
