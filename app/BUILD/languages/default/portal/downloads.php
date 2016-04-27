@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
     'portal.downloads.download'         => 'Download',
     'portal.downloads.none'             => 'No downloads yet',
     'portal.downloads.recent-downloads' => 'Recent Downloads',
@@ -35,4 +35,5 @@ return array(
     'portal.downloads.section-title'    => 'Downloads',
     'portal.downloads.uploaded-on'      => 'Uploaded',
     'portal.downloads.view-x-files'     => 'View 1 download|View {{count}} downloads',
-);
+    'portal.downloads.view-as-agent'    => 'You can see this page because you are an agent. Normal users will not be able to view this page.',
+];
