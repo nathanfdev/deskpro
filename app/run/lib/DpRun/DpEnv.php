@@ -316,7 +316,8 @@ class DpEnv
         #------------------------------
 
         if (!$dat_manager) {
-            $dat_manager = new \DpRun\DatManager($this->user_cache_dir);
+            $datManagerClass = $this->getConfig('env.dat_manager_class', 'DpRun\DatManager');
+            $dat_manager = new $datManagerClass($this->user_cache_dir);
         }
 
         $this->dat_manager = $dat_manager;

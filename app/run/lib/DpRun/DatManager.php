@@ -175,12 +175,12 @@ class DatManager implements DatManagerInterface
 
     ####################################################################################################################
 
-    private function hasFile($name)
+    protected function hasFile($name)
     {
         return is_file($this->cache_dir . DIRECTORY_SEPARATOR . $name);
     }
 
-    private function readFile($name)
+    protected function readFile($name)
     {
         $path = $this->cache_dir . DIRECTORY_SEPARATOR . $name;
 
@@ -196,7 +196,7 @@ class DatManager implements DatManagerInterface
         return $content;
     }
 
-    private function writeFile($name, $content)
+    protected function writeFile($name, $content)
     {
         $path  = $this->cache_dir . DIRECTORY_SEPARATOR . $name;
         $tries = 0;
@@ -208,7 +208,7 @@ class DatManager implements DatManagerInterface
         return $success;
     }
 
-    public function removeFile($name)
+    protected function removeFile($name)
     {
         $path  = $this->cache_dir . DIRECTORY_SEPARATOR . $name;
         $tries = 0;
