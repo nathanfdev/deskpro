@@ -17,3 +17,6 @@ services:
 
    audit_log.field_filter.mask:
      class: DeskPRO\Bundle\AuditBundle\Log\FieldFilter\MaskFieldFilter
+
+   audit_log.field_filter.date:
+     class: DeskPRO\Bundle\AuditBundle\Log\FieldFilter\DateFieldFilter

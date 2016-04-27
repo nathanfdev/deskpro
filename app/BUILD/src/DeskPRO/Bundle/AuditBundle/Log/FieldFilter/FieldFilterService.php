@@ -107,6 +107,8 @@ class FieldFilterService
                 if ($arguments) {
                     return new GenericFieldFilter([$createdFilter, 'filter'], $arguments);
                 }
+
+                return $createdFilter;
             } elseif (class_exists($filter) && $filter instanceof FieldFilterInterface) {
                 if ($arguments) {
                     $reflection = new \ReflectionClass($filter);

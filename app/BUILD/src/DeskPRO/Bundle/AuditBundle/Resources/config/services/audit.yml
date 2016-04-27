@@ -28,18 +28,18 @@ services:
     factory: ["@audit_log.storage.factory", createTransformer]
 
   audit_log.storage.mongodb:
-    class: DeskPRO\Bundle\AuditBundle\Storage\GenericStorage
+    class: DeskPRO\Bundle\AuditBundle\Storage\MongoDB\MongoDBStorage
     arguments:
       - "@doctrine_mongodb.odm.default_document_manager"
 
   audit_log.storage.db:
-    class: DeskPRO\Bundle\AuditBundle\Storage\GenericStorage
+    class: DeskPRO\Bundle\AuditBundle\Storage\DB\DBStorage
     arguments:
       - "@doctrine.orm.audit_entity_manager"
 
   audit_log.transformer.mongodb:
-    class: DeskPRO\Bundle\AuditBundle\Storage\GenericTransformer
+    class: DeskPRO\Bundle\AuditBundle\Storage\MongoDB\MongoDBTransformer
 
   audit_log.transformer.db:
-    class: DeskPRO\Bundle\AuditBundle\Storage\GenericTransformer
+    class: DeskPRO\Bundle\AuditBundle\Storage\DB\DBTransformer
 

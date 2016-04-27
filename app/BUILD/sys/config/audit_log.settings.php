@@ -47,6 +47,9 @@ return [
                 ],
             ],
             'field_filters' => [
+                'date_password_set' => [
+                    'date',
+                ],
                 'password' => [
                     ['mask', ['*']],
                 ],

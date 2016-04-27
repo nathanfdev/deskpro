@@ -26,22 +26,22 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\AuditBundle\Log\FieldFilter;
+
 /**
- * DeskPRO.
+ * Class DateFieldFilter.
  */
-namespace Application\InstallBundle\Upgrade\Build;
-
-class BuildNewAgent_0003_oldtables extends AbstractBuild
+class DateFieldFilter implements FieldFilterInterface
 {
-    public function run()
+    /**
+     * {@inheritdoc}
+     */
+    public function filter($value, $format = 'Y-m-d H:i:s')
     {
-        $this->out('Drop old tables');
-        $this->execMutateSql('DROP TABLE IF EXISTS pretickets_content');
-        $this->execMutateSql('DROP TABLE IF EXISTS article_to_product');
-        $this->execMutateSql('DROP TABLE IF EXISTS log_request_stats');
+        if ($value instanceof \DateTime) {
+            return $value->format($format);
+        }
 
-        $this->execMutateSql('DROP TABLE IF EXISTS `auditlog`');
+        return $value;
     }
 }
-
-//[[build:1456790403]]

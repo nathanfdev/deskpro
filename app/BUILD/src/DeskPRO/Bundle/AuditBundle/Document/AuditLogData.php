@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AuditBundle\Entity;
+namespace DeskPRO\Bundle\AuditBundle\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Orb\Types\JsonObjectSerializable;

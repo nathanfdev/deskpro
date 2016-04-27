@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AuditBundle\Log;
 
-use DeskPRO\Bundle\AuditBundle\Entity\AuditLogData;
+use DeskPRO\Bundle\AuditBundle\Document\AuditLogData;
 use DeskPRO\Bundle\AuditBundle\Storage\StorageInterface;
 use DeskPRO\Bundle\AuditBundle\Storage\TransformerInterface;
 use DeskPRO\Component\Util\ControllerUtils;

@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AuditBundle\Log;
 
-use DeskPRO\Bundle\AuditBundle\Entity\AuditLogData;
+use DeskPRO\Bundle\AuditBundle\Document\AuditLogData;
 
 /**
  * Class AuditLog.

@@ -39,5 +39,5 @@ doctrine_mongodb:
           AuditBundle:
             type: 'annotation'
             is_bundle: false
-            dir: '%kernel.root_dir%/../src/DeskPRO/Bundle/AuditBundle/Entity'
-            prefix: 'DeskPRO\Bundle\AuditBundle\Entity'
+            dir: '%kernel.root_dir%/../src/DeskPRO/Bundle/AuditBundle/Document'
+            prefix: 'DeskPRO\Bundle\AuditBundle\Document'

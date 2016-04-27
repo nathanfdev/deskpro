@@ -31,7 +31,7 @@ namespace DeskPRO\Bundle\AuditBundle\EventListener;
 use DeskPRO\Bundle\AuditBundle\Configuration\AuditContext;
 use DeskPRO\Bundle\AuditBundle\Configuration\Configuration;
 use DeskPRO\Bundle\AuditBundle\Configuration\ConfigurationSet;
-use DeskPRO\Bundle\AuditBundle\Entity\AuditLogData;
+use DeskPRO\Bundle\AuditBundle\Document\AuditLogData;
 use DeskPRO\Bundle\AuditBundle\Event\LogEvent;
 use DeskPRO\Bundle\AuditBundle\Log\FieldFilter\FieldFilterService;
 use DeskPRO\Component\Util\ListUtils;

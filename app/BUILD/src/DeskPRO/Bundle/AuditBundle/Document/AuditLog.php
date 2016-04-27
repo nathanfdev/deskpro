@@ -26,109 +26,91 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AuditBundle\Entity;
+namespace DeskPRO\Bundle\AuditBundle\Document;
 
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
-use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
-use DeskPRO\Bundle\AuditBundle\Document\AuditLogData;
-use DeskPRO\Bundle\AuditBundle\Log\LoggableInterface;
-use Doctrine\Common\NotifyPropertyChanged;
-use Doctrine\ORM\Mapping as ORM;
+use DeskPRO\Bundle\AuditBundle\Entity\AuditLog as AuditLogEntity;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 
 /**
  * Class Test.
  *
- * @ORM\Entity
- * @ORM\Table(
- *     name="audit_logs",
- *     indexes={
- *      @ORM\Index(name="performer_idx", columns={"performer_id", "date_created"}),
- *      @ORM\Index(name="date_created_idx", columns={"date_created"}),
- *      @ORM\Index(name="apikey_idx", columns={"api_key", "date_created"}),
- *      @ORM\Index(name="object_idx", columns={"object_type", "object_id"}),
- *     }
- * )
- * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
- * @ORM\InheritanceType("NONE")
+ * @ODM\Document()
  */
-class AuditLog implements LoggableInterface, NotifyPropertyChanged, EntityInterface
+class AuditLog  extends AuditLogEntity implements EntityInterface
 {
-    use NotifyPropertyChangedTrait;
-
     /**
-     * @ORM\Id()
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ODM\Id(strategy="INCREMENT")
      *
      * @var int
      */
     protected $id;
 
     /**
-     * @ORM\Column(type="string")
+     * @ODM\Field(type="string")
      *
      * @var string
      */
     protected $action;
 
     /**
-     * @ORM\Column(type="datetime", nullable=false, name="date_created")
+     * @ODM\Field(type="date")
      *
      * @var \DateTime
      */
     protected $dateCreated;
 
     /**
-     * @ORM\Column(type="string", name="performer_name")
+     * @ODM\Field(type="string")
      *
      * @var string
      */
     protected $performerName;
 
     /**
-     * @ORM\Column(type="integer", name="performer_id", nullable=true)
+     * @ODM\Field(type="int")
      *
      * @var int
      */
     protected $performerId;
 
     /**
-     * @ORM\Column(type="string", name="object_name", nullable=true)
+     * @ODM\Field(type="string")
      *
      * @var string
      */
     protected $objectName;
 
     /**
-     * @ORM\Column(type="string", name="object_type", nullable=true)
+     * @ODM\Field(type="string")
      *
      * @var string
      */
     protected $objectType;
 
     /**
-     * @ORM\Column(type="integer", name="object_id", nullable=true)
+     * @ODM\Field(type="int")
      *
      * @var int
      */
     protected $objectId;
 
     /**
-     * @ORM\Column(type="string")
+     * @ODM\Field(type="string")
      *
      * @var string
      */
     protected $description;
 
     /**
-     * @ORM\Column(type="integer", name="api_key", nullable=true)
+     * @ODM\Field(type="int")
      *
      * @var int
      */
     protected $apiKey;
 
     /**
-     * @ORM\Column(type="dp_json_obj")
+     * @ODM\EmbedOne(targetDocument="DeskPRO\Bundle\AuditBundle\Document\AuditLogData")
      *
      * @var AuditLogData
      */

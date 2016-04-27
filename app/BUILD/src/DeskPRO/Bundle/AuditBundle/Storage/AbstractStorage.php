@@ -31,20 +31,19 @@ namespace DeskPRO\Bundle\AuditBundle\Storage;
 use DeskPRO\Bundle\AuditBundle\Entity\AuditLog;
 use DeskPRO\Bundle\AuditBundle\Log\LoggableInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Common\Persistence\ObjectRepository;
 
 /**
- * Class GenericStorage.
+ * Class AbstractStorage.
  */
-class GenericStorage implements StorageInterface
+abstract class AbstractStorage implements StorageInterface
 {
     /**
      * @var ObjectManager
      */
-    private $manager;
+    protected $manager;
 
     /**
-     * MongoDBStorage constructor.
-     *
      * @param ObjectManager $manager
      */
     public function __construct(ObjectManager $manager)
@@ -68,7 +67,7 @@ class GenericStorage implements StorageInterface
      */
     public function find($id)
     {
-        return $this->manager->getRepository(AuditLog::class)->find($id);
+        return $this->getRepository()->find($id);
     }
 
     /**
@@ -79,6 +78,11 @@ class GenericStorage implements StorageInterface
      */
     public function read($offset, $limit)
     {
-        return $this->manager->getRepository(AuditLog::class)->findBy([], [], $limit, $offset);
+        return $this->getRepository()->findBy([], [], $limit, $offset);
     }
+
+    /**
+     * @return ObjectRepository
+     */
+    abstract protected function getRepository();
 }

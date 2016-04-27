@@ -26,22 +26,18 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\AuditBundle\Storage\MongoDB;
+
+use DeskPRO\Bundle\AuditBundle\Document\AuditLog as AuditLogDocument;
+use DeskPRO\Bundle\AuditBundle\Storage\AbstractTransformer;
+
 /**
- * DeskPRO.
+ * Class MongoDBTransformer.
  */
-namespace Application\InstallBundle\Upgrade\Build;
-
-class BuildNewAgent_0003_oldtables extends AbstractBuild
+class MongoDBTransformer extends AbstractTransformer
 {
-    public function run()
+    protected function createAuditLog()
     {
-        $this->out('Drop old tables');
-        $this->execMutateSql('DROP TABLE IF EXISTS pretickets_content');
-        $this->execMutateSql('DROP TABLE IF EXISTS article_to_product');
-        $this->execMutateSql('DROP TABLE IF EXISTS log_request_stats');
-
-        $this->execMutateSql('DROP TABLE IF EXISTS `auditlog`');
+        return new AuditLogDocument();
     }
 }
-
-//[[build:1456790403]]

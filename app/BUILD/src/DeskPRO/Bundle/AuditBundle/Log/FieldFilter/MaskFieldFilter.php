@@ -28,6 +28,9 @@
 
 namespace DeskPRO\Bundle\AuditBundle\Log\FieldFilter;
 
+/**
+ * Class MaskFieldFilter.
+ */
 class MaskFieldFilter implements FieldFilterInterface
 {
     /**

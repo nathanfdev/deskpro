@@ -26,22 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace Application\InstallBundle\Upgrade\Build;
+namespace DeskPRO\Bundle\AuditBundle\Storage\DB;
 
-class BuildNewAgent_0003_oldtables extends AbstractBuild
+use DeskPRO\Bundle\AuditBundle\Entity\AuditLog as AuditLogEntity;
+use DeskPRO\Bundle\AuditBundle\Storage\AbstractStorage;
+use Doctrine\Common\Persistence\ObjectRepository;
+
+class DBStorage extends AbstractStorage
 {
-    public function run()
+    /**
+     * @return ObjectRepository
+     */
+    protected function getRepository()
     {
-        $this->out('Drop old tables');
-        $this->execMutateSql('DROP TABLE IF EXISTS pretickets_content');
-        $this->execMutateSql('DROP TABLE IF EXISTS article_to_product');
-        $this->execMutateSql('DROP TABLE IF EXISTS log_request_stats');
-
-        $this->execMutateSql('DROP TABLE IF EXISTS `auditlog`');
+        return $this->manager->getRepository(AuditLogEntity::class);
     }
 }
-
-//[[build:1456790403]]

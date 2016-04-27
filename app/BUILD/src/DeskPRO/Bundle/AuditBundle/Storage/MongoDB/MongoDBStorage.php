@@ -26,13 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\InstallBundle\Upgrade\Build;
+namespace DeskPRO\Bundle\AuditBundle\Storage\MongoDB;
 
-class Build1460998250 extends AbstractBuild
+use DeskPRO\Bundle\AuditBundle\Document\AuditLog as AuditLogDocument;
+use DeskPRO\Bundle\AuditBundle\Storage\AbstractStorage;
+use Doctrine\Common\Persistence\ObjectRepository;
+
+class MongoDBStorage extends AbstractStorage
 {
-    public function run()
+    /**
+     * @return ObjectRepository
+     */
+    protected function getRepository()
     {
-        $this->out('Delete the old auditlog table');
-        $this->execDbQuery('default', 'DROP TABLE IF EXISTS `auditlog`');
+        return $this->manager->getRepository(AuditLogDocument::class);
     }
 }

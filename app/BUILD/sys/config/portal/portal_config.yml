@@ -199,15 +199,3 @@ nelmio_cors:
             allow_headers: ['X-Agent-Request', 'Content-Type', 'Cache-Control', 'X-Requested-With']
             allow_methods: ['POST', 'PUT', 'GET', 'DELETE']
             max_age: 3600
-
-doctrine_mongodb:
-    connections:
-        audit:
-            server: mongodb://localhost:27017
-            options: {}
-    default_database: dp_audit
-    default_document_manager: audit
-    default_connection: audit
-    document_managers:
-        audit:
-            auto_mapping: true
