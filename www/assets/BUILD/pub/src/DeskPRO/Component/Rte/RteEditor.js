@@ -33,6 +33,8 @@ export class RteEditor extends React.Component {
       // wrap content
       if (!$('p', node).length) {
         node.innerHTML = `<p>${node.innerHTML}</p>`;
+        // refocus after the modification
+        this.focus();
       }
 
       onChange(node.innerHTML);
