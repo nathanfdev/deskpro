@@ -4,7 +4,7 @@ services:
     class: DeskPRO\Bundle\AuditBundle\EventListener\AuditListener
     arguments:
       - "@event_dispatcher"
-      - "@security.token_storage"
+      - "@audit_log.helper"
     tags:
       - { name: doctrine.event_listener, connection: default, event: onFlush }
       - { name: doctrine.event_listener, connection: default, event: postFlush }

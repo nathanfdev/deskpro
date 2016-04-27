@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AuditBundle\Storage;
 
 use DeskPRO\Bundle\AuditBundle\Entity\AuditLog as AuditLogDocument;
+use DeskPRO\Bundle\AuditBundle\Entity\AuditLogData;
 use DeskPRO\Bundle\AuditBundle\Log\AuditLog;
 use DeskPRO\Bundle\AuditBundle\Log\LoggableInterface;
 
@@ -58,7 +59,7 @@ class GenericTransformer extends AbstractTransformer
             ->setPerformerName($log->getPerformerName())
             ->setApiKey($log->getApiKey());
 
-        $doc->setData($log->getData());
+        $doc->setData($log->getData() ?: new AuditLogData());
 
         return $doc;
     }

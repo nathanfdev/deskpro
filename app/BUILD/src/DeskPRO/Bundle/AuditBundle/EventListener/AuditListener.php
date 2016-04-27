@@ -28,11 +28,9 @@
 
 namespace DeskPRO\Bundle\AuditBundle\EventListener;
 
-use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AuditBundle\Configuration\AuditContext;
 use DeskPRO\Bundle\AuditBundle\Event\LogEvent;
-use DeskPRO\Bundle\AuditBundle\Log\AuditLog;
-use DeskPRO\Bundle\AuditBundle\Log\Performer;
+use DeskPRO\Bundle\AuditBundle\Log\AuditLogHelper;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\OnFlushEventArgs;
@@ -41,26 +39,16 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\UnitOfWork;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Class AuditListener.
  */
 class AuditListener
 {
-    /**
-     *
-     */
     const INSERT = 'insert';
 
-    /**
-     *
-     */
     const UPDATE = 'update';
 
-    /**
-     *
-     */
     const REMOVE = 'remove';
 
     /**
@@ -79,9 +67,9 @@ class AuditListener
     private $dispatcher;
 
     /**
-     * @var TokenStorageInterface
+     * @var AuditLogHelper
      */
-    private $tokenStorage;
+    private $auditLogHelper;
 
     /**
      * @var array
@@ -102,12 +90,12 @@ class AuditListener
      * AuditListener constructor.
      *
      * @param EventDispatcherInterface $dispatcher
-     * @param TokenStorageInterface    $tokenStorage
+     * @param AuditLogHelper           $auditLogHelper
      */
-    public function __construct(EventDispatcherInterface $dispatcher, TokenStorageInterface $tokenStorage)
+    public function __construct(EventDispatcherInterface $dispatcher, AuditLogHelper $auditLogHelper)
     {
-        $this->dispatcher   = $dispatcher;
-        $this->tokenStorage = $tokenStorage;
+        $this->dispatcher     = $dispatcher;
+        $this->auditLogHelper = $auditLogHelper;
     }
 
     /**
@@ -179,7 +167,7 @@ class AuditListener
         $this->dispatcher->dispatch(LogEvent::PRE_LOG_EVENT, $logEvent);
         if ($logEvent->isShouldLog()) {
             $logEvent = new LogEvent($context); // need this, cause propagation is stopped
-            $log      = $this->createAuditLog();
+            $log      = $this->auditLogHelper->createAuditLog();
 
             /** @var ClassMetadataInfo $metadata */
             $metadata = $this->em
@@ -189,8 +177,6 @@ class AuditListener
             $logEvent->setLog($log)->setMetadata($metadata);
 
             $this->dispatcher->dispatch(LogEvent::START_LOG_EVENT, $logEvent);
-            $log->setApiKey(0);
-
             $this->dispatcher->dispatch(LogEvent::FINISH_LOG_EVENT, $logEvent);
         }
     }
@@ -226,18 +212,6 @@ class AuditListener
     }
 
     /**
-     * @return AuditLog
-     */
-    private function createAuditLog()
-    {
-        $log       = new AuditLog();
-        $performer = $this->getPerformer();
-        $log->setPerformerId($performer->getId())->setPerformerName($performer->getName());
-
-        return $log;
-    }
-
-    /**
      * @param object $entity    this could be any object Doctrine trying to persist
      * @param string $action
      * @param array  $changeSet
@@ -246,21 +220,6 @@ class AuditListener
      */
     private function createContext($entity, $action, $changeSet = [])
     {
-        return new AuditContext($action, $this->getPerformer(), $entity, $changeSet);
-    }
-
-    /**
-     * @return Performer
-     */
-    private function getPerformer()
-    {
-        if ($this->tokenStorage && $this->tokenStorage->getToken()
-            && $user = $this->tokenStorage->getToken()->getUser()
-        ) {
-            /* @var Person $user */
-            return new Performer($user->getDisplayName(), $user->getId());
-        } else {
-            return new Performer('System');
-        }
+        return new AuditContext($action, $this->auditLogHelper->getPerformer(), $entity, $changeSet);
     }
 }

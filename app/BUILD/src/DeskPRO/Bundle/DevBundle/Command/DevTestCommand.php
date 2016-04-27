@@ -31,6 +31,8 @@
  */
 namespace DeskPRO\Bundle\DevBundle\Command;
 
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Person;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -52,6 +54,18 @@ class DevTestCommand extends ContainerAwareCommand
     {
         echo __FILE__;
         echo "\n";
+
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+
+        $entityRepo = $em->getRepository(Person::class);
+
+        $testEntity = $entityRepo->find(1);
+//        $testEntity = new AgentTeam();
+        // $2a$11$nHDBAi4smPbykQ07RzON3Owiyo/ZFHXM1Ud7VxM6u1vcEau16bJfC
+        $testEntity->password = 'ranneft';
+        $em->persist($testEntity);
+//        $em->remove($testEntity);
+        $em->flush($testEntity);
 
         return 0;
     }

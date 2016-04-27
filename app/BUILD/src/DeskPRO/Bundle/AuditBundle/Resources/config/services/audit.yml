@@ -5,6 +5,14 @@ services:
     arguments:
       - "@audit_log.storage"
       - "@audit_log.transformer"
+      - "@audit_log.helper"
+
+# unfortunately we have to set service_container as dependency, otherwise CirucalrDependency will occur
+  audit_log.helper:
+    class: DeskPRO\Bundle\AuditBundle\Log\AuditLogHelper
+    arguments:
+      - "@service_container"
+
 
   audit_log.storage.factory:
     class: DeskPRO\Bundle\AuditBundle\Storage\StorageFactory

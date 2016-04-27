@@ -28,8 +28,11 @@
 
 namespace DeskPRO\Bundle\AuditBundle\Log;
 
+use DeskPRO\Bundle\AuditBundle\Entity\AuditLogData;
 use DeskPRO\Bundle\AuditBundle\Storage\StorageInterface;
 use DeskPRO\Bundle\AuditBundle\Storage\TransformerInterface;
+use DeskPRO\Component\Util\ControllerUtils;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class AuditLogService.
@@ -47,15 +50,22 @@ class AuditLogService
     private $transformer;
 
     /**
+     * @var AuditLogHelper
+     */
+    private $helper;
+
+    /**
      * AuditLogService constructor.
      *
      * @param StorageInterface     $storage
      * @param TransformerInterface $transformer
+     * @param AuditLogHelper       $helper
      */
-    public function __construct(StorageInterface $storage, TransformerInterface $transformer)
+    public function __construct(StorageInterface $storage, TransformerInterface $transformer, AuditLogHelper $helper)
     {
         $this->storage     = $storage;
         $this->transformer = $transformer;
+        $this->helper      = $helper;
     }
 
     /**
@@ -64,10 +74,60 @@ class AuditLogService
     public function write(AuditLog $log)
     {
         $concreteLog = $this->transformer->transform($log);
-
         $this->storage->write($concreteLog);
     }
 
+    /**
+     * @param string|Request $action
+     * @param string         $description
+     * @param AuditLogData   $data
+     */
+    public function writeAction($action, $description = '', AuditLogData $data = null)
+    {
+        if ($action instanceof Request) {
+            $action = $this->extractAction($action);
+        }
+
+        $log = $this->helper->createAuditLog()->setAction($action)->setDescription($description);
+
+        if ($data) {
+            $log->setData($data);
+        }
+
+        if (!$description && $action instanceof Request) {
+            $log->setDescription($this->extractDescription($action, $log));
+        }
+
+        $this->write($log);
+    }
+
+    private function extractAction(Request $request)
+    {
+        $controller = $request->attributes->get('_controller');
+        $controller = explode('::', $controller);
+
+        return ControllerUtils::calculateTag($controller[0], $controller[1]);
+    }
+
+    private function extractDescription(Request $request, AuditLog $log)
+    {
+        $parts           = explode('::', $request->attributes->get('_controller'));
+        $controllerParts = explode('\\', $parts[0]);
+
+        return sprintf(
+            '%s performed %s request to %s controller, method is %s',
+            $log->getPerformerName(),
+            $request->getMethod(),
+            array_pop($controllerParts),
+            $parts[1]
+        );
+    }
+
+    /**
+     * @param $id
+     *
+     * @return AuditLog
+     */
     public function getLog($id)
     {
         $concreteLog = $this->storage->find($id);
@@ -75,6 +135,12 @@ class AuditLogService
         return $this->transformer->reverseTransform($concreteLog);
     }
 
+    /**
+     * @param $offset
+     * @param $limit
+     *
+     * @return AuditLog
+     */
     public function read($offset, $limit)
     {
         $concreteLogs = $this->storage->read($offset, $limit);
