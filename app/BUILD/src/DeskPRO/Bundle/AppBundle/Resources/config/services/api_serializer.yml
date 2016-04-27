@@ -165,5 +165,11 @@ services:
     tags:
       - { name: "jms_serializer.event_subscriber" }
 
+  api_serializer.ids_only_listener:
+    class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\IdsOnlyListener
+    arguments: ["@jms_serializer.metadata_factory"]
+    tags:
+      - { name: "jms_serializer.event_subscriber" }
+
 parameters:
   fos_rest.view_handler.default.class: "DeskPRO\Bundle\AppBundle\Serializer\ViewHandler"

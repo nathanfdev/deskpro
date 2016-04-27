@@ -73,7 +73,6 @@ class ViewHandler extends \FOS\RestBundle\View\ViewHandler
             if ($groups) {
                 $context->setGroups(array_merge($groups, ['wrapper']));
             }
-
             if ($this->annotation instanceof SerializerView) {
                 $context->setMapping($this->annotation->getMapping());
             }
