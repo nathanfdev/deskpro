@@ -37,9 +37,31 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 
 class ReplyAction extends AbstractAction implements ActionWithOptionsInterface
 {
+    public function __construct(array $options = null)
+    {
+        parent::__construct($options);
+        $nestedResolver = new ActionOptionsResolver();
+        static::configureNestedOptions($nestedResolver);
+        $this->options['reply'] = $nestedResolver->resolve($options['reply']);
+    }
+
     public static function configureOptions(ActionOptionsResolver $resolver)
     {
-        $resolver->setRequired('reply');
+        $resolver->setRequired(['reply']);
         $resolver->setAllowedTypes('reply', 'array');
+        $nestedResolver = new ActionOptionsResolver();
+        $nestedResolver->setRequired('message');
+        $nestedResolver->setDefined('isAgentNote');
+        $nestedResolver->setAllowedTypes('message', 'string');
+        $nestedResolver->setAllowedTypes('isAgentNote', 'bool');
+    }
+
+    public static function configureNestedOptions(ActionOptionsResolver $nestedResolver)
+    {
+        $nestedResolver->setRequired('message');
+        $nestedResolver->setDefined('isAgentNote');
+        $nestedResolver->setAllowedTypes('message', 'string');
+        $nestedResolver->setAllowedTypes('isAgentNote', 'string');
+        $nestedResolver->setAllowedValues('isAgentNote', ['0', '1']);
     }
 }

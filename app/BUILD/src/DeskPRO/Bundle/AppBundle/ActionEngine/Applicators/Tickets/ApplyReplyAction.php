@@ -64,7 +64,9 @@ class ApplyReplyAction extends AbstractTicketApplicator implements ActionApplica
                 ->setCreationSystem(TicketMessage::CREATED_WEB_AGENT)
                 ->setHostname($this->environmentService->getHostname())
                 ->setGeoCountry($this->getGeoCountry())
-                ->setAsAgentNote($this->options['reply']['message']);
+                ->setAsAgentNote($this->options['reply']['isAgentNote']);
+            $context = $this->tm->createAgentExecutorContext(null, 'mass_reply', 'mass_actions');
+            $this->tm->saveTicket($ticket, $context);
             $this->em->persist($message);
         }
     }
