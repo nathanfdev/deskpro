@@ -38,6 +38,11 @@ use Symfony\Component\ExpressionLanguage\ParsedExpression;
 class Condition
 {
     /**
+     * @var array
+     */
+    private $preconditions;
+
+    /**
      * @var Expression|ParsedExpression
      */
     private $expression;
@@ -55,21 +60,23 @@ class Condition
     /**
      * Condition constructor.
      *
+     * @param array              $preconditions
      * @param string             $expression
      * @param array              $variables
      * @param ExpressionLanguage $language
      */
-    public function __construct($expression, $variables, $language)
+    public function __construct($preconditions, $expression, $variables, $language)
     {
-        $this->expression = $expression;
-        $this->variables  = $variables;
-        $this->language   = $language;
+        $this->preconditions = $preconditions;
+        $this->expression    = $expression;
+        $this->variables     = $variables;
+        $this->language      = $language;
     }
 
     /**
      * @param AuditContext $context
      */
-    public function init(AuditContext $context)
+    private function init(AuditContext $context)
     {
         $entity    = $context->getEntity();
         $action    = $context->getAction();
@@ -89,14 +96,38 @@ class Condition
     }
 
     /**
+     * @param AuditContext $context
      *
+     * @return bool
      */
-    public function getBool()
+    public function getBool(AuditContext $context)
     {
-        if (!$this->initialized || !$this->expression instanceof ParsedExpression) {
-            throw new \RuntimeException('You can\'t get condition result until init');
+        if (!$this->checkPreconditions(array_keys($context->getChangeSet()))) {
+            return false;
         }
 
+        $this->init($context);
+
         return $this->language->evaluate($this->expression, $this->variables);
+    }
+
+    /**
+     * @param array $changeSet
+     *
+     * @return bool
+     */
+    private function checkPreconditions($changeSet)
+    {
+        if ($this->preconditions) {
+            return array_reduce(
+                $this->preconditions,
+                function ($carry, $item) use ($changeSet) {
+                    return $carry && in_array($item, $changeSet);
+                },
+                true
+            );
+        }
+
+        return true;
     }
 }

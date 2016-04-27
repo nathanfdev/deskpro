@@ -296,6 +296,7 @@ abstract class AbstractDbSet implements DataSetInterface
         } else {
             $this->installDatabase('default', true);
             $this->installDatabase('system');
+            $this->installDatabase('audit');
             $this->installSet();
 
             // This is required or else some e2e tests
@@ -319,8 +320,8 @@ abstract class AbstractDbSet implements DataSetInterface
      *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
-     * @return int The number of queries executed
      *
+     * @return int The number of queries executed
      */
     private function installDatabase($em_name, $is_master_schema = false)
     {

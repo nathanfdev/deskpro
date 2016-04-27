@@ -42,8 +42,9 @@ return [
         AuditListener::UPDATE => [
             'conditions' => [
                 [
-                    'expression' => 'entity.isAgent() === true and "password" in changeSet',
-                    'variables'  => ['entity', 'changeSet'],
+                    'preconditions' => ['password'],
+                    'expression'    => 'entity.isAgent() === true',
+                    'variables'     => ['entity'],
                 ],
             ],
             'field_filters' => [
@@ -53,15 +54,7 @@ return [
                 'password' => [
                     ['mask', ['*']],
                 ],
-// okay you can't use Closure, but really you can use any other callable
-//                'date_password_set' => [
-//                    function ($value) {
-//                        /* @var \DateTime $value */
-//                        return $value->getTimestamp();
-//                    },
-//                ],
             ],
-
         ],
     ],
 ];

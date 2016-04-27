@@ -59,6 +59,11 @@ class Configuration
     private $skipFields = false;
 
     /**
+     * @var AuditContext
+     */
+    private $context;
+
+    /**
      * Configuration constructor.
      *
      * @param string $entityClass
@@ -137,12 +142,14 @@ class Configuration
 
     /**
      * @param AuditContext $context
+     *
+     * @return $this
      */
     public function init(AuditContext $context)
     {
-        foreach ($this->conditions as $condition) {
-            $condition->init($context);
-        }
+        $this->context = $context;
+
+        return $this;
     }
 
     /**
@@ -153,7 +160,7 @@ class Configuration
         // Tremble, mortals, and despair! Bool has come to this world! (c) Lord Archimonde
         if (!$result = !(count($this->conditions) > 0)) {
             foreach ($this->conditions as $condition) {
-                $result = $result || $condition->getBool();
+                $result = $result || $condition->getBool($this->context);
                 if ($result) {
                     break;
                 }

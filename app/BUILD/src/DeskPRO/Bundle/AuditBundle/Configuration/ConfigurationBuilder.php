@@ -110,8 +110,9 @@ class ConfigurationBuilder
     {
         if (isset($configEntry['conditions']) && is_array($configEntry['conditions'])) {
             foreach ($configEntry['conditions'] as $condition) {
+                $preconditions = isset($condition['preconditions']) ? $condition['preconditions'] : [];
                 $configuration->addCondition(
-                    new Condition($condition['expression'], $condition['variables'], $this->language)
+                    new Condition($preconditions, $condition['expression'], $condition['variables'], $this->language)
                 );
             }
         }
