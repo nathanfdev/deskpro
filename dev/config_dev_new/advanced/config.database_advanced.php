@@ -41,3 +41,26 @@ $DB_CONFIG['read_search']  = [];
 //$DB_CONFIG['read_search'][0]['user']     = 'deskpro';
 //$DB_CONFIG['read_search'][0]['password'] = '';
 //$DB_CONFIG['read_search'][0]['dbname']   = 'deskpro_read';
+
+######################################################
+# System incidents Database                          #
+######################################################
+# Define one to use separate db for system incidents #
+######################################################
+
+//$DB_CONFIG['system']['host']     = 'localhost';
+//$DB_CONFIG['system']['user']     = 'root';
+//$DB_CONFIG['system']['password'] = '';
+//$DB_CONFIG['system']['dbname']   = 'deskpro_sys';
+
+######################################################
+# System incidents Database                          #
+######################################################
+# Define one to use separate db for audit logs       #
+# (of course if you are using sql db for logs)       #
+######################################################
+
+//$DB_CONFIG['audit']['host']     = 'localhost';
+//$DB_CONFIG['audit']['user']     = 'root';
+//$DB_CONFIG['audit']['password'] = '';
+//$DB_CONFIG['audit']['dbname']   = 'deskpro_audit';

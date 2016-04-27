@@ -29,12 +29,4 @@ $DB_CONFIG['dbname']   = 'deskpro';
 # will be stored in the main database.               #
 ######################################################
 
-//$DB_CONFIG['system']['host']     = 'localhost';
-//$DB_CONFIG['system']['user']     = 'root';
-//$DB_CONFIG['system']['password'] = '';
-//$DB_CONFIG['system']['dbname']   = 'deskpro_sys';
 
-//$DB_CONFIG['audit']['host']     = 'localhost';
-//$DB_CONFIG['audit']['user']     = 'root';
-//$DB_CONFIG['audit']['password'] = '';
-//$DB_CONFIG['audit']['dbname']   = 'deskpro_audit';

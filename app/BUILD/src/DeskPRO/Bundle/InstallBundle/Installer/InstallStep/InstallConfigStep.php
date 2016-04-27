@@ -84,7 +84,7 @@ class InstallConfigStep extends AbstractStep
         ]);
 
         if ($this->getSession()->getDbInfo() !== $this->getSession()->getSystemDbInfo()) {
-            $this->writeVars('config.database.php', 'DB_CONFIG\[\'system\'\]', [
+            $this->writeVars('advanced/config.database_advanced.php', 'DB_CONFIG\[\'system\'\]', [
                 'host'     => $this->getSession()->getSystemDbInfo()->host,
                 'user'     => $this->getSession()->getSystemDbInfo()->user,
                 'password' => $this->getSession()->getSystemDbInfo()->password,
@@ -93,7 +93,7 @@ class InstallConfigStep extends AbstractStep
         }
 
         if ($this->getSession()->getDbInfo() !== $this->getSession()->getAuditDbInfo()) {
-            $this->writeVars('config.database.php', 'DB_CONFIG\[\'audit\'\]', [
+            $this->writeVars('advanced/config.database_advanced.php', 'DB_CONFIG\[\'audit\'\]', [
                 'host'     => $this->getSession()->getAuditDbInfo()->host,
                 'user'     => $this->getSession()->getAuditDbInfo()->user,
                 'password' => $this->getSession()->getAuditDbInfo()->password,

@@ -69,10 +69,10 @@ class DbConfigReader
                 $conf_array_raw = $this->appEnv->getConfig('database');
                 break;
             case self::SYSTEM_ID:
-                $conf_array_raw = $this->appEnv->getConfig('database.system') ?: $this->appEnv->getConfig('database');
+                $conf_array_raw = $this->appEnv->getConfig('database_advanced.system') ?: $this->appEnv->getConfig('database');
                 break;
             case self::AUDIT_ID:
-                $conf_array_raw = $this->appEnv->getConfig('database.audit') ?: $this->appEnv->getConfig('database');
+                $conf_array_raw = $this->appEnv->getConfig('database_advanced.audit') ?: $this->appEnv->getConfig('database');
                 break;
             case self::READ_ID:
                 $conf_array_raw = $this->appEnv->getConfig('database_advanced.read')
