@@ -39,7 +39,6 @@ use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\Avatar\AvatarOwner;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
-use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
 use DeskPRO\Bundle\AppBundle\Entity\PersonList;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -61,7 +60,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
  * @property Department $parent
  * @property Department $children
  */
-class Department extends DomainObject implements HasPhraseName, PersonList, Chatable, AvatarOwner
+class Department extends DomainObject implements HasPhraseName, PersonList, AvatarOwner
 {
     /**
      * @var int
@@ -465,14 +464,6 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Chat
     public function getPersonList()
     {
         return $this->_people;
-    }
-
-    /**
-     * @return int
-     */
-    public function getChatableType()
-    {
-        return Chatable::PARTICIPANT_TYPE_DEPARTMENT;
     }
 
     /**

@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -106,7 +107,7 @@ class AgentChatParticipant implements EntityInterface, NotifyPropertyChanged
      *
      * @return $this
      */
-    public function setChat(AgentChat $chat)
+    public function setChat(AgentChat $chat = null)
     {
         $this->chat = $chat;
 
@@ -119,31 +120,15 @@ class AgentChatParticipant implements EntityInterface, NotifyPropertyChanged
     {
         return $this->person;
     }
-    /**
-     * @return Person[]
-     */
-    public function getPersonList()
-    {
-        if ($this->person) {
-            return array($this->getPerson());
-        } elseif ($this->team) {
-            return $this->team->getPersonList();
-        } elseif ($this->department) {
-            return $this->department->getPersonList();
-        } else {
-            return;
-        }
-    }
+
     /**
      * @param Person $person
      *
      * @return $this
      */
-    public function setPerson(Person $person)
+    public function setPerson(Person $person = null)
     {
-        $this->person     = $person;
-        $this->department = null;
-        $this->team       = null;
+        $this->person = $person;
 
         return $this;
     }
@@ -159,11 +144,9 @@ class AgentChatParticipant implements EntityInterface, NotifyPropertyChanged
      *
      * @return $this
      */
-    public function setTeam(AgentTeam $team)
+    public function setTeam(AgentTeam $team = null)
     {
-        $this->team       = $team;
-        $this->department = null;
-        $this->person     = null;
+        $this->team = $team;
 
         return $this;
     }
@@ -179,36 +162,10 @@ class AgentChatParticipant implements EntityInterface, NotifyPropertyChanged
      *
      * @return $this
      */
-    public function setDepartment(Department $department)
+    public function setDepartment(Department $department = null)
     {
         $this->department = $department;
-        $this->person     = null;
-        $this->team       = null;
 
         return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getPersonId()
-    {
-        return ($this->getPerson()) ? $this->getPerson()->getId() : null;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTeamId()
-    {
-        return ($this->getTeam()) ? $this->getTeam()->getId() : null;
-    }
-
-    /**
-     * @return int
-     */
-    public function getDepartmentId()
-    {
-        return ($this->getDepartment()) ? $this->getDepartment()->getId() : null;
     }
 }

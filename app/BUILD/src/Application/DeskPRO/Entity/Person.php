@@ -39,7 +39,6 @@ use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\Labels\Label;
 use Application\DeskPRO\Entity\Labels\LabelsOwner;
 use Application\DeskPRO\People\PasswordPolicyValidator;
-use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
@@ -123,7 +122,7 @@ use Symfony\Component\Validator\GroupSequenceProviderInterface;
  * @Assert\GroupSequenceProvider
  */
 class Person extends DomainObject implements HighlightableModelInterface, UserInterface, \Serializable,
-    EquatableInterface, Chatable, LabelsOwner, GroupSequenceProviderInterface
+    EquatableInterface, LabelsOwner, GroupSequenceProviderInterface
 {
     const CREATED_WEB_PERSON     = 'web.person';
     const CREATED_WEB_AGENT      = 'web.agent';
@@ -3528,14 +3527,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     {
         $this->assigned_tasks->add($assignment);
         $this->setModelField('assigned_tasks', $assignment);
-    }
-
-    /**
-     * @return int
-     */
-    public function getChatableType()
-    {
-        return Chatable::PARTICIPANT_TYPE_AGENT;
     }
 
     /**

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,24 +26,37 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\Chat;
+
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
+use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
+
 /**
- * DeskPRO. Just a stub to handle everyone chat.
- *
- * @category Entities
+ * Class AgentChatMessageVoter.
  */
-namespace DeskPRO\Bundle\AppBundle\Entity;
-
-use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
-
-class EveryoneChat implements Chatable
+class AgentChatMessageVoter extends AbstractAgentChatVoter
 {
-    public function getChatableType()
+    /**
+     * {@inheritdoc}
+     */
+    public static function getEntityClass()
     {
-        return Chatable::PARTICIPANT_TYPE_EVERYONE;
+        return AgentChatMessage::class;
     }
 
-    public function getId()
+    /**
+     * {@inheritdoc}
+     */
+    public function voteOnAttributeForAgent($attribute, PermissionGroupContext $context, Person $user)
     {
-        return 0;
+        /** @var AgentChat $agentChat */
+        $agentChat = $context->getParent();
+        if ($agentChat) {
+            return $this->isPersonInvolved($agentChat, $user);
+        }
+
+        return true;
     }
 }

@@ -28,13 +28,10 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert;
 
-use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\NewMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
-use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\AbstractGenerator;
-use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\Serializer;
@@ -43,7 +40,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 /**
  * Class NewAgentChatMessageGenerator.
  */
-class NewAgentChatMessageGenerator extends AbstractGenerator
+class NewAgentChatMessageGenerator extends AbstractAgentChatMessageGenerator
 {
     /**
      * @var Serializer
@@ -51,6 +48,8 @@ class NewAgentChatMessageGenerator extends AbstractGenerator
     protected $serializer;
 
     /**
+     * Constructor.
+     *
      * @param EntityManager         $em
      * @param TokenStorageInterface $token_storage
      * @param Serializer            $serializer
@@ -62,56 +61,26 @@ class NewAgentChatMessageGenerator extends AbstractGenerator
     }
 
     /**
-     * @param SystemEventInterface $event
+     * {@inheritdoc}
      *
-     * @return MessageInterface[]
+     * @param NewMessageEvent $event
      */
     public function createMessages(SystemEventInterface $event)
     {
-        $event->getName();
-        /* @var NewMessageEvent $event */
         $messages = [];
         foreach ($this->getTargets($event) as $target) {
-            $messages[] = new ActionAlert($target, $this->getData($event), $event->getName());
+            $messages[] = new ActionAlert($target->getId(), $this->getData($event), $event->getName());
         }
 
         return $messages;
     }
 
     /**
-     * @param SystemEventInterface $event
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function canCreateMessage(SystemEventInterface $event)
     {
-        if ($event instanceof NewMessageEvent) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * @param NewMessageEvent $event
-     *
-     * @return array
-     */
-    protected function getTargets(NewMessageEvent $event)
-    {
-        $message = $this->getChatMessage($event);
-        $targets = [];
-        if ($message->getChat()->getType() !== 'everyone') {
-            foreach ($message->getChat()->getPersonList() as $target) {
-                $targets[] = $target->getId();
-            }
-        } else {
-            foreach ($this->em->getRepository(Person::class)->findBy(['is_agent' => true]) as $agent) {
-                $targets[] = $agent->getId();
-            }
-        }
-
-        return $targets;
+        return $event instanceof NewMessageEvent;
     }
 
     /**
@@ -122,22 +91,5 @@ class NewAgentChatMessageGenerator extends AbstractGenerator
     protected function getData(NewMessageEvent $event)
     {
         return $this->serializer->toArray($this->getChatMessage($event), new SideloadSerializationContext());
-    }
-
-    /**
-     * @param NewMessageEvent $event
-     *
-     * @return AgentChatMessage
-     */
-    protected function getChatMessage(NewMessageEvent $event)
-    {
-        $messageRepo = $this->em->getRepository(AgentChatMessage::class);
-        /** @var AgentChatMessage $message */
-        $message = $messageRepo->findOneBy(['id' => $event->getMessageId()]);
-        if (!$message) {
-            throw new \InvalidArgumentException(sprintf('No message with id [ %s ] was found!', $event->getMessageId()));
-        }
-
-        return $message;
     }
 }

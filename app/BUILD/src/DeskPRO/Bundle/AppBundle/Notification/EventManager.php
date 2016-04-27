@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -42,6 +42,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class EventManager implements EventSubscriberInterface
 {
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
         return [
@@ -65,6 +68,9 @@ class EventManager implements EventSubscriberInterface
         $this->strategy_factory = $strategy_factory;
     }
 
+    /**
+     * @param SystemEventInterface $event
+     */
     public function handleEvent(SystemEventInterface $event)
     {
         $strategy = $this->getStrategyForEvent($event);

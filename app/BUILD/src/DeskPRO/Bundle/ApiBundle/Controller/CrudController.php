@@ -141,7 +141,7 @@ abstract class CrudController extends BaseController
         // reset group by if it was set in applyListFilters()
         $qb->resetDQLPart('groupBy');
 
-        $totalCount = $qb->select('count(e.id) as value')->getQuery()->getSingleScalarResult();
+        $totalCount = $qb->select('count(distinct e.id) as value')->getQuery()->getSingleScalarResult();
         $groupBy    = $request->get('group_by');
 
         if (!$groupBy) {
@@ -374,7 +374,8 @@ abstract class CrudController extends BaseController
      */
     protected function applySorting(QueryBuilder $qb, $alias, Request $request)
     {
-        $sortOptions = static::$sortOptions ? static::$sortOptions : ['id' => 'id'];
+        $sortOptions = static::$sortOptions ? static::$sortOptions : [];
+        $sortOptions = array_merge($sortOptions, ['id' => 'id']);
         $sortParam   = strtolower($request->get('order_by'));
         if ($sortParam && !array_key_exists($sortParam, $sortOptions)) {
             throw $this->createBadRequestException('Unknown sort field');

@@ -7,8 +7,15 @@ export const loadMessages = createAction(
     return repository('AgentChat').loadMessages(chatId, searchQuery, page).then(response => {
       const messages = response.data.data;
       const meta = response.data.meta.pagination;
+
       return new Promise((resolve) => {
-        resolve({chat_id: chatId, messages: messages, page: meta.current_page, pages: meta.total_pages, searchQuery: searchQuery});
+        resolve({
+          messages,
+          searchQuery,
+          chat_id: chatId,
+          page:    meta.current_page,
+          pages:   meta.total_pages
+        });
       });
     });
   }
@@ -74,7 +81,7 @@ export const markMessages = createAction(
     dispatch(markMessagesOptimistic(uuids, chatId, status));
     return new Promise(
       (resolve, reject) => {
-        return repository('AgentChat').markMessages(ids, status)
+        return repository('AgentChat').markMessages(chatId, ids, status)
           .success(() => {
             return resolve({chatId: chatId, uuids: uuids, status: status});
           })

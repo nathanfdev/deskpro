@@ -26,18 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter;
+namespace DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\Chat;
 
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PermissionChecker\ChatChecker;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\PermissionGroupEntityVoterInterface;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 
 /**
- * Class ChatVoter.
+ * Class UserChatVoter.
  */
-class ChatVoter implements PermissionGroupEntityVoterInterface
+class UserChatVoter implements PermissionGroupEntityVoterInterface
 {
     /**
      * {@inheritdoc}
@@ -46,6 +47,7 @@ class ChatVoter implements PermissionGroupEntityVoterInterface
     {
         return ChatConversation::class;
     }
+
     /**
      * {@inheritdoc}
      */

@@ -98,6 +98,20 @@ class UserChatsController extends CrudController
     /**
      * {@inheritdoc}
      */
+    protected function findEntity($id, Request $request)
+    {
+        /** @var ChatConversation $entity */
+        $entity = parent::findEntity($id, $request);
+        if ($entity->isAgentChat()) {
+            throw $this->createNotFoundException();
+        }
+
+        return $entity;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function applyListGroupBy(QueryBuilder $qb, $alias, $groupBy, Request $request)
     {
         switch ($groupBy) {

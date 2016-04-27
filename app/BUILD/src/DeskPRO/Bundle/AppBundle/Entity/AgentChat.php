@@ -31,18 +31,16 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\AgentChat\Exceptions\WrongChatableTypeException;
-use DeskPRO\Bundle\AppBundle\AgentChat\Interfaces\Chatable;
 use DeskPRO\Component\Util\ListUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\PersistentCollection;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -52,9 +50,15 @@ use JMS\Serializer\Annotation as JMS;
  * @ORM\InheritanceType("NONE")
  * @JMS\ExclusionPolicy("all")
  */
-class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
+class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
 {
     use NotifyPropertyChangedTrait;
+
+    const TYPE_AGENT      = 'agent';
+    const TYPE_TEAM       = 'team';
+    const TYPE_DEPARTMENT = 'department';
+    const TYPE_EVERYONE   = 'everyone';
+    const TYPE_GROUP      = 'group';
 
     /**
      * Id of chat.
@@ -116,11 +120,6 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
     protected $participants;
 
     /**
-     * @var Person[]
-     */
-    protected $personList = null;
-
-    /**
      * An array if ids corresponding to chat messages.
      *
      * @var AgentChatMessage[]
@@ -131,11 +130,10 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
     protected $messages;
 
     protected $allowedTypes = [
-        Chatable::PARTICIPANT_TYPE_AGENT,
-        Chatable::PARTICIPANT_TYPE_TEAM,
-        Chatable::PARTICIPANT_TYPE_DEPARTMENT,
-        Chatable::PARTICIPANT_TYPE_GROUP,
-        Chatable::PARTICIPANT_TYPE_EVERYONE,
+        self::TYPE_AGENT,
+        self::TYPE_TEAM,
+        self::TYPE_DEPARTMENT,
+        self::TYPE_EVERYONE,
     ];
 
     /**
@@ -170,10 +168,6 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
      */
     public function setType($type)
     {
-        if (!in_array($type, $this->allowedTypes)) {
-            $err = 'Used invalid Chatable type in AgentChat::setType. Should be one of %s';
-            throw new WrongChatableTypeException(sprintf($err, implode(',', $this->allowedTypes)));
-        }
         $this->type = $type;
     }
 
@@ -272,52 +266,72 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
         return ListUtils::filterMap($this->participants, function (AgentChatParticipant $p) { return $p->getPerson(); });
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getPersonList()
     {
-        if (!$this->personList) {
-            $this->personList = array();
-            foreach ($this->participants as $participant) {
-                $list = $participant->getPersonList();
-                if (is_array($list)) {
-                    $this->personList = array_merge($this->personList, $list);
-                } elseif ($list instanceof PersistentCollection) {
-                    $this->personList = array_merge($this->personList, $list->toArray());
+        $people    = [];
+        $addPerson = function (Person $person = null) use (&$people) {
+            if ($person && !array_key_exists($person->getId(), $people)) {
+                $people[$person->getId()] = $person;
+            }
+        };
+
+        foreach ($this->participants as $participant) {
+            $addPerson($participant->getPerson());
+            if ($participant->getTeam()) {
+                foreach ($participant->getTeam()->getPersonList() as $person) {
+                    $addPerson($person);
+                }
+            }
+            if ($participant->getDepartment()) {
+                foreach ($participant->getDepartment()->getPersonList() as $person) {
+                    $addPerson($person);
                 }
             }
         }
 
-        return $this->personList;
+        return array_values($people);
     }
 
     /**
-     * @param Chatable $participantPrototype
+     * @param $participant
      *
-     * @throws WrongChatableTypeException
+     * @return bool
+     */
+    public function containsParticipant($participant)
+    {
+        if ($participant instanceof Person) {
+            return in_array($participant, $this->getAgents());
+        } elseif ($participant instanceof AgentTeam) {
+            return in_array($participant, $this->getAgentTeams());
+        } elseif ($participant instanceof Department) {
+            return in_array($participant, $this->getDepartments());
+        } else {
+            throw new \InvalidArgumentException('Unknown participant type');
+        }
+    }
+
+    /**
+     * @param mixed $participant
      *
      * @return $this
      */
-    public function addParticipant(Chatable $participantPrototype)
+    public function addParticipant($participant)
     {
-        $participant = new AgentChatParticipant();
-        $type        = $participantPrototype->getChatableType();
-        switch ($type) {
-            case Chatable::PARTICIPANT_TYPE_AGENT;
-                /* @var Person $participantPrototype */
-                $participant->setPerson($participantPrototype);
-                break;
-            case Chatable::PARTICIPANT_TYPE_TEAM;
-                /* @var AgentTeam $participantPrototype */
-                $participant->setTeam($participantPrototype);
-                break;
-            case Chatable::PARTICIPANT_TYPE_DEPARTMENT;
-                /* @var Department $participantPrototype */
-                $participant->setDepartment($participantPrototype);
-                break;
-            default:
-                throw new WrongChatableTypeException();
+        $chatParticipant = new AgentChatParticipant();
+        $chatParticipant->setChat($this);
+
+        if ($participant instanceof Person) {
+            $chatParticipant->setPerson($participant);
+        } elseif ($participant instanceof AgentTeam) {
+            $chatParticipant->setTeam($participant);
+        } elseif ($participant instanceof Department) {
+            $chatParticipant->setDepartment($participant);
         }
-        $participant->setChat($this);
-        $this->participants->add($participant);
+
+        $this->participants->add($chatParticipant);
 
         return $this;
     }
@@ -337,9 +351,10 @@ class AgentChat implements PersonList, EntityInterface, NotifyPropertyChanged
      */
     public function addMessage(AgentChatMessage $message)
     {
-        $this->messages->add($message);
-        $this->date_last_message = new \DateTime();
         $message->setChat($this);
+        $this->messages->add($message);
+
+        $this->date_last_message = new \DateTime();
 
         return $this;
     }

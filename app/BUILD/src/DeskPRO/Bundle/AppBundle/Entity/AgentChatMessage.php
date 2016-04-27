@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
@@ -47,6 +48,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="agent_chat_message", uniqueConstraints={@ORM\UniqueConstraint(name="uuid_unique",columns={"uuid"})})
  * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
  * @ORM\InheritanceType("NONE")
+ *
+ * @ORM\EntityListeners({"DeskPRO\Bundle\AppBundle\EventListener\Doctrine\AgentChatMessageListener"})
  */
 class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
 {
@@ -268,7 +271,7 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
      *
      * @return $this
      */
-    public function setChat(AgentChat $chat)
+    public function setChat(AgentChat $chat = null)
     {
         $this->chat = $chat;
 
@@ -313,22 +316,6 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
         $this->metadata = $metadata;
 
         return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAgentChatId()
-    {
-        return $this->getChat()->getId();
-    }
-
-    /**
-     * @return int
-     */
-    public function getPersonId()
-    {
-        return $this->getPerson()->getId();
     }
 
     /**

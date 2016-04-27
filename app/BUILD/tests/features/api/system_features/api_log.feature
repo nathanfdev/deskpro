@@ -39,7 +39,7 @@ Feature: Api should log any request
     Request is failed. Checking different modes.
     Given I add "X-DeskPRO-Client-Request-ID" header equal to "de_dupe_header_modes"
     And I set duplcicate mode as <dup_mode>, failure mode as <fail_mode>, eager as 0 in request
-    When I send a POST request to "/api/v2/agent_chats/start"
+    When I send a POST request to "/api/v2/agent_chats"
     Then the response status code should be <status>
     And the header "X-DeskPRO-Request-ID" should be equal to "de_dupe_header_modes-c"
 

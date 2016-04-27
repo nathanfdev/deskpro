@@ -247,11 +247,6 @@ services:
     tags:
       - { name: form.type, alias: ticket_message }
 
-  form.ticket_description:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDescriptionType
-    tags:
-      - { name: form.type, alias: ticket_description }
-
   form.ticket_participants:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsType
     arguments:
@@ -266,3 +261,8 @@ services:
     tags:
       - { name: form.type, alias: widget_ticket_setup }
 
+  form.api.agent_chat.start_chat:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\AgentChat\AgentChatType
+    arguments: ["@doctrine.orm.default_entity_manager", "@data.departments"]
+    tags:
+      - { name: form.type }
