@@ -99,7 +99,9 @@ class TriggeringProcess
                             $updatedIncidents[] = $incident;
                         }
                     } else {
-                        $newIncidents[] = $incident;
+                        if (!in_array($incident, $newIncidents)) {
+                            $newIncidents[] = $incident;
+                        }
                     }
                     $this->em->persist($incident);
                 }
