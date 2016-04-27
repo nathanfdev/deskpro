@@ -2606,7 +2606,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function getLabels()
     {
-        return $this->labels->toArray();
+        return $this->labels;
     }
 
     /**
