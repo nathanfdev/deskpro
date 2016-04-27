@@ -36,7 +36,8 @@ export class ReplyButtons extends React.Component {
                color: textColor
              }}>
 
-            <i className="fa fa-mail-reply-all" /> {portalPhrases.get('portal.chat.reply_to', {'{firstName}': firstName})}
+            <i className="fa fa-mail-reply-all" />
+            {portalPhrases.get('portal.chat.reply_to', {'{firstName}': firstName})}
           </a>
           <a href="#" className="blank" onClick={this.onClose}>
               <i className="fa fa-times" /> {portalPhrases.get('portal.chat.dismiss_message')}

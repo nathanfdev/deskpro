@@ -89,7 +89,7 @@ class WidgetPerson
     public function __construct(PersonEntity $person, Avatar $avatar)
     {
         $this->id                    = $person->getId();
-        $this->display_name          = $person->getDisplayName();
+        $this->display_name          = $person->getDisplayNameUser();
         $this->primary_email_address = $person->getPrimaryEmailAddress();
         $this->is_agent              = $person->isAgent();
         $this->avatar                = $avatar;
