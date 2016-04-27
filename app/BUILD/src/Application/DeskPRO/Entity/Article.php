@@ -50,7 +50,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @PortalLinkRoute("portal_kb_view", route_param_map={"slug":"slug"})
  * @PortalLinkRoute("portal_kb_view", route_param_map={"slug": "id"}, type="permalink")
- * @PortalLinkRoute("portal_kb_article_toggle_subscription", route_param_map={"slug":"slug"}, type="toggle_subscription")
+ * @PortalLinkRoute("portal_kb_article_toggle_subscription",
+ *     route_param_map={"slug":"slug"}, type="toggle_subscription")
  * @PortalLinkRoute("portal_kb_article_vote_up", route_param_map={"slug":"slug"}, type="vote_up")
  * @PortalLinkRoute("portal_kb_article_vote_down", route_param_map={"slug":"slug"}, type="vote_down")
  * @JMS\ExclusionPolicy("all")
