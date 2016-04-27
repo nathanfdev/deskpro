@@ -409,6 +409,20 @@ class TicketMessage extends DomainObject
         return $this->person['id'];
     }
 
+    public function setCreationSystem($system)
+    {
+        $this->setModelField('creation_system', $system);
+
+        return $this;
+    }
+
+    public function setHostname($hostname)
+    {
+        $this->setModelField('hostname', $hostname);
+
+        return $this;
+    }
+
     public function getMessageLength()
     {
         if ($this->_message_length !== null) {
@@ -701,6 +715,8 @@ class TicketMessage extends DomainObject
         }
 
         $this->setModelField('message', $message);
+
+        return $this;
     }
 
     public function addAttachment(TicketAttachment $attach)
@@ -738,10 +754,14 @@ class TicketMessage extends DomainObject
 
     /**
      * @param string $geo_country Two-letter country code or null
+     *
+     * @return $this
      */
     public function setGeoCountry($geo_country)
     {
         $this->setModelField('geo_country', $geo_country ?: null);
+
+        return $this;
     }
 
     /**

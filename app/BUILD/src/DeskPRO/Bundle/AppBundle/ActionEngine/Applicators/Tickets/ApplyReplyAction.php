@@ -29,56 +29,59 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Services;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\TicketManager;
+use Application\DeskPRO\Entity\TicketMessage;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Interfaces\EnvironmentServiceAwareInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Interfaces\TicketManagerAwareInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Interfaces\TokenStorageAwareInterface;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices\EnvironmentService;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class TicketApplicatorService extends AbstractApplicatorService
+class ApplyReplyAction extends AbstractTicketApplicator implements ActionApplicatorInterface, TokenStorageAwareInterface, EnvironmentServiceAwareInterface
 {
-    protected $class     = Ticket::class;
-    protected $namespace = 'Tickets';
-
-    /** @var  EntityManager */
-    protected $em;
-    /** @var  TicketManager */
-    protected $tm;
     /** @var  TokenStorageInterface */
     protected $tokenStorage;
+
     /** @var  EnvironmentService */
     protected $environmentService;
 
-    public function __construct(
-        EntityManager $em,
-        TicketManager $tm,
-        TokenStorageInterface $tokenStorage,
-        EnvironmentService $environmentService
-    ) {
-        parent::__construct($em);
-        $this->tm                 = $tm;
-        $this->tokenStorage       = $tokenStorage;
-        $this->environmentService = $environmentService;
+    /** @var  array */
+    private $geoIp;
+
+    /**
+     * @param Ticket[] $tickets
+     */
+    public function apply(array $tickets)
+    {
+        foreach ($tickets as $ticket) {
+            $message = new TicketMessage();
+            $message
+                ->setTicket($ticket)
+                ->setMessage($this->options['reply']['message'])
+                ->setPerson($this->tokenStorage->getToken()->getUser())
+                ->setCreationSystem(TicketMessage::CREATED_WEB_AGENT)
+                ->setHostname($this->environmentService->getHostname())
+                ->setGeoCountry($this->getGeoCountry())
+                ->setAsAgentNote($this->options['reply']['message']);
+            $this->em->persist($message);
+        }
     }
 
-    protected function createApplicator($class)
+    public function setTokenStorage(TokenStorageInterface $tokenStorage)
     {
-        $applicator = new $class($this->em);
-        if ($applicator instanceof TicketManagerAwareInterface) {
-            $applicator->setTicketManager($this->tm);
-        }
-        if ($applicator instanceof TokenStorageAwareInterface) {
-            $applicator->setTokenStorage($this->tokenStorage);
-        }
-        if ($applicator instanceof EnvironmentServiceAwareInterface) {
-            $applicator->setEnvironmentService($this->environmentService);
-        }
+        $this->tokenStorage = $tokenStorage;
+    }
 
-        return $applicator;
+    public function setEnvironmentService(EnvironmentService $environmentService)
+    {
+        $this->environmentService = $environmentService;
+        $this->geoIp              = $environmentService->getGeoIp();
+    }
+
+    private function getGeoCountry()
+    {
+        return isset($this->geoIp['country_code']) ? $this->geoIp['country_code'] : null;
     }
 }
