@@ -70,6 +70,7 @@ class LanguageController extends AbstractApiController
             'portal.account.login-stay-logged-in',
             'portal.account.logout-confirm',
             'portal.general.no-search-results-general',
+            'portal.general.show_less',
             'portal.general.show_x_more',
             'portal.general.select_placeholder',
             'portal.general.delete',

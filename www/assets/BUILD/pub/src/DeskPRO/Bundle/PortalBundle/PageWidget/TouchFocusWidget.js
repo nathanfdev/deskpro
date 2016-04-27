@@ -19,11 +19,13 @@ export class TouchFocusWidget extends PageWidget {
     };
 
     this.$element.on('click touchend', (ev) => {
-      ev.stopPropagation();
-      if ($(this).is('a')) {
-        ev.preventDefault();
+      if ($(ev.target).parents('.no-touch-focus').length === 0) {
+        ev.stopPropagation();
+        if ($(this).is('a')) {
+          ev.preventDefault();
+        }
+        openIfClosed();
       }
-      openIfClosed();
     });
   }
 }

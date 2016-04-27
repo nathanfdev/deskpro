@@ -90,7 +90,10 @@ export class DownloadPopup extends React.Component {
             </div>
 
             <h1>{filename}</h1>
-            <h2>Uploaded on: {dateUploaded} - {filesize}</h2>
+            {dateUploaded
+              ? <h2>Uploaded on: {dateUploaded} - {filesize}</h2>
+              : <h2>{filesize}</h2>
+            }
 
             <a href={downloadUrl} className="button" target="_blank">
               Download File

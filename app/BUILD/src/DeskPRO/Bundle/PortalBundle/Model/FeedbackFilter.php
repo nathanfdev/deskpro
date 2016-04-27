@@ -47,43 +47,43 @@ class FeedbackFilter
     const SORT_DIRECTION_DESC = 'desc';
     const SORT_DIRECTION_ASC  = 'asc';
 
-    public static $statuses = array(
+    public static $statuses = [
         self::STATUS_ALL,
         self::STATUS_CLOSED,
         self::STATUS_ACTIVE,
-    );
+    ];
 
-    public static $statuses_translated = array(
+    public static $statuses_translated = [
         self::STATUS_ALL    => 'portal.feedback.status_all',
         self::STATUS_ACTIVE => 'portal.feedback.status_active',
         self::STATUS_CLOSED => 'portal.feedback.status_closed',
-    );
+    ];
 
-    public static $sorts = array(
+    public static $sorts = [
         self::SORT_DATE,
         self::SORT_POPULARITY,
         self::SORT_VIEWS,
         self::SORT_COMMENTS,
         self::SORT_RATING,
-    );
+    ];
 
-    public static $sorts_translated = array(
+    public static $sorts_translated = [
         self::SORT_DATE       => 'portal.feedback.sort_date',
         self::SORT_POPULARITY => 'portal.feedback.sort_popularity',
         self::SORT_VIEWS      => 'portal.feedback.sort_views',
         self::SORT_COMMENTS   => 'portal.feedback.sort_comments',
         self::SORT_RATING     => 'portal.feedback.sort_rating',
-    );
+    ];
 
-    public static $sort_directions = array(
+    public static $sort_directions = [
         self::SORT_DIRECTION_ASC,
         self::SORT_DIRECTION_DESC,
-    );
+    ];
 
-    public static $sort_directions_translated = array(
+    public static $sort_directions_translated = [
         self::SORT_DIRECTION_ASC  => 'portal.feedback.dir_asc',
         self::SORT_DIRECTION_DESC => 'portal.feedback.dir_desc',
-    );
+    ];
 
     protected $status;
     protected $status_categories;
@@ -91,20 +91,20 @@ class FeedbackFilter
     protected $sort;
     protected $sort_direction;
 
-    public function __construct(array $set_these = array())
+    public function __construct(array $set_these = [])
     {
         $this->replaceArray(array_merge(static::getDefaultValues(), $set_these));
     }
 
     public function toArray()
     {
-        return array(
+        return [
             'status'            => $this->getStatus(),
             'status_categories' => $this->getStatusCategories(),
             'types'             => $this->getTypes(),
             'sort'              => $this->getSort(),
             'sort_direction'    => $this->getSortDirection(),
-        );
+        ];
     }
 
     public function replaceArray(array $filter_values)
@@ -118,13 +118,13 @@ class FeedbackFilter
 
     public static function getDefaultValues()
     {
-        return array(
+        return [
             'status'            => static::STATUS_ACTIVE,
-            'status_categories' => array(),
-            'types'             => array(),
+            'status_categories' => [],
+            'types'             => [],
             'sort'              => static::SORT_DATE,
             'sort_direction'    => static::SORT_DIRECTION_DESC,
-        );
+        ];
     }
 
     /**

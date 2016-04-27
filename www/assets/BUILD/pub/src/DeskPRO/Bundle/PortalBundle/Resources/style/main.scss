@@ -3533,7 +3533,8 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
   }
 }
 
-.show-more-content {
+.show-more-content,
+.show-less-content {
   display: inline-block;
   border: 1px solid #d8d8d8;
   border-bottom: 2px solid #d8d8d8;

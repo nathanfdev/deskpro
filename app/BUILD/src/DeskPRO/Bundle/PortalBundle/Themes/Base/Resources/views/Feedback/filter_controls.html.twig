@@ -4,15 +4,30 @@
 <div class="feedback-filter">
     <ul class="flat-tabs">
         <li>
-            <a href="{{ path('portal_feedback_browse', { filter_uri: 'all' }) }}"{% if status == 'all' %} class="active"{% endif %}>{{ phrase('portal.feedback.filter_all_items') }}</a>
+            <div class="quick-jump">
+                <a href="{{ path('portal_feedback_browse', { filter_uri: 'all/' ~ (types ? 'type-' ~ types | join (',') : 'type-1,2,3') }) }}"
+                        {% if status == 'all' %} class="active"{% endif %}>
+                    {{ phrase('portal.feedback.filter_all_items') }}
+                </a>
+            </div>
         </li>
 
         <li>
-            <a href="{{ path('portal_feedback_browse', { filter_uri: 'active' }) }}"{% if status == 'active' %} class="active"{% endif %}>{{ phrase('portal.feedback.filter_open_items') }} <span class="control active-control"><i class="fa fa-caret-down"></i></span></a>
+            <div class="quick-jump">
+                <a href="{{ path('portal_feedback_browse', { filter_uri: 'active/' ~ (types ? 'type-' ~ types | join (',') : 'type-1,2,3') }) }}"
+                        {% if status == 'active' %} class="active"{% endif %}>
+                    {{ phrase('portal.feedback.filter_open_items') }}
+                </a>
+            </div>
         </li>
 
         <li>
-            <a href="{{ path('portal_feedback_browse', { filter_uri: 'closed' }) }}"{% if status == 'closed' %} class="active"{% endif %}>{{ phrase('portal.feedback.filter_closed_items') }} <span class="control"><i class="fa fa-caret-down"></i></span></a>
+            <div class="quick-jump">
+                <a href="{{ path('portal_feedback_browse', { filter_uri: 'closed/' ~ (types ? 'type-' ~ types | join (',') : 'type-1,2,3') }) }}"
+                        {% if status == 'closed' %} class="active"{% endif %}>
+                    {{ phrase('portal.feedback.filter_closed_items') }}
+                </a>
+            </div>
         </li>
     </ul>
 
@@ -23,20 +38,18 @@
             <li>
                 <div class="slider-panel">
                     {% if type.id in types or types is empty %}
-                        <a href="{{ path('portal_feedback_browse', { filter_uri: 'type-' ~ type.id }) }}" class="slider">
+                        <a href="{{ path('portal_feedback_browse', { filter_uri: status ~ '/type-' ~ type.id }) }}" class="slider">
                             <span class="slider-status">{{ phrase('portal.general.toggle_on') }}</span>
                             <span class="slider-icon"><i class="fa fa-check"></i></span>
                         </a>
                         <span class="slider-label">{{ object_phrase(type) }}</span>
-                        <span class="slider-options"><i class="fa fa-caret-down"></i></span>
                     {% else %}
-                        <a href="{{ path('portal_feedback_browse', { filter_uri: 'type-' ~ type.id }) }}"
+                        <a href="{{ path('portal_feedback_browse', { filter_uri: status ~ '/type-' ~ type.id }) }}"
                            class="slider off">
                             <span class="slider-icon"><i class="fa fa-times"></i></span>
                             <span class="slider-status">{{ phrase('portal.general.toggle_off') }}</span>
                         </a>
                         <span class="slider-label">{{ object_phrase(type) }}</span>
-                        <span class="slider-options"><i class="fa fa-caret-down"></i></span>
                     {% endif %}
                 </div>
             </li>

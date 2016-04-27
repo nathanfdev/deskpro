@@ -14,7 +14,6 @@ export class FilterModel {
       return _.parseInt(val);
     });
     this.page = _.parseInt(data.page || 1);
-    this.checkEmptyTypes();
     this.checkEmptyStatusCategories();
   }
 
@@ -25,7 +24,6 @@ export class FilterModel {
     this.status = 'all';
     this.status_categories = [];
     this.types = [];
-    this.checkEmptyTypes();
     this.checkEmptyStatusCategories();
   }
 
@@ -41,14 +39,6 @@ export class FilterModel {
     }
   }
 
-  checkEmptyTypes() {
-    if (this.types.length === 0) {
-      // if no types are checked, default back to all types
-      // this is the behaviour of the URL
-      this.types = this.available.getAvailableTypeIds();
-    }
-  }
-
   checkEmptyStatusCategories() {
     if (this.status_categories.length === 0) {
       this.status_categories = this.available.getStatusCategoryIdsForStatus(this.status);
@@ -56,8 +46,8 @@ export class FilterModel {
     // if no status cats are picked and this status has some, check em all!
   }
 
-  getAvailable() {
-    return this.available;
+  getSelectedTypes() {
+    return '/type-' + this.types.join(',');
   }
 
   createUrl() {
@@ -70,14 +60,7 @@ export class FilterModel {
     }
 
     if (this.types.length > 0) {
-      let diff = _.difference(this.available.getAvailableTypeIds(), this.types);
-      if (diff.length > 0) {
-        // we only add the /type-x to the URL if it's a subset of types. default is to
-        // include them all. if user has all selected, then we don't need it.
-        // _.intersection above with a length of > 0 means the arrays have diff elements.
-        url += '/type-';
-        url += this.types.join(',');
-      }
+      url += this.getSelectedTypes();
     }
 
     if (this.sort) {
@@ -122,7 +105,6 @@ export class FilterModel {
     } else {
       this.types.push(type_id);
     }
-    this.checkEmptyTypes();
   }
 
   setType(type_id) {
@@ -130,7 +112,6 @@ export class FilterModel {
     type_id = _.parseInt(type_id);
     this.types = [];
     this.types.push(type_id);
-    this.checkEmptyTypes();
   }
 
   toggleStatusCategory(status_category_id) {

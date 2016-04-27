@@ -41,7 +41,7 @@ export class Tab extends React.Component {
   renderInactive() {
     return (
       <div className={"quick-jump no-dropdown"} ref="quickJump">
-        <a href={'/feedback/browse/' + this.props.id}
+        <a href={'/feedback/browse/' + this.props.id + '/' + this.props.types}
            className={this.props.active ? "active" : ""}
            onClick={this.clickTab.bind(this)}
            onTouchStart={this.clickTab.bind(this)}
@@ -80,7 +80,7 @@ export class Tab extends React.Component {
 
   renderDropdown(dropdownCats) {
     return (
-      <div className="dropdown-content">
+      <div className="dropdown-content no-touch-focus">
         <ul>
           {_.map(dropdownCats, (cat) => {
             return (

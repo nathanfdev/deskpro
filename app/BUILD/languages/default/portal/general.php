@@ -121,6 +121,7 @@ return array(
     'portal.general.search_btn'                  => 'Search',
     'portal.general.select_placeholder'          => 'Select...',
     'portal.general.show'                        => 'Show',
+    'portal.general.show_less'                   => 'Show less',
     'portal.general.show_more'                   => 'Show more',
     'portal.general.show_x_more'                 => 'Show {num} more',
     'portal.general.software_provided_by'        => 'Helpdesk software provided by',

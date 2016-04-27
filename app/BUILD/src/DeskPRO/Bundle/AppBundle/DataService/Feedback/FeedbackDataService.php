@@ -70,7 +70,7 @@ class FeedbackDataService extends AbstractDataService
         $em = $this->em;
 
         return $this->generateAndCache(
-            array('hasAny'),
+            ['hasAny'],
             function () use ($em) {
                 return $em->getConnection()->fetchColumn('SELECT COUNT(*) FROM feedback LIMIT 1') ? true : false;
             }
@@ -91,13 +91,13 @@ class FeedbackDataService extends AbstractDataService
         $permissions_manager = $this->permissions_manager;
 
         return $this->generateAndCache(
-            array(
+            [
                 'getItemsPager',
                 $page,
                 $max_per_page,
                 $filter,
                 $person,
-            ),
+            ],
             function () use ($em, $permissions_manager, $page, $max_per_page, $filter, $person) {
                 $qb = $em->createQueryBuilder();
                 $qb->select('f')->from('DeskPRO:Feedback', 'f');
@@ -107,7 +107,7 @@ class FeedbackDataService extends AbstractDataService
                 $permissions_bag = $permissions_manager->getPortalPermissionsBag($person);
                 $allowed_types = $permissions_bag->getAllowedFeedbackCategoryIds();
                 $requested_types = $filter->getTypes();
-                $types = array();
+                $types = [];
                 if (null === $requested_types) {
                     $types = $allowed_types;
                 } elseif (count($requested_types)) {
@@ -118,10 +118,6 @@ class FeedbackDataService extends AbstractDataService
                     }
                 }
 
-                if (empty($types)) {
-                    $types = $allowed_types;
-                }
-
                 $filter->setTypes($types);
                 //
                 // end filter types
@@ -130,16 +126,16 @@ class FeedbackDataService extends AbstractDataService
                 // "all","active","closed"
                 switch ($filter->getStatus()) {
                     case FeedbackFilter::STATUS_ALL:
-                        $valid_status = array(Feedback::STATUS_ACTIVE, Feedback::STATUS_CLOSED);
+                        $valid_status = [Feedback::STATUS_ACTIVE, Feedback::STATUS_CLOSED];
                         break;
                     case FeedbackFilter::STATUS_ACTIVE:
-                        $valid_status = array(Feedback::STATUS_ACTIVE);
+                        $valid_status = [Feedback::STATUS_ACTIVE];
                         break;
                     case FeedbackFilter::STATUS_CLOSED:
-                        $valid_status = array(Feedback::STATUS_CLOSED);
+                        $valid_status = [Feedback::STATUS_CLOSED];
                         break;
                     default:
-                        $valid_status = array();
+                        $valid_status = [];
                 }
                 $qb->where('f.status IN (:valid_status)')->setParameter('valid_status', $valid_status);
 
@@ -156,6 +152,8 @@ class FeedbackDataService extends AbstractDataService
                 // array(1,3,5) $feedback->category
                 if (count($types = $filter->getTypes())) {
                     $qb->andWhere('f.category IN (:types)')->setParameter('types', $types);
+                } else {
+                    $qb->andWhere('f.category = 0');
                 }
 
                 // sort
@@ -198,10 +196,10 @@ class FeedbackDataService extends AbstractDataService
         $that = $this;
 
         return $this->generateAndCache(
-            array(
+            [
                 'getItem',
                 $item,
-            ),
+            ],
             function () use ($that, $item) {
                 if (!$item) { // we need some input
                     return;
@@ -221,11 +219,11 @@ class FeedbackDataService extends AbstractDataService
         $that = $this;
 
         return $this->generateAndCache(
-            array(
+            [
                 'getItemComments',
                 $item,
                 $person,
-            ),
+            ],
             function () use ($that, $item, $person) {
                 $item = $that->getItem($item);
 
@@ -244,9 +242,9 @@ class FeedbackDataService extends AbstractDataService
         $permissions_bag = $this->permissions_manager->getPortalPermissionsBag($person);
 
         return $this->getFeedbackCategoryRepo()->findBy(
-            array(
+            [
                 'id' => $permissions_bag->getAllowedFeedbackCategoryIds(),
-            )
+            ]
         );
     }
 
