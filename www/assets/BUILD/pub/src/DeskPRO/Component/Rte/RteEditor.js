@@ -56,9 +56,9 @@ export class RteEditor extends React.Component {
     this.medium.subscribe('editableClick', () => {
       setTimeout(() => this.medium.startSelectionUpdates(), 1);
     });
-    this.mousePresent = false;
-    document.addEventListener('mousemove', this.onMouseMove, true);
-    node.addEventListener('focus', this.showToolbar, true);
+
+    this.getDocument().addEventListener('mousemove', this.onMouseMove, true);
+    node.addEventListener('focus', this.onShowToolbar, true);
   }
 
   componentWillReceiveProps(newProps) {
@@ -76,6 +76,11 @@ export class RteEditor extends React.Component {
     $(this.getNode()).off('paste', this.onPaste);
     this.medium.destroy();
   }
+
+  onMouseMove = () => {
+    this.mousePresent = true;
+    this.getDocument().removeEventListener('mousemove', this.onMouseMove, true);
+  };
 
   onPaste = event => {
     event.preventDefault();
@@ -97,12 +102,24 @@ export class RteEditor extends React.Component {
     }
   };
 
+  onShowToolbar = () => {
+    if (this.mousePresent) {
+      $('.medium-editor-toolbar').show();
+      $('.dp-medium-rte').addClass('with-toolbar');
+      this.getNode().removeEventListener('focus', this.onShowToolbar, true);
+    }
+  };
+
   getMediumEditor() {
     return this.medium;
   }
 
   getNode() {
     return ReactDOM.findDOMNode(this);
+  }
+
+  getDocument() {
+    return this.medium.options.ownerDocument;
   }
 
   getContent() {
@@ -120,7 +137,7 @@ export class RteEditor extends React.Component {
   focus() {
     this.prepareFocusContent();
 
-    const doc = this.medium.options.ownerDocument;
+    const doc = this.getDocument();
     const node = this.getNode();
 
     this.medium.restoreSelection();
@@ -149,7 +166,7 @@ export class RteEditor extends React.Component {
   focusEnd() {
     this.prepareFocusContent();
 
-    const doc = this.medium.options.ownerDocument;
+    const doc = this.getDocument();
     const node = this.getNode();
     const $p = $('p', node);
 
@@ -169,25 +186,11 @@ export class RteEditor extends React.Component {
   prepareFocusContent() {
     const node = this.getNode();
     const $p = $('p', node);
-    
-    // This seems to cause this bug https://trello.com/c/8RBekuHd
-    // if (!$p.length || node.innerHTML === '<p><br></p>') {
-    //   node.innerHTML = '<p></p>';
-    // }
-  }
 
-  onMouseMove = () => {
-    this.mousePresent = true;
-    document.removeEventListener('mousemove', this.onMouseMove, true);
-  };
-
-  showToolbar = () => {
-    if (this.mousePresent) {
-      $('.medium-editor-toolbar').show();
-      $('.dp-medium-rte').addClass('with-toolbar');
-      this.getNode().removeEventListener('focus', this.showToolbar, true);
+    if (!$p.length || node.innerHTML === '<p><br></p>') {
+      node.innerHTML = '<p></p>';
     }
-  };
+  }
 
   render() {
     const { tag = 'div' } = this.props;
