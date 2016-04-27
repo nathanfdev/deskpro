@@ -92,14 +92,19 @@ Feature: /me/notifications endpoint
     And the JSON node "data[3].is_dismissed" should be equal to 1
 
   Scenario: I get notification counts
-    When I send a GET request to "/api/v2/me/notifications/counts"
+    When I send a GET request to "/api/v2/me/notifications/counts?group_by=is_dismissed"
     Then the response status code should be 200
     And the response should be in JSON
+
     And the JSON node "data.count" should be equal to 4
-    And the JSON node "data.nested[0].type" should be equal to "non_dismissed"
-    And the JSON node "data.nested[0].count" should be equal to 1
-    And the JSON node "data.nested[1].type" should be equal to "dismissed"
-    And the JSON node "data.nested[1].count" should be equal to 3
+    And the JSON node "data.nested[0].id" should be equal to "dismissed"
+    And the JSON node "data.nested[0].type" should be equal to "is_dismissed"
+    And the JSON node "data.nested[0].title" should be equal to "Dismissed"
+    And the JSON node "data.nested[0].count" should be equal to 3
+    And the JSON node "data.nested[1].id" should be equal to "non_dismissed"
+    And the JSON node "data.nested[1].type" should be equal to "is_dismissed"
+    And the JSON node "data.nested[1].title" should be equal to "Non dismissed"
+    And the JSON node "data.nested[1].count" should be equal to 1
 
   Scenario: I dismiss all notifications
     When I send a POST request to "/api/v2/me/notifications/dismiss/all"

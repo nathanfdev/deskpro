@@ -26,16 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\ApiBundle\Controller\AgentAlerts;
 
 use Application\DeskPRO\Entity\AgentAlert;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -54,45 +50,6 @@ class AgentAlertsController extends CrudController
     public static $entity    = AgentAlert::class;
     public static $listSort  = 'date_created';
     public static $listOrder = 'desc';
-
-    /**
-     * Get user's notification counts.
-     *
-     * @ApiDoc(
-     *     section="Notifications and alerts",
-     *     resourceDescription="Operations about agent alerts",
-     *     description="Get notifications counts",
-     *     statusCodes={
-     *         204="Returned if everything is ok",
-     *     }
-     * )
-     *
-     * @Rest\Get("/counts")
-     *
-     * @return View
-     */
-    public function getCountsAction()
-    {
-        $qb = $this->getManager()->createQueryBuilder();
-        $qb
-            ->select('count(a.id) as group_count, a.is_dismissed')
-            ->from(AgentAlert::class, 'a')
-            ->where('a.person = :user')
-            ->setParameter('user', $this->getUser())
-            ->groupBy('a.is_dismissed')
-        ;
-
-        $count  = Count::fromGroupedBy('is_dismissed');
-        $result = $qb->getQuery()->getResult();
-        if (is_array($result)) {
-            foreach ($result as $item) {
-                $type = $item['is_dismissed'] ? 'dismissed' : 'non_dismissed';
-                $count->addNested($item['group_count'], null, $type, null, true);
-            }
-        }
-
-        return new View($this->wrap($count));
-    }
 
     /**
      * Dismiss alerts with given ids array.
@@ -121,9 +78,10 @@ class AgentAlertsController extends CrudController
                 ->set('a.is_dismissed', 1)
                 ->where('a.id IN (:ids)')
                 ->setParameter('ids', $ids)
-                ->getQuery()
-                ->execute()
             ;
+
+            $this->applyUserFilter($qb, 'a');
+            $qb->getQuery()->execute();
         }
 
         return View::create(null, Response::HTTP_NO_CONTENT);
@@ -150,14 +108,11 @@ class AgentAlertsController extends CrudController
         $qb
             ->update(AgentAlert::class, 'a')
             ->set('a.is_dismissed', 1)
-            ->where(
-                'a.is_dismissed = 0',
-                'a.person = :user'
-            )
-            ->setParameter('user', $this->getUser())
-            ->getQuery()
-            ->execute()
+            ->where('a.is_dismissed = 0')
         ;
+
+        $this->applyUserFilter($qb, 'a');
+        $qb->getQuery()->execute();
 
         return View::create(null, Response::HTTP_NO_CONTENT);
     }
@@ -167,6 +122,8 @@ class AgentAlertsController extends CrudController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
+        $this->applyUserFilter($qb, $alias);
+
         if (null !== $request->get('after')) {
             $qb->andWhere("$alias.date_created > :date");
             $qb->setParameter('date', $request->get('after'));
@@ -174,6 +131,30 @@ class AgentAlertsController extends CrudController
         if (null !== $request->get('is_dismissed')) {
             $qb->andWhere("$alias.is_dismissed = :is_dismissed");
             $qb->setParameter('is_dismissed', $request->get('is_dismissed'));
+        }
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     * @param string       $alias
+     */
+    protected function applyUserFilter(QueryBuilder $qb, $alias)
+    {
+        $qb->andWhere("$alias.person = :user");
+        $qb->setParameter('user', $this->getUser());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function applyListGroupBy(QueryBuilder $qb, $alias, $groupBy, Request $request)
+    {
+        if ($groupBy === 'is_dismissed') {
+            $qb
+                ->addSelect("(CASE WHEN $alias.is_dismissed = 1 THEN 'dismissed' ELSE 'non_dismissed' END) as group_name")
+                ->addSelect("(CASE WHEN $alias.is_dismissed = 1 THEN 'Dismissed' ELSE 'Non dismissed' END) as title")
+                ->groupBy('group_name')
+            ;
         }
     }
 }
