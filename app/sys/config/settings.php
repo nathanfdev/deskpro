@@ -254,6 +254,11 @@ return array(
     'core.email_source_storetime_rejection' => 1296000, // 15 days
 
     /*
+     * An email address to email whenever there is a rejection
+     */
+    'core.email_source_alert_rejection' => '',
+
+    /*
      * How long to store sendmail sources
      */
     'core.sendmail_source_storetime'       => 1728000, // 20 days
