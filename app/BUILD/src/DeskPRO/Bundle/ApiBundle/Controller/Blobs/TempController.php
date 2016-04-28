@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Blobs;
 
-use Application\DeskPRO\Attachments\AcceptAttachment;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -44,7 +43,7 @@ use Symfony\Component\HttpFoundation\Response;
 class TempController extends BaseController
 {
     /**
-     * @Rest\Post("/blobs/temp", name="api_post_blobs_temp")
+     * @Rest\Post("/blobs/temp")
      *
      * @param Request $request
      *
@@ -52,10 +51,8 @@ class TempController extends BaseController
      */
     public function postAction(Request $request)
     {
-        $file = $request->files->get('file');
-
-        /** @var AcceptAttachment $accept */
-        $accept = $this->container->getAttachmentAccepter();
+        $file   = $request->files->get('file');
+        $accept = $this->getContainer()->getAttachmentAccepter();
         $blob   = $accept->accept($file);
 
         return View::create($this->wrap($blob), Response::HTTP_CREATED);
