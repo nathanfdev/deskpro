@@ -162,18 +162,14 @@ class TextSnippetsController extends CrudController
 
         // filter by category
         if ($query->get('category')) {
-            $qb
-                ->andWhere('e.category = :category_id')
-                ->setParameter('category_id', $request->get('category'))
-            ;
+            $qb->andWhere('e.category = :category_id');
+            $qb->setParameter('category_id', $request->get('category'));
         }
 
         // filter by draft
         if ($query->has('draft')) {
-            $qb
-                ->andWhere('e.is_draft = :is_draft')
-                ->setParameter('is_draft', $query->getInt('draft'))
-            ;
+            $qb->andWhere('e.is_draft = :is_draft');
+            $qb->setParameter('is_draft', $query->getInt('draft'));
         }
 
         $this->applyFilterByLanguage($request, $qb, 'text_snippets');
@@ -208,6 +204,8 @@ class TextSnippetsController extends CrudController
             if (!$category->getIsGlobal() && $category->getPerson() !== $this->getUser()) {
                 throw $this->createNotFoundException();
             }
+        } else {
+            throw $this->createNotFoundException();
         }
         if ($entity->getPerson() && $entity->getPerson() !== $this->getUser()) {
             throw $this->createNotFoundException();
