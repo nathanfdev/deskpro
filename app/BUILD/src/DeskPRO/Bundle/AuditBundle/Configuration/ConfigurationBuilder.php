@@ -97,7 +97,7 @@ class ConfigurationBuilder
         $configuration = new Configuration($entityClass, $action);
         $this->processConditions($configuration, $configEntry);
         $this->processFields($configuration, $configEntry);
-        $this->processFieldFilters($configuration, $configEntry);
+        $this->processFieldFilters($configuration, $action, $configEntry);
 
         return $configuration;
     }
@@ -111,9 +111,17 @@ class ConfigurationBuilder
         if (isset($configEntry['conditions']) && is_array($configEntry['conditions'])) {
             foreach ($configEntry['conditions'] as $condition) {
                 $preconditions = isset($condition['preconditions']) ? $condition['preconditions'] : [];
-                $configuration->addCondition(
-                    new Condition($preconditions, $condition['expression'], $condition['variables'], $this->language)
-                );
+                if (!isset($condition['expression']) || !$condition['expression']) {
+                    $conditionObject = new Condition($preconditions); // this will be executed much more frequently
+                } else {
+                    $conditionObject = new Condition(
+                        $preconditions,
+                        $condition['expression'],
+                        $condition['variables'],
+                        $this->language
+                    );
+                }
+                $configuration->addCondition($conditionObject);
             }
         }
     }
@@ -133,13 +141,19 @@ class ConfigurationBuilder
 
     /**
      * @param Configuration $configuration
+     * @param string        $action
      * @param array         $configEntry
      */
-    private function processFieldFilters(Configuration $configuration, array $configEntry)
+    private function processFieldFilters(Configuration $configuration, $action, array $configEntry)
     {
         if (isset($configEntry['field_filters']) && is_array($configEntry['field_filters'])) {
             foreach ($configEntry['field_filters'] as $field => $fieldsFilters) {
-                $this->fieldFilterService->buildFilters($fieldsFilters, $configuration->getEntityClass(), $field);
+                $this->fieldFilterService->buildFilters(
+                    $fieldsFilters,
+                    $configuration->getEntityClass(),
+                    $field,
+                    $action
+                );
             }
         }
     }

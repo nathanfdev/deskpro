@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -166,8 +165,12 @@ class ApiKey extends DomainObject
      */
     public function addApiKeyAction(ApiKeyAction $action)
     {
+        if ($this->actions->contains($action)) {
+            return;
+        }
         $this->actions->add($action);
         $action->setKey($this);
+        $this->_onPropertyChanged('actions', $this->actions, $this->actions);
 
         return $this;
     }
@@ -196,76 +199,94 @@ class ApiKey extends DomainObject
         $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 
-        $metadata->setPrimaryTable(array(
-            'name' => 'api_keys',
-        ));
+        $metadata->setPrimaryTable(
+            [
+                'name' => 'api_keys',
+            ]
+        );
 
-        $metadata->mapField(array(
-            'columnName' => 'id',
-            'fieldName'  => 'id',
-            'type'       => 'integer',
-            'id'         => true,
-            'nullable'   => false,
-        ));
-        $metadata->mapField(array(
-            'columnName' => 'code',
-            'fieldName'  => 'code',
-            'type'       => 'string',
-            'length'     => 25,
-            'nullable'   => false,
-        ));
-        $metadata->mapField(array(
-            'columnName' => 'note',
-            'fieldName'  => 'note',
-            'type'       => 'text',
-            'nullable'   => false,
-        ));
-        $metadata->mapField(array(
-            'columnName' => 'flags',
-            'fieldName'  => 'flags',
-            'type'       => 'simple_array',
-            'nullable'   => true,
-        ));
+        $metadata->mapField(
+            [
+                'columnName' => 'id',
+                'fieldName'  => 'id',
+                'type'       => 'integer',
+                'id'         => true,
+                'nullable'   => false,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'columnName' => 'code',
+                'fieldName'  => 'code',
+                'type'       => 'string',
+                'length'     => 25,
+                'nullable'   => false,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'columnName' => 'note',
+                'fieldName'  => 'note',
+                'type'       => 'text',
+                'nullable'   => false,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'columnName' => 'flags',
+                'fieldName'  => 'flags',
+                'type'       => 'simple_array',
+                'nullable'   => true,
+            ]
+        );
 
-        $metadata->mapManyToOne(array(
-            'fieldName'    => 'person',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
-            'mappedBy'     => null,
-            'inversedBy'   => null,
-            'joinColumns'  => array(array(
-                'name'                 => 'person_id',
-                'referencedColumnName' => 'id',
-                'nullable'             => true,
-                'onDelete'             => 'cascade',
-                'columnDefinition'     => null,
-            )),
-        ));
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'person',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    [
+                        'name'                 => 'person_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'cascade',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+            ]
+        );
 
-        $metadata->mapOneToMany(array(
-            'fieldName'    => 'logs',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\ApiKeyLog',
-            'mappedBy'     => 'key',
-            'inversedBy'   => null,
-            'orderBy'      => array('id' => 'DESC'),
-            'cascade'      => array('persist', 'remove'), // doesn't work
-        ));
+        $metadata->mapOneToMany(
+            [
+                'fieldName'     => 'logs',
+                'targetEntity'  => 'Application\\DeskPRO\\Entity\\ApiKeyLog',
+                'mappedBy'      => 'key',
+                'cascade'       => ['remove', 'persist', 'merge'],
+                'orphanRemoval' => true,
+            ]
+        );
 
-        $metadata->mapOneToMany(array(
-            'fieldName'    => 'actions',
-            'targetEntity' => 'DeskPRO\\Bundle\\AppBundle\\Entity\\ApiKeyAction',
-            'mappedBy'     => 'key',
-            'inversedBy'   => null,
-            'orderBy'      => array('id' => 'DESC'),
-            'cascade'      => array('persist', 'remove'), // doesn't work
-        ));
+        $metadata->mapOneToMany(
+            [
+                'fieldName'     => 'actions',
+                'targetEntity'  => 'DeskPRO\\Bundle\\AppBundle\\Entity\\ApiKeyAction',
+                'mappedBy'      => 'key',
+                'cascade'       => ['remove', 'persist', 'merge'],
+                'orphanRemoval' => true,
+            ]
+        );
 
-        $metadata->mapOneToMany(array(
-            'fieldName'    => 'api_logs',
-            'targetEntity' => 'DeskPRO\\Bundle\\AppBundle\\Entity\\ApiLog',
-            'mappedBy'     => 'key',
-            'inversedBy'   => null,
-            'orderBy'      => array('id' => 'DESC'),
-            'cascade'      => array('persist', 'remove'), // doesn't work
-        ));
+        $metadata->mapOneToMany(
+            [
+                'fieldName'    => 'api_logs',
+                'targetEntity' => 'DeskPRO\\Bundle\\AppBundle\\Entity\\ApiLog',
+                'mappedBy'     => 'key',
+                'inversedBy'   => null,
+                'orderBy'      => ['id' => 'DESC'],
+                'cascade'      => ['persist', 'remove'],
+            ]
+        );
     }
 }

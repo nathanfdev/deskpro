@@ -45,7 +45,9 @@ class ConfigurationSet
      */
     public function registerConfiguration(Configuration $configuration)
     {
-        $this->configurations[$configuration->getEntityClass().'::'.$configuration->getAction()] = $configuration;
+        $key = $this->getKey($configuration->getEntityClass(), $configuration->getAction());
+
+        $this->configurations[$key] = $configuration;
     }
 
     /**
@@ -68,15 +70,20 @@ class ConfigurationSet
     public function getConfigurationFor(AuditContext $context)
     {
         $entityClass = TypeUtils::getEntityClass($context->getEntity());
+        $key         = $this->getKey($entityClass, $context->getAction());
 
-        $key = $entityClass.'::'.$context->getAction();
         if (isset($this->configurations[$key])) {
             $configuration = $this->configurations[$key];
-            $configuration->init($context);
+            $configuration->setContext($context);
 
             return $configuration;
         }
 
         return;
+    }
+
+    private function getKey($entityClass, $action)
+    {
+        return sprintf('%s::%s', $entityClass, $action);
     }
 }

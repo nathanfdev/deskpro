@@ -28,6 +28,8 @@
 
 namespace DeskPRO\Bundle\AuditBundle\EventListener;
 
+use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\AuditBundle\Configuration\AuditContext;
 use DeskPRO\Bundle\AuditBundle\Configuration\Configuration;
 use DeskPRO\Bundle\AuditBundle\Configuration\ConfigurationSet;
@@ -72,7 +74,9 @@ class DataListener
 
     private function getDiff(Configuration $configuration, AuditContext $context)
     {
-        $diff = [];
+        $diff   = [];
+        $entity = $context->getEntity();
+        $action = $context->getAction();
 
         if ($configuration->shouldSkipFields()) {
             $fields = $configuration->getFields();
@@ -88,8 +92,23 @@ class DataListener
             $filteredChangeSet = $context->getChangeSet();
         }
 
-        foreach ($filteredChangeSet as $field => $change) {
-            $filtered     = $this->fieldFilterService->filterField($context->getEntity(), $field, $change);
+        foreach ($filteredChangeSet as $field => $changes) {
+            $filtered = [];
+            foreach ($changes as $change) {
+                if ($this->fieldFilterService->hasFilters($entity, $field, $action)) {
+                    $filtered[] = $this->fieldFilterService->filterField($entity, $field, $action, $change);
+                // next lines are just fallback to handle entiies, collections, arrays or dates
+                // TODO think how we can refactor it to reduce this fantastic and awesome else if
+                } elseif ($change instanceof EntityInterface || $change instanceof DomainObject) {
+                    $filtered[] = $this->fieldFilterService->getNamedFilter('entity')->filter($change);
+                } elseif ($change instanceof \Traversable || is_array($change)) {
+                    $filtered[] = $this->fieldFilterService->getNamedFilter('collection')->filter($change);
+                } elseif ($change instanceof \DateTime) {
+                    $filtered[] = $this->fieldFilterService->getNamedFilter('date')->filter($change);
+                } else {
+                    $filtered[] = $change;
+                }
+            }
             $diff[$field] = [$filtered[0] => $filtered[1]];
         }
 

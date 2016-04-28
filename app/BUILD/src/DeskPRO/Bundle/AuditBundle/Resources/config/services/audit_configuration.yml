@@ -27,3 +27,8 @@ services:
     class: DeskPRO\Bundle\AuditBundle\Log\FieldFilter\CollectionFieldFilter
     tags:
       - {name: audit.field_filter, alias: collection}
+
+  audit_log.field_filter.entity:
+    class: DeskPRO\Bundle\AuditBundle\Log\FieldFilter\EntityFieldFilter
+    tags:
+      - {name: audit.field_filter, alias: entity}

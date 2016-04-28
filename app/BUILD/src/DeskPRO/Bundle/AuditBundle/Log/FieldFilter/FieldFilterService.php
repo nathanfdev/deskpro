@@ -65,14 +65,25 @@ class FieldFilterService
     }
 
     /**
+     * @param $name
+     *
+     * @return mixed|null
+     */
+    public function getNamedFilter($name)
+    {
+        return array_key_exists($name, $this->filters) ? $this->filters[$name] : null;
+    }
+
+    /**
      * @param array  $filters
      * @param string $entityClass
      * @param string $field
+     * @param string $action
      */
-    public function buildFilters(array $filters, $entityClass, $field)
+    public function buildFilters(array $filters, $entityClass, $field, $action)
     {
         foreach ($filters as $filter) {
-            $this->buildFilter($filter, $entityClass, $field);
+            $this->buildFilter($filter, $entityClass, $field, $action);
         }
     }
 
@@ -80,10 +91,11 @@ class FieldFilterService
      * @param mixed  $filter
      * @param string $entityClass
      * @param string $field
+     * @param string $action
      */
-    private function buildFilter($filter, $entityClass, $field)
+    private function buildFilter($filter, $entityClass, $field, $action)
     {
-        $key = $entityClass.'::'.$field;
+        $key = $this->getKey($entityClass, $field, $action);
 
         switch (true) {
             case $createdFilter = $this->buildFromString($filter):
@@ -165,24 +177,49 @@ class FieldFilterService
     /**
      * @param EntityInterface|DomainObject $entity
      * @param string                       $field
-     * @param array                        $values
+     * @param string                       $action
      *
-     * @return array
+     * @return bool
      */
-    public function filterField($entity, $field, array $values)
+    public function hasFilters($entity, $field, $action)
     {
         $entityClass = TypeUtils::getEntityClass($entity);
 
-        $key = $entityClass.'::'.$field;
+        return isset($this->fieldsFilters[$this->getKey($entityClass, $field, $action)]);
+    }
+
+    /**
+     * @param EntityInterface|DomainObject $entity
+     * @param string                       $field
+     * @param string                       $action
+     * @param mixed                        $value
+     *
+     * @return array
+     */
+    public function filterField($entity, $field, $action, $value)
+    {
+        $entityClass = TypeUtils::getEntityClass($entity);
+        $key         = $this->getKey($entityClass, $field, $action);
+
         if (isset($this->fieldsFilters[$key])) {
             foreach ($this->fieldsFilters[$key] as $filter) {
                 /* @var FieldFilterInterface $filter */
-                foreach ($values as &$value) {
-                    $value = $filter->filter($value);
-                }
+                $value = $filter->filter($value);
             }
         }
+        // just a precaution - should be called without hasFilters() check
+        return $value;
+    }
 
-        return $values;
+    /**
+     * @param $entityClass
+     * @param $field
+     * @param $action
+     *
+     * @return mixed
+     */
+    private function getKey($entityClass, $field, $action)
+    {
+        return sprintf('%s::%s::%s', $entityClass, $field, $action);
     }
 }

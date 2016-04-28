@@ -30,21 +30,14 @@ namespace DeskPRO\Bundle\AuditBundle\Log\FieldFilter;
 
 use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
-use DeskPRO\Component\Util\TypeUtils;
-use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 /**
- * Class CollectionFieldFilter.
+ * Class EntityFieldFilter.
  */
-class CollectionFieldFilter implements FieldFilterInterface
+class EntityFieldFilter implements FieldFilterInterface
 {
-    /**
-     * @var array
-     */
-    private $procssed = [];
-
     /**
      * @var ExpressionLanguage
      */
@@ -61,30 +54,12 @@ class CollectionFieldFilter implements FieldFilterInterface
     /**
      * {@inheritdoc}
      */
-    public function filter($value, $expression = 'item.getId()')
+    public function filter($value, $expression = 'entity.getId()')
     {
-        $values = $value;
-        if ($value instanceof PersistentCollection) {
-            $oid = spl_object_hash($value);
-            if (!array_key_exists($oid, $this->procssed)) {
-                $values               = $value->getSnapshot();
-                $this->procssed[$oid] = true;
-            }
+        if ($value instanceof EntityInterface || $value instanceof DomainObject) {
+            return $this->language->evaluate(new Expression($expression), ['entity' => $value]);
         }
 
-        $ids = [];
-        foreach ($values as $item) {
-            if ($item instanceof EntityInterface || $item instanceof DomainObject) {
-                $ids[] = $this->language->evaluate(new Expression($expression), ['item' => $item]);
-            } elseif ($item instanceof \Traversable || is_array($item)) {
-                $ids[] = $this->filter($item);
-            } elseif (is_scalar($item)) {
-                $ids[] = $item;
-            } elseif (is_object($item)) {
-                $ids[] = TypeUtils::getBaseTypeName($item);
-            }
-        }
-
-        return sprintf('[ %s ]', implode(', ', $ids));
+        return $value;
     }
 }

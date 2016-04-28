@@ -145,7 +145,7 @@ class Configuration
      *
      * @return $this
      */
-    public function init(AuditContext $context)
+    public function setContext(AuditContext $context)
     {
         $this->context = $context;
 

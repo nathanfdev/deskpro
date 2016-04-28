@@ -65,8 +65,12 @@ class Condition
      * @param array              $variables
      * @param ExpressionLanguage $language
      */
-    public function __construct($preconditions, $expression, $variables, $language)
-    {
+    public function __construct(
+        array $preconditions,
+        $expression = '',
+        array $variables = [],
+        ExpressionLanguage $language = null
+    ) {
         $this->preconditions = $preconditions;
         $this->expression    = $expression;
         $this->variables     = $variables;
@@ -106,7 +110,11 @@ class Condition
             return false;
         }
 
-        $this->init($context);
+        if ($this->expression) {
+            $this->init($context);
+        } else {
+            return true; // this means that we have no expression, so condition contains only simple check about changeset
+        }
 
         return $this->language->evaluate($this->expression, $this->variables);
     }
@@ -122,9 +130,9 @@ class Condition
             return array_reduce(
                 $this->preconditions,
                 function ($carry, $item) use ($changeSet) {
-                    return $carry && in_array($item, $changeSet);
+                    return $carry || in_array($item, $changeSet);
                 },
-                true
+                false
             );
         }
 
