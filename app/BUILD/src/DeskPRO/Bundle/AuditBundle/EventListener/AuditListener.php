@@ -35,6 +35,7 @@ use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
+use Doctrine\ORM\Event\PreFlushEventArgs;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\UnitOfWork;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -98,17 +99,21 @@ class AuditListener
         $this->auditLogHelper = $auditLogHelper;
     }
 
+    public function preFlush(PreFlushEventArgs $eventArgs)
+    {
+        $this->em  = $eventArgs->getEntityManager();
+        $this->uow = $this->em->getUnitOfWork();
+    }
+
     /**
      * @param OnFlushEventArgs $eventArgs
      */
     public function onFlush(OnFlushEventArgs $eventArgs)
     {
-        $this->em  = $eventArgs->getEntityManager();
-        $this->uow = $this->em->getUnitOfWork();
-
         $this->insertions = $this->uow->getScheduledEntityInsertions();
         $this->updates    = $this->uow->getScheduledEntityUpdates();
         $this->deletions  = $this->uow->getScheduledEntityDeletions();
+
         $this->processDeletions();
     }
 

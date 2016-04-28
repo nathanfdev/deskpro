@@ -31,7 +31,6 @@ namespace DeskPRO\Bundle\AuditBundle\Log\FieldFilter;
 use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Component\Util\TypeUtils;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class FieldFilterService.
@@ -39,23 +38,30 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class FieldFilterService
 {
     /**
-     * @var ContainerInterface
-     */
-    private $container;
-
-    /**
      * @var FieldFilterInterface[]
      */
     private $fieldsFilters = [];
 
     /**
-     * FieldFilterService constructor.
-     *
-     * @param ContainerInterface $container
+     * @var array
      */
-    public function __construct(ContainerInterface $container)
+    private $filters = [];
+
+    /**
+     * @param FieldFilterInterface $filter
+     * @param                      $name
+     */
+    public function registerFilter(FieldFilterInterface $filter, $name)
     {
-        $this->container = $container;
+        if (array_key_exists($filter, $this->filters)) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Filter with alias [ %s ] already registered, check your configuration',
+                    $filter
+                )
+            );
+        }
+        $this->filters[$name] = $filter;
     }
 
     /**
@@ -63,10 +69,10 @@ class FieldFilterService
      * @param string $entityClass
      * @param string $field
      */
-    public function registerFilters(array $filters, $entityClass, $field)
+    public function buildFilters(array $filters, $entityClass, $field)
     {
         foreach ($filters as $filter) {
-            $this->registerFilter($filter, $entityClass, $field);
+            $this->buildFilter($filter, $entityClass, $field);
         }
     }
 
@@ -75,16 +81,16 @@ class FieldFilterService
      * @param string $entityClass
      * @param string $field
      */
-    private function registerFilter($filter, $entityClass, $field)
+    private function buildFilter($filter, $entityClass, $field)
     {
         $key = $entityClass.'::'.$field;
 
         switch (true) {
-            case $createdFilter = $this->createFromString($filter):
+            case $createdFilter = $this->buildFromString($filter):
                 break;
-            case $createdFilter = $this->createFromCallable($filter):
+            case $createdFilter = $this->buildFromCallable($filter):
                 break;
-            case $createdFilter = $this->createFromArray($filter):
+            case $createdFilter = $this->buildFromArray($filter):
                 break;
             default:
                 throw new \InvalidArgumentException('Field filter should be a service alias, a callable or a class name');
@@ -99,11 +105,11 @@ class FieldFilterService
      *
      * @return null|object
      */
-    private function createFromString($filter, array $arguments = [])
+    private function buildFromString($filter, array $arguments = [])
     {
         if (is_string($filter)) {
-            if ($this->container->has('audit_log.field_filter.'.$filter)) {
-                $createdFilter = $this->container->get('audit_log.field_filter.'.$filter);
+            if (array_key_exists($filter, $this->filters)) {
+                $createdFilter = $this->filters[$filter];
                 if ($arguments) {
                     return new GenericFieldFilter([$createdFilter, 'filter'], $arguments);
                 }
@@ -129,7 +135,7 @@ class FieldFilterService
      *
      * @return GenericFieldFilter|null
      */
-    private function createFromCallable($filter, array $arguments = [])
+    private function buildFromCallable($filter, array $arguments = [])
     {
         if (is_callable($filter)) {
             return new GenericFieldFilter($filter, $arguments);
@@ -143,12 +149,12 @@ class FieldFilterService
      *
      * @return GenericFieldFilter|null|object
      */
-    private function createFromArray($filter)
+    private function buildFromArray($filter)
     {
         if (is_array($filter) && count($filter) == 2) {
-            if ($inner = $this->createFromString($filter[0], $filter[1])) {
+            if ($inner = $this->buildFromString($filter[0], $filter[1])) {
                 return $inner;
-            } elseif ($inner = $this->createFromCallable($filter[0], $filter[1])) {
+            } elseif ($inner = $this->buildFromCallable($filter[0], $filter[1])) {
                 return $inner;
             }
         }

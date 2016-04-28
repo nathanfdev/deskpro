@@ -26,26 +26,25 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AuditBundle;
+namespace DeskPRO\Bundle\AuditBundle\DependencyInjection\Compiler;
 
-use DeskPRO\Bundle\AuditBundle\DependencyInjection\Compiler\FilterServiceCompilerPass;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Component\DependencyInjection\Reference;
 
-/**
- * Class AuditBundle.
- */
-class AuditBundle extends Bundle
+class FilterServiceCompilerPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function build(ContainerBuilder $container)
+    public function process(ContainerBuilder $container)
     {
-        parent::build($container);
-        $container->addCompilerPass(new FilterServiceCompilerPass());
+        if ($container->hasDefinition('audit_log.field_filter_service')) {
+            $definition = $container->getDefinition('audit_log.field_filter_service');
+            $services   = $container->findTaggedServiceIds('audit.field_filter');
+            foreach ($services as $id => $service) {
+                $tags = $container->findDefinition($id)->getTag('audit.field_filter');
+                foreach ($tags as $tag) {
+                    $definition->addMethodCall('registerFilter', [new Reference($id), $tag['alias']]);
+                }
+            }
+        }
     }
 }

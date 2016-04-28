@@ -139,7 +139,7 @@ class ConfigurationBuilder
     {
         if (isset($configEntry['field_filters']) && is_array($configEntry['field_filters'])) {
             foreach ($configEntry['field_filters'] as $field => $fieldsFilters) {
-                $this->fieldFilterService->registerFilters($fieldsFilters, $configuration->getEntityClass(), $field);
+                $this->fieldFilterService->buildFilters($fieldsFilters, $configuration->getEntityClass(), $field);
             }
         }
     }

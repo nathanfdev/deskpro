@@ -26,26 +26,23 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AuditBundle;
-
-use DeskPRO\Bundle\AuditBundle\DependencyInjection\Compiler\FilterServiceCompilerPass;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+namespace DeskPRO\Bundle\AuditBundle\Log\FieldFilter;
 
 /**
- * Class AuditBundle.
+ * Class CollectionFieldFilter.
  */
-class AuditBundle extends Bundle
+class CollectionFieldFilter implements FieldFilterInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function build(ContainerBuilder $container)
+    public function filter($value, $maskChar = '*')
     {
-        parent::build($container);
-        $container->addCompilerPass(new FilterServiceCompilerPass());
+        $ids = [];
+        foreach ($value as $item) {
+            $ids[] = $item->getId();
+        }
+
+        return sprintf('[ %s ]', implode(', ', $ids));
     }
 }

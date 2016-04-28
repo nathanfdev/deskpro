@@ -6,6 +6,7 @@ services:
       - "@event_dispatcher"
       - "@audit_log.helper"
     tags:
+      - { name: doctrine.event_listener, connection: default, event: preFlush }
       - { name: doctrine.event_listener, connection: default, event: onFlush }
       - { name: doctrine.event_listener, connection: default, event: postFlush }
 

@@ -1,22 +1,29 @@
 services:
-   audit_log.configuration_builder:
-     class: DeskPRO\Bundle\AuditBundle\Configuration\ConfigurationBuilder
-     arguments:
-       - "@audit_log.field_filter_service"
-
-   audit_log.configuration_builder_wrapper:
-     class: DeskPRO\Bundle\AuditBundle\Configuration\ConfigurationBuilderWrapper
-     arguments:
-       - "@settings_resolver"
-       - "@audit_log.configuration_builder"
-
-   audit_log.field_filter_service:
-    class: DeskPRO\Bundle\AuditBundle\Log\FieldFilter\FieldFilterService
+  audit_log.configuration_builder:
+    class: DeskPRO\Bundle\AuditBundle\Configuration\ConfigurationBuilder
     arguments:
-      - "@service_container"
+      - "@audit_log.field_filter_service"
 
-   audit_log.field_filter.mask:
-     class: DeskPRO\Bundle\AuditBundle\Log\FieldFilter\MaskFieldFilter
+  audit_log.configuration_builder_wrapper:
+    class: DeskPRO\Bundle\AuditBundle\Configuration\ConfigurationBuilderWrapper
+    arguments:
+      - "@settings_resolver"
+      - "@audit_log.configuration_builder"
 
-   audit_log.field_filter.date:
-     class: DeskPRO\Bundle\AuditBundle\Log\FieldFilter\DateFieldFilter
+  audit_log.field_filter_service:
+    class: DeskPRO\Bundle\AuditBundle\Log\FieldFilter\FieldFilterService
+
+  audit_log.field_filter.mask:
+    class: DeskPRO\Bundle\AuditBundle\Log\FieldFilter\MaskFieldFilter
+    tags:
+      - {name: audit.field_filter, alias: mask}
+
+  audit_log.field_filter.date:
+    class: DeskPRO\Bundle\AuditBundle\Log\FieldFilter\DateFieldFilter
+    tags:
+      - {name: audit.field_filter, alias: date}
+
+  audit_log.field_filter.collection:
+    class: DeskPRO\Bundle\AuditBundle\Log\FieldFilter\CollectionFieldFilter
+    tags:
+      - {name: audit.field_filter, alias: collection}

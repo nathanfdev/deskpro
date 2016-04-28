@@ -35,7 +35,11 @@ return [
         AuditListener::INSERT => true,
         AuditListener::REMOVE => true,
         AuditListener::UPDATE => [
-            'fields' => ['name', 'id'],
+            'field_filters' => [
+                'members' => [
+                    'collection',
+                ],
+            ],
         ],
     ],
     Person::class => [
