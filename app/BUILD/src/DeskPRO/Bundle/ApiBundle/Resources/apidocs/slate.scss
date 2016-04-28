@@ -1,6 +1,5 @@
-
 @import "functions";
-@import "stylesheets/_variables.scss";
+@import "stylesheets/extends";
 
 @mixin calc($property, $expression) {
   #{$property}: -moz-calc(#{$expression});
