@@ -43,7 +43,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * API access to ticket slas.
  *
- * @Rest\Route("/tickets/{parentId}/slas")
+ * @Rest\Route("/{parentId}/ticket_slas")
  * @ApiModes("all")
  * @ApiDoc(target="all", section="Tickets", output="TicketSla")
  */
