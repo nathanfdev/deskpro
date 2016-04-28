@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\Mail\RawTransport;
 
 /**
@@ -105,7 +106,11 @@ class RawSmtpTransport implements RawTransportInterface
 
             rewind($raw_fp);
             while (!feof($raw_fp)) {
-                $buf->write(fread($raw_fp, 4096));
+                $chunk = fread($raw_fp, 4096);
+
+                if ($chunk !== false && $chunk !== '') {
+                    $buf->write($chunk);
+                }
             }
 
             $buf->flushBuffers();
