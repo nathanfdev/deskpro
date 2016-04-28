@@ -99,6 +99,32 @@
 			]
 		},
 		{
+			"name": "name_id_format",
+			"type": "choice",
+			"label": "Name ID Format",
+			"description": "You may need to change this if your provider does not support the default. Note that DeskPRO does not typically require a persistent identifier because the system will automatically match based on email address in the response, so any of these options are suitable.",
+			"native_only": true,
+			"default_value": "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
+			"options": [
+				{
+					"label": "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
+					"value": "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+				},
+				{
+					"label": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+					"value": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
+				},
+				{
+					"label": "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
+					"value": "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
+				},
+				{
+					"label": "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
+					"value": "urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
+				}
+			]
+		},
+		{
 			"name": "login_custom_text",
 			"type": "text",
 			"label": "Login Button Text",

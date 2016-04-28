@@ -31,6 +31,7 @@
  *
  * @category Apps
  */
+
 namespace deskpro_us_saml;
 
 use Application\DeskPRO\App\Native\InstallerHandler\AbstractUsersourceInstallerHandler;
@@ -64,6 +65,7 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
             'slo_url'                     => $app->getSetting('slo_url'),
             'issuer_id'                   => $app->getSetting('issuer_id'),
             'cert_fingerprint'            => $app->getSetting('cert_fingerprint'),
+            'name_id_format'              => $app->getSetting('name_id_format'),
             'cert'                        => $app->getSetting('cert'),
             'login_custom_text'           => $app->getSetting('login_custom_text'),
             'raw_info_filter'             => $app->getSetting('raw_info_filter') ?: null,
