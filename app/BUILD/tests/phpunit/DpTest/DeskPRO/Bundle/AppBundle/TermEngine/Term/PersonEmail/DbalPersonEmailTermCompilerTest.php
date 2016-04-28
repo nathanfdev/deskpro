@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,12 +26,8 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmail;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmail\DbalPersonEmailTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmail\PersonEmailTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
@@ -51,62 +47,43 @@ class DbalPersonEmailTermCompilerTest extends AbstractDbalTicketFilterTermCompil
 
     public function testCompileIs()
     {
-        $term = new PersonEmailTerm(
-            array(
-                'email' => 'chris.tickner@deskpro.com',
-            )
-        );
+        $term = new PersonEmailTerm(['email' => 'chris.tickner@deskpro.com']);
+        $qp   = $this->term_compiler->compile($term);
 
-        $query_part = $this->term_compiler->compile($term);
-
-        $this->assertJoins(
-            $query_part,
-            array(
-                'people_emails' => array(
-                    'table' => 'people_emails',
-                    'on'    => 'ticket.person_id = people_emails.person_id',
-                    'type'  => DbalQuery::JOIN_LEFT,
-                ),
-            )
-        );
-        $this->assertParameters(
-            $query_part,
-            array(
-                'email' => 'chris.tickner@deskpro.com',
-            )
-        );
-        $this->assertWhere($query_part, 'people_emails.email = :email');
-        $this->assertNoUniqueJoins($query_part);
+        $this->assertParameters($qp, [
+            'email' => 'chris.tickner@deskpro.com',
+        ]);
+        $this->assertWhere($qp, '
+                ticket.person_id  IN(SELECT pe.person_id FROM people_emails pe WHERE pe.email = :email) OR  EXISTS(
+                  SELECT * FROM
+                    tickets_participants tp
+                        JOIN
+                    people p ON tp.person_id = p.id
+                  WHERE
+                    p.is_agent = 0 AND p.id  IN(SELECT pe.person_id FROM people_emails pe WHERE pe.email = :email) AND ticket.id = tp.ticket_id
+                )
+            ');
+        $this->assertNoUniqueJoins($qp);
     }
 
     public function testCompileIsNot()
     {
-        $term = new PersonEmailTerm(
-            array(
-                'email' => 'chris.tickner@deskpro.com',
-            ),
-            TermInterface::OP_NOT
-        );
+        $term = new PersonEmailTerm(['email' => 'chris.tickner@deskpro.com'], TermInterface::OP_NOT);
+        $qp   = $this->term_compiler->compile($term);
 
-        $query_part = $this->term_compiler->compile($term);
-
-        $this->assertUniqueJoins(
-            $query_part,
-            array(
-                'email_join' => array(
-                    'table' => 'people_emails',
-                    'on'    => 'ticket.person_id = {email_join}.person_id AND {email_join}.email = :email',
-                    'type'  => DbalQuery::JOIN_LEFT,
-                ),
-            )
-        );
-        $this->assertParameters(
-            $query_part,
-            array(
-                'email' => 'chris.tickner@deskpro.com',
-            )
-        );
-        $this->assertWhere($query_part, '{email_join}.id IS NULL');
-        $this->assertNoJoins($query_part);
+        $this->assertParameters($qp, [
+            'email' => 'chris.tickner@deskpro.com',
+        ]);
+        $this->assertWhere($qp, '
+                ticket.person_id NOT IN(SELECT pe.person_id FROM people_emails pe WHERE pe.email = :email) AND NOT EXISTS(
+                  SELECT * FROM
+                    tickets_participants tp
+                        JOIN
+                    people p ON tp.person_id = p.id
+                  WHERE
+                    p.is_agent = 0 AND p.id NOT IN(SELECT pe.person_id FROM people_emails pe WHERE pe.email = :email) AND ticket.id = tp.ticket_id
+                )
+            ');
+        $this->assertNoJoins($qp);
     }
 }

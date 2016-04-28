@@ -41,6 +41,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Term\CustomData\CustomDataTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\Department\DepartmentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\Organization\OrganizationTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\Person\PersonTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmail\PersonEmailTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\Problem\ProblemTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateCreated\TicketDateCreatedTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketFlagged\TicketFlaggedTerm;
@@ -119,6 +120,9 @@ class TicketsSelectCriteria
                     break;
                 case 'person':
                     $composite->addTerm(new PersonTerm(['person_ids' => [$value]]));
+                    break;
+                case 'email':
+                    $composite->addTerm(new PersonEmailTerm(['email' => [$value]]));
                     break;
                 case 'organization':
                     $composite->addTerm(new OrganizationTerm(['organization' => $value]));

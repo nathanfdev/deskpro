@@ -26,48 +26,49 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmail;
+namespace DeskPRO\Bundle\ApiBundle\Traits;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractTerm;
-use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use Symfony\Component\Validator\Constraints as Assert;
+use Application\DeskPRO\Entity\Ticket;
+use Doctrine\ORM\EntityManager;
+use Pagerfanta\Adapter\FixedAdapter;
+use Pagerfanta\Pagerfanta;
 
 /**
- * Class PersonEmailTerm.
+ * Class TicketsPagerTrait.
+ *
+ * @method EntityManager getManager()
  */
-class PersonEmailTerm extends AbstractTerm
+trait TicketsPagerTrait
 {
     /**
-     * {@inheritdoc}
+     * @param int   $total
+     * @param array $ids
+     * @param int   $currentPage
+     * @param int   $maxPerPage
+     *
+     * @return Pagerfanta
      */
-    public static function configureOptions(TermOptionsResolver $resolver)
+    public function getTicketsPager($total, array $ids, $currentPage, $maxPerPage)
     {
-        $resolver->setDefaults([
-            'email' => '',
-        ]);
+        $tickets = [];
+        if (count($ids)) {
+            $qb = $this->getManager()->createQueryBuilder();
+            $qb
+                ->select('t, field(t.id, :ids) as HIDDEN field')
+                ->from(Ticket::class, 't')
+                ->where('t.id IN (:ids)')
+                ->orderBy('field')
+                ->setParameter('ids', $ids)
+            ;
 
-        $resolver->setConstraints([
-            'email' => [
-                new Assert\NotBlank(),
-                new Assert\Email(),
-            ],
-        ]);
-    }
+            $tickets = $qb->getQuery()->getResult();
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getSupportedOps()
-    {
-        return [TermInterface::OP_IS, TermInterface::OP_NOT];
-    }
+        $pager = new Pagerfanta(new FixedAdapter($total, $tickets));
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getDefaultOp()
-    {
-        return TermInterface::OP_IS;
+        $pager->setMaxPerPage($maxPerPage);
+        $pager->setCurrentPage($currentPage);
+
+        return $pager;
     }
 }
