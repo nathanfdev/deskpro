@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query;
 
 /**
@@ -141,10 +142,14 @@ class DbalQueryPart
      *
      * @param $name
      * @param $value
+     *
+     * @return $this
      */
     public function setParameter($name, $value)
     {
         $this->parameters[$name] = $value;
+
+        return $this;
     }
 
     /**
@@ -164,6 +169,8 @@ class DbalQueryPart
      * @param $table
      * @param $on_condition
      * @param string $type
+     *
+     * @return $this
      */
     public function addJoin($table, $on_condition, $type = DbalQuery::JOIN_LEFT)
     {
@@ -172,6 +179,8 @@ class DbalQueryPart
             'on'    => $on_condition,
             'type'  => $type,
         ];
+
+        return $this;
     }
 
     /**
@@ -183,6 +192,8 @@ class DbalQueryPart
      * @param $table
      * @param $on_condition
      * @param string $type
+     *
+     * @return $this
      */
     public function addUniqueJoin($alias, $table, $on_condition, $type = DbalQuery::JOIN_LEFT)
     {
@@ -197,6 +208,8 @@ class DbalQueryPart
             'on'    => $on_condition,
             'type'  => $type,
         ];
+
+        return $this;
     }
 
     /**
@@ -205,10 +218,14 @@ class DbalQueryPart
      * or a simple join with the table name.
      *
      * @param $where
+     *
+     * @return $this
      */
     public function setWhereString($where)
     {
         $this->where = (string) $where;
+
+        return $this;
     }
 
     /**

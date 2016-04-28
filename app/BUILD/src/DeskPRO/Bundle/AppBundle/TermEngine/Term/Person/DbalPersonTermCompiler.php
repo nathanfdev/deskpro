@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\Person;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
@@ -41,15 +42,28 @@ class DbalPersonTermCompiler extends AbstractDbalTermCompiler
      */
     public function doCompile(TermInterface $term)
     {
-        $ids = array_map(function ($id) { return (int) $id; }, $term->getOption('person_ids'));
-        $queryPart = $this->getEntityHelper()->buildQueryPart(
-            'ticket.person_id',
-            $term->getOp(),
-            $ids
-        );
+        $isNot = $this->isOp($term->getOp(), TermInterface::OP_NOT);
 
-        $this->logQueryPart($queryPart);
+        $notPrefix = $isNot ? 'NOT' : '';
+        $composite = $isNot ? 'AND' : 'OR';
 
-        return $queryPart;
+        $qp = new DbalQueryPart();
+        $qp
+            ->setParameter('ids', array_map(function ($id) { return (int) $id; }, $term->getOption('person_ids')))
+            ->setWhereString("
+                ticket.person_id $notPrefix IN(:ids) $composite $notPrefix EXISTS(
+                  SELECT * FROM
+                    tickets_participants tp
+                        JOIN
+                    people p ON tp.person_id = p.id
+                  WHERE
+                    p.is_agent = 0 AND p.id $notPrefix IN(:ids) AND ticket.id = tp.ticket_id
+                )
+            ")
+        ;
+
+        $this->logQueryPart($qp);
+
+        return $qp;
     }
 }

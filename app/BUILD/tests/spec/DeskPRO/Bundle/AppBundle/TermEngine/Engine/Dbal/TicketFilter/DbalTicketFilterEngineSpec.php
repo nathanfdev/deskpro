@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace spec\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter;
 
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
@@ -54,11 +55,6 @@ class DbalTicketFilterEngineSpec extends ObjectBehavior
         Logger $logger
     ) {
         $this->beConstructedWith($compiler, $event_dispatcher, $connection, $logger);
-    }
-
-    public function it_is_a_dbal_engine()
-    {
-        $this->shouldBeAnInstanceOf('DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngine');
     }
 
     public function it_creates_an_executable_query_for_a_filter_using_given_context(
