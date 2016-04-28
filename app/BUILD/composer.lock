@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a7f679e0a5f0a2249f7a46b5d4fcfa30",
-    "content-hash": "b040a3190562096a7f8421dd5120595a",
+    "hash": "ecf7d4f26f78af415b8c562ce8c4198d",
+    "content-hash": "98ef85a45b0e5ec28eb088f8cd005e46",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -1252,12 +1252,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/DoctrineBundle.git",
-                "reference": "56db77e995e8f6e469a05f2a7fd09b3f5f5d3fa4"
+                "reference": "fd51907c6c76acaa8a5234822a4f901c1500afc1"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/fd51907c6c76acaa8a5234822a4f901c1500afc1",
-                "reference": "56db77e995e8f6e469a05f2a7fd09b3f5f5d3fa4",
+                "reference": "fd51907c6c76acaa8a5234822a4f901c1500afc1",
                 "shasum": ""
             },
             "require": {
@@ -1274,13 +1274,14 @@
                 "phpunit/phpunit": "~4",
                 "satooshi/php-coveralls": "~0.6.1",
                 "symfony/phpunit-bridge": "~2.7|~3.0",
+                "symfony/property-info": "~2.8|~3.0",
                 "symfony/validator": "~2.2|~3.0",
                 "symfony/yaml": "~2.2|~3.0",
                 "twig/twig": "~1.10"
             },
             "suggest": {
                 "doctrine/orm": "The Doctrine ORM integration is optional in the bundle.",
-                "symfony/web-profiler-bundle": "to use the data collector"
+                "symfony/web-profiler-bundle": "To use the data collector."
             },
             "type": "symfony-bundle",
             "extra": {
@@ -1323,7 +1324,7 @@
                 "orm",
                 "persistence"
             ],
-            "time": "2016-04-01 15:00:37"
+            "time": "2016-04-21 19:55:56"
         },
         {
             "name": "doctrine/doctrine-cache-bundle",
@@ -4670,12 +4671,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/onelogin/php-saml.git",
-                "reference": "ee34d416f13cf218d460db250eebd96e56cb021a"
+                "reference": "cdca76433287aa7ddd1caaace61ed8ad638ec391"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/3669bf6bc341fef4020fe58f25b0b4e78944315d",
-                "reference": "ee34d416f13cf218d460db250eebd96e56cb021a",
+                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/cdca76433287aa7ddd1caaace61ed8ad638ec391",
+                "reference": "cdca76433287aa7ddd1caaace61ed8ad638ec391",
                 "shasum": ""
             },
             "require": {
@@ -4716,7 +4717,7 @@
                 "onelogin",
                 "saml"
             ],
-            "time": "2016-03-30 14:10:17"
+            "time": "2016-04-27 09:40:19"
         },
         {
             "name": "onesky/api-library-php5",
