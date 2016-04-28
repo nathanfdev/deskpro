@@ -130,3 +130,25 @@ Feature: /feedback endpoint
     And the JSON node "meta" should exist
     And the JSON node "meta.pagination" should exist
     And the JSON node "meta.pagination.total" should be equal to 21
+
+  Scenario Outline: I order list
+    When I send a GET request to "/api/v2/feedback?order_by=<order_by>&order_dir=asc"
+    Then the response status code should be 200
+    And the JSON node "data[0].<order_by>" should be equal to <min1>
+    And the JSON node "data[1].<order_by>" should be equal to <min2>
+
+    When I send a GET request to "/api/v2/feedback?order_by=<order_by>&order_dir=desc"
+    Then the response status code should be 200
+    And the JSON node "data[0].<order_by>" should be equal to <max1>
+    And the JSON node "data[1].<order_by>" should be equal to <max2>
+
+    Examples:
+      | order_by     | min1                       | min2                       | max1                       | max2                       |
+      | date_created | "2015-04-13T11:33:33+0000" | "2015-04-13T11:33:33+0000" | "2015-11-08T00:00:00+0000" | "2015-11-08T00:00:00+0000" |
+      | id           | 1                          | 2                          | 64                         | 63                         |
+      | total_rating | 0                          | 0                          | 5                          | 5                          |
+      | num_ratings  | 0                          | 0                          | 6                          | 6                          |
+      | title        | "Test feedback 1"          | "Test feedback 10"         | "Test feedback 9"          | "Test feedback 8"          |
+      | status       | active                     | active                     | hidden                     | hidden                     |
+      | category     | 1                          | 1                          | 3                          | 3                          |
+      | person       | 1                          | 1                          | 1                          | 1                          |

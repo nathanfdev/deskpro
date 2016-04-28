@@ -74,8 +74,17 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class FeedbackController extends AbstractFeedbackController
 {
-    public static $exposeOnly = ['get', 'list', 'count', 'delete'];
-    public static $entity     = Feedback::class;
+    public static $exposeOnly  = ['get', 'list', 'count', 'delete'];
+    public static $entity      = Feedback::class;
+    public static $sortOptions = [
+        'date_created' => 'date_created',
+        'total_rating' => 'total_rating',
+        'num_ratings'  => 'num_ratings',
+        'title'        => 'title',
+        'status'       => 'status',
+        'category'     => ['join' => 'category', 'as' => 'c', 'sort' => 'c.id'],
+        'person'       => ['join' => 'person', 'as' => 'p', 'sort' => 'p.id'],
+    ];
 
     /**
      * {@inheritdoc}
