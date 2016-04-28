@@ -28,18 +28,31 @@
 
 namespace DeskPRO\Bundle\AuditBundle\Log\FieldFilter;
 
+use Doctrine\ORM\PersistentCollection;
+
 /**
  * Class CollectionFieldFilter.
  */
 class CollectionFieldFilter implements FieldFilterInterface
 {
+    private $procssed = [];
+
     /**
      * {@inheritdoc}
      */
-    public function filter($value, $maskChar = '*')
+    public function filter($value)
     {
+        $values = $value;
+        if ($value instanceof PersistentCollection) {
+            $oid = spl_object_hash($value);
+            if (!array_key_exists($oid, $this->procssed)) {
+                $values               = $value->getSnapshot();
+                $this->procssed[$oid] = true;
+            }
+        }
+
         $ids = [];
-        foreach ($value as $item) {
+        foreach ($values as $item) {
             $ids[] = $item->getId();
         }
 

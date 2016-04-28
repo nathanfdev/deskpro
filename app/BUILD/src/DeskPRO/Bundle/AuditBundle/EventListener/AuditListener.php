@@ -113,7 +113,7 @@ class AuditListener
         $this->insertions = $this->uow->getScheduledEntityInsertions();
         $this->updates    = $this->uow->getScheduledEntityUpdates();
         $this->deletions  = $this->uow->getScheduledEntityDeletions();
-
+        $this->processUpdates();
         $this->processDeletions();
     }
 
@@ -123,7 +123,6 @@ class AuditListener
     public function postFlush(PostFlushEventArgs $event)
     {
         $this->processInsertions();
-        $this->processUpdates();
     }
 
     /**

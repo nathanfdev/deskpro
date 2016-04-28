@@ -83,10 +83,10 @@ class SkipWizardStep extends AbstractStep
         if (!$this->getSession()->getSystemDbInfo()) {
             $env                 = $this->getContext()->getDpEnv();
             $sysDbInfo           = new DbInfo();
-            $sysDbInfo->host     = $env->getConfig('database.system.host') ?: $env->getConfig('database.host');
-            $sysDbInfo->user     = $env->getConfig('database.system.user') ?: $env->getConfig('database.user');
-            $sysDbInfo->password = $env->getConfig('database.system.password') ?: $env->getConfig('database.password');
-            $sysDbInfo->dbname   = $env->getConfig('database.system.dbname') ?: $env->getConfig('database.dbname');
+            $sysDbInfo->host     = $env->getConfig('database_advanced.system.host') ?: $env->getConfig('database.host');
+            $sysDbInfo->user     = $env->getConfig('database_advanced.system.user') ?: $env->getConfig('database.user');
+            $sysDbInfo->password = $env->getConfig('database_advanced.system.password') ?: $env->getConfig('database.password');
+            $sysDbInfo->dbname   = $env->getConfig('database_advanced.system.dbname') ?: $env->getConfig('database.dbname');
             $this->getSession()->setSystemDbInfo($sysDbInfo);
         } else {
             $sysDbInfo = $this->getSession()->getSystemDbInfo();
@@ -97,10 +97,10 @@ class SkipWizardStep extends AbstractStep
         if (!$this->getSession()->getAuditDbInfo()) {
             $env                   = $this->getContext()->getDpEnv();
             $auditDbInfo           = new DbInfo();
-            $auditDbInfo->host     = $env->getConfig('database.audit.host') ?: $env->getConfig('database.host');
-            $auditDbInfo->user     = $env->getConfig('database.audit.user') ?: $env->getConfig('database.user');
-            $auditDbInfo->password = $env->getConfig('database.audit.password') ?: $env->getConfig('database.password');
-            $auditDbInfo->dbname   = $env->getConfig('database.audit.dbname') ?: $env->getConfig('database.dbname');
+            $auditDbInfo->host     = $env->getConfig('database_advanced.audit.host') ?: $env->getConfig('database.host');
+            $auditDbInfo->user     = $env->getConfig('database_advanced.audit.user') ?: $env->getConfig('database.user');
+            $auditDbInfo->password = $env->getConfig('database_advanced.audit.password') ?: $env->getConfig('database.password');
+            $auditDbInfo->dbname   = $env->getConfig('database_advanced.audit.dbname') ?: $env->getConfig('database.dbname');
             $this->getSession()->setAuditDbInfo($auditDbInfo);
         } else {
             $auditDbInfo = $this->getSession()->getAuditDbInfo();

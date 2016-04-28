@@ -53,7 +53,7 @@ class FieldFilterService
      */
     public function registerFilter(FieldFilterInterface $filter, $name)
     {
-        if (array_key_exists($filter, $this->filters)) {
+        if (array_key_exists($name, $this->filters)) {
             throw new \InvalidArgumentException(
                 sprintf(
                     'Filter with alias [ %s ] already registered, check your configuration',
