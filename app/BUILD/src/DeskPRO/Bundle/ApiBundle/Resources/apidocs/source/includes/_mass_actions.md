@@ -85,12 +85,21 @@ See example on javascript tab.
     "set_workflow": 3,
     "set_language": 5,
     "set_followers": [512, 1, 2, 3, 4, 5],
-    "set_of_actions":["mark_as_spam", "delete", "unassign"]
+    "set_of_actions":["mark_as_spam", "delete"]
 }
 ```
+> For unassign agent and followers
+
+```json
+{
+    "assign": {"agent": null},
+    "set_followers": [],
+}
+```
+
 * Endpoint: **/mass_actions/tickets**
 * Available actions (see example on javascript tab):
-    * set_followers. Options: [array of agentIds]
+    * set_followers. Options: [array of agentIds] OR [] *Empty array for remove all followers*
     * set_product. Options: productId (int)
     * set_status. Options: statusName (string). *Available values: awaiting_agent, awaiting_user, resolved, archived*
     * set_workflow. Options: workflowId (int)

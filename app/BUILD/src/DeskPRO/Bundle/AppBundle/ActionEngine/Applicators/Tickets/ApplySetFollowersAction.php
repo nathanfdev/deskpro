@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Person;
@@ -46,11 +45,19 @@ class ApplySetFollowersAction extends AbstractTicketApplicator implements Action
      */
     public function apply(array $tickets)
     {
-        $this->init();
-        foreach ($tickets as $ticket) {
-            $ticket->setAgentParticipants($this->followers);
-            $context = $this->tm->createAgentExecutorContext(null, 'set_followers', 'mass_actions');
-            $this->tm->saveTicket($ticket, $context);
+        if (empty($this->options['set_followers'])) {
+            foreach ($tickets as $ticket) {
+                $ticket->resetParticipants();
+                $context = $this->tm->createAgentExecutorContext(null, 'unset_followers', 'mass_actions');
+                $this->tm->saveTicket($ticket, $context);
+            }
+        } else {
+            $this->init();
+            foreach ($tickets as $ticket) {
+                $ticket->setAgentParticipants($this->followers);
+                $context = $this->tm->createAgentExecutorContext(null, 'set_followers', 'mass_actions');
+                $this->tm->saveTicket($ticket, $context);
+            }
         }
     }
 
