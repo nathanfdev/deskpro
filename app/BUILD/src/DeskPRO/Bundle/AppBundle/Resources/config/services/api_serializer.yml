@@ -23,9 +23,9 @@ services:
 
   # entities
   api_serializer.handler.custom_data:
-      class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\CustomDataHandler
-      tags:
-        - { name: "jms_serializer.subscribing_handler" }
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\CustomDataHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.contact_data:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\ContactDataHandler
@@ -45,6 +45,12 @@ services:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\OrganizationHandler
     arguments:
       - "@data.chat"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.feedback:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\FeedbackHandler
+    arguments: ["@doctrine.orm.default_entity_manager"]
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
@@ -95,11 +101,11 @@ services:
       - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.agent_team:
-      class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AgentTeamHandler
-      arguments:
-        - "@avatar_resolver"
-      tags:
-        - { name: "jms_serializer.subscribing_handler" }
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AgentTeamHandler
+    arguments:
+      - "@avatar_resolver"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.ticket:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets\TicketHandler
@@ -122,14 +128,14 @@ services:
       - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.layout_field:
-      class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets\LayoutFieldHandler
-      tags:
-        - { name: "jms_serializer.subscribing_handler" }
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets\LayoutFieldHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.blob:
-      class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\BlobHandler
-      tags:
-        - { name: "jms_serializer.subscribing_handler" }
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\BlobHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.text_snippet:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TextSnippets\TextSnippetHandler
@@ -145,11 +151,11 @@ services:
       - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.theme_set_asset:
-        class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\ThemeSetAssetHandler
-        arguments:
-          - "@router"
-        tags:
-          - { name: "jms_serializer.subscribing_handler" }
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\ThemeSetAssetHandler
+    arguments:
+      - "@router"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
 
   # listeners and subscribers
   api_serializer.sideload_listener:

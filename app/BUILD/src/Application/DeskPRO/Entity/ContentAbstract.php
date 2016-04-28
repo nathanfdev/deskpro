@@ -447,6 +447,14 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
     public function getHiddenStatus()
     {
         return $this->hidden_status;
@@ -756,6 +764,14 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @return int
+     */
+    public function getNumRatings()
+    {
+        return $this->num_ratings;
+    }
+
+    /**
      * @return \Application\DeskPRO\Labels\LabelManager
      */
     public function getLabelManager()
@@ -858,6 +874,22 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function getDateCreated()
     {
         return $this->date_created;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalRating()
+    {
+        return $this->total_rating;
+    }
+
+    /**
+     * @return int
+     */
+    public function getViewCount()
+    {
+        return $this->view_count;
     }
 
     /**

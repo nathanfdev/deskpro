@@ -9,6 +9,7 @@ Feature: /feedback endpoint
     And my request is authenticated
     And I set permission "feedback.use" = 1 for "registered" usergroup
 
+  @reinstall
   Scenario: I GET list of feedback with hidden_status set to validating
     When I send a GET request to "/api/v2/feedback?awaiting_validation=1"
     Then the response should be in JSON
@@ -130,6 +131,18 @@ Feature: /feedback endpoint
     And the JSON node "meta" should exist
     And the JSON node "meta.pagination" should exist
     And the JSON node "meta.pagination.total" should be equal to 21
+
+  Scenario: I check feedback comments count
+    When I send a GET request to "/api/v2/feedback?order_by=id&order_dir=asc"
+    Then the response status code should be 200
+    And the JSON node "data[0].id" should be equal to 1
+    And the JSON node "data[0].comments_count" should be equal to 2
+    And the JSON node "data[1].id" should be equal to 2
+    And the JSON node "data[1].comments_count" should be equal to 1
+    And the JSON node "data[2].id" should be equal to 3
+    And the JSON node "data[2].comments_count" should be equal to 1
+    And the JSON node "data[3].id" should be equal to 4
+    And the JSON node "data[3].comments_count" should be equal to 0
 
   Scenario Outline: I order list
     When I send a GET request to "/api/v2/feedback?order_by=<order_by>&order_dir=asc"

@@ -41,7 +41,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
-use JMS\Serializer\Annotation as JMS;
 
 /**
  * @PortalLinkRoute("portal_feedback_view", route_param_map={"slug":"slug"})
@@ -49,7 +48,6 @@ use JMS\Serializer\Annotation as JMS;
  * @PortalLinkRoute("portal_feedback_toggle_subscription", route_param_map={"slug":"slug"}, type="toggle_subscription")
  * @PortalLinkRoute("portal_feedback_vote_up",       route_param_map={"slug":"slug"}, type="vote_up")
  * @PortalLinkRoute("portal_feedback_vote_down", route_param_map={"slug":"slug"}, type="vote_down")
- * @JMS\ExclusionPolicy("all")
  */
 class Feedback extends ContentAbstract implements HighlightableModelInterface
 {
@@ -73,9 +71,6 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     /**
      * Category the feedback belongs to.
      *
-     * @JMS\Expose()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\FeedbackStatusCategory>")
-     *
      * @var FeedbackStatusCategory
      */
     protected $status_category = null;
@@ -83,18 +78,12 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     /**
      * Hidden status code.
      *
-     * @JMS\Expose()
-     * @JMS\Type("string")
-     *
      * @var string
      */
     protected $hidden_status = null;
 
     /**
      * Category the feedback belongs to.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\FeedbackCategory>")
      *
      * @var FeedbackCategory
      */
@@ -110,10 +99,6 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     /**
      * String array of labels associated with this news.
      *
-     * @JMS\Expose()
-     * @JMS\Groups({"labels"})
-     * @JMS\Type("array<to_string<Application\DeskPRO\Entity\FeedbackLabel>>")
-     *
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $labels;
@@ -125,9 +110,6 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
 
     /**
      * Popularity.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("integer")
      *
      * (see recalculatePopularity)
      *
@@ -198,22 +180,6 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         }
 
         return;
-    }
-
-    /**
-     * Custom data.
-     *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("string")
-     *
-     * // FIXME: getCustomData is making $this->custom_data return a string from outside, which breaks FieldManager
-     * // So I've renamed it 'X' so this can be reviewed.
-     *
-     * @return string
-     */
-    public function XgetCustomData()
-    {
-        return $this->getCustomDataForField(1) ? $this->getCustomDataForField(1)->getInput() : null;
     }
 
     /**
@@ -524,6 +490,22 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         }
 
         return $this->_label_manager;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getCustomData()
+    {
+        return $this->custom_data;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPopularity()
+    {
+        return $this->popularity;
     }
 
     /**

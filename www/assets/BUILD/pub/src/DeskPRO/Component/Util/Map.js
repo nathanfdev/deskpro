@@ -37,6 +37,8 @@ export function mapKeyedFromArray(arrayVal, keyProp) {
     return Immutable.Map().withMutations(map => {
       Object.keys(arrayVal).forEach(key => {
         const v = arrayVal[key];
+        invariant(!!v, 'Got empty value for %s', keyProp, arrayVal);
+
         const k = isDeepKey ? objGet(v, keyProp) : v[keyProp];
         if (k !== null && typeof k !== 'undefined') {
           map.set(k, Immutable.fromJS(v));
