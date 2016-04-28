@@ -14,6 +14,10 @@
         "set_workflow": 3,
         "set_language": 5,
         "set_followers": [512, 1, 2, 3, 4, 5],
+        "reply": {
+                   "message":     "<p>Fine HTML or nl2br message</p>", 
+                   "isAgentNote": 1
+        }
         "set_of_actions":["mark_as_spam", "delete"]
       }
  }
@@ -85,6 +89,11 @@ See example on javascript tab.
     "set_workflow": 3,
     "set_language": 5,
     "set_followers": [512, 1, 2, 3, 4, 5],
+    "reply": {
+               "message":     "<p>Fine HTML or nl2br message</p>", 
+               "isAgentNote": 1
+    }
+    "set_of_actions":["mark_as_spam", "delete", "unassign"]
     "set_of_actions":["mark_as_spam", "delete"]
 }
 ```
@@ -105,6 +114,7 @@ See example on javascript tab.
     * set_workflow. Options: workflowId (int)
     * set_category. Options: categoryId (int)
     * assign: {"agent": personId OR "team": teamId OR "department": departmentId}
+    * reply: {"message": HTML or plain text, "isAgentNote": 0 | 1}
     * delete
     * mark_as_spam
     * unassign. Set agent and team to null and department to default value
