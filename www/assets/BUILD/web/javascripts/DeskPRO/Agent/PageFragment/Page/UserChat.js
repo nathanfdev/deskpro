@@ -799,7 +799,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			this.getEl('messages_box').find('.row.agent').addClass('user-ack');
 		}
 
-		var avatarHtml = '';
+		var avatarHtml;
 		var person_avatar = metadata.person_avatar || this.meta.userPictureUrl;
 		person_avatar = person_avatar.replace(/\/avatar\/\d+\//, "/avatar/25/", person_avatar);
 		person_avatar = person_avatar.replace(/\/size\/\d+\//, "/size/25/", person_avatar);
@@ -808,7 +808,14 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			person_avatar = Orb.appendQueryData(person_avatar, 's', '25');
 		}
 
-		avatarHtml = '<div class="avatar tipped" title="'+ Orb.escapeHtml(metadata.author_name || '') +'"><img src="' + person_avatar + '" /></div>';
+		var authorName = '';
+		if (type == 'agent') {
+			authorName = this.meta.youName || '';
+		} else if (type == 'user') {
+			authorName = this.meta.convo.person_name || '';
+		}
+
+		avatarHtml = '<div class="avatar tipped" title="'+ Orb.escapeHtml(authorName) +'"><img src="' + person_avatar + '" /></div>';
 
 		var html = ['<div class="row '+type+' ' + addclass + '"><div class="message-content">'];
 			if (type == 'sys') {
