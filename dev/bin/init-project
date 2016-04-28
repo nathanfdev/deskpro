@@ -40,9 +40,3 @@ echo ">> Building documentation"
 npm run-script gulp-docs
 echo ".. done"
 echo
-
-echo ">> Building slate"
-npm run-script gulp slate
-echo ".. done"
-echo
-
