@@ -1,0 +1,65 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+<div class="content-wrapper">
+    <section class="content setup widget-editor">
+        <h1><i class="fa fa-cog"></i> Ticket Form Widget</h1>
+        <form class="widget-editor-form">
+            <div class="content-section">
+                <h2><span>Embed a ticket form directly in to any web page.</span></h2>
+                <ul class="options">
+                    <li>
+                        <label class="option-label">Language:</label>
+                        <div class="option-group">
+                            <select ng-model="language"
+                                    ng-change="code = ''"
+                                    ng-options="l.locale as l.title for l in languages">
+                            </select>
+                        </div>
+                    </li>
+                    <li>
+                        <label class="option-label">Department:</label>
+                        <div class="option-group">
+                            <select ng-model="department"
+                                    ng-change="code = ''"
+                                    ng-options="d.locale as d.title for d in departments">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                    </li>
+                    <li>
+                        <label class="option-label">Width:</label>
+                        <div class="option-group">
+                            <input type="text" ng-model="width" ng-change="code = ''" />
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="form-footer">
+                <div ng-show="!code">
+                    <button type="submit" ng-click="Ctrl.getCode()">Get Code</button>
+                    <div ng-show="saving_code">
+                        <i class="spinner-flat"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="editor-row" ng-show="code">
+                <div class="editor-wrap">
+                    <div
+                         style="height: 100px;"
+                         ng-model="code"
+                         ui-ace="{
+                             mode: 'html',
+                             useWrapMode: false,
+                             showGutter: false,
+                             theme: 'textmate',
+                             onLoad: embedEditorLoaded
+                         }">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </section>
+</div>
+{% endblock %}
