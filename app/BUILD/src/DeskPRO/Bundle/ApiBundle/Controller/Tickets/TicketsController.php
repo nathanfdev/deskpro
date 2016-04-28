@@ -187,7 +187,7 @@ class TicketsController extends AbstractTicketsController
             $ids = $ticketsQuery->fetchIds();
         }
 
-        return View::create($this->wrap($this->getTicketsPager($total, $ids, $maxPerPage, $currentPage)));
+        return View::create($this->wrap($this->getTicketsPager($total, $ids, $currentPage, $maxPerPage)));
     }
 
     /**

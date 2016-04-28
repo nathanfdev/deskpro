@@ -94,7 +94,7 @@ class TicketFiltersController extends CrudController
             'offset' => $maxPerPage * ($currentPage - 1),
         ]);
 
-        return View::create($this->wrap($this->getTicketsPager($total, $ids, $maxPerPage, $currentPage)));
+        return View::create($this->wrap($this->getTicketsPager($total, $ids, $currentPage, $maxPerPage)));
     }
 
     /**

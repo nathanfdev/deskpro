@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter;
 
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
@@ -60,6 +57,13 @@ class DbalTicketFilterEngineCompiler
      */
     protected $logger;
 
+    /**
+     * Constructor.
+     *
+     * @param DbalCompiler    $compiler
+     * @param DbalQueryCacher $cacher
+     * @param LoggerInterface $logger
+     */
     public function __construct(DbalCompiler $compiler, DbalQueryCacher $cacher, LoggerInterface $logger)
     {
         $this->compiler = $compiler;
@@ -74,36 +78,39 @@ class DbalTicketFilterEngineCompiler
      */
     public function compile(TicketFilter $filter)
     {
-        $this->logger->info('START FILTER COMPILE', array(
+        $this->logger->info('START FILTER COMPILE', [
             'filter_id'    => $filter->getId(),
             'filter_title' => $filter->getTitle(),
-        ));
+        ]);
 
         $timer = new SimpleTimer();
+        $key   = $this->generateKey($filter);
 
-        $key = $this->generateKey($filter);
+        $this->logger->debug('Checking DbalQueryCache', ['key' => $key]);
 
-        $this->logger->debug('Checking DbalQueryCache', array('key' => $key));
+        $compiledQuery = $this->cacher->fetchQuery($key);
+        if ($compiledQuery) {
+            $this->logger->info('Cache hit, exiting compiler', ['time' => $timer->getElapsedTime()]);
 
-        if ($compiled_query = $this->cacher->fetchQuery($key)) {
-            $this->logger->info('Cache hit, exiting compiler', array('time' => $timer->getElapsedTime()));
-
-            return $compiled_query;
+            return $compiledQuery;
         }
 
         $this->logger->debug('Cache miss, compiling');
-
-        $compiled_query = $this->compiler->compile($filter->getTerm());
+        $compiledQuery = $this->compiler->compile($filter->getTerm());
 
         // cache it for future calls to retrieve
-        $this->cacher->saveQuery($key, $compiled_query);
-        $this->logger->debug('Saved compiled query to the cache store', array('key' => $key));
+        $this->cacher->saveQuery($key, $compiledQuery);
+        $this->logger->debug('Saved compiled query to the cache store', ['key' => $key]);
+        $this->logger->info('END FILTER COMPILE', ['time' => $timer->getElapsedTime()]);
 
-        $this->logger->info('END FILTER COMPILE', array('time' => $timer->getElapsedTime()));
-
-        return $compiled_query;
+        return $compiledQuery;
     }
 
+    /**
+     * @param TicketFilter $filter
+     *
+     * @return string
+     */
     protected function generateKey(TicketFilter $filter)
     {
         return sprintf('%s.%s', $filter->getId(), $filter->getDateUpdated()->getTimestamp());

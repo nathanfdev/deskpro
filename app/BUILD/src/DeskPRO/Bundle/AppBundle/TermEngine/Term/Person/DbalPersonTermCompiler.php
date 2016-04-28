@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\Person;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
@@ -45,13 +42,14 @@ class DbalPersonTermCompiler extends AbstractDbalTermCompiler
     public function doCompile(TermInterface $term)
     {
         $ids = array_map(function ($id) { return (int) $id; }, $term->getOption('person_ids'));
-        $query_part = $this->getEntityHelper()->buildQueryPart(
+        $queryPart = $this->getEntityHelper()->buildQueryPart(
             'ticket.person_id',
             $term->getOp(),
             $ids
         );
-        $this->logQueryPart($query_part);
 
-        return $query_part;
+        $this->logQueryPart($queryPart);
+
+        return $queryPart;
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,17 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
+/**
+ * Class DbalEntityHelper.
+ */
 class DbalEntityHelper extends AbstractDbalHelper
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getId()
     {
         return 'entity';
@@ -62,7 +65,7 @@ class DbalEntityHelper extends AbstractDbalHelper
         $ids = $this->filterIds($ids);
 
         // determine what we will assert
-        $assert_ids  = array();
+        $assert_ids  = [];
         $assert_null = false;
         foreach ($ids as $id) {
             if (0 === $id) {
@@ -72,7 +75,7 @@ class DbalEntityHelper extends AbstractDbalHelper
             }
         }
 
-        $this->getLogger()->debug('DbalEntityHelper: using ids', array('ids' => $assert_ids, 'null?' => $assert_null));
+        $this->getLogger()->debug('DbalEntityHelper: using ids', ['ids' => $assert_ids, 'null?' => $assert_null]);
 
         $where = '';
 
@@ -100,8 +103,7 @@ class DbalEntityHelper extends AbstractDbalHelper
             );
         }
 
-        $this->getLogger()->debug('DbalEntityHelper: asserting WHERE', array('where' => $where));
-
+        $this->getLogger()->debug('DbalEntityHelper: asserting WHERE', ['where' => $where]);
         $part->setWhereString($where);
 
         return $part;
@@ -126,11 +128,11 @@ class DbalEntityHelper extends AbstractDbalHelper
         }
 
         if (!count($ids) || $all_null) {
-            $ids = array(0);
+            $ids = [0];
         }
 
         // filter ids
-        $filtered_ids = array();
+        $filtered_ids = [];
         foreach ($ids as $id) {
             if (null === $id) {
                 $filtered_ids[] = 0;

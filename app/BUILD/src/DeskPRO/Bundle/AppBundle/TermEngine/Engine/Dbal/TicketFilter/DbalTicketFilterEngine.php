@@ -33,7 +33,6 @@
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter;
 
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngine;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngineEvent;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalEngineEvents;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\EventListener\DbalQueryManipulatorListener;
@@ -47,7 +46,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 /**
  * Class DbalTicketFilterEngine.
  */
-class DbalTicketFilterEngine extends DbalEngine
+class DbalTicketFilterEngine
 {
     /**
      * @var DbalTicketFilterEngineCompiler
@@ -57,7 +56,7 @@ class DbalTicketFilterEngine extends DbalEngine
     /**
      * @var DbalQueryManipulatorListener
      */
-    private $event_dispatcher;
+    private $eventDispatcher;
 
     /**
      * @var Connection
@@ -73,20 +72,20 @@ class DbalTicketFilterEngine extends DbalEngine
      * Constructor.
      *
      * @param DbalTicketFilterEngineCompiler $compiler
-     * @param EventDispatcherInterface       $event_dispatcher
+     * @param EventDispatcherInterface       $eventDispatcher
      * @param Connection                     $connection
      * @param LoggerInterface                $logger
      */
     public function __construct(
         DbalTicketFilterEngineCompiler $compiler,
-        EventDispatcherInterface       $event_dispatcher,
+        EventDispatcherInterface       $eventDispatcher,
         Connection                     $connection,
         LoggerInterface                $logger
     ) {
-        $this->compiler         = $compiler;
-        $this->event_dispatcher = $event_dispatcher;
-        $this->connection       = $connection;
-        $this->logger           = $logger;
+        $this->compiler        = $compiler;
+        $this->eventDispatcher = $eventDispatcher;
+        $this->connection      = $connection;
+        $this->logger          = $logger;
     }
 
     /**
@@ -103,10 +102,10 @@ class DbalTicketFilterEngine extends DbalEngine
             'filter_title' => $filter->getTitle(),
         ]);
 
-        $compiled_query = $this->compiler->compile($filter);
+        $compiledQuery = $this->compiler->compile($filter);
 
-        $event = new DbalEngineEvent($compiled_query, $context);
-        $this->event_dispatcher->dispatch(DbalEngineEvents::MANIPULATE_QUERY, $event);
+        $event = new DbalEngineEvent($compiledQuery, $context);
+        $this->eventDispatcher->dispatch(DbalEngineEvents::MANIPULATE_QUERY, $event);
 
         $this->logger->info('END EVALUATE FILTER', [
             'filter_id'    => $filter->getId(),
@@ -114,7 +113,7 @@ class DbalTicketFilterEngine extends DbalEngine
             'time'         => $timer->getElapsedTime(),
         ]);
 
-        $query = new DbalExecutableQuery($compiled_query, $this->connection, $this->logger);
+        $query = new DbalExecutableQuery($compiledQuery, $this->connection, $this->logger);
 
         // Do we need to apply grouping clauses?
         if (count($context->getGroupBys()) > 0) {
