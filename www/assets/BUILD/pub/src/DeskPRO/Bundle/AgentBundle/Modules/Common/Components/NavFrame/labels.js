@@ -1,14 +1,15 @@
-import React, {Component, PropTypes} from 'react';
+import React, { PropTypes } from 'react';
 import Immutable from 'immutable';
 
-export class LabelsDictionary extends Component {
+export class LabelsDictionary extends React.Component {
 
   static propTypes = {
     onClick: PropTypes.func.isRequired,
-    labels: PropTypes.object.isRequired
+    labels:  PropTypes.object.isRequired
   };
 
-  groupByFirstLetter(labels) {
+  groupByFirstLetter() {
+    const { labels } = this.props;
     const dictionary = {};
     let count;
 
@@ -16,7 +17,7 @@ export class LabelsDictionary extends Component {
     count = labels.count() ? labels.count() : labels.size;
     for (let index = 0, label, letter; index < count; index++) {
       label = Immutable.Iterable.isIterable(labels) ? labels.get(index) : labels[index];
-      letter = label[0].toUpperCase();
+      letter = label.get('label')[0].toUpperCase();
       if (!dictionary.hasOwnProperty(letter)) {
         dictionary[letter] = [];
       }
@@ -37,35 +38,30 @@ export class LabelsDictionary extends Component {
   }
 
   render() {
-    const grouped = this.groupByFirstLetter(this.props.labels);
-    const onClick = this.props.onClick ? this.props.onClick : () => {
-    };
+    const { onClick } = this.props;
 
     return (
       <section className="sidebar-list sidebar-list-labels tasks-nav-labels">
         <div className="sidebar-label-list sidebar-list">
           <span className="labelCharacter">--</span>
           <ul>
-            <li onClick={onClick.bind(this, {name: 'no_labels', value: 1})}>
+            <li onClick={() => onClick({ name: 'no_labels', value: 1 })}>
               <a href="#" className="item-label">no labels defined</a>
             </li>
           </ul>
-          {grouped.map((group, index) => {
-            return (
-              <div key={index}>
-                <span className="labelCharacter">{group.letter}</span>
-                <ul>
-                  {group.labels.map((label, key) =>
-                    <li key={key} onClick={onClick.bind(this, {name: 'label', value: label})}>
-                      <a href="#" className="item-label">{label}</a>
-                    </li>)}
-                </ul>
-              </div>
-            );
-          })}
+          {this.groupByFirstLetter().map((group, index) =>
+            <div key={index}>
+              <span className="labelCharacter">{group.letter}</span>
+              <ul>
+                {group.labels.map((label, key) =>
+                  <li key={key} onClick={() => onClick({ name: 'label', value: label.get('label') })}>
+                    <a href="#" className="item-label">{label.get('label')}</a>
+                  </li>)}
+              </ul>
+            </div>
+          )}
         </div>
       </section>
     );
   }
-
 }
