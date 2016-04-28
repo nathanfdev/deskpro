@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category ClientMessage
  */
+
 namespace Application\DeskPRO\ClientMessage\Generator;
 
 use Application\DeskPRO\Entity\ChatConversation;
@@ -39,7 +40,7 @@ use Application\DeskPRO\Entity\ClientMessage;
 
 class Chat
 {
-    public static function createNewChatMessages($by_client_id, ChatConversation $conversation, ChatMessage $chat_message)
+    public static function createNewChatMessages($byClientId, ChatConversation $conversation, ChatMessage $chatMessage)
     {
         if ($conversation['is_agent']) {
             $channel = 'agent_chat.new-chat';
@@ -47,165 +48,165 @@ class Chat
             $channel = 'chat.new-chat';
         }
 
-        $new_chat_cm = new ClientMessage();
-        $new_chat_cm->fromArray(array(
+        $newChatCm = new ClientMessage();
+        $newChatCm->fromArray([
             'channel' => $channel,
-            'data'    => array(
+            'data'    => [
                 'conversation_id' => $conversation['id'],
-                'message_id'      => $chat_message['id'],
-                'author_id'       => $chat_message['author_id'],
-                'author_name'     => $chat_message['author_name'],
-                'message'         => $chat_message['content'],
-                'date_created'    => $chat_message['date_created']->getTimestamp(),
-            ),
-            'created_by_client' => $by_client_id,
-        ));
+                'message_id'      => $chatMessage['id'],
+                'author_id'       => $chatMessage['author_id'],
+                'author_name'     => $chatMessage['author_name'],
+                'message'         => $chatMessage['content'],
+                'date_created'    => $chatMessage['date_created']->getTimestamp(),
+            ],
+            'created_by_client' => $byClientId,
+        ]);
 
-        return array($new_chat_cm);
+        return [$newChatCm];
     }
 
-    public static function createNewAddedPartMessage($by_client_id, ChatConversation $conversation, $agent)
+    public static function createNewAddedPartMessage($byClientId, ChatConversation $conversation, $agent)
     {
         $channel = 'chat_user_agent.added-as-part';
 
-        $chat_message = $conversation->messages->get(0);
+        $chatMessage = $conversation->messages->get(0);
 
-        $new_chat_cm = new ClientMessage();
-        $new_chat_cm->fromArray(array(
+        $newChatCm = new ClientMessage();
+        $newChatCm->fromArray([
             'channel' => $channel,
-            'data'    => array(
+            'data'    => [
                 'conversation_id' => $conversation['id'],
-                'message_id'      => $chat_message['id'],
-                'author_id'       => $chat_message['author_id'],
-                'author_name'     => $chat_message['author_name'],
-                'message'         => $chat_message['content'],
-                'date_created'    => $chat_message['date_created']->getTimestamp(),
-            ),
-            'created_by_client' => $by_client_id,
+                'message_id'      => $chatMessage['id'],
+                'author_id'       => $chatMessage['author_id'],
+                'author_name'     => $chatMessage['author_name'],
+                'message'         => $chatMessage['content'],
+                'date_created'    => $chatMessage['date_created']->getTimestamp(),
+            ],
+            'created_by_client' => $byClientId,
             'for_person'        => $agent,
-        ));
+        ]);
 
-        return array($new_chat_cm);
+        return [$newChatCm];
     }
 
-    public static function createChatEndedMessages($by_client_id, ChatConversation $conversation)
+    public static function createChatEndedMessages($byClientId, ChatConversation $conversation)
     {
         $channel = 'chat.chat-ended';
 
-        $chat_cm = new ClientMessage();
-        $chat_cm->fromArray(array(
+        $chatCm = new ClientMessage();
+        $chatCm->fromArray([
             'channel' => $channel,
-            'data'    => array(
+            'data'    => [
                 'conversation_id' => $conversation['id'],
                 'date_created'    => time(),
-            ),
-            'created_by_client' => $by_client_id,
-        ));
+            ],
+            'created_by_client' => $byClientId,
+        ]);
 
-        return array($chat_cm);
+        return [$chatCm];
     }
 
-    public static function createChatAssignedMessages($by_client_id, ChatConversation $conversation)
+    public static function createChatAssignedMessages($byClientId, ChatConversation $conversation)
     {
-        $client_messages = array();
+        $clientMessages = [];
 
-        $chat_cm = new ClientMessage();
+        $chatCm = new ClientMessage();
 
-        $chat_message = $conversation->messages->get(0);
+        $chatMessage = $conversation->messages->get(0);
 
         // We only need to notify the one guy
         if ($conversation['agent']) {
-            $chat_cm->fromArray(array(
+            $chatCm->fromArray([
                 'channel' => 'chat.new-chat-assigned',
-                'data'    => array(
+                'data'    => [
                     'conversation_id' => $conversation['id'],
-                    'message_id'      => $chat_message['id'],
-                    'author_id'       => $chat_message['author_id'],
-                    'author_name'     => $chat_message['author_name'],
-                    'message'         => $chat_message['content'],
-                    'date_created'    => $chat_message['date_created']->getTimestamp(),
-                ),
-                'created_by_client' => $by_client_id,
+                    'message_id'      => $chatMessage['id'],
+                    'author_id'       => $chatMessage['author_id'],
+                    'author_name'     => $chatMessage['author_name'],
+                    'message'         => $chatMessage['content'],
+                    'date_created'    => $chatMessage['date_created']->getTimestamp(),
+                ],
+                'created_by_client' => $byClientId,
                 'for_person'        => $conversation['agent'],
-            ));
+            ]);
 
-        // Dispatch a 'new chat' type popup for everyone
+            // Dispatch a 'new chat' type popup for everyone
         } else {
-            $chat_cm = new ClientMessage();
-            $chat_cm->fromArray(array(
+            $chatCm = new ClientMessage();
+            $chatCm->fromArray([
                 'channel' => 'chat.new-chat',
-                'data'    => array(
+                'data'    => [
                     'conversation_id' => $conversation['id'],
-                    'message_id'      => $chat_message['id'],
-                    'author_id'       => $chat_message['author_id'],
-                    'author_name'     => $chat_message['author_name'],
-                    'message'         => $chat_message['content'],
-                    'date_created'    => $chat_message['date_created']->getTimestamp(),
-                ),
-                'created_by_client' => $by_client_id,
-            ));
+                    'message_id'      => $chatMessage['id'],
+                    'author_id'       => $chatMessage['author_id'],
+                    'author_name'     => $chatMessage['author_name'],
+                    'message'         => $chatMessage['content'],
+                    'date_created'    => $chatMessage['date_created']->getTimestamp(),
+                ],
+                'created_by_client' => $byClientId,
+            ]);
         }
 
-        $client_messages[] = $chat_cm;
+        $clientMessages[] = $chatCm;
 
         // Dispatch a general message, so the interfaces that are beeping can
         // can hide the beep
-        $chat_cm = new ClientMessage();
-        $chat_cm->fromArray(array(
+        $chatCm = new ClientMessage();
+        $chatCm->fromArray([
             'channel' => 'chat_user_agent.chat-assigned',
-            'data'    => array(
+            'data'    => [
                 'conversation_id' => $conversation['id'],
                 'agent_id'        => $conversation['agent'] ? $conversation['agent']['id'] : 0,
-            ),
-            'created_by_client' => $by_client_id,
-        ));
+            ],
+            'created_by_client' => $byClientId,
+        ]);
 
-        $client_messages[] = $chat_cm;
+        $clientMessages[] = $chatCm;
 
         // User should be notiifed too
         if (!$conversation['is_agent'] and $conversation->session) {
-            $chat_cm_user = new ClientMessage();
-            $chat_cm_user->fromArray(array(
+            $chatCmUser = new ClientMessage();
+            $chatCmUser->fromArray([
                 'channel' => 'chat_user.chat-assigned',
-                'data'    => array(
+                'data'    => [
                     'conversation_id' => $conversation['id'],
                     'agent_id'        => $conversation['agent'] ? $conversation['agent']['id'] : 0,
-                ),
-                'created_by_client' => $by_client_id,
+                ],
+                'created_by_client' => $byClientId,
                 'for_client'        => $conversation->session['id'],
-            ));
+            ]);
 
-            $client_messages[] = $chat_cm_user;
+            $clientMessages[] = $chatCmUser;
         }
 
-        return $client_messages;
+        return $clientMessages;
     }
 
-    public static function createPartisipatedUpdatedMessages($by_client_id, ChatConversation $conversation)
+    public static function createPartisipatedUpdatedMessages($byClientId, ChatConversation $conversation)
     {
-        $cm_data = array(
+        $cmData = [
             'conversation_id' => $conversation->getId(),
             'agent_id'        => $conversation['agent'] ? $conversation['agent']['id'] : 0,
-            'participant_ids' => array(),
-        );
+            'participant_ids' => [],
+        ];
 
         foreach ($conversation->participants as $part) {
-            $cm_data['participant_ids'][] = $part['id'];
+            $cmData['participant_ids'][] = $part['id'];
         }
 
         $channel = 'chat_user_agent.chat-parts-updated';
 
-        $cms = array();
+        $cms = [];
 
         // Assigned agent
         if ($conversation->agent) {
             $cm = new ClientMessage();
-            $cm->fromArray(array(
+            $cm->fromArray([
                 'channel'           => $channel,
-                'data'              => $cm_data,
-                'created_by_client' => $by_client_id,
+                'data'              => $cmData,
+                'created_by_client' => $byClientId,
                 'for_person'        => $conversation->agent,
-            ));
+            ]);
 
             $cms[] = $cm;
         }
@@ -213,12 +214,12 @@ class Chat
         // Participants first
         foreach ($conversation->participants as $part) {
             $cm = new ClientMessage();
-            $cm->fromArray(array(
+            $cm->fromArray([
                 'channel'           => $channel,
-                'data'              => $cm_data,
-                'created_by_client' => $by_client_id,
+                'data'              => $cmData,
+                'created_by_client' => $byClientId,
                 'for_person'        => $part,
-            ));
+            ]);
 
             $cms[] = $cm;
         }
@@ -226,29 +227,29 @@ class Chat
         return $cms;
     }
 
-    public static function createNewChatRoundRobinMessages($by_client_id, ChatConversation $conversation, ChatMessage $chat_message)
+    public static function createNewChatRoundRobinMessages($byClientId, ChatConversation $conversation, ChatMessage $chatMessage)
     {
-        $new_chat_cm = new ClientMessage();
-        $new_chat_cm->fromArray(array(
+        $newChatCm = new ClientMessage();
+        $newChatCm->fromArray([
             'channel' => 'chat.new-chat-assigned',
-            'data'    => array(
+            'data'    => [
                 'conversation_id' => $conversation['id'],
-                'message_id'      => $chat_message['id'],
-                'author_id'       => $chat_message['author_id'],
-                'author_name'     => $chat_message['author_name'],
-                'message'         => $chat_message['content'],
-                'date_created'    => $chat_message['date_created']->getTimestamp(),
-            ),
-            'created_by_client' => $by_client_id,
+                'message_id'      => $chatMessage['id'],
+                'author_id'       => $chatMessage['author_id'],
+                'author_name'     => $chatMessage['author_name'],
+                'message'         => $chatMessage['content'],
+                'date_created'    => $chatMessage['date_created']->getTimestamp(),
+            ],
+            'created_by_client' => $byClientId,
             'for_person'        => $conversation['agent'],
-        ));
+        ]);
 
-        return array($new_chat_cm);
+        return [$newChatCm];
     }
 
-    public static function createNewMessageMessages($by_client_id, ChatMessage $chat_message, &$cm_data = null)
+    public static function createNewMessageMessages($byClientId, ChatMessage $chatMessage, &$cmData = null)
     {
-        $conversation = $chat_message->conversation;
+        $conversation = $chatMessage->conversation;
 
         if ($conversation['is_agent']) {
             $channel = 'agent_chat.message';
@@ -256,38 +257,38 @@ class Chat
             $channel = 'chat.message';
         }
 
-        $author_type = 'user';
-        if ($chat_message['is_sys']) {
-            $author_type = 'sys';
-        } elseif ($chat_message['author'] and $chat_message['author']['is_agent']) {
-            $author_type = 'agent';
+        $authorType = 'user';
+        if ($chatMessage['is_sys']) {
+            $authorType = 'sys';
+        } elseif ($chatMessage['author'] and $chatMessage['author']['is_agent']) {
+            $authorType = 'agent';
         }
 
-        $cm_data = array(
+        $cmData = [
             'conversation_id' => $conversation['id'],
-            'message_id'      => $chat_message['id'],
-            'author_id'       => $chat_message['author_id'],
-            'author_name'     => $chat_message['author_name'],
-            'author_type'     => $author_type,
-            'message'         => $chat_message['content'],
-            'date_created'    => $chat_message['date_created']->getTimestamp(),
-        );
-        if ($chat_message['is_html']) {
-            $cm_data['message_html'] = $chat_message['content'];
-            unset($cm_data['message']);
+            'message_id'      => $chatMessage['id'],
+            'author_id'       => $chatMessage['author_id'],
+            'author_name'     => $chatMessage['author_name'],
+            'author_type'     => $authorType,
+            'message'         => $chatMessage['content'],
+            'date_created'    => $chatMessage['date_created']->getTimestamp(),
+        ];
+        if ($chatMessage['is_html']) {
+            $cmData['message_html'] = $chatMessage['content'];
+            unset($cmData['message']);
         }
 
-        $cms = array();
+        $cms = [];
 
         // Assigned agent
         if ($conversation->agent) {
             $cm = new ClientMessage();
-            $cm->fromArray(array(
+            $cm->fromArray([
                 'channel'           => $channel,
-                'data'              => $cm_data,
-                'created_by_client' => $by_client_id,
+                'data'              => $cmData,
+                'created_by_client' => $byClientId,
                 'for_person'        => $conversation->agent,
-            ));
+            ]);
 
             $cms[] = $cm;
         }
@@ -295,27 +296,27 @@ class Chat
         // Participants first
         foreach ($conversation->participants as $part) {
             $cm = new ClientMessage();
-            $cm->fromArray(array(
+            $cm->fromArray([
                 'channel'           => $channel,
-                'data'              => $cm_data,
-                'created_by_client' => $by_client_id,
+                'data'              => $cmData,
+                'created_by_client' => $byClientId,
                 'for_person'        => $part,
-            ));
+            ]);
 
             $cms[] = $cm;
         }
 
         // And the user
-        if (!$conversation['is_agent'] and !$chat_message['is_user_hidden']) {
+        if (!$conversation['is_agent'] and !$chatMessage['is_user_hidden']) {
             $session = $conversation->session;
 
             $cm = new ClientMessage();
-            $cm->fromArray(array(
+            $cm->fromArray([
                 'channel'           => $channel,
-                'data'              => $cm_data,
-                'created_by_client' => $by_client_id,
+                'data'              => $cmData,
+                'created_by_client' => $byClientId,
                 'for_client'        => $session['id'],
-            ));
+            ]);
 
             $cms[] = $cm;
         }
@@ -323,26 +324,26 @@ class Chat
         return $cms;
     }
 
-    public static function createUserTypingMessages($by_client_id, ChatConversation $conversation, $partial_message)
+    public static function createUserTypingMessages($byClientId, ChatConversation $conversation, $partialMessage)
     {
-        $cm_data = array(
+        $cmData = [
             'conversation_id' => $conversation['id'],
-            'partial_message' => $partial_message,
-        );
+            'partial_message' => $partialMessage,
+        ];
 
         $channel = 'chat.user-typing';
 
-        $cms = array();
+        $cms = [];
 
         // Assigned agent
         if ($conversation->agent) {
             $cm = new ClientMessage();
-            $cm->fromArray(array(
+            $cm->fromArray([
                 'channel'           => $channel,
-                'data'              => $cm_data,
-                'created_by_client' => $by_client_id,
+                'data'              => $cmData,
+                'created_by_client' => $byClientId,
                 'for_person'        => $conversation->agent,
-            ));
+            ]);
 
             $cms[] = $cm;
         }
@@ -350,12 +351,12 @@ class Chat
         // Participants first
         foreach ($conversation->participants as $part) {
             $cm = new ClientMessage();
-            $cm->fromArray(array(
+            $cm->fromArray([
                 'channel'           => $channel,
-                'data'              => $cm_data,
-                'created_by_client' => $by_client_id,
+                'data'              => $cmData,
+                'created_by_client' => $byClientId,
                 'for_person'        => $part,
-            ));
+            ]);
 
             $cms[] = $cm;
         }
