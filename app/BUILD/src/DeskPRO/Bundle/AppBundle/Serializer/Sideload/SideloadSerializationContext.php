@@ -41,7 +41,7 @@ class SideloadSerializationContext extends SerializationContext
     /**
      * @var SideloadStore
      */
-    protected $sideload_store;
+    protected $sideloadStore;
 
     /**
      * @var array
@@ -51,7 +51,7 @@ class SideloadSerializationContext extends SerializationContext
     /**
      * @var bool
      */
-    protected $exclusion_enabled = true;
+    protected $exclusionEnabled = true;
 
     /**
      * @var array
@@ -64,6 +64,11 @@ class SideloadSerializationContext extends SerializationContext
     protected $tokenStorage;
 
     /**
+     * @var bool
+     */
+    protected $idsOnly = false;
+
+    /**
      * SideloadSerializationContext constructor.
      *
      * @param array                 $includes
@@ -73,9 +78,9 @@ class SideloadSerializationContext extends SerializationContext
     {
         parent::__construct();
 
-        $this->sideload_store = new SideloadStore();
-        $this->includes       = $includes;
-        $this->tokenStorage   = $tokenStorage;
+        $this->sideloadStore = new SideloadStore();
+        $this->includes      = $includes;
+        $this->tokenStorage  = $tokenStorage;
     }
 
     /**
@@ -85,9 +90,14 @@ class SideloadSerializationContext extends SerializationContext
      */
     public static function createContext(ContainerInterface $container)
     {
-        $raw_includes = $container->get('request_stack')->getMasterRequest()->query->get('include');
+        $request     = $container->get('request_stack')->getMasterRequest();
+        $rawIncludes = $request->query->get('include');
+        $idsOnly     = $request->query->get('ids_only');
 
-        return new self(self::cleanIncludes($raw_includes), $container->get('security.token_storage'));
+        $context = new self(self::cleanIncludes($rawIncludes), $container->get('security.token_storage'));
+        $context->setIdsOnly((bool) $idsOnly);
+
+        return $context;
     }
 
     /**
@@ -97,7 +107,7 @@ class SideloadSerializationContext extends SerializationContext
      */
     public function setExclusionEnabled($enabled = true)
     {
-        $this->exclusion_enabled = (bool) $enabled;
+        $this->exclusionEnabled = (bool) $enabled;
 
         return $this;
     }
@@ -107,7 +117,7 @@ class SideloadSerializationContext extends SerializationContext
      */
     public function getExclusionStrategy()
     {
-        if ($this->exclusion_enabled) {
+        if ($this->exclusionEnabled) {
             return parent::getExclusionStrategy();
         }
 
@@ -119,7 +129,7 @@ class SideloadSerializationContext extends SerializationContext
      */
     public function getSideloadStore()
     {
-        return $this->sideload_store;
+        return $this->sideloadStore;
     }
 
     /**
@@ -176,6 +186,26 @@ class SideloadSerializationContext extends SerializationContext
         }
 
         return;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isIdsOnly()
+    {
+        return $this->idsOnly;
+    }
+
+    /**
+     * @param bool $idsOnly
+     *
+     * @return $this
+     */
+    public function setIdsOnly($idsOnly)
+    {
+        $this->idsOnly = $idsOnly;
+
+        return $this;
     }
 
     /**

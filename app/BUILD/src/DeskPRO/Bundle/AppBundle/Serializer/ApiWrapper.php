@@ -107,4 +107,20 @@ class ApiWrapper
 
         return false;
     }
+
+    /**
+     * @return array|Pagerfanta
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * @param array|Pagerfanta $data
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
+    }
 }

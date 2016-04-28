@@ -64,7 +64,6 @@ class DeferredPropertiesListener implements EventSubscriberInterface
     {
         /** @var GenericSerializationVisitor $visitor */
         $visitor = $event->getVisitor();
-
         /** @var SideloadSerializationContext $context */
         $context = $event->getContext();
 
@@ -80,7 +79,13 @@ class DeferredPropertiesListener implements EventSubscriberInterface
         $property->setAccessible(false);
     }
 
-    public function resolveArray($data, SideloadSerializationContext $context)
+    /**
+     * @param array                        $data
+     * @param SideloadSerializationContext $context
+     *
+     * @return array
+     */
+    protected function resolveArray(array $data, SideloadSerializationContext $context)
     {
         foreach ($data as $key => $value) {
             if ($value instanceof WrappedDeferred) {
