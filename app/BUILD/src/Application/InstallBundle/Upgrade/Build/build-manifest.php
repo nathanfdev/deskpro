@@ -1687,4 +1687,16 @@ return array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0040_userchat1.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0040_userchat1',
     ),
+    1460678421 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0024_custom_data_unique.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0024_custom_data_unique',
+    ),
+    1460678422 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0052_peoplealter3.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0052_peoplealter3',
+    ),
+    1460678423 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0063_ticketalter4.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0063_ticketalter4',
+    ),
 );
