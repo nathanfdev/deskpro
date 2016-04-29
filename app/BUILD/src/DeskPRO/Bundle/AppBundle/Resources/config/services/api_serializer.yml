@@ -140,11 +140,9 @@ services:
       - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.text_snippet_category:
-        class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TextSnippets\TextSnippetCategoryHandler
-        arguments:
-          - "@security.token_storage"
-        tags:
-          - { name: "jms_serializer.subscribing_handler" }
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TextSnippets\TextSnippetCategoryHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.theme_set_asset:
         class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\ThemeSetAssetHandler

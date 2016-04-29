@@ -28,33 +28,16 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TextSnippets;
 
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TextSnippetCategory as TextSnippetCategoryEntity;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\TextSnippets\TextSnippetCategory as TextSnippetCategoryModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Class TextSnippetCategoryHandler.
  */
 class TextSnippetCategoryHandler extends AbstractEntityHandler
 {
-    /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
-
-    /**
-     * TextSnippetHandler constructor.
-     *
-     * @param TokenStorageInterface $tokenStorage
-     */
-    public function __construct(TokenStorageInterface $tokenStorage)
-    {
-        $this->tokenStorage = $tokenStorage;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -70,9 +53,7 @@ class TextSnippetCategoryHandler extends AbstractEntityHandler
      */
     protected function createModel($entity, SideloadSerializationContext $context)
     {
-        /** @var Person $user */
-        $user  = $this->tokenStorage->getToken()->getUser();
-        $title = $entity->getObjectPropLanguageTranslationValue('title', $user->getLanguage());
+        $title = $entity->getObjectPropLanguageTranslationValue('title', $context->getUser()->getLanguage());
 
         return new TextSnippetCategoryModel($entity, $title);
     }
