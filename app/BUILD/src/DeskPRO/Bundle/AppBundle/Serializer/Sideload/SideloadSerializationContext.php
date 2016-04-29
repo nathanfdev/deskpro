@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Sideload;
 use Application\DeskPRO\Entity\Person;
 use JMS\Serializer\SerializationContext;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
@@ -69,6 +70,11 @@ class SideloadSerializationContext extends SerializationContext
     protected $idsOnly = false;
 
     /**
+     * @var Request
+     */
+    protected $request;
+
+    /**
      * SideloadSerializationContext constructor.
      *
      * @param array                 $includes
@@ -96,6 +102,7 @@ class SideloadSerializationContext extends SerializationContext
 
         $context = new self(self::cleanIncludes($rawIncludes), $container->get('security.token_storage'));
         $context->setIdsOnly((bool) $idsOnly);
+        $context->setRequest($request);
 
         return $context;
     }
@@ -204,6 +211,26 @@ class SideloadSerializationContext extends SerializationContext
     public function setIdsOnly($idsOnly)
     {
         $this->idsOnly = $idsOnly;
+
+        return $this;
+    }
+
+    /**
+     * @return Request
+     */
+    public function getRequest()
+    {
+        return $this->request;
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return $this
+     */
+    public function setRequest(Request $request = null)
+    {
+        $this->request = $request;
 
         return $this;
     }
