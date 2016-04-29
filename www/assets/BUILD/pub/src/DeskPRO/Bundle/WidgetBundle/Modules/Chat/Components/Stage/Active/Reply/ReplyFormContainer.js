@@ -3,7 +3,12 @@ import { connect } from 'react-redux';
 import { ReplyForm } from './ReplyForm';
 import { ReopenChatContainer } from '../ReopenChatContainer';
 import { replaceSmileCodes } from 'DeskPRO/Component/Rte/Emotions';
-import { sendUserTyping, sendChatMessage, removeAttachment } from '../../../../Actions/chatActions';
+import {
+  sendUserTyping,
+  sendChatMessage,
+  removeAttachment,
+  savePartialTyping
+} from '../../../../Actions/chatActions';
 import {
   chatIdSelector,
   chatLoadedSelector,
@@ -32,6 +37,7 @@ export class ReplyFormContainer extends React.Component {
     const { dispatch, chatId } = this.props;
     const data = { partial_message: message };
 
+    dispatch(savePartialTyping(message));
     dispatch(sendUserTyping(chatId, data));
   };
 
@@ -42,6 +48,7 @@ export class ReplyFormContainer extends React.Component {
       attachments: attachments.map(attachment => attachment.get('blob_auth_id'))
     };
 
+    dispatch(savePartialTyping(''));
     dispatch(sendChatMessage(chatId, data));
   };
 

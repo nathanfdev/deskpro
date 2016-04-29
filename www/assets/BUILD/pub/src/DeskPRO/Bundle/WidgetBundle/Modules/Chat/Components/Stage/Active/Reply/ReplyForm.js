@@ -12,6 +12,7 @@ import { DropZoneContainer } from './Upload/DropZone/DropZoneContainer';
 import { PasteCatcher } from 'DeskPRO/Component/Uploader/PasteCatcher';
 import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
 import { DragOverlayListener } from 'DeskPRO/Component/Uploader/DragOverlayListener';
+import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import { DropZoneOverlay } from './Upload/DropZone/DropZoneOverlay';
 import { ReopenOverlay } from './ReopenOverlay';
 import ScrollArea from 'react-scrollbar-iframe';
@@ -30,8 +31,14 @@ export class ReplyForm extends React.Component {
 
   constructor(props) {
     super(props);
+
+    let message = '';
+    if (storageAvailable('localStorage') && localStorage.getItem('dpWidget.chat.partial')) {
+      message = localStorage.getItem('dpWidget.chat.partial');
+    }
+
     this.state = {
-      message: ''
+      message: message
     };
   }
 

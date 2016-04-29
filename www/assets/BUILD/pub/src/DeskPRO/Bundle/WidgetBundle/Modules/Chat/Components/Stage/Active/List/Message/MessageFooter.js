@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import TimeAgo from 'react-timeago';
+import moment from 'moment';
 import classNames from 'classnames';
 import { timeAgoFormatter } from '../../../../../../../Services/timeago';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
@@ -30,7 +31,7 @@ export class MessageFooter extends React.Component {
             <TimeAgo className="dpdesignportal-message-footer-timer"
                      formatter={timeAgoFormatter}
                      minPeriod={60000}
-                     date={date} />
+                     date={moment(date)} />
           }
           {notDelivered &&
             <span className="dpdesignportal-message-footer-not-delivered">

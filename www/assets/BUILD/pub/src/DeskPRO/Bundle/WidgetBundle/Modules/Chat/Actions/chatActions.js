@@ -4,6 +4,7 @@ import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
 import { addSessionCode } from '../../Application/Actions/bootstrapActions';
 import { loadBatch } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import { generate } from 'randomstring';
 import striptags from 'striptags';
 import moment from 'moment';
@@ -33,7 +34,10 @@ export const setChatId = createAction(
 
 export const unsetChatId = createAction(
   'WIDGET_CHAT_UNSET_ID',
-  () => localStorage.removeItem('dpWidget.chat.chatId')
+  () => {
+    localStorage.removeItem('dpWidget.chat.chatId');
+    localStorage.removeItem('dpWidget.chat.partial');
+  }
 );
 
 export const setLoaded = createAction('WIDGET_CHAT_SET_LOADED');
@@ -330,6 +334,15 @@ export const sendUserTyping = createAction(
     const queryParams = compileParams(addSessionCode(state));
 
     return widgetApi.sendPost(`DP_API/chats/${chatId}/user_typing?${queryParams}`, params, { ...ajaxOptions });
+  }
+);
+
+export const savePartialTyping = createAction(
+  'WIDGET_CHAT_SAVE_PARTIAL_TYPING',
+  (params) => () => {
+    if (storageAvailable('localStorage')) {
+      return localStorage.setItem('dpWidget.chat.partial', params);
+    }
   }
 );
 
