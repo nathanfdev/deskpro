@@ -69,6 +69,13 @@ class AuditLogHelper
             if ($user instanceof Person) {
                 /* @var Person $user */
                 return new Performer($user->getDisplayName(), $user->getId());
+            } elseif ($this->container->has('deskpro.api.request_auth')) {
+                /** @var \Application\LegacyApiBundle\Request\RequestAuth $request_auth */
+                $request_auth = $this->container->get('deskpro.api.request_auth');
+                $user         = $request_auth->getApiUser()->person;
+                if ($user instanceof Person) {
+                    return new Performer($user->getDisplayName(), $user->getId());
+                }
             } elseif (is_scalar($user)) {
                 return new Performer((string) $user);
             }
