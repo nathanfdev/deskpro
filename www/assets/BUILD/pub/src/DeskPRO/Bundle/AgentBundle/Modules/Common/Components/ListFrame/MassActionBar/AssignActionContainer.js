@@ -1,8 +1,11 @@
 import React, { Component, PropTypes } from 'react';
+import Immutable from 'immutable';
 import { paramsSelector } from '../../../../Application/Selectors/massActions';
-import { AgentsListContainer, TeamsListContainer, DepartmentsListContainer }
+import {
+  AgentsListContainer, AgentTeamsListContainer, DepartmentsListContainer
+}
   from '../../../../Common/Components/Form/Lists';
-import { FieldGroup, Popup} from '../../../../Common/Components/Popup';
+import { Popup } from '../../../../Common/Components/Popup';
 
 import { connect } from 'react-redux';
 @connect(state => ({
@@ -11,31 +14,49 @@ import { connect } from 'react-redux';
 
 export class AssignActionContainer extends Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    setParams: PropTypes.func.isRequired,
+    dispatch:          PropTypes.func.isRequired,
+    setParams:         PropTypes.func.isRequired,
     resetSingleAction: PropTypes.func.isRequired,
-    currentParams: PropTypes.object
+    currentParams:     PropTypes.object
   };
 
-  onClick = (param, value) => {
-    const { setParams, dispatch, currentParams, resetSingleAction } = this.props;
-
-    if (currentParams.get('assign') && currentParams.get('assign').get(param) === value) {
-      dispatch(resetSingleAction('assign'));
-    } else {
-      const setOfActions = currentParams.get('set_of_actions') ? currentParams.get('set_of_actions').toArray() : [];
-      setOfActions.splice(setOfActions.indexOf('unassign'), 1);
-      dispatch(setParams({ assign: { [param]: value } }));
-    }
+  setAgent = (value = null) => {
+    const { setParams, dispatch, currentParams } = this.props;
+    const agent         = { agent: value ? value.first() : null };
+    const currentAssign = currentParams.get('assign');
+    const assign        = currentAssign ? Object.assign(currentAssign.toJS(), agent) : agent;
+    dispatch(setParams({ assign }));
   };
 
-  unAssign = (e) => {
+  setTeam = (value = null) => {
+    const { setParams, dispatch, currentParams } = this.props;
+    const team          = { team: value ? value.first() : null };
+    const currentAssign = currentParams.get('assign');
+    const assign        = currentAssign ? Object.assign(currentAssign.toJS(), team) : team;
+    dispatch(setParams({ assign }));
+  };
+
+  setDepartment = (value = null) => {
+    const { setParams, dispatch, currentParams } = this.props;
+    const department    = { department: value ? value.first() : null };
+    const currentAssign = currentParams.get('assign');
+    const assign        = currentAssign ? Object.assign(currentAssign.toJS(), department) : department;
+    dispatch(setParams({ assign }));
+  };
+
+  unAssignAgent = (e) => {
     e.preventDefault();
-    const { setParams, dispatch, resetSingleAction, currentParams } = this.props;
-    const setOfActions = currentParams.get('set_of_actions') ? currentParams.get('set_of_actions').toArray() : [];
-    dispatch(resetSingleAction('assign'));
-    setOfActions.push('unassign');
-    dispatch(setParams({ set_of_actions: [... new Set(setOfActions)] }));
+    this.setAgent();
+  };
+
+  unAssignTeam = (e) => {
+    e.preventDefault();
+    this.setTeam();
+  };
+
+  unAssignDepartment = (e) => {
+    e.preventDefault();
+    this.setDepartment();
   };
 
   render() {
@@ -48,32 +69,73 @@ export class AssignActionContainer extends Component {
           <form>
             <div className="dpw--popup-content">
               <div className="dpw--popup-content-line">
-                <div className="dpw--popup-content-right">
-                  <div className="dpw-popup-content-item">
-                    <div className="dpw-popup-content-item-unassign-all">
-                      <a href="#" className="checkbox-link" onClick={this.unAssign}>
-                        <span>Unassign All</span>
-                        <span className="unassign-all-icon"><span></span></span>
-                      </a>
+                <div className="dpw--popup-item-collection">
+                  <div className="dpw--popup-content-left">
+                    <div className="dpw-popup-content-item">
+                      <h3>Assign to agent</h3>
                     </div>
                   </div>
+                  <div className="dpw--popup-content-right">
+                    <div className="dpw-popup-content-item">
+                      <div className="dpw-popup-content-item-unassign-all">
+                        <a href="#" className="checkbox-link" onClick={this.unAssignAgent}>
+                          <span>Unassign agent</span>
+                          <span className="unassign-all-icon"><span /></span>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  <AgentsListContainer
+                    selected={assign && Immutable.Set([assign.get('agent')])}
+                    onChange={this.setAgent}
+                  />
                 </div>
               </div>
-              <div className="dpw--popup-item-collection">
-                <FieldGroup>
-                  <AgentsListContainer
-                    selected={assign && assign.get('agent')}
-                    onClick={this.onClick}
-                    />
-                  <TeamsListContainer
-                    selected={assign && assign.get('team')}
-                    onClick={this.onClick}
-                    />
+              <div className="dpw--popup-content-line">
+                <div className="dpw--popup-item-collection">
+                  <div className="dpw--popup-content-left">
+                    <div className="dpw-popup-content-item">
+                      <h3>Assign to agents team</h3>
+                    </div>
+                  </div>
+                  <div className="dpw--popup-content-right">
+                    <div className="dpw-popup-content-item">
+                      <div className="dpw-popup-content-item-unassign-all">
+                        <a href="#" className="checkbox-link" onClick={this.unAssignTeam}>
+                          <span>Unassign agents team</span>
+                          <span className="unassign-all-icon"><span /></span>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  <AgentTeamsListContainer
+                    selected={assign && Immutable.Set([assign.get('team')])}
+                    onChange={this.setTeam}
+                  />
+                </div>
+              </div>
+              <div className="dpw--popup-content-line">
+                <div className="dpw--popup-item-collection">
+                  <div className="dpw--popup-content-left">
+                    <div className="dpw-popup-content-item">
+                      <h3>Assign to department</h3>
+                    </div>
+                  </div>
+                  <div className="dpw--popup-content-right">
+                    <div className="dpw-popup-content-item">
+                      <div className="dpw-popup-content-item-unassign-all">
+                        <a href="#" className="checkbox-link" onClick={this.unAssignDepartment}>
+                          <span>Unassign department</span>
+                          <span className="unassign-all-icon"><span /></span>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
                   <DepartmentsListContainer
-                    selected={assign && assign.get('department')}
-                    onClick={this.onClick}
-                    />
-                </FieldGroup>
+                    selected={assign && Immutable.Set([assign.get('department')])}
+                    onChange={this.setDepartment}
+                  />
+                </div>
               </div>
             </div>
           </form>
