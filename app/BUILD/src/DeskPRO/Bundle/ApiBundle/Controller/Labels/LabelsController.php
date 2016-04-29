@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Labels;
 
 use Application\DeskPRO\Entity\LabelDef;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -48,7 +49,6 @@ class LabelsController extends BaseController
      *
      * @ApiDoc(
      *     resourceDescription="Operations about labels",
-     *     tags={"unstable"="#ff6666"},
      *     description="Get all labels by types",
      *     requirements={
      *         {
@@ -73,6 +73,7 @@ class LabelsController extends BaseController
      *     output="Application\DeskPRO\Entity\LabelDef"
      *
      * )
+     * @ApiUnstable()
      * @Rest\Get(
      *     "/{type}_labels",
      *     name="api_person_labels_list",

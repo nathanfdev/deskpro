@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Chats;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
@@ -44,6 +45,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @ApiModes("all")
  * @Rest\Route("/agent_chats/messages")
+ * @ApiUnstable()
  * @ApiDoc(target="all", section="Chats", output="DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage")
  */
 class AgentChatAllMessagesController extends CrudController

@@ -119,9 +119,9 @@ class OverrideHandler implements HandlerInterface
     }
 
     /**
-     * @param          $key
+     * @param string   $key
      * @param DpApiDoc $annotation
-     * @param          $action
+     * @param string   $action
      */
     private function overrideWith($key, DpApiDoc $annotation, $action)
     {
@@ -144,6 +144,7 @@ class OverrideHandler implements HandlerInterface
             $this->overrideOutput($annotation, $override, $action);
             $this->overrideSection($annotation, $override);
             $this->overrideInput($annotation, $override, $action);
+            $this->overrideTags($annotation, $override);
             if ($extended) {
                 $this->overrideFilters($annotation, $override);
                 $this->overrideRequirements($annotation, $override);
@@ -234,6 +235,16 @@ class OverrideHandler implements HandlerInterface
     {
         if ($override->getDescription()) {
             $annotation->setDescription($override->getDescription());
+        }
+    }
+
+    private function overrideTags(DpApiDoc $annotation, DpApiDoc $override)
+    {
+        $arrayData = $override->toArray();
+        if (isset($arrayData['tags'])) {
+            foreach ($arrayData['tags'] as $tag => $colorCode) {
+                $annotation->addTag($tag, $colorCode);
+            }
         }
     }
 }
