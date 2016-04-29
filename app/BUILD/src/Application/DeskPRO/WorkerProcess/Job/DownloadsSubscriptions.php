@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Publish\Structure;
 use Orb\Util\Arrays;
 
 /**
@@ -44,133 +48,151 @@ class DownloadsSubscriptions extends AbstractJob
 
     public function run()
     {
-        $last_time = App::getSetting('user.download_subscriptions_last');
+        $lastTime = App::getSetting('user.download_subscriptions_last');
 
-        App::getDb()->replace('settings', array(
+        App::getDb()->replace('settings', [
             'name'  => 'user.download_subscriptions_last',
             'value' => time(),
-        ));
+        ]);
 
         if (!App::getSetting('user.downloads_subscriptions')) {
             return;
         }
 
-        if (!$last_time) {
+        if (!$lastTime) {
             return;
         }
 
-        $last_date = new \DateTime("@$last_time");
+        $lastDate = new \DateTime("@$lastTime");
 
         #------------------------------
         # Find articles
         #------------------------------
 
+        /** @var Download[] $published */
         $published = App::getOrm()->createQuery("
             SELECT n
             FROM DeskPRO:Download n INDEX BY n.id
             JOIN n.category c
             WHERE n.status = 'published' AND n.date_published > :date
             ORDER BY n.date_published DESC
-        ")->setMaxResults(250)->execute(array('date' => $last_date));
+        ")->setMaxResults(250)->execute(['date' => $lastDate]);
 
+        /** @var Download[] $updated */
         $updated = App::getOrm()->createQuery("
             SELECT n
             FROM DeskPRO:Download n INDEX BY n.id
             JOIN n.category c
             WHERE n.status = 'published' AND (n.date_updated > :date OR n.date_last_comment > :date)
             ORDER BY n.date_updated DESC
-        ")->setMaxResults(250)->execute(array('date' => $last_date));
+        ")->setMaxResults(250)->execute(['date' => $lastDate]);
 
         if (!$published && !$updated) {
+            $this->logStatus('No new news downloads');
+
             return;
         }
         #------------------------------
         # Get subscriptions
         #------------------------------
 
+        /** @var Structure $structure */
         $structure = App::getContainer()->getSystemService('publish_structure');
         $helper    = $structure->getDownloadCategoryHelper();
 
-        $category_ids  = array();
-        $downloads_ids = array();
+        $categoryIds  = [];
+        $downloadsIds = [];
 
         foreach ($published as $a) {
-            $category_ids[] = $a->category->id;
+            $categoryIds[] = $a->getCategory()->getId();
         }
         foreach ($updated as $a) {
-            $downloads_ids[] = $a->id;
+            $downloadsIds[] = $a->getId();
         }
 
-        $category_ids  = array_unique($category_ids);
-        $downloads_ids = array_unique($downloads_ids);
+        $categoryIds  = array_unique($categoryIds);
+        $downloadsIds = array_unique($downloadsIds);
 
-        $cat_subs     = array();
-        $article_subs = array();
+        $catSubs     = [];
+        $rootSubs    = [];
+        $articleSubs = [];
 
-        if ($category_ids) {
+        if ($categoryIds) {
             // Users can be subscribed to a category higher-up,
             // so for each article need to include subs for the whole path
-            $add_ids = array();
-            foreach ($category_ids as $cid) {
-                $parents = $helper->getPath(array('id' => $cid));
+            $addIds = [];
+            foreach ($categoryIds as $cid) {
+                $parents = $helper->getPath(['id' => $cid]);
                 foreach ($parents as $c) {
-                    $add_ids[] = $c['id'];
+                    $addIds[] = $c['id'];
                 }
             }
 
-            $category_ids = array_merge($category_ids, $add_ids);
-            $category_ids = array_unique($category_ids);
+            $categoryIds = array_merge($categoryIds, $addIds);
+            $categoryIds = array_unique($categoryIds);
 
-            $cat_subs = App::getDb()->fetchAllGrouped('
+            $catSubs = App::getDb()->fetchAllGrouped('
                 SELECT person_id, category_id
                 FROM download_subscriptions
                 WHERE category_id IN (?)
-            ', array($category_ids), 'person_id', null, 'category_id', array(Connection::PARAM_INT_ARRAY));
+            ', [$categoryIds], 'person_id', null, 'category_id', [Connection::PARAM_INT_ARRAY]);
+
+            $rootSubs = App::getDb()->fetchAllGrouped('
+                SELECT person_id
+                FROM download_subscriptions
+                WHERE root_category = 1
+            ', [], 'person_id', null, 'root_category', [Connection::PARAM_INT_ARRAY]);
         }
 
-        if ($downloads_ids) {
-            $article_subs = App::getDb()->fetchAllGrouped('
+        if ($downloadsIds) {
+            $articleSubs = App::getDb()->fetchAllGrouped('
                 SELECT person_id, download_id
                 FROM download_subscriptions
                 WHERE download_id IN (?)
-            ', array($downloads_ids), 'person_id', null, 'download_id', array(Connection::PARAM_INT_ARRAY));
+            ', [$downloadsIds], 'person_id', null, 'download_id', [Connection::PARAM_INT_ARRAY]);
         }
 
         #------------------------------
         # Sort subscriptions into users
         #------------------------------
 
-        $user_to_downloads = array();
+        $userToDownloads = [];
 
-        foreach ($cat_subs as $person_id => $cids) {
-            foreach ($published as $downloads) {
-                $cat    = $downloads->category;
+        foreach ($rootSubs as $personId => $root) {
+            foreach ($published as $download) {
+                $userToDownloads[$personId][$download->getId()] = $download;
+            }
+        }
+
+        foreach ($catSubs as $personId => $cids) {
+            foreach ($published as $download) {
+                $cat    = $download->getCategory();
                 $path   = $helper->getPathIds($cat);
                 $path[] = $cat->getId();
 
                 if (Arrays::isIn($path, $cids)) {
-                    if (!isset($user_to_downloads[$person_id])) {
-                        $user_to_downloads[$person_id] = array();
+                    if (!isset($userToDownloads[$personId])) {
+                        $userToDownloads[$personId] = [];
                     }
-                    $user_to_downloads[$person_id][$downloads->getId()] = $downloads;
+                    $userToDownloads[$personId][$download->getId()] = $download;
                 }
             }
         }
 
-        foreach ($article_subs as $person_id => $aids) {
+        foreach ($articleSubs as $personId => $aids) {
             foreach ($aids as $aid) {
                 if (!isset($updated[$aid])) {
                     continue;
                 }
 
-                if (!isset($user_to_downloads[$person_id])) {
-                    $user_to_downloads[$person_id] = array();
+                if (!isset($userToDownloads[$personId])) {
+                    $userToDownloads[$personId] = [];
                 }
-                $user_to_downloads[$person_id][$aid] = $updated[$aid];
+                $userToDownloads[$personId][$aid] = $updated[$aid];
             }
         }
 
-        if (!$user_to_downloads) {
+        if (!$userToDownloads) {
             return;
         }
 
@@ -178,73 +200,74 @@ class DownloadsSubscriptions extends AbstractJob
         # Verify permissions
         #------------------------------
 
-        $user_groupmembers = App::getDb()->fetchAllGrouped('
+        $userGroupMembers = App::getDb()->fetchAllGrouped('
             SELECT person_id, usergroup_id
             FROM person2usergroups
             WHERE person_id IN (?)
-        ', array(array_keys($user_to_downloads)), 'person_id', null, 'usergroup_id', array(Connection::PARAM_INT_ARRAY));
+        ', [array_keys($userToDownloads)], 'person_id', null, 'usergroup_id', [Connection::PARAM_INT_ARRAY]);
 
-        $cat_groups = App::getDb()->fetchAllGrouped('
+        $catGroups = App::getDb()->fetchAllGrouped('
             SELECT category_id, usergroup_id
             FROM download_category2usergroup
-        ', array(), 'category_id', null, 'usergroup_id');
+        ', [], 'category_id', null, 'usergroup_id');
 
-        $all_user_to_downloads = $user_to_downloads;
-        $user_to_downloads     = array();
+        $allUserToDownloads = $userToDownloads;
+        $userToDownloads    = [];
 
-        foreach ($all_user_to_downloads as $person_id => $downloads) {
-            $person_ugs   = isset($user_groupmembers[$person_id]) ? $user_groupmembers[$person_id] : array();
-            $person_ugs[] = 1; // Everyone
+        foreach ($allUserToDownloads as $personId => $downloads) {
+            $personUgs   = isset($userGroupMembers[$personId]) ? $userGroupMembers[$personId] : [];
+            $personUgs[] = 1; // Everyone
 
+            /** @var Download $download */
             foreach ($downloads as $download) {
-                $add     = false;
-                $cat     = $download->category;
-                $cat_ugs = isset($cat_groups[$cat->getId()]) ? $cat_groups[$cat->getId()] : array();
-                if (Arrays::isIn($person_ugs, $cat_ugs)) {
+                $add    = false;
+                $cat    = $download->getCategory();
+                $catUgs = isset($catGroups[$cat->getId()]) ? $catGroups[$cat->getId()] : [];
+                if (Arrays::isIn($personUgs, $catUgs)) {
                     $add = true;
                 }
 
                 if ($add) {
-                    if (!isset($user_to_downloads[$person_id])) {
-                        $user_to_downloads[$person_id] = array();
+                    if (!isset($userToDownloads[$personId])) {
+                        $userToDownloads[$personId] = [];
                     }
-                    $user_to_downloads[$person_id][$download->getId()] = $download;
+                    $userToDownloads[$personId][$download->getId()] = $download;
                 }
             }
         }
 
-        unset($all_user_to_downloads);
+        unset($allUserToDownloads);
 
         #------------------------------
         # Now send the emails (they are queued)
         #------------------------------
 
-        foreach ($user_to_downloads as $person_id => $downloads) {
-            //var_dump($person_id, $articles);exit;
+        foreach ($userToDownloads as $personId => $downloads) {
 
-            $person = App::getOrm()->find('DeskPRO:Person', $person_id);
+            /** @var Person $person */
+            $person = App::getOrm()->find('DeskPRO:Person', $personId);
             if (!$person) {
                 continue;
             }
 
-            $new_downloads     = array();
-            $updated_downloads = array();
+            $newDownloads     = [];
+            $updatedDownloads = [];
 
-            foreach ($downloads as $downloads) {
-                if ($downloads->date_published > $last_date) {
-                    $new_downloads[] = $downloads;
+            foreach ($downloads as $download) {
+                if ($download->getDatePublished() > $lastDate) {
+                    $newDownloads[] = $download;
                 } else {
-                    $updated_downloads[] = $downloads;
+                    $updatedDownloads[] = $download;
                 }
             }
 
             $message = App::getMailer()->createMessage();
             $message->setToPerson($person);
-            $message->setTemplate('DeskPRO:emails_user:download-subscription.html.twig', array(
+            $message->setTemplate('DeskPRO:emails_user:download-subscription.html.twig', [
                 'person'            => $person,
-                'new_downloads'     => $new_downloads,
-                'updated_downloads' => $updated_downloads,
-            ));
+                'new_downloads'     => $newDownloads,
+                'updated_downloads' => $updatedDownloads,
+            ]);
 
             App::getMailer()->send($message);
 
@@ -252,8 +275,8 @@ class DownloadsSubscriptions extends AbstractJob
             App::getOrm()->detach($person);
         }
 
-        if ($user_to_downloads) {
-            $this->logStatus('Send '.count($user_to_downloads).' notifications');
+        if ($userToDownloads) {
+            $this->logStatus('Send '.count($userToDownloads).' notifications');
         }
     }
 }
