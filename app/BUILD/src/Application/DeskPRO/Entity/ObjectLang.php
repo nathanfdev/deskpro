@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -134,6 +134,20 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
         return $ol;
     }
 
+    public function setLanguage(Language $lang)
+    {
+        $this->setModelField('language', $lang);
+
+        return $this;
+    }
+
+    public function setValue($value)
+    {
+        $this->setModelField('value', $value);
+
+        return $this;
+    }
+
     /**
      * @param object $object
      *
@@ -219,24 +233,86 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->setPrimaryTable(array(
-            'name'    => 'object_lang',
-            'indexes' => array(
-                'prop_ref_type' => array('columns' => array('ref_type', 'ref_id')),
-            ),
-            'uniqueConstraints' => array(
-                'prop_ref' => array('columns' => array('ref', 'prop_name', 'language_id')),
-            ),
-        ));
+        $metadata->setPrimaryTable(
+            array(
+                'name'    => 'object_lang',
+                'indexes' => array(
+                    'prop_ref_type' => array('columns' => array('ref_type', 'ref_id')),
+                ),
+                'uniqueConstraints' => array(
+                    'prop_ref' => array('columns' => array('ref', 'prop_name', 'language_id')),
+                ),
+            )
+        );
         $metadata->addLifecycleCallback('_resetRefCode', 'prePersist');
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'ref', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ref'));
-        $metadata->mapField(array('fieldName' => 'ref_type', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'ref_type'));
-        $metadata->mapField(array('fieldName' => 'ref_id', 'type' => 'integer', 'nullable' => true, 'columnName' => 'ref_id'));
-        $metadata->mapField(array('fieldName' => 'prop_name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'prop_name'));
-        $metadata->mapField(array('fieldName' => 'value', 'type' => 'text', 'nullable' => false, 'columnName' => 'value'));
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'id',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'id',
+                'id'         => true,
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'ref',
+                'type'       => 'string',
+                'length'     => 200,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'ref',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'ref_type',
+                'type'       => 'string',
+                'length'     => 100,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'ref_type',
+            )
+        );
+        $metadata->mapField(
+            array('fieldName' => 'ref_id', 'type' => 'integer', 'nullable' => true, 'columnName' => 'ref_id')
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'prop_name',
+                'type'       => 'string',
+                'length'     => 100,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'prop_name',
+            )
+        );
+        $metadata->mapField(
+            array('fieldName' => 'value', 'type' => 'text', 'nullable' => false, 'columnName' => 'value')
+        );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array('fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
+        $metadata->mapManyToOne(
+            array(
+                'fieldName'    => 'language',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Language',
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => array(
+                    0 => array(
+                        'name'                 => 'language_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'cascade',
+                        'columnDefinition'     => null,
+                    ),
+                ),
+            )
+        );
     }
 }
