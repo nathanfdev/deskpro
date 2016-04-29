@@ -406,101 +406,6 @@ class SystemErrorHandler
             @fclose($fh);
             @chmod(dp_get_log_dir().'/error.log', 0777);
         }
-
-        $throttle_id = 'email_error';
-        if (isset($errinfo['email_throttle_id'])) {
-            $throttle_id = $errinfo['email_throttle_id'];
-        }
-        if (
-            isset($errinfo['email'])
-            && $errinfo['email']
-            && defined('DP_TECHNICAL_EMAIL')
-            && DP_TECHNICAL_EMAIL
-            && (!$DP_ENV || !$DP_ENV->getConfig('settings.no_report_errors'))
-            && function_exists('dp_should_throttle_action')
-            && self::shouldThrottle($throttle_id, 300)
-        ) {
-            if (isset($errinfo['exception']) && ($errinfo['exception'] instanceof \PDOException || $errinfo['exception'] instanceof DBALException)) {
-                $line = 'There has been a MySQL error: '.$errinfo['exception']->getMessage();
-            }
-
-            $fallback_send = true;
-
-            if (isset($errinfo['email_body'])) {
-                $email_str = $errinfo['email_body'];
-            } else {
-                $email_str = $str;
-            }
-
-            $email_subject = $line;
-            if (isset($errinfo['email_subject'])) {
-                $email_subject = $errinfo['email_subject'];
-            }
-
-            if (class_exists('Application\DeskPRO\App')) {
-                try {
-                    $message = App::getMailer()->createMessage();
-                    $message->setTo(DP_TECHNICAL_EMAIL);
-                    $message->setSubject($email_subject);
-
-                    $email_str = nl2br(htmlspecialchars($email_str, \ENT_QUOTES, 'UTF-8'));
-                    $message->setBody($email_str, 'text/html');
-
-                    if (isset($errinfo['attach_logs']) && $errinfo['attach_logs']) {
-                        if (is_file(dp_get_log_dir().'/error.log')) {
-                            $file = @file_get_contents(dp_get_log_dir().'/error.log');
-                            if (isset($file[3670016])) {
-                                $file = substr($file, -3670016);
-                            }
-                            $filename = 'error.log';
-                            $filetype = 'text/plain';
-
-                            if (function_exists('gzencode')) {
-                                $file     = gzencode($file);
-                                $filename = 'error.log.gz';
-                                $filetype = 'application/gzip';
-                            }
-
-                            $message->attach(\Swift_Attachment::newInstance(
-                                $file,
-                                $filename,
-                                $filetype
-                            ));
-                        }
-
-                        if (is_file(dp_get_log_dir().'/cli-phperr.log')) {
-                            $file = @file_get_contents(dp_get_log_dir().'/cli-phperr.log');
-                            if (isset($file[3670016])) {
-                                $file = substr($file, -3670016);
-                            }
-                            $filename = 'cli-phperr.log';
-                            $filetype = 'text/plain';
-
-                            if (function_exists('gzencode')) {
-                                $file     = gzencode($file);
-                                $filename = 'cli-phperr.log.gz';
-                                $filetype = 'application/gzip';
-                            }
-
-                            $message->attach(\Swift_Attachment::newInstance(
-                                $file,
-                                $filename,
-                                $filetype
-                            ));
-                        }
-                    }
-
-                    if (App::getMailer()->send($message)) {
-                        $fallback_send = false;
-                    }
-                } catch (\Exception $e) {
-                }
-            }
-
-            if ($fallback_send) {
-                @mail(DP_TECHNICAL_EMAIL, $line, $str);
-            }
-        }
     }
 
     public function shouldThrottle($id, $timeout)
@@ -536,8 +441,7 @@ class SystemErrorHandler
         $errfile = self::stripPathPrefix($exception->getFile());
         $errline = $exception->getLine();
 
-        $errfile_hash     = self::getFilehash($exception->getFile());
-        $errfile_modified = self::isFileModified($exception->getFile(), $errfile_hash);
+        $errfile_hash = self::getFilehash($exception->getFile());
 
         $backtrace    = $exception->getTrace();
         $trace        = self::formatBacktrace($backtrace);
@@ -604,7 +508,7 @@ class SystemErrorHandler
             'errno'             => $errno,
             'errfile'           => $errfile,
             'errfile_hash'      => $errfile_hash,
-            'errfile_modified'  => $errfile_modified,
+            'errfile_modified'  => false,
             'errline'           => $errline,
             'last_error'        => $last_e,
             'display'           => $display,
@@ -619,14 +523,6 @@ class SystemErrorHandler
         $url = '';
         if (defined('DP_REQUEST_URL')) {
             $url = DP_REQUEST_URL;
-        } elseif (defined('DP_INTERFACE')) {
-            $url = isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : '';
-            if (class_exists('Application\\DeskPRO\\App') && App::$container) {
-                try {
-                    $url = App::getRequest()->getUri();
-                } catch (\Exception $e) {
-                }
-            }
         }
         if (php_sapi_name() == 'cli' && !empty($_SERVER['argv'])) {
             $url = 'Command: '.implode(' ', $_SERVER['argv']);
@@ -1059,31 +955,6 @@ class SystemErrorHandler
         $file_contents = trim(str_replace(array("\r", "\n"), '', $file_contents));
 
         return $file_contents;
-    }
-
-    /**
-     * Compare a file hash versus the original stored in the distro checksums file.
-     *
-     * @param string $path
-     */
-    public static function isFileModified($path, $hash = null)
-    {
-        if ($hash === null) {
-            $hash = self::getFilehash($path);
-        }
-
-        if (!is_file(DP_ROOT.'app/sys/Resources/distro-checksums.php')) {
-            return true;
-        }
-
-        $checksums = require DP_ROOT.'app/sys/Resources/distro-checksums.php';
-        $key       = str_replace(DP_ROOT, '', $path);
-
-        if (!isset($checksums[$key]) || $hash != $checksums[$key]) {
-            return false;
-        }
-
-        return true;
     }
 
     public static function logExceptionIfUniqueBacktrace(/*Throwable*/ $e, $send = false)
