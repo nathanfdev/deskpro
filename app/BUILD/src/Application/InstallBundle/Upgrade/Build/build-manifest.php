@@ -1699,8 +1699,4 @@ return array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0063_ticketalter4.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0063_ticketalter4',
     ),
-    1460998250 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/04/Build1460998250.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1460998250',
-    ),
 );
