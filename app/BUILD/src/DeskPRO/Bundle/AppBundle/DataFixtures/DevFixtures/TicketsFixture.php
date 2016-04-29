@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\LabelDef;
@@ -36,6 +37,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketFlagged;
 use Application\DeskPRO\Entity\TicketSla;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
+use DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures\CustomFields\CustomDataGenerator;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Orb\Util\DpStrings;
@@ -476,6 +478,8 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         $parts_batch     = [];
         $fielddata_batch = [];
 
+        $customDefGenerator = new CustomDataGenerator($this->faker);
+
         foreach ($this->ticketIds as $ticket_id) {
             foreach ($this->faker->randomElements($this->labels, $this->faker->numberBetween(1, 5)) as $l) {
                 $labels_batch[] = ['ticket_id' => $ticket_id, 'label' => $l];
@@ -502,45 +506,8 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
             #------------------------------
             # Field Data
             #------------------------------
-
             foreach ($this->fields as $f) {
-                $num = 1;
-                if ($f->getOption('multiple')) {
-                    $num = $this->faker->numberBetween(1, count($f->getChildren()));
-                }
-
-                for ($x = 0; $x < $num; ++$x) {
-                    $row_data = [
-                        'ticket_id'     => $ticket_id,
-                        'field_id'      => $f->getId(),
-                        'root_field_id' => $f->getId(),
-                        'value'         => 0,
-                        'input'         => '',
-                    ];
-                    switch ($f->getTypeName()) {
-                        case 'text':
-                            $row_data['input'] = $this->faker->realText($this->faker->numberBetween(10, 80));
-                            break;
-                        case 'textarea':
-                            $row_data['input'] = $this->faker->realText($this->faker->numberBetween(20, 500));
-                            break;
-                        case 'date':
-                        case 'datetime':
-                            $row_data['value'] = time();
-                            break;
-                        case 'choice':
-                            $opt                  = $this->faker->randomElement($f->getChildren()->toArray());
-                            $row_data['field_id'] = $opt->getId();
-                            $row_data['value']    = 1;
-                            break;
-                        default:
-                            throw new \InvalidArgumentException();
-                    }
-
-                    if ($row_data) {
-                        $fielddata_batch[] = $row_data;
-                    }
-                }
+                $customDefGenerator->addCustomDefData($fielddata_batch, $f, 'ticket_id', $ticket_id);
             }
         }
 
@@ -563,8 +530,7 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         $batch = [];
 
         foreach ($this->ticketIds as $ticketId) {
-            $status = $this->faker
-                ->randomElement([TicketSla::STATUS_OK, TicketSla::STATUS_WARNING, TicketSla::STATUS_FAIL]);
+            $status  = $this->faker->randomElement([TicketSla::STATUS_OK, TicketSla::STATUS_WARNING, TicketSla::STATUS_FAIL]);
             $batch[] = [
                 'ticket_id'  => $ticketId,
                 'sla_id'     => 1,

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -71,12 +71,15 @@ class CustomDataProduct extends CustomDataAbstract
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setPrimaryTable(
-            array(
+            [
                 'name'    => 'custom_data_product',
-                'indexes' => array(
-                    'field_id_idx' => array('columns' => array(0 => 'field_id', 1 => 'product_id')),
-                ),
-            )
+                'indexes' => [
+                    'field_id_idx' => ['columns' => [0 => 'field_id', 1 => 'product_id']],
+                ],
+                'uniqueConstraints' => [
+                    'unique_idx' => ['columns' => ['field_id', 'product_id', 'root_field_id']],
+                ],
+            ]
         );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(

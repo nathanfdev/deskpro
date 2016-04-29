@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -113,12 +114,15 @@ class CustomDataTicket extends CustomDataAbstract
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CustomDataTicket';
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setPrimaryTable(
-            array(
+            [
                 'name'    => 'custom_data_ticket',
-                'indexes' => array(
-                    'field_id_idx' => array('columns' => array(0 => 'field_id', 1 => 'ticket_id')),
-                ),
-            )
+                'indexes' => [
+                    'field_id_idx' => ['columns' => [0 => 'field_id', 1 => 'ticket_id']],
+                ],
+                'uniqueConstraints' => [
+                    'unique_idx' => ['columns' => ['field_id', 'ticket_id', 'root_field_id']],
+                ],
+            ]
         );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
