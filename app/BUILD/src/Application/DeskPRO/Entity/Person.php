@@ -3530,22 +3530,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     }
 
     /**
-     * @return array
-     */
-    public function getLabelsArray()
-    {
-        $labels = array_map(
-            function ($label) {
-                return $label->getLabel();
-            },
-            $this->labels->toArray()
-        );
-        sort($labels);
-
-        return $labels;
-    }
-
-    /**
      * Get person`s phones.
      *
      * @return array

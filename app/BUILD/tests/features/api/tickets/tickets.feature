@@ -126,6 +126,44 @@ Feature: /tickets endpoint
     And the JSON node "data.followers[0]" should be equal to 1
     And the JSON node "data.followers[1]" should be equal to 4
 
+  Scenario: I modify ticket custom fields
+    When I send a GET request to "/api/v2/tickets/6"
+    Then the response status code should be 200
+    And the JSON node "data.fields.6.value" should be equal to "some text"
+    And the JSON node "data.fields.7.value" should be equal to 0
+
+    When I send a PUT request to "/api/v2/tickets/6" with body:
+    """
+{
+  "fields": {
+    "1": {
+      "value": ["2"],
+      "detail": {"2": {"id": 2, "title": "Small"}}
+    },
+    "5": "2016-02-09 17:28:00",
+    "6": "inline text",
+    "7": "textarea text",
+    "8": ["10", "11"],
+    "12": "2016-02-09 17:28:00"
+  }
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/tickets/6"
+    Then the response status code should be 200
+    And the JSON node "data.fields.1.value" should have 1 element
+    And the JSON node "data.fields.1.value[0]" should be equal to 2
+    And the JSON node "data.fields.1.detail.2.title" should be equal to "Small"
+    And the JSON node "data.fields.5.value" should be equal to "2016-02-09T17:28:00+0000"
+    And the JSON node "data.fields.6.value" should be equal to "inline text"
+    And the JSON node "data.fields.7.value" should be equal to "textarea text"
+    And the JSON node "data.fields.8.value" should have 2 element
+    And the JSON node "data.fields.8.value[0]" should be equal to 10
+    And the JSON node "data.fields.8.value[1]" should be equal to 11
+    And the JSON node "data.fields.8.detail.10.title" should be equal to "Choice 2"
+    And the JSON node "data.fields.8.detail.11.title" should be equal to "Choice 3"
+
   Scenario: I delete a ticket
     When I send a DELETE request to "/api/v2/tickets/5"
     Then the response should be in JSON
