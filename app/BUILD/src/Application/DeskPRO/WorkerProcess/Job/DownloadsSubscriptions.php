@@ -243,7 +243,6 @@ class DownloadsSubscriptions extends AbstractJob
         #------------------------------
 
         foreach ($userToDownloads as $personId => $downloads) {
-            //var_dump($person_id, $articles);exit;
 
             /** @var Person $person */
             $person = App::getOrm()->find('DeskPRO:Person', $personId);
