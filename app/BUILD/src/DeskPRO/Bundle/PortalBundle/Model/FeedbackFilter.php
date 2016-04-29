@@ -60,19 +60,19 @@ class FeedbackFilter
     ];
 
     public static $sorts = [
-        self::SORT_DATE,
         self::SORT_POPULARITY,
-        self::SORT_VIEWS,
-        self::SORT_COMMENTS,
         self::SORT_RATING,
+        self::SORT_DATE,
+        self::SORT_COMMENTS,
+        self::SORT_VIEWS,
     ];
 
     public static $sorts_translated = [
-        self::SORT_DATE       => 'portal.feedback.sort_date',
         self::SORT_POPULARITY => 'portal.feedback.sort_popularity',
-        self::SORT_VIEWS      => 'portal.feedback.sort_views',
-        self::SORT_COMMENTS   => 'portal.feedback.sort_comments',
         self::SORT_RATING     => 'portal.feedback.sort_rating',
+        self::SORT_DATE       => 'portal.feedback.sort_date',
+        self::SORT_COMMENTS   => 'portal.feedback.sort_comments',
+        self::SORT_VIEWS      => 'portal.feedback.sort_views',
     ];
 
     public static $sort_directions = [

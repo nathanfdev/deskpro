@@ -1339,6 +1339,7 @@ button, .button, input[type="submit"] {
         @include padding-left(35px);
         @include margin-left(10px);
         white-space: nowrap;
+        min-width: 130px;
 
         img {
           position: absolute;
@@ -9959,6 +9960,11 @@ form {
     // width: 60%;
     max-width: 620px;
   }
+
+  #ticket_message .dp-medium-rte {
+    max-height: 300px;
+    overflow-y: auto;
+  }
 }
 
 .form-filter {
@@ -10379,6 +10385,13 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
       vertical-align: bottom;
       margin: 0;
       font-family: $fonts;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .dp-medium-rte {
+      max-height: 300px;
+      overflow-y: auto;
     }
   }
 }

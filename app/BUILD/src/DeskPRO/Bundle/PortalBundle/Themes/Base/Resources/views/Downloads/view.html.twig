@@ -23,6 +23,9 @@
                 <span class="comments"><i class="fa fa-comments"></i> <a
                             href="#comments">{{ phrase('portal.general.comments-count', {count: file.num_comments}) }}</a></span>
             </div>
+            {% if file.status != 'published' and file.status != 'archived' and app.user.is_agent %}
+                <div class="sub-note">{{ phrase('portal.downloads.view-as-agent') }}</div>
+            {% endif %}
         </header>
 
         <div class="article-extras as-top">
