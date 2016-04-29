@@ -136,6 +136,7 @@ class DpKernel extends BaseKernel
 
             new \DeskPRO\Bundle\AppBundle\AppBundle(),
             new \DeskPRO\Bundle\SystemBundle\SystemBundle(),
+            new \DeskPRO\Bundle\AuditBundle\AuditBundle(),
         ];
 
         if (defined('DPC_IS_CLOUD')) {

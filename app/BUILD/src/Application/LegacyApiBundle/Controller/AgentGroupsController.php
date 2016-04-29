@@ -29,13 +29,13 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\People\AgentPermissions\AgentPermissions;
 use Application\DeskPRO\People\AgentPermissions\GroupDbPersister;
 use Application\DeskPRO\People\AgentPermissions\GroupsDbLoader;
+use Application\DeskPRO\People\PermissionUtil;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
@@ -183,106 +183,6 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
      * @throws \Exception
      *
      * @return Response
-     *
-     *
-     * SWG\Api(
-     * 	path="/agent_groups/{id}",
-     * 	SWG\Operation(
-     * 		method="POST",
-     * 		summary="Update existing agent group by ID",
-     *		type="array",
-     *      SWG\Parameters (
-     *          SWG\Parameter(
-     *				name="id",
-     *				description="Agent group ID",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer",
-     *			),
-     *          SWG\Parameter(
-     *				name="group[title]",
-     *				description="Group title",
-     *				paramType="query",
-     *				required=false,
-     *				type="string",
-     *			),
-     *          SWG\Parameter(
-     *				name="group[perms]",
-     *				description="Group permissions",
-     *				paramType="query",
-     *				required=false,
-     *				type="string[]",
-     *			),
-     *          SWG\Parameter(
-     *				name="group[person_ids]",
-     *				description="Agents who belongs to this group",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer[]",
-     *			),
-     *          SWG\Parameter(
-     *				name="dep_perms[tickets]",
-     *				description="Department tickets belongs to this group",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer[]",
-     *			),
-     *          SWG\Parameter(
-     *				name="dep_perms[chat]",
-     *				description="",
-     *				paramType="query",
-     *				required=false,
-     *				type="string[]",
-     *			),
-     *      )
-     *  )
-     * )
-     *
-     * SWG\Api(
-     * 	path="/agent_groups",
-     * 	SWG\Operation(
-     * 		method="PUT",
-     * 		summary="Create new agent group",
-     *		type="array",
-     *      SWG\Parameters (
-     *          SWG\Parameter(
-     *				name="group[title]",
-     *				description="Group title",
-     *				paramType="query",
-     *				required=false,
-     *				type="string",
-     *			),
-     *          SWG\Parameter(
-     *				name="group[perms]",
-     *				description="Group permissions",
-     *				paramType="query",
-     *				required=false,
-     *				type="string[]",
-     *			),
-     *          SWG\Parameter(
-     *				name="group[person_ids]",
-     *				description="Agents who belongs to this group",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer[]",
-     *			),
-     *          SWG\Parameter(
-     *				name="dep_perms[tickets]",
-     *				description="Department tickets belongs to this group",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer[]",
-     *			),
-     *          SWG\Parameter(
-     *				name="dep_perms[chat]",
-     *				description="",
-     *				paramType="query",
-     *				required=false,
-     *				type="string[]",
-     *			),
-     *      )
-     *  )
-     * )
      */
     public function saveGroupAction($id)
     {

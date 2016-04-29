@@ -483,7 +483,12 @@ return [
         AuditListener::REMOVE => true,
         AuditListener::UPDATE => [
             'conditions' => [
-                ['preconditions' => ['title', 'note', 'is_enabled']],
+                ['preconditions' => ['title', 'note', 'is_enabled', 'permissions']],
+            ],
+            'field_filters' => [
+                'permissions' => [
+                    ['collection', ['item.name']],
+                ],
             ],
         ],
     ],

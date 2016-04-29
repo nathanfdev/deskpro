@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -47,6 +46,7 @@ use Orb\Util\Numbers;
  * @property Usergroup $usergroup
  * @property Person $person
  * @property bool $value
+ * @property bool $is_active
  */
 class Permission extends DomainObject
 {
@@ -224,8 +224,7 @@ class Permission extends DomainObject
             array(
                  'fieldName'    => 'usergroup',
                  'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
-                 'mappedBy'     => null,
-                 'inversedBy'   => null,
+                 'inversedBy'   => 'permissions',
                  'joinColumns'  => array(
                      0 => array(
                          'name'                 => 'usergroup_id',
