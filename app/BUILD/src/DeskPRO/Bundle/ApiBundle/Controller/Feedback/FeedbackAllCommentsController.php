@@ -71,17 +71,20 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class FeedbackAllCommentsController extends AbstractFeedbackController
 {
-    public static $exposeOnly = ['get', 'list', 'count', 'put', 'delete'];
-    public static $entity     = FeedbackComment::class;
-    public static $type       = FeedbackCommentType::class;
-    public static $listOrder  = 'asc';
+    public static $exposeOnly  = ['get', 'list', 'count', 'put', 'delete'];
+    public static $entity      = FeedbackComment::class;
+    public static $type        = FeedbackCommentType::class;
+    public static $listOrder   = 'asc';
+    public static $sortOptions = [
+        'date_created' => 'date_created',
+    ];
 
     /**
      * {@inheritdoc}
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        $qb->leftJoin("$alias.feedback", 'feedback');
+        $qb->join("$alias.feedback", 'feedback');
 
         $this->applyNotReviewedFilters($qb, $alias, $request);
         $this->applyDateCreatedFilters($qb, $alias, $request);
