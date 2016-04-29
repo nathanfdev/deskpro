@@ -54,4 +54,4 @@ services:
   api_client_info:
     class: DeskPRO\Bundle\ApiBundle\Request\ApiClientInfo
     factory: [DeskPRO\Bundle\ApiBundle\Request\ApiClientInfo, createFromRequestStack]
-    arguments: ["@request_stack]
+    arguments: ["@request_stack"]

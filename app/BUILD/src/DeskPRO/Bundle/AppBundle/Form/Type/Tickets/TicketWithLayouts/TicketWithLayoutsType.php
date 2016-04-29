@@ -679,6 +679,11 @@ class TicketWithLayoutsType extends AbstractType
      */
     private function createLabelsField(TicketWithLayoutsContext $context)
     {
+        // Users can never set labels, so guard against that
+        if ($context->getViewContext() === TicketWithLayoutsContext::VIEW_USER) {
+            return false;
+        }
+
         return new FormField(LabelsCollectionType::class, [
             'labels_class'   => LabelTicket::class,
             'labels_owner'   => $context->getTicket(),
