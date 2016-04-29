@@ -481,6 +481,9 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         // An email might have inline attachments and we tokenize them with these
         // codes so we can now turn them into inline images or attachment links
         $fn = function ($m, $before = '') use ($resizeInlines) {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                App::getRouter()->foobar();
+            }
             $download_url = App::getRouter()->getGenerator()->generate(
                 'serve_blob',
                 array('blob_auth_id' => $m[2], 'filename' => $m[3]),
