@@ -327,7 +327,9 @@ class Person
     /**
      * Labels associated with this user.
      *
-     * @var array
+     * @JMS\Type("array<to_string<Application\DeskPRO\Entity\LabelPerson>>")
+     *
+     * @var \Application\DeskPRO\Entity\Labels\Label[]
      */
     protected $labels;
 
@@ -478,7 +480,7 @@ class Person
         $this->dateLastLogin           = $person->date_last_login;
         $this->browser                 = $person->browser;
         $this->usergroups              = $person->getUsergroups();
-        $this->labels                  = $person->getLabelsArray();
+        $this->labels                  = $person->getLabels();
         $this->primaryEmail            = $person->getPrimaryEmail();
         $this->ticketsCount            = $person->getTicketsCount();
         $this->chatsCount              = $person->getChatsCount();

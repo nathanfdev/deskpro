@@ -38,7 +38,6 @@ use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\DateHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
-use DeskPRO\Bundle\ApiBundle\Traits\Labels\LabelsHelper;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonType;
 use Doctrine\ORM\QueryBuilder;
@@ -56,8 +55,6 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  */
 class PeopleController extends CrudController
 {
-    use LabelsHelper;
-
     public static $entity      = Person::class;
     public static $type        = PersonType::class;
     public static $sortOptions = [
