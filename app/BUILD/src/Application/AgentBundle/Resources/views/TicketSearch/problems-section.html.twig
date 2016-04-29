@@ -32,17 +32,17 @@
                 </li>
 
                 {% for p in open_problems %}
-                    {% set filter = problem_filters[p.id] %}
-                    <li class="is-nav-item filter filter-{{ filter.id }} nav-filter-{{ filter.id }}"
-                        data-filter-id="{{ filter.id }}"
+                    {% set filterId = problem_filters[p.id].id|default(0) %}
+                    <li class="is-nav-item filter filter-{{ filterId }} nav-filter-{{ filterId }}"
+                        data-filter-id="{{ filterId }}"
                         data-problem-id="{{ p.id }}"
                             >
 
-                        <div class="item" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
+                        <div class="item" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=problems&amp;terms[0][op]=is&amp;terms[0][options][]={{p.id}}">
                             <h3>{{ p.title }}</h3>
 
                             <div class="float-side">
-                                <em class="counter list-counter" id="ticket_filter_{{ problem_filters[p.id] }}_count">0</em>
+                                {% if filterId %}<em class="counter list-counter" id="ticket_filter_{{ filterId }}_count">0</em>{% endif %}
                             </div>
                         </div>
                     </li>
@@ -66,10 +66,9 @@
                                     >
                                 <option value="">{{ phrase('agent.problems.closed_problems') }}</option>
                                 {% for p in closed_problems %}
-                                    {% set filter = problem_filters[p.id] %}
-                                    <option value="{{ filter.id }}" data-filter-id="{{ filter.id }}" data-problem-id="{{ p.id }}">
+                                    {% set filterId = problem_filters[p.id].id|default(0) %}
+                                    <option value="{{ filterId }}" data-filter-id="{{ filterId }}" data-problem-id="{{ p.id }}">
                                         {{ p.title }}
-                                        (0)
                                     </option>
                                 {% endfor %}
                             </select>
