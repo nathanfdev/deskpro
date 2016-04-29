@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Chats;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Traits\AgentChatFiltersTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -48,6 +49,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @ApiModes("all")
  * @Rest\Route("/agent_chats")
  * @ApiDoc(target="all", section="Chats", output="DeskPRO\Bundle\AppBundle\Entity\AgentChat")
+ * @ApiUnstable()
  */
 class AgentChatsController extends CrudController
 {
@@ -65,7 +67,7 @@ class AgentChatsController extends CrudController
      * This endpoint gives an ability to start chat with some person, team, department or with everyone in helpdesk.
      *
      * @ApiDoc(
-     *     section = "Agent`s chat",
+     *     section = "Chats",
      *     resourceDescription="Operations about agent chats",
      *     description = "create an agent`s chat",
      *     requirements={

@@ -29,10 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Helpdesk;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Settings\SettingsManager;
@@ -52,13 +52,13 @@ class SettingsController extends BaseController
      *
      * @ApiDoc(
      *     section="Helpdesk",
-     *     tags={"unstable"="#ff6666"},
      *     resourceDescription="Operations about helpdesk discovering",
      *     description="Get current user personal settings",
      *     statusCodes={
      *         200="Success"
      *     }
      * )
+     * @ApiUnstable()
      * @Rest\Get("/helpdesk/agent-client/settings")
      */
     public function agentClientInfoAction()

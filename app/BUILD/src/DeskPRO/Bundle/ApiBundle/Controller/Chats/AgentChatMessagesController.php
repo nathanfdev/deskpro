@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Chats;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
@@ -56,6 +57,7 @@ use Symfony\Component\HttpFoundation\Response;
  *          {"name"="order", "dataType"="string", "pattern"="date_created"}
  *      }
  * )
+ * @ApiUnstable()
  */
 class AgentChatMessagesController extends CrudSubController
 {
