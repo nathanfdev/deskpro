@@ -31,16 +31,22 @@ namespace DeskPRO\Bundle\AuditBundle\Document;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\AuditBundle\Entity\AuditLog as AuditLogEntity;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class Test.
  *
  * @ODM\Document()
+ * @JMS\ExclusionPolicy("all")
  */
-class AuditLog  extends AuditLogEntity implements EntityInterface
+class AuditLog extends AuditLogEntity implements EntityInterface
 {
     /**
      * @ODM\Id(strategy="INCREMENT")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     * @JMS\Groups("list")
      *
      * @var int
      */
@@ -49,12 +55,20 @@ class AuditLog  extends AuditLogEntity implements EntityInterface
     /**
      * @ODM\Field(type="string")
      *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     * @JMS\Groups("list")
+     *
      * @var string
      */
     protected $action;
 
     /**
      * @ODM\Field(type="date")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     * @JMS\Groups("list")
      *
      * @var \DateTime
      */
@@ -63,12 +77,20 @@ class AuditLog  extends AuditLogEntity implements EntityInterface
     /**
      * @ODM\Field(type="string")
      *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     * @JMS\Groups("list")
+     *
      * @var string
      */
     protected $performerName;
 
     /**
      * @ODM\Field(type="int")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     * @JMS\Groups("list")
      *
      * @var int
      */
@@ -77,12 +99,20 @@ class AuditLog  extends AuditLogEntity implements EntityInterface
     /**
      * @ODM\Field(type="string")
      *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     * @JMS\Groups("list")
+     *
      * @var string
      */
     protected $objectName;
 
     /**
      * @ODM\Field(type="string")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     * @JMS\Groups("list")
      *
      * @var string
      */
@@ -91,12 +121,20 @@ class AuditLog  extends AuditLogEntity implements EntityInterface
     /**
      * @ODM\Field(type="int")
      *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     * @JMS\Groups("list")
+     *
      * @var int
      */
     protected $objectId;
 
     /**
      * @ODM\Field(type="string")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     * @JMS\Groups("details")
      *
      * @var string
      */
@@ -105,234 +143,19 @@ class AuditLog  extends AuditLogEntity implements EntityInterface
     /**
      * @ODM\Field(type="int")
      *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     * @JMS\Groups("list")
+     *
      * @var int
      */
     protected $apiKey;
 
     /**
      * @ODM\EmbedOne(targetDocument="DeskPRO\Bundle\AuditBundle\Document\AuditLogData")
+     * @JMS\Groups("details")
      *
      * @var AuditLogData
      */
     protected $data;
-
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int $id
-     *
-     * @return $this
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getAction()
-    {
-        return $this->action;
-    }
-
-    /**
-     * @param mixed $action
-     *
-     * @return $this
-     */
-    public function setAction($action)
-    {
-        $this->action = $action;
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDateCreated()
-    {
-        return $this->dateCreated;
-    }
-
-    /**
-     * @param \DateTime $dateCreated
-     *
-     * @return $this
-     */
-    public function setDateCreated($dateCreated)
-    {
-        $this->dateCreated = $dateCreated;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPerformerName()
-    {
-        return $this->performerName;
-    }
-
-    /**
-     * @param string $performerName
-     *
-     * @return $this
-     */
-    public function setPerformerName($performerName)
-    {
-        $this->performerName = $performerName;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getPerformerId()
-    {
-        return $this->performerId;
-    }
-
-    /**
-     * @param int $performerId
-     *
-     * @return $this
-     */
-    public function setPerformerId($performerId)
-    {
-        $this->performerId = $performerId;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getObjectName()
-    {
-        return $this->objectName;
-    }
-
-    /**
-     * @param string $objectName
-     *
-     * @return $this
-     */
-    public function setObjectName($objectName)
-    {
-        $this->objectName = $objectName;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getObjectType()
-    {
-        return $this->objectType;
-    }
-
-    /**
-     * @param string $objectType
-     *
-     * @return $this
-     */
-    public function setObjectType($objectType)
-    {
-        $this->objectType = $objectType;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getObjectId()
-    {
-        return $this->objectId;
-    }
-
-    /**
-     * @param int $objectId
-     *
-     * @return $this
-     */
-    public function setObjectId($objectId)
-    {
-        $this->objectId = $objectId;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     * @param string $description
-     *
-     * @return $this
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getApiKey()
-    {
-        return $this->apiKey;
-    }
-
-    /**
-     * @param int $apiKey
-     *
-     * @return $this
-     */
-    public function setApiKey($apiKey)
-    {
-        $this->apiKey = $apiKey;
-
-        return $this;
-    }
-
-    /**
-     * @return AuditLogData
-     */
-    public function getData()
-    {
-        return $this->data;
-    }
-
-    /**
-     * @param AuditLogData $data
-     *
-     * @return $this
-     */
-    public function setData(AuditLogData $data)
-    {
-        $this->data = $data;
-
-        return $this;
-    }
 }

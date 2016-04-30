@@ -34,6 +34,7 @@ use DeskPRO\Bundle\AuditBundle\Document\AuditLogData;
 use DeskPRO\Bundle\AuditBundle\Log\LoggableInterface;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class Test.
@@ -50,6 +51,7 @@ use Doctrine\ORM\Mapping as ORM;
  * )
  * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
  * @ORM\InheritanceType("NONE")
+ * @JMS\ExclusionPolicy("all")
  */
 class AuditLog implements LoggableInterface, NotifyPropertyChanged, EntityInterface
 {
@@ -60,12 +62,20 @@ class AuditLog implements LoggableInterface, NotifyPropertyChanged, EntityInterf
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     * @JMS\Groups("list")
+     *
      * @var int
      */
     protected $id;
 
     /**
      * @ORM\Column(type="string")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     * @JMS\Groups("list")
      *
      * @var string
      */
@@ -74,12 +84,20 @@ class AuditLog implements LoggableInterface, NotifyPropertyChanged, EntityInterf
     /**
      * @ORM\Column(type="datetime", nullable=false, name="date_created")
      *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     * @JMS\Groups("list")
+     *
      * @var \DateTime
      */
     protected $dateCreated;
 
     /**
      * @ORM\Column(type="string", name="performer_name")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     * @JMS\Groups("list")
      *
      * @var string
      */
@@ -88,12 +106,20 @@ class AuditLog implements LoggableInterface, NotifyPropertyChanged, EntityInterf
     /**
      * @ORM\Column(type="integer", name="performer_id", nullable=true)
      *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     * @JMS\Groups("list")
+     *
      * @var int
      */
     protected $performerId;
 
     /**
      * @ORM\Column(type="string", name="object_name", nullable=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     * @JMS\Groups("list")
      *
      * @var string
      */
@@ -102,12 +128,20 @@ class AuditLog implements LoggableInterface, NotifyPropertyChanged, EntityInterf
     /**
      * @ORM\Column(type="string", name="object_type", nullable=true)
      *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     * @JMS\Groups("list")
+     *
      * @var string
      */
     protected $objectType;
 
     /**
      * @ORM\Column(type="integer", name="object_id", nullable=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     * @JMS\Groups("list")
      *
      * @var int
      */
@@ -116,6 +150,10 @@ class AuditLog implements LoggableInterface, NotifyPropertyChanged, EntityInterf
     /**
      * @ORM\Column(type="string")
      *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     * @JMS\Groups("details")
+     *
      * @var string
      */
     protected $description;
@@ -123,12 +161,19 @@ class AuditLog implements LoggableInterface, NotifyPropertyChanged, EntityInterf
     /**
      * @ORM\Column(type="integer", name="api_key", nullable=true)
      *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     * @JMS\Groups("list")
+     *
      * @var int
      */
     protected $apiKey;
 
     /**
      * @ORM\Column(type="dp_json_obj")
+     *
+     * @JMS\Expose()
+     * @JMS\Groups("details")
      *
      * @var AuditLogData
      */

@@ -109,7 +109,7 @@ class DataListener
                     $filtered[] = $change;
                 }
             }
-            $diff[$field] = [$filtered[0] => $filtered[1]];
+            $diff[$field] = $filtered;
         }
 
         return $diff;

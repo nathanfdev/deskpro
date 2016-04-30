@@ -56,4 +56,10 @@ interface StorageInterface
      * @return LoggableInterface[]
      */
     public function read($offset, $limit);
+
+    public function getPaginationAdapter($qb);
+
+    public function createQueryBuilder();
+
+    public function applyFilters($filters, $qb);
 }

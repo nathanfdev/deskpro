@@ -29,17 +29,22 @@
 namespace DeskPRO\Bundle\AuditBundle\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Types\JsonObjectSerializable;
 
 /**
  * Class AuditLogData.
  *
  * @ODM\EmbeddedDocument()
+ * @JMS\ExclusionPolicy("none")
  */
 class AuditLogData implements JsonObjectSerializable
 {
     /**
      * @ODM\Field(type="hash")
+     *
+     * @JMS\Type("array")
+     * @JMS\Groups("details")
      *
      * @var array
      */
@@ -47,6 +52,9 @@ class AuditLogData implements JsonObjectSerializable
 
     /**
      * @ODM\Field(type="hash")
+     *
+     * @JMS\Type("array")
+     * @JMS\Groups("details")
      *
      * @var array
      */
