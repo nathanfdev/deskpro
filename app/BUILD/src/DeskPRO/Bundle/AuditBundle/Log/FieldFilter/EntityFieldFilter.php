@@ -41,7 +41,7 @@ class EntityFieldFilter implements FieldFilterInterface
     /**
      * @var ExpressionLanguage
      */
-    private $language;
+    protected $language;
 
     /**
      * CollectionFieldFilter constructor.
@@ -56,8 +56,19 @@ class EntityFieldFilter implements FieldFilterInterface
      */
     public function filter($value, $expression = 'entity.getId()')
     {
+        return $this->doFilter($value, $expression);
+    }
+
+    /**
+     * @param $value
+     * @param $expression
+     *
+     * @return string
+     */
+    protected function doFilter($value, $expression)
+    {
         if ($value instanceof EntityInterface || $value instanceof DomainObject) {
-            return $this->language->evaluate(new Expression($expression), ['entity' => $value]);
+            $value = $this->language->evaluate(new Expression($expression), ['entity' => $value]);
         }
 
         return $value;

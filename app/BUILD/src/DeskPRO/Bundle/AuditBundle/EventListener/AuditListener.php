@@ -46,6 +46,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class AuditListener
 {
+    const ALL = 'all'; // this is special key to reduce code duplicate in configuration
+
     const INSERT = 'insert';
 
     const UPDATE = 'update';

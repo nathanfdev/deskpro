@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AuditBundle\Configuration;
 
+use DeskPRO\Bundle\AuditBundle\EventListener\AuditListener;
 use DeskPRO\Bundle\AuditBundle\Log\FieldFilter\FieldFilterService;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
@@ -68,13 +69,21 @@ class ConfigurationBuilder
         if (!$this->configurationSet || $rebuild === true) {
             $this->configurationSet = new ConfigurationSet();
             foreach ($rawConfig as $entityClass => $actions) {
+                if (isset($actions[AuditListener::ALL])) {
+                    $all = $actions[AuditListener::ALL];
+                    unset($actions[AuditListener::ALL]);
+                } else {
+                    $all = [];
+                }
                 foreach ($actions as $action => $configEntry) {
                     if ($configEntry) {
+                        $configEntry = is_array($configEntry) ? $configEntry : [];
+                        $configEntry = array_replace_recursive($all, $configEntry);
                         $this->configurationSet->registerConfiguration(
                             $this->buildConfiguration(
                                 $entityClass,
                                 $action,
-                                is_array($configEntry) ? $configEntry : []
+                                $configEntry
                             )
                         );
                     }

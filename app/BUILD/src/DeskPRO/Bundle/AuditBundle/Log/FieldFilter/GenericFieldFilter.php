@@ -58,7 +58,7 @@ class GenericFieldFilter implements FieldFilterInterface
     /**
      * {@inheritdoc}
      */
-    public function filter($value)
+    public function filter($value, $argument = null)
     {
         $arguments = $this->arguments;
         array_unshift($arguments, $value);

@@ -32,3 +32,8 @@ services:
     class: DeskPRO\Bundle\AuditBundle\Log\FieldFilter\EntityFieldFilter
     tags:
       - {name: audit.field_filter, alias: entity}
+
+  audit_log.field_filter.object:
+    class: DeskPRO\Bundle\AuditBundle\Log\FieldFilter\ObjectFieldFilter
+    tags:
+      - {name: audit.field_filter, alias: object}

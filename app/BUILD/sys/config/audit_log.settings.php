@@ -57,6 +57,7 @@ use Application\DeskPRO\Entity\Template;
 use Application\DeskPRO\Entity\TicketCategory;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\TicketMacro;
+use Application\DeskPRO\Entity\TicketPriority;
 use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Entity\TicketWorkflow;
 use Application\DeskPRO\Entity\Usergroup;
@@ -76,7 +77,7 @@ return [
     ],
 
     ApiKey::class => [
-        AuditListener::INSERT => [
+        AuditListener::ALL => [
             'field_filters' => [
                 'actions' => [
                     ['collection', ['item.getAction()']],
@@ -86,18 +87,11 @@ return [
                 ],
             ],
         ],
+        AuditListener::INSERT => true,
         AuditListener::REMOVE => true,
         AuditListener::UPDATE => [
             'conditions' => [
                 ['preconditions' => ['person', 'note', 'flags', 'actions']],
-            ],
-            'field_filters' => [
-                'actions' => [
-                    ['collection', ['item.getAction()']],
-                ],
-                'person' => [
-                    ['entity', ['entity.getDisplayName()~"("~entity.getId()~")"']],
-                ],
             ],
         ],
     ],
@@ -236,6 +230,16 @@ return [
     ],
 
     Organization::class => [
+        AuditListener::ALL => [
+            'field_filters' => [
+                'labels' => [
+                    ['collection', ['item.getLabel()']],
+                ],
+                'email_domains' => [
+                    ['collection', ['item.getDomain()']],
+                ],
+            ],
+        ],
         AuditListener::INSERT => true,
         AuditListener::REMOVE => true,
         AuditListener::UPDATE => [
@@ -248,32 +252,19 @@ return [
                     ],
                 ],
             ],
-            'field_filters' => [
-                'labels' => [
-                    ['collection', ['item.getLabel()']],
-                ],
-                'email_domains' => [
-                    ['collection', ['item.getDomain()']],
-                ],
-            ],
         ],
     ],
 
     Person::class => [
-        AuditListener::INSERT => [
+        AuditListener::ALL => [
             'field_filters' => [
                 'password' => [
                     ['mask', ['*']],
                 ],
             ],
         ],
-        AuditListener::REMOVE => [
-            'field_filters' => [
-                'password' => [
-                    ['mask', ['*']],
-                ],
-            ],
-        ],
+        AuditListener::INSERT => true,
+        AuditListener::REMOVE => true,
         AuditListener::UPDATE => [
             'conditions' => [
                 [
@@ -297,11 +288,6 @@ return [
                         'password',
                         'usergroups',
                     ],
-                ],
-            ],
-            'field_filters' => [
-                'password' => [
-                    ['mask', ['*']],
                 ],
             ],
         ],
@@ -435,13 +421,23 @@ return [
         ],
     ],
 
-    TicketMacro::class => [
+    TicketPriority::class => [
         AuditListener::INSERT => true,
         AuditListener::REMOVE => true,
         AuditListener::UPDATE => true,
     ],
 
     TicketTrigger::class => [
+        AuditListener::ALL => [
+            'field_filters' => [
+                'terms' => [
+                    ['object', ['object.serialize()"']],
+                ],
+                'actions' => [
+                    ['object', ['object.serialize()"']],
+                ],
+            ],
+        ],
         AuditListener::INSERT => true,
         AuditListener::REMOVE => true,
         AuditListener::UPDATE => [
@@ -479,16 +475,18 @@ return [
     ],
 
     Usergroup::class => [
+        AuditListener::ALL => [
+            'field_filters' => [
+                'permissions' => [
+                    ['collection', ['item.name']],
+                ],
+            ],
+        ],
         AuditListener::INSERT => true,
         AuditListener::REMOVE => true,
         AuditListener::UPDATE => [
             'conditions' => [
                 ['preconditions' => ['title', 'note', 'is_enabled', 'permissions']],
-            ],
-            'field_filters' => [
-                'permissions' => [
-                    ['collection', ['item.name']],
-                ],
             ],
         ],
     ],
