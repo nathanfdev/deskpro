@@ -112,10 +112,36 @@ return [
     ],
 
     ChatConversation::class => [
-        AuditListener::REMOVE => true,
+        AuditListener::REMOVE => [
+            'fields' => [
+                'id',
+                'department',
+                'agent_team',
+                'labels',
+                'subject',
+                'status',
+                'agent',
+                'person',
+                'session',
+                'visitor_id',
+                'person_name',
+                'person_email',
+                'is_agent',
+                'is_window',
+
+            ],
+        ],
+        'field_filters' => [
+            'labels' => [
+                ['collection', 'item.getLabel()'],
+            ],
+        ],
     ],
 
     CustomDefArticle::class => [
+        AuditListener::ALL => [
+            'fields' => ['parent', 'title', 'description', 'options', 'is_enabled'],
+        ],
         AuditListener::INSERT => true,
         AuditListener::REMOVE => true,
         AuditListener::UPDATE => [
@@ -126,6 +152,9 @@ return [
     ],
 
     CustomDefBilling::class => [
+        AuditListener::ALL => [
+            'fields' => ['parent', 'title', 'description', 'options', 'is_enabled'],
+        ],
         AuditListener::INSERT => true,
         AuditListener::REMOVE => true,
         AuditListener::UPDATE => [
@@ -136,6 +165,9 @@ return [
     ],
 
     CustomDefChat::class => [
+        AuditListener::ALL => [
+            'fields' => ['parent', 'title', 'description', 'options', 'is_enabled'],
+        ],
         AuditListener::INSERT => true,
         AuditListener::REMOVE => true,
         AuditListener::UPDATE => [
@@ -146,6 +178,9 @@ return [
     ],
 
     CustomDefFeedback::class => [
+        AuditListener::ALL => [
+            'fields' => ['parent', 'title', 'description', 'options', 'is_enabled'],
+        ],
         AuditListener::INSERT => true,
         AuditListener::REMOVE => true,
         AuditListener::UPDATE => [
@@ -156,6 +191,9 @@ return [
     ],
 
     CustomDefOrganization::class => [
+        AuditListener::ALL => [
+            'fields' => ['parent', 'title', 'description', 'options', 'is_enabled'],
+        ],
         AuditListener::INSERT => true,
         AuditListener::REMOVE => true,
         AuditListener::UPDATE => [
@@ -166,6 +204,9 @@ return [
     ],
 
     CustomDefPerson::class => [
+        AuditListener::ALL => [
+            'fields' => ['parent', 'title', 'description', 'options', 'is_enabled'],
+        ],
         AuditListener::INSERT => true,
         AuditListener::REMOVE => true,
         AuditListener::UPDATE => [
@@ -176,6 +217,9 @@ return [
     ],
 
     CustomDefProduct::class => [
+        AuditListener::ALL => [
+            'fields' => ['parent', 'title', 'description', 'options', 'is_enabled'],
+        ],
         AuditListener::INSERT => true,
         AuditListener::REMOVE => true,
         AuditListener::UPDATE => [
@@ -186,6 +230,9 @@ return [
     ],
 
     CustomDefTicket::class => [
+        AuditListener::ALL => [
+            'fields' => ['parent', 'title', 'description', 'options', 'is_enabled'],
+        ],
         AuditListener::INSERT => true,
         AuditListener::REMOVE => true,
         AuditListener::UPDATE => [
@@ -376,6 +423,19 @@ return [
     ],
 
     Sla::class => [
+        AuditListener::ALL => [
+            'field_filters' => [
+                'apply_terms' => [
+                    ['object', ['object.serialize()']],
+                ],
+                'warn_actions' => [
+                    ['object', ['object.serialize()']],
+                ],
+                'fail_actions' => [
+                    ['object', ['object.serialize()']],
+                ],
+            ],
+        ],
         AuditListener::INSERT => true,
         AuditListener::REMOVE => true,
         AuditListener::UPDATE => true,
@@ -392,6 +452,13 @@ return [
     ],
 
     TicketCategory::class => [
+        AuditListener::ALL => [
+            'fields' => [
+                'id',
+                'title',
+                'parent',
+            ],
+        ],
         AuditListener::INSERT => true,
         AuditListener::REMOVE => true,
         AuditListener::UPDATE => [
@@ -402,6 +469,16 @@ return [
     ],
 
     TicketLayout::class => [
+        AuditListener::ALL => [
+            'field_filters' => [
+                'agent_layout' => [
+                    ['object', ['object.serialize()']],
+                ],
+                'user_layout' => [
+                    ['object', ['object.serialize()']],
+                ],
+            ],
+        ],
         AuditListener::INSERT => true,
         AuditListener::REMOVE => true,
         AuditListener::UPDATE => [
@@ -431,10 +508,10 @@ return [
         AuditListener::ALL => [
             'field_filters' => [
                 'terms' => [
-                    ['object', ['object.serialize()"']],
+                    ['object', ['object.serialize()']],
                 ],
                 'actions' => [
-                    ['object', ['object.serialize()"']],
+                    ['object', ['object.serialize()']],
                 ],
             ],
         ],
