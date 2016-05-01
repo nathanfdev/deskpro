@@ -1,0 +1,79 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+
+{% block fullpane_content %}
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Audit logs</h3>
+		</header>
+
+		<article class="padd" ng-if="ServerAuditLogs.logs.length">
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>
+							{{ phrase('agent.general.id') }}
+						</th>
+						<th>
+							{{ phrase('agent.general.date_created') }}
+						</th>
+						<th>
+							{{ phrase('admin.server.action') }}
+						</th>
+						<th>
+							{{ phrase('admin.server.object_name') }}
+						</th>
+						<th>
+							{{ phrase('admin.server.object_type') }}
+						</th>
+						<th>
+							{{ phrase('admin.server.object_id') }}
+						</th>
+						<th>
+							{{ phrase('admin.server.performer_id') }}
+						</th>
+						<th>
+							{{ phrase('admin.server.performer_name') }}
+						</th>
+						<th>
+							{{ phrase('admin.server.api_key_id') }}
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="log in ServerAuditLogs.logs">
+						<td class="alt dp-id-col">
+							{{ ng_var('log.id') }}
+						</td>
+						<td>
+							{{ ng_var('log.date_created | date : "yyyy-MM-d H:mm:ss"') }}
+						</td>
+						<td>
+							{{ ng_var('log.action') }}
+						</td>
+						<td>
+							{{ ng_var('log.object_name') }}
+						</td>
+						<td>
+							{{ ng_var('log.object_type') }}
+						</td>
+						<td>
+							{{ ng_var('log.object_id') }}
+						</td>
+						<td>
+							{{ ng_var('log.performer_id') }}
+						</td>
+						<td>
+							{{ ng_var('log.performer_name') }}
+						</td>
+						<td>
+							{{ ng_var('log.api_key') }}
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</article>
+
+	</section>
+
+{% endblock %}

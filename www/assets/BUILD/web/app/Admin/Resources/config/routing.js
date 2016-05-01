@@ -2399,6 +2399,24 @@ define(function() {
 	});
 
   //###
+	//# AuditLogs
+	//###
+	routes.push({
+		id: 'server.audit_logs',
+		url: '/audit_logs',
+		templateName: 'Server/server-audit_logs.html',
+		controller: 'Admin_ServerAuditLogs_Ctrl_ServerAuditLogs'
+	});
+
+	// routes.push({
+	// 	id: 'server.incidents.view',
+	// 	url: '/view/{id}',
+	// 	templateName: 'Server/server-incidents-view.html',
+	// 	controller: 'Admin_ServerIncidents_Ctrl_View',
+	// 	target: "appbody@server"
+	// });
+
+  //###
   //# Sendmail Queue
   //###
   routes.push({
