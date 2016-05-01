@@ -7,8 +7,89 @@
 			<h3>Audit logs</h3>
 		</header>
 
-		<article class="padd" ng-if="ServerAuditLogs.logs.length">
-			<table class="table table-bordered">
+		<article class="padd">
+            <div class="alert alert-info">
+                <div>
+                    <table>
+                        <tr>
+                            <td width="80">Performer`s id</td>
+                            <td width="100">
+                                <input class="form-control" type="number" ng-model="ServerAuditLogs.filters.performer_id" />
+                            </td>
+                            <td style="padding-left: 15px" width="115">Performer`s name</td>
+                            <td width="150">
+                                <input class="form-control" type="text" ng-model="ServerAuditLogs.filters.performer_name" />
+                            </td>
+                            <td style="padding-left: 15px" width="75">Api key</td>
+                            <td width="100">
+                                <input class="form-control" type="number" ng-model="ServerAuditLogs.filters.api_key" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="100">Object type</td>
+                            <td width="100">
+                                <input class="form-control" type="text" ng-model="ServerAuditLogs.filters.object_type" />
+                            </td>
+                            <td style="padding-left: 15px" width="95">Object id</td>
+                            <td width="100">
+                                <input class="form-control" type="number" ng-model="ServerAuditLogs.filters.object_id" />
+                            </td>
+                            <td width="95" style="padding-left: 15px" >Object name</td>
+                            <td width="100">
+                                <input class="form-control" type="text" ng-model="ServerAuditLogs.filters.object_name" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="95"  >Action</td>
+                            <td width="100">
+                                <input class="form-control" type="text" ng-model="ServerAuditLogs.filters.action" />
+                            </td>
+                            <td width="150" style="padding-left: 15px">Date created from-to</td>
+                            <td colspan="3">
+                                <span>
+                                    <input type="text" class="form-control" style="width: 140px; display: inline-block;"
+                                           ng-model="ServerAuditLogs.filters.date_created_from"
+                                           dp-datetime-popup="DD MMMM YYYY"
+                                    />
+                                </span>
+                                <span>
+                                    <input type="text" class="form-control" style="width: 140px; display: inline-block;"
+                                           ng-model="ServerAuditLogs.filters.date_created_to"
+                                           dp-datetime-popup="DD MMMM YYYY"
+                                    />
+                                </span>
+                            </td>
+
+                        </tr>
+                    </table>
+                    <div class="text-center" style="border-top: 1px solid #aed7e0; padding-top: 8px; margin-top: 8px;">
+                        <button class="btn btn-primary" ng-click="ServerAuditLogs.updateFilter()">Filter</button>
+                        <button class="btn btn-default" ng-click="ServerAuditLogs.clearFilter()">Clear Filter</button>
+                    </div>
+                </div>
+            </div>
+			<div class="dp-btn-pagination" ng-show="ServerAuditLogs.logs.length">
+				<span dp-show-spinning="paginating_server_audit_logs">
+					<i class="spinner-flat"></i>
+				</span>
+				<button class="btn" ng-show="ServerAuditLogs.pagination.current_page != 1" ng-click="ServerAuditLogs.goPrevPage()">
+					&lt; Prev
+				</button>
+				<select
+						ng-model="ServerAuditLogs.pagination.current_page"
+						ui-select2
+						style="width: 130px;"
+				>
+					<option ng-repeat="page in ServerAuditLogs.pagination.page_nums" value="{{ ng_var('page') }}">
+						Page {{ ng_var('page') }}
+					</option>
+				</select>
+				<button class="btn" ng-show="ServerAuditLogs.pagination.current_page < ServerAuditLogs.pagination.total_pages"
+						ng-click="ServerAuditLogs.goNextPage()">
+					Next &gt;
+				</button>
+			</div>
+			<table class="table table-bordered" ng-if="ServerAuditLogs.logs.length">
 				<thead>
 					<tr>
 						<th>
@@ -72,7 +153,29 @@
 					</tr>
 				</tbody>
 			</table>
+			<div class="dp-btn-pagination" ng-show="ServerAuditLogs.logs.length">
+				<span dp-show-spinning="paginating_server_audit_logs">
+					<i class="spinner-flat"></i>
+				</span>
+				<button class="btn" ng-show="ServerAuditLogs.pagination.current_page != 1" ng-click="ServerAuditLogs.goPrevPage()">
+					&lt; Prev
+				</button>
+				<select
+						ng-model="ServerAuditLogs.pagination.current_page"
+						ui-select2
+						style="width: 130px;"
+				>
+					<option ng-repeat="page in ServerAuditLogs.pagination.page_nums" value="{{ ng_var('page') }}">
+						Page {{ ng_var('page') }}
+					</option>
+				</select>
+				<button class="btn" ng-show="ServerAuditLogs.pagination.current_page < ServerAuditLogs.pagination.total_pages"
+						ng-click="ServerAuditLogs.goNextPage()">
+					Next &gt;
+				</button>
+			</div>
 		</article>
+
 
 	</section>
 
