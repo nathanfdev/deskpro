@@ -2,13 +2,16 @@ import 'babel-polyfill';
 import factory from 'iframe-resizer';
 
 ((helpdeskUrl, options = {}, window, document) => {
-  const { language = 'en', width = 500, department = 0 } = options;
+  const { language = 'en', width = 500, department = 0, hide_department = 0 } = options;
   const node = document.createElement('iframe');
 
   // embed type (full portal or new-ticket)
   node.src = helpdeskUrl + `focus-win/${language}/new-ticket`;
   if (department) {
-    node.src += `ticket[department_id]=${department}`;
+    node.src += `?department_id=${department}`;
+    if (hide_department) {
+      node.src += `&hide_department=1`
+    }
   }
 
   // iframe styles

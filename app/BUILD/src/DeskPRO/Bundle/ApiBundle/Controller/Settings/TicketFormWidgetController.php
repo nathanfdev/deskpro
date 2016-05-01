@@ -60,18 +60,14 @@ class TicketFormWidgetController extends BaseController
      */
     public function getJsAction(Request $request)
     {
-        $language   = $request->get('language') ?: 'en';
-        $department = (int) $request->get('department') ?: 0;
-        $width      = $request->get('width', '500');
-
         /** @var AppEnvInterface $env */
         $env    = $this->get('deskpro.app_env');
         $assets = $env->getAppWwwAssetDir();
         $file   = "$assets/pub/build/embed_loader.js";
         $js     = file_get_contents($file);
         $js     = strtr($js, [
-            '__DP_URL__'     => '"'.$this->generateUrl('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL).'"',
-            '__DP_OPTIONS__' => "{language: '$language', department: $department, width: '$width'}",
+            '__DP_URL__'     => $this->getDpUrl(),
+            '__DP_OPTIONS__' => $this->getDpOptions($request),
         ]);
         $js     = str_replace("\n", "\n  ", $js); // JS 2 space padding
         $script = <<<CODE
@@ -83,5 +79,32 @@ class TicketFormWidgetController extends BaseController
 CODE;
 
         return new Response($script);
+    }
+
+    /**
+     * Get __DP_URL__ JS placeholder value.
+     *
+     * @return string
+     */
+    private function getDpUrl()
+    {
+        return '"'.$this->generateUrl('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL).'"';
+    }
+
+    /**
+     * Get __DP_OPTIONS__ JS placeholder value.
+     *
+     * @param Request $request
+     *
+     * @return string
+     */
+    private function getDpOptions(Request $request)
+    {
+        $language       = $request->get('language') ?: 'en';
+        $department     = (int) $request->get('department') ?: 0;
+        $hideDepartment = (int) $request->get('hide_department') ?: 0;
+        $width          = $request->get('width', '500');
+
+        return "{language: '$language', department: $department, hide_department: $hideDepartment, width: '$width'}";
     }
 }

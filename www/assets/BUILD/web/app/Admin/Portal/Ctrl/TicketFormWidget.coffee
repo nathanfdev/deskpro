@@ -21,6 +21,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
 
     getCode: ->
       params = {language: @$scope.language, department: @$scope.department, width: @$scope.width}
+      if params.department
+        params.hide_department = 1
       @Api2.sendGet('/ticket-form-widget/code', params).then (response) =>
         @$scope.code = response.data
 
