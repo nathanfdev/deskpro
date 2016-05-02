@@ -62,7 +62,7 @@ Feature: /organizations endpoint
   "name": "Organization 3",
   "summary": "test organization",
   "picture_blob": "AAAAAAAAAAAAAAAAAA",
-  "labels": ["label 1", "label 1", "label 2"],
+  "labels": ["label1", "label1", "label2"],
   "email_domains": ["domain1.com", "domain2.com"],
   "user_groups": [1, 2, 1],
   "contact_data": {
@@ -117,8 +117,8 @@ Feature: /organizations endpoint
     And the JSON node "data.summary" should be equal to "test organization"
     And the JSON node "data.importance" should be equal to 0
     And the JSON node "data.labels" should have 2 elements
-    And the JSON node "data.labels[0]" should be equal to "label 1"
-    And the JSON node "data.labels[1]" should be equal to "label 2"
+    And the JSON node "data.labels[0]" should be equal to "label1"
+    And the JSON node "data.labels[1]" should be equal to "label2"
     And the JSON node "data.email_domains" should have 2 elements
     And the JSON node "data.email_domains[0]" should be equal to "domain1.com"
     And the JSON node "data.email_domains[1]" should be equal to "domain2.com"
@@ -197,7 +197,7 @@ Feature: /organizations endpoint
   "importance": 5,
   "picture_blob": "BBBBBBBBBBBBBBBBBB",
   "parent": 2,
-  "labels": ["label 1", "label 3"],
+  "labels": ["label1", "label3"],
   "email_domains": ["domain1.com", "domain3.com"],
   "fields": {
     "6": "some text"
@@ -223,8 +223,8 @@ Feature: /organizations endpoint
     And the JSON node "data.importance" should be equal to 5
     And the JSON node "data.parent" should be equal to 2
     And the JSON node "data.labels" should have 2 elements
-    And the JSON node "data.labels[0]" should be equal to "label 1"
-    And the JSON node "data.labels[1]" should be equal to "label 3"
+    And the JSON node "data.labels[0]" should be equal to "label1"
+    And the JSON node "data.labels[1]" should be equal to "label3"
     And the JSON node "data.email_domains" should have 2 elements
     And the JSON node "data.email_domains[0]" should be equal to "domain1.com"
     And the JSON node "data.email_domains[1]" should be equal to "domain3.com"
@@ -274,3 +274,34 @@ Feature: /organizations endpoint
     When I send a GET request to "/api/v2/organizations?user_group[]=2"
     Then the JSON node "data" should have 1 element
     And the JSON node "data[0].user_groups[1]" should be equal to 2
+
+  Scenario: I filter by labels
+    When I send a GET request to "/api/v2/organizations?label[]=label1&label[]=label3"
+    Then the JSON node "data" should have 1 element
+    And the JSON node "data[0].labels" should have 2 elements
+    And the JSON node "data[0].labels[0]" should be equal to "label1"
+    And the JSON node "data[0].labels[1]" should be equal to "label3"
+
+    When I send a GET request to "/api/v2/organizations?label[]=label1"
+    Then the JSON node "data" should have 1 element
+    And the JSON node "data[0].labels" should have 2 elements
+    And the JSON node "data[0].labels[0]" should be equal to "label1"
+    And the JSON node "data[0].labels[1]" should be equal to "label3"
+
+    When I send a GET request to "/api/v2/organizations?label[]=label1&label[]=label3&labels_mode=all"
+    Then the JSON node "data" should have 1 element
+    And the JSON node "data[0].labels" should have 2 elements
+    And the JSON node "data[0].labels[0]" should be equal to "label1"
+    And the JSON node "data[0].labels[1]" should be equal to "label3"
+
+    When I send a GET request to "/api/v2/organizations?label[]=label1&label[]=label4"
+    Then the JSON node "data" should have 1 element
+    And the JSON node "data[0].labels" should have 2 elements
+    And the JSON node "data[0].labels[0]" should be equal to "label1"
+    And the JSON node "data[0].labels[1]" should be equal to "label3"
+
+    When I send a GET request to "/api/v2/organizations?label[]=label1&label[]=label4&labels_mode=all"
+    Then the JSON node "data" should have 0 element
+
+    When I send a GET request to "/api/v2/organizations?no_labels=1"
+    Then the JSON node "data" should have 2 element

@@ -37,6 +37,8 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\DateHelper;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\LabelHelper;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\UsergroupsHelper;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -146,6 +148,8 @@ class PeopleController extends CrudController
 
         DateHelper::applyDatePeriodFilter($context, 'date_created', 'period_created');
         UsergroupsHelper::applyUsergroupsFilters($context);
+        ListHelper::applyInListFilter($context, 'organization');
+        LabelHelper::applyLabelFilters($context, static::$entity);
 
         if (null !== $request->get('is_agent')) {
             $qb->andWhere("$alias.is_agent = :is_agent");
@@ -171,18 +175,6 @@ class PeopleController extends CrudController
             } else {
                 $qb->andWhere('teams.id IS NULL');
             }
-        }
-
-        $org = $request->get('organization');
-        if ($org) {
-            $qb->innerJoin("$alias.organization", 'org');
-            if (is_array($org)) {
-                $qb->andWhere('org.id IN (:org)');
-            } else {
-                $qb->andWhere('org.id = :org');
-            }
-
-            $qb->setParameter('org', $org);
         }
     }
 

@@ -33,7 +33,7 @@ Feature: /people endpoint
   "organization_position": "Chief Sample Person",
   "user_groups": [1, 2],
   "agent_groups": [7, 8],
-  "labels": ["label 1", "label 1", "label 2"],
+  "labels": ["label1", "label1", "label2"],
   "fields": {
     "6": "some text"
   },
@@ -60,8 +60,8 @@ Feature: /people endpoint
     And the JSON node "data.organization_position" should be equal to "Chief Sample Person"
     And the JSON node "data.primary_email" should be equal to "sample.person@deskpro.com"
     And the JSON node "data.labels" should have 2 elements
-    And the JSON node "data.labels[0]" should be equal to "label 1"
-    And the JSON node "data.labels[1]" should be equal to "label 2"
+    And the JSON node "data.labels[0]" should be equal to "label1"
+    And the JSON node "data.labels[1]" should be equal to "label2"
     And the JSON node "data.fields" should have 4 elements
     And the JSON node "data.fields.5.value" should exist
     And the JSON node "data.fields.6.value" should be equal to "some text"
@@ -152,3 +152,34 @@ Feature: /people endpoint
     Then the response status code should be 200
     And the JSON node "data.name" should be equal to "Modified Name"
     And the JSON node "data.user_groups" should have 0 elements
+
+  Scenario: I filter by labels
+    When I send a GET request to "/api/v2/people?label[]=label1&label[]=label2"
+    Then the JSON node "data" should have 1 element
+    And the JSON node "data[0].labels" should have 2 elements
+    And the JSON node "data[0].labels[0]" should be equal to "label1"
+    And the JSON node "data[0].labels[1]" should be equal to "label2"
+
+    When I send a GET request to "/api/v2/people?label[]=label1"
+    Then the JSON node "data" should have 1 element
+    And the JSON node "data[0].labels" should have 2 elements
+    And the JSON node "data[0].labels[0]" should be equal to "label1"
+    And the JSON node "data[0].labels[1]" should be equal to "label2"
+
+    When I send a GET request to "/api/v2/people?label[]=label1&label[]=label2&labels_mode=all"
+    Then the JSON node "data" should have 1 element
+    And the JSON node "data[0].labels" should have 2 elements
+    And the JSON node "data[0].labels[0]" should be equal to "label1"
+    And the JSON node "data[0].labels[1]" should be equal to "label2"
+
+    When I send a GET request to "/api/v2/people?label[]=label1&label[]=label4"
+    Then the JSON node "data" should have 1 element
+    And the JSON node "data[0].labels" should have 2 elements
+    And the JSON node "data[0].labels[0]" should be equal to "label1"
+    And the JSON node "data[0].labels[1]" should be equal to "label2"
+
+    When I send a GET request to "/api/v2/people?label[]=label1&label[]=label4&labels_mode=all"
+    Then the JSON node "data" should have 0 element
+
+    When I send a GET request to "/api/v2/people?no_labels=1"
+    Then the JSON node "data" should have 4 element
