@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\MultiPermissions;
@@ -406,7 +407,9 @@ class TicketController extends AbstractController implements ProtectedController
         } else {
             $message->setMessageText($message_text);
         }
-
+        if ($this->in->getBool('is_note')) {
+            $message->is_agent_note = true;
+        }
         $this->em->persist($message);
         $ticket->addMessage($message);
 
