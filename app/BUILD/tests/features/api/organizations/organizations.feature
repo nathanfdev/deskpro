@@ -122,9 +122,9 @@ Feature: /organizations endpoint
     And the JSON node "data.email_domains" should have 2 elements
     And the JSON node "data.email_domains[0]" should be equal to "domain1.com"
     And the JSON node "data.email_domains[1]" should be equal to "domain2.com"
-    And the JSON node "data.usergroups" should have 2 elements
-    And the JSON node "data.usergroups[0]" should be equal to 1
-    And the JSON node "data.usergroups[1]" should be equal to 2
+    And the JSON node "data.user_groups" should have 2 elements
+    And the JSON node "data.user_groups[0]" should be equal to 1
+    And the JSON node "data.user_groups[1]" should be equal to 2
     And the JSON node "data.contact_data" should have 8 elements
     And the JSON node "data.contact_data[0].id" should be equal to 1
     And the JSON node "data.contact_data[0].contact_type" should be equal to "phone"
@@ -266,3 +266,11 @@ Feature: /organizations endpoint
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data.email_domains" should have 0 elements
+
+  Scenario: I filter by user_groups
+    When I send a GET request to "/api/v2/organizations"
+    Then the JSON node "data" should have 3 elements
+
+    When I send a GET request to "/api/v2/organizations?user_group[]=2"
+    Then the JSON node "data" should have 1 element
+    And the JSON node "data[0].user_groups[1]" should be equal to 2

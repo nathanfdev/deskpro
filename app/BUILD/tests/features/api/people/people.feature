@@ -66,11 +66,11 @@ Feature: /people endpoint
     And the JSON node "data.fields.5.value" should exist
     And the JSON node "data.fields.6.value" should be equal to "some text"
     And the JSON node "data.fields.7.value" should be equal to 0
-    And the JSON node "data.usergroups" should have 4 elements
-    And the JSON node "data.usergroups[0]" should be equal to 1
-    And the JSON node "data.usergroups[1]" should be equal to 2
-    And the JSON node "data.usergroups[2]" should be equal to 7
-    And the JSON node "data.usergroups[3]" should be equal to 8
+    And the JSON node "data.user_groups" should have 4 elements
+    And the JSON node "data.user_groups[0]" should be equal to 1
+    And the JSON node "data.user_groups[1]" should be equal to 2
+    And the JSON node "data.user_groups[2]" should be equal to 7
+    And the JSON node "data.user_groups[3]" should be equal to 8
     And the JSON node "data.contact_data[0].contact_type" should be equal to "website"
     And the JSON node "data.contact_data[0].id" should be equal to 1
     And the JSON node "data.contact_data[1].id" should be equal to 2
@@ -106,11 +106,11 @@ Feature: /people endpoint
     When I send a GET request to "/api/v2/people/5"
     Then the response status code should be 200
     And the JSON node "data.name" should be equal to "Modified Name"
-    And the JSON node "data.usergroups" should have 2 elements
-    And the JSON node "data.usergroups[0]" should be equal to 2
-    And the JSON node "data.usergroups[1]" should be equal to 7
+    And the JSON node "data.user_groups" should have 2 elements
+    And the JSON node "data.user_groups[0]" should be equal to 2
+    And the JSON node "data.user_groups[1]" should be equal to 7
 
-  Scenario: I modify usergroups
+  Scenario: I modify user_groups
     When I send a PUT request to "/api/v2/people/5" with body:
     """
 {
@@ -123,11 +123,22 @@ Feature: /people endpoint
     When I send a GET request to "/api/v2/people/5"
     Then the response status code should be 200
     And the JSON node "data.name" should be equal to "Modified Name"
-    And the JSON node "data.usergroups" should have 2 elements
-    And the JSON node "data.usergroups[0]" should be equal to 1
-    And the JSON node "data.usergroups[1]" should be equal to 8
+    And the JSON node "data.user_groups" should have 2 elements
+    And the JSON node "data.user_groups[0]" should be equal to 1
+    And the JSON node "data.user_groups[1]" should be equal to 8
 
-  Scenario: I reset usergroups
+  Scenario: I filter by user_groups
+    When I send a GET request to "/api/v2/people"
+    Then the JSON node "data" should have 5 elements
+
+    When I send a GET request to "/api/v2/people?user_group[]=2"
+    Then the JSON node "data" should have 4 elements
+    And the JSON node "data[0].user_groups[1]" should be equal to 2
+    And the JSON node "data[1].user_groups[1]" should be equal to 2
+    And the JSON node "data[2].user_groups[1]" should be equal to 2
+    And the JSON node "data[3].user_groups[1]" should be equal to 2
+
+  Scenario: I reset user_groups
     When I send a PUT request to "/api/v2/people/5" with body:
     """
 {
@@ -140,4 +151,4 @@ Feature: /people endpoint
     When I send a GET request to "/api/v2/people/5"
     Then the response status code should be 200
     And the JSON node "data.name" should be equal to "Modified Name"
-    And the JSON node "data.usergroups" should have 0 elements
+    And the JSON node "data.user_groups" should have 0 elements

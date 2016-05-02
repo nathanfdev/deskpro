@@ -92,7 +92,7 @@ class Organization
      *
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    protected $usergroups;
+    protected $userGroups;
 
     /**
      * Labels associated with this organization.
@@ -179,7 +179,7 @@ class Organization
         $this->summary         = $organization->getSummary();
         $this->importance      = $organization->getImportance();
         $this->fields          = $organization->getCustomData();
-        $this->usergroups      = $organization->getUsergroups();
+        $this->userGroups      = $organization->getUsergroups();
         $this->labels          = $organization->getLabels();
         $this->contact_data    = $organization->getContactData();
         $this->email_domains   = $organization->getEmailDomains();

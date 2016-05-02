@@ -322,7 +322,7 @@ class Person
      *
      * @var ArrayCollection
      */
-    protected $usergroups;
+    protected $userGroups;
 
     /**
      * Labels associated with this user.
@@ -479,7 +479,7 @@ class Person
         $this->dateCreated             = $person->date_created;
         $this->dateLastLogin           = $person->date_last_login;
         $this->browser                 = $person->browser;
-        $this->usergroups              = $person->getUsergroups();
+        $this->userGroups              = $person->getUsergroups();
         $this->labels                  = $person->getLabels();
         $this->primaryEmail            = $person->getPrimaryEmail();
         $this->ticketsCount            = $person->getTicketsCount();
