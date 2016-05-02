@@ -104,12 +104,7 @@ class OrganizationsController extends CrudController
     protected function applyListGroupBy(QueryBuilder $qb, $alias, $groupBy, Request $request)
     {
         if ($groupBy === 'user_group') {
-            $qb
-                ->leftJoin("$alias.usergroups", 'groups')
-                ->addSelect('groups.title as title')
-                ->addSelect('groups.id as group_name')
-                ->groupBy('group_name')
-            ;
+            UsergroupsHelper::applyUserGroupsGroupBy(new RequestQueryContext($qb, $alias, $request));
         }
     }
 }

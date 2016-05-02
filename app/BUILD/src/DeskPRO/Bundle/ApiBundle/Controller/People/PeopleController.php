@@ -206,12 +206,7 @@ class PeopleController extends CrudController
     {
         switch ($groupBy) {
             case 'user_group':
-                $qb
-                    ->leftJoin("$alias.usergroups", 'groups')
-                    ->addSelect('groups.title as title')
-                    ->addSelect('groups.id as group_name')
-                    ->groupBy('group_name')
-                ;
+                UsergroupsHelper::applyUserGroupsGroupBy(new RequestQueryContext($qb, $alias, $request));
 
                 break;
             case 'agent_team':

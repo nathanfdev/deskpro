@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,11 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usergroup;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
@@ -59,22 +58,28 @@ class UsergroupsType extends AbstractType
 
     /**
      * {@inheritdoc}
+     *
+     * @param OptionsResolver $resolver
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        /* @var OptionsResolver $resolver */
         $resolver
             ->setRequired(['owner', 'is_agent_group'])
             ->setAllowedTypes([
                 'is_agent_group' => 'bool',
+                'owner'          => [Person::class, Organization::class],
             ])
             ->setDefaults([
                 'class'         => Usergroup::class,
                 'multiple'      => true,
+                'mapped'        => false,
                 'query_builder' => function (EntityRepository $repository, $options) {
                     return $repository
                         ->createQueryBuilder('u')
-                        ->where('u.is_agent_group = '.(int) $options['is_agent_group'])
+                        ->where('u.is_agent_group = :is_agent_group')
+                        ->andWhere('u.is_enabled = 1')
+                        ->andWhere("u.sys_name NOT IN ('everyone', 'registered')")
+                        ->setParameter('is_agent_group', $options['is_agent_group'])
                     ;
                 },
             ])
@@ -97,15 +102,13 @@ class UsergroupsType extends AbstractType
      */
     public function onFilterValues(FormEvent $event)
     {
-        $form       = $event->getForm();
-        $all_groups = $event->getData() ?: new ArrayCollection();
+        $owner = $this->getOwner($event);
 
-        $is_agent_group  = $form->getConfig()->getOption('is_agent_group');
-        $filtered_groups = $all_groups->filter(function (Usergroup $user_group) use ($is_agent_group) {
-            return $user_group->is_agent_group === $is_agent_group;
-        });
-
-        $event->setData($filtered_groups);
+        if ($this->isAgent($event)) {
+            $event->setData($owner->getPublicAgentgroups());
+        } else {
+            $event->setData($owner->getPublicUsergroups());
+        }
     }
 
     /**
@@ -113,28 +116,43 @@ class UsergroupsType extends AbstractType
      */
     public function onMergeValues(FormEvent $event)
     {
-        $form   = $event->getForm();
-        $config = $form->getConfig();
+        /** @var Person|Organization $owner */
+        $owner   = $this->getOwner($event);
+        $oldData = $this->isAgent($event) ? $owner->getPublicAgentgroups() : $owner->getPublicUsergroups();
+        $newData = $event->getData();
 
-        $property_path  = $config->getOption('property_path') ?: $form->getName();
-        $is_agent_group = $config->getOption('is_agent_group');
+        /** @var ArrayCollection $usergroups */
+        $usergroups = $owner->getUsergroups();
 
-        /** @var ArrayCollection $all_groups */
-        $all_groups  = $config->getOption('owner')->$property_path;
-        $type_groups = $event->getData();
-
-        /** @var Usergroup $user_group */
-        foreach ($type_groups as $user_group) {
-            if (!$all_groups->contains($user_group)) {
-                $all_groups->add($user_group);
+        foreach ($oldData as $group) {
+            if (!$newData->contains($group)) {
+                $usergroups->removeElement($group);
             }
         }
-        foreach ($all_groups as $user_group) {
-            if ($user_group->is_agent_group === $is_agent_group && !$type_groups->contains($user_group)) {
-                $all_groups->removeElement($user_group);
+        foreach ($newData as $group) {
+            if (!$oldData->contains($group)) {
+                $usergroups->add($group);
             }
         }
+    }
 
-        $event->setData($all_groups);
+    /**
+     * @param FormEvent $event
+     *
+     * @return bool
+     */
+    private function isAgent(FormEvent $event)
+    {
+        return $event->getForm()->getConfig()->getOption('is_agent_group');
+    }
+
+    /**
+     * @param FormEvent $event
+     *
+     * @return mixed
+     */
+    private function getOwner(FormEvent $event)
+    {
+        return $event->getForm()->getConfig()->getOption('owner');
     }
 }

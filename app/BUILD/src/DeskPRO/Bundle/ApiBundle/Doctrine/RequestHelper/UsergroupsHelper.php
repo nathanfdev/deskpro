@@ -36,14 +36,29 @@ class UsergroupsHelper
     /**
      * @param RequestQueryContext $context
      */
+    public static function joinUserGroups(RequestQueryContext $context)
+    {
+        $alias = $context->getAlias();
+        $qb    = $context->getQb();
+
+        if (in_array('ug', $qb->getAllAliases())) {
+            return;
+        }
+
+        $qb->leftJoin("$alias.usergroups", 'ug');
+        $qb->andWhere("ug.sys_name NOT IN ('everyone', 'registered') OR ug.sys_name is null");
+    }
+
+    /**
+     * @param RequestQueryContext $context
+     */
     public static function applyUsergroupsFilters(RequestQueryContext $context)
     {
-        $qb    = $context->getQb();
-        $alias = $context->getAlias();
+        self::joinUserGroups($context);
+        $qb = $context->getQb();
 
         $userGroups = $context->getRequest()->get('user_group');
         if (null !== $userGroups) {
-            $qb->leftJoin("$alias.usergroups", 'ug');
             if (is_array($userGroups)) {
                 $qb->andWhere('ug.id in (:user_group_id)');
                 $qb->setParameter('user_group_id', $userGroups);
@@ -57,5 +72,20 @@ class UsergroupsHelper
                 }
             }
         }
+    }
+
+    /**
+     * @param RequestQueryContext $context
+     */
+    public static function applyUserGroupsGroupBy(RequestQueryContext $context)
+    {
+        self::joinUserGroups($context);
+
+        $qb = $context->getQb();
+        $qb
+            ->addSelect('ug.title as title')
+            ->addSelect('ug.id as group_name')
+            ->groupBy('group_name')
+        ;
     }
 }

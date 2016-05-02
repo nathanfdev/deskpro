@@ -64,7 +64,7 @@ Feature: /organizations endpoint
   "picture_blob": "AAAAAAAAAAAAAAAAAA",
   "labels": ["label1", "label1", "label2"],
   "email_domains": ["domain1.com", "domain2.com"],
-  "user_groups": [1, 2, 1],
+  "user_groups": [3, 5],
   "contact_data": {
     "website": [
       {"url": "http://site.com"}
@@ -123,8 +123,8 @@ Feature: /organizations endpoint
     And the JSON node "data.email_domains[0]" should be equal to "domain1.com"
     And the JSON node "data.email_domains[1]" should be equal to "domain2.com"
     And the JSON node "data.user_groups" should have 2 elements
-    And the JSON node "data.user_groups[0]" should be equal to 1
-    And the JSON node "data.user_groups[1]" should be equal to 2
+    And the JSON node "data.user_groups[0]" should be equal to 3
+    And the JSON node "data.user_groups[1]" should be equal to 5
     And the JSON node "data.contact_data" should have 8 elements
     And the JSON node "data.contact_data[0].id" should be equal to 1
     And the JSON node "data.contact_data[0].contact_type" should be equal to "phone"
@@ -271,9 +271,9 @@ Feature: /organizations endpoint
     When I send a GET request to "/api/v2/organizations"
     Then the JSON node "data" should have 3 elements
 
-    When I send a GET request to "/api/v2/organizations?user_group[]=2"
+    When I send a GET request to "/api/v2/organizations?user_group[]=3"
     Then the JSON node "data" should have 1 element
-    And the JSON node "data[0].user_groups[1]" should be equal to 2
+    And the JSON node "data[0].user_groups[0]" should be equal to 3
 
   Scenario: I filter by labels
     When I send a GET request to "/api/v2/organizations?label[]=label1&label[]=label3"
