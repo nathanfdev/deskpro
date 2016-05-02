@@ -52,6 +52,14 @@ Feature: /feedback/counts endpoint
     And the JSON node "data" should exist
     And the JSON node "data.count" should be equal to 64
     And the JSON node "data.grouped_by" should be equal to "custom_category"
-    And the JSON node "data.nested[0].id" should be equal to 1
+    And the JSON node "data.nested[0].id" should be equal to 2
     And the JSON node "data.nested[0].title" should be equal to "Windows"
     And the JSON node "data.nested[0].count" should be equal to 1
+
+    And the JSON node "data.nested[1].id" should be equal to 3
+    And the JSON node "data.nested[1].title" should be equal to "Mac"
+    And the JSON node "data.nested[1].count" should be equal to 1
+
+    And the JSON node "data.nested[2].id" should be equal to 4
+    And the JSON node "data.nested[2].title" should be equal to "Linux"
+    And the JSON node "data.nested[2].count" should be equal to 2
