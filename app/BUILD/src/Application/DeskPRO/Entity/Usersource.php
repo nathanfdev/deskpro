@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
@@ -57,6 +58,8 @@ use Orb\Util\Util;
  * @property $user_permission_group
  * @property $app
  * @property $id
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 class Usersource extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -73,12 +76,18 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
     /**
      * The unique ID.
      *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id = null;
 
     /**
      * The title of this usersource.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      *
      * @var string
      */
@@ -88,6 +97,9 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
      * "user" or "agent" for now.
      *
      * the interface this usersource applies to
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      *
      * @var string
      */
@@ -110,10 +122,13 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
      *
      * @var array
      */
-    protected $options = array();
+    protected $options = [];
 
     /**
      * The order in which to display this source in UserBundle.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      *
      * @var int
      */
@@ -121,6 +136,9 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * True if this usersource is enabled/usable.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
      *
      * @var bool
      */
@@ -300,26 +318,26 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Usersource';
-        $metadata->setPrimaryTable(array('name' => 'usersources'));
+        $metadata->setPrimaryTable(['name' => 'usersources']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title'));
-        $metadata->mapField(array('fieldName' => 'type', 'type' => 'string', 'length' => 25, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'type'));
-        $metadata->mapField(array('fieldName' => 'source_type', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'source_type'));
-        $metadata->mapField(array('fieldName' => 'lost_password_url', 'type' => 'string', 'length' => 1000, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'lost_password_url'));
-        $metadata->mapField(array('fieldName' => 'options', 'type' => 'json_array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'options'));
-        $metadata->mapField(array('fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order'));
-        $metadata->mapField(array('fieldName' => 'is_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_enabled'));
-        $metadata->mapField(array('fieldName' => 'is_sso_auto', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_sso_auto'));
-        $metadata->mapField(array('fieldName' => 'is_sso_background', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_sso_background'));
-        $metadata->mapField(array('fieldName' => 'sync_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'default' => 0, 'nullable' => false, 'columnName' => 'sync_enabled'));
+        $metadata->mapField(['fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true]);
+        $metadata->mapField(['fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title']);
+        $metadata->mapField(['fieldName' => 'type', 'type' => 'string', 'length' => 25, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'type']);
+        $metadata->mapField(['fieldName' => 'source_type', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'source_type']);
+        $metadata->mapField(['fieldName' => 'lost_password_url', 'type' => 'string', 'length' => 1000, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'lost_password_url']);
+        $metadata->mapField(['fieldName' => 'options', 'type' => 'json_array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'options']);
+        $metadata->mapField(['fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order']);
+        $metadata->mapField(['fieldName' => 'is_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_enabled']);
+        $metadata->mapField(['fieldName' => 'is_sso_auto', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_sso_auto']);
+        $metadata->mapField(['fieldName' => 'is_sso_background', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_sso_background']);
+        $metadata->mapField(['fieldName' => 'sync_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'default' => 0, 'nullable' => false, 'columnName' => 'sync_enabled']);
 
-        $metadata->mapManyToOne(array('fieldName' => 'app', 'targetEntity' => 'Application\\DeskPRO\\Entity\\AppInstance', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'app_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
+        $metadata->mapManyToOne(['fieldName' => 'app', 'targetEntity' => 'Application\\DeskPRO\\Entity\\AppInstance', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => [0 => ['name' => 'app_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null]]]);
 
-        $metadata->mapField(array('fieldName' => 'auto_agent', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auto_agent'));
+        $metadata->mapField(['fieldName' => 'auto_agent', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auto_agent']);
 
-        $metadata->mapManyToOne(array('fieldName' => 'agent_permission_group', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'agent_permission_group_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
-        $metadata->mapManyToOne(array('fieldName' => 'user_permission_group', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'user_permission_group_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
+        $metadata->mapManyToOne(['fieldName' => 'agent_permission_group', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => [0 => ['name' => 'agent_permission_group_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null]]]);
+        $metadata->mapManyToOne(['fieldName' => 'user_permission_group', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => [0 => ['name' => 'user_permission_group_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null]]]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }
 
@@ -419,5 +437,32 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
     public function getApp()
     {
         return $this->app;
+    }
+
+    /**
+     * @JMS\VirtualProperty()
+     * @JMS\SerializedName("source_type")
+     * @JMS\Type("string")
+     *
+     * @return string
+     */
+    public function getShortSourceType()
+    {
+        return strtolower(Util::getBaseClassname($this->source_type));
+    }
+
+    /**
+     * @JMS\VirtualProperty()
+     * @JMS\Type("array")
+     */
+    public function getDisplayOptions()
+    {
+        $options = [];
+
+        if (isset($this->options['login_custom_text'])) {
+            $options['button_label'] = $this->options['login_custom_text'];
+        }
+
+        return $options;
     }
 }
