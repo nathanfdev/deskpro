@@ -475,8 +475,8 @@ abstract class CrudController extends BaseController
      */
     protected function handleForm($model, Request $request, array $options = [])
     {
-        $partial_update = $model && $model->getId();
-        $status         = $partial_update ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
+        $partialUpdate = $model && $model->getId();
+        $status        = $partialUpdate ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
         $form    = $this->createForm(static::$type, $model, $options);
         $decoded = $this->getRequestContent($request);
@@ -490,7 +490,7 @@ abstract class CrudController extends BaseController
 
         // in this case form ViolationMapper should apply entity validation errors on the submitted form
 
-        $form->submit($decoded, !$partial_update);
+        $form->submit($decoded, !$partialUpdate);
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }

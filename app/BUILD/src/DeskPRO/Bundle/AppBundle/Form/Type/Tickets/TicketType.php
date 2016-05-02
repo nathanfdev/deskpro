@@ -93,8 +93,9 @@ class TicketType extends AbstractType
             ->add('department', EntityType::class, [
                 'class' => Department::class,
             ])
-            ->add('parent_ticket', EntityType::class, [
-                'class' => Ticket::class,
+            ->add('parent', EntityType::class, [
+                'class'         => Ticket::class,
+                'property_path' => 'parent_ticket',
             ])
             ->add('language', EntityType::class, [
                 'class' => Language::class,

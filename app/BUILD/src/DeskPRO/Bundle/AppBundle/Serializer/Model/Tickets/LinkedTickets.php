@@ -34,8 +34,6 @@ use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class LinkedTickets.
- *
- * @JMS\ExclusionPolicy("none")
  */
 class LinkedTickets
 {
