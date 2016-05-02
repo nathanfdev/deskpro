@@ -97,4 +97,19 @@ class OrganizationsController extends CrudController
         UsergroupsHelper::applyUsergroupsFilters($context);
         LabelHelper::applyLabelFilters($context, static::$entity);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function applyListGroupBy(QueryBuilder $qb, $alias, $groupBy, Request $request)
+    {
+        if ($groupBy === 'user_group') {
+            $qb
+                ->leftJoin("$alias.usergroups", 'groups')
+                ->addSelect('groups.title as title')
+                ->addSelect('groups.id as group_name')
+                ->groupBy('group_name')
+            ;
+        }
+    }
 }
