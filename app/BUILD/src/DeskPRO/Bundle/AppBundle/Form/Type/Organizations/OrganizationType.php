@@ -26,21 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Organizations;
 
 use Application\DeskPRO\Entity\LabelOrganization;
 use Application\DeskPRO\Entity\Organization;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\ContactData\ContactDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\UsergroupsType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
@@ -70,15 +69,15 @@ class OrganizationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', 'text')
+            ->add('name', TextType::class)
             ->add('parent', 'entity', [
-                'class' => 'DeskPRO:Organization',
+                'class' => Organization::class,
             ])
-            ->add('picture_blob', 'auth_blob', [
+            ->add('picture_blob', BlobAuthType::class, [
                 'property_path' => 'picture_blob',
             ])
-            ->add('summary', 'text')
-            ->add('importance', 'integer', [
+            ->add('summary', TextType::class)
+            ->add('importance', IntegerType::class, [
                 'empty_data' => '0',
             ])
             ->add('labels', LabelsCollectionType::class, [
@@ -91,7 +90,7 @@ class OrganizationType extends AbstractType
                 'owner'          => $builder->getData(),
                 'property_path'  => 'usergroups',
             ])
-            ->add('email_domains', 'organization_email_domains', [
+            ->add('email_domains', OrganizationEmailDomainsType::class, [
                 'owner'          => $builder->getData(),
                 'error_bubbling' => false,
             ])
@@ -104,14 +103,6 @@ class OrganizationType extends AbstractType
                 'parent_builder' => $builder,
             ])
         ;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'organization';
     }
 
     /**
