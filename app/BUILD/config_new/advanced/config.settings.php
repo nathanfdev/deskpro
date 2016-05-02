@@ -77,3 +77,17 @@ $SETTINGS['notification.settings.polling_client.polling_interval'] = 500000;
 # Disable API response caching                       #
 ######################################################
 $SETTINGS['response.cache.enabled'] = false;
+
+######################################################
+# Segment tracking (http://segment.com/)             #
+######################################################
+
+$SETTINGS['segment'] = [
+    'enabled'            => false,
+    'agent_project_key'  => '',
+    'portal_project_key' => '',
+    'group_data'         => [
+        'group_id' => '',
+        'data'     => '',
+    ]
+];

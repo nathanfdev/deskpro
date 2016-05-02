@@ -62,3 +62,9 @@ services:
     arguments: ["@service_container"]
     tags:
       - { name: kernel.event_subscriber }
+
+  segment_tracking.listener:
+    class: DeskPRO\Bundle\AppBundle\EventListener\SegmentTrackingListener
+    arguments: ["@security.token_storage", "@settings_resolver"]
+    tags:
+      - { name: kernel.event_subscriber, priority: -10 }
