@@ -91,7 +91,6 @@ $SETTINGS['segment'] = [
         'data'     => '',
     ]
 ];
-$SETTINGS['response.cache.enabled'] = false;
 
 ######################################################
 # Bugsnag (http://bugsnag.com/)                      #
