@@ -74,8 +74,17 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class FeedbackController extends AbstractFeedbackController
 {
-    public static $exposeOnly = ['get', 'list', 'count', 'delete'];
-    public static $entity     = Feedback::class;
+    public static $exposeOnly  = ['get', 'list', 'count', 'delete'];
+    public static $entity      = Feedback::class;
+    public static $sortOptions = [
+        'date_created' => 'date_created',
+        'total_rating' => 'total_rating',
+        'num_ratings'  => 'num_ratings',
+        'title'        => 'title',
+        'status'       => 'status',
+        'category'     => ['join' => 'category', 'as' => 'c', 'sort' => 'c.id'],
+        'person'       => ['join' => 'person', 'as' => 'p', 'sort' => 'p.id'],
+    ];
 
     /**
      * {@inheritdoc}
@@ -107,11 +116,12 @@ class FeedbackController extends AbstractFeedbackController
                 break;
             case 'custom_category':
                 $qb
-                    ->leftJoin("{$alias}.custom_data", 'customCat')
-                    ->leftJoin('customCat.field', 'def')
-                    ->addSelect('customCat.input as title')
-                    ->addSelect('customCat.id as group_name')
-                    ->andWhere('def.sys_name = :cat')
+                    ->join("{$alias}.custom_data", 'customCat')
+                    ->join('customCat.field', 'def')
+                    ->join('def.parent', 'parent')
+                    ->addSelect('def.title as title')
+                    ->addSelect('def.id as group_name')
+                    ->andWhere('parent.sys_name = :cat')
                     ->setParameter('cat', 'cat')
                     ->groupBy('group_name')
                 ;
@@ -128,7 +138,7 @@ class FeedbackController extends AbstractFeedbackController
                 break;
             case 'status_category':
                 $qb
-                    ->leftJoin("{$alias}.status_category", 'statusCategory')
+                    ->join("{$alias}.status_category", 'statusCategory')
                     ->addSelect('statusCategory.title as title')
                     ->addSelect('statusCategory.id as group_name')
                     ->groupBy('group_name')

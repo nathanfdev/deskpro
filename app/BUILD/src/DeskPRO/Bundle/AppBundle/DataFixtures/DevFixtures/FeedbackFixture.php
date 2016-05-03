@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
+use Application\DeskPRO\CustomFields\Handler\Choice;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\Feedback;
@@ -153,27 +154,30 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
 
     private function loadCustomDefFeedback()
     {
-        $cat_field = new CustomDefFeedback();
-        $cat_field
+        $customCatDef = new CustomDefFeedback();
+        $customCatDef
             ->setSysName('cat')
             ->setTitle('Category')
             ->setDescription('e.g., maybe Windows, Mac, Linux.')
-            ->setHandlerClass('Application\DeskPRO\CustomFields\Handler\Choice');
-        $this->manager->persist($cat_field);
+            ->setHandlerClass(Choice::class)
+        ;
+
+        $this->manager->persist($customCatDef);
         $this->manager->flush();
 
         foreach (['Windows', 'Mac', 'Linux'] as $order => $title) {
-            $opt_f = new CustomDefFeedback();
-            $opt_f
-                ->setParent($cat_field)
+            $customCatChoice = new CustomDefFeedback();
+            $customCatChoice
+                ->setParent($customCatDef)
                 ->setTitle($title)
                 ->setDescription('')
                 ->setIsUserEnabled(true)
                 ->setIsEnabled(true)
                 ->setDisplayOreder($order)
-                ->setOption('parent_id', 0);
+                ->setOption('parent_id', 0)
+            ;
 
-            $this->manager->persist($opt_f);
+            $customCatDef->addChild($customCatChoice);
         }
 
         $this->manager->flush();
@@ -184,8 +188,9 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
         foreach ($this->statusesCategories as $status => $titles) {
             foreach ($titles as $title) {
                 $cat = new FeedbackStatusCategory();
-                $cat->setStatusType($status)
-                    ->setTitle($title);
+                $cat->setStatusType($status);
+                $cat->setTitle($title);
+
                 $this->manager->persist($cat);
             }
         }
@@ -304,20 +309,22 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
 
     private function loadFeedbackCategories()
     {
-        $batch         = [];
-        $categoryDefId = $this->fetchIds(
-            self::TABLE_CUSTOM_DEF_FEEDBACK,
-            [['field' => 'title', 'value' => 'Category']]
-        );
+        $customCatDef = $this->manager->getRepository(CustomDefFeedback::class)->findOneBy([
+            'sys_name' => 'cat',
+        ]);
+
+        $batch = [];
+        $ids   = $customCatDef->getChoiceIds();
+
         foreach ($this->feedback as $feedbackId) {
-            $values = [
-                'feedback_id' => $feedbackId,
-                'field_id'    => $categoryDefId[0],
-                'value'       => 0,
-                'input'       => $this->faker->randomElement($this->categories),
+            $batch[] = [
+                'feedback_id'   => $feedbackId,
+                'root_field_id' => $customCatDef->getId(),
+                'field_id'      => $ids[array_rand($ids)],
+                'value'         => 1,
             ];
-            $batch[] = $values;
         }
+
         $this->db->batchInsert(self::TABLE_CUSTOM_DATA_FEEDBACK, $batch, true);
     }
 

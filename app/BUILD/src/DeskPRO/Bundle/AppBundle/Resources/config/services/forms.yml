@@ -182,11 +182,6 @@ services:
     arguments:
       - "@term_to_json_converter"
 
-  form.feedback_comment:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\FeedbackCommentType
-    tags:
-      - { name: form.type, alias: feedback_comment }
-
   form.ticket_message_attachment:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageAttachmentType
     arguments: ["@blob.storage", "@blob_repository", "@attachment_accepter"]

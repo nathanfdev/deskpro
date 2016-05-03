@@ -30,13 +30,12 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
 use Application\DeskPRO\Entity\FeedbackComment;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\CountBadge\Count;
-use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
-use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
+use DeskPRO\Bundle\AppBundle\Form\Type\FeedbackCommentType;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -72,98 +71,13 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class FeedbackAllCommentsController extends AbstractFeedbackController
 {
-    public static $exposeOnly = ['get', 'list', 'put', 'delete'];
-    public static $entity     = FeedbackComment::class;
-    public static $listOrder  = 'asc';
-    public static $type       = 'feedback_comment';
-
-    /**
-     * Count overall feedback comments or count for given feedbacks.
-     *
-     * @ApiDoc(
-     *      section="Feedback",
-     *      tags={"feedback"="#4422bb", "comments"="#22aa22"},
-     *      description="get counter of comments for feedback",
-     *      statusCodes={
-     *          200="Success"
-     *      },
-     *      filters={
-     *          {"name"="ids", "dataType"="string", "description"="a comma separated list of feedback ids"}
-     *     }
-     * )
-     * @Rest\Get("/counter")
-     *
-     * @param Request $request
-     *
-     * @return View
-     */
-    public function counterAction(Request $request)
-    {
-        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW_LIST, new PermissionGroupContext(FeedbackComment::class));
-
-        $qb = $this->getManager()->createQueryBuilder();
-        $qb
-            ->select('f.id', 'f.title', 'count(c.id) as counter')
-            ->from(FeedbackComment::class, 'c')
-            ->join('c.feedback', 'f')
-            ->groupBy('f.id')
-        ;
-
-        $ids = $request->get('ids');
-        if ($ids) {
-            $qb
-                ->andWhere('f.id IN (:ids)')
-                ->setParameter('ids', $ids)
-            ;
-        }
-
-        $result = $qb->getQuery()->getResult();
-        $count  = Count::fromGroupedBy('feedback');
-        foreach ($result as $value) {
-            $count->addNested($value['counter'], $value['id'], null, $value['title'], true);
-        }
-
-        return View::create($this->wrap($count));
-    }
-
-    /**
-     * Fetch a list of feedback comments awaiting validation.
-     *
-     * @ApiDoc(
-     *      section="Feedback",
-     *      tags={"feedback"="#4422bb", "comments"="#22aa22"},
-     *      description="get count of feedback comment awaiting validation",
-     *      parameters={
-     *          {
-     *              "name"="awaiting_validation",
-     *              "requirement"="\d+",
-     *              "description"="count of feedback comment awaiting validation",
-     *              "dataType"="integer",
-     *              "required"=true
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Returned if everything is ok"
-     *      }
-     * )
-     *
-     * @Rest\Get("/counts")
-     *
-     * @return View
-     */
-    public function getCountAwaitingValidationAction()
-    {
-        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW_LIST, new PermissionGroupContext(FeedbackComment::class));
-
-        $qb = $this->getManager()->createQueryBuilder();
-        $qb
-            ->select('count(c)')
-            ->from(FeedbackComment::class, 'c')
-            ->where('c.is_reviewed = 0')
-        ;
-
-        return View::create($this->wrap(Count::fromValue($qb->getQuery()->getSingleScalarResult())));
-    }
+    public static $exposeOnly  = ['get', 'list', 'count', 'put', 'delete'];
+    public static $entity      = FeedbackComment::class;
+    public static $type        = FeedbackCommentType::class;
+    public static $listOrder   = 'asc';
+    public static $sortOptions = [
+        'date_created' => 'date_created',
+    ];
 
     /**
      * {@inheritdoc}
@@ -175,5 +89,21 @@ class FeedbackAllCommentsController extends AbstractFeedbackController
         $this->applyNotReviewedFilters($qb, $alias, $request);
         $this->applyDateCreatedFilters($qb, $alias, $request);
         $this->applyFeedbackListFilters($qb, 'feedback', $request);
+
+        ListHelper::applyInListFilter(new RequestQueryContext($qb, 'feedback', $request), 'id', 'feedback_ids');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function applyListGroupBy(QueryBuilder $qb, $alias, $groupBy, Request $request)
+    {
+        if ($groupBy === 'feedback') {
+            $qb
+                ->addSelect('feedback.title as title')
+                ->addSelect('feedback.id as group_name')
+                ->groupBy('group_name')
+            ;
+        }
     }
 }

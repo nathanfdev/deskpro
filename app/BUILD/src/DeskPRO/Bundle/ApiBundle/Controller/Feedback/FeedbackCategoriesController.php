@@ -26,13 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
-use Application\DeskPRO\Entity\CustomDataFeedback;
+use Application\DeskPRO\Entity\CustomDefFeedback;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -69,13 +65,14 @@ class FeedbackCategoriesController extends BaseController
     {
         $qb = $this->getManager()->createQueryBuilder();
         $qb
-            ->select('category.id', 'category.input')
-            ->from(CustomDataFeedback::class, 'category')
-            ->leftJoin('category.field', 'field')
-            ->where('field.title = :title')
-            ->setParameter('title', 'Category')
-            ->groupBy('category.input')
-            ->orderBy('category.input', 'asc')
+            ->select('def.id', 'def.title')
+            ->from(CustomDefFeedback::class, 'def')
+            ->join('def.parent', 'parent')
+            ->addSelect('def.title as title')
+            ->addSelect('def.id as group_name')
+            ->andWhere('parent.sys_name = :cat')
+            ->setParameter('cat', 'cat')
+            ->orderBy('def.title', 'asc')
         ;
 
         return View::create($this->wrap($qb->getQuery()->getResult()));
