@@ -121,7 +121,7 @@ security:
             stateless: true
             anonymous: ~
         api_tokens_request:
-            pattern: ^/api/v2/api_tokens$
+            pattern: ^/api/v2/api_tokens
             stateless: true
             anonymous: ~
         api_session_request:

@@ -1,3 +1,4 @@
+@basic
 Feature: API Authentication
   In order to interact with the API
   As anyone
@@ -86,43 +87,6 @@ Feature: API Authentication
     And the JSON node "data.auth_method" should be equal to "api_key"
     And the JSON node "data.person_id" should be equal to 3
     And I should have an authenticated token with the role ROLE_API
-
-  Scenario: I fail to get a token because I make a bad request
-    When I send a POST request to "/api/v2/api_tokens" with body:
-    """
-    {
-    }
-    """
-    And the response status code should be 400
-    And the JSON node "status" should be equal to 400
-    And the JSON node "code" should be equal to "invalid_input"
-    And the JSON node "message" should be equal to "Request input is invalid."
-    And the JSON node "errors" should exist
-
-  Scenario: I fail to get a token because I use the wrong credentials
-    When I send a POST request to "/api/v2/api_tokens" with body:
-    """
-    {
-      "email": "agent@deskpro.dev",
-      "password": "wrong password"
-    }
-    """
-    Then the response status code should be 401
-    And the header "WWW-Authenticate" should be equal to 'session,token,key realm="DeskPRO API"'
-    And the JSON node "status" should be equal to 401
-    And the JSON node "code" should be equal to "bad_credentials"
-    And the JSON node "message" should be equal to "Bad credentials."
-
-  Scenario: I successfully get a token
-    When I send a POST request to "/api/v2/api_tokens" with body:
-    """
-    {
-      "email": "agent@deskpro.dev",
-      "password": "password"
-    }
-    """
-    Then the response status code should be 201
-    And the JSON node "data.token" should exist
 
   @reinstall
   Scenario: I have a valid api token (user "agent" id=2 in the "api" data set)

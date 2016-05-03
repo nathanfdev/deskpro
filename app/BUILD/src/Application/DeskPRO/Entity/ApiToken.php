@@ -122,6 +122,38 @@ class ApiToken extends DomainObject
         return $this->person;
     }
 
+    /**
+     * @param Person $person
+     *
+     * @return $this
+     */
+    public function setPerson($person)
+    {
+        $this->setModelField('person', $person);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getScope()
+    {
+        return $this->scope;
+    }
+
+    /**
+     * @param string $scope
+     *
+     * @return $this
+     */
+    public function setScope($scope)
+    {
+        $this->setModelField('scope', $scope);
+
+        return $this;
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################

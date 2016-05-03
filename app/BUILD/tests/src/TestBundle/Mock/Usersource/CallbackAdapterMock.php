@@ -26,39 +26,32 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * Orb.
- *
- * @category Auth
- */
+namespace DpTestSrc\TestBundle\Mock\Usersource;
 
-namespace Orb\Auth\Adapter;
+use Application\DeskPRO\Usersource\Adapter\AbstractAdapter;
+use Application\DeskPRO\Usersource\UsersourceInfo;
+use DpTestSrc\TestBundle\Mock\Usersource\Auth\CallbackAdapterStub;
 
 /**
- * Adapters that use a two-step authentication scheme with a callback (such as OpenID)
- * should implement this interface.
- *
- * When the callback page is called up, the context is set which should change the operations
- * used in the authenticate() method of AdapterInterface.
+ * Class CallbackAdapterMock.
  */
-interface CallbackInterface extends AdapterInterface
+class CallbackAdapterMock extends AbstractAdapter
 {
     /**
-     * Switches the adapter to the callback context using form data $data.
-     *
-     * @param array $data Form data or other callback data
+     * {@inheritdoc}
      */
-    public function setCallbackContext(array $data);
+    public function getCapabilities()
+    {
+        return [
+            UsersourceInfo::CAPABILITY_LOGIN_PULL_BTN,
+        ];
+    }
 
     /**
-     * Set the callback URL the user should return to when the remote service is finished.
-     *
-     * @param string $url The URL
+     * {@inheritdoc}
      */
-    public function setCallbackUrl($url);
-
-    /**
-     * @return string
-     */
-    public function getCallbackUrl();
+    protected function _createAuthAdapterObject()
+    {
+        return new CallbackAdapterStub();
+    }
 }
