@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\LabelDef;
@@ -512,7 +511,9 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         $batch = [];
 
         foreach ($this->ticketIds as $ticketId) {
-            $status  = $this->faker->randomElement([TicketSla::STATUS_OK, TicketSla::STATUS_WARNING, TicketSla::STATUS_FAIL]);
+            $status = $this->faker->randomElement(
+                [TicketSla::STATUS_OK, TicketSla::STATUS_WARNING, TicketSla::STATUS_FAIL]
+            );
             $batch[] = [
                 'ticket_id'  => $ticketId,
                 'sla_id'     => 1,
@@ -532,10 +533,13 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
     {
         foreach ($this->ticketIds as $id) {
             if ($id > 2 && $this->faker->boolean(33)) {
-                $parentId = $this->faker->numberBetween(1, $id - 1);
+                $previousTicketKeys = array_keys(
+                    array_slice($this->ticketIds, 0, array_search($id, $this->ticketIds) - 1, true)
+                );
+                $parentKey = $this->faker->randomElement($previousTicketKeys);
                 $this->db->executeUpdate(
                     'UPDATE tickets
-                    SET tickets.parent_ticket_id = '.$parentId.'
+                    SET tickets.parent_ticket_id = '.$this->ticketIds[$parentKey].'
                     WHERE tickets.id = '.$id
                 );
             }
