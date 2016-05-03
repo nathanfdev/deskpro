@@ -92,8 +92,7 @@ See example on javascript tab.
     "reply": {
                "message":     "<p>Fine HTML or nl2br message</p>", 
                "isAgentNote": 1
-    }
-    "set_of_actions":["mark_as_spam", "delete", "unassign"]
+    },
     "set_of_actions":["mark_as_spam", "delete"]
 }
 ```
