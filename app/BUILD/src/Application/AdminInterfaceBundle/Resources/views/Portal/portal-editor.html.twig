@@ -12,11 +12,22 @@
                     <a href ng-click="Portal.commit()" class="save-changes">Save Changes</a>
                 </div>
 
-                <a href="#" class="current-theme">
-                    <span class="preview-icon"></span>
-                    <span class="theme-tag">Theme:</span> <span class="theme-title">An Excellent Theme</span>
-                    <span class="dropdown-icon"><i class="fa fa-sort"></i></span>
-                </a>
+                <!-- Theme -->
+
+                <div class="panel-title">
+                    <a ng-click="Portal.togglePanel('theme')">
+                        Theme
+                        <i class="fa fa-caret-right" ng-show="!Portal.isOpen('theme')"></i>
+                        <i class="fa fa-caret-down" ng-show="Portal.isOpen('theme')"></i>
+                    </a>
+                </div>
+
+                <div class="site-text" ng-show="Portal.isOpen('theme')">
+                    <select ng-model="Portal.selected_theme"
+                            ng-change="Portal.editTheme()"
+                            ng-options="item.id as item.title for item in Portal.available_themes">
+                    </select>
+                </div>
 
                 <!-- Variables settings -->
 
