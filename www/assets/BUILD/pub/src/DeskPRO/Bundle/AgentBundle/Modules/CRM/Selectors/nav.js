@@ -22,7 +22,12 @@ export const agentsSelector = createSelector(
   (state) => state.get('agents')
 );
 
-export const labelsSelector = createSelector(
+export const organizationLabelsSelector = createSelector(
   stateSelector,
-  state => state.get('labels')
+  state => state.get('organizationLabels')
+);
+
+export const personLabelsSelector = createSelector(
+  stateSelector,
+  state => state.get('personLabels')
 );

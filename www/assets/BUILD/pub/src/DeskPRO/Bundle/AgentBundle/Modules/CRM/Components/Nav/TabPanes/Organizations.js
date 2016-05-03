@@ -19,15 +19,13 @@ export class Organizations extends Component {
       <TabsPaneStatefulContainer id="orgTab">
         <Tab title="All">
           <ul>
-            <ListItemContainer group="organizations"
-                               label="all"
-                               listOptions={listOptions}>
+            <ListItemContainer group="organizations" label="all" listOptions={listOptions}>
               <ListItem count={organizations.get('count')} label="All Organizations" />
             </ListItemContainer>
           </ul>
         </Tab>
         <Tab title="Labels">
-          {labels && <LabelsDictionary labels={labels.get('organization')} onClick={() => {}} />}
+          {labels && <LabelsDictionary labels={labels} onClick={() => {}} />}
         </Tab>
       </TabsPaneStatefulContainer>
     );
