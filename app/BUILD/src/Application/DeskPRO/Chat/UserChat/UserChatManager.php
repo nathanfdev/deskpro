@@ -847,6 +847,8 @@ class UserChatManager
      * @param \Application\DeskPRO\Entity\ChatConversation $convo
      * @param                                              $email
      * @param string                                       $name
+     *
+     * @deprecated Emails are sent through a WorkerProcess now
      */
     public function sendChatTranscript(ChatConversation $convo, $email, $name = '')
     {
@@ -878,25 +880,19 @@ class UserChatManager
      */
     public function autoSendChatTranscript(ChatConversation $convo)
     {
-        if (!$convo->date_first_agent_message) {
+        if (!$convo->getDateFirstAgentMessage()) {
             return false;
         }
 
         $email = '';
-        $name  = '';
-        if ($convo->person && $convo->person->getPrimaryEmailAddress()) {
-            $email = $convo->person->getPrimaryEmailAddress();
-        } elseif ($convo->person_email) {
-            $email = $convo->person_email;
-        }
-        if ($convo->person && $convo->person->name) {
-            $name = $convo->person->name;
-        } elseif ($convo->person_name) {
-            $name = $convo->person_name;
+        if ($convo->getPerson() && $convo->getPerson()->getPrimaryEmailAddress()) {
+            $email = $convo->getPerson()->getPrimaryEmailAddress();
+        } elseif ($convo->getPersonEmail()) {
+            $email = $convo->getPersonEmail();
         }
 
         if ($email) {
-            $convo->should_send_transcript = true;
+            $convo->setShouldSendTranscript(true);
             App::getOrm()->persist($convo);
             App::getOrm()->flush($convo);
 
