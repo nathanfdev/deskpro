@@ -41,7 +41,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Class UsersourcesController.
  *
  * @ApiModes("all")
- * @Rest\Route("/usersources/{context}", requirements={"context": "(agent|user)"})
+ * @Rest\Route("/user_sources/{context}", requirements={"context": "(agent|user)"})
  */
 class UsersourcesController extends CrudController
 {
