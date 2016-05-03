@@ -28,7 +28,7 @@ export const repositoriesConfig = {
   Comment:              { type: 'factory', factory: () => new CommentsRepository(api) },
   ArticlePendingCreate: {
     type:            'api',
-    url:             '/article_pending_create',
+    url:             '/article_pending_creates',
     repositoryClass: ArticlePendingCreateRepository
   }
 };
