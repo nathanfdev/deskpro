@@ -81,7 +81,10 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
     testSettingsModal: ->
       loadAccountTest = =>
         postData = {
-          url: @$scope.settings.url
+          url: @$scope.settings.url,
+          tika_enabled: @$scope.settings.tika_enabled,
+          tika_ip: @$scope.settings.tika_ip,
+          tika_port: @$scope.settings.tika_port
         }
         return @Api.sendPostJson('/elastic-search/settings/test', postData)
 

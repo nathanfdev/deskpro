@@ -12,24 +12,31 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
         @$scope.logo_blob = res.data
 
       data_promise = @Api.sendGet('/password_settings', {rate_limit_context: 'agent'}).then( (res) =>
-        @$scope.settings = {
-          sessions_lifetime:              res.data.settings.sessions_lifetime,
-          session_keepalive_require_page: res.data.settings.session_keepalive_require_page,
-          ip_security_enabled:            res.data.settings.ip_security_enabled,
-          ip_security_mode:               res.data.settings.ip_security_mode || 'admins',
-          ip_security_whitelist_lifetime: res.data.settings.ip_security_whitelist_lifetime + "",
-          disable_notifications:          res.data.settings.disable_notifications,
-          enable_agent_rememberme:        res.data.settings.enable_agent_rememberme,
-          enable_user_rememberme:         res.data.settings.enable_user_rememberme,
-          agent_enable_kb_shortcuts: res.data.settings.agent_enable_kb_shortcuts,
-        }
+        @initPolicy(res.data)
+      )
 
-        @$scope.rate_limit_settings = res.data.rate_limit_settings
+      return data_promise
 
-        @$scope.agent = res.data.settings.agent
-        @$scope.user  = res.data.settings.user
 
-        @$scope.agent.standard_policy = @$scope.agent.min_length == 5 and
+    initPolicy: (data) =>
+      @$scope.settings = {
+        sessions_lifetime:              data.settings.sessions_lifetime,
+        session_keepalive_require_page: data.settings.session_keepalive_require_page,
+        ip_security_enabled:            data.settings.ip_security_enabled,
+        ip_security_mode:               data.settings.ip_security_mode || 'admins',
+        ip_security_whitelist_lifetime: data.settings.ip_security_whitelist_lifetime + "",
+        disable_notifications:          data.settings.disable_notifications,
+        enable_agent_rememberme:        data.settings.enable_agent_rememberme,
+        enable_user_rememberme:         data.settings.enable_user_rememberme,
+        agent_enable_kb_shortcuts: data.settings.agent_enable_kb_shortcuts,
+      }
+
+      @$scope.rate_limit_settings = data.rate_limit_settings
+
+      @$scope.agent = data.settings.agent
+      @$scope.user  = data.settings.user
+
+      @$scope.agent.standard_policy = @$scope.agent.min_length == 5 and
           !@$scope.agent.max_age and
           !@$scope.agent.forbid_reuse and
           !@$scope.agent.require_num_uppercase and
@@ -37,16 +44,13 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
           !@$scope.agent.require_num_number and
           !@$scope.agent.require_num_symbol
 
-        @$scope.user.standard_policy = @$scope.user.min_length == 5 and
+      @$scope.user.standard_policy = @$scope.user.min_length == 5 and
           !@$scope.user.max_age and
           !@$scope.user.forbid_reuse and
           !@$scope.user.require_num_uppercase and
           !@$scope.user.require_num_lowercase and
           !@$scope.user.require_num_number and
           !@$scope.user.require_num_symbol
-      )
-
-      return data_promise
 
     saveSettings: ->
       return if @$scope.form_props.$invalid
@@ -81,8 +85,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
         rate_limit_settings: @$scope.rate_limit_settings
         rate_limit_context: 'agent'
 
-      @Api.sendPostJson('/password_settings', post).success( =>
+      @Api.sendPostJson('/password_settings', post).success((data) =>
         @stopSpinner('saving').then(=>
+          @initPolicy(data)
           message = @getRegisteredMessage('saved_settings')
           @Growl.success(message) if message && message.length
         )

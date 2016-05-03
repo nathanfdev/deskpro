@@ -1,0 +1,32 @@
+{
+	"package_name": "deskpro_slack",
+	"is_native": true,
+	"title": "Slack",
+	"description": "Allows you to add a ticket trigger that inserts a message into a Slack channel when matched.",
+	"tags": ["notifications", "ticket-triggers"],
+	"api_version": 1,
+	"version": 1,
+	"version_name": "1.0.0",
+	"is_single": true,
+	"author": {
+		"name": "DeskPRO",
+		"email": "support@deskpro.com",
+		"link": "https://www.deskpro.com/"
+	},
+	"settings_def": [
+		{
+			"name": "webhook_url",
+			"type": "text",
+			"label": "Webhook URL",
+			"description": "This is the Webhook of your Slack channel. This can be created at https://my.slack.com/services/new/incoming-webhook/",
+			"native_only": true
+		},
+		{
+			"name": "notify",
+			"type": "checkbox",
+			"label": "Notify",
+			"checkbox_label": "Yes",
+			"description": "Notify channel members of a new message"
+		}
+	]
+}

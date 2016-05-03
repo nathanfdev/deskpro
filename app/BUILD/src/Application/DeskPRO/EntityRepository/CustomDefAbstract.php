@@ -169,6 +169,13 @@ class CustomDefAbstract extends AbstractEntityRepository
         )->setParameter('ids', $ids)->getOneOrNullResult();
     }
 
+    public function delete(array $ids)
+    {
+        return $this->getEntityManager()->createQuery(
+            "DELETE {$this->_entityName} f WHERE f.id IN (:ids)"
+        )->setParameter('ids', $ids)->execute();
+    }
+
     public function updateTo(array $fromIds, $toId)
     {
         $table = str_replace('_def_', '_data_', $this->getTableName());
