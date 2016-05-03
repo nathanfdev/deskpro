@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\LabelDef;
+use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketFlagged;
 use Application\DeskPRO\Entity\TicketSla;
@@ -509,14 +510,14 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
     private function loadTicketSlas()
     {
         $batch = [];
-
+        $sla   = $this->manager->getRepository(Sla::class)->findOneBy(['sla_type' => 'first_response']);
         foreach ($this->ticketIds as $ticketId) {
             $status = $this->faker->randomElement(
                 [TicketSla::STATUS_OK, TicketSla::STATUS_WARNING, TicketSla::STATUS_FAIL]
             );
             $batch[] = [
                 'ticket_id'  => $ticketId,
-                'sla_id'     => 1,
+                'sla_id'     => $sla->getId(),
                 'sla_status' => $status,
                 'warn_date'  => $status === TicketSla::STATUS_WARNING ?
                     $this->faker->dateTimeBetween('-14 days', '-10 days')->format('Y-m-d H:i:s') : null,
@@ -536,12 +537,15 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
                 $previousTicketKeys = array_keys(
                     array_slice($this->ticketIds, 0, array_search($id, $this->ticketIds) - 1, true)
                 );
-                $parentKey = $this->faker->randomElement($previousTicketKeys);
-                $this->db->executeUpdate(
-                    'UPDATE tickets
-                    SET tickets.parent_ticket_id = '.$this->ticketIds[$parentKey].'
-                    WHERE tickets.id = '.$id
-                );
+
+                if (!empty($previousTicketKeys)) {
+                    $parentKey = $this->faker->randomElement($previousTicketKeys);
+                    $this->db->executeUpdate(
+                        'UPDATE tickets
+                            SET tickets.parent_ticket_id = '.$this->ticketIds[$parentKey].'
+                            WHERE tickets.id = '.$id
+                    );
+                }
             }
         }
     }
