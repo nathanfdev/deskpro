@@ -2408,6 +2408,14 @@ define(function() {
 		controller: 'Admin_ServerAuditLogs_Ctrl_ServerAuditLogs'
 	});
 
+  routes.push({
+    id: 'server.audit_logs.view',
+    url: '/view/{id}',
+    templateName: 'Server/server-audit_logs-view.html',
+    controller: 'Admin_ServerAuditLogs_Ctrl_ServerAuditLogsView',
+    target: "appbody@server"
+  });
+
 	// routes.push({
 	// 	id: 'server.incidents.view',
 	// 	url: '/view/{id}',

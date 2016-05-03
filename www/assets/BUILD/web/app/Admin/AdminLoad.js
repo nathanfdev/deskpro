@@ -132,6 +132,7 @@ define([
   'Admin/Server/Ctrl/ServerFileCheck',
   'Admin/Server/Ctrl/ServerReportFile',
   'Admin/Server/Ctrl/ServerAuditLogs',
+  'Admin/Server/Ctrl/ServerAuditLogsView',
   'Admin/Settings/Ctrl/AdvancedSettings',
   'Admin/Settings/Ctrl/ElasticSearch',
   'Admin/Settings/Ctrl/GeneralSettings',

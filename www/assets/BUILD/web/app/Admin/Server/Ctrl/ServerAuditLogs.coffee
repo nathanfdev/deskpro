@@ -2,7 +2,7 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
   class Admin_ServerAuditLogs_Ctrl_ServerAuditLogs extends Admin_Ctrl_Base
     @CTRL_ID   = 'Admin_ServerAuditLogs_Ctrl_ServerAuditLogs'
     @CTRL_AS   = 'ServerAuditLogs'
-    @DEPS      = ['Api2', 'DpDateService']
+    @DEPS      = ['Api2']
 
     init: ->
       @filters = {

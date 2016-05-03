@@ -12,21 +12,21 @@
                 <div>
                     <table>
                         <tr>
-                            <td width="80">Performer`s id</td>
+                            <td width="80">{{ phrase('admin.audit_logs.performer_id') }}</td>
                             <td width="100">
                                 <input class="form-control" type="number" ng-model="ServerAuditLogs.filters.performer_id" />
                             </td>
-                            <td style="padding-left: 15px" width="115">Performer`s name</td>
+                            <td style="padding-left: 15px" width="115">{{ phrase('admin.audit_logs.performer_name') }}</td>
                             <td width="150">
                                 <input class="form-control" type="text" ng-model="ServerAuditLogs.filters.performer_name" />
                             </td>
-                            <td style="padding-left: 15px" width="75">Api key</td>
+                            <td style="padding-left: 15px" width="75">{{ phrase('admin.audit_logs.api_key_id') }}</td>
                             <td width="100">
                                 <input class="form-control" type="number" ng-model="ServerAuditLogs.filters.api_key" />
                             </td>
                         </tr>
                         <tr>
-                            <td width="100">Object type</td>
+                            <td width="100">{{ phrase('admin.audit_logs.object_type_filter') }}</td>
                             <td width="100">
                                 <input class="form-control" type="text" ng-model="ServerAuditLogs.filters.object_type" />
                             </td>
@@ -34,7 +34,7 @@
                             <td width="100">
                                 <input class="form-control" type="number" ng-model="ServerAuditLogs.filters.object_id" />
                             </td>
-                            <td width="95" style="padding-left: 15px" >Object name</td>
+                            <td width="95" style="padding-left: 15px" >{{ phrase('admin.audit_logs.object_name_filter') }}</td>
                             <td width="100">
                                 <input class="form-control" type="text" ng-model="ServerAuditLogs.filters.object_name" />
                             </td>
@@ -44,7 +44,7 @@
                             <td width="100">
                                 <input class="form-control" type="text" ng-model="ServerAuditLogs.filters.action" />
                             </td>
-                            <td width="150" style="padding-left: 15px">Date created from-to</td>
+                            <td width="150" style="padding-left: 15px">{{ phrase('admin.audit_logs.date_created_filter') }}</td>
                             <td colspan="3">
                                 <span>
                                     <input type="text" class="form-control" style="width: 140px; display: inline-block;"
@@ -63,8 +63,8 @@
                         </tr>
                     </table>
                     <div class="text-center" style="border-top: 1px solid #aed7e0; padding-top: 8px; margin-top: 8px;">
-                        <button class="btn btn-primary" ng-click="ServerAuditLogs.updateFilter()">Filter</button>
-                        <button class="btn btn-default" ng-click="ServerAuditLogs.clearFilter()">Clear Filter</button>
+                        <button class="btn btn-primary" ng-click="ServerAuditLogs.updateFilter()">{{ phrase('admin.audit_logs.filter') }}</button>
+                        <button class="btn btn-default" ng-click="ServerAuditLogs.clearFilter()">{{ phrase('admin.audit_logs.clear_filter') }}</button>
                     </div>
                 </div>
             </div>
@@ -93,38 +93,38 @@
 				<thead>
 					<tr>
 						<th>
-							{{ phrase('agent.general.id') }}
+							{{ phrase('admin.audit_logs.id') }}
 						</th>
 						<th>
-							{{ phrase('agent.general.date_created') }}
+							{{ phrase('admin.audit_logs.date_created') }}
 						</th>
 						<th>
-							{{ phrase('admin.server.action') }}
+							{{ phrase('admin.audit_logs.action') }}
 						</th>
 						<th>
-							{{ phrase('admin.server.object_name') }}
+							{{ phrase('admin.audit_logs.object_name') }}
 						</th>
 						<th>
-							{{ phrase('admin.server.object_type') }}
+							{{ phrase('admin.audit_logs.object_type') }}
 						</th>
 						<th>
-							{{ phrase('admin.server.object_id') }}
+							{{ phrase('admin.audit_logs.object_id') }}
 						</th>
 						<th>
-							{{ phrase('admin.server.performer_id') }}
+							{{ phrase('admin.audit_logs.performer_id') }}
 						</th>
 						<th>
-							{{ phrase('admin.server.performer_name') }}
+							{{ phrase('admin.audit_logs.performer_name') }}
 						</th>
 						<th>
-							{{ phrase('admin.server.api_key_id') }}
+							{{ phrase('admin.audit_logs.api_key_id') }}
 						</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr ng-repeat="log in ServerAuditLogs.logs">
 						<td class="alt dp-id-col">
-							{{ ng_var('log.id') }}
+							<a ng-href="{{ ng_href('server.audit_logs.view', '{id: log.id}') }}">{{ ng_var('log.id') }}</a>
 						</td>
 						<td>
 							{{ ng_var('log.date_created | date : "yyyy-MM-d H:mm:ss"') }}

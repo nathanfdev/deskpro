@@ -76,11 +76,5 @@ return array(
     'admin.server.upload_effect_max_explain'         => 'Based on the three values above, this is the effective maximum filesize your server is currently able to accept.',
     'admin.server.upload_memory_limit_explain'       => 'This is the maximum amount of memory PHP can use. A file must be read into memory for DeskPRO to process and save it. The maximum filesize you can accept through an upload will be about 1/3 of this value.',
     'admin.server.we_detected_php_ini_at'            => 'We have detected the path to your php.ini file at {{path}}',
-    'admin.server.object_id'                         => 'Object id',
-    'admin.server.object_name'                       => 'Object name (if exists)',
-    'admin.server.object_type'                       => 'Object type (refer docs)',
-    'admin.server.action'                            => 'Performed action',
-    'admin.server.performer_id'                      => 'Performer\'s id',
-    'admin.server.performer_name'                    => 'Performer\'s name',
-    'admin.server.api_key_id'                        => 'ApiKey ID (if so)',
+
 );
