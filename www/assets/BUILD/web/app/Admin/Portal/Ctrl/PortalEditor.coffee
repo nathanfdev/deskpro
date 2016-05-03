@@ -13,6 +13,10 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         {id: "standard", title: "Standard"},
         {id: "sidebar", title: "Sidebar"}
       ]
+      @welcome_box = {
+        title: '',
+        message: ''
+      }
       @advanced_tab = 'header'
       @is_advanced_expanded = false
       @asset_files = []
@@ -48,6 +52,18 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         data: {
           theme_id: @selected_theme
         }
+      })
+      @recompiling = true
+      request.then(
+        () => @refreshPreviewUrl(); @recompiling = false,
+        () => @serverError(); @recompiling = false
+      )
+
+     editWelcomeBox: () =>
+      request = @$http({
+        method: 'PUT',
+        url: '/portal/api/style/edit-theme-set/welcome-message',
+        data: @welcome_box
       })
       @recompiling = true
       request.then(
@@ -94,6 +110,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         @loadLogo(),
         @loadTemplateOptions(),
         @loadThemeSet()
+        @loadWelcomeBox()
       ])
 
     togglePanel: (name) ->
@@ -173,6 +190,11 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @$http.get('/portal/api/style/edit-theme-set/info').success((data) =>
         @theme_set = data
         @selected_theme = @theme_set.theme_id
+      )
+
+    loadWelcomeBox: () ->
+      @$http.get('/portal/api/style/edit-theme-set/welcome-message').success((data) =>
+        @welcome_box = data
       )
 
     loadLogo: () ->

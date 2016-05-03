@@ -7,26 +7,7 @@
 
         {% show section nav_buttons_big %}
 
-        <div class="wrapper">
-            <div class="column-full">
-                <div class="welcome-block-wrapper">
-                    <div class="welcome-block-second-border">
-                        <div class="welcome-block">
-                            <h1>Welcome to DeskPRO</h1>
-                            <p>You can get in touch with us using our <a href="https://support.deskpro.com/new-ticket">Contact Us</a> page, email us directly on <a href="mailto:support@deskpro.com">support@deskpro.com</a> or call us on 1-888-DESKPRO or (+44) 020-3582-1980. If you're an existing DeskPRO customer and you have a feature request, please look through our Feedback section and vote for it, or submit it if it's not already there.</p>
-                            <div class="welcome-block-social-media">
-                                <h3>DeskPRO on social media</h3>
-                                <ul>
-                                    <li><a href="https://www.facebook.com/deskpro/"><i class="fa fa-facebook-square"></i></a></li>
-                                    <li><a href="https://twitter.com/deskpro"><i class="fa fa-twitter-square"></i></a></li>
-                                    <li><a href="https://plus.google.com/+Deskpro"><i class="fa fa-google-plus-square"></i></a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {% include 'Theme:Portal:welcome-box.html.twig' %}
 
     </section>
     {% endblock content_header %}

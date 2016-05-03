@@ -29,30 +29,27 @@
                     </select>
                 </div>
 
-                <!-- Variables settings -->
+                <!-- Welcome -->
 
-                <div ng-repeat="(group, variables) in Portal.groups">
-                    <div class="panel-title">
-                        <a ng-click="Portal.togglePanel(group)">
-                            <span ng-bind="Portal.label(group)"></span>
-                            <i class="fa fa-caret-right" ng-show="!Portal.isOpen(group)"></i>
-                            <i class="fa fa-caret-down" ng-show="Portal.isOpen(group)"></i>
-                        </a>
-                    </div>
-                    <div>
-                        <div class="color-scheme font-options" ng-show="Portal.isOpen(group)">
-                            <div ng-repeat="variable in variables" ng-init="variable.label = Portal.label(variable.name)">
-                                <dp-portal-designer-variable-form
-                                    variable="variable"
-                                    values="Portal.values">
-                                </dp-portal-designer-variable-form>
-                            </div>
-                        </div>
-                    </div>
+                <div class="panel-title">
+                    <a ng-click="Portal.togglePanel('site_copy')">
+                        Welcome Message
+                        <i class="fa fa-caret-right" ng-show="!Portal.isOpen('site_copy')"></i>
+                        <i class="fa fa-caret-down" ng-show="Portal.isOpen('site_copy')"></i>
+                    </a>
                 </div>
 
-                <!-- End of variables settings -->
+                <div class="site-text" ng-show="Portal.isOpen('site_copy')">
+                    <form>
+                        <input type="text" placeholder="Welcome Box title" ng-model="Portal.welcome_box.title">
+                        <textarea placeholder="Content (HTML)" style="height: 200px;" ng-model="Portal.welcome_box.message"></textarea>
+                        <div class="footer">
+                            <button ng-click="Portal.editWelcomeBox()">Set &amp; Preview</button>
+                        </div>
+                    </form>
+                </div>
 
+                <!-- Logo -->
                 <div class="panel-title">
                     <a ng-click="Portal.togglePanel('logo')">
                         Logo
@@ -75,23 +72,29 @@
                     </div>
                 </div>
 
-                <div class="panel-title">
-                    <a ng-click="Portal.togglePanel('site_copy')">
-                        Site Copy
-                        <i class="fa fa-caret-right" ng-show="!Portal.isOpen('site_copy')"></i>
-                        <i class="fa fa-caret-down" ng-show="Portal.isOpen('site_copy')"></i>
-                    </a>
+                <!-- Vars -->
+
+                <div ng-repeat="(group, variables) in Portal.groups">
+                    <div class="panel-title">
+                        <a ng-click="Portal.togglePanel(group)">
+                            <span ng-bind="Portal.label(group)"></span>
+                            <i class="fa fa-caret-right" ng-show="!Portal.isOpen(group)"></i>
+                            <i class="fa fa-caret-down" ng-show="Portal.isOpen(group)"></i>
+                        </a>
+                    </div>
+                    <div>
+                        <div class="color-scheme font-options" ng-show="Portal.isOpen(group)">
+                            <div ng-repeat="variable in variables" ng-init="variable.label = Portal.label(variable.name)">
+                                <dp-portal-designer-variable-form
+                                    variable="variable"
+                                    values="Portal.values">
+                                </dp-portal-designer-variable-form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="site-text" ng-show="Portal.isOpen('site_copy')">
-                    <form>
-                        <input type="text" placeholder="Sample input text">
-                        <textarea placeholder="Add a welcome message"></textarea>
-                        <div class="footer">
-                            <input type="submit" value="Preview Welcome Message">
-                        </div>
-                    </form>
-                </div>
+                <!-- End of variables settings -->
 
                 <!-- Advanced edit ------------------------------------------------------------------------------------>
 
