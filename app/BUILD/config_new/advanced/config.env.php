@@ -24,6 +24,24 @@ $ENV_CONFIG = [];
 $ENV_CONFIG['set_umask'] = 0000;
 
 ######################################################
+# Proxy servers                                      #
+######################################################
+# This is array of trusted proxy addresses.          #
+# You can specify an ip address, range or a file to  #
+# read array from.
+#
+# $ENV_CONFIG['trust_proxy_data'] = [
+#     '127.0.0.1',
+#     '127.0.0.1/24',
+#     '@/etc/proxy_list.php'
+# ];
+######################################################
+
+$ENV_CONFIG['trust_proxy_data'] = [
+    '127.0.0.1'
+];
+
+######################################################
 # DeskPRO runtime environment                        #
 ######################################################
 # This can be: prod, dev or test                     #

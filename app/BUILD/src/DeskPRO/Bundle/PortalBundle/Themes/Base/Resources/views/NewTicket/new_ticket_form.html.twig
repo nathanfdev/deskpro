@@ -1,6 +1,5 @@
 <div id="new_ticket_page">
 
-
     <!-- BEGIN NEW TICKET FORM -->
     <div class="dp_ticket_form dpx-form{% if show_ticket_suggestions %} dpx-with-ticket-deflection{% endif %}">
 
@@ -27,7 +26,10 @@
 
         <div class="dynamic-fields-container">
             {% for widget in form.children if not widget.rendered and widget.vars.name not in ['_token', '_dp_csrf_token'] %}
-                <div class="column-full deskpro-form-widget field_{{ widget.vars.name }}" data-field="{{ widget.vars.name }}">
+                {% set hidden = widget.vars.name == 'department' and app.request.get('hide_department') %}
+                <div class="column-full deskpro-form-widget field_{{ widget.vars.name }}"
+                     data-field="{{ widget.vars.name }}"
+                     style="{% if hidden %}display: none;{% endif %}">
                     {{ form_row(widget) }}
                 </div>
             {% endfor %}

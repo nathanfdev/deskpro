@@ -203,6 +203,21 @@ class PortalController extends AbstractController
     }
 
     /**
+     * Display logout button.
+     *
+     * This action is used to render logout confirmation button in case of LogoutException because of invalid CSRF.
+     *
+     * @Route("/logout-confirmation", name="portal_logout_confirm")
+     */
+    public function confirmLogoutAction()
+    {
+        return $this->renderThemeView(
+            'PortalBundle:Logout:confirmation.html.twig',
+            ['url' => $this->get('security.logout_url_generator')->getLogoutUrl('portal')]
+        );
+    }
+
+    /**
      * @Route("/change-language", name="portal_change_language")
      */
     public function changeLanguageAction(Request $request)
