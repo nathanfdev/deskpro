@@ -1,0 +1,22 @@
+{% if app.user and app.user.is_agent and app.user.can_admin %}
+    <!DOCTYPE html>
+    <html {% if language.is_rtl %}class="as-rtl" dir="rtl"{% endif %}>
+        <head>
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+            <meta charset="utf-8" />
+            <title></title>
+            <link href="{{ portal_css_url() }}" media="all" rel="stylesheet" type="text/css" />
+        </head>
+    <body>
+        <div class="world with-searchbox">
+            <section class="with-dpx">
+                <div class="column-full">
+                    The portal has been disabled. You can re-enable the portal from <a href="{{ path('admin') }}#/portal/setup">Admin > Portal > Setup</a>.
+                </div>
+            </section>
+        </div>
+    </body>
+    </html>
+{% else %}
+    <!-- Portal disabled -->
+{% endif %}
