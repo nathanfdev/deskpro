@@ -54,7 +54,7 @@ $DB_CONFIG['read_search']  = [];
 //$DB_CONFIG['system']['dbname']   = 'deskpro_sys';
 
 ######################################################
-# System incidents Database                          #
+# Audit Log Database                                 #
 ######################################################
 # Define one to use separate db for audit logs       #
 # (of course if you are using sql db for logs)       #
