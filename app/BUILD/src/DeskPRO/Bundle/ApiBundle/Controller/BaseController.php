@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use DeskPRO\Bundle\ApiBundle\View\Representation\StandardRepresentation;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
+use DeskPRO\Bundle\SystemBundle\Bridge\ErrorHandler;
 use DeskPRO\Component\Util\TypeUtils;
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\Form\FormInterface;
@@ -255,6 +256,10 @@ class BaseController extends FOSRestController
      */
     protected function logException(\Exception $exception)
     {
+        $bugsnagSettings = $this->get('settings_resolver')->getGlobalSettings()->get('bugsnag');
+        if ($bugsnagSettings['enable_php']) {
+            ErrorHandler::bugsnagException($exception);
+        }
         $this->get('dp_sys.alerts.event_logger')->log($exception);
     }
 }

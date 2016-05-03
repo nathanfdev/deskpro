@@ -114,7 +114,14 @@ abstract class BaseKernel extends Kernel
         if ($this->dpEnv->isDebug() || $isCli) {
             \Symfony\Component\Debug\Debug::enable(true, true);
         } else {
-            \Monolog\ErrorHandler::register($this->container->get('logger'));
+            $bugsnagSettings = $this->container->get('settings_resolver')->getGlobalSettings()->get('bugsnag');
+            $bugsnagApiKey   = $bugsnagSettings['enable_php'] && $bugsnagSettings['api_key']
+                             ? $bugsnagSettings['api_key']
+                             : false;
+            \DeskPRO\Bundle\SystemBundle\Bridge\ErrorHandler::register(
+                $bugsnagApiKey,
+                $this->container->get('logger')
+            );
             ini_set('display_errors', 0);
         }
 
