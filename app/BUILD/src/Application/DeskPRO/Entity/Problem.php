@@ -127,10 +127,82 @@ class Problem extends DomainObject
 
     /**
      * @param Person $creator
+     *
+     * @return $this
      */
     public function setCreator($creator)
     {
-        $this->creator = $creator;
+        $this->setModelField('creator', $creator);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     *
+     * @return $this
+     */
+    public function setTitle($title)
+    {
+        $this->setModelField('title', $title);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOpen()
+    {
+        return $this->is_open;
+    }
+
+    /**
+     * @param bool $is_open
+     *
+     * @return $this
+     */
+    public function setIsOpen($is_open)
+    {
+        $this->setModelField('is_open', $is_open);
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection|Ticket[]
+     */
+    public function getTickets()
+    {
+        return $this->tickets;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    /**
+     * @param \DateTime $created
+     *
+     * @return $this
+     */
+    public function setCreated(\DateTime $created)
+    {
+        $this->setModelField('created', $created);
+
+        return $this;
     }
 
     ############################################################################
@@ -144,12 +216,12 @@ class Problem extends DomainObject
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Problem';
 
         if (defined('DP_INTERFACE') && DP_INTERFACE != 'install') {
-            foreach (array(
+            foreach ([
                          Events::prePersist,
                          Events::postPersist,
                          Events::preUpdate,
                          Events::postUpdate,
-                     ) as $event) {
+                     ] as $event) {
                 $metadata->addEntityListener(
                     $event,
                     'Application\DeskPRO\Entity\EventListener\ProblemListener',
@@ -159,81 +231,81 @@ class Problem extends DomainObject
         }
 
         $metadata->setPrimaryTable(
-            array(
+            [
                 'name'    => 'problems',
-                'indexes' => array(),
-            )
+                'indexes' => [],
+            ]
         );
 
         $metadata->mapField(
-            array(
+            [
                 'fieldName' => 'id',
                 'type'      => 'integer',
                 'id'        => true,
-            )
+            ]
         );
 
         $metadata->mapField(
-            array(
+            [
                 'fieldName' => 'title',
-            )
+            ]
         );
 
         $metadata->mapField(
-            array(
+            [
                 'fieldName' => 'created',
                 'type'      => 'datetime',
-            )
+            ]
         );
 
         $metadata->mapField(
-            array(
+            [
                 'fieldName' => 'is_open',
                 'type'      => 'boolean',
-            )
+            ]
         );
 
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'creator',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
-                'joinColumns'  => array(
-                    array(
+                'joinColumns'  => [
+                    [
                         'name'                 => 'person_id',
                         'referencedColumnName' => 'id',
                         'onDelete'             => 'set null',
-                    ),
-                ),
+                    ],
+                ],
                 'dpApi' => true,
-            )
+            ]
         );
 
         $metadata->mapManyToMany(
-            array(
+            [
                 'fieldName'    => 'tickets',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket',
-                'cascade'      => array('persist', 'merge'),
+                'cascade'      => ['persist', 'merge'],
                 'mappedBy'     => 'problems',
-                'joinTable'    => array(
+                'joinTable'    => [
                     'name'        => 'problem2tickets',
-                    'joinColumns' => array(
-                        array(
+                    'joinColumns' => [
+                        [
                             'name'                 => 'problem_id',
                             'referencedColumnName' => 'id',
                             'nullable'             => true,
                             'onDelete'             => 'cascade',
-                        ),
-                    ),
-                    'inverseJoinColumns' => array(
-                        array(
+                        ],
+                    ],
+                    'inverseJoinColumns' => [
+                        [
                             'name'                 => 'ticket_id',
                             'referencedColumnName' => 'id',
                             'nullable'             => true,
                             'onDelete'             => 'cascade',
-                        ),
-                    ),
-                ),
-            )
+                        ],
+                    ],
+                ],
+            ]
         );
     }
 }
