@@ -193,8 +193,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       )
 
     loadWelcomeBox: () ->
-      @$http.get('/portal/api/style/edit-theme-set/welcome-message').success((data) =>
-        @welcome_box = data
+      @$http.get('/portal/api/style/edit-theme-set/welcome-message').success((response) =>
+        @welcome_box = response.data
+        console.log(@welcome_box)
       )
 
     loadLogo: () ->
