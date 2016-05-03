@@ -68,3 +68,9 @@ services:
     arguments: ["@security.token_storage", "@settings_resolver"]
     tags:
       - { name: kernel.event_subscriber, priority: -10 }
+
+  bugsnag_js.listener:
+    class: DeskPRO\Bundle\AppBundle\EventListener\BugsnagJsListener
+    arguments: ["@settings_resolver"]
+    tags:
+      - { name: kernel.event_subscriber, priority: -10 }

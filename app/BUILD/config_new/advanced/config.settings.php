@@ -91,3 +91,14 @@ $SETTINGS['segment'] = [
         'data'     => '',
     ]
 ];
+$SETTINGS['response.cache.enabled'] = false;
+
+######################################################
+# Bugsnag (http://bugsnag.com/)                      #
+######################################################
+
+$SETTINGS['bugsnag'] = [
+    'api_key'    => '',
+    'enable_php' => false,
+    'enable_js'  => false,
+];
