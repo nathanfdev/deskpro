@@ -117,6 +117,7 @@ class TicketSla extends DomainObject
 
     /**
      * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Ticket>")
      *
      * @var Ticket
      */
@@ -124,6 +125,7 @@ class TicketSla extends DomainObject
 
     /**
      * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Sla>")
      *
      * @var Sla
      */
