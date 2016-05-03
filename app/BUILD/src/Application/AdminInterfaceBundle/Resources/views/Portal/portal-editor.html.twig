@@ -1,11 +1,11 @@
 {% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
 {% block fullpane_content %}
 <div class="content-wrapper portal-editor-wrap">
-    <section class="content editor" style="font-family: Lato, helvetica, verdana, sans-serif;">
+    <section class="content editor">
 
-        <div class="editor-panel">
+        <div class="editor-panel" dp-match-min-height watch="sidebar">
 
-            <div class="panel-wrapper">
+            <div class="panel-wrapper" dp-match-min-height watched-as="sidebar">
                 <div class="current-theme-actions">
                     <a href ng-click="Portal.save()" class="save-changes">Preview Changes</a>
                     <a href ng-click="Portal.discard()" class="discard-changes">Discard Changes</a>
@@ -246,6 +246,7 @@
                     close="Portal.closeTemplateEditor">
                 </dp-code-editor>
 
+                <br/><br/>
             </div><!-- End panel wrapper -->
 
         </div><!-- End editor panel -->
