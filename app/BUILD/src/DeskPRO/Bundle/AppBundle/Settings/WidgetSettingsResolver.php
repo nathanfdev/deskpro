@@ -29,10 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Settings;
 
 use Application\DeskPRO\Entity\DataStore;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\WidgetGlobalSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\WidgetOptions;
@@ -43,6 +43,7 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Class WidgetSettingsResolver.
@@ -69,18 +70,32 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     private $router;
 
     /**
+     * @var TokenStorageInterface
+     */
+    private $tokenStorage;
+
+    /**
+     * @var PortalPermissionsManager
+     */
+    private $permissionsManager;
+
+    /**
      * Constructor.
      *
      * @param BrandAwareSettingsResolver $settingsResolver
      * @param EntityManager              $em
      * @param Packages                   $assetPackages
      * @param RouterInterface            $router
+     * @param TokenStorageInterface      $tokenStorage,
+     * @param PortalPermissionsManager   $permissionsManager
      */
     public function __construct(
         BrandAwareSettingsResolver $settingsResolver,
         EntityManager              $em,
         Packages                   $assetPackages,
-        RouterInterface            $router
+        RouterInterface            $router,
+        TokenStorageInterface      $tokenStorage,
+        PortalPermissionsManager   $permissionsManager
     ) {
         parent::__construct($settingsResolver);
 
@@ -88,9 +103,11 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
             $router = $router->getBaseRouter();
         }
 
-        $this->em            = $em;
-        $this->assetPackages = $assetPackages;
-        $this->router        = $router;
+        $this->em                 = $em;
+        $this->assetPackages      = $assetPackages;
+        $this->router             = $router;
+        $this->tokenStorage       = $tokenStorage;
+        $this->permissionsManager = $permissionsManager;
     }
 
     /**

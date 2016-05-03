@@ -118,11 +118,6 @@ export const chatOptionsSelector = createSelector(
   options => options.get('chat')
 );
 
-export const widgetHasChatSelector = createSelector(
-  chatOptionsSelector,
-  options => options.get('enabled') !== undefined ? options.get('enabled') : true
-);
-
 export const widgetProactiveChatSelector = createSelector(
   chatOptionsSelector,
   options => options.get('proactive') !== undefined ? options.get('proactive') : true

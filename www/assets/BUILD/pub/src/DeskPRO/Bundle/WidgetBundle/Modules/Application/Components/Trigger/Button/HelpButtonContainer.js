@@ -10,7 +10,6 @@ import { openWidget, openTriggerPopup, closeTriggerPopup } from '../../../Action
 import { loadOnlineAgents } from '../../../Actions/peopleActions';
 import { onlineAgentsCountSelector } from '../../../Selectors/peopleSelectors';
 import {
-  widgetHasChatSelector,
   widgetProactiveChatSelector,
   widgetOpenedSelector,
   widgetPositionSelector,
@@ -27,8 +26,10 @@ import {
   liveDemoSelector
 } from '../../../Selectors/dpWindow';
 
+import { widgetBrandSettingsChatEnabledSelector } from '../../../Selectors/bootstrap';
+
 @connect(state => ({
-  hasChat:             widgetHasChatSelector(state),
+  hasChat:             widgetBrandSettingsChatEnabledSelector(state),
   proactiveChat:       widgetProactiveChatSelector(state),
   triggerPopupOpened:  triggerPopupOpenedSelector(state),
   widgetOpened:        widgetOpenedSelector(state),

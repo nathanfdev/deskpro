@@ -29,10 +29,11 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\UseSectionVoter;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings\WidgetBrandChatSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\WidgetGlobalSettings;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
@@ -59,6 +60,26 @@ class WidgetController extends AbstractApiController
      */
     public function getWidgetSettingsAction()
     {
-        return $this->wrap($this->container->get('widget_settings_resolver')->getWidgetGlobalOptions());
+        $options           = $this->container->get('widget_settings_resolver')->getWidgetOptions();
+        $brandChatSettings = $options->getBrand()->getChat();
+        $brandChatSettings->setEnabled($this->isChatEnabled($brandChatSettings));
+
+        return $this->wrap($options);
+    }
+
+    /**
+     * @param WidgetBrandChatSettings $brandChatSettings
+     *
+     * @return bool
+     */
+    private function isChatEnabled(WidgetBrandChatSettings $brandChatSettings)
+    {
+        return
+            $brandChatSettings->isEnabled()
+            && $this->isGranted(
+                UseSectionVoter::USE_CHAT,
+                $this->get('security.token_storage')->getToken()
+            )
+        ;
     }
 }
