@@ -5,21 +5,17 @@ export class Button extends Component {
   static propTypes = {
     isActive: PropTypes.bool,
     hasValue: PropTypes.bool,
-    label: PropTypes.string,
-    icon: PropTypes.string,
-    onClick: PropTypes.func.isRequired
+    label:    PropTypes.string,
+    icon:     PropTypes.string,
+    onClick:  PropTypes.func.isRequired
   };
 
   componentWillMount() {
-    this.setState({
-      isActive: this.props.isActive
-    });
+    this.setState({ isActive: this.props.isActive });
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      isActive: nextProps.isActive
-    });
+    this.setState({ isActive: nextProps.isActive });
     return nextProps;
   }
 
@@ -29,13 +25,15 @@ export class Button extends Component {
       return label;
     } else if (icon) {
       const classes = classNames('fa', icon);
-      return (<i className={classes}></i>);
+      return (<i className={classes} />);
     }
+
+    return null;
   }
 
   render() {
     const { onClick, hasValue } = this.props;
-    const classes = classNames('top-row-action-button-link', { 'active': this.state.isActive, 'has-value': hasValue });
+    const classes = classNames('top-row-action-button-link', { active: this.state.isActive, 'has-value': hasValue });
 
     return (
       <span className="dpwd-navigation-dropdown-top-row-action-button">
@@ -46,7 +44,7 @@ export class Button extends Component {
           </span>
           <span className="top-row-action-button-link-extra">
             <span className="dpwd-navigation-dropdown-top-row-button-icon">
-              <i className="fa fa-caret-down"></i>
+              <i className="fa fa-caret-down" />
             </span>
           </span>
         </a>

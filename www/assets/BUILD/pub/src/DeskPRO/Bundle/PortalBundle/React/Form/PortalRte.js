@@ -12,10 +12,10 @@ import $ from 'jquery';
 export class PortalRte extends React.Component {
 
   static propTypes = {
-    className: PropTypes.string,
-    widgetOptions: PropTypes.object,
+    className:         PropTypes.string,
+    widgetOptions:     PropTypes.object,
     $toolbarContainer: PropTypes.object,
-    $textarea: PropTypes.object,
+    $textarea:         PropTypes.object,
 
     // Inline attachment form prototype must be suppled
     // if inline attachments (e.g. pasting, dragging images etc) is to be supported.
@@ -61,7 +61,7 @@ export class PortalRte extends React.Component {
     const editor = this.refs.input;
     editor.focus();
 
-    const file = data.files[0];
+    const file   = data.files[0];
     const urlObj = window.URL || window.webkitURL;
     const imgUrl = urlObj.createObjectURL(file);
 
@@ -71,20 +71,20 @@ export class PortalRte extends React.Component {
   };
 
   onUploadSuccess = (event, response) => {
-    const { $textarea } = this.props;
+    const { $textarea, $inlineAttachProto } = this.props;
     const pasteId = response.files[0].id;
-    const $image = $('img[data-paste-id=' + pasteId + ']', this.getNode());
-    const editor = this.refs.input;
-    const blob = response.result && response.result.blob;
+    const $image  = $(`img[data-paste-id=${pasteId}]`, this.getNode());
+    const editor  = this.refs.input;
+    const blob    = response.result && response.result.blob;
 
     if (blob) {
       $image.removeAttr('data-paste-id').attr('src', blob.url);
       this.onChangeMessage(editor.getContent());
 
       if (this.props.$inlineAttachProto) {
-        const $inlineField = $(this.props.$inlineAttachProto.data('prototype').replace(/__name__/g, uniqueId('inline_field_')));
+        const $inlineField = $($inlineAttachProto.data('prototype').replace(/__name__/g, uniqueId('inline_field_')));
         $inlineField.find('input').val(blob.authcode);
-        $inlineField.insertAfter(this.props.$textarea);
+        $inlineField.insertAfter($textarea);
       }
     } else {
       $image.remove();
@@ -94,7 +94,7 @@ export class PortalRte extends React.Component {
 
   onUploadFail = (event, response) => {
     const pasteId = response.files[0].id;
-    const $image = $('img[data-paste-id=' + pasteId + ']', this.getNode());
+    const $image  = $(`img[data-paste-id=${pasteId}]`, this.getNode());
 
     $image.remove();
 
@@ -131,31 +131,34 @@ export class PortalRte extends React.Component {
           onChange={this.onChangeMessage}
           onPasteImage={this.onPasteImage}
           options={{
-            contentWindow: contentWindow,
-            ownerDocument: ownerDocument,
+            contentWindow,
+            ownerDocument,
             toolbar: {
               buttons: ['bold', 'italic', 'underline', 'anchor', 'unorderedlist', 'orderedlist', 'quote', 'pre', 'removeFormat'],
-              static: true,
-              sticky: true,
-              updateOnEmptySelection: true,
-              align: 'left',
-              relativeContainer: $toolbarContainer.get(0)
-            },
-            targetBlank: true,
-            buttonLabels: 'fontawesome'
-          }}/>
+              static:  true,
+              sticky:  true,
+              align:   'left',
 
-        <input type="submit" ref="fileUpload" name="file[blob]" style={{display: 'none'}} />
+              updateOnEmptySelection: true,
+              relativeContainer:      $toolbarContainer.get(0)
+            },
+            targetBlank:  true,
+            buttonLabels: 'fontawesome'
+          }}
+        />
+
+        <input type="submit" ref="fileUpload" name="file[blob]" style={{ display: 'none' }} />
         <DropZone
           ref="dropZone"
           getExternalInput={() => this.refs.fileUpload}
-          uploadUrl={portalUrlGenerator.path('/') + 'dpblob'}
+          uploadUrl={`${portalUrlGenerator.path('/')}dpblob`}
           uploadParams={params}
           context={context}
           onSubmit={this.onUploadSubmit}
           onSend={this.onUploadStarted}
           onSuccess={this.onUploadSuccess}
-          onFail={this.onUploadFail}>
+          onFail={this.onUploadFail}
+        >
 
           <DragOverlayListener context={context}>
             <div className="dp-medium-rte-wrapper-overlay">

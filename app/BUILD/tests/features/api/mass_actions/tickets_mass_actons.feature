@@ -236,7 +236,7 @@ Feature: /mass_actions/tickets endpoint
     And the JSON node "data.agent_team" should be null
     And the JSON node "data.department" should be equal to 1
 
-  Scenario: I delete ticket with ID=1,2 and check if delete mass actions was applied
+  Scenario: I delete ticket with ID=3,4 and check if delete mass actions was applied
     When I send a POST request to "/api/v2/mass_actions/tickets" with body:
     """
 {
@@ -263,4 +263,3 @@ Feature: /mass_actions/tickets endpoint
     And the JSON node "data" should exist
     And the JSON node "data.status" should be equal to "hidden"
     And the JSON node "data.hidden_status" should be equal to "deleted"
-

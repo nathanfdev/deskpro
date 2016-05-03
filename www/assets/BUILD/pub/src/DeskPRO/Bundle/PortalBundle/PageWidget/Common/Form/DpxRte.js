@@ -18,18 +18,19 @@ export class DpxRte extends PageWidget {
   renderWidget() {
     const $el = this.$element;
 
-    const $textarea = $el.find('textarea');
+    const $textarea          = $el.find('textarea');
     const $inlineAttachProto = $el.find('[id$=\'ticket_message_inline_attachments\']');
-    const $rElement = $('<div class="dp-medium-rte-wrapper as-dpui"></div>').appendTo(this.$element);
+    const $rElement          = $('<div class="dp-medium-rte-wrapper as-dpui"></div>').appendTo(this.$element);
 
     $textarea.hide();
 
     const component = React.createElement(PortalRte, {
-      className: 'dp-medium-rte medium-editor-placeholder',
       $textarea,
+
+      className:          'dp-medium-rte medium-editor-placeholder',
       $inlineAttachProto: $inlineAttachProto[0] ? $inlineAttachProto : null,
-      widgetOptions: this.options,
-      $toolbarContainer: $rElement
+      widgetOptions:      this.options,
+      $toolbarContainer:  $rElement
     });
 
     ReactDOM.render(component, $rElement.get(0));
