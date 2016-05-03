@@ -9,6 +9,7 @@ import { generate } from 'randomstring';
 import striptags from 'striptags';
 import moment from 'moment';
 import Immutable from 'immutable';
+import linkifyHtml from 'linkifyjs/html';
 import {
   skippedPollingSelector,
   lockedPollingSelector,
@@ -359,6 +360,8 @@ export const sendChatMessage = createAction(
       length:  20,
       charset: 'alphabetic'
     });
+
+    params.message = linkifyHtml(params.message);
 
     // Add optimistic message
     if (striptags(params.message)) {
