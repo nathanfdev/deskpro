@@ -583,9 +583,13 @@ class Runner
             $message->getHeaders()->addTextHeader('X-DeskPRO-Build', DP_BUILD_TIME); // used if this were to come back to us, prevents loops
             $hd_url       = App::getSetting('core.deskpro_url');
             $download_url = $source->blob->getDownloadUrl(true);
-            $body         = <<<BODY
+            $to_list      = implode(', ', array_map(function ($t) {
+                return trim($t->getNameUtf8().' <'.$t->getRealEmail().'>');
+            }, $reader->getToAddresses()));
+            $body = <<<BODY
 Subject:  {$reader->getSubject()->getSubjectUtf8()}
 From:     {$reader->getFromAddress()->getNameUtf8()} <{$reader->getFromAddress()->getEmail()}>
+To:       {$to_list}
 Rejected: {$source->error_code}
 
 Download the raw email here:
