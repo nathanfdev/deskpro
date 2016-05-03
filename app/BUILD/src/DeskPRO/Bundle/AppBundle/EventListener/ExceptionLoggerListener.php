@@ -36,6 +36,7 @@ use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
 use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 
 /**
@@ -78,6 +79,7 @@ class ExceptionLoggerListener
                 && $exception->getStatusCode() < 500
             )
             || $exception instanceof MethodNotAllowedException
+            || $exception instanceof NotFoundHttpException
         ) {
             return;
         }
