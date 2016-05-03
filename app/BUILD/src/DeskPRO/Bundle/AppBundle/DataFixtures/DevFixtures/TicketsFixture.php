@@ -48,7 +48,6 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
     private $numCategories     = 5;
     private $numWorkflows      = 5;
     private $numProducts       = 5;
-    private $numProblems       = 100;
     private $numLabels         = 100;
     private $ticketMaxMessages = 10;
 
@@ -144,7 +143,6 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
     {
         $this->manager = $manager;
         $this->initIds();
-        $this->loadProblems();
         $this->loadCategories();
         $this->loadWorkflows();
         $this->loadProducts();
@@ -165,6 +163,7 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         $this->agentTeamIds  = $this->fetchIds(self::TABLE_AGENT_TEAMS);
         $this->agentIds      = $this->fetchIds(self::TABLE_PEOPLE, [['field' => 'is_agent', 'value' => 1]]);
         $this->peopleIds     = $this->fetchIds(self::TABLE_PEOPLE, [['field' => 'is_agent', 'value' => 0]]);
+        $this->problemIds    = $this->fetchIds(self::TABLE_PROBLEMS);
         $this->departmentIds = $this->fetchIds(
             self::TABLE_DEPARTMENTS,
             [['field' => 'is_tickets_enabled', 'value' => 1]]
@@ -180,23 +179,6 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
             WHERE f.parent IS NULL ORDER BY f.display_order ASC
         '
         )->execute();
-    }
-
-    private function loadProblems()
-    {
-        $batch = [];
-
-        for ($i = 0; $i < $this->numProblems; ++$i) {
-            $batch[] = [
-                'person_id' => $this->faker->randomElement($this->agentIds),
-                'title'     => $this->faker->sentence(4),
-                'created'   => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'is_open'   => (int) $this->faker->boolean(25),
-            ];
-        }
-
-        $this->db->batchInsert(self::TABLE_PROBLEMS, $batch);
-        $this->problemIds = $this->fetchIds(self::TABLE_PROBLEMS);
     }
 
     private function loadCategories()
