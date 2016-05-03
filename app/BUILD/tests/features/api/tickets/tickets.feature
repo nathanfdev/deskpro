@@ -19,6 +19,7 @@ Feature: /tickets endpoint
     When I send a GET request to "/api/v2/tickets/2?include=person,organization"
     And the response status code should be 200
     And the JSON node "data.subject" should be equal to "Ticket #1"
+    And the JSON node "data.parent" should be equal to 0
     And the JSON node "linked.person.1.id" should be equal to 1
     And the JSON node "linked.person.1.primary_email" should be equal to "admin@deskpro.dev"
     And the JSON node "linked.person.3.id" should be equal to 3
@@ -73,6 +74,7 @@ Feature: /tickets endpoint
     """
 {
   "subject": "Sample Ticket",
+  "parent": 1,
   "department": 1,
   "is_hold": true,
   "person":  3,
@@ -89,6 +91,7 @@ Feature: /tickets endpoint
     And the JSON node "data.id" should be equal to 6
     And the JSON node "data.subject" should be equal to "Sample Ticket"
     And the JSON node "data.is_hold" should be equal to 1
+    And the JSON node "data.parent" should be equal to 1
     And the JSON node "data.person" should be equal to 3
     And the JSON node "data.agent" should be equal to 1
     And the JSON node "data.cc" should have 1 element
