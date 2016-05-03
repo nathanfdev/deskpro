@@ -53,7 +53,11 @@ class DpFormLoginToken extends AbstractToken
     {
         parent::__construct($roles);
 
-        $this->setUser($user);
+        try {
+            $this->setUser($user);
+        } catch (\InvalidArgumentException $e) {
+            throw new \InvalidArgumentException($e->getMessage().' Got '.json_encode($user));
+        }
         $this->credentials = $credentials;
 
         parent::setAuthenticated($user instanceof Person && count($roles) > 0);
