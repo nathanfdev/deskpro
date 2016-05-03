@@ -28,9 +28,9 @@ Feature: /people/counts endpoint
     And the JSON node "data" should exist
     And the JSON node "data.count" should be equal to 1
     And the JSON node "data.nested" should exist
-    And the JSON node "data.nested[0].title" should be equal to "Everyone"
+    And the JSON node "data.nested[0].title" should be equal to "Group 3"
     And the JSON node "data.nested[0].count" should be equal to 1
-    And the JSON node "data.nested[0].id" should be equal to 1
+    And the JSON node "data.nested[0].id" should be equal to 5
     And the JSON node "data.nested[0].type" should be equal to "user_group"
 
   Scenario: I count soft-deleted people

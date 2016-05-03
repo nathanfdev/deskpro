@@ -31,13 +31,14 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Avatar\AvatarOwner;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints\UniqueCollection;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -113,7 +114,7 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      * @var \Doctrine\Common\Collections\ArrayCollection
      *
      * @Assert\Valid()
-     * @UniqueCollection()
+     * @AppAssert\UniqueCollection()
      */
     protected $labels;
 
@@ -128,7 +129,7 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      * @var \Doctrine\Common\Collections\ArrayCollection
      *
      * @Assert\Valid()
-     * @UniqueCollection()
+     * @AppAssert\UniqueCollection()
      */
     protected $email_domains;
 
@@ -523,11 +524,23 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
     }
 
     /**
-     * @return ArrayCollection
+     * @return ArrayCollection|Usergroup[]
      */
     public function getUsergroups()
     {
         return $this->usergroups;
+    }
+
+    /**
+     * @return ArrayCollection|Usergroup[]
+     *
+     * @AppAssert\UniqueCollection()
+     */
+    public function getPublicUsergroups()
+    {
+        return $this->usergroups->filter(function (Usergroup $group) {
+            return !$group->is_agent_group && $group->sys_name !== 'everyone' && $group->is_enabled;
+        });
     }
 
     /**

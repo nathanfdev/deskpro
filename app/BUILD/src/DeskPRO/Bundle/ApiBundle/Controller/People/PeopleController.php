@@ -37,7 +37,10 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\DateHelper;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\LabelHelper;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\UsergroupsHelper;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonType;
 use Doctrine\ORM\QueryBuilder;
@@ -142,7 +145,11 @@ class PeopleController extends CrudController
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
         $context = new RequestQueryContext($qb, $alias, $request);
+
         DateHelper::applyDatePeriodFilter($context, 'date_created', 'period_created');
+        UsergroupsHelper::applyUsergroupsFilters($context);
+        ListHelper::applyInListFilter($context, 'organization');
+        LabelHelper::applyLabelFilters($context, static::$entity);
 
         if (null !== $request->get('is_agent')) {
             $qb->andWhere("$alias.is_agent = :is_agent");
@@ -159,23 +166,6 @@ class PeopleController extends CrudController
             $qb->setParameter('id', $this->getUser()->getId());
         }
 
-        $userGroups = $request->get('user_group');
-        if (null !== $userGroups) {
-            $qb->leftJoin("$alias.usergroups", 'ug');
-            if (is_array($userGroups)) {
-                $qb->andWhere('ug.id in (:user_group_id)');
-                $qb->setParameter('user_group_id', $userGroups);
-            } else {
-                $user_group = (int) $userGroups;
-                if ($user_group > 0) {
-                    $qb->andWhere('ug.id = :user_group_id');
-                    $qb->setParameter('user_group_id', $user_group);
-                } else {
-                    $qb->andWhere('ug.id IS NULL');
-                }
-            }
-        }
-
         if (null !== $request->get('agent_team')) {
             $agentTeam = (int) $request->get('agent_team');
             $qb->leftJoin("$alias.teams", 'teams');
@@ -185,18 +175,6 @@ class PeopleController extends CrudController
             } else {
                 $qb->andWhere('teams.id IS NULL');
             }
-        }
-
-        $org = $request->get('organization');
-        if ($org) {
-            $qb->innerJoin("$alias.organization", 'org');
-            if (is_array($org)) {
-                $qb->andWhere('org.id IN (:org)');
-            } else {
-                $qb->andWhere('org.id = :org');
-            }
-
-            $qb->setParameter('org', $org);
         }
     }
 
@@ -228,12 +206,7 @@ class PeopleController extends CrudController
     {
         switch ($groupBy) {
             case 'user_group':
-                $qb
-                    ->leftJoin("$alias.usergroups", 'groups')
-                    ->addSelect('groups.title as title')
-                    ->addSelect('groups.id as group_name')
-                    ->groupBy('group_name')
-                ;
+                UsergroupsHelper::applyUserGroupsGroupBy(new RequestQueryContext($qb, $alias, $request));
 
                 break;
             case 'agent_team':

@@ -92,7 +92,7 @@ class Organization
      *
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    protected $usergroups;
+    protected $userGroups;
 
     /**
      * Labels associated with this organization.
@@ -110,7 +110,7 @@ class Organization
      *
      * @var \Application\DeskPRO\Entity\OrganizationContactData[]
      */
-    protected $contact_data;
+    protected $contactData;
 
     /**
      * Organization email domains.
@@ -119,7 +119,7 @@ class Organization
      *
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    protected $email_domains;
+    protected $emailDomains;
 
     /**
      * Date when this organization was created.
@@ -128,7 +128,7 @@ class Organization
      *
      * @var \DateTime
      */
-    protected $date_created;
+    protected $dateCreated;
 
     /**
      * Organization parent (this is organization too).
@@ -146,7 +146,7 @@ class Organization
      *
      * @var int
      */
-    protected $chats_count;
+    protected $chatsCount;
 
     /**
      * How many tickets organization participating.
@@ -155,7 +155,7 @@ class Organization
      *
      * @var int
      */
-    protected $tickets_count;
+    protected $ticketsCount;
 
     /**
      * How many employees organization has.
@@ -164,29 +164,29 @@ class Organization
      *
      * @var int
      */
-    protected $employees_count;
+    protected $employeesCount;
 
     /**
      * Constructor.
      *
      * @param \Application\DeskPRO\Entity\Organization $organization
-     * @param int                                      $chats_count
+     * @param int                                      $chatsCount
      */
-    public function __construct(\Application\DeskPRO\Entity\Organization $organization, $chats_count)
+    public function __construct(\Application\DeskPRO\Entity\Organization $organization, $chatsCount)
     {
-        $this->id              = $organization->getId();
-        $this->name            = $organization->getName();
-        $this->summary         = $organization->getSummary();
-        $this->importance      = $organization->getImportance();
-        $this->fields          = $organization->getCustomData();
-        $this->usergroups      = $organization->getUsergroups();
-        $this->labels          = $organization->getLabels();
-        $this->contact_data    = $organization->getContactData();
-        $this->email_domains   = $organization->getEmailDomains();
-        $this->date_created    = $organization->getDateCreated();
-        $this->parent          = $organization->getParent();
-        $this->chats_count     = $chats_count;
-        $this->tickets_count   = $organization->getTicketsCount();
-        $this->employees_count = $organization->getEmployeesCount();
+        $this->id             = $organization->getId();
+        $this->name           = $organization->getName();
+        $this->summary        = $organization->getSummary();
+        $this->importance     = $organization->getImportance();
+        $this->fields         = $organization->getCustomData();
+        $this->userGroups     = $organization->getPublicUsergroups();
+        $this->labels         = $organization->getLabels();
+        $this->contactData    = $organization->getContactData();
+        $this->emailDomains   = $organization->getEmailDomains();
+        $this->dateCreated    = $organization->getDateCreated();
+        $this->parent         = $organization->getParent();
+        $this->chatsCount     = $chatsCount;
+        $this->ticketsCount   = $organization->getTicketsCount();
+        $this->employeesCount = $organization->getEmployeesCount();
     }
 }
