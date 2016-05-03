@@ -11,6 +11,7 @@ import { loadOnlineAgents } from '../../../Actions/peopleActions';
 import { onlineAgentsCountSelector } from '../../../Selectors/peopleSelectors';
 import {
   widgetHasChatSelector,
+  widgetProactiveChatSelector,
   widgetOpenedSelector,
   widgetPositionSelector,
   helpButtonSizeSelector,
@@ -28,6 +29,7 @@ import {
 
 @connect(state => ({
   hasChat:             widgetHasChatSelector(state),
+  proactiveChat:       widgetProactiveChatSelector(state),
   triggerPopupOpened:  triggerPopupOpenedSelector(state),
   widgetOpened:        widgetOpenedSelector(state),
   widgetPosition:      widgetPositionSelector(state),
@@ -47,6 +49,7 @@ export class HelpButtonContainer extends React.Component {
 
   static propTypes = {
     hasChat:             PropTypes.bool,
+    proactiveChat:       PropTypes.bool,
     triggerPopupOpened:  PropTypes.bool,
     widgetOpened:        PropTypes.bool,
     widgetPosition:      PropTypes.string,
@@ -84,11 +87,11 @@ export class HelpButtonContainer extends React.Component {
   };
 
   checkRenderPopup() {
-    const { widgetOpened, triggerPopupOpened, agentsCount, hasChat, liveDemo, dispatch } = this.props;
+    const { widgetOpened, triggerPopupOpened, agentsCount, hasChat, proactiveChat, liveDemo, dispatch } = this.props;
     const storageKey = 'dpWidget.dpWindow.popupShown';
     const notClosedPopup = !(storageKey in localStorage) || localStorage[storageKey] !== 'none';
 
-    if (!widgetOpened && hasChat && (liveDemo || (notClosedPopup && agentsCount > 0))) {
+    if (!widgetOpened && hasChat && proactiveChat && (liveDemo || (notClosedPopup && agentsCount > 0))) {
       if (!triggerPopupOpened) {
         dispatch(openTriggerPopup());
       }
