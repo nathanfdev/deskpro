@@ -261,18 +261,18 @@ export const pollingChat = createAction(
           dispatch(updateChatInfo(newChatInfo));
         }
 
-        // Toggle reopen chat
+        // Chat closed by user can be reopened for 5 minutes, chat are closed immediately otherwise
         const canReopen = canReopenSelector(state);
-        if (!newChatInfo.date_ended) {
-          if (!canReopen) {
-            dispatch(enableChatReopen());
-          }
-        } else {
-          const ended = moment(newChatInfo.date_ended).format('X');
-          const now = moment().format('X');
-          const delay = ended - now + 120; // can reopen in 2 minutes
+        if (newChatInfo.date_ended && canReopen) {
+          if (newChatInfo.ended_by == 'user') {
+            const ended = moment(newChatInfo.date_ended).format('X');
+            const now = moment().format('X');
+            const delay = ended - now + 300; // can reopen in 5 minutes
 
-          if (canReopen && delay < 0) {
+            if (delay < 0) {
+              dispatch(disableChatReopen());
+            }
+          } else {
             dispatch(disableChatReopen());
           }
         }

@@ -737,7 +737,7 @@ var DpChatMake = function() {
 			DpChat_Display.showEnd();
 		};
 
-		this.getFinisehdUrl = function() {
+		this.getFinishedUrl = function() {
 			return options.deskproUrl + 'chat/chat-finished/' + sessionCode + '?conversation_id=' + conversationId
 		};
 

@@ -371,12 +371,12 @@ var DpChat_Display = (function() {
 		$('#dpchat_endchat').hide();
 		$('#dpchat_ended').show();
 
-		$('#dpchat_ended_send_btn').attr('href', DpChat.getFinisehdUrl()).on('click', function(ev) {
+		$('#dpchat_ended_send_btn').attr('href', DpChat.getFinishedUrl()).on('click', function(ev) {
 			ev.stopPropagation();
 			ev.preventDefault();
-			window.open(DpChat.getFinisehdUrl());
+			window.open(DpChat.getFinishedUrl());
 		});
-	},
+	};
 
 	this.destroy = function() {
 		chatBox.remove();

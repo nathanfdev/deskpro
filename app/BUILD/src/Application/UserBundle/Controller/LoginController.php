@@ -119,7 +119,8 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
     {
         if (($token = $this->in->getString('tok')) && strpos($token, '-')) {
             list($person_id, $login_token) = explode('-', $token, 2);
-            $person                        = $this->em->find('DeskPRO:Person', $person_id);
+            /** @var Person $person */
+            $person = $this->em->find('DeskPRO:Person', $person_id);
             if (!$person || !$person->checkPassword($login_token)) {
                 $person = null;
             }
@@ -172,7 +173,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
                     $this->session->set('active_status', 'available');
 
                     if ($person->hasPerm('agent_chat.use')) {
-                        $this->session->set('is_chat_available', 1);
+                        $this->session->set('is_chat_available', $person->getPref('agent.chat.is_available', 1));
                     } else {
                         $this->session->set('is_chat_available', 0);
                     }
@@ -545,7 +546,7 @@ HTML;
                 $this->session->set('active_status', 'available');
 
                 if ($person->hasPerm('agent_chat.use')) {
-                    $this->session->set('is_chat_available', 1);
+                    $this->session->set('is_chat_available', $person->getPref('agent.chat.is_available', 1));
                 } else {
                     $this->session->set('is_chat_available', 0);
                 }

@@ -75,25 +75,23 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				// Sets the real message ID after we've come back from ajax
 				self.getEl('messages_box').find('.message-' + tmp_id).addClass('message-' + message_id).addClass('server-ack').data('message-id', message_id).attr('title', 'User read message at: ' + time);
 			});
-		}
+		};
 
 		this.doSendMsg = function() {
-			sendMsg();
-		}
-
-		messageTextarea.on('keypress', function(ev) {
-			if (ev.keyCode == 13 && !ev.metaKey) {
-				ev.preventDefault();
+			var ed = textarea.getEditor();
+			ed.linkify();
+			window.setTimeout(function() {
+				messageTextarea.val(ed[0].innerHTML);
 				sendMsg();
-			}
-		});
+			}, 100);
+		};
 
 		messageTextarea.on('keyup', function() {
 			self.typing();
 		});
 
 		this.addEvent('destroy', function() {
-			DeskPRO_Window.getMessageBroker().removeTaggedListeners(OBJ_ID)
+			DeskPRO_Window.getMessageBroker().removeTaggedListeners(OBJ_ID);
 			if (self.chatStatus == 'ended') {
 				return;
 			} if (self.closeAction == 'unassign') {
@@ -201,17 +199,12 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 			if (textarea.data('redactor')) {
 				var ed = textarea.getEditor();
-				ed.on('keypress', function(ev) {
+				ed.on('keypress', $.proxy(function(ev) {
 					if (ev.keyCode === 13 && !ev.shiftKey && !ev.ctrlKey && !ev.metaKey) {
 						ev.preventDefault();
-						window.setTimeout(function() {
-							ed.linkify();
-							window.setTimeout(function() {
-								sendMsg();
-							}, 100);
-						}, 10);
+						this.doSendMsg();
 					}
-				});
+				}, this));
 
 				var lastH = ed.height();
 				ed.on('keypress change', function() {
@@ -611,7 +604,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		li.addClass('agent-' + agent_id);
 		$('a', li).text(agentInfo.name).addClass('agent-link').css({
 			'background-image': agentInfo.pictureUrlSizable.replace('{SIZE}', 20)
-		})
+		});
 
 		this.getEl('agent_parts').append(li);
 

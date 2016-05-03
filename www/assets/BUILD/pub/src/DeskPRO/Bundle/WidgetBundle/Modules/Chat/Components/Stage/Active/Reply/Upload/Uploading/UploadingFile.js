@@ -38,9 +38,6 @@ export class UploadingFile extends React.Component {
           {isFailed && <span className="failed-status">({portalPhrases.get('portal.chat.asset_failed')})</span>}
           {isFailed
             ? <div>
-                <a className="dpdesignportal-chat-form-attached-file-repeat" onClick={this.onRepeat}>
-                  <i className="fa fa-repeat" />
-                </a>
                 <a className="dpdesignportal-chat-form-attached-file-remove" onClick={this.onRemove}>
                   <i className="fa fa-times-circle" />
                 </a>
