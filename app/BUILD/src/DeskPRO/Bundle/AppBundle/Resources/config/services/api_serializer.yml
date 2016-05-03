@@ -133,6 +133,13 @@ services:
       - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.blob:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\ApiTokenHandler
+    arguments:
+      - "@discover_settings_resolver"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.blob:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\BlobHandler
     tags:
       - { name: "jms_serializer.subscribing_handler" }

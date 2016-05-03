@@ -69,7 +69,8 @@ class ApiTokensController extends BaseController
      *      }
      * )
      *
-     * @Rest\Post("/api_tokens", name="api_post_api_tokens")
+     * @Rest\Post("/api_tokens")
+     * @Rest\View(serializerGroups={"token"})
      *
      * @param Request $request
      *
@@ -112,30 +113,19 @@ class ApiTokensController extends BaseController
             $this->throwUnauthorized();
         }
 
-        $em     = $this->get('doctrine.orm.default_entity_manager');
-        $person = $em->getRepository('DeskPRO:Person')->find($person_id);
-
+        $person = $this->getManager()->getRepository(Person::class)->find($person_id);
         if (!$person) {
             $this->throwUnauthorized();
         }
 
-        $api_token         = new ApiToken();
-        $api_token->person = $person;
-        $api_token->scope  = ApiToken::SCOPE_CLIENT;
+        $token         = new ApiToken();
+        $token->person = $person;
+        $token->scope  = ApiToken::SCOPE_CLIENT;
 
-        $em = $this->get('doctrine.orm.default_entity_manager');
-        $em->persist($api_token);
-        $em->flush($api_token);
+        $this->getManager()->persist($token);
+        $this->getManager()->flush($token);
 
-        return View::create(
-            $this->createRepresentation(
-                [
-                    'person_id' => $person->id,
-                    'token'     => $api_token->id.':'.$api_token->token,
-                ]
-            ),
-            Response::HTTP_CREATED
-        );
+        return View::create($this->wrap($token), Response::HTTP_CREATED);
     }
 
     /**
@@ -147,7 +137,12 @@ class ApiTokensController extends BaseController
      *          404="Auth code not found"
      *      }
      * )
-     * @Rest\Get("/api_tokens/device-setup/{auth}", name="api_authenticate_device")
+     * @Rest\Get("/api_tokens/device-setup/{auth}")
+     * @Rest\View(serializerGroups={"token", "discover"})
+     *
+     * @param string $auth
+     *
+     * @return View
      */
     public function authenticateDeviceAction($auth)
     {
@@ -162,29 +157,12 @@ class ApiTokensController extends BaseController
         $token         = new ApiToken();
         $token->person = $person;
         $token->scope  = ApiToken::SCOPE_CLIENT;
+
         $this->getManager()->remove($tmpData);
         $this->getManager()->persist($token);
         $this->getManager()->flush();
 
-        // TODO this is a copy+pasta from DiscoverController
-        // should be put into some service/model
-        $s            = $this->get('deskpro.core.settings');
-        $helpdesk_url = rtrim($s->get('core.deskpro_url'), '/').'/';
-        $base_api_url = $helpdesk_url.'api/v2/';
-
-        return View::create(
-            $this->createRepresentation([
-                'person_id' => $person->id,
-                'token'     => $token->id.':'.$token->token,
-                'discover'  => [
-                    'is_deskpro'   => true,
-                    'helpdesk_url' => $helpdesk_url,
-                    'base_api_url' => $base_api_url,
-                    'build'        => DP_BUILD_TIME,
-                ],
-            ]),
-            Response::HTTP_CREATED
-        );
+        return View::create($this->wrap($token), Response::HTTP_CREATED);
     }
 
     /**
