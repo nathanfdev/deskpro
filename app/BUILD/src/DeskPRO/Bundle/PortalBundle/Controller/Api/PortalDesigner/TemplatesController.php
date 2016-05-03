@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api\PortalDesigner;
 
 use Application\DeskPRO\Entity\Template;
@@ -87,13 +88,18 @@ class TemplatesController extends AbstractApiController
         }
 
         $data = json_decode($request->getContent(), true);
-        if (!array_key_exists('code', $data)) {
-            throw new BadRequestHttpException('Request body must contain "code" property');
+        if (!array_key_exists('code', $data) && !array_key_exists('revert', $data)) {
+            throw new BadRequestHttpException('Request body must contain "code" or "revert" props');
         }
 
-        $template->template_code     = $data['code'];
-        $template->template_compiled = $this->get('twig')->compileSource($template->template_code, $template_name);
-        $this->getManager()->persist($template);
+        if (!empty($data['revert'])) {
+            $this->getManager()->remove($template);
+        } else {
+            $template->template_code     = $data['code'];
+            $template->template_compiled = $this->get('twig')->compileSource($template->template_code, $template_name);
+            $this->getManager()->persist($template);
+        }
+
         $this->getManager()->flush();
 
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);

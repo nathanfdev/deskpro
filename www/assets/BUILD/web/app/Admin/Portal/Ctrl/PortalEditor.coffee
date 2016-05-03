@@ -161,7 +161,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         (code) => @selected_template_code = angular.fromJson(code); @selected_template_code_loaded = true
       )
 
-    closeTemplateEditor: () =>
+    saveTemplateEditor: () =>
       @$http({
         method: 'PUT',
         url: '/portal/api/style/edit-theme-set/template-sources?template=' + @selected_template,
@@ -169,6 +169,23 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       })
       .error(@serverError)
 
+      @selected_template = null
+      @selected_template_code = null
+      @selected_template_code_loaded = false
+
+    saveTemplateEditor: () =>
+      @$http({
+        method: 'PUT',
+        url: '/portal/api/style/edit-theme-set/template-sources?template=' + @selected_template,
+        data: angular.toJson({revert: true})
+      })
+      .error(@serverError)
+
+      @selected_template = null
+      @selected_template_code = null
+      @selected_template_code_loaded = false
+
+    cancelTemplateEditor: () =>
       @selected_template = null
       @selected_template_code = null
       @selected_template_code_loaded = false
