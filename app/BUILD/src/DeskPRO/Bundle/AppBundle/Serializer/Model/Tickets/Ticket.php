@@ -48,15 +48,12 @@ use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class Ticket.
- *
- * @JMS\ExclusionPolicy("all")
  */
 class Ticket
 {
     /**
      * The unique ID.
      *
-     * @JMS\Expose()
      * @JMS\Type("integer")
      *
      * @var int
@@ -66,7 +63,6 @@ class Ticket
     /**
      * String reference.
      *
-     * @JMS\Expose()
      * @JMS\Type("string")
      *
      * @var string
@@ -76,7 +72,6 @@ class Ticket
     /**
      * Auth string.
      *
-     * @JMS\Expose()
      * @JMS\Type("integer")
      *
      * @var string
@@ -86,18 +81,15 @@ class Ticket
     /**
      * Parent of this ticket.
      *
-     * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\Ticket>")
-     * @JMS\SerializedName("parent_ticket")
      *
      * @var TicketEntity
      */
-    private $parentTicket;
+    private $parent;
 
     /**
      * Language associated with this ticket.
      *
-     * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\Language>")
      *
      * @var Language
@@ -107,7 +99,6 @@ class Ticket
     /**
      * Ticket where this department is processing.
      *
-     * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\Department>")
      *
      * @var Department
@@ -117,7 +108,6 @@ class Ticket
     /**
      * Category of this ticket.
      *
-     * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\TicketCategory>")
      *
      * @var TicketCategory
@@ -127,7 +117,6 @@ class Ticket
     /**
      * Priority of this ticket.
      *
-     * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\TicketPriority>")
      *
      * @var TicketPriority
@@ -137,7 +126,6 @@ class Ticket
     /**
      * Workflow entity.
      *
-     * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\TicketWorkflow>")
      *
      * @var TicketWorkflow
@@ -147,7 +135,6 @@ class Ticket
     /**
      * Product about which this ticket.
      *
-     * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\Product>")
      *
      * @var Product
@@ -157,7 +144,6 @@ class Ticket
     /**
      * Person created this ticket.
      *
-     * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
      *
      * @var Person
@@ -167,9 +153,7 @@ class Ticket
     /**
      * Person`s email.
      *
-     * @JMS\Expose()
      * @JMS\Type("to_string<Application\DeskPRO\Entity\PersonEmail>")
-     * @JMS\SerializedName("person_email")
      *
      * @var PersonEmail
      */
@@ -178,7 +162,6 @@ class Ticket
     /**
      * Agent assigned.
      *
-     * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
      *
      * @var Person
@@ -188,9 +171,7 @@ class Ticket
     /**
      * Agent team where this ticket is processing.
      *
-     * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\AgentTeam>")
-     * @JMS\SerializedName("agent_team")
      *
      * @var AgentTeam
      */
@@ -199,7 +180,6 @@ class Ticket
     /**
      * Organization team where this ticket is processing.
      *
-     * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\Organization>")
      *
      * @var Organization
@@ -209,9 +189,7 @@ class Ticket
     /**
      * ChatConversation where this ticket is discussed.
      *
-     * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\ChatConversation>")
-     * @JMS\SerializedName("linked_chat")
      *
      * @var ChatConversation
      */
@@ -220,9 +198,7 @@ class Ticket
     /**
      * Addresses where ticket was send.
      *
-     * @JMS\Expose()
      * @JMS\Type("array")
-     * @JMS\SerializedName("sent_to_address")
      *
      * @var array
      */
@@ -231,9 +207,7 @@ class Ticket
     /**
      * Email account used to gather the ticket.
      *
-     * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\EmailAccount>")
-     * @JMS\SerializedName("email_account")
      *
      * @var EmailAccount
      */
@@ -242,9 +216,7 @@ class Ticket
     /**
      * Email account address used to gather the ticket.
      *
-     * @JMS\Expose()
      * @JMS\Type("string")
-     * @JMS\SerializedName("email_account_address")
      *
      * @var string
      */
@@ -253,9 +225,7 @@ class Ticket
     /**
      * How this ticket appears.
      *
-     * @JMS\Expose()
      * @JMS\Type("string")
-     * @JMS\SerializedName("creation_system")
      *
      * @var string
      */
@@ -264,9 +234,7 @@ class Ticket
     /**
      * Option used by creation system.
      *
-     * @JMS\Expose()
      * @JMS\Type("string")
-     * @JMS\SerializedName("creation_system_option")
      *
      * @var string
      */
@@ -275,9 +243,7 @@ class Ticket
     /**
      * Unique hash.
      *
-     * @JMS\Expose()
      * @JMS\Type("string")
-     * @JMS\SerializedName("ticket_hash")
      *
      * @var string
      */
@@ -286,7 +252,6 @@ class Ticket
     /**
      * Ticket status.
      *
-     * @JMS\Expose()
      * @JMS\Type("string")
      *
      * @var string
@@ -296,9 +261,7 @@ class Ticket
     /**
      * Ticket hidden status.
      *
-     * @JMS\Expose()
      * @JMS\Type("string")
-     * @JMS\SerializedName("hidden_status")
      *
      * @var string
      */
@@ -307,9 +270,7 @@ class Ticket
     /**
      * Is this on hold?
      *
-     * @JMS\Expose()
      * @JMS\Type("boolean")
-     * @JMS\SerializedName("is_hold")
      *
      * @var bool
      */
@@ -318,7 +279,6 @@ class Ticket
     /**
      * String array of labels.
      *
-     * @JMS\Expose()
      * @JMS\Type("array<to_string<Application\DeskPRO\Entity\LabelTicket>>")
      *
      * @var bool
@@ -328,7 +288,6 @@ class Ticket
     /**
      * How urgent this ticket?
      *
-     * @JMS\Expose()
      * @JMS\Type("integer")
      *
      * @var int
@@ -338,9 +297,7 @@ class Ticket
     /**
      * It`s rating based on feedback votes.
      *
-     * @JMS\Expose()
      * @JMS\Type("integer")
-     * @JMS\SerializedName("feedback_rating")
      *
      * @var int
      */
@@ -349,9 +306,7 @@ class Ticket
     /**
      * When the rating was calculated.
      *
-     * @JMS\Expose()
      * @JMS\Type("DateTime")
-     * @JMS\SerializedName("date_feedback_rating")
      *
      * @var \DateTime
      */
@@ -360,9 +315,7 @@ class Ticket
     /**
      * When the ticket was created.
      *
-     * @JMS\Expose()
      * @JMS\Type("DateTime")
-     * @JMS\SerializedName("date_created")
      *
      * @var \DateTime
      */
@@ -371,9 +324,7 @@ class Ticket
     /**
      * When the ticket was resolved.
      *
-     * @JMS\Expose()
      * @JMS\Type("DateTime")
-     * @JMS\SerializedName("date_resolved")
      *
      * @var \DateTime
      */
@@ -382,9 +333,7 @@ class Ticket
     /**
      * And archived at last.
      *
-     * @JMS\Expose()
      * @JMS\Type("DateTime")
-     * @JMS\SerializedName("date_archived")
      *
      * @var \DateTime
      */
@@ -393,9 +342,7 @@ class Ticket
     /**
      * When it was assigned to agent at the very first time.
      *
-     * @JMS\Expose()
      * @JMS\Type("DateTime")
-     * @JMS\SerializedName("date_first_agent_assign")
      *
      * @var \DateTime
      */
@@ -404,9 +351,7 @@ class Ticket
     /**
      * When it was first time replied.
      *
-     * @JMS\Expose()
      * @JMS\Type("DateTime")
-     * @JMS\SerializedName("date_first_agent_reply")
      *
      * @var \DateTime
      */
@@ -415,9 +360,7 @@ class Ticket
     /**
      * And when it was replied the last time.
      *
-     * @JMS\Expose()
      * @JMS\Type("DateTime")
-     * @JMS\SerializedName("date_last_agent_reply")
      *
      * @var \DateTime
      */
@@ -426,9 +369,7 @@ class Ticket
     /**
      * And the date user replied here last time.
      *
-     * @JMS\Expose()
      * @JMS\Type("DateTime")
-     * @JMS\SerializedName("date_last_user_reply")
      *
      * @var \DateTime
      */
@@ -437,9 +378,7 @@ class Ticket
     /**
      * Time when agent started to wait user.
      *
-     * @JMS\Expose()
      * @JMS\Type("DateTime")
-     * @JMS\SerializedName("date_agent_waiting")
      *
      * @var \DateTime
      */
@@ -448,9 +387,7 @@ class Ticket
     /**
      * And the time when user started to wait agent.
      *
-     * @JMS\Expose()
      * @JMS\Type("DateTime")
-     * @JMS\SerializedName("date_user_waiting")
      *
      * @var \DateTime
      */
@@ -459,9 +396,7 @@ class Ticket
     /**
      * When status was changed.
      *
-     * @JMS\Expose()
      * @JMS\Type("DateTime")
-     * @JMS\SerializedName("date_status")
      *
      * @var \DateTime
      */
@@ -470,9 +405,7 @@ class Ticket
     /**
      * How much user was waited?
      *
-     * @JMS\Expose()
      * @JMS\Type("integer")
-     * @JMS\SerializedName("total_user_waiting")
      *
      * @var int
      */
@@ -481,9 +414,7 @@ class Ticket
     /**
      * Total waiting before first reply.
      *
-     * @JMS\Expose()
      * @JMS\Type("integer")
-     * @JMS\SerializedName("total_to_first_reply")
      *
      * @var int
      */
@@ -492,9 +423,7 @@ class Ticket
     /**
      * An agent who locked the ticket.
      *
-     * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
-     * @JMS\SerializedName("locked_by_agent")
      *
      * @var Person
      */
@@ -503,9 +432,7 @@ class Ticket
     /**
      * Date time when ticket was locked.
      *
-     * @JMS\Expose()
      * @JMS\Type("DateTime")
-     * @JMS\SerializedName("date_locked")
      *
      * @var \DateTime
      */
@@ -514,9 +441,7 @@ class Ticket
     /**
      * Does this ticked has attachments?
      *
-     * @JMS\Expose()
      * @JMS\Type("boolean")
-     * @JMS\SerializedName("has_attachments")
      *
      * @var bool
      */
@@ -525,7 +450,6 @@ class Ticket
     /**
      * Ticket subject.
      *
-     * @JMS\Expose()
      * @JMS\Type("string")
      *
      * @var string
@@ -535,9 +459,7 @@ class Ticket
     /**
      * Original subject given by creator.
      *
-     * @JMS\Expose()
      * @JMS\Type("string")
-     * @JMS\SerializedName("original_subject")
      *
      * @var string
      */
@@ -546,7 +468,6 @@ class Ticket
     /**
      * Array of properties.
      *
-     * @JMS\Expose()
      * @JMS\Type("array")
      *
      * @var array
@@ -556,7 +477,6 @@ class Ticket
     /**
      * An array of associated problems.
      *
-     * @JMS\Expose()
      * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Problem>>")
      *
      * @var ArrayCollection
@@ -566,9 +486,7 @@ class Ticket
     /**
      * Count of all replies made by agents.
      *
-     * @JMS\Expose()
      * @JMS\Type("integer")
-     * @JMS\SerializedName("count_agent_replies")
      *
      * @var int
      */
@@ -577,9 +495,7 @@ class Ticket
     /**
      * Count of all replies made by user.
      *
-     * @JMS\Expose()
      * @JMS\Type("integer")
-     * @JMS\SerializedName("count_user_replies")
      *
      * @var int
      */
@@ -588,9 +504,7 @@ class Ticket
     /**
      * Well, this is worst SLA status.
      *
-     * @JMS\Expose()
      * @JMS\Type("string")
-     * @JMS\SerializedName("worst_sla_status")
      *
      * @var string
      */
@@ -599,9 +513,7 @@ class Ticket
     /**
      * An array of waiting times.
      *
-     * @JMS\Expose()
      * @JMS\Type("array")
-     * @JMS\SerializedName("waiting_times")
      *
      * @var array
      */
@@ -610,9 +522,7 @@ class Ticket
     /**
      * All ticket slas.
      *
-     * @JMS\Expose()
      * @JMS\Type("collection<entity<Application\DeskPRO\Entity\TicketSla>>")
-     * @JMS\SerializedName("ticket_slas")
      *
      * @var TicketSla[]
      */
@@ -621,7 +531,6 @@ class Ticket
     /**
      * Custom ticket fields.
      *
-     * @JMS\Expose()
      * @JMS\Type("custom_data<array<Application\DeskPRO\Entity\CustomDataTicket>>")
      *
      * @var CustomDataTicket[]
@@ -631,7 +540,6 @@ class Ticket
     /**
      * Ticket children.
      *
-     * @JMS\Expose()
      * @JMS\Type("array<entity<Application\DeskPRO\Entity\Ticket>>")
      *
      * @var TicketEntity[]
@@ -641,7 +549,6 @@ class Ticket
     /**
      * Ticket siblings.
      *
-     * @JMS\Expose()
      * @JMS\Type("array<entity<Application\DeskPRO\Entity\Ticket>>")
      *
      * @var TicketEntity[]
@@ -651,7 +558,6 @@ class Ticket
     /**
      * User should be acknowledged about this ticket.
      *
-     * @JMS\Expose()
      * @JMS\Type("array<entity<Application\DeskPRO\Entity\Person>>")
      *
      * @var Person[]
@@ -661,7 +567,6 @@ class Ticket
     /**
      * Agents that follows this ticket.
      *
-     * @JMS\Expose()
      * @JMS\Type("array<entity<Application\DeskPRO\Entity\Person>>")
      *
      * @var Person[]
@@ -675,17 +580,17 @@ class Ticket
      */
     public function __construct(TicketEntity $ticket)
     {
-        $this->id           = $ticket->getId();
-        $this->ref          = $ticket->getRef();
-        $this->auth         = $ticket->getAuth();
-        $this->parentTicket = $ticket->getParentTicket();
-        $this->language     = $ticket->getLanguage();
-        $this->department   = $ticket->getDepartment();
-        $this->category     = $ticket->getCategory();
-        $this->priority     = $ticket->getPriority();
-        $this->workflow     = $ticket->getWorkflow();
-        $this->product      = $ticket->getProduct();
-        $this->person       = $ticket->getPerson();
+        $this->id         = $ticket->getId();
+        $this->ref        = $ticket->getRef();
+        $this->auth       = $ticket->getAuth();
+        $this->parent     = $ticket->getParentTicket();
+        $this->language   = $ticket->getLanguage();
+        $this->department = $ticket->getDepartment();
+        $this->category   = $ticket->getCategory();
+        $this->priority   = $ticket->getPriority();
+        $this->workflow   = $ticket->getWorkflow();
+        $this->product    = $ticket->getProduct();
+        $this->person     = $ticket->getPerson();
 
         if ($ticket->getPersonEmail()) {
             $this->personEmail = $ticket->getPersonEmail();

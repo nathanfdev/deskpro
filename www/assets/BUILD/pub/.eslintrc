@@ -45,10 +45,6 @@
         }
       }
     ],
-    "react/jsx-closing-bracket-location": [
-      2,
-      "props-aligned"
-    ],
     "react/prefer-stateless-function": 0,
     "react/jsx-uses-react": 2,
     "react/jsx-uses-vars": 2,

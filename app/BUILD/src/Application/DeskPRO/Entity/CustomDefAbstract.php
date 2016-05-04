@@ -563,21 +563,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * Get an array of all IDs from this def and down.
-     *
-     * @return array
-     */
-    public function getAllChildIds()
-    {
-        $ids = array($this->id);
-        foreach ($this->children as $child) {
-            $ids = array_merge($ids, $child->getAllChildIds());
-        }
-
-        return $ids;
-    }
-
-    /**
      * @return array
      */
     public function getAllChildTitles()

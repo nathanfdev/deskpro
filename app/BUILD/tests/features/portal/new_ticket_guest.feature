@@ -43,6 +43,7 @@ Feature: Guests can submit new tickets
     And I select "Sales" from "Department"
     And I fill in "Subject" with "This is a subject"
     And I fill in "Message" with "Here is my ticket message"
+    And I fill in "ticket_person_user_name" with "Chris Name"
     And I fill in "ticket_person_user_email_email" with "my@email.com"
     And I press "Submit"
     Then I should be on "/thank-you"
@@ -53,6 +54,7 @@ Feature: Guests can submit new tickets
     And I select "Sales" from "Department"
     And I fill in "Subject" with "This is a subject"
     And I fill in "Message" with "Here is my ticket message"
+    And I fill in "ticket_person_user_name" with "Chris Name"
     And I fill in "ticket_person_user_email_email" with "user@deskpro.dev"
 
     And I press "Submit"
@@ -70,6 +72,7 @@ Feature: Guests can submit new tickets
     And I select "Sales" from "Department"
     And I fill in "Subject" with "This is a subject"
     And I fill in "Message" with "Here is my ticket message"
+    And I fill in "ticket_person_user_name" with "Chris Name"
     And I fill in "ticket_person_user_email_email" with "some@new.email"
     And I press "Submit"
     Then I should be on "/thank-you/verify-email"

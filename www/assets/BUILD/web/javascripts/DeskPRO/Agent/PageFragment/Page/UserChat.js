@@ -75,25 +75,23 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				// Sets the real message ID after we've come back from ajax
 				self.getEl('messages_box').find('.message-' + tmp_id).addClass('message-' + message_id).addClass('server-ack').data('message-id', message_id).attr('title', 'User read message at: ' + time);
 			});
-		}
+		};
 
 		this.doSendMsg = function() {
-			sendMsg();
-		}
-
-		messageTextarea.on('keypress', function(ev) {
-			if (ev.keyCode == 13 && !ev.metaKey) {
-				ev.preventDefault();
+			var ed = textarea.getEditor();
+			ed.linkify();
+			window.setTimeout(function() {
+				messageTextarea.val(ed[0].innerHTML);
 				sendMsg();
-			}
-		});
+			}, 100);
+		};
 
 		messageTextarea.on('keyup', function() {
 			self.typing();
 		});
 
 		this.addEvent('destroy', function() {
-			DeskPRO_Window.getMessageBroker().removeTaggedListeners(OBJ_ID)
+			DeskPRO_Window.getMessageBroker().removeTaggedListeners(OBJ_ID);
 			if (self.chatStatus == 'ended') {
 				return;
 			} if (self.closeAction == 'unassign') {
@@ -201,17 +199,12 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 			if (textarea.data('redactor')) {
 				var ed = textarea.getEditor();
-				ed.on('keypress', function(ev) {
+				ed.on('keypress', $.proxy(function(ev) {
 					if (ev.keyCode === 13 && !ev.shiftKey && !ev.ctrlKey && !ev.metaKey) {
 						ev.preventDefault();
-						window.setTimeout(function() {
-							ed.linkify();
-							window.setTimeout(function() {
-								sendMsg();
-							}, 100);
-						}, 10);
+						this.doSendMsg();
 					}
-				});
+				}, this));
 
 				var lastH = ed.height();
 				ed.on('keypress change', function() {
@@ -611,7 +604,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		li.addClass('agent-' + agent_id);
 		$('a', li).text(agentInfo.name).addClass('agent-link').css({
 			'background-image': agentInfo.pictureUrlSizable.replace('{SIZE}', 20)
-		})
+		});
 
 		this.getEl('agent_parts').append(li);
 
@@ -799,7 +792,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			this.getEl('messages_box').find('.row.agent').addClass('user-ack');
 		}
 
-		var avatarHtml = '';
+		var avatarHtml;
 		var person_avatar = metadata.person_avatar || this.meta.userPictureUrl;
 		person_avatar = person_avatar.replace(/\/avatar\/\d+\//, "/avatar/25/", person_avatar);
 		person_avatar = person_avatar.replace(/\/size\/\d+\//, "/size/25/", person_avatar);
@@ -808,7 +801,14 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			person_avatar = Orb.appendQueryData(person_avatar, 's', '25');
 		}
 
-		avatarHtml = '<div class="avatar tipped" title="'+ Orb.escapeHtml(metadata.author_name || '') +'"><img src="' + person_avatar + '" /></div>';
+		var authorName = '';
+		if (type == 'agent') {
+			authorName = this.meta.youName || '';
+		} else if (type == 'user') {
+			authorName = this.meta.convo.person_name || '';
+		}
+
+		avatarHtml = '<div class="avatar tipped" title="'+ Orb.escapeHtml(authorName) +'"><img src="' + person_avatar + '" /></div>';
 
 		var html = ['<div class="row '+type+' ' + addclass + '"><div class="message-content">'];
 			if (type == 'sys') {

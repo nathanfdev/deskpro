@@ -13,22 +13,20 @@ export class Footer extends React.Component {
     super(props);
 
     this.state = {
-      message: '',
+      message:         '',
       emoticonsOpened: false
     };
   }
 
   handleChange = (text) => {
-    this.setState({message: text});
+    this.setState({ message: text });
   };
 
   handleSubmit = event => {
     event.preventDefault();
 
     this.props.handleAddMessage(replaceSmileCodes(this.state.message, true));
-    this.setState({
-      message: ''
-    });
+    this.setState({ message: '' });
   };
 
   render() {
@@ -43,19 +41,17 @@ export class Footer extends React.Component {
             onSubmit={this.handleSubmit}
             className="textarea"
             options={{
-              autoLink: true,
+              autoLink:      true,
               imageDragging: true,
-              placeholder: {
-                text: 'Send a message'
-              },
-              toolbar: {
-                buttons: ['bold', 'italic', 'underline', 'anchor'],
+              placeholder:   { text: 'Send a message' },
+              toolbar:       {
+                buttons:                ['bold', 'italic', 'underline', 'anchor'],
                 updateOnEmptySelection: true
               },
               paste: {
-                forcePlainText: false,
+                forcePlainText:  false,
                 cleanPastedHTML: false,
-                cleanAttrs: ['style', 'dir']
+                cleanAttrs:      ['style', 'dir']
               }
             }}
           />
@@ -68,7 +64,7 @@ export class Footer extends React.Component {
             popupPositionMy="left top"
           />
 
-          <input onClick={this.handleSubmit} type="button" value="&#xf101;"/>
+          <input onClick={this.handleSubmit} type="button" value="&#xf101;" />
         </form>
       </footer>
     );

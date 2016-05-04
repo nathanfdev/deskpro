@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -60,6 +60,11 @@ class DownloadsSubscription extends \Application\DeskPRO\Domain\DomainObject
     protected $download;
 
     /**
+     * @var bool
+     */
+    protected $root_category;
+
+    /**
      * @param DownloadCategory $category
      */
     public function setCategory(DownloadCategory $category = null)
@@ -83,6 +88,22 @@ class DownloadsSubscription extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('download', $download);
     }
 
+    /**
+     * @return bool
+     */
+    public function isRootCategory()
+    {
+        return $this->root_category;
+    }
+
+    /**
+     * @param bool $root_category
+     */
+    public function setRootCategory($root_category)
+    {
+        $this->setModelField('root_category', $root_category);
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -91,17 +112,93 @@ class DownloadsSubscription extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\DownloadSubscription';
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name'    => 'download_subscriptions',
-            'indexes' => array(),
-        ));
+            'indexes' => [
+                'root_category_idx' => ['columns' => ['root_category']],
+            ],
+        ]);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapManyToOne(array('fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null)), 'dpApi' => true));
-        $metadata->mapManyToOne(array('fieldName' => 'download', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Download', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'download_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
-        $metadata->mapManyToOne(array('fieldName' => 'category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\DownloadCategory', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null)), 'dpApi' => true));
+        $metadata->mapField(
+            [
+                'fieldName'  => 'id',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'id',
+                'id'         => true,
+            ]
+        );
+
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'person',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'person_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'cascade',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+                'dpApi' => true,
+            ]
+        );
+
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'download',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Download',
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'download_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'cascade',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+            ]
+        );
+
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'category',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\DownloadCategory',
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'category_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'cascade',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+                'dpApi' => true,
+            ]
+        );
+
+        $metadata->mapField(
+            [
+                'fieldName'  => 'root_category',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'root_category',
+            ]
+        );
     }
 
     /**

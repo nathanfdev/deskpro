@@ -58,6 +58,14 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
+  logout_exception.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\LogoutExceptionRedirectListener
+    arguments:
+      - "@router"
+      - "portal_logout_confirm"
+    tags:
+      - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: 0 }
+
   controller_name_converter:
       class: DeskPRO\Bundle\PortalBundle\HttpKernel\ControllerNameParser
       tags: [{name: monolog.logger, channel: request}]

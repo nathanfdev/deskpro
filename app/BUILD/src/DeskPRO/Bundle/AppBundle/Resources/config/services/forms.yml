@@ -130,7 +130,7 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Organizations\OrganizationType
     arguments: ["@custom_field_manager"]
     tags:
-      - { name: form.type, alias: organization }
+      - { name: form.type }
 
   form.organization_email_domains:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Organizations\OrganizationEmailDomainsType
@@ -165,24 +165,6 @@ services:
     tags:
       - { name: form.type, alias: dp_auth }
 
-  form.task_link_article:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\Task\LinkedArticleType
-    arguments: ["@doctrine.orm.entity_manager"]
-    tags:
-      - { name: form.type, alias: task_link_article }
-
-  form.task_link_chat:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\Task\LinkedChatType
-    arguments: ["@doctrine.orm.entity_manager"]
-    tags:
-      - { name: form.type, alias: task_link_chat }
-
-  form.task_link_ticket:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\Task\LinkedTicketType
-    arguments: ["@doctrine.orm.entity_manager"]
-    tags:
-      - { name: form.type, alias: task_link_ticket }
-
   form.term_engine.term:
     class: DeskPRO\Bundle\AppBundle\Form\Type\TermEngineTermType
     arguments:
@@ -199,11 +181,6 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\DataTransformer\TermEngineTermTransformer
     arguments:
       - "@term_to_json_converter"
-
-  form.feedback_comment:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\FeedbackCommentType
-    tags:
-      - { name: form.type, alias: feedback_comment }
 
   form.ticket_message_attachment:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageAttachmentType

@@ -1650,6 +1650,16 @@ define(function() {
 		controller: 'Admin_Portal_Ctrl_WidgetEditor'
 	});
 
+	//###
+	//# Ticket Form Widget
+	//###
+	routes.push({
+		id: 'portal.ticket_form_widget',
+		url: '/ticket_form_widget',
+		templateName: 'Portal/ticket-form-widget.html',
+		controller: 'Admin_Portal_Ctrl_TicketFormWidget'
+	});
+
   //###
   //# Portal Settings
   //###

@@ -29,28 +29,11 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Interfaces;
 
-use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class ApplyUnassignAction extends AbstractTicketApplicator implements ActionApplicatorInterface
+interface TokenStorageAwareInterface
 {
-    /**
-     * @param Ticket[] $tickets
-     */
-    public function apply(array $tickets)
-    {
-        $context = $this->tm->createAgentExecutorContext(null, 'unassign', 'mass_actions');
-        // Department will not set to null, it will be set to default value
-        // see Application\DeskPRO\Tickets\TicketSaveActions\VerifyDepartment::processTicket()
-        foreach ($tickets as $ticket) {
-            $ticket
-                ->setAgent()
-                ->setAgentTeam()
-                ->setDepartment();
-
-            $this->tm->saveTicket($ticket, $context);
-        }
-    }
+    public function setTokenStorage(TokenStorageInterface $tokenStorage);
 }

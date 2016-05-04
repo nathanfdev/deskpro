@@ -428,8 +428,6 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
             $status_code = str_replace('hidden.', '', $status_code);
             $this->setModelField('status', 'hidden');
             $this->setModelField('hidden_status', $status_code);
-
-            $this->setModelField('date_published', null);
         } else {
             $this->setModelField('status', $status_code);
             $this->setModelField('hidden_status', null);
@@ -447,6 +445,14 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         } else {
             return $this->status;
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 
     public function getHiddenStatus()
@@ -758,6 +764,14 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @return int
+     */
+    public function getNumRatings()
+    {
+        return $this->num_ratings;
+    }
+
+    /**
      * @return \Application\DeskPRO\Labels\LabelManager
      */
     public function getLabelManager()
@@ -860,6 +874,22 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function getDateCreated()
     {
         return $this->date_created;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalRating()
+    {
+        return $this->total_rating;
+    }
+
+    /**
+     * @return int
+     */
+    public function getViewCount()
+    {
+        return $this->view_count;
     }
 
     /**

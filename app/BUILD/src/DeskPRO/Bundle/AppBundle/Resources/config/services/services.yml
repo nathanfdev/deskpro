@@ -70,3 +70,7 @@ services:
   widget_loader_code_renderer:
     class: DeskPRO\Bundle\AppBundle\Templating\WidgetLoader
     arguments: ["@deskpro.app_env", "@widget_settings_resolver", "@serializer"]
+
+  app.environment:
+    class: DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices\EnvironmentService
+    arguments: ["@request_stack"]

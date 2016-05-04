@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\CustomDefTicket;
@@ -38,6 +39,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
+use DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures\CustomFields\CustomDataGenerator;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures\CustomFields\TicketFieldsFixture;
 use DeskPRO\Bundle\AppBundle\DataFixtures\Tools\RandomFileFromDir;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
@@ -115,7 +117,7 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
      */
     public function getOrder()
     {
-        return 70;
+        return 90;
     }
 
     /**
@@ -267,47 +269,12 @@ class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixt
         #------------------------------
 
         /** @var CustomDefTicket[] $fields */
-        $fields = TicketFieldsFixture::$fields[$departmentRef];
+        $fields             = TicketFieldsFixture::$fields[$departmentRef];
+        $customDefGenerator = new CustomDataGenerator($this->faker);
 
         $batch = [];
         foreach ($fields as $f) {
-            $num = 1;
-            if ($f->getOption('multiple')) {
-                $num = $this->faker->numberBetween(1, count($f->getChildren()));
-            }
-
-            for ($x = 0; $x < $num; ++$x) {
-                $rowData = [
-                    'ticket_id'     => $ticket->getId(),
-                    'field_id'      => $f->getId(),
-                    'root_field_id' => $f->getId(),
-                    'value'         => 0,
-                    'input'         => '',
-                ];
-                switch ($f->getTypeName()) {
-                    case 'text':
-                        $rowData['input'] = $this->faker->realText($this->faker->numberBetween(10, 80));
-                        break;
-                    case 'textarea':
-                        $rowData['input'] = $this->faker->realText($this->faker->numberBetween(20, 500));
-                        break;
-                    case 'date':
-                    case 'datetime':
-                        $rowData['value'] = time();
-                        break;
-                    case 'choice':
-                        $opt                 = $this->faker->randomElement($f->getChildren()->toArray());
-                        $rowData['field_id'] = $opt->getId();
-                        $rowData['value']    = 1;
-                        break;
-                    default:
-                        throw new \InvalidArgumentException();
-                }
-
-                if ($rowData) {
-                    $batch[] = $rowData;
-                }
-            }
+            $customDefGenerator->addCustomDefData($batch, $f, 'ticket_id', $ticket->getId());
         }
 
         if ($batch) {

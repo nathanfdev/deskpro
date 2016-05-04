@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,11 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\Person;
 
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
@@ -44,14 +42,28 @@ class DbalPersonTermCompiler extends AbstractDbalTermCompiler
      */
     public function doCompile(TermInterface $term)
     {
-        $ids = array_map(function ($id) { return (int) $id; }, $term->getOption('person_ids'));
-        $query_part = $this->getEntityHelper()->buildQueryPart(
-            'ticket.person_id',
-            $term->getOp(),
-            $ids
-        );
-        $this->logQueryPart($query_part);
+        $isNot = $this->isOp($term->getOp(), TermInterface::OP_NOT);
 
-        return $query_part;
+        $notPrefix = $isNot ? 'NOT' : '';
+        $composite = $isNot ? 'AND' : 'OR';
+
+        $qp = new DbalQueryPart();
+        $qp
+            ->setParameter('ids', array_map(function ($id) { return (int) $id; }, $term->getOption('person_ids')))
+            ->setWhereString("
+                ticket.person_id $notPrefix IN(:ids) $composite $notPrefix EXISTS(
+                  SELECT * FROM
+                    tickets_participants tp
+                        JOIN
+                    people p ON tp.person_id = p.id
+                  WHERE
+                    p.is_agent = 0 AND p.id $notPrefix IN(:ids) AND ticket.id = tp.ticket_id
+                )
+            ")
+        ;
+
+        $this->logQueryPart($qp);
+
+        return $qp;
     }
 }

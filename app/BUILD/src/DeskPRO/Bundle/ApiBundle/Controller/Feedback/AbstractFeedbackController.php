@@ -94,8 +94,9 @@ abstract class AbstractFeedbackController extends CrudController
         $customCategory = $request->get('custom_category');
         if (!empty($customCategory)) {
             $qb
-                ->leftJoin("$alias.custom_data", 'custom_category')
-                ->andWhere('custom_category.input IN (:custom_category)')
+                ->join("$alias.custom_data", 'customCat')
+                ->join('customCat.field', 'def')
+                ->andWhere('def.title IN (:custom_category)')
                 ->setParameter('custom_category', $customCategory)
             ;
         }

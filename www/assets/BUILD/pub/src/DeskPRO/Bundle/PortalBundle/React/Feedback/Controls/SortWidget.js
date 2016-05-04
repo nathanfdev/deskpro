@@ -21,16 +21,16 @@ export class SortWidget extends React.Component {
     const arrowUp = ' (asc)';
 
     const sorts = {
-      'date-desc': portalPhrases.get('portal.general.prop_date') + arrowDown,
-      'date-asc': portalPhrases.get('portal.general.prop_date') + arrowUp,
-      'most-views-desc': portalPhrases.get('portal.general.prop_views') + arrowDown,
-      'most-views-asc': portalPhrases.get('portal.general.prop_views') + arrowUp,
-      'highest-rating-desc': portalPhrases.get('portal.general.prop_rating') + arrowDown,
-      'highest-rating-asc': portalPhrases.get('portal.general.prop_rating') + arrowUp,
       'most-popular-desc': portalPhrases.get('portal.general.prop_popularity') + arrowDown,
       'most-popular-asc': portalPhrases.get('portal.general.prop_popularity') + arrowUp,
+      'highest-rating-desc': portalPhrases.get('portal.general.prop_rating') + arrowDown,
+      'highest-rating-asc': portalPhrases.get('portal.general.prop_rating') + arrowUp,
+      'date-desc': portalPhrases.get('portal.general.prop_date') + arrowDown,
+      'date-asc': portalPhrases.get('portal.general.prop_date') + arrowUp,
       'most-discussed-desc': portalPhrases.get('portal.general.prop_comments') + arrowDown,
-      'most-discussed-asc': portalPhrases.get('portal.general.prop_comments') + arrowUp
+      'most-discussed-asc': portalPhrases.get('portal.general.prop_comments') + arrowUp,
+      'most-views-desc': portalPhrases.get('portal.general.prop_views') + arrowDown,
+      'most-views-asc': portalPhrases.get('portal.general.prop_views') + arrowUp
     };
 
     const selectedSort = {id: filter.sort + '-' + filter.sort_direction, title: "Sort"};

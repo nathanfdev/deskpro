@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,43 +29,46 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmail;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
+/**
+ * Class DbalPersonEmailTermCompiler.
+ */
 class DbalPersonEmailTermCompiler extends AbstractDbalTermCompiler
 {
+    /**
+     * {@inheritdoc}
+     */
     public function doCompile(TermInterface $term)
     {
-        $query_part = new DbalQueryPart();
+        $isNot = $this->isOp($term->getOp(), TermInterface::OP_NOT);
 
-        $op = $term->getOp();
+        $subQuery  = 'SELECT pe.person_id FROM people_emails pe WHERE pe.email = :email';
+        $notPrefix = $isNot ? 'NOT' : '';
+        $composite = $isNot ? 'AND' : 'OR';
 
-        switch ($op) {
-            case TermInterface::OP_IS:
-                $query_part->setParameter('email', $term->getOption('email'));
-                $query_part->addJoin('people_emails', 'ticket.person_id = people_emails.person_id');
-                $query_part->setWhereString('people_emails.email = :email');
+        $qp = new DbalQueryPart();
+        $qp
+            ->setParameter('email', $term->getOption('email'))
+            ->setWhereString("
+                ticket.person_id $notPrefix IN($subQuery) $composite $notPrefix EXISTS(
+                  SELECT * FROM
+                    tickets_participants tp
+                        JOIN
+                    people p ON tp.person_id = p.id
+                  WHERE
+                    p.is_agent = 0 AND p.id $notPrefix IN($subQuery) AND ticket.id = tp.ticket_id
+                )
+            ")
+        ;
 
-                $this->logQueryPart($query_part);
+        $this->logQueryPart($qp);
 
-                return $query_part;
-            case TermInterface::OP_NOT:
-                $query_part->setParameter('email', $term->getOption('email'));
-                $query_part->addUniqueJoin(
-                    'email_join',
-                    'people_emails',
-                    'ticket.person_id = {email_join}.person_id AND {email_join}.email = :email'
-                );
-                $query_part->setWhereString('{email_join}.id IS NULL');
-
-                $this->logQueryPart($query_part);
-
-                return $query_part;
-        }
-
-        return '';
+        return $qp;
     }
 }

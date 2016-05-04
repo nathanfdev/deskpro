@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 
 use DeskPRO\Bundle\AppBundle\Security\Voter\AbstractVoter;
@@ -50,11 +51,11 @@ class ContentSubscriptionsVoter extends AbstractVoter
     const SUBSCRIBE_FEEDBACK          = 'SUBSCRIBE_FEEDBACK';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function supports($attribute, $subject)
     {
-        return in_array($attribute, array(
+        return in_array($attribute, [
             self::SUBSCRIBE_ARTICLE,
             self::SUBSCRIBE_ARTICLE_CATEGORY,
             self::SUBSCRIBE_NEWS,
@@ -62,11 +63,11 @@ class ContentSubscriptionsVoter extends AbstractVoter
             self::SUBSCRIBE_DOWNLOAD,
             self::SUBSCRIBE_DOWNLOAD_CATEGORY,
             self::SUBSCRIBE_FEEDBACK,
-        ));
+        ]);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function voteOnAttribute($attribute, $object, TokenInterface $token)
     {
@@ -76,9 +77,9 @@ class ContentSubscriptionsVoter extends AbstractVoter
             return false;
         }
 
-        $permission_bag = $this->getPortalPermissionsManager()->getPermissionsBagForPerson($user);
+        $permissionBag = $this->getPortalPermissionsManager()->getPermissionsBagForPerson($user);
 
-        $permitted = $permission_bag->hasContentCategoryAccess($object);
+        $permitted = $permissionBag->hasContentCategoryAccess($object);
 
         switch ($attribute) {
             case static::SUBSCRIBE_ARTICLE:

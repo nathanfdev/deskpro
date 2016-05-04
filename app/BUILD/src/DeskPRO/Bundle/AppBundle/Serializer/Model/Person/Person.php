@@ -322,12 +322,23 @@ class Person
      *
      * @var ArrayCollection
      */
-    protected $usergroups;
+    protected $userGroups;
+
+    /**
+     * Usergroups the user belongs to.
+     *
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Usergroup>>")
+     *
+     * @var ArrayCollection
+     */
+    protected $agentGroups;
 
     /**
      * Labels associated with this user.
      *
-     * @var array
+     * @JMS\Type("array<to_string<Application\DeskPRO\Entity\LabelPerson>>")
+     *
+     * @var \Application\DeskPRO\Entity\Labels\Label[]
      */
     protected $labels;
 
@@ -477,8 +488,9 @@ class Person
         $this->dateCreated             = $person->date_created;
         $this->dateLastLogin           = $person->date_last_login;
         $this->browser                 = $person->browser;
-        $this->usergroups              = $person->getUsergroups();
-        $this->labels                  = $person->getLabelsArray();
+        $this->userGroups              = $person->getPublicUsergroups();
+        $this->agentGroups             = $person->getPublicAgentgroups();
+        $this->labels                  = $person->getLabels();
         $this->primaryEmail            = $person->getPrimaryEmail();
         $this->ticketsCount            = $person->getTicketsCount();
         $this->chatsCount              = $person->getChatsCount();

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
@@ -39,12 +36,15 @@ use DeskPRO\Bundle\AppBundle\Util\SimpleTimer;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Class AbstractTermCompiler.
+ */
 abstract class AbstractTermCompiler
 {
     /**
      * @var TermCompilerHelperPool
      */
-    protected $helper_pool;
+    protected $helperPool;
 
     /**
      * @var LoggerInterface
@@ -61,51 +61,65 @@ abstract class AbstractTermCompiler
      */
     protected $short_name;
 
+    /**
+     * @param LoggerInterface $logger
+     */
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
 
+    /**
+     * @return LoggerInterface
+     */
     public function getLogger()
     {
         return $this->logger;
     }
 
+    /**
+     * @param TermInterface $term
+     */
     public function logStartingCompile(TermInterface $term)
     {
         // logEndingCompile method relies on $this->stateful_timer here
         $this->stateful_timer = new SimpleTimer();
-
-        $this->logDebug(
-            'START',
-            array(
-                'term_name' => TermTypeCodes::getTermTypeCode($term),
-                'op'        => $term->getOp(),
-                'options'   => $term->getOptions(),
-            )
-        );
+        $this->logDebug('START', [
+            'term_name' => TermTypeCodes::getTermTypeCode($term),
+            'op'        => $term->getOp(),
+            'options'   => $term->getOptions(),
+        ]);
     }
 
+    /**
+     * @param TermInterface $term
+     */
     public function logEndingCompile(TermInterface $term)
     {
-        $this->logDebug(
-            'END',
-            array(
-                'term_name'  => TermTypeCodes::getTermTypeCode($term),
-                'op'         => $term->getOp(),
-                'time_in_ms' => $this->stateful_timer->getElapsedTime(),
-            )
-        );
+        $this->logDebug('END', [
+            'term_name'  => TermTypeCodes::getTermTypeCode($term),
+            'op'         => $term->getOp(),
+            'time_in_ms' => $this->stateful_timer->getElapsedTime(),
+        ]);
     }
 
-    public function log($level, $message, array $context = array())
+    /**
+     * @param int    $level
+     * @param string $message
+     * @param array  $context
+     */
+    public function log($level, $message, array $context = [])
     {
         $message = sprintf('%s: %s', $this->getShortName(), $message);
 
         $this->getLogger()->log($level, $message, $context);
     }
 
-    public function logDebug($message, array $context = array())
+    /**
+     * @param string $message
+     * @param array  $context
+     */
+    public function logDebug($message, array $context = [])
     {
         if (!$this->getLogger()) {
             return;
@@ -114,7 +128,11 @@ abstract class AbstractTermCompiler
         $this->log(Logger::DEBUG, $message, $context);
     }
 
-    public function logInfo($message, array $context = array())
+    /**
+     * @param string $message
+     * @param array  $context
+     */
+    public function logInfo($message, array $context = [])
     {
         if (!$this->getLogger()) {
             return;
@@ -123,7 +141,11 @@ abstract class AbstractTermCompiler
         $this->log(Logger::INFO, $message, $context);
     }
 
-    public function logNotice($message, array $context = array())
+    /**
+     * @param string $message
+     * @param array  $context
+     */
+    public function logNotice($message, array $context = [])
     {
         if (!$this->getLogger()) {
             return;
@@ -132,7 +154,11 @@ abstract class AbstractTermCompiler
         $this->log(Logger::NOTICE, $message, $context);
     }
 
-    public function logWarning($message, array $context = array())
+    /**
+     * @param string $message
+     * @param array  $context
+     */
+    public function logWarning($message, array $context = [])
     {
         if (!$this->getLogger()) {
             return;
@@ -141,7 +167,11 @@ abstract class AbstractTermCompiler
         $this->getLogger()->log(Logger::WARNING, $message, $context);
     }
 
-    public function logError($message, array $context = array())
+    /**
+     * @param string $message
+     * @param array  $context
+     */
+    public function logError($message, array $context = [])
     {
         if (!$this->getLogger()) {
             return;
@@ -150,7 +180,11 @@ abstract class AbstractTermCompiler
         $this->log(Logger::ERROR, $message, $context);
     }
 
-    public function logCritical($message, array $context = array())
+    /**
+     * @param string $message
+     * @param array  $context
+     */
+    public function logCritical($message, array $context = [])
     {
         if (!$this->getLogger()) {
             return;
@@ -159,7 +193,11 @@ abstract class AbstractTermCompiler
         $this->log(Logger::CRITICAL, $context);
     }
 
-    public function logAlert($message, array $context = array())
+    /**
+     * @param string $message
+     * @param array  $context
+     */
+    public function logAlert($message, array $context = [])
     {
         if (!$this->getLogger()) {
             return;
@@ -168,7 +206,11 @@ abstract class AbstractTermCompiler
         $this->log(Logger::ALERT, $message, $context);
     }
 
-    public function logEmergency($message, array $context = array())
+    /**
+     * @param string $message
+     * @param array  $context
+     */
+    public function logEmergency($message, array $context = [])
     {
         if (!$this->getLogger()) {
             return;
@@ -177,6 +219,9 @@ abstract class AbstractTermCompiler
         $this->log(Logger::EMERGENCY, $message, $context);
     }
 
+    /**
+     * @return string
+     */
     public function getShortName()
     {
         if (!$this->short_name) {
@@ -187,9 +232,12 @@ abstract class AbstractTermCompiler
         return $this->short_name;
     }
 
-    public function setHelperPool(TermCompilerHelperPool $helper_pool)
+    /**
+     * @param TermCompilerHelperPool $helperPool
+     */
+    public function setHelperPool(TermCompilerHelperPool $helperPool)
     {
-        $this->helper_pool = $helper_pool;
+        $this->helperPool = $helperPool;
     }
 
     /**
@@ -201,11 +249,13 @@ abstract class AbstractTermCompiler
      */
     public function getHelper($id)
     {
-        return $this->helper_pool->getHelper($id);
+        return $this->helperPool->getHelper($id);
     }
 
     /**
      * @param TermInterface $term
+     *
+     * @return DbalQueryPart
      */
     public function compile(TermInterface $term)
     {

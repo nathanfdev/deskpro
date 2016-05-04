@@ -37,11 +37,6 @@ export const setParams = createAction('FEEDBACK_LIST_SET_CURRENT_PARAMS');
 
 export const loadIndicator = createAction('FEEDBACK_LIST_LOAD_INDICATOR');
 
-export const getCommentsCounter = createAction(
-  'FEEDBACK_GET_COMMENTS_COUNTER',
-    ids => dispatch => dispatch(loadBatch('FeedbackCommentCounter', ids, recordStoresId))
-);
-
 export const setDisplayFields = createAction(
   'FEEDBACK_SET_DISPLAY_FIELDS',
     payload => payload
@@ -60,7 +55,6 @@ export const loadFeedbackList = createAction(
           recordStoresId,
           prepareLinkedData(res.linked.feedback_status_category))
       );
-      dispatch(getCommentsCounter(ids));
 
       return { ids, pagination: res.meta.pagination };
     }

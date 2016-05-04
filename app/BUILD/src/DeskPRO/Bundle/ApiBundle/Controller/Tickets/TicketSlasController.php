@@ -43,7 +43,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * API access to ticket slas.
  *
- * @Rest\Route("/tickets/{parentId}/slas")
+ * @Rest\Route("/tickets/{parentId}/ticket_slas")
  * @ApiModes("all")
  * @ApiDoc(target="all", section="Tickets", output="TicketSla")
  */
@@ -85,7 +85,7 @@ class TicketSlasController extends CrudSubController
      *     }
      * )
      *
-     * @Rest\Get("/{slaId}", name="api_ticket_sla_single")
+     * @Rest\Get("/by_sla/{slaId}")
      *
      * @param Request $request
      * @param int     $parentId parent Ticket's ID
@@ -93,7 +93,7 @@ class TicketSlasController extends CrudSubController
      *
      * @return View
      */
-    public function getSingleSlaAction(Request $request, $parentId, $slaId)
+    public function getSingleTicketSlaAction(Request $request, $parentId, $slaId)
     {
         $ticketSla = $this->getRepository(TicketSla::class)->findOneBy(['ticket' => $parentId, 'sla' => $slaId]);
         if (null === $ticketSla) {
@@ -125,7 +125,7 @@ class TicketSlasController extends CrudSubController
      *     }
      * )
      *
-     * @Rest\Delete("/{slaId}", name="api_ticket_sla_single_delete")
+     * @Rest\Delete("/by_sla/{slaId}")
      *
      * @param Request $request
      * @param int     $parentId parent Ticket's ID

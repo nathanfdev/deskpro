@@ -76,7 +76,7 @@ class ArticlesController extends AbstractController
                 'page_title' => $this->get('portal_view.page_title_generator')->kb(),
             ]);
         }
-        $rss_link = $this->generateUrl(
+        $rssLink = $this->generateUrl(
             'portal_kb',
             ['_format' => 'rss']
         );
@@ -87,16 +87,28 @@ class ArticlesController extends AbstractController
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildKb();
 
         //
+        // SUBSCRIPTION
+        //
+        $isSubscribed = false;
+        if (
+        $this->getBrandSetting('user.kb_subscriptions', false) && $this->getUser()
+        ) {
+            // waiting info regarding article category subscriptions
+            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('kb', $this->getUser());
+        }
+
+        //
         // RENDER THEME
         //
         return $this->renderThemeView(
             'Theme:Articles:index.html.twig',
             [
-                'page'        => $page,
-                'count'       => $this->getBrandSetting('portal.per_page_content'),
-                'breadcrumbs' => $breadcrumbs,
-                'page_title'  => $this->get('portal_view.page_title_generator')->kb(),
-                'rss_link'    => $rss_link,
+                'page'          => $page,
+                'count'         => $this->getBrandSetting('portal.per_page_content'),
+                'breadcrumbs'   => $breadcrumbs,
+                'page_title'    => $this->get('portal_view.page_title_generator')->kb(),
+                'rss_link'      => $rssLink,
+                'is_subscribed' => $isSubscribed,
             ]
         );
     }
@@ -131,7 +143,7 @@ class ArticlesController extends AbstractController
                 'page_title' => $this->get('portal_view.page_title_generator')->kb($category),
             ]);
         }
-        $rss_link = $this->generateUrl('portal_kb_browse', ['slug' => $category->getSlug(), '_format' => 'rss']);
+        $rssLink = $this->generateUrl('portal_kb_browse', ['slug' => $category->getSlug(), '_format' => 'rss']);
 
         //
         // BREADCRUMBS
@@ -145,13 +157,13 @@ class ArticlesController extends AbstractController
         //
         // SUBSCRIPTION
         //
-        $is_subscribed = false;
+        $isSubscribed = false;
         if (
             $this->getBrandSetting('user.kb_subscriptions', false)
             && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE_CATEGORY, $category)
         ) {
             // waiting info regarding article category subscriptions
-            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
+            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
         }
 
         //
@@ -169,11 +181,11 @@ class ArticlesController extends AbstractController
                 'category'      => $category,
                 'breadcrumbs'   => $breadcrumbs,
                 'page_title'    => $this->get('portal_view.page_title_generator')->kb($category),
-                'is_subscribed' => $is_subscribed,
+                'is_subscribed' => $isSubscribed,
                 'pager'         => $pager,
                 'count'         => $count,
                 'page'          => $page,
-                'rss_link'      => $rss_link,
+                'rss_link'      => $rssLink,
             ]
         );
     }
@@ -190,14 +202,14 @@ class ArticlesController extends AbstractController
         //
         // COMMENT FORM
         //
-        $new_comment_form = null;
+        $newCommentForm = null;
         if ($this->isGranted(ContentCommentVoter::COMMENT_ARTICLE, $article)) {
-            $form_handler = $this->get('form_handler.comment');
-            $comment      = new ArticleComment();
+            $formHandler = $this->get('form_handler.comment');
+            $comment     = new ArticleComment();
             $comment->setVisitorId($visitor_id);
             $comment->setIpAddress($request->getClientIp());
-            $new_comment_form = $form_handler->createForm($comment, $request);
-            $form_result      = $form_handler->handle($new_comment_form, $request, $article, $comment);
+            $newCommentForm = $formHandler->createForm($comment, $request);
+            $form_result    = $formHandler->handle($newCommentForm, $request, $article, $comment);
             if ($form_result instanceof Response) {
                 return $form_result;
             }
@@ -216,18 +228,18 @@ class ArticlesController extends AbstractController
         //
         // NUM RATINGS
         //
-        list($show_rating_counts, $rating_counts) = $this->determineRatingCounts($article);
+        list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($article);
 
         //
         // SUBSCRIPTION
         //
-        $is_subscribed = false;
+        $isSubscribed = false;
         if (
             $this->getBrandSetting('user.kb_subscriptions', false)
             && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE, $article)
         ) {
             // waiting on info on the kb subs
-            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($article, $this->getUser());
+            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedContent($article, $this->getUser());
         }
 
         //
@@ -235,19 +247,19 @@ class ArticlesController extends AbstractController
         //
         return $this->renderThemeView(
             'Theme:Articles:view.html.twig',
-            array(
+            [
                 'article'            => $article,
                 'rating'             => $rating,
-                'is_subscribed'      => $is_subscribed,
+                'is_subscribed'      => $isSubscribed,
                 'category'           => $article->getPrimaryCategory(),
                 'breadcrumbs'        => $breadcrumbs,
                 'content_id'         => $article->getId(),
                 'content_type'       => Article::CONTENT_TYPE,
                 'page_title'         => $this->get('portal_view.page_title_generator')->kb($article),
-                'new_comment_form'   => $new_comment_form ? $new_comment_form->createView() : null,
-                'show_rating_counts' => $show_rating_counts,
-                'rating_counts'      => $rating_counts,
-            )
+                'new_comment_form'   => $newCommentForm ? $newCommentForm->createView() : null,
+                'show_rating_counts' => $showRatingCounts,
+                'rating_counts'      => $ratingCounts,
+            ]
         );
     }
 
@@ -257,6 +269,12 @@ class ArticlesController extends AbstractController
      * @ParamConverter(name="article", converter="deskpro_slug")
      * @Security("is_granted('USE_ARTICLES') and is_granted('RATE_ARTICLE', article)")
      * @AutoPostOnGetRequest()
+     *
+     * @param Article $article
+     * @param         $visitor_id
+     * @param         $up_or_down
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function articleRateAction(Article $article, $visitor_id, $up_or_down)
     {
@@ -270,7 +288,7 @@ class ArticlesController extends AbstractController
 
         $this->addFlash('success', $this->phrase('portal.flashes.rating_thanks'));
 
-        return $this->redirectToRoute('portal_kb_view', array('slug' => $article->getSlug()));
+        return $this->redirectToRoute('portal_kb_view', ['slug' => $article->getSlug()]);
     }
 
     /**
@@ -278,21 +296,25 @@ class ArticlesController extends AbstractController
      * @ParamConverter(name="article", converter="deskpro_slug")
      * @Security("is_granted('USE_ARTICLES') and is_granted('SUBSCRIBE_ARTICLE', article)")
      * @AutoPostOnGetRequest()
+     *
+     * @param Article $article
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function articleSubscriptionAction(Article $article)
     {
-        $person               = $this->getUser();
-        $subscriptions_helper = $this->getSubscriptionsHelper();
+        $person              = $this->getUser();
+        $subscriptionsHelper = $this->getSubscriptionsHelper();
 
-        if ($subscriptions_helper->isSubscribedContent($article, $person)) {
-            $subscriptions_helper->unsubscribeFromContent($article, $person);
+        if ($subscriptionsHelper->isSubscribedContent($article, $person)) {
+            $subscriptionsHelper->unsubscribeFromContent($article, $person);
             $this->addFlash('success', $this->phrase('portal.flashes.article_unsubscribe'));
         } else {
-            $subscriptions_helper->subscribeToContent($article, $person);
+            $subscriptionsHelper->subscribeToContent($article, $person);
             $this->addFlash('success', $this->phrase('portal.flashes.article_subscribe'));
         }
 
-        return $this->redirectToRoute('portal_kb_view', array('slug' => $article->getSlug()));
+        return $this->redirectToRoute('portal_kb_view', ['slug' => $article->getSlug()]);
     }
 
     /**
@@ -300,21 +322,46 @@ class ArticlesController extends AbstractController
      * @ParamConverter(name="category", converter="deskpro_slug")
      * @Security("is_granted('USE_ARTICLES') and is_granted('SUBSCRIBE_ARTICLE_CATEGORY', category)")
      * @AutoPostOnGetRequest()
+     *
+     * @param ArticleCategory $category
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function articleCategorySubscriptionAction(ArticleCategory $category)
     {
-        $person               = $this->getUser();
-        $subscriptions_helper = $this->getSubscriptionsHelper();
+        $person              = $this->getUser();
+        $subscriptionsHelper = $this->getSubscriptionsHelper();
 
-        if ($subscriptions_helper->isSubscribedCategory($category, $person)) {
-            $subscriptions_helper->unsubscribeFromCategory($category, $person);
+        if ($subscriptionsHelper->isSubscribedCategory($category, $person)) {
+            $subscriptionsHelper->unsubscribeFromCategory($category, $person);
             $this->addFlash('success', $this->phrase('portal.flashes.article_cat_unsubscribe'));
         } else {
-            $subscriptions_helper->subscribeToCategory($category, $person);
+            $subscriptionsHelper->subscribeToCategory($category, $person);
             $this->addFlash('success', $this->phrase('portal.flashes.article_cat_subscribe'));
         }
 
-        return $this->redirectToRoute('portal_kb_browse', array('slug' => $category->getSlug()));
+        return $this->redirectToRoute('portal_kb_browse', ['slug' => $category->getSlug()]);
+    }
+
+    /**
+     * @Route("/kb/root/toggle-subscription", name="portal_kb_article_root_category_toggle_subscription")
+     * @Security("is_granted('ROLE_USER') and is_granted('USE_ARTICLES')")
+     * @AutoPostOnGetRequest()
+     */
+    public function articleRootCategorySubscriptionAction()
+    {
+        $person              = $this->getUser();
+        $subscriptionsHelper = $this->getSubscriptionsHelper();
+
+        if ($subscriptionsHelper->isSubscribedRootCategory('kb', $person)) {
+            $subscriptionsHelper->unsubscribeFromRootCategory('kb', $person);
+            $this->addFlash('success', $this->phrase('portal.flashes.article_cat_unsubscribe'));
+        } else {
+            $subscriptionsHelper->subscribeToRootCategory('kb', $person);
+            $this->addFlash('success', $this->phrase('portal.flashes.article_cat_subscribe'));
+        }
+
+        return $this->redirectToRoute('portal_kb');
     }
 
     /**

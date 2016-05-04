@@ -47,7 +47,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class MainController extends AbstractController
 {
-    protected $deleted_tickets = array();
+    protected $deleted_tickets = [];
 
     public function requireRequestToken($action, $arguments = null)
     {
@@ -73,7 +73,7 @@ class MainController extends AbstractController
         }
 
         // Used in some header menus for search options
-        $titles                  = array();
+        $titles                  = [];
         $titles['organizations'] = $this->container->getDataService('Organization')->getOrganizationNames();
         $titles['usergroups']    = $this->container->getDataService('Usergroup')->getUsergroupNames();
 
@@ -127,10 +127,10 @@ class MainController extends AbstractController
             FROM sessions s
             JOIN people AS p ON p.id = s.person_id
             WHERE s.is_chat_available = 1 AND p.is_agent = true AND s.date_last > ?
-        ', array($cutoff));
+        ', [$cutoff]);
 
-        $with_chat_perm    = array();
-        $without_chat_perm = array();
+        $with_chat_perm    = [];
+        $without_chat_perm = [];
         foreach ($this->container->getAgentData()->getAgents() as $a) {
             if ($a->hasPerm('agent_chat.use')) {
                 $with_chat_perm[] = $a->id;
@@ -142,8 +142,8 @@ class MainController extends AbstractController
         if ($without_chat_perm) {
             $this->db->executeUpdate(
                 'UPDATE sessions SET is_chat_available = ? WHERE person_id IN (?)',
-                array(0, $without_chat_perm),
-                array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY)
+                [0, $without_chat_perm],
+                [\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY]
             );
         }
 
@@ -154,7 +154,7 @@ class MainController extends AbstractController
                 WHERE
                     department_permissions.person_id IN (?)
                     AND department_permissions.app = 'chat' AND department_permissions.value = 1
-            ", array($with_chat_perm), 'person_id', null, 'department_id', array(Connection::PARAM_INT_ARRAY));
+            ", [$with_chat_perm], 'person_id', null, 'department_id', [Connection::PARAM_INT_ARRAY]);
 
             foreach ($agent_chat_depmap as &$v) {
                 if ($v) {
@@ -162,7 +162,7 @@ class MainController extends AbstractController
                 }
             }
         } else {
-            $agent_chat_depmap = array();
+            $agent_chat_depmap = [];
         }
 
         $is_first_login      = false;
@@ -184,11 +184,11 @@ class MainController extends AbstractController
         $ticket_snippet_cats = $this->em->getRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent('tickets', $this->person);
         $chat_snippet_cats   = $this->em->getRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent('chat', $this->person);
 
-        return $this->render('AgentBundle:Main:index.html.twig', array(
+        return $this->render('AgentBundle:Main:index.html.twig', [
             'has_raw_assets'      => $has_raw_assets,
             'is_demo'             => $this->in->checkIsset('show-demo-bar'),
             'last_message_id'     => $last_message_id,
-            'js_debug'            => App::getConfig('debug.js', array()),
+            'js_debug'            => App::getConfig('debug.js', []),
             'is_first_login'      => $is_first_login,
             'is_first_login_name' => $is_first_login_name,
             'timezones'           => \DateTimeZone::listIdentifiers(),
@@ -197,7 +197,7 @@ class MainController extends AbstractController
             'agent_chat_depmap'   => $agent_chat_depmap,
             'ticket_snippet_cats' => $ticket_snippet_cats,
             'chat_snippet_cats'   => $chat_snippet_cats,
-        ));
+        ]);
     }
 
     public function loadVersionNoticeAction($id)
@@ -252,12 +252,12 @@ class MainController extends AbstractController
         }
         $version_notices->save();
 
-        return $this->createJsonResponse(array('success' => true));
+        return $this->createJsonResponse(['success' => true]);
     }
 
     public function getCombinedSectionDataAction()
     {
-        $data = array();
+        $data = [];
 
         foreach ($this->in->getCleanValueArray('section_ids', 'str_simple', 'discard') as $name) {
             switch ($name) {
@@ -308,14 +308,14 @@ class MainController extends AbstractController
             SELECT value_array
             FROM people_prefs
             WHERE person_id = ? AND name = 'agent.ui.recent_tabs_collection'
-        ", array($this->person->getId()));
+        ", [$this->person->getId()]);
 
         if ($recent_tabs) {
             $recent_tabs = @unserialize($recent_tabs);
         }
 
         if (!$recent_tabs) {
-            $recent_tabs = array();
+            $recent_tabs = [];
         } else {
             uasort($recent_tabs, function ($a, $b) {
                 if ($a[4] == $b[4]) {
@@ -334,30 +334,30 @@ class MainController extends AbstractController
         $q    = $this->in->getString('q');
         $sort = $this->in->getString('sort');
 
-        $results = array(
-            'article'              => array(),
-            'download'             => array(),
-            'feedback'             => array(),
-            'news'                 => array(),
-            'ticket'               => array(),
-            'person'               => array(),
-            'person_related'       => array(),
-            'organization'         => array(),
-            'organization_related' => array(),
-            'chat'                 => array(),
-        );
+        $results = [
+            'article'              => [],
+            'download'             => [],
+            'feedback'             => [],
+            'news'                 => [],
+            'ticket'               => [],
+            'person'               => [],
+            'person_related'       => [],
+            'organization'         => [],
+            'organization_related' => [],
+            'chat'                 => [],
+        ];
 
-        $result_meta = array();
+        $result_meta = [];
         $people_top  = false;
 
         if (!$q) {
-            return $this->render('AgentBundle:Main:quicksearch.json.jsonphp', array(
+            return $this->render('AgentBundle:Main:quicksearch.json.jsonphp', [
                 'q'           => $q,
                 'router'      => App::getRouter(),
                 'results'     => $results,
                 'result_meta' => $result_meta,
                 'people_top'  => $people_top,
-            ));
+            ]);
         }
 
         if ($this->container->getSetting('elastica.enabled')) {
@@ -381,20 +381,20 @@ class MainController extends AbstractController
 
         list($results, $result_meta, $people_top) = $elasticsearch->quickSearch($q, $sort);
 
-        $return_results = array();
+        $return_results = [];
 
         if ($results) {
             foreach ($results as $type => $raw_rows) {
-                $rows = array();
+                $rows = [];
                 foreach ($raw_rows as $r) {
                     $rows[] = $r;
                 }
 
-                $return_results[] = array(
+                $return_results[] = [
                     'type'    => $type,
                     'title'   => $this->container->getTranslator()->phrase('agent.search.type_'.$type),
                     'results' => $rows,
-                );
+                ];
             }
         }
 
@@ -412,11 +412,11 @@ class MainController extends AbstractController
 
         $return_results[] = $this->getDeletedTicketResults($q);
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'grouped_results' => $return_results,
             'index_running'   => $index_running,
             'is_elastic'      => true,
-        ));
+        ]);
     }
 
     private function searchInDB($q)
@@ -426,22 +426,22 @@ class MainController extends AbstractController
 
         list($results, $result_meta, $people_top) = $doctrine->quickSearch($q);
 
-        $return_results = array();
+        $return_results = [];
 
         if ($results) {
             foreach ($results as $type => $raw_rows) {
-                $rows = array();
+                $rows = [];
                 foreach ($raw_rows as $r) {
                     if (is_object($r)) {
                         $rows[] = $r;
                     }
                 }
 
-                $return_results[] = array(
+                $return_results[] = [
                     'type'    => $type,
                     'title'   => $this->container->getTranslator()->phrase('agent.search.type_'.$type),
                     'results' => $rows,
-                );
+                ];
             }
         }
 
@@ -451,44 +451,44 @@ class MainController extends AbstractController
 
         $return_results[] = $this->getDeletedTicketResults($q);
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'grouped_results' => $return_results,
-        ));
+        ]);
     }
 
     protected function getDeletedTicketResults($query)
     {
-        $res = array(
+        $res = [
             'type'    => 'deleted_tickets',
             'title'   => $this->container->getTranslator()->phrase('agent.search.type_ticket_deleted'),
-            'results' => array(),
-        );
+            'results' => [],
+        ];
 
         if ($sub = preg_replace('/[^\d]/', '', $query)) {
             /** @var $deleted TicketDeleted */
             if ($deleted = $this->em->find('DeskPRO:TicketDeleted', $sub)) {
                 if (isset($this->deleted_tickets[$deleted['ticket_id']])) {
-                    $res['results'][] = array(
+                    $res['results'][] = [
                         'id'     => $deleted->ticket_id,
                         'reason' => $this->deleted_tickets[$deleted->ticket_id]->title,
-                    );
+                    ];
                     unset($this->deleted_tickets[$deleted['ticket_id']]);
                 } else {
-                    $res['results'][] = array(
+                    $res['results'][] = [
                         'id'     => $deleted->ticket_id,
                         'reason' => $deleted->reason,
-                    );
+                    ];
                 }
             }
         }
 
         foreach ($this->deleted_tickets as $deleted) {
-            $res['results'][] = array(
+            $res['results'][] = [
                 'id'     => $deleted->id,
                 'reason' => $deleted->title,
-            );
+            ];
         }
-        $this->deleted_tickets = array();
+        $this->deleted_tickets = [];
 
         return $res;
     }
@@ -501,10 +501,10 @@ class MainController extends AbstractController
      */
     private function renderSearchResults($type, array $results)
     {
-        $rows = array();
+        $rows = [];
 
-        $render_person = function (Person $person, array $counts = array()) {
-            $data                   = array();
+        $render_person = function (Person $person, array $counts = []) {
+            $data                   = [];
             $data['picture_url']    = $person->getPictureUrl();
             $data['picture_url_80'] = $person->getPictureUrl(80);
             $data['picture_url_64'] = $person->getPictureUrl(64);
@@ -513,15 +513,15 @@ class MainController extends AbstractController
             $data['picture_url_32'] = $person->getPictureUrl(32);
             $data['picture_url_22'] = $person->getPictureUrl(22);
             $data['picture_url_16'] = $person->getPictureUrl(16);
-            foreach (array('id', 'first_name', 'last_name', 'name', 'display_name', 'override_display_name') as $k) {
+            foreach (['id', 'first_name', 'last_name', 'name', 'display_name', 'override_display_name'] as $k) {
                 $data[$k] = $person[$k];
             }
 
             if ($person->primary_email) {
-                $data['primary_email'] = array(
+                $data['primary_email'] = [
                     'id'    => (int) $person->primary_email->id,
                     'email' => $person->primary_email->email,
-                );
+                ];
             } else {
                 $data['primary_email'] = null;
             }
@@ -539,14 +539,14 @@ class MainController extends AbstractController
                 $ticket_display->setPersonContext($this->person);
 
                 foreach ($results as $r) {
-                    $ticket_info = array(
+                    $ticket_info = [
                         'id'      => $r->id,
                         'subject' => $r->subject,
                         'status'  => $r->status,
                         'urgency' => $r->urgency,
                         'person'  => null,
                         'agent'   => null,
-                    );
+                    ];
 
                     $agent = $ticket_display->getAgent($r);
                     if ($agent) {
@@ -575,12 +575,12 @@ class MainController extends AbstractController
 
             case 'chat_conversation':
                 foreach ($results as $r) {
-                    $chat_info = array(
+                    $chat_info = [
                         'id'      => $r->id,
                         'subject' => $r->subject,
                         'person'  => null,
                         'agent'   => null,
-                    );
+                    ];
 
                     $agent = $r->agent;
                     if ($agent) {
@@ -598,10 +598,10 @@ class MainController extends AbstractController
 
             case 'organization':
                 foreach ($results as $r) {
-                    $rows[] = array(
+                    $rows[] = [
                         'id'   => $r->id,
                         'name' => $r->name,
-                    );
+                    ];
                 }
                 break;
 
@@ -610,10 +610,10 @@ class MainController extends AbstractController
             case 'feedback':
             case 'download':
                 foreach ($results as $r) {
-                    $rows[] = array(
+                    $rows[] = [
                         'id'    => $r->id,
                         'title' => $r->title,
-                    );
+                    ];
                 }
         }
 
@@ -636,8 +636,8 @@ class MainController extends AbstractController
         $limit   = $request->get('all') ? null : 15;
         $tickets = $rep->getPersonTickets($person, $limit, $sort);
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'results' => $this->renderSearchResults('ticket', $tickets),
-        ));
+        ]);
     }
 }

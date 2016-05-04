@@ -128,6 +128,11 @@ Feature: /ticket_snippets endpoint
     And the JSON node "linked.text_snippet_content.2.fr.title" should be equal to "Ticket Snippet 2"
     And the JSON node "linked.text_snippet_content.2.fr.content" should be equal to "Ticket Snippet Content 2"
 
+    When I send a GET request to "/api/v2/ticket_snippets?include=text_snippet_content&ticket=2"
+    Then the response status code should be 200
+    And the JSON node "linked.text_snippet_content.1.en_US.title" should be equal to "Ticket Snippet Ticket #1 (en) 1"
+    And the JSON node "linked.text_snippet_content.1.en_US.content" should be equal to "Ticket Snippet Content Ganon User (en) 1"
+
   Scenario: I try to create a ticket snippet with empty request
     When I send a POST request to "/api/v2/ticket_snippets"
     Then the response status code should be 400

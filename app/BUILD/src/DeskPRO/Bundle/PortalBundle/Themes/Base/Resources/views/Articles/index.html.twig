@@ -6,7 +6,10 @@
   </div>
 
   <header class="large-title">
-      <div class="header-buttons">{% show rss_link %}</div>
+      <div class="header-buttons">
+          {% show rss_link %}
+          {% show kb_root_subscription_link %}
+      </div>
       <h1>{{ phrase('portal.articles.section-title') }}</h1>
       <p>{{ phrase('portal.articles.section-desc') }}</p>
   </header>

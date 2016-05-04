@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\Compiler;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -57,12 +58,12 @@ class DbalTicketFilterCompilerTest extends ApiTestCase
 
     public function testBasicTermCompile()
     {
-        $term = new AgentTerm(array('agent_ids' => array(1)));
+        $term = new AgentTerm(['agent_ids' => [1]]);
 
         $dbal_query = $this->compiler->compile($term);
 
         $this->assertEquals(
-            array('ids_0' => array(1)),
+            ['ids_0' => [1]],
             $dbal_query->getParameters()
         );
         $this->assertEquals(
@@ -77,17 +78,17 @@ class DbalTicketFilterCompilerTest extends ApiTestCase
 
     public function testCompositeTermCompile()
     {
-        $term = new CompositeTerm(array(), TermInterface::OP_OR);
-        $term->addTerm(new AgentTerm(array('agent_ids' => array(1))));
-        $term->addTerm(new TicketStatusTerm(array('status' => array(Ticket::STATUS_RESOLVED))));
+        $term = new CompositeTerm([], TermInterface::OP_OR);
+        $term->addTerm(new AgentTerm(['agent_ids' => [1]]));
+        $term->addTerm(new TicketStatusTerm(['status' => [Ticket::STATUS_RESOLVED]]));
 
         $dbal_query = $this->compiler->compile($term);
 
         $this->assertEquals(
-            array(
-                'ids_0'    => array(1),
-                'status_0' => array(Ticket::STATUS_RESOLVED),
-            ),
+            [
+                'ids_0'    => [1],
+                'status_0' => [Ticket::STATUS_RESOLVED],
+            ],
             $dbal_query->getParameters()
         );
         $this->assertEquals(
@@ -102,37 +103,51 @@ class DbalTicketFilterCompilerTest extends ApiTestCase
 
     public function testComplexEmbeddedCompositeTermCompile()
     {
-        $composite_term1 = new CompositeTerm(array(), TermInterface::OP_OR);
-        $composite_term1->addTerm(new AgentTerm(array('agent_ids' => array(1))));
-        $composite_term1->addTerm(new TicketStatusTerm(array('status' => array(Ticket::STATUS_RESOLVED))));
+        $composite_term1 = new CompositeTerm([], TermInterface::OP_OR);
+        $composite_term1->addTerm(new AgentTerm(['agent_ids' => [1]]));
+        $composite_term1->addTerm(new TicketStatusTerm(['status' => [Ticket::STATUS_RESOLVED]]));
 
-        $composite_term2 = new CompositeTerm(array(), TermInterface::OP_AND);
-        $composite_term2->addTerm(new DepartmentTerm(array('department_ids' => array(1, 2))));
-        $composite_term2->addTerm(new PersonEmailTerm(array('email' => 'chris.tickner@deskpro.com')));
+        $composite_term2 = new CompositeTerm([], TermInterface::OP_AND);
+        $composite_term2->addTerm(new DepartmentTerm(['department_ids' => [1, 2]]));
+        $composite_term2->addTerm(new PersonEmailTerm(['email' => 'chris.tickner@deskpro.com']));
 
-        $term = new CompositeTerm(array(), TermInterface::OP_OR);
+        $term = new CompositeTerm([], TermInterface::OP_OR);
         $term->addTerm($composite_term1);
-        $term->addTerm(new AgentTeamTerm(array('agent_team_ids' => array('me'))));
+        $term->addTerm(new AgentTeamTerm(['agent_team_ids' => ['me']]));
         $term->addTerm($composite_term2);
 
         $dbal_query = $this->compiler->compile($term);
 
         $this->assertEquals(
-            array(
-                'ids_0'    => array(1),
-                'status_0' => array(Ticket::STATUS_RESOLVED),
-                'ids_1'    => array(new TermEngineExpression('agent.getTeamIds()')),
-                'ids_2'    => array(1, 2),
+            [
+                'ids_0'    => [1],
+                'status_0' => [Ticket::STATUS_RESOLVED],
+                'ids_1'    => [new TermEngineExpression('agent.getTeamIds()')],
+                'ids_2'    => [1, 2],
                 'email_0'  => 'chris.tickner@deskpro.com',
-            ),
+            ],
             $dbal_query->getParameters()
         );
         $this->assertEquals(
-            '((ticket.agent_id IN (:ids_0)) OR (ticket.status IN (:status_0))) OR (ticket.agent_team_id IN (:ids_1)) OR ((ticket.department_id IN (:ids_2)) AND (people_emails.email = :email_0))',
+            '((ticket.agent_id IN (:ids_0)) OR (ticket.status IN (:status_0))) OR (ticket.agent_team_id IN (:ids_1)) OR ((ticket.department_id IN (:ids_2)) AND (ticket.person_id  IN(SELECT pe.person_id FROM people_emails pe WHERE pe.email = :email_0) OR  EXISTS(
+                  SELECT * FROM
+                    tickets_participants tp
+                        JOIN
+                    people p ON tp.person_id = p.id
+                  WHERE
+                    p.is_agent = 0 AND p.id  IN(SELECT pe.person_id FROM people_emails pe WHERE pe.email = :email_0) AND ticket.id = tp.ticket_id
+                )))',
             $dbal_query->generateWhereString()
         );
         $this->assertEquals(
-            'SELECT * FROM tickets ticket LEFT JOIN people_emails ON (ticket.person_id = people_emails.person_id) WHERE (((ticket.agent_id IN (:ids_0)) OR (ticket.status IN (:status_0))) OR (ticket.agent_team_id IN (:ids_1)) OR ((ticket.department_id IN (:ids_2)) AND (people_emails.email = :email_0)))',
+            'SELECT * FROM tickets ticket WHERE (((ticket.agent_id IN (:ids_0)) OR (ticket.status IN (:status_0))) OR (ticket.agent_team_id IN (:ids_1)) OR ((ticket.department_id IN (:ids_2)) AND (ticket.person_id  IN(SELECT pe.person_id FROM people_emails pe WHERE pe.email = :email_0) OR  EXISTS(
+                  SELECT * FROM
+                    tickets_participants tp
+                        JOIN
+                    people p ON tp.person_id = p.id
+                  WHERE
+                    p.is_agent = 0 AND p.id  IN(SELECT pe.person_id FROM people_emails pe WHERE pe.email = :email_0) AND ticket.id = tp.ticket_id
+                ))))',
             (string) $dbal_query
         );
     }

@@ -26,13 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
-
-class UnassignAction extends AbstractAction
+class BuildNewAgent_0063_ticketalter4 extends AbstractBuild
 {
+    public function run()
+    {
+        $this->execDbQueryQuiet('default', 'ALTER TABLE `custom_data_ticket`
+            ADD UNIQUE INDEX `unique_idx` (`field_id` ASC, `ticket_id` ASC, `root_field_id` ASC);');
+    }
 }

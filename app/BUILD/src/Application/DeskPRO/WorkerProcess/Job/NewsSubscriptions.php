@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Publish\Structure;
 use Orb\Util\Arrays;
 
 /**
@@ -44,46 +48,50 @@ class NewsSubscriptions extends AbstractJob
 
     public function run()
     {
-        $last_time = App::getSetting('user.news_subscriptions_last');
+        $lastTime = App::getSetting('user.news_subscriptions_last');
 
-        App::getDb()->replace('settings', array(
+        App::getDb()->replace('settings', [
             'name'  => 'user.news_subscriptions_last',
             'value' => time(),
-        ));
+        ]);
 
         if (!App::getSetting('user.news_subscriptions')) {
             return;
         }
 
-        if (!$last_time) {
+        if (!$lastTime) {
             return;
         }
 
-        $last_date = new \DateTime("@$last_time");
+        $lastDate = new \DateTime("@$lastTime");
 
         #------------------------------
         # Find articles
         #------------------------------
 
+        /** @var News[] $published */
         $published = App::getOrm()->createQuery("
             SELECT n
             FROM DeskPRO:News n INDEX BY n.id
             JOIN n.category c
             WHERE n.status = 'published' AND n.date_published > :date
             ORDER BY n.date_published DESC
-        ")->setMaxResults(250)->execute(array('date' => $last_date));
+        ")->setMaxResults(250)->execute(['date' => $lastDate]);
 
         // news does not update
-        $updated = array();
+        $updated = [];
+        /** @var News[] $updated */
         $updated = App::getOrm()->createQuery("
             SELECT n
             FROM DeskPRO:News n INDEX BY n.id
             JOIN n.category c
             WHERE n.status = 'published' AND (n.date_last_comment > :date)
             ORDER BY n.date_updated DESC
-        ")->setMaxResults(250)->execute(array('date' => $last_date));
+        ")->setMaxResults(250)->execute(['date' => $lastDate]);
 
         if (!$published && !$updated) {
+            $this->logStatus('No new news posts');
+
             return;
         }
 
@@ -91,89 +99,103 @@ class NewsSubscriptions extends AbstractJob
         # Get subscriptions
         #------------------------------
 
+        /** @var Structure $structure */
         $structure = App::getContainer()->getSystemService('publish_structure');
         $helper    = $structure->getNewsCategoryHelper();
 
-        $category_ids = array();
-        $news_ids     = array();
+        $categoryIds = [];
+        $newsIds     = [];
 
         foreach ($published as $a) {
-            $category_ids[] = $a->category->id;
+            $categoryIds[] = $a->getCategory()->getId();
         }
         foreach ($updated as $a) {
-            $news_ids[] = $a->id;
+            $newsIds[] = $a->getId();
         }
 
-        $category_ids = array_unique($category_ids);
-        $news_ids     = array_unique($news_ids);
+        $categoryIds = array_unique($categoryIds);
+        $newsIds     = array_unique($newsIds);
 
-        $cat_subs     = array();
-        $article_subs = array();
+        $catSubs     = [];
+        $rootSubs    = [];
+        $articleSubs = [];
 
-        if ($category_ids) {
+        if ($categoryIds) {
             // Users can be subscribed to a category higher-up,
             // so for each article need to include subs for the whole path
-            $add_ids = array();
-            foreach ($category_ids as $cid) {
-                $parents = $helper->getPath(array('id' => $cid));
+            $addIds = [];
+            foreach ($categoryIds as $cid) {
+                $parents = $helper->getPath(['id' => $cid]);
                 foreach ($parents as $c) {
-                    $add_ids[] = $c['id'];
+                    $addIds[] = $c['id'];
                 }
             }
 
-            $category_ids = array_merge($category_ids, $add_ids);
-            $category_ids = array_unique($category_ids);
+            $categoryIds = array_merge($categoryIds, $addIds);
+            $categoryIds = array_unique($categoryIds);
 
-            $cat_subs = App::getDb()->fetchAllGrouped('
+            $catSubs = App::getDb()->fetchAllGrouped('
                 SELECT person_id, category_id
                 FROM news_subscriptions
                 WHERE category_id IN (?)
-            ', array($category_ids), 'person_id', null, 'category_id', array(Connection::PARAM_INT_ARRAY));
+            ', [$categoryIds], 'person_id', null, 'category_id', [Connection::PARAM_INT_ARRAY]);
+
+            $rootSubs = App::getDb()->fetchAllGrouped('
+                SELECT person_id
+                FROM news_subscriptions
+                WHERE root_category = 1
+            ', [], 'person_id', null, 'root_category', [Connection::PARAM_INT_ARRAY]);
         }
 
-        if ($news_ids) {
-            $article_subs = App::getDb()->fetchAllGrouped('
+        if ($newsIds) {
+            $articleSubs = App::getDb()->fetchAllGrouped('
                 SELECT person_id, news_id
                 FROM news_subscriptions
                 WHERE news_id IN (?)
-            ', array($news_ids), 'person_id', null, 'news_id', array(Connection::PARAM_INT_ARRAY));
+            ', [$newsIds], 'person_id', null, 'news_id', [Connection::PARAM_INT_ARRAY]);
         }
 
         #------------------------------
         # Sort subscriptions into users
         #------------------------------
 
-        $user_to_news = array();
+        $userToNews = [];
 
-        foreach ($cat_subs as $person_id => $cids) {
+        foreach ($rootSubs as $personId => $root) {
             foreach ($published as $news) {
-                $cat    = $news->category;
+                $userToNews[$personId][$news->getId()] = $news;
+            }
+        }
+
+        foreach ($catSubs as $personId => $cids) {
+            foreach ($published as $news) {
+                $cat    = $news->getCategory();
                 $path   = $helper->getPathIds($cat);
                 $path[] = $cat->getId();
 
                 if (Arrays::isIn($path, $cids)) {
-                    if (!isset($user_to_news[$person_id])) {
-                        $user_to_news[$person_id] = array();
+                    if (!isset($userToNews[$personId])) {
+                        $userToNews[$personId] = [];
                     }
-                    $user_to_news[$person_id][$news->getId()] = $news;
+                    $userToNews[$personId][$news->getId()] = $news;
                 }
             }
         }
 
-        foreach ($article_subs as $person_id => $aids) {
+        foreach ($articleSubs as $personId => $aids) {
             foreach ($aids as $aid) {
                 if (!isset($updated[$aid])) {
                     continue;
                 }
 
-                if (!isset($user_to_news[$person_id])) {
-                    $user_to_news[$person_id] = array();
+                if (!isset($userToNews[$personId])) {
+                    $userToNews[$personId] = [];
                 }
-                $user_to_news[$person_id][$aid] = $updated[$aid];
+                $userToNews[$personId][$aid] = $updated[$aid];
             }
         }
 
-        if (!$user_to_news) {
+        if (!$userToNews) {
             return;
         }
 
@@ -181,70 +203,72 @@ class NewsSubscriptions extends AbstractJob
         # Verify permissions
         #------------------------------
 
-        $user_groupmembers = App::getDb()->fetchAllGrouped('
+        $userGroupMembers = App::getDb()->fetchAllGrouped('
             SELECT person_id, usergroup_id
             FROM person2usergroups
             WHERE person_id IN (?)
-        ', array(array_keys($user_to_news)), 'person_id', null, 'usergroup_id', array(Connection::PARAM_INT_ARRAY));
+        ', [array_keys($userToNews)], 'person_id', null, 'usergroup_id', [Connection::PARAM_INT_ARRAY]);
 
-        $cat_groups = App::getDb()->fetchAllGrouped('
+        $catGroups = App::getDb()->fetchAllGrouped('
             SELECT category_id, usergroup_id
             FROM news_category2usergroup
-        ', array(), 'category_id', null, 'usergroup_id');
+        ', [], 'category_id', null, 'usergroup_id');
 
-        $all_user_to_articles = $user_to_news;
-        $user_to_news         = array();
+        $allUserToArticles = $userToNews;
+        $userToNews        = [];
 
-        foreach ($all_user_to_articles as $person_id => $articles) {
-            $person_ugs   = isset($user_groupmembers[$person_id]) ? $user_groupmembers[$person_id] : array();
-            $person_ugs[] = 1; // Everyone
+        foreach ($allUserToArticles as $personId => $articles) {
+            $personUgs   = isset($userGroupMembers[$personId]) ? $userGroupMembers[$personId] : [];
+            $personUgs[] = 1; // Everyone
 
+            /** @var News $news */
             foreach ($articles as $news) {
-                $add     = false;
-                $cat     = $news->category;
-                $cat_ugs = isset($cat_groups[$cat->getId()]) ? $cat_groups[$cat->getId()] : array();
-                if (Arrays::isIn($person_ugs, $cat_ugs)) {
+                $add    = false;
+                $cat    = $news->getCategory();
+                $catUgs = isset($catGroups[$cat->getId()]) ? $catGroups[$cat->getId()] : [];
+                if (Arrays::isIn($personUgs, $catUgs)) {
                     $add = true;
                 }
 
                 if ($add) {
-                    if (!isset($user_to_news[$person_id])) {
-                        $user_to_news[$person_id] = array();
+                    if (!isset($userToNews[$personId])) {
+                        $userToNews[$personId] = [];
                     }
-                    $user_to_news[$person_id][$news->getId()] = $news;
+                    $userToNews[$personId][$news->getId()] = $news;
                 }
             }
         }
 
-        unset($all_user_to_articles);
+        unset($allUserToArticles);
 
         #------------------------------
         # Now send the emails (they are queued)
         #------------------------------
 
-        foreach ($user_to_news as $person_id => $articles) {
-            $person = App::getOrm()->find('DeskPRO:Person', $person_id);
+        foreach ($userToNews as $personId => $articles) {
+            /** @var Person $person */
+            $person = App::getOrm()->find('DeskPRO:Person', $personId);
             if (!$person) {
                 continue;
             }
 
-            $new_articles     = array();
-            $updated_articles = array();
+            $newArticles     = [];
+            $updatedArticles = [];
 
             foreach ($articles as $news) {
-                if ($news->date_published > $last_date) {
-                    $new_articles[] = $news;
+                if ($news->getDatePublished() > $lastDate) {
+                    $newArticles[] = $news;
                 } else {
-                    $updated_articles[] = $news;
+                    $updatedArticles[] = $news;
                 }
             }
 
             $message = App::getMailer()->createMessage();
             $message->setToPerson($person);
-            $message->setTemplate('DeskPRO:emails_user:news-subscription.html.twig', array(
-                'person'           => $person,
-                'new_articles'     => $new_articles,
-                'updated_articles' => $updated_articles, )
+            $message->setTemplate('DeskPRO:emails_user:news-subscription.html.twig', [
+                    'person'           => $person,
+                    'new_articles'     => $newArticles,
+                    'updated_articles' => $updatedArticles, ]
             );
 
             App::getMailer()->send($message);
@@ -253,8 +277,8 @@ class NewsSubscriptions extends AbstractJob
             App::getOrm()->detach($person);
         }
 
-        if ($user_to_news) {
-            $this->logStatus('Send '.count($user_to_news).' notifications');
+        if ($userToNews) {
+            $this->logStatus('Send '.count($userToNews).' notifications');
         }
     }
 }

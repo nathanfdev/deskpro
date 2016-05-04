@@ -13,6 +13,13 @@ services:
     tags:
       - { name: nelmio_api_doc.extractor.handler }
 
+  dp_api_doc.extractor.api_unstable_handler:
+    class: DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor\Handler\ApiUnstableHandler
+    arguments:
+      - "@annotations.reader"
+    tags:
+      - { name: nelmio_api_doc.extractor.handler }
+
   dp_api_doc.parser.jms_metadata_parser:
     class: DeskPRO\Bundle\ApiBundle\ApiDoc\Parser\JmsMetadataParser
     arguments:

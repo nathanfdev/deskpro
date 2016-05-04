@@ -622,7 +622,10 @@ class TicketWithLayoutsType extends AbstractType
             'options' => [
                 'property_path' => 'person.name',
                 'label'         => $this->phrase('portal.forms.label_name'),
-                'empty_data'    => $context->getPerson()->getDisplayName(),
+                'empty_data'    => $context->getPerson()->getDisplayName(false),
+                'constraints'   => [
+                    new Assert\NotBlank(),
+                ],
             ],
         ];
     }

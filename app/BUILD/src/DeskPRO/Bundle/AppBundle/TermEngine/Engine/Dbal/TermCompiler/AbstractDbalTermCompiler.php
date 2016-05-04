@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,25 +29,33 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\AbstractTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalDateHelper;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalEntityHelper;
+use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalJoinedHelper;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalNumericHelper;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper\DbalStringHelper;
 
+/**
+ * Class AbstractDbalTermCompiler.
+ */
 abstract class AbstractDbalTermCompiler extends AbstractTermCompiler
 {
+    /**
+     * @param DbalQueryPart $part
+     */
     public function logQueryPart(DbalQueryPart $part)
     {
-        $this->logDebug('Constructed QueryPart', array(
+        $this->logDebug('Constructed QueryPart', [
             'where'        => $part->getWhereString(),
             'params'       => $part->getParameters(),
             'joins'        => $part->getJoins(),
             'unique_joins' => $part->getUniqueJoins(),
-        ));
+        ]);
     }
 
     /**
@@ -55,7 +63,7 @@ abstract class AbstractDbalTermCompiler extends AbstractTermCompiler
      */
     public function getEntityHelper()
     {
-        return $this->helper_pool->getHelper('entity');
+        return $this->helperPool->getHelper('entity');
     }
 
     /**
@@ -63,7 +71,7 @@ abstract class AbstractDbalTermCompiler extends AbstractTermCompiler
      */
     public function getStringHelper()
     {
-        return $this->helper_pool->getHelper('string');
+        return $this->helperPool->getHelper('string');
     }
 
     /**
@@ -71,7 +79,7 @@ abstract class AbstractDbalTermCompiler extends AbstractTermCompiler
      */
     public function getDateHelper()
     {
-        return $this->helper_pool->getHelper('date');
+        return $this->helperPool->getHelper('date');
     }
 
     /**
@@ -79,7 +87,7 @@ abstract class AbstractDbalTermCompiler extends AbstractTermCompiler
      */
     public function getJoinedHelper()
     {
-        return $this->helper_pool->getHelper('joined');
+        return $this->helperPool->getHelper('joined');
     }
 
     /**
@@ -87,6 +95,6 @@ abstract class AbstractDbalTermCompiler extends AbstractTermCompiler
      */
     public function getNumericHelper()
     {
-        return $this->helper_pool->getHelper('numeric');
+        return $this->helperPool->getHelper('numeric');
     }
 }

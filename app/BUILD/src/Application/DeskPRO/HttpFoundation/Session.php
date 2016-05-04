@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category HttpFoundation
  */
+
 namespace Application\DeskPRO\HttpFoundation;
 
 use Application\DeskPRO\App;
@@ -66,9 +67,9 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
     /**
      * @var array
      */
-    protected $autostart_interfaces = array(
+    protected $autostart_interfaces = [
         'admin', 'agent', 'reports', 'user', 'dp',
-    );
+    ];
 
     protected $has_run_start = false;
 
@@ -114,13 +115,13 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                             SELECT person_id, auth
                             FROM sessions
                             WHERE id = ? AND date_last > ? AND date_last_page > ?
-                        ', array($sid, date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime')), date(time() - App::getSetting('core.sessions_lifetime'))));
+                        ', [$sid, date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime')), date(time() - App::getSetting('core.sessions_lifetime'))]);
                     } else {
                         $agent_session = App::getDb()->fetchAssoc('
                             SELECT person_id, auth
                             FROM sessions
                             WHERE id = ? AND date_last > ?
-                        ', array($sid, date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'))));
+                        ', [$sid, date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'))]);
                     }
 
                     list(, $auth) = explode('-', $_COOKIE['dpsid-agent']);
@@ -135,21 +136,22 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
             } elseif (!empty($_COOKIE['dpreme']) && strpos($_COOKIE['dpreme'], '-') !== false && $allow_rememberme) {
                 list($person_id, $cookie_code) = explode('-', $_COOKIE['dpreme'], 2);
 
+                /** @var Entity\Person $person */
                 $person = App::getEntityRepository('DeskPRO:Person')->find($person_id);
                 if ($person && !$person->is_deleted && !$person->is_disabled && $person->validateRememberMeCookieCode($cookie_code)) {
                     $this->_setCurrentPerson($person);
 
                     if (defined('DP_INTERFACE') && DP_INTERFACE == 'agent') {
                         $this->set('active_status', 'available');
-                        $this->set('is_chat_available', '1');
+                        $this->set('is_chat_available', $person->getPref('agent.chat.is_available', 1));
                     }
 
                     // Set last login date
-                    App::getDb()->update('people', array('date_last_login' => date('Y-m-d H:i:s')), array('id' => $person->getId()));
+                    App::getDb()->update('people', ['date_last_login' => date('Y-m-d H:i:s')], ['id' => $person->getId()]);
 
                     // Insert log
                     if ($person->is_agent) {
-                        App::getDb()->insert('login_log', array(
+                        App::getDb()->insert('login_log', [
                             'person_id'    => $person_id,
                             'area'         => DP_INTERFACE,
                             'is_success'   => 1,
@@ -158,10 +160,10 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                             'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
                             'date_created' => date('Y-m-d H:i:s'),
                             'via_cookie'   => 1,
-                        ));
+                        ]);
                     }
                 }
-            // can we carry over an agent session in the user interface?
+                // can we carry over an agent session in the user interface?
             } elseif (!empty($_COOKIE['dpsid']) && (DP_INTERFACE == 'agent' || DP_INTERFACE == 'reports' || DP_INTERFACE == 'billing' || DP_INTERFACE == 'admin')) {
                 $sid = $_COOKIE['dpsid'];
                 if ($sid) {
@@ -171,9 +173,9 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                             FROM sess_data
                             WHERE sess_id = ?
                         ',
-                        array(
+                        [
                             $sid,
-                        )
+                        ]
                     );
                     $agent_sess_data = $agent_session['sess_data'];
                     $agent_sess_data = base64_decode($agent_session['sess_data']);
@@ -264,7 +266,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
             $minute              = intval($minute / 5) * 5;
             $date_active->setTime($hour, $minute, 0);
 
-            App::getDb()->executeQuery('INSERT IGNORE INTO agent_activity(agent_id, date_active) VALUES(?,?)', array($agent['id'], $date_active->format('Y-m-d H:i:s')));
+            App::getDb()->executeQuery('INSERT IGNORE INTO agent_activity(agent_id, date_active) VALUES(?,?)', [$agent['id'], $date_active->format('Y-m-d H:i:s')]);
         }
 
         $this->set('dplast', time());
@@ -298,7 +300,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
         App::setCurrentPerson($person);
         if ($person->is_agent) {
             $this->attributes['active_status']     = 'available';
-            $this->attributes['is_chat_available'] = 1;
+            $this->attributes['is_chat_available'] = $person->getPref('agent.chat.is_available', 1);
         }
 
         $this->set('auth_person_id', $person->getId());
@@ -382,7 +384,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
             $languages  = $data->getAll();
             $default_id = $data->getDefaultId();
 
-            $locales = array('');
+            $locales = [''];
             foreach ($languages as $language) {
                 $locales[] = $language->locale;
             }
@@ -394,7 +396,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
             } catch (\Symfony\Component\DependencyInjection\Exception\InactiveScopeException $e) {
                 // the request may not be available, so use the default lang
                 $locale           = '';
-                $accept_languages = array();
+                $accept_languages = [];
             }
 
             if ($locale) {
@@ -492,7 +494,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
     /**
      * Generate a new security token.
      *
-     * @param $name
+     * @param     $name
      * @param int $timeout
      *
      * @return string
@@ -520,7 +522,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
      */
     public function setFlash($name, $value)
     {
-        $this->getFlashBag()->set($name, !is_array($value) ? array('value' => $value) : $value);
+        $this->getFlashBag()->set($name, !is_array($value) ? ['value' => $value] : $value);
     }
 
     /**
@@ -529,7 +531,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
      *
      * @return array
      */
-    public function getFlash($name, array $default = array())
+    public function getFlash($name, array $default = [])
     {
         return $this->getFlashBag()->get($name, $default);
     }

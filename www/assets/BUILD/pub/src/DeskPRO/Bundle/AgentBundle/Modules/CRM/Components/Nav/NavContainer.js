@@ -1,16 +1,17 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { isLoadedSelector, usersSelector, organizationsSelector, agentsSelector, labelsSelector }
+import { isLoadedSelector, usersSelector, organizationsSelector, agentsSelector, organizationLabelsSelector, personLabelsSelector }
   from '../../Selectors/nav';
 import * as actions from '../../Actions/crmNavActions';
 import { Nav } from './Nav';
 
 @connect(state => ({
-  isLoaded:      isLoadedSelector(state),
-  users:         usersSelector(state),
-  organizations: organizationsSelector(state),
-  agents:        agentsSelector(state),
-  labels:        labelsSelector(state)
+  isLoaded:           isLoadedSelector(state),
+  users:              usersSelector(state),
+  organizations:      organizationsSelector(state),
+  agents:             agentsSelector(state),
+  organizationLabels: organizationLabelsSelector(state),
+  personLabels:       personLabelsSelector(state)
 }))
 
 export class NavContainer extends Component {

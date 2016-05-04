@@ -106,7 +106,7 @@ use Symfony\Component\Validator\GroupSequenceProviderInterface;
  * @property ArrayCollection|LabelPerson[]       $labels
  * @property ArrayCollection|CustomDataPerson[]  $custom_data
  * @property ArrayCollection|PersonContactData[] $contact_data
- * @property Usergroup[]                         $usergroups
+ * @property ArrayCollection|Usergroup[]         $usergroups
  * @property TwitterAccount[]                    $twitter_accounts
  * @property TwitterUser[]                       $twitter_users
  * @property PersonPref[]                        $preferences
@@ -996,9 +996,36 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         return $this->getHelperManager()->hasHelper($name);
     }
 
+    /**
+     * @return ArrayCollection|Usergroup[]
+     */
     public function getUsergroups()
     {
         return $this->usergroups;
+    }
+
+    /**
+     * @return ArrayCollection|Usergroup[]
+     *
+     * @AppAssert\UniqueCollection()
+     */
+    public function getPublicUsergroups()
+    {
+        return $this->usergroups->filter(function (Usergroup $group) {
+            return !$group->is_agent_group && !in_array($group->sys_name, ['everyone', 'registered']) && $group->is_enabled;
+        });
+    }
+
+    /**
+     * @return ArrayCollection|Usergroup[]
+     *
+     * @AppAssert\UniqueCollection()
+     */
+    public function getPublicAgentgroups()
+    {
+        return $this->usergroups->filter(function (Usergroup $group) {
+            return $group->is_agent_group && $group->is_enabled;
+        });
     }
 
     /**
@@ -3527,22 +3554,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     {
         $this->assigned_tasks->add($assignment);
         $this->setModelField('assigned_tasks', $assignment);
-    }
-
-    /**
-     * @return array
-     */
-    public function getLabelsArray()
-    {
-        $labels = array_map(
-            function ($label) {
-                return $label->getLabel();
-            },
-            $this->labels->toArray()
-        );
-        sort($labels);
-
-        return $labels;
     }
 
     /**

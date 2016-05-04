@@ -4,6 +4,7 @@ import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
 import { addSessionCode } from '../../Application/Actions/bootstrapActions';
 import { loadBatch } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import { generate } from 'randomstring';
 import striptags from 'striptags';
 import moment from 'moment';
@@ -33,7 +34,10 @@ export const setChatId = createAction(
 
 export const unsetChatId = createAction(
   'WIDGET_CHAT_UNSET_ID',
-  () => localStorage.removeItem('dpWidget.chat.chatId')
+  () => {
+    localStorage.removeItem('dpWidget.chat.chatId');
+    localStorage.removeItem('dpWidget.chat.partial');
+  }
 );
 
 export const setLoaded = createAction('WIDGET_CHAT_SET_LOADED');
@@ -257,18 +261,18 @@ export const pollingChat = createAction(
           dispatch(updateChatInfo(newChatInfo));
         }
 
-        // Toggle reopen chat
+        // Chat closed by user can be reopened for 5 minutes, chat are closed immediately otherwise
         const canReopen = canReopenSelector(state);
-        if (!newChatInfo.date_ended) {
-          if (!canReopen) {
-            dispatch(enableChatReopen());
-          }
-        } else {
-          const ended = moment(newChatInfo.date_ended).format('X');
-          const now = moment().format('X');
-          const delay = ended - now + 120; // can reopen in 2 minutes
+        if (newChatInfo.date_ended && canReopen) {
+          if (newChatInfo.ended_by == 'user') {
+            const ended = moment(newChatInfo.date_ended).format('X');
+            const now = moment().format('X');
+            const delay = ended - now + 300; // can reopen in 5 minutes
 
-          if (canReopen && delay < 0) {
+            if (delay < 0) {
+              dispatch(disableChatReopen());
+            }
+          } else {
             dispatch(disableChatReopen());
           }
         }
@@ -330,6 +334,15 @@ export const sendUserTyping = createAction(
     const queryParams = compileParams(addSessionCode(state));
 
     return widgetApi.sendPost(`DP_API/chats/${chatId}/user_typing?${queryParams}`, params, { ...ajaxOptions });
+  }
+);
+
+export const savePartialTyping = createAction(
+  'WIDGET_CHAT_SAVE_PARTIAL_TYPING',
+  (params) => () => {
+    if (storageAvailable('localStorage')) {
+      return localStorage.setItem('dpWidget.chat.partial', params);
+    }
   }
 );
 

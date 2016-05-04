@@ -32,10 +32,12 @@
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\LabelDef;
+use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketFlagged;
 use Application\DeskPRO\Entity\TicketSla;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
+use DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures\CustomFields\CustomDataGenerator;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Orb\Util\DpStrings;
@@ -46,7 +48,6 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
     private $numCategories     = 5;
     private $numWorkflows      = 5;
     private $numProducts       = 5;
-    private $numProblems       = 100;
     private $numLabels         = 100;
     private $ticketMaxMessages = 10;
 
@@ -142,7 +143,6 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
     {
         $this->manager = $manager;
         $this->initIds();
-        $this->loadProblems();
         $this->loadCategories();
         $this->loadWorkflows();
         $this->loadProducts();
@@ -163,6 +163,7 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         $this->agentTeamIds  = $this->fetchIds(self::TABLE_AGENT_TEAMS);
         $this->agentIds      = $this->fetchIds(self::TABLE_PEOPLE, [['field' => 'is_agent', 'value' => 1]]);
         $this->peopleIds     = $this->fetchIds(self::TABLE_PEOPLE, [['field' => 'is_agent', 'value' => 0]]);
+        $this->problemIds    = $this->fetchIds(self::TABLE_PROBLEMS);
         $this->departmentIds = $this->fetchIds(
             self::TABLE_DEPARTMENTS,
             [['field' => 'is_tickets_enabled', 'value' => 1]]
@@ -178,23 +179,6 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
             WHERE f.parent IS NULL ORDER BY f.display_order ASC
         '
         )->execute();
-    }
-
-    private function loadProblems()
-    {
-        $batch = [];
-
-        for ($i = 0; $i < $this->numProblems; ++$i) {
-            $batch[] = [
-                'person_id' => $this->faker->randomElement($this->agentIds),
-                'title'     => $this->faker->sentence(4),
-                'created'   => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'is_open'   => (int) $this->faker->boolean(25),
-            ];
-        }
-
-        $this->db->batchInsert(self::TABLE_PROBLEMS, $batch);
-        $this->problemIds = $this->fetchIds(self::TABLE_PROBLEMS);
     }
 
     private function loadCategories()
@@ -476,6 +460,8 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         $parts_batch     = [];
         $fielddata_batch = [];
 
+        $customDefGenerator = new CustomDataGenerator($this->faker);
+
         foreach ($this->ticketIds as $ticket_id) {
             foreach ($this->faker->randomElements($this->labels, $this->faker->numberBetween(1, 5)) as $l) {
                 $labels_batch[] = ['ticket_id' => $ticket_id, 'label' => $l];
@@ -502,45 +488,8 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
             #------------------------------
             # Field Data
             #------------------------------
-
             foreach ($this->fields as $f) {
-                $num = 1;
-                if ($f->getOption('multiple')) {
-                    $num = $this->faker->numberBetween(1, count($f->getChildren()));
-                }
-
-                for ($x = 0; $x < $num; ++$x) {
-                    $row_data = [
-                        'ticket_id'     => $ticket_id,
-                        'field_id'      => $f->getId(),
-                        'root_field_id' => $f->getId(),
-                        'value'         => 0,
-                        'input'         => '',
-                    ];
-                    switch ($f->getTypeName()) {
-                        case 'text':
-                            $row_data['input'] = $this->faker->realText($this->faker->numberBetween(10, 80));
-                            break;
-                        case 'textarea':
-                            $row_data['input'] = $this->faker->realText($this->faker->numberBetween(20, 500));
-                            break;
-                        case 'date':
-                        case 'datetime':
-                            $row_data['value'] = time();
-                            break;
-                        case 'choice':
-                            $opt                  = $this->faker->randomElement($f->getChildren()->toArray());
-                            $row_data['field_id'] = $opt->getId();
-                            $row_data['value']    = 1;
-                            break;
-                        default:
-                            throw new \InvalidArgumentException();
-                    }
-
-                    if ($row_data) {
-                        $fielddata_batch[] = $row_data;
-                    }
-                }
+                $customDefGenerator->addCustomDefData($fielddata_batch, $f, 'ticket_id', $ticket_id);
             }
         }
 
@@ -561,13 +510,14 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
     private function loadTicketSlas()
     {
         $batch = [];
-
+        $sla   = $this->manager->getRepository(Sla::class)->findOneBy(['sla_type' => 'first_response']);
         foreach ($this->ticketIds as $ticketId) {
-            $status = $this->faker
-                ->randomElement([TicketSla::STATUS_OK, TicketSla::STATUS_WARNING, TicketSla::STATUS_FAIL]);
+            $status = $this->faker->randomElement(
+                [TicketSla::STATUS_OK, TicketSla::STATUS_WARNING, TicketSla::STATUS_FAIL]
+            );
             $batch[] = [
                 'ticket_id'  => $ticketId,
-                'sla_id'     => 1,
+                'sla_id'     => $sla->getId(),
                 'sla_status' => $status,
                 'warn_date'  => $status === TicketSla::STATUS_WARNING ?
                     $this->faker->dateTimeBetween('-14 days', '-10 days')->format('Y-m-d H:i:s') : null,
@@ -584,12 +534,18 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
     {
         foreach ($this->ticketIds as $id) {
             if ($id > 2 && $this->faker->boolean(33)) {
-                $parentId = $this->faker->numberBetween(1, $id - 1);
-                $this->db->executeUpdate(
-                    'UPDATE tickets
-                    SET tickets.parent_ticket_id = '.$parentId.'
-                    WHERE tickets.id = '.$id
+                $previousTicketKeys = array_keys(
+                    array_slice($this->ticketIds, 0, array_search($id, $this->ticketIds) - 1, true)
                 );
+
+                if (!empty($previousTicketKeys)) {
+                    $parentKey = $this->faker->randomElement($previousTicketKeys);
+                    $this->db->executeUpdate(
+                        'UPDATE tickets
+                            SET tickets.parent_ticket_id = '.$this->ticketIds[$parentKey].'
+                            WHERE tickets.id = '.$id
+                    );
+                }
             }
         }
     }

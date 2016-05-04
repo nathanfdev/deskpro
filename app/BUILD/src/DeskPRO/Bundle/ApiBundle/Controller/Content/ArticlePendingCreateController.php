@@ -59,7 +59,10 @@ class ArticlePendingCreateController extends CrudController
 {
     public static $exposeOnly  = ['get', 'list', 'count', 'delete'];
     public static $entity      = ArticlePendingCreate::class;
-    public static $sortOptions = ['date_created', 'assigned_person'];
+    public static $sortOptions = [
+        'date_created'    => 'date_created',
+        'assigned_person' => 'assigned_person',
+    ];
 
     /**
      * {@inheritdoc}

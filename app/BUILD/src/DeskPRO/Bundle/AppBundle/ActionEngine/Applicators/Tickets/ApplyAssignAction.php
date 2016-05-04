@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -80,23 +79,32 @@ class ApplyAssignAction extends AbstractTicketApplicator implements ActionApplic
         foreach ($this->options['assign'] as $type => $id) {
             switch ($type) {
                 case 'agent':
-                    $agent = $this->em->getRepository('DeskPRO:Person')->find($id);
-                    if (!$agent) {
-                        throw new BadRequestHttpException("Agent with ID=$id doesn't exists");
+                    $agent = null;
+                    if ($id) {
+                        $agent = $this->em->getRepository('DeskPRO:Person')->find($id);
+                        if (!$agent) {
+                            throw new BadRequestHttpException("Agent with ID=$id doesn't exists");
+                        }
                     }
                     $collection['agent'] = $agent;
                     break;
                 case 'team':
-                    $team = $this->em->getRepository('DeskPRO:AgentTeam')->find($id);
-                    if (!$team) {
-                        throw new BadRequestHttpException("Agents team with ID=$id doesn't exists");
+                    $team = null;
+                    if ($id) {
+                        $team = $this->em->getRepository('DeskPRO:AgentTeam')->find($id);
+                        if (!$team) {
+                            throw new BadRequestHttpException("Agents team with ID=$id doesn't exists");
+                        }
                     }
                     $collection['team'] = $team;
                     break;
                 case 'department':
-                    $department = $this->em->getRepository('DeskPRO:Department')->find($id);
-                    if (!$department) {
-                        throw new BadRequestHttpException("Department with ID=$id doesn't exists");
+                    $department = null;
+                    if ($id) {
+                        $department = $this->em->getRepository('DeskPRO:Department')->find($id);
+                        if (!$department) {
+                            throw new BadRequestHttpException("Department with ID=$id doesn't exists");
+                        }
                     }
                     $collection['department'] = $department;
                     break;

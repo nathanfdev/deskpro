@@ -129,12 +129,10 @@ class PersonType extends ApiType
             ->add('user_groups', UsergroupsType::class, [
                 'is_agent_group' => false,
                 'owner'          => $builder->getData(),
-                'property_path'  => 'usergroups',
             ])
             ->add('agent_groups', UsergroupsType::class, [
                 'is_agent_group' => true,
                 'owner'          => $builder->getData(),
-                'property_path'  => 'usergroups',
             ])
             ->add('fields', CombinedType::class, [
                 'forms'          => $this->getCustomDataFields($options),

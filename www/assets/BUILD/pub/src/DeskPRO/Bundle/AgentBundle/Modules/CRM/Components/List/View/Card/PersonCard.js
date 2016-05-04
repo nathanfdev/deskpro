@@ -37,7 +37,7 @@ export class PersonCard extends Component {
       return (
         <CardLine>
           <CardLineItem>
-            <i className="fa fa-tags"></i> {labels.map((label, index) => <CardLabel key={index} label={label} />)}
+            <i className="fa fa-tags" /> {labels.map((label, index) => <CardLabel key={index} label={label} />)}
           </CardLineItem>
         </CardLine>
       );
@@ -47,12 +47,12 @@ export class PersonCard extends Component {
 
   renderUserGroups() {
     const { usergroups, person } = this.props;
-    const personGroups = person.get('usergroups').toJS();
+    const personGroups = person.get('user_groups').toJS();
     if (personGroups.size > 0) {
       return (
         personGroups.map((groupId, index) =>
           <CardLineItem key={index}>
-            <i className="fa fa-group"></i>{usergroups.get(groupId).get('title')}
+            <i className="fa fa-group" />{usergroups.get(groupId).get('title')}
           </CardLineItem>)
       );
     }

@@ -219,8 +219,8 @@
             {%- endif -%}
         {%- endif -%}
         <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans({}, translation_domain) }}{% if required %} *{% endif %}{% if dp_include_link is defined and dp_include_link == 'manage_email' %}
-            <span class="form-label-link">
-                <a href="{{ path('portal_user_profile_emails') }}">{{ phrase('portal.account.email-managment-from-form') }}<i class="fa fa-angle-double-right"></i></a>
+            <span class="form-label-link manage-emails-link">
+                <a href="{{ path('portal_user_profile_emails') }}">{{ phrase('portal.account.email-management-from-form') }}<i class="fa fa-angle-double-right"></i></a>
             </span>
     {% endif %}</label>
     {%- endif -%}

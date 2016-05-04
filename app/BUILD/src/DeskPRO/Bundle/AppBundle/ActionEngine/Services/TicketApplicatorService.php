@@ -29,13 +29,16 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Services;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\TicketManager;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Interfaces\EnvironmentServiceAwareInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Interfaces\TicketManagerAwareInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Interfaces\TokenStorageAwareInterface;
+use DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices\EnvironmentService;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class TicketApplicatorService extends AbstractApplicatorService
 {
@@ -46,11 +49,21 @@ class TicketApplicatorService extends AbstractApplicatorService
     protected $em;
     /** @var  TicketManager */
     protected $tm;
+    /** @var  TokenStorageInterface */
+    protected $tokenStorage;
+    /** @var  EnvironmentService */
+    protected $environmentService;
 
-    public function __construct(EntityManager $em, TicketManager $tm)
-    {
+    public function __construct(
+        EntityManager $em,
+        TicketManager $tm,
+        TokenStorageInterface $tokenStorage,
+        EnvironmentService $environmentService
+    ) {
         parent::__construct($em);
-        $this->tm = $tm;
+        $this->tm                 = $tm;
+        $this->tokenStorage       = $tokenStorage;
+        $this->environmentService = $environmentService;
     }
 
     protected function createApplicator($class)
@@ -58,6 +71,12 @@ class TicketApplicatorService extends AbstractApplicatorService
         $applicator = new $class($this->em);
         if ($applicator instanceof TicketManagerAwareInterface) {
             $applicator->setTicketManager($this->tm);
+        }
+        if ($applicator instanceof TokenStorageAwareInterface) {
+            $applicator->setTokenStorage($this->tokenStorage);
+        }
+        if ($applicator instanceof EnvironmentServiceAwareInterface) {
+            $applicator->setEnvironmentService($this->environmentService);
         }
 
         return $applicator;

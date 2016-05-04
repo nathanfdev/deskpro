@@ -104,7 +104,7 @@ Feature: /task_projects/{id}/members/(agents|departments|teams) endpoint
     Then the response status code should be 200
     And the JSON node "data.id" should be equal to 2
     And the JSON node "data.primary_email" should be equal to "agent@deskpro.dev"
-    And the JSON node "linked.usergroup.1.title" should be equal to "Everyone"
+    And the JSON node "linked.usergroup.5.title" should be equal to "Group 3"
 
   Scenario Outline: I get single department/team project member
     When I send a GET request to "/api/v2/task_projects/1/members/<type>/2"

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\AbstractTermCompiler;
@@ -70,7 +71,7 @@ abstract class AbstractPhpTermCompiler extends AbstractTermCompiler
      */
     public function getMethodCheckHelper()
     {
-        return $this->helper_pool->getHelper('method_check');
+        return $this->helperPool->getHelper('method_check');
     }
 
     /**
@@ -78,7 +79,7 @@ abstract class AbstractPhpTermCompiler extends AbstractTermCompiler
      */
     public function getDateHelper()
     {
-        return $this->helper_pool->getHelper('date');
+        return $this->helperPool->getHelper('date');
     }
 
     /**
@@ -86,7 +87,7 @@ abstract class AbstractPhpTermCompiler extends AbstractTermCompiler
      */
     public function getStringHelper()
     {
-        return $this->helper_pool->getHelper('string');
+        return $this->helperPool->getHelper('string');
     }
 
     /**
@@ -94,7 +95,7 @@ abstract class AbstractPhpTermCompiler extends AbstractTermCompiler
      */
     public function getAgentHelper()
     {
-        return $this->helper_pool->getHelper('agent');
+        return $this->helperPool->getHelper('agent');
     }
 
     public function turnArrayIntoPhpArrayString(array $values = array())

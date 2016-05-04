@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,11 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\Person;
 use Orb\Util\Arrays;
 
 /**
@@ -45,83 +47,116 @@ class FeedbackSubscriptions extends AbstractJob
 
     public function run()
     {
-        $last_time = App::getSetting('user.feedback_subscriptions_last');
+        $lastTime = App::getSetting('user.feedback_subscriptions_last');
 
-        App::getDb()->replace('settings', array(
+        App::getDb()->replace('settings', [
             'name'  => 'user.feedback_subscriptions_last',
             'value' => time(),
-        ));
+        ]);
 
         if (!App::getSetting('user.feedback_subscriptions')) {
             return;
         }
 
-        if (!$last_time) {
+        if (!$lastTime) {
             return;
         }
 
-        $last_date = new \DateTime("@$last_time");
+        $lastDate = new \DateTime("@$lastTime");
 
         #------------------------------
         # Find Feedback
         #------------------------------
 
+        /** @var Feedback[] $published */
+        $published = App::getOrm()->createQuery('
+            SELECT f
+            FROM DeskPRO:Feedback f INDEX BY f.id
+            WHERE f.status IN (:statuses) AND f.date_published > :date
+            ORDER BY f.date_published DESC
+        ')->setMaxResults(250)->execute(['date' => $lastDate, 'statuses' => [
+            Feedback::STATUS_ACTIVE,
+            Feedback::STATUS_CLOSED,
+        ]]);
+
+        /** @var Feedback[] $updated */
         $updated = App::getOrm()->createQuery('
             SELECT f
             FROM DeskPRO:Feedback f INDEX BY f.id
-            LEFT JOIN f.category cat
             WHERE f.status IN (:statuses) AND (f.date_updated > :date OR f.date_last_comment > :date)
             ORDER BY f.date_updated DESC
-        ')->setMaxResults(250)->execute(array('date' => $last_date, 'statuses' => array(Feedback::STATUS_ACTIVE, Feedback::STATUS_CLOSED)));
+        ')->setMaxResults(250)->execute(['date' => $lastDate, 'statuses' => [
+            Feedback::STATUS_ACTIVE,
+            Feedback::STATUS_CLOSED,
+        ]]);
 
-        if (!$updated) {
+        if (!$updated && !$published) {
+            $this->logStatus('No new news feedbacks');
+
             return;
         }
 
         #------------------------------
         # Get subscriptions
         #------------------------------
+        $publishedFeedbackIds = [];
+        $updatedFeedbackIds   = [];
 
-        $structure = App::getContainer()->getSystemService('publish_structure');
-        $helper    = $structure->getFeedbackCategoryHelper();
-
-        $feedback_ids = array();
-
+        foreach ($published as $a) {
+            $publishedFeedbackIds[] = $a->getId();
+        }
         foreach ($updated as $a) {
-            $feedback_ids[] = $a->getId();
+            $updatedFeedbackIds[] = $a->getId();
         }
 
-        $feedback_ids  = array_unique($feedback_ids);
-        $feedback_subs = array();
+        $publishedFeedbackIds = array_unique($publishedFeedbackIds);
+        $updatedFeedbackIds   = array_unique($updatedFeedbackIds);
 
-        if ($feedback_ids) {
-            $feedback_subs = App::getDb()->fetchAllGrouped('
+        $rootSubs     = [];
+        $feedbackSubs = [];
+
+        if ($publishedFeedbackIds) {
+            $rootSubs = App::getDb()->fetchAllGrouped('
+                SELECT person_id
+                FROM feedback_subscriptions
+                WHERE root_category = 1
+            ', [], 'person_id', null, 'root_category', [Connection::PARAM_INT_ARRAY]);
+        }
+
+        if ($updatedFeedbackIds) {
+            $feedbackSubs = App::getDb()->fetchAllGrouped('
                 SELECT person_id, feedback_id
                 FROM feedback_subscriptions
                 WHERE feedback_id IN (?)
-            ', array($feedback_ids), 'person_id', null, 'feedback_id', array(Connection::PARAM_INT_ARRAY));
+            ', [$updatedFeedbackIds], 'person_id', null, 'feedback_id', [Connection::PARAM_INT_ARRAY]);
         }
 
         #------------------------------
         # Sort subscriptions into users
         #------------------------------
 
-        $user_to_feedback = array();
+        $userToFeedback = [];
 
-        foreach ($feedback_subs as $person_id => $aids) {
+        foreach ($rootSubs as $personId => $root) {
+            foreach ($published as $feedback) {
+                $userToFeedback[$personId][$feedback->getId()] = $feedback;
+            }
+        }
+
+        foreach ($feedbackSubs as $personId => $aids) {
             foreach ($aids as $aid) {
                 if (!isset($updated[$aid])) {
                     continue;
                 }
 
-                if (!isset($user_to_feedback[$person_id])) {
-                    $user_to_feedback[$person_id] = array();
+                if (!isset($userToFeedback[$personId])) {
+                    $userToFeedback[$personId] = [];
                 }
-                $user_to_feedback[$person_id][$aid] = $updated[$aid];
+                $userToFeedback[$personId][$aid] = $updated[$aid];
             }
         }
 
-        if (!$user_to_feedback) {
+        if (!$userToFeedback) {
             return;
         }
 
@@ -129,65 +164,67 @@ class FeedbackSubscriptions extends AbstractJob
         # Verify permissions
         #------------------------------
 
-        $user_groupmembers = App::getDb()->fetchAllGrouped('
+        $userGroupMembers = App::getDb()->fetchAllGrouped('
             SELECT person_id, usergroup_id
             FROM person2usergroups
             WHERE person_id IN (?)
-        ', array(array_keys($user_to_feedback)), 'person_id', null, 'usergroup_id', array(Connection::PARAM_INT_ARRAY));
+        ', [array_keys($userToFeedback)], 'person_id', null, 'usergroup_id', [Connection::PARAM_INT_ARRAY]);
 
-        $cat_groups = App::getDb()->fetchAllGrouped('
+        $catGroups = App::getDb()->fetchAllGrouped('
             SELECT category_id, usergroup_id
             FROM feedback_category2usergroup
-        ', array(), 'category_id', null, 'usergroup_id');
+        ', [], 'category_id', null, 'usergroup_id');
 
-        $all_user_to_feedback = $user_to_feedback;
-        $user_to_feedback     = array();
+        $allUserToFeedback = $userToFeedback;
+        $userToFeedback    = [];
 
-        foreach ($all_user_to_feedback as $person_id => $feedbacks) {
-            $person_ugs   = isset($user_groupmembers[$person_id]) ? $user_groupmembers[$person_id] : array();
-            $person_ugs[] = 1; // Everyone
+        foreach ($allUserToFeedback as $personId => $feedbacks) {
+            $personUgs   = isset($userGroupMembers[$personId]) ? $userGroupMembers[$personId] : [];
+            $personUgs[] = 1; // Everyone
 
-            foreach ($feedbacks as $fback) {
-                $add     = false;
-                $cat     = $fback->category;
-                $cat_ugs = isset($cat_groups[$cat->getId()]) ? $cat_groups[$cat->getId()] : array();
-                if (Arrays::isIn($person_ugs, $cat_ugs)) {
+            /** @var Feedback $feedback */
+            foreach ($feedbacks as $feedback) {
+                $add    = false;
+                $cat    = $feedback->getCategory();
+                $catUgs = isset($catGroups[$cat->getId()]) ? $catGroups[$cat->getId()] : [];
+                if (Arrays::isIn($personUgs, $catUgs)) {
                     $add = true;
                 }
 
                 if ($add) {
-                    if (!isset($user_to_feedback[$person_id])) {
-                        $user_to_feedback[$person_id] = array();
+                    if (!isset($userToFeedback[$personId])) {
+                        $userToFeedback[$personId] = [];
                     }
-                    $user_to_feedback[$person_id][$fback->getId()] = $fback;
+                    $userToFeedback[$personId][$feedback->getId()] = $feedback;
                 }
             }
         }
 
-        unset($all_user_to_feedback);
+        unset($allUserToFeedback);
 
         #------------------------------
         # Now send the emails (they are queued)
         #------------------------------
 
-        foreach ($user_to_feedback as $person_id => $feedbacks) {
-            $person = App::getOrm()->find('DeskPRO:Person', $person_id);
+        foreach ($userToFeedback as $personId => $feedbacks) {
+            /** @var Person $person */
+            $person = App::getOrm()->find('DeskPRO:Person', $personId);
             if (!$person) {
                 continue;
             }
 
-            $updated_items = array();
+            $updatedItems = [];
 
-            foreach ($feedbacks as $ff) {
-                $updated_items[] = $ff;
+            foreach ($feedbacks as $feedback) {
+                $updatedItems[] = $feedback;
             }
 
             $message = App::getMailer()->createMessage();
             $message->setToPerson($person);
-            $message->setTemplate('DeskPRO:emails_user:feedback-subscription.html.twig', array(
+            $message->setTemplate('DeskPRO:emails_user:feedback-subscription.html.twig', [
                 'person'        => $person,
-                'updated_items' => $updated_items,
-            ));
+                'updated_items' => $updatedItems,
+            ]);
 
             App::getMailer()->send($message);
 
@@ -195,8 +232,8 @@ class FeedbackSubscriptions extends AbstractJob
             App::getOrm()->detach($person);
         }
 
-        if ($user_to_feedback) {
-            $this->logStatus('Send '.count($user_to_feedback).' notifications');
+        if ($userToFeedback) {
+            $this->logStatus('Send '.count($userToFeedback).' notifications');
         }
     }
 }

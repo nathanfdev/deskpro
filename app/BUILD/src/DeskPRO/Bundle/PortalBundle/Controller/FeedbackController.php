@@ -103,23 +103,24 @@ class FeedbackController extends AbstractController
                 'page_title' => $this->createPageTitle()->feedback(),
             ]);
         }
-        $rss_link = $this->generateUrl('portal_feedback', ['_format' => 'rss']);
+        $rssLink = $this->generateUrl('portal_feedback', ['_format' => 'rss']);
 
         //
         // NEW FEEDBACK FORM
         //
-        $rerendering_saved = $request->attributes->get('rerender-form', false); // true if auto-submit SavedFormController wants us to definitely rerender
-        $permission_bad    = $this->getPermissionBagForCurrentUser();
-        $new_feedback      = new Feedback();
-        $new_feedback->setIsReviewed(false);
-        if (!$permission_bad->hasPermission('feedback.no_submit_validate')) {
-            $new_feedback->setStatus(Feedback::STATUS_HIDDEN);
+        // true if auto-submit SavedFormController wants us to definitely rerender
+        $rerenderingSaved = $request->attributes->get('rerender-form', false);
+        $permissionBag    = $this->getPermissionBagForCurrentUser();
+        $newFeedback      = new Feedback();
+        $newFeedback->setIsReviewed(false);
+        if (!$permissionBag->hasPermission('feedback.no_submit_validate')) {
+            $newFeedback->setStatus(Feedback::STATUS_HIDDEN);
         } else {
-            $new_feedback->setStatus(Feedback::STATUS_ACTIVE);
+            $newFeedback->setStatus(Feedback::STATUS_ACTIVE);
         }
-        $new_feedback->setStatusCategory($this->getDefaultStatusCategory());
-        $new_feedback->setPerson($person);
-        $form = $this->createForm('new_feedback', $new_feedback, [
+        $newFeedback->setStatusCategory($this->getDefaultStatusCategory());
+        $newFeedback->setPerson($person);
+        $form = $this->createForm('new_feedback', $newFeedback, [
             'person'                => $person,
             'action'                => $this->generateUrl('portal_feedback'),
             'saved_form_subrequest' => $request->attributes->has('saved-form'),
@@ -132,7 +133,7 @@ class FeedbackController extends AbstractController
 
         if ($form->isValid()) {
             if (
-                !$rerendering_saved // if we are rerendering dont pass this condition
+                !$rerenderingSaved // if we are rerendering dont pass this condition
                 &&
                 (
                     !$form->getClickedButton() // if user clicked more_attachments dont pass condition
@@ -153,12 +154,12 @@ class FeedbackController extends AbstractController
                         $person = $this->getPersonDataService()->getPersonForEmail($email->getEmail());
 
                         // since the guest is set on the form, we need to update all of the associations
-                        $new_feedback->setPerson($person);
-                        foreach ($new_feedback->getAttachments() as $attachment) {
+                        $newFeedback->setPerson($person);
+                        foreach ($newFeedback->getAttachments() as $attachment) {
                             $attachment->setPerson($person);
                         }
 
-                        return $this->acceptNewFeedback($new_feedback, $person, $request);
+                        return $this->acceptNewFeedback($newFeedback, $person, $request);
                     } catch (LoginRequiredException $e) {
                         $person = $e->getPerson();
                         $this->submitNewFeedbackAbuseCheck($person, $request->getClientIp());
@@ -167,8 +168,8 @@ class FeedbackController extends AbstractController
                     } catch (EmailValidationRequiredException $e) {
                         $this->submitNewFeedbackAbuseCheck($person, $request->getClientIp());
 
-                        $saved_form = $this->getFormSaver()->saveForm(SavedForm::TYPE_NEW_FEEDBACK, $form, $request, $person->getEmailAddress(), $person->getDisplayName());
-                        $this->get('portal_validation')->sendVerificationEmail(PortalValidation::NEW_FEEDBACK, $saved_form);
+                        $savedForm = $this->getFormSaver()->saveForm(SavedForm::TYPE_NEW_FEEDBACK, $form, $request, $person->getEmailAddress(), $person->getDisplayName());
+                        $this->get('portal_validation')->sendVerificationEmail(PortalValidation::NEW_FEEDBACK, $savedForm);
                         $this->addFlash('success', $this->phrase('portal.flashes.guest_content_must_verify'));
 
                         return $this->redirectToRoute('portal_feedback');
@@ -177,15 +178,15 @@ class FeedbackController extends AbstractController
 
                 $this->submitNewFeedbackAbuseCheck($person, $request->getClientIp());
 
-                return $this->acceptNewFeedback($new_feedback, $person, $request);
+                return $this->acceptNewFeedback($newFeedback, $person, $request);
             }
         } elseif ($form->isSubmitted()) {
             $this->submitNewFeedbackAbuseCheck($person, $request->getClientIp());
         }
 
-        $form_was_submitted = false;
+        $formWasSubmitted = false;
         if ($form->isSubmitted()) {
-            $form_was_submitted = true;
+            $formWasSubmitted = true;
         }
 
         //
@@ -194,20 +195,31 @@ class FeedbackController extends AbstractController
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildFeedback();
 
         //
+        // SUBSCRIPTION
+        //
+        $isSubscribed = false;
+        if (
+        $this->getBrandSetting('user.feedback_subscriptions', false) && $this->getUser()
+        ) {
+            // waiting info regarding article category subscriptions
+            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('feedback', $this->getUser());
+        }
+
+        //
         // FILTER CATEGORIES
         //
-        $feedback_types = $this->get('data.feedback')->getFeedbackCategoriesForPerson($person);
+        $feedbackTypes = $this->get('data.feedback')->getFeedbackCategoriesForPerson($person);
 
         //
         // JS INITIAL DATA
         //
-        $filter               = new FeedbackFilter(); // get the defaults$allowed_types_parsed = array();
-        $allowed_types_parsed = [];
-        foreach ($feedback_types as $cat) {
-            $allowed_types_parsed[] = $cat->getId();
+        $filter             = new FeedbackFilter(); // get the defaults$allowed_types_parsed = array();
+        $allowedTypesParsed = [];
+        foreach ($feedbackTypes as $cat) {
+            $allowedTypesParsed[] = $cat->getId();
         }
-        $filter->setTypes($allowed_types_parsed);
-        $filter_js = $this->generateFilterJs($filter, $feedback_types, $page);
+        $filter->setTypes($allowedTypesParsed);
+        $filterJs = $this->generateFilterJs($filter, $feedbackTypes, $page);
 
         //
         // RENDER THEME
@@ -216,7 +228,7 @@ class FeedbackController extends AbstractController
             'Theme:Feedback:index.html.twig',
             [
                 'page'               => $page,
-                'feedback_types'     => $feedback_types,
+                'feedback_types'     => $feedbackTypes,
                 'count'              => $this->getBrandSetting('portal.per_page_content'),
                 'show_pagination'    => true,
                 'status'             => $filter->getStatus(),
@@ -225,37 +237,38 @@ class FeedbackController extends AbstractController
                 'sort'               => $filter->getSort(),
                 'sort_direction'     => $filter->getSortDirection(),
                 'form'               => $form->createView(),
-                'form_was_submitted' => $form_was_submitted,
+                'form_was_submitted' => $formWasSubmitted,
                 'user'               => $this->getUser(),
-                'rerendering_saved'  => $rerendering_saved,
+                'rerendering_saved'  => $rerenderingSaved,
                 'breadcrumbs'        => $breadcrumbs,
                 'page_title'         => $this->createPageTitle()->feedback(),
-                'rss_link'           => $rss_link,
-                'filter_js'          => $filter_js,
+                'rss_link'           => $rssLink,
+                'filter_js'          => $filterJs,
+                'is_subscribed'      => $isSubscribed,
             ]
         );
     }
 
     /**
-     * @param Feedback $new_feedback
+     * @param Feedback $newFeedback
      * @param Person   $person
      * @param Request  $request
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    protected function acceptNewFeedback(Feedback $new_feedback, Person $person, Request $request)
+    protected function acceptNewFeedback(Feedback $newFeedback, Person $person, Request $request)
     {
-        $this->persistAndFlushEntity($new_feedback);
+        $this->persistAndFlushEntity($newFeedback);
 
-        if ($new_feedback->isVisibleOnPortal()) {
+        if ($newFeedback->isVisibleOnPortal()) {
             $this->addFlash('success', $this->phrase('portal.flashes.new_feedback_posted'));
-            $destination = $this->getObjectRouter()->getPortalPath($new_feedback);
+            $destination = $this->getObjectRouter()->getPortalPath($newFeedback);
         } else {
             $this->addFlash('success', $this->phrase('portal.flashes.new_feedback_awaiting_review'));
             $destination = $this->generateUrl('portal_feedback');
         }
 
-        $this->getEmailSender()->sendNewFeedbackEmail($new_feedback);
+        $this->getEmailSender()->sendNewFeedbackEmail($newFeedback);
 
         $redirect = $this->get('portal_validation')->getPasswordRedirectIfRequired($person, $request, $destination);
         if ($redirect) {
@@ -287,16 +300,16 @@ class FeedbackController extends AbstractController
         $person = $this->getUser() ?: new PersonGuest();
 
         try {
-            $uri_helper = new FeedbackFilterUriHelper();
-            $filter     = $uri_helper->extractFeedbackFilter($filter_uri);
+            $uriHelper = new FeedbackFilterUriHelper();
+            $filter    = $uriHelper->extractFeedbackFilter($filter_uri);
         } catch (\InvalidArgumentException $e) {
             throw $this->createNotFoundException('filter_uri could not be parsed');
         }
 
         // SECURITY
         // a permissions check, if the user can't see one of these filtered "types" (i.e. FeedbackCategory)
-        $permissions_bag      = $this->getPermissionBag($person);
-        $allowed_category_ids = $permissions_bag->getAllowedFeedbackCategoryIds();
+        $permissionsBag       = $this->getPermissionBag($person);
+        $allowed_category_ids = $permissionsBag->getAllowedFeedbackCategoryIds();
         foreach ($filter->getTypes() as $type) {
             if (!in_array($type, $allowed_category_ids)) {
                 throw new AccessDeniedException(
@@ -306,9 +319,9 @@ class FeedbackController extends AbstractController
         }
 
         // order was incorrect, redirect, but only if this is not an ajax request
-        $generated_uri = $uri_helper->generateUriSegment($filter);
-        if (!$request->isXmlHttpRequest() && $filter_uri != $generated_uri) {
-            if (strlen($generated_uri) < 1) {
+        $generatedUri = $uriHelper->generateUriSegment($filter);
+        if (!$request->isXmlHttpRequest() && $filter_uri != $generatedUri) {
+            if (strlen($generatedUri) < 1) {
                 // actually, in this case, it is all the defaults, so go back to the index
                 return $this->redirectToRoute(
                     'portal_feedback',
@@ -317,7 +330,7 @@ class FeedbackController extends AbstractController
             }
 
             return $this->redirectToRoute('portal_feedback_browse', [
-                'filter_uri' => $generated_uri,
+                'filter_uri' => $generatedUri,
                 'page'       => $page,
             ], Response::HTTP_MOVED_PERMANENTLY);
         }
@@ -328,14 +341,25 @@ class FeedbackController extends AbstractController
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildFeedback();
 
         //
+        // SUBSCRIPTION
+        //
+        $isSubscribed = false;
+        if (
+        $this->getBrandSetting('user.feedback_subscriptions', false)
+        ) {
+            // waiting info regarding article category subscriptions
+            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('feedback', $this->getUser());
+        }
+
+        //
         // FILTER CATEGORIES
         //
-        $feedback_types = $this->get('data.feedback')->getFeedbackCategoriesForPerson($person);
-        $filter_js      = $this->generateFilterJs($filter, $feedback_types, $page);
+        $feedbackTypes = $this->get('data.feedback')->getFeedbackCategoriesForPerson($person);
+        $filterJs      = $this->generateFilterJs($filter, $feedbackTypes, $page);
 
-        $page_options = [
+        $pageOptions = [
             'page'              => $page,
-            'feedback_types'    => $feedback_types,
+            'feedback_types'    => $feedbackTypes,
             'count'             => $this->getBrandSetting('portal.per_page_content'),
             'show_pagination'   => true,
             'status'            => $filter->getStatus(),
@@ -345,27 +369,28 @@ class FeedbackController extends AbstractController
             'sort_direction'    => $filter->getSortDirection(),
             'breadcrumbs'       => $breadcrumbs,
             'page_title'        => $this->createPageTitle()->feedback(),
-            'filter_js'         => $filter_js,
+            'filter_js'         => $filterJs,
             'rerendering_saved' => false, // wont happen here because we always rerender on index
+            'is_subscribed'     => $isSubscribed,
         ];
 
         if ($request->isXmlHttpRequest()) {
             return $this->renderThemeView(
                 'Theme:Feedback:items_ajax_partial.html.twig',
-                $page_options
+                $pageOptions
             );
         }
 
         // setup and render an initial form that posts to /feedback
-        $person       = $this->getUser() ?: new PersonGuest();
-        $new_feedback = new Feedback();
-        $new_feedback->setPerson($person);
-        $form = $this->createForm('new_feedback', $new_feedback, [
+        $person      = $this->getUser() ?: new PersonGuest();
+        $newFeedback = new Feedback();
+        $newFeedback->setPerson($person);
+        $form = $this->createForm('new_feedback', $newFeedback, [
             'person' => $person,
             'action' => $this->generateUrl('portal_feedback'),
         ]);
 
-        $page_options = array_merge($page_options, [
+        $pageOptions = array_merge($pageOptions, [
             'form'               => $form->createView(),
             'form_was_submitted' => false,
             'user'               => $this->getUser(),
@@ -376,7 +401,7 @@ class FeedbackController extends AbstractController
         //
         return $this->renderThemeView(
             'Theme:Feedback:index.html.twig',
-            $page_options
+            $pageOptions
         );
     }
 
@@ -402,16 +427,16 @@ class FeedbackController extends AbstractController
         //
         // COMMENT FORM
         //
-        $new_comment_form = null;
+        $newCommentForm = null;
         if ($this->isGranted(ContentCommentVoter::COMMENT_FEEDBACK, $item)) {
-            $form_handler = $this->get('form_handler.comment');
-            $comment      = new FeedbackComment();
+            $formHandler = $this->get('form_handler.comment');
+            $comment     = new FeedbackComment();
             $comment->setVisitorId($visitor_id);
             $comment->setIpAddress($request->getClientIp());
-            $new_comment_form = $form_handler->createForm($comment, $request);
-            $form_result      = $form_handler->handle($new_comment_form, $request, $item, $comment);
-            if ($form_result instanceof Response) {
-                return $form_result;
+            $newCommentForm = $formHandler->createForm($comment, $request);
+            $formResult     = $formHandler->handle($newCommentForm, $request, $item, $comment);
+            if ($formResult instanceof Response) {
+                return $formResult;
             }
         }
 
@@ -429,18 +454,18 @@ class FeedbackController extends AbstractController
         //
         // NUM RATINGS
         //
-        list($show_rating_counts, $rating_counts) = $this->determineRatingCounts($item);
+        list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($item);
 
         //
         // SUBSCRIPTION
         //
-        $is_subscribed = false;
+        $isSubscribed = false;
         if (
             $this->getBrandSetting('user.feedback_subscriptions', false)
             && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_FEEDBACK, $item)
         ) {
             // waiting on info on the kb subs
-            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($item, $this->getUser());
+            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedContent($item, $this->getUser());
         }
 
         //
@@ -450,15 +475,15 @@ class FeedbackController extends AbstractController
             'Theme:Feedback:view.html.twig',
             [
                 'item'               => $item,
-                'is_subscribed'      => $is_subscribed,
+                'is_subscribed'      => $isSubscribed,
                 'content_id'         => $item->getId(),
                 'content_type'       => Feedback::CONTENT_TYPE,
-                'new_comment_form'   => $new_comment_form ? $new_comment_form->createView() : null,
+                'new_comment_form'   => $newCommentForm ? $newCommentForm->createView() : null,
                 'page_title'         => $this->createPageTitle()->feedback($item),
                 'breadcrumbs'        => $breadcrumbs,
                 'rating'             => $rating,
-                'show_rating_counts' => $show_rating_counts,
-                'rating_counts'      => $rating_counts,
+                'show_rating_counts' => $showRatingCounts,
+                'rating_counts'      => $ratingCounts,
             ]
         );
     }
@@ -528,6 +553,10 @@ class FeedbackController extends AbstractController
      * @ParamConverter(name="item", converter="deskpro_slug")
      * @Security("is_granted('USE_FEEDBACK') and is_granted('SUBSCRIBE_FEEDBACK', item)")
      * @AutoPostOnGetRequest()
+     *
+     * @param Feedback $item
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function articleSubscriptionAction(Feedback $item)
     {
@@ -535,18 +564,39 @@ class FeedbackController extends AbstractController
             throw $this->createNotFoundException('this feedback item is hidden');
         }
 
-        $person               = $this->getUser();
-        $subscriptions_helper = $this->getSubscriptionsHelper();
+        $person              = $this->getUser();
+        $subscriptionsHelper = $this->getSubscriptionsHelper();
 
-        if ($subscriptions_helper->isSubscribedContent($item, $person)) {
-            $subscriptions_helper->unsubscribeFromContent($item, $person);
+        if ($subscriptionsHelper->isSubscribedContent($item, $person)) {
+            $subscriptionsHelper->unsubscribeFromContent($item, $person);
             $this->addFlash('success', $this->phrase('portal.flashes.feedback_unsubscribe'));
         } else {
-            $subscriptions_helper->subscribeToContent($item, $person);
+            $subscriptionsHelper->subscribeToContent($item, $person);
             $this->addFlash('success', $this->phrase('portal.flashes.feedback_subscribe'));
         }
 
         return $this->redirectToRoute('portal_feedback_view', ['slug' => $item->getSlug()]);
+    }
+
+    /**
+     * @Route("/feedback/root/toggle-subscription", name="portal_feedback_root_toggle_subscription")
+     * @Security("is_granted('ROLE_USER') and is_granted('USE_FEEDBACK')")
+     * @AutoPostOnGetRequest()
+     */
+    public function articleRootCategorySubscriptionAction()
+    {
+        $person              = $this->getUser();
+        $subscriptionsHelper = $this->getSubscriptionsHelper();
+
+        if ($subscriptionsHelper->isSubscribedRootCategory('feedback', $person)) {
+            $subscriptionsHelper->unsubscribeFromRootCategory('feedback', $person);
+            $this->addFlash('success', $this->phrase('portal.flashes.article_cat_unsubscribe'));
+        } else {
+            $subscriptionsHelper->subscribeToRootCategory('feedback', $person);
+            $this->addFlash('success', $this->phrase('portal.flashes.article_cat_subscribe'));
+        }
+
+        return $this->redirectToRoute('portal_feedback');
     }
 
     /**
@@ -571,56 +621,58 @@ class FeedbackController extends AbstractController
      */
     protected function getDefaultStatusCategory()
     {
-        $default_status_category_id = $this->getBrandSetting('portal.default_feedback_status_category_id');
-        $default_status_category    = $this->getFeedbackDataService()->getFeedbackStatusCategory($default_status_category_id);
+        $defaultStatusCategoryId = $this->getBrandSetting('portal.default_feedback_status_category_id');
+        $defaultStatusCategory   = $this->getFeedbackDataService()->getFeedbackStatusCategory($defaultStatusCategoryId);
 
-        return $default_status_category;
+        return $defaultStatusCategory;
     }
 
     /**
      * @param $filter
-     * @param $feedback_types
+     * @param $feedbackTypes
      *
      * @return string
      */
-    public function generateFilterJs(FeedbackFilter $filter, array $feedback_types, $page)
+    public function generateFilterJs(FeedbackFilter $filter, array $feedbackTypes, $page)
     {
-        $allowed_types_parsed = [];
-        foreach ($feedback_types as $cat) {
-            $allowed_types_parsed[$cat->getId()] = $this->objectPhrase($cat);
+        $allowedTypesParsed = [];
+        foreach ($feedbackTypes as $cat) {
+            $allowedTypesParsed[$cat->getId()] = $this->objectPhrase($cat);
         }
 
-        $status_categories        = [];
-        $status_categories_entity = $this->getRepo('DeskPRO:FeedbackStatusCategory')->findBy(['status_type' => FeedbackFilter::$statuses]);
-        foreach ($status_categories_entity as $status_category) {
-            $status_type = $status_category->getStatusType();
-            if (!array_key_exists($status_type, $status_categories)) {
-                $status_categories[$status_type] = [];
+        $statusCategories       = [];
+        $statusCategoriesEntity = $this->getRepo('DeskPRO:FeedbackStatusCategory')->findBy(
+            ['status_type' => FeedbackFilter::$statuses]
+        );
+        foreach ($statusCategoriesEntity as $statusCategory) {
+            $statusType = $statusCategory->getStatusType();
+            if (!array_key_exists($statusType, $statusCategories)) {
+                $statusCategories[$statusType] = [];
             }
 
-            $status_categories[$status_type][] = [
-                'id'    => $status_category->getId(),
-                'title' => $this->objectPhrase($status_category),
+            $statusCategories[$statusType][] = [
+                'id'    => $statusCategory->getId(),
+                'title' => $this->objectPhrase($statusCategory),
             ];
         }
 
-        $the_array = [
+        $theArray = [
             'filter'    => array_merge($filter->toArray(), ['page' => $page]),
             'available' => [
                 'status'            => $this->transArray(FeedbackFilter::$statuses_translated),
-                'status_categories' => $status_categories,
-                'types'             => $allowed_types_parsed,
+                'status_categories' => $statusCategories,
+                'types'             => $allowedTypesParsed,
                 'sorts'             => $this->transArray(FeedbackFilter::$sorts_translated),
                 'sort_directions'   => $this->transArray(FeedbackFilter::$sort_directions_translated),
             ],
         ];
 
-        $filter_js = json_encode(
-            $the_array,
+        $filterJs = json_encode(
+            $theArray,
             JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_NUMERIC_CHECK
         );
 
-        return $filter_js;
+        return $filterJs;
     }
 
     /**
@@ -630,12 +682,12 @@ class FeedbackController extends AbstractController
      */
     protected function transArray(array $array)
     {
-        $new_array = [];
+        $newArray = [];
 
         foreach ($array as $key => $phrase) {
-            $new_array[$key] = $this->phrase($phrase);
+            $newArray[$key] = $this->phrase($phrase);
         }
 
-        return $new_array;
+        return $newArray;
     }
 }

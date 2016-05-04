@@ -31,6 +31,8 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
+use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\ObjectLang;
 use Application\DeskPRO\Entity\TextSnippetCategory;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -97,24 +99,37 @@ class SnippetsFixture extends DeskProAbstractFixture implements OrderedFixtureIn
 
     private function loadObjectLang()
     {
-        $batch = [];
+        /** @var Language $lang */
+        $lang = $this->getReference('english');
+
+        foreach ($this->categories as $categoryId) {
+            $objLang = new ObjectLang();
+            $objLang
+                ->setLanguage($lang)
+                ->setRef('text_snippet_categories.'.$categoryId)
+                ->setPropName('title')
+                ->setValue($this->faker->words(3, true));
+            $this->manager->persist($objLang);
+        }
         foreach ($this->snippets as $snippetId) {
-            $batch[] = [
-                'language_id' => 1,
-                'ref'         => self::TABLE_TEXT_SNIPPETS.'.'.$snippetId,
-                'prop_name'   => 'title',
-                'value'       => $this->faker->words(3, true),
-            ];
+            $objLang = new ObjectLang();
+            $objLang
+                ->setLanguage($lang)
+                ->setRef(self::TABLE_TEXT_SNIPPETS.'.'.$snippetId)
+                ->setPropName('title')
+                ->setValue($this->faker->words(3, true));
+            $this->manager->persist($objLang);
 
             $snippetLength = $this->faker->numberBetween(15, 500);
 
-            $batch[] = [
-                'language_id' => 1,
-                'ref'         => self::TABLE_TEXT_SNIPPETS.'.'.$snippetId,
-                'prop_name'   => 'snippet',
-                'value'       => $this->faker->realText($snippetLength),
-            ];
+            $objLang = new ObjectLang();
+            $objLang
+                ->setLanguage($lang)
+                ->setRef(self::TABLE_TEXT_SNIPPETS.'.'.$snippetId)
+                ->setPropName('snippet')
+                ->setValue($this->faker->realText($snippetLength));
+            $this->manager->persist($objLang);
         }
-        $this->db->batchInsert('object_lang', $batch);
+        $this->manager->flush();
     }
 }
