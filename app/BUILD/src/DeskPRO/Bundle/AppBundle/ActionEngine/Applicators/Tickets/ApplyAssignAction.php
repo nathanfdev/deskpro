@@ -43,26 +43,28 @@ class ApplyAssignAction extends AbstractTicketApplicator implements ActionApplic
     public function apply(array $tickets)
     {
         $collection = $this->init();
-        $context    = $this->tm->createAgentExecutorContext(null, 'set_status', 'mass_actions');
 
         foreach ($collection as $type => $value) {
             switch ($type) {
                 case 'agent':
                     foreach ($tickets as $ticket) {
                         $ticket->setAgent($value);
-                        $this->tm->saveTicket($ticket, $context);
+                        $this->validateTicket($ticket);
+                        $this->saveTicket($ticket, 'set_status');
                     }
                     break;
                 case 'team':
                     foreach ($tickets as $ticket) {
                         $ticket->setAgentTeam($value);
-                        $this->tm->saveTicket($ticket, $context);
+                        $this->validateTicket($ticket);
+                        $this->saveTicket($ticket, 'set_status');
                     }
                     break;
                 case 'department':
                     foreach ($tickets as $ticket) {
                         $ticket->setDepartment($value);
-                        $this->tm->saveTicket($ticket, $context);
+                        $this->validateTicket($ticket);
+                        $this->saveTicket($ticket, 'set_status');
                     }
                     break;
             }

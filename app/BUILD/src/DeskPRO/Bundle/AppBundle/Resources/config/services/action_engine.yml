@@ -17,5 +17,5 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - "@ticket_manager"
       - "@security.token_storage"
-      - "@app.environment"
       - "@validator"
+      - "@app.environment"

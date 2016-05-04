@@ -68,8 +68,8 @@ class TicketApplicatorService extends AbstractApplicatorService
         parent::__construct($em);
         $this->tm                 = $tm;
         $this->tokenStorage       = $tokenStorage;
-        $this->environmentService = $environmentService;
         $this->validator          = $validator;
+        $this->environmentService = $environmentService;
     }
 
     protected function createApplicator($class)

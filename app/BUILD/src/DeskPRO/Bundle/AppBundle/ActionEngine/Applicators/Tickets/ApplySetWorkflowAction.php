@@ -48,7 +48,7 @@ class ApplySetWorkflowAction extends AbstractTicketApplicator implements ActionA
         }
         foreach ($tickets as $ticket) {
             $ticket->setWorkflow($workflow);
-//            $this->validateTicket($ticket);
+            $this->validateTicket($ticket);
             $this->saveTicket($ticket, 'set_workflow');
         }
     }
