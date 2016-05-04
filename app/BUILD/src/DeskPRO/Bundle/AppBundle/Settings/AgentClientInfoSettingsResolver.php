@@ -76,8 +76,8 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
      */
     public function __construct(
         BrandAwareSettingsResolver $settingsResolver,
-        TokenStorageInterface $tokenStorage,
-        EntityManager $em
+        TokenStorageInterface      $tokenStorage,
+        EntityManager              $em
     ) {
         parent::__construct($settingsResolver);
 
@@ -99,7 +99,8 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setCrm($this->getCrmSettings())
             ->setFeedback($this->getFeedbackSettings())
             ->setPublish($this->getPublishSettings())
-            ->setTasks($this->getTasksSettings());
+            ->setTasks($this->getTasksSettings())
+        ;
 
         return $model;
     }
@@ -113,7 +114,8 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
         $model
             ->setMultiLang($this->getSetting('core.enable_languages'))
             ->setHelpdeskName($this->getSetting('core.deskpro_name'))
-            ->setAttachments($this->getAttachmentsSettings());
+            ->setAttachments($this->getAttachmentsSettings())
+        ;
 
         return $model;
     }
@@ -123,17 +125,17 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
      */
     public function getAttachmentsSettings()
     {
+        $whiteList = Arrays::removeEmptyString(explode(',', $this->getSetting('core.attach_agent_must_exts') ?: ''));
+        $blackList = Arrays::removeEmptyString(explode(',', $this->getSetting('core.attach_agent_not_exts') ?: ''));
+
         $model = new AttachmentsSettings();
 
         $agentsSettings = $model->getAgents();
         $agentsSettings
             ->setMaxSize($this->getSetting('core.attach_agent_maxsize'))
-            ->setWhitelist(
-                Arrays::removeEmptyString(explode(',', $this->getSetting('core.attach_agent_must_exts') ?: ''))
-            )
-            ->setBlacklist(
-                Arrays::removeEmptyString(explode(',', $this->getSetting('core.attach_agent_not_exts') ?: ''))
-            );
+            ->setWhitelist($whiteList)
+            ->setBlacklist($blackList)
+        ;
 
         return $model;
     }
@@ -147,30 +149,27 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
         $model
             ->setEnabled($this->getUser()->hasPerm('agent_tickets.use'))
             ->setRefCode($this->getSetting('core_tickets.use_ref'))
-            ->setArchiving($this->getSetting('core_tickets.use_archive'));
+            ->setArchiving($this->getSetting('core_tickets.use_archive'))
+        ;
 
         // set fields info
         $fields = $model->getFieldInfo();
 
         $product = $fields->getProduct();
-        $product
-            ->setEnabled($this->getSetting('core.use_product'))
-            ->setDefaultId($this->getSetting('core.default_prod_id'));
+        $product->setEnabled($this->getSetting('core.use_product'));
+        $product->setDefaultId($this->getSetting('core.default_prod_id'));
 
         $category = $fields->getCategory();
-        $category
-            ->setEnabled($this->getSetting('core.use_ticket_category'))
-            ->setDefaultId($this->getSetting('core.default_ticket_cat'));
+        $category->setEnabled($this->getSetting('core.use_ticket_category'));
+        $category->setDefaultId($this->getSetting('core.default_ticket_cat'));
 
         $workflow = $fields->getWorkflow();
-        $workflow
-            ->setEnabled($this->getSetting('core.use_ticket_workflow'))
-            ->setDefaultId($this->getSetting('core.default_ticket_work'));
+        $workflow->setEnabled($this->getSetting('core.use_ticket_workflow'));
+        $workflow->setDefaultId($this->getSetting('core.default_ticket_work'));
 
         $priority = $fields->getPriority();
-        $priority
-            ->setEnabled($this->getSetting('core.use_ticket_priority'))
-            ->setDefaultId($this->getSetting('core.default_ticket_pri'));
+        $priority->setEnabled($this->getSetting('core.use_ticket_priority'));
+        $priority->setDefaultId($this->getSetting('core.default_ticket_pri'));
 
         /** @var \Application\DeskPRO\EntityRepository\CustomDefTicket $customDefRepo */
         $customDefRepo = $this->em->getRepository(CustomDefTicket::class);
@@ -296,6 +295,9 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
         return $model;
     }
 
+    /**
+     * @return AccountInfo
+     */
     public function getAccountInfo()
     {
         $user          = $this->getUser();
