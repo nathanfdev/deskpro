@@ -26,39 +26,48 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * Orb.
- *
- * @category Auth
- */
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
-namespace Orb\Auth\Adapter;
+use Application\DeskPRO\Entity\ApiToken;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\ApiToken as ApiTokenModel;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\AppBundle\Settings\DiscoverSettingsResolver;
 
 /**
- * Adapters that use a two-step authentication scheme with a callback (such as OpenID)
- * should implement this interface.
- *
- * When the callback page is called up, the context is set which should change the operations
- * used in the authenticate() method of AdapterInterface.
+ * Class ApiTokenHandler.
  */
-interface CallbackInterface extends AdapterInterface
+class ApiTokenHandler extends AbstractEntityHandler
 {
     /**
-     * Switches the adapter to the callback context using form data $data.
-     *
-     * @param array $data Form data or other callback data
+     * @var DiscoverSettingsResolver
      */
-    public function setCallbackContext(array $data);
+    private $settingsResolver;
 
     /**
-     * Set the callback URL the user should return to when the remote service is finished.
+     * Constructor.
      *
-     * @param string $url The URL
+     * @param DiscoverSettingsResolver $settingsResolver
      */
-    public function setCallbackUrl($url);
+    public function __construct(DiscoverSettingsResolver $settingsResolver)
+    {
+        $this->settingsResolver = $settingsResolver;
+    }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
-    public function getCallbackUrl();
+    public static function getClassNames()
+    {
+        return ApiToken::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param ApiToken $entity
+     */
+    protected function createModel($entity, SideloadSerializationContext $context)
+    {
+        return new ApiTokenModel($entity, $this->settingsResolver->getSettings());
+    }
 }

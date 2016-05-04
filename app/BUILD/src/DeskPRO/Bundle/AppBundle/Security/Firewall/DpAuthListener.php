@@ -40,19 +40,18 @@ use DeskPRO\Bundle\AppBundle\Exception\UsersourceNoEmailException;
 use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
 use DeskPRO\Bundle\AppBundle\Security\DpFormLoginToken;
 use DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\CaptchaType;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
 use Orb\Auth\Result;
 use Orb\Log\Loggable;
 use Orb\Log\Writer\ArrayWriter;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Http\Firewall\AbstractAuthenticationListener;
 
@@ -66,13 +65,13 @@ use Symfony\Component\Security\Http\Firewall\AbstractAuthenticationListener;
  */
 class DpAuthListener extends AbstractAuthenticationListener implements ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+
     const USERSOURCE_TEST = 'usersource_test';
 
     /**
-     * @var ContainerInterface
+     * {@inheritdoc}
      */
-    protected $container;
-
     protected function requiresAuthentication(Request $request)
     {
         $security_routes = [
@@ -87,21 +86,15 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
     }
 
     /**
-     * Performs authentication.
-     *
-     * @param Request $request A Request instance
-     *
-     * @throws AuthenticationException if the authentication fails
-     *
-     * @return TokenInterface|Response|null The authenticated token, null if full authentication is not possible,
-     *                                      or a Response
+     * {@inheritdoc}
      */
     protected function attemptAuthentication(Request $request)
     {
         $tokenOrResponse = null;
 
         if ('portal_login_submit' == $request->attributes->get('_route')) {
-            if ($response = $this->checkCaptcha($request)) {
+            $response = $this->checkCaptcha($request);
+            if ($response) {
                 $this->logLoginFailure($request->get('username'), $request->getClientIp());
 
                 return $response;
@@ -126,6 +119,11 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
         return $this->authenticationManager->authenticate($tokenOrResponse);
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return JsonResponse|RedirectResponse|void
+     */
     protected function checkCaptcha(Request $request)
     {
         $anti_abuse  = $this->container->get('anti_abuse');
@@ -133,66 +131,49 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
         $abuse_check->markAsCheckOnly();
         $anti_abuse->check($abuse_check);
         if ($abuse_check->isCaptchaRecommended()) {
-            $captcha_check = $this->container->get('form.factory')->createNamed(
-                '',
-                'deskpro_captcha',
-                null,
-                [
-                    'csrf_double_submit_protection' => false,
-                ]
-            );
-            $captcha_check->submit($request->get('deskpro_captcha'));
-            if (!$captcha_check->isValid()) {
+            $captchaForm = $this->container->get('form.factory')->create(CaptchaType::class, null, [
+                'csrf_double_submit_protection' => false,
+            ]);
+            $captchaForm->submit($request->get('deskpro_captcha'));
+            if (!$captchaForm->isValid()) {
                 if ($request->isXmlHttpRequest()) {
-                    return new JsonResponse(
-                        [
-                            'success' => false,
-                            'captcha' => true,
-                        ]
-                    );
+                    return new JsonResponse([
+                        'success' => false,
+                        'captcha' => true,
+                    ]);
                 }
 
-                return new RedirectResponse(
-                    $this->container->get('router')->generate(
-                        'portal_login',
-                        [
-                            'retry' => 'captcha',
-                        ]
-                    )
-                );
+                return new RedirectResponse($this->container->get('router')->generate('portal_login', [
+                    'retry' => 'captcha',
+                ]));
             }
         }
 
         return;
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return DpFormLoginToken|RedirectResponse
+     */
     protected function getAuthRedirect(Request $request)
     {
         /** @var \Symfony\Component\HttpFoundation\Session\Session $session */
-        $session        = $request->getSession();
-        $return         = $request->get('return');
-        $usersource_id  = $request->get('usersource_id');
-        $requestContext = $request->get('context');
+        $session     = $request->getSession();
+        $authManager = $this->container->get('dp_authentication_manager.user');
 
-        $em = $this->container->get('doctrine.orm.default_entity_manager');
-        /** @var \Application\DeskPRO\Auth\AuthenticationManager $auth_manager */
-        $auth_manager         = $this->container->get('dp_authentication_manager.user');
-        $auth_adapter_factory = $auth_manager->getAuthAdapterFactory();
-
-        if ($usersource_test = $request->get(self::USERSOURCE_TEST)) {
+        $usersource     = $this->getUsersource($request);
+        $usersourceTest = $this->isUsersourceTest($request);
+        if ($usersourceTest) {
             $session->getFlashBag()->set(self::USERSOURCE_TEST, 1);
         }
 
-        $usersource = $em->find('DeskPRO:Usersource', $usersource_id);
-        if (!$usersource) {
-            throw new NotFoundHttpException();
-        }
-        $adapter = $auth_adapter_factory->getAuthAdapter($usersource, $requestContext);
-
-        if (!$usersource_test && !$auth_manager->isUsableUsersource($usersource)) {
+        if (!$usersourceTest && !$authManager->isUsableUsersource($usersource)) {
             throw new NotFoundHttpException('it is illegal to use this usersource in this context');
         }
 
+        $adapter = $authManager->getAuthAdapterFactory()->getAuthAdapter($usersource, $request->get('context'));
         if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
             $result = $adapter->authenticate();
 
@@ -220,174 +201,124 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
         }
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return DpFormLoginToken|RedirectResponse|Response
+     */
     protected function processCallback(Request $request)
     {
         /** @var \Symfony\Component\HttpFoundation\Session\Session $session */
-        $session        = $request->getSession();
-        $return         = $request->get('return');
-        $usersource_id  = $request->get('usersource_id');
-        $requestContext = $request->get('context');
-        $em             = $this->container->get('doctrine.orm.default_entity_manager');
-        /** @var \Application\DeskPRO\Auth\AuthenticationManager $auth_manager */
-        $auth_manager         = $this->container->get('dp_authentication_manager.user');
-        $auth_adapter_factory = $auth_manager->getAuthAdapterFactory();
+        $session     = $request->getSession();
+        $authManager = $this->container->get('dp_authentication_manager.user');
 
-        $usersource = $em->find('DeskPRO:Usersource', $usersource_id);
-        if (!$usersource) {
-            throw new NotFoundHttpException();
-        }
+        $usersource     = $this->getUsersource($request);
+        $usersourceTest = $this->isUsersourceTest($request);
 
-        $usersource_test = $session->getFlashBag()->get(self::USERSOURCE_TEST, []);
-        if (!$usersource_test) {
-            $usersource_test = $request->get(self::USERSOURCE_TEST);
-        }
-
-        if (!$usersource_test && !$auth_manager->isUsableUsersource($usersource)) {
+        if (!$usersourceTest && !$authManager->isUsableUsersource($usersource)) {
             throw new NotFoundHttpException('it is illegal to use this usersource in this context');
         }
 
-        $adapter = $auth_adapter_factory->getAuthAdapter($usersource, $requestContext);
-
-        $arr_writer = new ArrayWriter();
-        if ($usersource_test && $adapter instanceof Loggable && $adapter->getLogger()) {
-            $adapter->getLogger()->addWriter($arr_writer);
+        $adapter = $authManager->getAuthAdapterFactory()->getAuthAdapter($usersource, $request->get('context'));
+        $writer  = new ArrayWriter();
+        if ($usersourceTest && $adapter instanceof Loggable && $adapter->getLogger()) {
+            $adapter->getLogger()->addWriter($writer);
         }
 
         // It must be a callback type to be here, so if not redirect back to login
-        if (!($adapter instanceof \Orb\Auth\Adapter\CallbackInterface)) {
+        if (!$adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
             $session->getFlashBag()->set('login_failed', true);
 
             throw new BadCredentialsException();
         }
 
         $adapter->setCallbackContext($_REQUEST);
-
         $result = $adapter->authenticate();
 
         // Valid
         if ($result->isValid()) {
-            try {
-                $login_processor = new LoginProcessor($usersource, $result->getIdentity());
-                $person          = $login_processor->getPerson();
-                $person->setLastLoginAt();
-                $em->persist($person);
-                $em->flush();
-            } catch (UsersourceNoEmailException $e) {
-                return $this->saveTmpDataAndRedirectToSetEmailPage($usersource, $result);
+            $token = $this->createTokenFromUsersourceResult($usersource, $result);
+            if ($usersourceTest) {
+                return $this->getSuccessTestResponse($token->getUser(), $writer);
             }
 
-            if ($usersource_test) {
-                // test result
-                return $this->container->get('templating')->renderResponse(
-                    'DeskPRO:Auth:_sso_test_verified.html.twig', [
-                        'person' => $person,
-                        'log'    => $arr_writer->getMessagesAsString(),
-                    ]
-                );
-            }
+            return $token;
+        }
 
-            return $this->createTokenFromPerson($person);
-        } elseif ($usersource_test) {
-            return $this->container->get('templating')->renderResponse(
-                'DeskPRO:Auth:_sso_test_failed.html.twig', [
-                    'log' => implode("\n", $arr_writer->getMessages()),
-                ]
-            );
+        if ($usersourceTest) {
+            return $this->getFailedTestResponse($writer);
         }
 
         throw new BadCredentialsException();
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return DpFormLoginToken|Response
+     */
     protected function processBackgroundSso(Request $request)
     {
-        /** @var \Symfony\Component\HttpFoundation\Session\Session $session */
-        $session        = $request->getSession();
-        $return         = $request->get('return');
-        $usersource_id  = $request->get('usersource_id');
-        $requestContext = $request->get('context');
-        $em             = $this->container->get('doctrine.orm.default_entity_manager');
-        /** @var \Application\DeskPRO\Auth\AuthenticationManager $auth_manager */
-        $auth_manager         = $this->container->get('dp_authentication_manager.user');
-        $auth_adapter_factory = $auth_manager->getAuthAdapterFactory();
+        $authManager    = $this->container->get('dp_authentication_manager.user');
+        $usersource     = $this->getUsersource($request);
+        $usersourceTest = $this->isUsersourceTest($request);
 
-        $usersource = $em->find('DeskPRO:Usersource', $usersource_id);
-        if (!$usersource) {
-            throw new NotFoundHttpException();
-        }
-
-        $adapter = $auth_adapter_factory->getAuthAdapter($usersource, $requestContext);
-
+        $adapter = $authManager->getAuthAdapterFactory()->getAuthAdapter($usersource, $request->get('context'));
         if (!$adapter instanceof SsoLoginActionInterface) {
             throw new NotFoundHttpException();
         }
-
-        $arr_writer = new ArrayWriter();
-        if (!$usersource_test = $session->getFlashBag()->get(self::USERSOURCE_TEST, [])) {
-            $usersource_test = $request->get(self::USERSOURCE_TEST);
-        }
-        if (!$usersource_test && !$auth_manager->isUsableUsersource($usersource)) {
+        if (!$usersourceTest && !$authManager->isUsableUsersource($usersource)) {
             throw new NotFoundHttpException('it is illegal to use this usersource in this context');
         }
-        if ($usersource_test && $adapter instanceof Loggable && $adapter->getLogger()) {
-            $adapter->getLogger()->addWriter($arr_writer);
+
+        $writer = new ArrayWriter();
+        if ($usersourceTest && $adapter instanceof Loggable && $adapter->getLogger()) {
+            $adapter->getLogger()->addWriter($writer);
         }
 
         $result = $adapter->getSsoLoginActionResult();
-
         if ($result->isValid()) {
             $token = $this->createTokenFromUsersourceResult($usersource, $result);
             $token->setAttribute(SsoLoginActionInterface::TOKEN_ATTRIBUTE_BACKGROUND_REFRESH, true);
 
-            if (!$token->isAuthenticated()) {
-                throw new BadCredentialsException();
-            }
-
-            if ($usersource_test) {
-                // test result
-                return $this->container->get('templating')->renderResponse('DeskPRO:Auth:_sso_test_verified.html.twig', [
-                        'person' => $token->getUser(),
-                        'log'    => $arr_writer->getMessagesAsString(),
-                    ]
-                );
+            if ($usersourceTest) {
+                return $this->getSuccessTestResponse($token->getUser(), $writer);
             }
 
             return $token;
-        } elseif ($usersource_test) {
-            return $this->container->get('templating')->renderResponse('DeskPRO:Auth:_sso_test_failed.html.twig', [
-                    'log' => implode("\n", $arr_writer->getMessages()),
-                ]
-            );
+        }
+
+        if ($usersourceTest) {
+            return $this->getFailedTestResponse($writer);
         }
 
         throw new BadCredentialsException();
     }
 
+    /**
+     * @param string $url
+     *
+     * @return RedirectResponse
+     */
     protected function redirect($url)
     {
         return new RedirectResponse($url, 302, [RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER => '1']);
     }
 
+    /**
+     * @param string $route
+     * @param array  $params
+     *
+     * @return RedirectResponse
+     */
     protected function redirectRoute($route, $params = [])
     {
         return new RedirectResponse($this->container->get('router')->generate($route, $params));
     }
 
     /**
-     * Sets the Container.
-     *
-     * @param ContainerInterface|null $container A ContainerInterface instance or null
-     *
-     * @api
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
-
-    /**
-     * @param $usersource
-     * @param $result
-     * @param $em
+     * @param Usersource $usersource
+     * @param Result     $result
      *
      * @return DpFormLoginToken
      */
@@ -405,7 +336,12 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
             return $this->saveTmpDataAndRedirectToSetEmailPage($usersource, $result);
         }
 
-        return $this->createTokenFromPerson($person);
+        $token = $this->createTokenFromPerson($person);
+        if (!$token->isAuthenticated()) {
+            throw new BadCredentialsException();
+        }
+
+        return $token;
     }
 
     /**
@@ -418,6 +354,10 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
         return new DpFormLoginToken($person, $person->getPassword(), array_merge(['ROLE_USER'], $person->getRoles()));
     }
 
+    /**
+     * @param string $email
+     * @param string $ip
+     */
     private function logLoginFailure($email, $ip)
     {
         /** @var \Application\DeskPRO\EntityRepository\Person $person_repo */
@@ -452,5 +392,60 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
         $tmp_auth = $this->container->get('usersource_identity_saver')->save($usersource, $result->getIdentity());
 
         return $this->redirectRoute('user_validate_usersource_email', ['tmp_auth' => $tmp_auth]);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return Usersource
+     */
+    protected function getUsersource(Request $request)
+    {
+        $em         = $this->container->get('doctrine.orm.default_entity_manager');
+        $usersource = $em->find(Usersource::class, $request->get('usersource_id'));
+        if (!$usersource) {
+            throw new NotFoundHttpException();
+        }
+
+        return $usersource;
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return bool
+     */
+    protected function isUsersourceTest(Request $request)
+    {
+        /** @var \Symfony\Component\HttpFoundation\Session\Session $session */
+        $session = $request->getSession();
+
+        return $session->getFlashBag()->get(self::USERSOURCE_TEST, []) || $request->get(self::USERSOURCE_TEST);
+    }
+
+    /**
+     * @param Person      $person
+     * @param ArrayWriter $writer
+     *
+     * @return Response
+     */
+    protected function getSuccessTestResponse(Person $person, ArrayWriter $writer)
+    {
+        return $this->container->get('templating')->renderResponse('DeskPRO:Auth:_sso_test_verified.html.twig', [
+            'person' => $person,
+            'log'    => $writer->getMessagesAsString(),
+        ]);
+    }
+
+    /**
+     * @param ArrayWriter $writer
+     *
+     * @return Response
+     */
+    protected function getFailedTestResponse(ArrayWriter $writer)
+    {
+        return $this->container->get('templating')->renderResponse('DeskPRO:Auth:_sso_test_failed.html.twig', [
+            'log' => $writer->getMessagesAsString(),
+        ]);
     }
 }

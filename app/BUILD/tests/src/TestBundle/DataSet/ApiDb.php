@@ -37,6 +37,7 @@ use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\LabelDef;
 use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\Usersource;
@@ -46,6 +47,7 @@ use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
+use DpTestSrc\TestBundle\Mock\Usersource\CallbackAdapterMock;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 
 /**
@@ -259,7 +261,32 @@ SQL
             $deskProUsers->title         = 'DeskPRO';
             $deskProUsers->options       = [];
             $this->getEm()->persist($deskProUsers);
+
+            $googlePlusUs                = new Usersource();
+            $googlePlusUs->type          = $type;
+            $googlePlusUs->source_type   = CallbackAdapterMock::class;
+            $googlePlusUs->is_enabled    = true;
+            $googlePlusUs->display_order = 0; // ensure #1 order (initially!)
+            $googlePlusUs->title         = 'GooglePlus';
+            $googlePlusUs->options       = [];
+            $this->getEm()->persist($googlePlusUs);
+
+            $assoc = new PersonUsersourceAssoc();
+            $assoc->setPerson($admin);
+            $assoc->setUsersource($googlePlusUs);
+            $assoc->setIdentity(1);
+            $assoc->setIdentityFriendly('');
+            $this->getEm()->persist($assoc);
         }
+
+        $fbUserUs                = new Usersource();
+        $fbUserUs->type          = 'user';
+        $fbUserUs->source_type   = CallbackAdapterMock::class;
+        $fbUserUs->is_enabled    = false;
+        $fbUserUs->display_order = 10; // ensure #1 order (initially!)
+        $fbUserUs->title         = 'Facebook';
+        $fbUserUs->options       = [];
+        $this->getEm()->persist($fbUserUs);
 
         $this->getEm()->flush();
 

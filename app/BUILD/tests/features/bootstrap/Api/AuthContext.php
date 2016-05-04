@@ -31,6 +31,7 @@ namespace DpBehat\Api;
 use Application\DeskPRO\Entity\ApiKey;
 use Application\DeskPRO\Entity\ApiToken;
 use Application\DeskPRO\Entity\Session;
+use Application\DeskPRO\Entity\TmpData;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use DeskPRO\Bundle\AppBundle\Entity\ApiKeyAction;
 use DeskPRO\Bundle\AppBundle\Entity\ApiKeyLimit;
@@ -175,6 +176,27 @@ class AuthContext extends BaseContext
         }
 
         $this->rest_context->iAddHeaderEqualTo('Authorization', 'key '.$key->getKeyString());
+    }
+
+    /**
+     * @Given a device setup auth code :code for agent :who
+     *
+     * @param string $code
+     * @param string $who
+     */
+    public function iAddDeviceSetupAuthCode($code, $who)
+    {
+        $reflection = new \ReflectionProperty(TmpData::class, 'auth');
+        $reflection->setAccessible(true);
+
+        $tmpData       = new TmpData();
+        $tmpData->auth = $code;
+        $tmpData->setData('agent_id', $this->getUserDetails()->getWho($who)->getId());
+
+        $reflection->setAccessible(false);
+
+        $this->em()->persist($tmpData);
+        $this->em()->flush($tmpData);
     }
 
     /**

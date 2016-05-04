@@ -34,7 +34,6 @@ namespace Application\DeskPRO\Auth;
 
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\NewSettings\SettingsBag;
-use Application\DeskPRO\Settings\Settings;
 use Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Application\DeskPRO\Usersource\UsersourceManager;
@@ -104,14 +103,14 @@ class AuthenticationManager
      * @param UsersourceManager            $usersourceManager    system service
      * @param AuthSettings                 $authSettings         system service
      * @param UsersourceAuthAdapterFactory $auth_adapter_factory
-     * @param Settings                     $appSettings
+     * @param SettingsBag                  $appSettings
      * @param string                       $interface            this MUST be "user" or "agent"
      */
     public function __construct(
-        AuthSettings $authSettings,
-        UsersourceManager $usersourceManager,
+        AuthSettings                 $authSettings,
+        UsersourceManager            $usersourceManager,
         UsersourceAuthAdapterFactory $auth_adapter_factory,
-        SettingsBag $appSettings,
+        SettingsBag                  $appSettings,
         $interface
     ) {
         $this->usersourceManager  = $usersourceManager;

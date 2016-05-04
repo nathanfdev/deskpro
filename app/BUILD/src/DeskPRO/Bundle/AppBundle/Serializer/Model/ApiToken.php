@@ -26,39 +26,51 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * Orb.
- *
- * @category Auth
- */
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model;
 
-namespace Orb\Auth\Adapter;
+use DeskPRO\Bundle\AppBundle\Settings\Model\DiscoverSettings;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Adapters that use a two-step authentication scheme with a callback (such as OpenID)
- * should implement this interface.
- *
- * When the callback page is called up, the context is set which should change the operations
- * used in the authenticate() method of AdapterInterface.
+ * Class ApiToken.
  */
-interface CallbackInterface extends AdapterInterface
+class ApiToken
 {
     /**
-     * Switches the adapter to the callback context using form data $data.
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     * @JMS\SerializedName("person_id")
+     * @JMS\Groups("token")
      *
-     * @param array $data Form data or other callback data
+     * @var int
      */
-    public function setCallbackContext(array $data);
+    private $person;
 
     /**
-     * Set the callback URL the user should return to when the remote service is finished.
+     * @JMS\Type("string")
+     * @JMS\Groups("token")
      *
-     * @param string $url The URL
+     * @var string
      */
-    public function setCallbackUrl($url);
+    private $token;
 
     /**
-     * @return string
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\DiscoverSettings")
+     * @JMS\Groups("discover")
+     *
+     * @var DiscoverSettings
      */
-    public function getCallbackUrl();
+    private $discover;
+
+    /**
+     * Constructor.
+     *
+     * @param \Application\DeskPRO\Entity\ApiToken $apiToken
+     * @param DiscoverSettings                     $discover
+     */
+    public function __construct(\Application\DeskPRO\Entity\ApiToken $apiToken, DiscoverSettings $discover)
+    {
+        $this->person   = $apiToken->getPerson();
+        $this->token    = $apiToken->getKeyString();
+        $this->discover = $discover;
+    }
 }

@@ -32,21 +32,26 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Authentication;
 
+use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Entity\ApiToken;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
+use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiAuthenticator;
-use DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Exception\UsersourceNoEmailException;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\BadCredentialsFormException;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\AuthenticationRequestType;
 use DeskPRO\Bundle\AppBundle\Form\Type\AuthenticationType;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use Orb\Auth\Adapter\CallbackInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
@@ -55,6 +60,7 @@ use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
  * Class ApiTokensController.
  *
  * @ApiModes("all")
+ * @Rest\Route("/api_tokens")
  */
 class ApiTokensController extends BaseController
 {
@@ -69,7 +75,8 @@ class ApiTokensController extends BaseController
      *      }
      * )
      *
-     * @Rest\Post("/api_tokens", name="api_post_api_tokens")
+     * @Rest\Post("")
+     * @Rest\View(serializerGroups={"token"})
      *
      * @param Request $request
      *
@@ -85,7 +92,7 @@ class ApiTokensController extends BaseController
             throw new InvalidFormException($form);
         }
 
-        $form = $this->createForm(new AuthenticationType());
+        $form = $this->createForm(AuthenticationType::class);
         $form->submit($request_data);
         if (!$form->isValid()) {
             throw new BadCredentialsFormException($form);
@@ -112,30 +119,12 @@ class ApiTokensController extends BaseController
             $this->throwUnauthorized();
         }
 
-        $em     = $this->get('doctrine.orm.default_entity_manager');
-        $person = $em->getRepository('DeskPRO:Person')->find($person_id);
-
+        $person = $this->getManager()->getRepository(Person::class)->find($person_id);
         if (!$person) {
             $this->throwUnauthorized();
         }
 
-        $api_token         = new ApiToken();
-        $api_token->person = $person;
-        $api_token->scope  = ApiToken::SCOPE_CLIENT;
-
-        $em = $this->get('doctrine.orm.default_entity_manager');
-        $em->persist($api_token);
-        $em->flush($api_token);
-
-        return View::create(
-            $this->createRepresentation(
-                [
-                    'person_id' => $person->id,
-                    'token'     => $api_token->id.':'.$api_token->token,
-                ]
-            ),
-            Response::HTTP_CREATED
-        );
+        return View::create($this->wrap($this->createToken($person)), Response::HTTP_CREATED);
     }
 
     /**
@@ -147,7 +136,12 @@ class ApiTokensController extends BaseController
      *          404="Auth code not found"
      *      }
      * )
-     * @Rest\Get("/api_tokens/device-setup/{auth}", name="api_authenticate_device")
+     * @Rest\Get("/device_setup/{auth}")
+     * @Rest\View(serializerGroups={"token", "discover"})
+     *
+     * @param string $auth
+     *
+     * @return View
      */
     public function authenticateDeviceAction($auth)
     {
@@ -159,45 +153,87 @@ class ApiTokensController extends BaseController
             throw $this->createNotFoundException();
         }
 
-        $token         = new ApiToken();
-        $token->person = $person;
-        $token->scope  = ApiToken::SCOPE_CLIENT;
         $this->getManager()->remove($tmpData);
-        $this->getManager()->persist($token);
         $this->getManager()->flush();
 
-        // TODO this is a copy+pasta from DiscoverController
-        // should be put into some service/model
-        $s            = $this->get('deskpro.core.settings');
-        $helpdesk_url = rtrim($s->get('core.deskpro_url'), '/').'/';
-        $base_api_url = $helpdesk_url.'api/v2/';
-
-        return View::create(
-            $this->createRepresentation([
-                'person_id' => $person->id,
-                'token'     => $token->id.':'.$token->token,
-                'discover'  => [
-                    'is_deskpro'   => true,
-                    'helpdesk_url' => $helpdesk_url,
-                    'base_api_url' => $base_api_url,
-                    'build'        => DP_BUILD_TIME,
-                ],
-            ]),
-            Response::HTTP_CREATED
-        );
+        return View::create($this->wrap($this->createToken($person)), Response::HTTP_CREATED);
     }
 
     /**
-     * @param AbstractApiSecurityToken $token
+     * @ApiDoc(
+     *      description="Returns api token for usersource callback",
+     *      output="token",
+     *      statusCodes={
+     *          201="Created token",
+     *          404="Auth code not found"
+     *      }
+     * )
      *
-     * @return string
+     * @Rest\Get("/callback/{usersource}")
+     *
+     * @param Usersource $usersource
+     *
+     * @return View
      */
-    protected function makeAuthMethodString(AbstractApiSecurityToken $token)
+    public function processCallbackAction(Usersource $usersource)
     {
-        return $token->getName();
+        /** @var UsersourceAuthAdapterFactory $adapterFactory */
+        $adapterFactory = $this->getContainer()->getSystemService('usersource_auth_adapter_factory');
+
+        $adapter = $adapterFactory->getAuthAdapter($usersource);
+        if (!$adapter instanceof CallbackInterface) {
+            throw $this->createBadRequestException('Not callback usersource.');
+        }
+
+        $adapter->setCallbackContext($_REQUEST);
+        $result = $adapter->authenticate();
+        if (!$result->isValid()) {
+            $this->throwUnauthorized();
+        }
+
+        $loginProcessor = new LoginProcessor($usersource, $result->getIdentity());
+
+        try {
+            $person = $loginProcessor->getPerson();
+            $person->setLastLoginAt();
+
+            $this->getManager()->persist($person);
+            $this->getManager()->flush();
+        } catch (UsersourceNoEmailException $e) {
+            $person = null;
+            $this->throwUnauthorized();
+        }
+
+        $context = new SideloadSerializationContext();
+        $context->setGroups(['wrapper', 'token']);
+
+        $token   = $this->createToken($person);
+        $payload = $this->get('serializer')->serialize($this->wrap($token), 'json', $context);
+
+        return new View("<script>sendPayload($payload)</script>", Response::HTTP_CREATED);
     }
 
-    protected function throwUnauthorized()
+    /**
+     * @param Person $person
+     *
+     * @return ApiToken
+     */
+    private function createToken(Person $person)
+    {
+        $token = new ApiToken();
+        $token->setPerson($person);
+        $token->setScope(ApiToken::SCOPE_CLIENT);
+
+        $this->getManager()->persist($token);
+        $this->getManager()->flush($token);
+
+        return $token;
+    }
+
+    /**
+     * @throws UnauthorizedHttpException
+     */
+    private function throwUnauthorized()
     {
         throw new UnauthorizedHttpException(ApiAuthenticator::HTTP_REALM, ErrorsCodes::BAD_CREDENTIALS);
     }
