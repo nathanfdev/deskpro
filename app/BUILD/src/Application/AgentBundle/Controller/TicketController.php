@@ -97,6 +97,9 @@ class TicketController extends AbstractController
 
     public function viewAction($ticket_id)
     {
+        if ($foobar) {
+            //xxx
+        }
         $is_pdf   = $this->in->getBool('pdf');
         $is_print = $this->in->getBool('view_print');
 

@@ -88,7 +88,7 @@ class DevSetupFixture extends DeskProAbstractFixture implements OrderedFixtureIn
             ['name' => 'core.default_timezone', 'value' => 'UTC'],
             ['name' => 'core.deskpro_name', 'value' => 'Helpdesk'],
             ['name' => 'core.deskpro_url', 'value' => $url],
-            ['name' => 'core.license', 'value' => file_get_contents(DP_DIR.'/dev/dev-lic-key.txt')],
+            ['name' => 'core.license', 'value' => @file_get_contents(DP_DIR.'/dev/dev-lic-key.txt') ?: ''],
         ];
 
         $this->db->batchInsert('settings', $ins);

@@ -38,6 +38,8 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use DeskPRO\Bundle\ApiBundle\ApiBundle;
 use DeskPRO\Bundle\AppBundle\AppBundle;
 use DeskPRO\Bundle\PortalBundle\PortalBundle;
+use DpSys\LowError\SystemErrorHandler;
+use Monolog\ErrorHandler;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -101,45 +103,15 @@ abstract class BaseKernel extends Kernel
      */
     public function boot()
     {
-        // Configure Symfony error handler to throw exceptions on PHP errors depending on the current environment
-        // (setting it here right before container is compiled)
-        $this->getContainerBuilder()->setParameter('debug.error_handler.throw_at', $this->dpEnv->isDebug() ? -1 : 0);
-
-        // Boot kernel, compile the container
         parent::boot();
-
-        $isCli = php_sapi_name() === 'cli';
-
-        // Registering error handlers right after container is compiled and we can access the logger service
-        if ($this->dpEnv->isDebug()) {
-            \Symfony\Component\Debug\Debug::enable(true, true);
-        } else {
-            $bugsnagSettings = $this->dpEnv->getConfig('settings.bugsnag');
-            $bugsnagApiKey   = @$bugsnagSettings['enable_php'] && @$bugsnagSettings['api_key']
-                             ? $bugsnagSettings['api_key']
-                             : false;
-
-            \DeskPRO\Bundle\SystemBundle\Bridge\ErrorHandler::register(
-                $this->container->get('logger'),
-                [],
-                null,
-                null,
-                $bugsnagApiKey
-            );
-        }
-
-        // Symfony sets error_reporting to 0 if not in the Debug mode, resetting this to E_ALL regardless
-        // the current mode to catch all errors in the prod mode too.
-        error_reporting(E_ALL);
-
-        if ($isCli) {
-            ini_set('display_errors', 1);
-        } else {
-            ini_set('display_errors', 0);
-        }
 
         if ($this->container instanceof DeskproContainer) {
             $this->container->kernel = $this;
+        }
+
+        if ($this->container->has('logger')) {
+            $handler = new ErrorHandler($this->container->get('logger'));
+            SystemErrorHandler::setErrorHandlerLogger($handler);
         }
 
         // Legacy

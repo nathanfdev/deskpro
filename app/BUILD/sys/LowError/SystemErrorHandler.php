@@ -32,47 +32,60 @@
 
 namespace DpSys\LowError;
 
-use Application\DeskPRO\App;
-use DeskPRO\Component\Util\RandUtils;
-use Doctrine\DBAL\DBALException;
-
 class SystemErrorHandler
 {
-    public static $is_logging            = false;
-    public static $is_handling_exception = false;
-    public static $wrote_log_file        = false;
-    public static $wrote_php_log         = false;
-    protected static $caught_errors      = array();
-    protected static $process_log        = array();
+    /**
+     * @var bool
+     */
+    private static $isLogging = false;
 
     /**
-     * Add a log line that'll be saved with an error. This is used with things like the gateway, where
-     * if there's an error we'll want to know everything that happened up to the error point.
-     *
-     * @param $line
+     * @var bool
      */
-    public static function addProcessLog($line)
-    {
-        self::$process_log[] = $line;
-    }
+    private static $isHandlingException = false;
 
     /**
-     * Clears the process log. For example, with the gateway, if a new email is started then the last log
-     * might be cleared.
+     * @var string[]
      */
-    public static function clearProcessLog()
-    {
-        self::$process_log = array();
-    }
+    private static $processLog = [];
+
+    /**
+     * @var string|null
+     */
+    private static $bugsnagApiKey = null;
+
+    /**
+     * @var null|\Bugsnag_Client
+     */
+    private static $bugsnagClient = null;
+
+    /**
+     * @var \Monolog\ErrorHandler
+     */
+    private static $errorHandlerLogger = null;
+
+    /**
+     * @var bool
+     */
+    private static $hasFatalHandler = false;
+
+    /**
+     * @var array
+     */
+    private static $fatalErrors = array(E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR);
+
+    ####################################################################################################################
+    # Exceptions
+    ####################################################################################################################
 
     /**
      * Handle logging of an exception.
      *
      * @param \Exception $exception
      */
-    public static function handleException(/*Throwable*/ $exception, $exit = true)
+    public static function handleException(/*Throwable*/ $exception)
     {
-        if (self::$is_handling_exception) {
+        if (self::$isHandlingException) {
             return;
         }
 
@@ -90,51 +103,15 @@ class SystemErrorHandler
             return;
         }
 
-        $GLOBALS['DP_LAST_ERROR'] = array('type' => 'exception', 'exception' => get_class($exception), 'message' => $exception->getMessage(), 'file' => $exception->getFile(), 'line' => $exception->getFile());
-
-        self::$is_handling_exception = true;
+        self::$isHandlingException = true;
 
         $errinfo = self::getExceptionInfo($exception);
         self::logErrorInfo($errinfo);
 
-        if ($errinfo['display']) {
-            echo $errinfo['summary'];
+        self::$isHandlingException = false;
 
-            if (isset($GLOBALS['DP_IS_IN_CLI'])) {
-                if (self::$wrote_log_file) {
-                    echo "\n(Refer to ".self::$wrote_log_file." for details)\n";
-                } else {
-                    echo "\n(Refer to the PHP error log for details)\n";
-                }
-            }
-        }
-
-        try {
-            if (!empty($GLOBALS['DP_ERR_LOGGER'])) {
-                $logger = $GLOBALS['DP_ERR_LOGGER'];
-                $logger->log($errinfo['summary']."\n".$errinfo['trace'], 'ERR', array('errinfo' => $errinfo));
-            }
-        } catch (\Exception $e) {
-        }
-
-        if ($errinfo['die'] && $exit) {
-            self::tryCleanup();
-
-            $code = (int) $errinfo['exception']->getCode();
-            if ($code > 255) {
-                $code = 255;
-            }
-            if ($code == 0) {
-                $code = 1;
-            }
-
-            // This exit happens before symfony exception handler so that no debug info is displayed
-            // commenting this out fixes exception handling in HTTP contex
-            // @todo Check if everything is OK in CLI (non-HTTP) environments
-            // exit($code);
-        }
-
-        self::$is_handling_exception = false;
+        // uncaught means we should exit
+        exit(255);
     }
 
     /**
@@ -146,6 +123,9 @@ class SystemErrorHandler
     {
         static $got_unique_ids = array();
 
+        /* @var \DpRun\DpEnv */
+        global $DP_ENV;
+
         if ($unique_id && defined('DP_BUILD_TIME') && !defined('DP_BUILDING')) {
             if (isset($got_unique_ids[$unique_id])) {
                 return;
@@ -153,20 +133,22 @@ class SystemErrorHandler
             $got_unique_ids[$unique_id] = true;
 
             try {
-                $got = App::getDb()->fetchColumn('
-                    SELECT data
-                    FROM install_data
-                    WHERE build = ? AND name = ?
-                ', array(DP_BUILD_TIME, 'err_'.$unique_id));
-                if ($got) {
-                    return;
+                $unique_exceptions = $DP_ENV->getDatManager()->readDatFile('unique_exceptions', []);
+                $found             = false;
+                $save_new          = [];
+                foreach ($unique_exceptions as $hash => $info) {
+                    if ($info['ts'] > (time() - 604800)) {
+                        $save_new[$hash] = $info;
+                        if ($hash === $unique_id) {
+                            $found = true;
+                        }
+                    }
                 }
-
-                App::getDb()->replace('install_data', array(
-                    'data'  => '1',
-                    'build' => DP_BUILD_TIME,
-                    'name'  => 'err_'.$unique_id,
-                ));
+                if (!$found) {
+                    $save_new[$unique_id] = ['ts' => time(), 'message' => $exception->getMessage()];
+                }
+                if ($found || count($save_new) != $unique_exceptions) {
+                }
             } catch (\Exception $e) {
             }
         }
@@ -178,78 +160,322 @@ class SystemErrorHandler
         self::logErrorInfo($einfo);
     }
 
-    /**
-     * Logs debug data to a file.
-     *
-     * @param string $content
-     * @param null   $id
-     *
-     * @return string
-     */
-    public static function logDebugDataDump($content, $id = null)
+    public static function logExceptionIfUniqueBacktrace(/*Throwable*/ $e, $send = false)
     {
-        /* @var \DpRun\DpEnv */
-        global $DP_ENV;
-
-        $path = $DP_ENV->getUserDebugDir().DIRECTORY_SEPARATOR.'data_dumps';
-        if (!is_dir($path)) {
-            @mkdir($path, 0777, true);
+        $hashable_trace      = '';
+        $formatted_backtrace = debug_backtrace();
+        foreach ($formatted_backtrace as $trace) {
+            $hashable_trace .= (isset($trace['class']) ? $trace['class'] : 'NOCLASS');
+            $hashable_trace .= '::'.(isset($trace['function']) ? $trace['function'] : 'NOFUNC');
+            $hashable_trace .= ' (line '.(isset($trace['line']) ? $trace['line'] : 'NOLINE').')';
+            $hashable_trace .= PHP_EOL;
         }
 
-        if (!$id) {
-            $id = date('YmdHis').'--'.RandUtils::randomString(20);
-        }
+        $hash = md5($hashable_trace);
 
-        $dumpPath = $path.DIRECTORY_SEPARATOR.$id.'.dump';
-        @file_put_contents($dumpPath, $content);
-
-        return $dumpPath;
+        self::logException(
+            $e,
+            $send,
+            $hash
+        );
     }
 
     /**
-     * Tries to clean up before dieing after a fatal error.
+     * Gets a standard error info array from an exception.
+     *
+     * @param \Exception $exception
+     *
+     * @return array
      */
-    public static function tryCleanup()
+    public static function getExceptionInfo(/*Throwable*/ $exception)
     {
-        if (class_exists('Application\DeskPRO\App', false) && App::$container) {
-            try {
-                $db = App::getDb();
-                if ($db->isTransactionActive()) {
-                    $db->rollback();
-                }
-            } catch (\Exception $e) {
+        $errno   = $exception->getCode();
+        $errstr  = self::stripPathPrefix($exception->getMessage());
+        $errfile = self::stripPathPrefix($exception->getFile());
+        $errline = $exception->getLine();
+
+        $backtrace    = $exception->getTrace();
+        $trace        = self::formatBacktrace($backtrace);
+        $context_data = '';
+
+        if (isset($exception->_dp_query)) {
+            $errstr .= ' -- Query: '.substr($exception->_dp_query, 0, 2000);
+
+            $context_data .= 'Query: '.substr($exception->_dp_query, 0, 2000);
+
+            if (!empty($exception->_dp_query_params)) {
+                $context_data .= "\n\n".self::varToString($exception->_dp_query_params);
             }
         }
+
+        if (!$context_data && isset($exception->_dp_context_data)) {
+            $context_data = $exception->_dp_context_data;
+        }
+
+        $type    = get_class($exception);
+        $summary = "[EXCEPTION] $type:$errno $errstr ($errfile:$errline)";
+
+        $prev = $exception->getPrevious();
+        if ($prev) {
+            $previnfo = self::getExceptionInfo($prev);
+            $summary .= ', '.$previnfo['summary'];
+            $trace .= "\n\n(Alt Exception)\n{$previnfo['summary']}\n".$previnfo['trace'];
+        }
+
+        $errinfo = array(
+            'type'              => 'exception',
+            'session_name'      => isset($exception->_dp_sn) ? $exception->_dp_sn : self::genSessionName(),
+            'exception'         => $exception,
+            'exception_type'    => get_class($exception),
+            'pri'               => 'ERR',
+            'trace'             => $trace,
+            'summary'           => $summary,
+            'errstr'            => $errstr,
+            'errname'           => 'EXCEPTION',
+            'errno'             => $errno,
+            'errfile'           => $errfile,
+            'errline'           => $errline,
+            'build'             => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
+            'process_log'       => implode("\n", self::$processLog),
+            'context_data'      => $context_data,
+            'error_time'        => microtime(true),
+            'time_to_error'     => defined('DP_START_TIME') ? sprintf('%0.4f', microtime(true) - DP_START_TIME) : 0,
+            'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
+        );
+
+        $url = '';
+        if (defined('DP_REQUEST_URL')) {
+            $url = DP_REQUEST_URL;
+        }
+        if (php_sapi_name() == 'cli' && !empty($_SERVER['argv'])) {
+            $url = 'Command: '.implode(' ', $_SERVER['argv']);
+        }
+        $errinfo['url'] = $url;
+
+        if (self::isNoReportException($exception)) {
+            $errinfo['no_send_error'] = true;
+        }
+
+        return $errinfo;
+    }
+
+    ####################################################################################################################
+    # Errors
+    ####################################################################################################################
+
+    /**
+     * Handle an error. Typically used as the error handler with set_error_handler().
+     *
+     * @param int    $errno
+     * @param string $errstr
+     * @param string $errfile
+     * @param string $errline
+     */
+    public static function handleError($errno, $errstr, $errfile, $errline)
+    {
+        if (!(error_reporting() & $errno)) {
+            return;
+        }
+
+        // Only log fatals if we dont have a fatal error handler already (prevent dupes)
+        if (!self::$hasFatalHandler || !in_array($errno, self::$fatalErrors, true)) {
+            $errinfo = self::getErrorInfo($errno, $errstr, $errfile, $errline);
+            self::logErrorInfo($errinfo);
+        }
     }
 
     /**
-     * @static
+     * Enables fatal error handler.
      */
-    public static function genSessionName()
+    public static function enableFatalErrorHandler()
     {
-        static $counter = 0;
-
-        list($time, $ms) = explode(' ', microtime());
-
-        return self::_encodeNum($time).self::_encodeNum($ms).self::_encodeNum(++$counter);
+        register_shutdown_function(array(self::class, 'handleFatalError'));
+        self::$hasFatalHandler = true;
     }
 
-    protected static function _encodeNum($num)
+    public static function handleFatalError()
     {
-        $alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $lastError = error_get_last();
 
-        $arr  = array();
-        $base = strlen($alphabet);
+        if ($lastError && in_array($lastError['type'], self::$fatalErrors, true)) {
+            $errinfo = self::getErrorInfo($lastError['type'], $lastError['message'], $lastError['file'], $lastError['line']);
+            self::logErrorInfo($errinfo);
+        }
+    }
 
-        while ($num) {
-            $rem   = $num % $base;
-            $num   = (int) ($num / $base);
-            $arr[] = $alphabet[$rem];
+    /**
+     * Gets a standard error info array from an error.
+     *
+     * @param int    $errno
+     * @param string $errstr
+     * @param string $errfile
+     * @param string $errline
+     *
+     * @return array
+     */
+    public static function getErrorInfo($errno, $errstr, $errfile, $errline)
+    {
+        switch ($errno) {
+            case E_ERROR:
+                $pri     = 'ERR';
+                $errname = 'E_ERROR';
+                break;
+
+            case E_WARNING:
+            case E_USER_WARNING:
+                $pri     = 'WARN';
+                $errname = 'E_WARNING';
+                break;
+
+            case E_NOTICE:
+            case E_USER_NOTICE:
+                $pri     = 'NOTICE';
+                $errname = 'E_NOTICE';
+                break;
+
+            case E_STRICT:
+                $pri     = 'STRICT';
+                $errname = 'E_STRICT';
+                break;
+
+            case E_RECOVERABLE_ERROR:
+                $pri     = 'ERR';
+                $errname = 'E_RECOVERABLE_ERROR';
+                break;
+
+            case E_DEPRECATED:
+            case E_USER_DEPRECATED:
+                $pri     = 'NOTICE';
+                $errname = 'E_DEPRECATED';
+                break;
+
+            default:
+                $pri     = 'ERR';
+                $errname = 'UNKNOWN';
         }
 
-        $arr = array_reverse($arr);
+        $context_data = '';
 
-        return implode('', $arr);
+        $no_send_error = false;
+
+        // Dont output apc warnings (but still log them)
+        if (strpos($errstr, 'Unable to allocate memory for pool') !== false) {
+            $no_send_error = true;
+        }
+
+        $errstr  = self::stripPathPrefix($errstr);
+        $errfile = self::stripPathPrefix($errfile);
+
+        $backtrace = debug_backtrace();
+        $trace     = self::formatBacktrace($backtrace);
+
+        // Dont send in general perm errors or things to do with the fs storage
+        if ((strpos($errstr, 'failed to open stream: Permission denied') !== false || strpos($errstr, 'failed to open stream: No such file or directory') !== false) && strpos($trace, 'FileDescriptor') !== false) {
+            $no_send_error = true;
+        }
+
+        // Dont send connection errors with smtp
+        if (strpos($errfile, 'StreamBuffer.php') !== false && strpos($errstr, 'bytes failed with errno') !== false) {
+            $no_send_error = true;
+        }
+
+        if (strpos($errstr, 'htmlspecialchars(): Invalid multibyte sequence in argument') !== false) {
+            $no_send_error = true;
+        }
+
+        // Dont send logs about bad file attachments
+        if (strpos($errstr, 'failed to open stream') !== false && (strpos($errstr, '/FileDescriptor/Filesystem.php') !== false || strpos($errstr, '\\FileDescriptor\\Filesystem.php') !== false)) {
+            $no_send_error = true;
+        }
+
+        // Windows PHP <5.3.6 https://bugs.php.net/bug.php?id=51894
+        if (strpos($errstr, 'range(): step exceeds the specified range') !== false) {
+            $no_send_error = true;
+        }
+
+        // Log but dont report errors about writing chat available trigger
+        if (strpos($errstr, 'chat_is_available.trigger') !== false) {
+            $no_send_error = true;
+        }
+
+        // Ignore range() warning caused by PHP bug https://bugs.php.net/bug.php?id=51894 (fixed in PHP >= 5.3.6)
+        if (strpos($errstr, 'step exceeds the specified range') !== false) {
+            $no_send_error = true;
+        }
+
+        if (strpos($errstr, 'set_time_limit() has been disabled for security reasons') !== false) {
+            $no_send_error = true;
+        }
+
+        if (strpos($errstr, 'passthru() has been disabled for security reasons') !== false) {
+            $no_send_error = true;
+        }
+
+        if (strpos($errstr, 'possibly out of disk space') !== false) {
+            $no_send_error = true;
+        }
+
+        if (strpos($errstr, 'Kerberos error') !== false) {
+            return; // completely ignore
+        }
+
+        // imap
+        if (
+            strpos($errstr, 'Can not authenticate to IMAP server') !== false
+            || strpos($errstr, 'imap_gc()') !== false
+            || strpos($errstr, 'imap_open()') !== false
+            || strpos($errstr, 'Unknown: LOGIN failed') !== false
+        ) {
+            $no_send_error = true;
+        }
+
+        // Socket/network errors
+        if (
+            strpos($errstr, 'stream_socket_enable_crypto():') !== false
+            || strpos($errstr, 'SSL: Broken pipe') !== false
+            || strpos($errstr, 'SSL: Connection reset by peer') !== false
+            || strpos($errstr, 'SSL operation failed') !== false
+            || strpos($errstr, 'errno=32 Broken pipe')
+            || strpos($errstr, 'SSL: An established connection was aborted') !== false
+            || strpos($errstr, 'SSL: An existing connection was forcibly closed by the remote host') !== false
+            || strpos($errstr, 'Couldn\'t open stream') !== false
+            || strpos($errstr, 'Can\'t connect to') !== false
+            || strpos($errstr, 'fsockopen()') !== false
+        ) {
+            $no_send_error = true;
+        }
+
+        $summary = "[$errname:$errno] $errstr ($errfile:$errline)";
+
+        $url = '';
+        if (defined('DP_REQUEST_URL')) {
+            $url = DP_REQUEST_URL;
+        }
+
+        if (php_sapi_name() == 'cli' && !empty($_SERVER['argv'])) {
+            $url = 'Command: '.implode(' ', $_SERVER['argv']);
+        }
+
+        return array(
+            'type'              => 'error',
+            'session_name'      => self::genSessionName(),
+            'pri'               => $pri,
+            'trace'             => $trace,
+            'summary'           => $summary,
+            'errstr'            => $errstr,
+            'errname'           => $errname,
+            'errno'             => $errno,
+            'errfile'           => $errfile,
+            'errline'           => $errline,
+            'build'             => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
+            'process_log'       => implode("\n", self::$processLog),
+            'context_data'      => $context_data,
+            'error_time'        => microtime(true),
+            'time_to_error'     => defined('DP_START_TIME') ? sprintf('%0.4f', microtime(true) - DP_START_TIME) : 0,
+            'no_send_error'     => $no_send_error,
+            'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
+            'url'               => $url,
+        );
     }
 
     /**
@@ -259,33 +485,16 @@ class SystemErrorHandler
      */
     public static function logErrorInfo(array $errinfo)
     {
-        if (self::$is_logging) {
+        if (self::$isLogging) {
             return;
         }
-        self::$is_logging = true;
+        self::$isLogging = true;
 
         if (!empty($GLOBALS['DP_CONTAINER_IS_BUILDING'])) {
             return;
         }
 
-        if (!class_exists('Application\DeskPRO\App')) {
-            return;
-        }
-
-        if (isset($errinfo['exception']) && ($errinfo['exception'] instanceof \PDOException || $errinfo['exception'] instanceof DBALException)) {
-            $errinfo['email'] = true;
-        }
-
-        if (!empty($errinfo['set_setting']) && class_exists('Application\DeskPRO\App', false)) {
-            try {
-                if (App::getContainer() && App::getContainer()->getSettingsHandler()) {
-                    App::getContainer()->getSettingsHandler()->setSetting($errinfo['set_setting'], 1);
-                }
-            } catch (\Exception $e) {
-            }
-        }
-
-        self::logToFile($errinfo);
+        self::processErrorInfo($errinfo);
         unset($errinfo['exception']);
 
         if (!(isset($errinfo['no_send_error']) && $errinfo['no_send_error'])) {
@@ -300,25 +509,20 @@ class SystemErrorHandler
             //==END:MONITORING==
         }
 
-        if (isset($GLOBALS['DP_CRON_LOGGER'])) {
-            $GLOBALS['DP_CRON_LOGGER']->log("ERROR {$errinfo['session_name']}: {$errinfo['summary']}", 'ERR', array('flag' => 'job_error'));
-        }
-
-        self::$is_logging = false;
+        self::$isLogging = false;
     }
+
+    ####################################################################################################################
+    # Logging
+    ####################################################################################################################
 
     /**
      * Logs error info to the data/error.log file and the summary to the PHP error log.
      *
      * @param array $errinfo
      */
-    public static function logToFile(array $errinfo)
+    public static function processErrorInfo(array $errinfo)
     {
-        /* @var \DpRun\DpEnv $DP_ENV */
-        global $DP_ENV;
-
-        self::$wrote_log_file = false;
-
         $str = array();
         if ($errinfo['type'] == 'exception') {
             $e     = $errinfo['exception'];
@@ -384,12 +588,17 @@ class SystemErrorHandler
         }
         @error_log($line, 0);
 
-        if (function_exists('dp_get_log_dir') && dp_get_log_dir() && ($fh = @fopen(dp_get_log_dir().'/error.log', 'a')) !== false) {
+        if (self::shouldDisplayErrors()) {
+            echo "\n";
+            echo $errinfo['summary'];
+            echo "\n";
+        }
+
+        $errorLogFile = self::getLogDir();
+        if ($errorLogFile && ($fh = @fopen($errorLogFile, 'a')) !== false) {
             $written = @fwrite($fh, $str);
 
             if ($written) {
-                self::$wrote_log_file = dp_get_log_dir().'/error.log';
-
                 // Max 30MB
                 $stat = @fstat($fh);
                 if ($stat && $stat['size'] && $stat['size'] > 31457280) {
@@ -398,137 +607,142 @@ class SystemErrorHandler
             }
 
             @fclose($fh);
-            @chmod(dp_get_log_dir().'/error.log', 0777);
-        }
-    }
-
-    public function shouldThrottle($id, $timeout)
-    {
-        $file = dp_get_data_dir().'/last-'.$id.'.dat';
-        if (!file_exists($file)) {
-            @file_put_contents($file, time());
-
-            return false;
+            @chmod($errorLogFile, 0777);
         }
 
-        $last = (int) file_get_contents($file);
-        if ($last > time() - $min_time) {
-            return true;
+        if (self::$errorHandlerLogger) {
+            if ($errinfo['type'] == 'exception') {
+                self::$errorHandlerLogger->handleException($errinfo['exception']);
+            } else {
+                self::$errorHandlerLogger->handleError($errinfo['errno'], $errinfo['errstr'], $errinfo['errfile'], $errinfo['errline']);
+            }
         }
 
-        @file_put_contents($file, time());
-
-        return false;
+        if ($errinfo['no_send_error']) {
+            if ($bs = self::getBugsnagClient()) {
+                if ($errinfo['type'] == 'exception') {
+                    $bs->notifyException($errinfo['exception']);
+                } else {
+                    $bs->notifyError($errinfo['errname'], $errinfo['summary']);
+                }
+            }
+        }
     }
 
     /**
-     * Gets a standard error info array from an exception.
+     * Logs debug data to a file.
      *
-     * @param \Exception $exception
+     * @param string $content
+     * @param null   $id
      *
-     * @return array
+     * @return string
      */
-    public static function getExceptionInfo(/*Throwable*/ $exception)
+    public static function logDebugDataDump($content, $id = null)
     {
-        $errno   = $exception->getCode();
-        $errstr  = self::stripPathPrefix($exception->getMessage());
-        $errfile = self::stripPathPrefix($exception->getFile());
-        $errline = $exception->getLine();
+        /* @var \DpRun\DpEnv */
+        global $DP_ENV;
 
-        $errfile_hash = self::getFilehash($exception->getFile());
-
-        $backtrace    = $exception->getTrace();
-        $trace        = self::formatBacktrace($backtrace);
-        $context_data = '';
-
-        if (isset($exception->_dp_query)) {
-            $errstr .= ' -- Query: '.substr($exception->_dp_query, 0, 2000);
-
-            $context_data .= 'Query: '.substr($exception->_dp_query, 0, 2000);
-
-            if (!empty($exception->_dp_query_params)) {
-                $context_data .= "\n\n".self::varToString($exception->_dp_query_params);
-            }
-
-            try {
-                if (class_exists('Application\\DeskPRO\\App', false)) {
-                    $status = App::getDb()->fetchAssoc('SHOW ENGINE INNODB STATUS');
-                    if (!empty($status['Status'])) {
-                        $status = $status['Status'];
-                        $context_data .= "\n\nINNODB STATUS: $status";
-                    }
-                }
-            } catch (\Exception $e) {
-            }
+        $path = $DP_ENV->getUserDebugDir().DIRECTORY_SEPARATOR.'data_dumps';
+        if (!is_dir($path)) {
+            @mkdir($path, 0777, true);
         }
 
-        if (!$context_data && isset($exception->_dp_context_data)) {
-            $context_data = $exception->_dp_context_data;
+        if (!$id) {
+            $id = date('YmdHis').'--'.md5(uniqid('', true));
         }
 
-        $type    = get_class($exception);
-        $summary = "[EXCEPTION] $type:$errno $errstr ($errfile:$errline)";
+        $dumpPath = $path.DIRECTORY_SEPARATOR.$id.'.dump';
+        @file_put_contents($dumpPath, $content);
 
-        $display = true;
-        if (!(error_reporting() & E_ERROR)) {
-            $display = false;
-        }
-
-        $prev = $exception->getPrevious();
-        if ($prev) {
-            $previnfo = self::getExceptionInfo($prev);
-            $summary .= ', '.$previnfo['summary'];
-            $trace .= "\n\n(Alt Exception)\n{$previnfo['summary']}\n".$previnfo['trace'];
-        }
-
-        $last_e = null;
-        if (isset($GLOBALS['DP_LAST_ERROR'])) {
-            $last_e = sprintf('[%d] %s (%s line %d)', $GLOBALS['DP_LAST_ERROR']['type'], $GLOBALS['DP_LAST_ERROR']['message'], $GLOBALS['DP_LAST_ERROR']['file'], $GLOBALS['DP_LAST_ERROR']['line']);
-        } elseif ($last_e_info = @error_get_last()) {
-            $last_e = sprintf('[%d] %s (%s line %d)', $last_e_info['type'], $last_e_info['message'], $last_e_info['file'], $last_e_info['line']);
-        }
-
-        $errinfo = array(
-            'type'              => 'exception',
-            'session_name'      => isset($exception->_dp_sn) ? $exception->_dp_sn : self::genSessionName(),
-            'exception'         => $exception,
-            'exception_type'    => get_class($exception),
-            'die'               => true,
-            'pri'               => 'ERR',
-            'trace'             => $trace,
-            'summary'           => $summary,
-            'errstr'            => $errstr,
-            'errname'           => 'EXCEPTION',
-            'errno'             => $errno,
-            'errfile'           => $errfile,
-            'errfile_hash'      => $errfile_hash,
-            'errfile_modified'  => false,
-            'errline'           => $errline,
-            'last_error'        => $last_e,
-            'display'           => $display,
-            'build'             => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
-            'process_log'       => implode("\n", self::$process_log),
-            'context_data'      => $context_data,
-            'error_time'        => microtime(true),
-            'time_to_error'     => defined('DP_START_TIME') ? sprintf('%0.4f', microtime(true) - DP_START_TIME) : 0,
-            'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
-        );
-
-        $url = '';
-        if (defined('DP_REQUEST_URL')) {
-            $url = DP_REQUEST_URL;
-        }
-        if (php_sapi_name() == 'cli' && !empty($_SERVER['argv'])) {
-            $url = 'Command: '.implode(' ', $_SERVER['argv']);
-        }
-        $errinfo['url'] = $url;
-
-        if (self::isNoReportException($exception)) {
-            $errinfo['no_send_error'] = true;
-        }
-
-        return $errinfo;
+        return $dumpPath;
     }
+
+    /**
+     * Add a log line that'll be saved with an error. This is used with things like the gateway, where
+     * if there's an error we'll want to know everything that happened up to the error point.
+     *
+     * @param $line
+     */
+    public static function addProcessLog($line)
+    {
+        self::$processLog[] = $line;
+    }
+
+    /**
+     * Clears the process log. For example, with the gateway, if a new email is started then the last log
+     * might be cleared.
+     */
+    public static function clearProcessLog()
+    {
+        self::$processLog = array();
+    }
+
+    ####################################################################################################################
+    # Config
+    ####################################################################################################################
+
+    /**
+     * @return \Bugsnag_Client|null
+     */
+    private static function getBugsnagClient()
+    {
+        if (self::$bugsnagClient) {
+            return self::$bugsnagClient;
+        }
+
+        if (self::$bugsnagApiKey) {
+            if (!class_exists('Bugsnag_Client', true)) {
+                // failed to autoload the class, so ignore
+                self::$bugsnagApiKey = null;
+
+                return;
+            }
+
+            return self::$bugsnagClient = new \Bugsnag_Client(self::$bugsnagApiKey);
+        }
+
+        return;
+    }
+
+    /**
+     * @param string $bugsnagApiKey
+     */
+    public static function setBugsnagApiKey($bugsnagApiKey)
+    {
+        self::$bugsnagApiKey = $bugsnagApiKey;
+        self::$bugsnagClient = null;
+    }
+
+    /**
+     * @param \Monolog\ErrorHandler $errorHandler
+     */
+    public static function setErrorHandlerLogger(\Monolog\ErrorHandler $errorHandler)
+    {
+        self::$errorHandlerLogger = $errorHandler;
+    }
+
+    /**
+     * @return string
+     */
+    private static function getLogDir()
+    {
+        return self::getDpEnv()->getUserLogsDir();
+    }
+
+    /**
+     * @return \DpRun\DpEnv
+     */
+    private static function getDpEnv()
+    {
+        /* @var \DpRun\DpEnv */
+        global $DP_ENV;
+
+        return $DP_ENV;
+    }
+
+    ####################################################################################################################
+    # Filtering
+    ####################################################################################################################
 
     /**
      * @param \Exception $exception
@@ -569,7 +783,7 @@ class SystemErrorHandler
             return true;
         }
 
-        if ($exception instanceof \PDOException || $exception instanceof DBALException) {
+        if ($exception instanceof \PDOException || $exception instanceof \Doctrine\DBAL\DBALException) {
             if (strpos($exception->getFile(), 'DbTablePhpPasswordCheck.php') !== false) {
                 return true;
             }
@@ -697,6 +911,74 @@ class SystemErrorHandler
         return false;
     }
 
+    ####################################################################################################################
+    # Utils
+    ####################################################################################################################
+
+    /**
+     * Used with formatBacktrace to format an array (usually parameters) to a string, being sure not to recurse
+     * too deep.
+     *
+     * @param mixed $var
+     * @param int   $_depth
+     *
+     * @return string
+     */
+    public static function varToString($var, $_depth = 0)
+    {
+        if (is_object($var)) {
+            return sprintf('<%s>', get_class($var));
+        }
+        if (is_array($var)) {
+            $a        = array();
+            $len      = count($var);
+            $is_array = true;
+
+            for ($i = 0; $i < $len; ++$i) {
+                if (!array_key_exists($i, $var)) {
+                    $is_array = false;
+                    break;
+                }
+            }
+
+            foreach ($var as $k => $v) {
+                if ($k === 'pass' || $k === 'password' || $k === 'passphrase') {
+                    $v = '***';
+                }
+                if ($_depth > 8) {
+                    if ($is_array) {
+                        $a[] = '(array)';
+                    } else {
+                        $a[] = sprintf('%s => %s', $k, '(string)');
+                    }
+                } else {
+                    if ($is_array) {
+                        $a[] = self::varToString($v, $_depth + 1);
+                    } else {
+                        if (!is_numeric($k)) {
+                            $k = "'$k'";
+                        }
+                        $a[] = sprintf('%s => %s', $k, self::varToString($v, $_depth + 1));
+                    }
+                }
+            }
+            if ($_depth == 0) {
+                return implode(', ', $a);
+            } else {
+                return sprintf('array(%s)', implode(', ', $a));
+            }
+        }
+        if (is_resource($var)) {
+            return '[resource]';
+        }
+        $str = (string) $var;
+        if (strlen($str) > 1000) {
+            $str = substr($str, 0, 1000).'...(clipped)';
+        }
+
+        return str_replace("\n", '', var_export(self::stripPathPrefix($str), true));
+    }
+
     /**
      * Strips the full path prefix from $content. This makes all paths relative to the root of DeskRPO install.
      *
@@ -715,21 +997,6 @@ class SystemErrorHandler
         $content = str_replace($prefix, '/', $content);
 
         return $content;
-    }
-
-    protected static function recordErrorAsCaught($errno, $errstr, $errfile, $errline)
-    {
-        self::$caught_errors[self::hashErrorInfoForKey($errno, $errstr, $errfile, $errline)] = true;
-    }
-
-    protected static function isErrorCaught($errno, $errstr, $errfile, $errline)
-    {
-        return isset(self::$caught_errors[self::hashErrorInfoForKey($errno, $errstr, $errfile, $errline)]);
-    }
-
-    protected static function hashErrorInfoForKey($errno, $errstr, $errfile, $errline)
-    {
-        return md5($errno.$errstr.$errfile.$errline);
     }
 
     /**
@@ -863,111 +1130,20 @@ class SystemErrorHandler
     }
 
     /**
-     * Used with formatBacktrace to format an array (usually parameters) to a string, being sure not to recurse
-     * too deep.
-     *
-     * @param mixed $var
-     * @param int   $_depth
-     *
-     * @return string
+     * @static
      */
-    public static function varToString($var, $_depth = 0)
+    private static function genSessionName()
     {
-        if (is_object($var)) {
-            return sprintf('<%s>', get_class($var));
-        }
-        if (is_array($var)) {
-            $a        = array();
-            $len      = count($var);
-            $is_array = true;
-
-            for ($i = 0; $i < $len; ++$i) {
-                if (!array_key_exists($i, $var)) {
-                    $is_array = false;
-                    break;
-                }
-            }
-
-            foreach ($var as $k => $v) {
-                if ($k === 'pass' || $k === 'password' || $k === 'passphrase') {
-                    $v = '***';
-                }
-                if ($_depth > 8) {
-                    if ($is_array) {
-                        $a[] = '(array)';
-                    } else {
-                        $a[] = sprintf('%s => %s', $k, '(string)');
-                    }
-                } else {
-                    if ($is_array) {
-                        $a[] = self::varToString($v, $_depth + 1);
-                    } else {
-                        if (!is_numeric($k)) {
-                            $k = "'$k'";
-                        }
-                        $a[] = sprintf('%s => %s', $k, self::varToString($v, $_depth + 1));
-                    }
-                }
-            }
-            if ($_depth == 0) {
-                return implode(', ', $a);
-            } else {
-                return sprintf('array(%s)', implode(', ', $a));
-            }
-        }
-        if (is_resource($var)) {
-            return '[resource]';
-        }
-        $str = (string) $var;
-        if (strlen($str) > 1000) {
-            $str = substr($str, 0, 1000).'...(clipped)';
-        }
-
-        return str_replace("\n", '', var_export(self::stripPathPrefix($str), true));
+        return time().substr(strtoupper(md5(uniqid(''))), 0, 6);
     }
 
     /**
-     * Gets a filehash.
-     *
-     * @param string $path
-     *
-     * @return string
+     * @return bool
      */
-    public static function getFilehash($path)
+    private static function shouldDisplayErrors()
     {
-        if (!is_file($path)) {
-            return;
-        }
+        $v = ini_get('display_errors');
 
-        $file_contents = @file_get_contents($path);
-
-        $bom = pack('CCC', 0xEF, 0xBB, 0xBF);
-        if (substr($file_contents, 0, 3) === $bom) {
-            $file_contents = substr($file_contents, 3);
-        }
-
-        $file_contents = trim(str_replace(array("\r", "\n"), '', $file_contents));
-
-        return $file_contents;
-    }
-
-    public static function logExceptionIfUniqueBacktrace(/*Throwable*/ $e, $send = false)
-    {
-        $hashable_trace      = '';
-        $formatted_backtrace = debug_backtrace();
-        foreach ($formatted_backtrace as $trace) {
-            $hashable_trace .= (isset($trace['class']) ? $trace['class'] : 'NOCLASS');
-            $hashable_trace .= '::'.(isset($trace['function']) ? $trace['function'] : 'NOFUNC');
-            $hashable_trace .= ' (line '.(isset($trace['line']) ? $trace['line'] : 'NOLINE').')';
-            $hashable_trace .= PHP_EOL;
-        }
-
-        $hash = md5($hashable_trace);
-
-        self::logException(
-            $e,
-            $send,
-            $hash
-        );
+        return $v === '1' || $v === 1 || strtoupper($v) === 'ON' || strtoupper($v) === 'YES';
     }
 }
