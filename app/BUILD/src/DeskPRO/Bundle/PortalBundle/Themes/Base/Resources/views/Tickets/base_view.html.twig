@@ -33,7 +33,9 @@
                                 {{ phrase('portal.tickets.view_you_created', { ago: date_ago(ticket.date_created, null, false) }) }}
                             </span>
                         {% endif %}
-                        {{ phrase('portal.tickets.view_will_notify_you') }}
+                        {% if not ticket.date_last_agent_reply %}
+                            {{ phrase('portal.tickets.view_will_notify_you') }}
+                        {% endif %}
                     </div>
                 {% endif %}
 
