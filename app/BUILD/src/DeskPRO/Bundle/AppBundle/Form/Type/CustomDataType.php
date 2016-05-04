@@ -250,7 +250,7 @@ class CustomDataType extends AbstractType
         foreach ($customDefData as $customData) {
             $customData->root_field = $customDef;
 
-            if ($customDef->getType() !== 'choice') {
+            if (!$customDef->isChoiceType()) {
                 // for simple custom data field = root field
                 $customData->field = $customDef;
             }
@@ -301,6 +301,10 @@ class CustomDataType extends AbstractType
                     return $field && $field->getType() === CustomDefAbstract::TYPE_HIDDEN;
                 },
                 'constraints' => function (Options $options) {
+                    if ($options['ignore_validation']) {
+                        return [];
+                    }
+
                     return [
                         new AppAssert\CustomField\CustomData([
                             'context'    => $options['agent_interface'] ? 'agent' : 'user',
