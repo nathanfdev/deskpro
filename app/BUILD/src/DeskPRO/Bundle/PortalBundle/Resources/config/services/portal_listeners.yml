@@ -58,14 +58,6 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
-  exception_logger.listener:
-    class: DeskPRO\Bundle\PortalBundle\EventListener\ExceptionLoggerListener
-    arguments:
-      - "@dp_sys.alerts.event_logger"
-      - "@=parameter('kernel.environment')==='prod'"
-    tags:
-      - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: 0 }
-
   logout_exception.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\LogoutExceptionRedirectListener
     arguments:
@@ -78,7 +70,6 @@ services:
       class: DeskPRO\Bundle\PortalBundle\HttpKernel\ControllerNameParser
       tags: [{name: monolog.logger, channel: request}]
       arguments: ["@kernel", "@brand_stack", "@portal_brand_theme_loader"]
-
 
   tag_options.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\TagOptionsListener

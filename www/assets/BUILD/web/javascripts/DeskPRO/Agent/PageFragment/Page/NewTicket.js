@@ -40,6 +40,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this._initLabels();
 		this._initDraft();
 
+    this.addEvent('destroy', function() {
+      this.draft.reset();
+    }, this);
+
 		this.meta.person_api_data = {};
 
 		this.addEvent('activate', function() {
@@ -1743,7 +1747,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
       ;
 
     this.draft = d = {
-			_key: null,
+      _key: null,
       key: function (backup) {
         return backup ? 'drafts.new-ticket-backup' : 'drafts.new-ticket';
       },
@@ -1862,6 +1866,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
         }
 
         window.localStorage.removeItem(this.key());
+        window.localStorage.removeItem(this.key(true));
 
 		  // reload self
 		  if (reloadForm) {

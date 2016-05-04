@@ -875,6 +875,7 @@ return [
     # user
     ####################################################################################################################
 
+    // alias for core.iface_portal
     'user.portal_enabled'          => true,
     'user.portal_title'            => 'Support Center',
     'user.portal_header'           => 'My Title',

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,12 +29,15 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api\PortalDesigner;
 
 use DeskPRO\Bundle\PortalBundle\Controller\Api\AbstractApiController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class ThemeSetController.
@@ -42,6 +45,48 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class ThemeSetController extends AbstractApiController
 {
     use HelperMethods;
+
+    /**
+     * @Route("/portal/api/style/edit-theme-set/info")
+     * @Method({"GET"})
+     */
+    public function getThemeSetAction()
+    {
+        $themeSet = $this->getEditThemeSet();
+
+        return new JsonResponse([
+            'id'       => $themeSet->getId(),
+            'theme_id' => $themeSet->getThemeId(),
+        ]);
+    }
+
+    /**
+     * @Route("/portal/api/style/edit-theme-set/info")
+     * @Method({"PUT"})
+     */
+    public function setThemeSetAction(Request $request)
+    {
+        $themeSet = $this->getEditThemeSet();
+
+        $data = json_decode($request->getContent(), true);
+        if (!array_key_exists('theme_id', $data)) {
+            throw new BadRequestHttpException('Request body must contain "theme_id" property');
+        }
+
+        $themeId = $data['theme_id'];
+        if ($themeId !== 'standard' && $themeId !== 'sidebar') {
+            throw new BadRequestHttpException('Invalid theme_id option');
+        }
+
+        $themeSet->setThemeId($themeId);
+        $this->getManager()->persist($themeSet);
+        $this->getManager()->flush();
+
+        return new JsonResponse([
+            'id'       => $themeSet->getId(),
+            'theme_id' => $themeSet->getThemeId(),
+        ]);
+    }
 
     /**
      * @Route("/portal/api/style/edit-theme-set/commit")

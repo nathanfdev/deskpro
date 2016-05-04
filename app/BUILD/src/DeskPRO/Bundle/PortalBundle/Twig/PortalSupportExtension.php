@@ -116,6 +116,7 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('date', [$this, 'date']),
             new \Twig_SimpleFunction('date_ago', [$this, 'dateAgo'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('date_diff', [$this, 'dateDiff'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('theme_option', [$this, 'getThemeSetting']),
         ];
 
         return $funcs;
@@ -705,6 +706,19 @@ class PortalSupportExtension extends \Twig_Extension
     }
 
     /**
+     * @param string $name
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    public function getThemeSetting($name, $default = null)
+    {
+        $themeSet = $this->getActiveThemeSet();
+
+        return $themeSet->getOption($name, $default);
+    }
+
+    /**
      * @return \DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface
      */
     private function getActiveTheme()
@@ -714,6 +728,18 @@ class PortalSupportExtension extends \Twig_Extension
         $theme           = $brand_theme->getActiveTheme();
 
         return $theme;
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\Entity\ThemeSet
+     */
+    private function getActiveThemeSet()
+    {
+        $brand_container = $this->container->get('brand_stack')->getActive();
+        $brand_theme     = $this->container->get('portal_brand_theme_loader')->getPortalBrandTheme($brand_container->getBrand());
+        $themeSet        = $brand_theme->getActiveThemeSet();
+
+        return $themeSet;
     }
 
     /**

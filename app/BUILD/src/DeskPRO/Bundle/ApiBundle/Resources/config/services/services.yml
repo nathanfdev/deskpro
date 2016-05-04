@@ -51,3 +51,7 @@ services:
       - "@doctrine.orm.entity_manager"
       - "@job.scheduler"
 
+  api_client_info:
+    class: DeskPRO\Bundle\ApiBundle\Request\ApiClientInfo
+    factory: [DeskPRO\Bundle\ApiBundle\Request\ApiClientInfo, createFromRequestStack]
+    arguments: ["@request_stack"]

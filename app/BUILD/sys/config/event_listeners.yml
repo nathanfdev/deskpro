@@ -4,6 +4,14 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
+  exception_logger.listener:
+    class: DeskPRO\Bundle\AppBundle\EventListener\ExceptionLoggerListener
+    arguments:
+      - "@dp_sys.alerts.event_logger"
+      - "@=parameter('kernel.environment')==='prod'"
+    tags:
+      - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: 0 }
+
   preflight_checks.listener:
     class: DeskPRO\Bundle\AppBundle\EventListener\PreflightChecksListener
     arguments: ["@service_container"]

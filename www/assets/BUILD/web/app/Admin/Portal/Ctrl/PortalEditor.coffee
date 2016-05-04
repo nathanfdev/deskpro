@@ -9,6 +9,14 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @values = {}
       @recompiling = false
       @advanced = {header: '', footer: '', scss: '', javascript: ''}
+      @available_themes = [
+        {id: "standard", title: "Standard"},
+        {id: "sidebar", title: "Sidebar"}
+      ]
+      @welcome_box = {
+        title: '',
+        message: ''
+      }
       @advanced_tab = 'header'
       @is_advanced_expanded = false
       @asset_files = []
@@ -21,6 +29,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @preview_as_expanded = false
       @preview_as = 'myself'
       @preview_as_email = null
+      @selected_theme = null
+      @theme_set = null;
       @refreshPreviewUrl()
 
     save: () =>
@@ -32,6 +42,32 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @recompiling = true
       request.then(
         @saveValues,
+        () => @serverError(); @recompiling = false
+      )
+
+    editTheme: () =>
+      request = @$http({
+        method: 'PUT',
+        url: '/portal/api/style/edit-theme-set/info',
+        data: {
+          theme_id: @selected_theme
+        }
+      })
+      @recompiling = true
+      request.then(
+        () => @refreshPreviewUrl(); @recompiling = false,
+        () => @serverError(); @recompiling = false
+      )
+
+     editWelcomeBox: () =>
+      request = @$http({
+        method: 'PUT',
+        url: '/portal/api/style/edit-theme-set/welcome-message',
+        data: @welcome_box
+      })
+      @recompiling = true
+      request.then(
+        () => @refreshPreviewUrl(); @recompiling = false,
         () => @serverError(); @recompiling = false
       )
 
@@ -66,12 +102,16 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         );
 
     initialLoad: ->
-      @$http.get('/portal/api/style/variable-groups').success((data) => @groups = data)
-      @loadValues()
-      @loadAdvancedEdits()
-      @loadAssetFiles()
-      @loadLogo()
-      @loadTemplateOptions()
+      @$q.all([
+        @$http.get('/portal/api/style/variable-groups').success((data) => @groups = data),
+        @loadValues(),
+        @loadAdvancedEdits(),
+        @loadAssetFiles(),
+        @loadLogo(),
+        @loadTemplateOptions(),
+        @loadThemeSet()
+        @loadWelcomeBox()
+      ])
 
     togglePanel: (name) ->
       if name in @open_panels
@@ -121,7 +161,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         (code) => @selected_template_code = angular.fromJson(code); @selected_template_code_loaded = true
       )
 
-    closeTemplateEditor: () =>
+    saveTemplateEditor: () =>
       @$http({
         method: 'PUT',
         url: '/portal/api/style/edit-theme-set/template-sources?template=' + @selected_template,
@@ -129,6 +169,23 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       })
       .error(@serverError)
 
+      @selected_template = null
+      @selected_template_code = null
+      @selected_template_code_loaded = false
+
+    saveTemplateEditor: () =>
+      @$http({
+        method: 'PUT',
+        url: '/portal/api/style/edit-theme-set/template-sources?template=' + @selected_template,
+        data: angular.toJson({revert: true})
+      })
+      .error(@serverError)
+
+      @selected_template = null
+      @selected_template_code = null
+      @selected_template_code_loaded = false
+
+    cancelTemplateEditor: () =>
       @selected_template = null
       @selected_template_code = null
       @selected_template_code_loaded = false
@@ -144,6 +201,18 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     loadAssetFiles: () ->
       @$http.get('/portal/api/style/edit-theme-set/assets').success(
         (response) => angular.extend(@asset_files, response.data)
+      )
+
+    loadThemeSet: () ->
+      @$http.get('/portal/api/style/edit-theme-set/info').success((data) =>
+        @theme_set = data
+        @selected_theme = @theme_set.theme_id
+      )
+
+    loadWelcomeBox: () ->
+      @$http.get('/portal/api/style/edit-theme-set/welcome-message').success((response) =>
+        @welcome_box = response.data
+        console.log(@welcome_box)
       )
 
     loadLogo: () ->

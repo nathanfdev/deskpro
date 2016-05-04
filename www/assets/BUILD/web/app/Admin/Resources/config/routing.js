@@ -1630,6 +1630,16 @@ define(function() {
     controller: 'Admin_Portal_Ctrl_PortalEditor'
   });
 
+  //###
+  //# Portal Editor Disabled
+  //###
+  routes.push({
+    id: 'portal.portal_editor_disabled',
+    url: '/portal_editor_disabled',
+    templateName: 'Portal/portal-editor-disabled.html',
+    controller: 'Admin_Main_Ctrl_Bare'
+  });
+
 	//###
 	//# Portal Widget Editor
 	//###

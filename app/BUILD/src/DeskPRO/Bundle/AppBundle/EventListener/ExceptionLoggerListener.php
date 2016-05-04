@@ -30,11 +30,13 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\PortalBundle\EventListener;
+namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
+use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 
 /**
@@ -69,10 +71,6 @@ class ExceptionLoggerListener
      */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
-        if (!$this->enabled) {
-            return;
-        }
-
         $exception = $event->getException();
         if (
             (
@@ -81,12 +79,16 @@ class ExceptionLoggerListener
                 && $exception->getStatusCode() < 500
             )
             || $exception instanceof MethodNotAllowedException
+            || $exception instanceof NotFoundHttpException
         ) {
             return;
         }
 
+        // Always log to error log
+        SystemErrorHandler::logException($exception);
+
         // only log if there is no response attached by previous listeners
-        if (!$event->hasResponse()) {
+        if ($this->enabled && !$event->hasResponse()) {
             $this->logger->log($exception);
         }
     }
