@@ -610,22 +610,25 @@ class SystemErrorHandler
             @chmod($errorLogFile, 0777);
         }
 
-        if (self::$errorHandlerLogger) {
-            if ($errinfo['type'] == 'exception') {
-                self::$errorHandlerLogger->handleException($errinfo['exception']);
-            } else {
-                self::$errorHandlerLogger->handleError($errinfo['errno'], $errinfo['errstr'], $errinfo['errfile'], $errinfo['errline']);
-            }
-        }
-
-        if ($errinfo['no_send_error']) {
-            if ($bs = self::getBugsnagClient()) {
+        try {
+            if (self::$errorHandlerLogger) {
                 if ($errinfo['type'] == 'exception') {
-                    $bs->notifyException($errinfo['exception']);
+                    self::$errorHandlerLogger->handleException($errinfo['exception']);
                 } else {
-                    $bs->notifyError($errinfo['errname'], $errinfo['summary']);
+                    self::$errorHandlerLogger->handleError($errinfo['errno'], $errinfo['errstr'], $errinfo['errfile'], $errinfo['errline']);
                 }
             }
+
+            if ($errinfo['no_send_error']) {
+                if ($bs = self::getBugsnagClient()) {
+                    if ($errinfo['type'] == 'exception') {
+                        $bs->notifyException($errinfo['exception']);
+                    } else {
+                        $bs->notifyError($errinfo['errname'], $errinfo['summary']);
+                    }
+                }
+            }
+        } catch (\Exception $e) {
         }
     }
 
