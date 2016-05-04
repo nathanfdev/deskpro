@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\JobQueue;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -210,7 +211,7 @@ class JobWorker
                 // router is supposed to handle all situations and catch all errors and never throw
                 // this is here to attempt to keep the queue moving in case of what should be next-to-impossible situations
                 // this will eventually do something other than return true
-                SystemErrorHandler::handleException($e, false);
+                SystemErrorHandler::logException($e, false);
 
                 return true;
             }
