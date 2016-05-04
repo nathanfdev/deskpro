@@ -54,6 +54,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Serializer\Deferred;
 
 /**
@@ -66,17 +67,27 @@ class CallbackDeferredProperty
      * @var callable
      */
     private $callable;
+
     /**
      * @var array
      */
     private $arguments;
 
-    public function __construct(callable $callable, array $arguments)
+    /**
+     * Constructor.
+     *
+     * @param callable $callable
+     * @param array    $arguments
+     */
+    public function __construct(callable $callable, array $arguments = [])
     {
         $this->callable  = $callable;
         $this->arguments = $arguments;
     }
 
+    /**
+     * @return mixed
+     */
     public function call()
     {
         return call_user_func_array($this->callable, $this->arguments);
