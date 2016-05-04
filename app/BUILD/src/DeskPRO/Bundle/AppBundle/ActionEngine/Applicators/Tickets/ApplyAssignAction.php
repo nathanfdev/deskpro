@@ -31,6 +31,9 @@
  */
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -49,19 +52,19 @@ class ApplyAssignAction extends AbstractTicketApplicator implements ActionApplic
                 case 'agent':
                     foreach ($tickets as $ticket) {
                         $ticket->setAgent($value);
-                        $this->saveTicket($ticket, 'set_status');
+                        $this->saveTicket($ticket, 'assign');
                     }
                     break;
                 case 'team':
                     foreach ($tickets as $ticket) {
                         $ticket->setAgentTeam($value);
-                        $this->saveTicket($ticket, 'set_status');
+                        $this->saveTicket($ticket, 'assign');
                     }
                     break;
                 case 'department':
                     foreach ($tickets as $ticket) {
                         $ticket->setDepartment($value);
-                        $this->saveTicket($ticket, 'set_status');
+                        $this->saveTicket($ticket, 'assign');
                     }
                     break;
             }
@@ -80,7 +83,7 @@ class ApplyAssignAction extends AbstractTicketApplicator implements ActionApplic
                 case 'agent':
                     $agent = null;
                     if ($id) {
-                        $agent = $this->em->getRepository('DeskPRO:Person')->find($id);
+                        $agent = $this->em->getRepository(Person::class)->find($id);
                         if (!$agent) {
                             throw new BadRequestHttpException("Agent with ID=$id doesn't exists");
                         }
@@ -90,7 +93,7 @@ class ApplyAssignAction extends AbstractTicketApplicator implements ActionApplic
                 case 'team':
                     $team = null;
                     if ($id) {
-                        $team = $this->em->getRepository('DeskPRO:AgentTeam')->find($id);
+                        $team = $this->em->getRepository(AgentTeam::class)->find($id);
                         if (!$team) {
                             throw new BadRequestHttpException("Agents team with ID=$id doesn't exists");
                         }
@@ -100,7 +103,7 @@ class ApplyAssignAction extends AbstractTicketApplicator implements ActionApplic
                 case 'department':
                     $department = null;
                     if ($id) {
-                        $department = $this->em->getRepository('DeskPRO:Department')->find($id);
+                        $department = $this->em->getRepository(Department::class)->find($id);
                         if (!$department) {
                             throw new BadRequestHttpException("Department with ID=$id doesn't exists");
                         }

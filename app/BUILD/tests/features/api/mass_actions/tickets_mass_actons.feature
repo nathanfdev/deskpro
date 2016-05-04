@@ -45,7 +45,7 @@ Feature: /mass_actions/tickets endpoint
      "assign": {
         "agent": 1,
         "team": 1,
-        "department": 2
+        "department": 3
      },
      "set_of_actions": ["mark_as_spam"]
   }
@@ -173,7 +173,7 @@ Feature: /mass_actions/tickets endpoint
     And the JSON node "data.product" should be equal to 1
     And the JSON node "data.agent" should be equal to 1
     And the JSON node "data.agent_team" should be equal to 1
-    And the JSON node "data.department" should be equal to 2
+    And the JSON node "data.department" should be equal to 3
     And the JSON node "data.category" should be equal to 1
     And the JSON node "data.language" should be equal to 1
     And the JSON node "data.followers" should have 2 elements
@@ -202,7 +202,7 @@ Feature: /mass_actions/tickets endpoint
     And the JSON node "data.product" should be equal to 1
     And the JSON node "data.agent" should be equal to 1
     And the JSON node "data.agent_team" should be equal to 1
-    And the JSON node "data.department" should be equal to 2
+    And the JSON node "data.department" should be equal to 3
     And the JSON node "data.category" should be equal to 1
     And the JSON node "data.language" should be equal to 1
     And the JSON node "data.followers" should have 0 element
