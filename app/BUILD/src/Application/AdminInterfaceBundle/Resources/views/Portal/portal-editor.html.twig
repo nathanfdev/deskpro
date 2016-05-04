@@ -118,10 +118,7 @@
                                 <a href ng-click="Portal.openAdvancedTab('footer')">Footer</a>
                             </li>
                             <li ng-class="{active: Portal.isAdvancedTab('scss')}">
-                                <a href ng-click="Portal.openAdvancedTab('scss')">(S)CSS</a>
-                            </li>
-                            <li ng-class="{active: Portal.isAdvancedTab('javascript')}">
-                                <a href ng-click="Portal.openAdvancedTab('javascript')">Javascript</a>
+                                <a href ng-click="Portal.openAdvancedTab('scss')">CSS</a>
                             </li>
                             <li ng-class="{active: Portal.isAdvancedTab('assets')}">
                                 <a href ng-click="Portal.openAdvancedTab('assets')">Assets</a>
@@ -136,14 +133,9 @@
                         visible="Portal.isAdvancedTab('header') && Portal.isAdvancedExpanded()"
                         close="Portal.collapseAdvanced">
                     </dp-code-editor>
-                    <div class="the-code"
-                         ng-click="Portal.expandAdvanced()"
-                         ng-show="Portal.isAdvancedTab('header')"
-                         style="height: 100px;"
-                         ui-ace="{theme: 'monokai', mode: 'twig'}"
-                         ng-model="Portal.advanced.header"
-                         readonly
-                    ></div>
+                    <div class="the-code" ng-show="Portal.isAdvancedTab('header')">
+                        <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-header.html.twig')">Edit Header Template</button>
+                    </div>
 
                     <!-- Footer -->
                     <dp-code-editor
@@ -152,14 +144,9 @@
                         visible="Portal.isAdvancedTab('footer') && Portal.isAdvancedExpanded()"
                         close="Portal.collapseAdvanced">
                     </dp-code-editor>
-                    <div class="the-code"
-                         ng-click="Portal.expandAdvanced()"
-                         ng-show="Portal.isAdvancedTab('footer')"
-                         style="height: 100px;"
-                         ui-ace="{theme: 'monokai', mode: 'html'}"
-                         ng-model="Portal.advanced.footer"
-                         readonly
-                    ></div>
+                    <div class="the-code" ng-show="Portal.isAdvancedTab('footer')">
+                        <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-footer.html.twig')">Edit Footer Template</button>
+                    </div>
 
                     <!-- CSS -->
                     <dp-code-editor
@@ -168,30 +155,9 @@
                         visible="Portal.isAdvancedTab('scss') && Portal.isAdvancedExpanded()"
                         close="Portal.collapseAdvanced">
                     </dp-code-editor>
-                    <div class="the-code"
-                         ng-click="Portal.expandAdvanced()"
-                         ng-show="Portal.isAdvancedTab('scss')"
-                         style="height: 100px;"
-                         ui-ace="{theme: 'monokai', mode: 'scss'}"
-                         ng-model="Portal.advanced.scss"
-                         readonly
-                    ></div>
-
-                    <!-- Javascript -->
-                    <dp-code-editor
-                        code="Portal.advanced.javascript"
-                        syntax="javascript"
-                        visible="Portal.isAdvancedTab('javascript') && Portal.isAdvancedExpanded()"
-                        close="Portal.collapseAdvanced">
-                    </dp-code-editor>
-                    <div class="the-code"
-                         ng-click="Portal.expandAdvanced()"
-                         ng-show="Portal.isAdvancedTab('javascript')"
-                         style="height: 100px;"
-                         ui-ace="{theme: 'monokai', mode: 'javascript'}"
-                         ng-model="Portal.advanced.javascript"
-                         readonly
-                    ></div>
+                    <div class="the-code" ng-show="Portal.isAdvancedTab('scss')">
+                        <button class="btn btn-default">Edit CSS</button>
+                    </div>
 
                     <!-- Assets -->
                     <div class="the-assets" ng-show="Portal.isAdvancedTab('assets')">

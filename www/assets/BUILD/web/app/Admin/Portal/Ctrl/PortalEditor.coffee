@@ -165,6 +165,16 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         @selected_template_info_loaded = true
       )
 
+    openTemplateEditor: (tpl) =>
+      @selected_template = tpl
+      @$http.get('/portal/api/style/edit-theme-set/template-info?template=' + @selected_template).success((data) =>
+        @selected_template_info = {
+          code: data.source,
+          is_custom: data.is_custom
+        }
+        @selected_template_info_loaded = true
+      )
+
     saveTemplateEditor: () =>
       @$http({
         method: 'PUT',
