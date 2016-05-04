@@ -772,23 +772,18 @@ class TicketWithLayoutsType extends AbstractType
             return false;
         }
 
-        $isAgent = $context->getViewContext() === TicketWithLayoutsContext::VIEW_AGENT;
         $options = [
             'custom_def'      => $def,
             'property_path'   => $propertyPath,
-            'agent_interface' => $isAgent,
+            'agent_interface' => $context->isAgentView(),
             'label'           => $def->getTitle(),
-            'required'        => $def->isRequired($isAgent),
+            'required'        => $def->isRequired($context->isAgentView()),
             'inline'          => $context->forApi(),
         ];
 
-        if (in_array($def->getHandlerClass(), [
-            'Application\DeskPRO\CustomFields\Handler\Hidden',
-            'Application\DeskPRO\CustomFields\Handler\Display',
-        ])) {
+        if (in_array($def->getType(), [CustomDefAbstract::TYPE_HIDDEN, CustomDefAbstract::TYPE_DISPLAY])) {
             $options['label'] = false;
         }
-
         if ($ignoreValidation) {
             $options                      = $this->markNoValidation($options);
             $options['ignore_validation'] = true;

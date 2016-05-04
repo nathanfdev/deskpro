@@ -297,11 +297,8 @@ class CustomDataType extends AbstractType
                 'fully_hidden'      => function (Options $options) {
                     /** @var \Application\DeskPRO\Entity\CustomDefAbstract $field */
                     $field = $options['custom_def'];
-                    if ($field) {
-                        return $field->getHandlerClass() === 'Application\DeskPRO\CustomFields\Handler\Hidden';
-                    }
 
-                    return false;
+                    return $field && $field->getType() === CustomDefAbstract::TYPE_HIDDEN;
                 },
                 'constraints' => function (Options $options) {
                     return [
