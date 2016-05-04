@@ -4,8 +4,7 @@ define [], () ->
       restrict: 'E',
       templateUrl: DP_BASE_ADMIN_URL + '/load-view/Portal/Editor/code-editor.html',
       scope: {
-        code: '=',
-        is_custom: '=',
+        info: '=',
         syntax: '@',
         visible: '=',
         cancel: '&',
