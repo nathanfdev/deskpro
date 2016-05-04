@@ -310,6 +310,131 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
         return ucfirst(Strings::underscoreToCamelCase(Util::getBaseClassname($this->source_type)));
     }
 
+    /**
+     * @param int $display_order
+     */
+    public function setDisplayOrder($display_order)
+    {
+        $this->setModelField('display_order', $display_order);
+    }
+
+    /**
+     * @return int
+     */
+    public function getDisplayOrder()
+    {
+        return $this->display_order;
+    }
+
+    /**
+     * @param bool $is_enabled
+     */
+    public function setIsEnabled($is_enabled)
+    {
+        $this->setModelField('is_enabled', $is_enabled);
+    }
+
+    /**
+     * @return bool
+     *
+     * @deprecated use isEnabled
+     */
+    public function getIsEnabled()
+    {
+        return $this->isEnabled();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return (bool) $this->is_enabled;
+    }
+
+    /**
+     * @param string $lost_password_url
+     */
+    public function setLostPasswordUrl($lost_password_url)
+    {
+        $this->setModelField('lost_password_url', $lost_password_url);
+    }
+
+    /**
+     * @return string
+     */
+    public function getLostPasswordUrl()
+    {
+        return $this->lost_password_url;
+    }
+
+    /**
+     * @param string $source_type
+     */
+    public function setSourceType($source_type)
+    {
+        $this->setModelField('source_type', $source_type);
+    }
+
+    /**
+     * @return string
+     */
+    public function getSourceType()
+    {
+        return $this->source_type;
+    }
+
+    /**
+     * @param string $title
+     */
+    public function setTitle($title)
+    {
+        $this->setModelField('title', $title);
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @return AppInstance|null
+     */
+    public function getApp()
+    {
+        return $this->app;
+    }
+
+    /**
+     * @JMS\VirtualProperty()
+     * @JMS\SerializedName("source_type")
+     * @JMS\Type("string")
+     *
+     * @return string
+     */
+    public function getShortSourceType()
+    {
+        return strtolower(Util::getBaseClassname($this->source_type));
+    }
+
+    /**
+     * @JMS\VirtualProperty()
+     * @JMS\Type("array")
+     */
+    public function getDisplayOptions()
+    {
+        $options = [];
+
+        if (isset($this->options['login_custom_text'])) {
+            $options['button_label'] = $this->options['login_custom_text'];
+        }
+
+        return $options;
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -472,130 +597,5 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
             ],
         ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-    }
-
-    /**
-     * @param int $display_order
-     */
-    public function setDisplayOrder($display_order)
-    {
-        $this->setModelField('display_order', $display_order);
-    }
-
-    /**
-     * @return int
-     */
-    public function getDisplayOrder()
-    {
-        return $this->display_order;
-    }
-
-    /**
-     * @param bool $is_enabled
-     */
-    public function setIsEnabled($is_enabled)
-    {
-        $this->setModelField('is_enabled', $is_enabled);
-    }
-
-    /**
-     * @return bool
-     *
-     * @deprecated use isEnabled
-     */
-    public function getIsEnabled()
-    {
-        return $this->isEnabled();
-    }
-
-    /**
-     * @return bool
-     */
-    public function isEnabled()
-    {
-        return (bool) $this->is_enabled;
-    }
-
-    /**
-     * @param string $lost_password_url
-     */
-    public function setLostPasswordUrl($lost_password_url)
-    {
-        $this->setModelField('lost_password_url', $lost_password_url);
-    }
-
-    /**
-     * @return string
-     */
-    public function getLostPasswordUrl()
-    {
-        return $this->lost_password_url;
-    }
-
-    /**
-     * @param string $source_type
-     */
-    public function setSourceType($source_type)
-    {
-        $this->setModelField('source_type', $source_type);
-    }
-
-    /**
-     * @return string
-     */
-    public function getSourceType()
-    {
-        return $this->source_type;
-    }
-
-    /**
-     * @param string $title
-     */
-    public function setTitle($title)
-    {
-        $this->setModelField('title', $title);
-    }
-
-    /**
-     * @return string
-     */
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    /**
-     * @return AppInstance|null
-     */
-    public function getApp()
-    {
-        return $this->app;
-    }
-
-    /**
-     * @JMS\VirtualProperty()
-     * @JMS\SerializedName("source_type")
-     * @JMS\Type("string")
-     *
-     * @return string
-     */
-    public function getShortSourceType()
-    {
-        return strtolower(Util::getBaseClassname($this->source_type));
-    }
-
-    /**
-     * @JMS\VirtualProperty()
-     * @JMS\Type("array")
-     */
-    public function getDisplayOptions()
-    {
-        $options = [];
-
-        if (isset($this->options['login_custom_text'])) {
-            $options['button_label'] = $this->options['login_custom_text'];
-        }
-
-        return $options;
     }
 }
