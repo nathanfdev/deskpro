@@ -39,7 +39,6 @@ use DeskPRO\Bundle\ApiBundle\ApiBundle;
 use DeskPRO\Bundle\AppBundle\AppBundle;
 use DeskPRO\Bundle\PortalBundle\PortalBundle;
 use DpSys\LowError\SystemErrorHandler;
-use Monolog\ErrorHandler;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -110,8 +109,7 @@ abstract class BaseKernel extends Kernel
         }
 
         if ($this->container->has('logger')) {
-            $handler = new ErrorHandler($this->container->get('logger'));
-            SystemErrorHandler::setErrorHandlerLogger($handler);
+            SystemErrorHandler::setErrorLogger($this->container->get('logger'));
         }
 
         // Legacy

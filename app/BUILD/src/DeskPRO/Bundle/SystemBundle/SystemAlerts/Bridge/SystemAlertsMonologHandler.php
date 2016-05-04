@@ -71,21 +71,25 @@ class SystemAlertsMonologHandler extends AbstractProcessingHandler
      */
     protected function write(array $record)
     {
-        $context = array_key_exists('context', $record)  ? $record['context']  : [];
-        $code    = array_key_exists('code', $context)    ? $context['code']    : null;
-        $message = array_key_exists('message', $context) ? $context['message'] : null;
-        $file    = array_key_exists('file', $context)    ? $context['file']    : null;
-        $line    = array_key_exists('line', $context)    ? $context['line']    : null;
+        if (!empty($record['context']['exception']) && $record['context']['exception'] instanceof \Exception) {
+            $this->getEventLogger()->log($record['context']['exception']);
+        } else {
+            $context = array_key_exists('context', $record)  ? $record['context']  : [];
+            $code    = array_key_exists('code', $context)    ? $context['code']    : null;
+            $message = array_key_exists('message', $context) ? $context['message'] : null;
+            $file    = array_key_exists('file', $context)    ? $context['file']    : null;
+            $line    = array_key_exists('line', $context)    ? $context['line']    : null;
 
-        // To prevent Monolog from logging a PHP error with both error and fatal handlers
-        // we compare record hash with hash of the previously logged one
-        $hash = $this->recordHash($code, $message, $file, $line);
-        if ($this->lastRecordHash === $hash) {
-            return;
+            // To prevent Monolog from logging a PHP error with both error and fatal handlers
+            // we compare record hash with hash of the previously logged one
+            $hash = $this->recordHash($code, $message, $file, $line);
+            if ($this->lastRecordHash === $hash) {
+                return;
+            }
+            $this->lastRecordHash = $hash;
+
+            $this->getEventLogger()->log(new ErrorEvent($code, $message, $file, $line, null, $record));
         }
-        $this->lastRecordHash = $hash;
-
-        $this->getEventLogger()->log(new ErrorEvent($code, $message, $file, $line, null, $record));
     }
 
     /**

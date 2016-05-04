@@ -32,6 +32,9 @@
 
 namespace DpSys\LowError;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
+
 class SystemErrorHandler
 {
     /**
@@ -60,9 +63,9 @@ class SystemErrorHandler
     private static $bugsnagClient = null;
 
     /**
-     * @var \Monolog\ErrorHandler
+     * @var LoggerInterface
      */
-    private static $errorHandlerLogger = null;
+    private static $errorLogger = null;
 
     /**
      * @var bool
@@ -72,7 +75,28 @@ class SystemErrorHandler
     /**
      * @var array
      */
-    private static $fatalErrors = array(E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR);
+    private static $fatalErrors = [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR];
+
+    /**
+     * @var array
+     */
+    private static $errorLevelMap = [
+        E_ERROR             => LogLevel::CRITICAL,
+        E_WARNING           => LogLevel::WARNING,
+        E_PARSE             => LogLevel::ALERT,
+        E_NOTICE            => LogLevel::NOTICE,
+        E_CORE_ERROR        => LogLevel::CRITICAL,
+        E_CORE_WARNING      => LogLevel::WARNING,
+        E_COMPILE_ERROR     => LogLevel::ALERT,
+        E_COMPILE_WARNING   => LogLevel::WARNING,
+        E_USER_ERROR        => LogLevel::ERROR,
+        E_USER_WARNING      => LogLevel::WARNING,
+        E_USER_NOTICE       => LogLevel::NOTICE,
+        E_STRICT            => LogLevel::NOTICE,
+        E_RECOVERABLE_ERROR => LogLevel::ERROR,
+        E_DEPRECATED        => LogLevel::NOTICE,
+        E_USER_DEPRECATED   => LogLevel::NOTICE,
+    ];
 
     ####################################################################################################################
     # Exceptions
@@ -351,7 +375,7 @@ class SystemErrorHandler
 
             default:
                 $pri     = 'ERR';
-                $errname = 'UNKNOWN';
+                $errname = 'UNKNOWN:'.$errno;
         }
 
         $context_data = '';
@@ -594,7 +618,7 @@ class SystemErrorHandler
             echo "\n";
         }
 
-        $errorLogFile = self::getLogDir();
+        $errorLogFile = self::getLogDir().DIRECTORY_SEPARATOR.'/error.log';
         if ($errorLogFile && ($fh = @fopen($errorLogFile, 'a')) !== false) {
             $written = @fwrite($fh, $str);
 
@@ -611,17 +635,23 @@ class SystemErrorHandler
         }
 
         try {
-            if (self::$errorHandlerLogger) {
-                if ($errinfo['type'] == 'exception') {
-                    self::$errorHandlerLogger->handleException($errinfo['exception']);
+            if (self::$errorLogger) {
+                if ($errinfo['type'] === 'exception') {
+                    $e = $errinfo['exception'];
+                    self::$errorLogger->log(
+                        LogLevel::ERROR,
+                        sprintf('Uncaught Exception %s: "%s" at %s line %s', get_class($e), $e->getMessage(), $e->getFile(), $e->getLine()),
+                        array('exception' => $e)
+                    );
                 } else {
-                    self::$errorHandlerLogger->handleError($errinfo['errno'], $errinfo['errstr'], $errinfo['errfile'], $errinfo['errline']);
+                    $level = isset(self::$errorLevelMap[$errinfo['errno']]) ? self::$errorLevelMap[$errinfo['errno']] : LogLevel::CRITICAL;
+                    self::$errorLogger->log($level, $errinfo['errname'].': '.$errinfo['errstr'], array('code' => $errinfo['errno '], 'message' => $errinfo['errstr'], 'file' => $errinfo['errfile'], 'line' => $errinfo['errline']));
                 }
             }
 
             if ($errinfo['no_send_error']) {
                 if ($bs = self::getBugsnagClient()) {
-                    if ($errinfo['type'] == 'exception') {
+                    if ($errinfo['type'] === 'exception') {
                         $bs->notifyException($errinfo['exception']);
                     } else {
                         $bs->notifyError($errinfo['errname'], $errinfo['summary']);
@@ -717,11 +747,11 @@ class SystemErrorHandler
     }
 
     /**
-     * @param \Monolog\ErrorHandler $errorHandler
+     * @param LoggerInterface $logger
      */
-    public static function setErrorHandlerLogger(\Monolog\ErrorHandler $errorHandler)
+    public static function setErrorLogger(LoggerInterface $logger)
     {
-        self::$errorHandlerLogger = $errorHandler;
+        self::$errorLogger = $logger;
     }
 
     /**

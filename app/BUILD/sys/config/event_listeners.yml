@@ -6,9 +6,6 @@ services:
 
   exception_logger.listener:
     class: DeskPRO\Bundle\AppBundle\EventListener\ExceptionLoggerListener
-    arguments:
-      - "@dp_sys.alerts.event_logger"
-      - "@=parameter('kernel.environment')==='prod'"
     tags:
       - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: 0 }
 

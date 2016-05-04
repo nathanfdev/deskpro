@@ -32,7 +32,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
-use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
 use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -44,26 +43,6 @@ use Symfony\Component\Routing\Exception\MethodNotAllowedException;
  */
 class ExceptionLoggerListener
 {
-    /**
-     * @var EventLogger
-     */
-    private $logger;
-
-    /**
-     * @var bool
-     */
-    private $enabled;
-
-    /**
-     * @param EventLogger $logger
-     * @param bool        $enabled
-     */
-    public function __construct(EventLogger $logger, $enabled)
-    {
-        $this->logger  = $logger;
-        $this->enabled = $enabled;
-    }
-
     /**
      * @param GetResponseForExceptionEvent $event
      *
@@ -84,12 +63,6 @@ class ExceptionLoggerListener
             return;
         }
 
-        // Always log to error log
         SystemErrorHandler::logException($exception);
-
-        // only log if there is no response attached by previous listeners
-        if ($this->enabled && !$event->hasResponse()) {
-            $this->logger->log($exception);
-        }
     }
 }
