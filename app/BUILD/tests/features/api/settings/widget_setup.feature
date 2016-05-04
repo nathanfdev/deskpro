@@ -31,7 +31,7 @@ Feature: Widget Setup
     And the JSON node "data.settings.brand.chat.request_user_info" should be equal to 1
     And the JSON node "data.settings.brand.chat.proactive" should be equal to 1
     And the JSON node "data.settings.brand.chat.popup.title" should be equal to "DeskPRO Customer Support"
-    And the JSON node "data.settings.brand.chat.popup.message" should be equal to "Given a string consisting of printable ASCII chars, produce an output consisting of its unique chars in the original order."
+    And the JSON node "data.settings.brand.chat.popup.message" should be equal to "Need help? Just reply to start a live chat with one of our team."
     And the JSON node "data.settings.brand.chat.popup.reply_type" should be equal to "buttons"
     And the JSON node "data.settings.brand.chat.begin_mode" should be equal to "form"
     And the JSON node "data.settings.brand.chat.waiting_timeout" should be equal to 30

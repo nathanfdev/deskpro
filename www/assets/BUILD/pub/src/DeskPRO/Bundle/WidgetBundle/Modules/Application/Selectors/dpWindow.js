@@ -118,9 +118,9 @@ export const chatOptionsSelector = createSelector(
   options => options.get('chat')
 );
 
-export const widgetHasChatSelector = createSelector(
+export const widgetProactiveChatSelector = createSelector(
   chatOptionsSelector,
-  options => options.get('enabled') !== undefined ? options.get('enabled') : true
+  options => options.get('proactive') !== undefined ? options.get('proactive') : true
 );
 
 export const chatBeginModeSelector = createSelector(
