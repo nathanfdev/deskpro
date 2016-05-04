@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -53,7 +53,7 @@ class TextSnippet extends AbstractEntityRepository
         $dql = '
             SELECT s, c
             FROM DeskPRO:TextSnippet s
-            LEFT JOIN s.category c
+            INNER JOIN s.category c
             WHERE
                 c.typename = ?1
                 AND (c.person = ?2 OR c.is_global = true)
@@ -87,7 +87,7 @@ class TextSnippet extends AbstractEntityRepository
         $dql = '
             SELECT s, c
             FROM DeskPRO:TextSnippet s
-            LEFT JOIN s.category c
+            INNER JOIN s.category c
             WHERE
                 c.typename = ?1
                 AND (c.person = ?2 OR c.is_global = true)
@@ -125,7 +125,7 @@ class TextSnippet extends AbstractEntityRepository
         return App::getDb()->fetchColumn('
             SELECT COUNT(*)
             FROM text_snippets
-            LEFT JOIN text_snippet_categories ON (text_snippet_categories.id = text_snippets.category_id)
+            INNER JOIN text_snippet_categories ON (text_snippet_categories.id = text_snippets.category_id)
             WHERE
                 text_snippet_categories.typename = ?
                 AND (text_snippets.person_id = ? OR text_snippet_categories.is_global = 1)
