@@ -765,6 +765,18 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		});
 	},
 
+	joinConvo: function() {
+		DeskPRO_Window.util.ajaxWithClientMessages({
+			url: BASE_URL + 'agent/chat/join/' + this.meta.conversation_id,
+			success: function(data) {
+				if (data.result) {
+					$('.chatreply .input-wrap').show();
+					$('.chatreply .agent-join').hide();
+				}
+			}
+		});
+	},
+
 	addMessageRow: function(name, msg, type, is_html, message_id, metadata, reqData) {
 
 		var notify = true;
@@ -1106,6 +1118,8 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		chatPositioner.on('resize', syncChatSize);
 		box1.on('resize', syncSizes);
 		box2.on('resize', syncSizes);
+
+		chatView.on('click', '.join-convo', $.proxy(self.joinConvo, this));
 
 		syncSizes();
 		syncChatSize();

@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { createChat } from '../../../Actions/chatActions';
-import { Header } from './Header';
 import { liveDemoSelector } from '../../../../Application/Selectors/dpWindow';
 import { requireChatEmailValidationSelector, requireChatLoginSelector } from '../../../../Application/Selectors/bootstrap';
 import { history } from '../../../../../Services/history';
@@ -141,7 +140,6 @@ export class ChatBeginContainer extends React.Component {
 
     return (
       <div>
-        <Header />
         {content}
       </div>
     );

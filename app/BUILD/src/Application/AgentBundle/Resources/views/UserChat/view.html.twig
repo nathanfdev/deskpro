@@ -284,11 +284,16 @@ pageMeta.baseId = '{{ baseId }}';
 				</div>
 			</div>
 			<div class="chatreply" id="{{baseId}}_replybox" style="{% if convo.status == 'ended' and convo.ended_by != 'timeout' %}display: none{% endif %};">
-				<div class="input-wrap">
+				<div class="input-wrap" style="{% if not has_joined %}display: none{% endif %}">
 					<textarea placeholder="" id="{{baseId}}_replybox_txt" name="message"></textarea>
 					<input type="hidden" id="{{baseId}}_is_html_reply" name="is_html_reply" value="0" />
 					<div class="drop-file-zone drop-file-zone-rte chat"><h1>{{ phrase('agent.general.drop_here_to_insert_image') }}</h1></div>
 				</div>
+				{% if not has_joined %}
+					<div class="agent-join">
+						<button class="clean-white small join-convo">{{ phrase('agent.chat.join_chat') }}</button>
+					</div>
+				{% endif %}
 			</div>
 		</article>
 		<article id="{{baseId}}_fields_display_main_wrap" style="display: none;">

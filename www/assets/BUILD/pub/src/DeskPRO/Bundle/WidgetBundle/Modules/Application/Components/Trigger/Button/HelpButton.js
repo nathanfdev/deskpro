@@ -1,6 +1,12 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import classNames from 'classnames';
+import { chatIdSelector } from '../../../../Chat/Selectors/chat';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
+@connect(state => ({
+  chatId: chatIdSelector(state)
+}))
 export class HelpButton extends React.Component {
 
   static propTypes = {
@@ -13,7 +19,8 @@ export class HelpButton extends React.Component {
     textColor:       PropTypes.string,
     borderColor:     PropTypes.string,
     disabled:        PropTypes.bool,
-    triggerResize:   PropTypes.func
+    triggerResize:   PropTypes.func,
+    chatId:          PropTypes.number
   };
 
   componentDidUpdate() {
@@ -26,7 +33,14 @@ export class HelpButton extends React.Component {
   };
 
   render() {
-    const { widgetPosition, name, size, disabled, backgroundColor, textColor, borderColor } = this.props;
+    const { widgetPosition, name, size, disabled, backgroundColor, textColor, borderColor, chatId } = this.props;
+
+    let buttonCaption;
+    if (chatId) {
+      buttonCaption = portalPhrases.get('portal.chat.reopen_chat_action');
+    } else {
+      buttonCaption = name;
+    }
 
     return (
       <div className="dpdesignportal-state-buttons">
@@ -43,7 +57,7 @@ export class HelpButton extends React.Component {
              'position-left': widgetPosition === 'bottom.left'
            })}>
 
-          <span className="state-button-text">{name}</span>
+          <span className="state-button-text">{buttonCaption}</span>
           <span className="state-button-icon" style={{
             color: backgroundColor,
             borderColor

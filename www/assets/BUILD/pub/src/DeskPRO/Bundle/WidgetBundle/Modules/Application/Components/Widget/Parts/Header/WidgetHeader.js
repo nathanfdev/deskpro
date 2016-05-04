@@ -1,12 +1,18 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
+import { isEndedSelector } from '../../../../../Chat/Selectors/chat';
 
+@connect(state => ({
+  chatEnded:   isEndedSelector(state)
+}))
 export class WidgetHeader extends React.Component {
 
   static propTypes = {
     onOpenMenu:  PropTypes.func,
     onClose:     PropTypes.func,
     companyName: PropTypes.string,
-    companyLogo: PropTypes.string
+    companyLogo: PropTypes.string,
+    chatEnded:   PropTypes.bool
   };
 
   onOpenMenu = event => {
@@ -20,7 +26,14 @@ export class WidgetHeader extends React.Component {
   };
 
   render() {
-    const { companyName, companyLogo } = this.props;
+    const { companyName, companyLogo, chatEnded } = this.props;
+
+    let minimizeButton;
+    if (chatEnded) {
+      minimizeButton = <i className="fa fa-times" />;
+    } else {
+      minimizeButton = <i className="fa fa-minus" />;
+    }
 
     return (
       <div className="dpdesignportal-header">
@@ -33,7 +46,7 @@ export class WidgetHeader extends React.Component {
         <a href="#" className="dpdesignportal-header-controls dpdesignportal-mobile-nav-control right"
            onClick={this.onClose}>
           <span className="dpdesignportal-control-hide">
-            <i className="fa fa-times" />
+            {minimizeButton}
           </span>
         </a>
 

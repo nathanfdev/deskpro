@@ -2085,9 +2085,15 @@ $collection->create('agent_agentchat_getsectiondata', array(
 ));
 
 $collection->create('agent_userchat_view', array(
-    'path'       => '/chat/view/{conversation_id}',
+    'path'       => '/chat/view/{conversation_id}/{action}',
     'controller' => 'AgentBundle:UserChat:view',
+    'defaults'   => array('action' => '-1'),
     'options'    => array('fragment_name' => 'c'),
+));
+
+$collection->create('agent_userchat_join', array(
+    'path'       => '/chat/join/{conversation_id}',
+    'controller' => 'AgentBundle:UserChat:joinChat',
 ));
 
 $collection->create('agent_userchat_save_fields', array(

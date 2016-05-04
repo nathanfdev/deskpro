@@ -33,6 +33,7 @@
     "jquery-serializejson": "2.6.2",
     "jquery-ui": "1.10.5",
     "jquery.ui.widget": "1.10.3",
+    "linkifyjs": "^2.0.0",
     "lodash": "3.10.1",
     "medium-editor": "5.13.0",
     "mime-types": "2.1.9",

@@ -777,7 +777,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 				audio.pause();
 			}
 			alertEl.remove();
-		}).data('route', 'page:' + BASE_URL + 'agent/chat/view/' + conversation_id);
+		}).data('route', 'page:' + BASE_URL + 'agent/chat/view/' + conversation_id + '/join');
 	},
 
 	handleReassignedChat: function(data) {
@@ -929,7 +929,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 //			if (!DeskPRO_Window.paneVis.tabs) {
 //				DeskPRO_Window.setPaneVis('tabs', true);
 //			}
-		}).data('route', 'page:' + BASE_URL + 'agent/chat/view/' + conversation_id);
+		}).data('route', 'page:' + BASE_URL + 'agent/chat/view/' + conversation_id + '/join');
 	},
 
 	getNewChatTitles: function() {
