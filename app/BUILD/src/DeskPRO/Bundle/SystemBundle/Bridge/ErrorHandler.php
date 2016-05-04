@@ -52,11 +52,11 @@ class ErrorHandler extends \Monolog\ErrorHandler
      * {@inheritdoc}
      */
     public static function register(
-        $bugsnagApiKey,
         LoggerInterface $logger,
         $errorLevelMap = [],
         $exceptionLevel = null,
-        $fatalLevel = null
+        $fatalLevel = null,
+        $bugsnagApiKey = null
     ) {
         if ($bugsnagApiKey && !self::$bugsnag) {
             self::$bugsnag = new \Bugsnag_Client($bugsnagApiKey);

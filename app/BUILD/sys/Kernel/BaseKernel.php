@@ -111,7 +111,7 @@ abstract class BaseKernel extends Kernel
         $isCli = php_sapi_name() === 'cli';
 
         // Registering error handlers right after container is compiled and we can access the logger service
-        if ($this->dpEnv->isDebug() || $isCli) {
+        if ($this->dpEnv->isDebug()) {
             \Symfony\Component\Debug\Debug::enable(true, true);
         } else {
             $bugsnagSettings = $this->container->get('settings_resolver')->getGlobalSettings()->get('bugsnag');
@@ -119,8 +119,11 @@ abstract class BaseKernel extends Kernel
                              ? $bugsnagSettings['api_key']
                              : false;
             \DeskPRO\Bundle\SystemBundle\Bridge\ErrorHandler::register(
-                $bugsnagApiKey,
-                $this->container->get('logger')
+                $this->container->get('logger'),
+                [],
+                null,
+                null,
+                $bugsnagApiKey
             );
             ini_set('display_errors', 0);
         }
