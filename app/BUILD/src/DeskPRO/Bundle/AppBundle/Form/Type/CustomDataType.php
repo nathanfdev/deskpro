@@ -95,6 +95,7 @@ class CustomDataType extends AbstractType
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onGenerateFields']);
         $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onTransformToCustomData'], -1);
+        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onValidateData'], -1);
 
         if ($options['inline']) {
             $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetInlineData']);
@@ -272,6 +273,38 @@ class CustomDataType extends AbstractType
     }
 
     /**
+     * We need to map errors to the custom data form.
+     *
+     * Because we have single custom data collection for all custom def fields we need to get validation errors from
+     * unmapped field. Create another field for validation to keep custom data mapped.
+     *
+     * @param FormEvent $event
+     */
+    public function onValidateData(FormEvent $event)
+    {
+        $form    = $event->getForm();
+        $options = $form->getConfig()->getOptions();
+
+        if ($options['ignore_validation']) {
+            return;
+        }
+
+        $form->add('custom_def_data', HiddenType::class, [
+            'mapped'         => false,
+            'error_bubbling' => true,
+            'constraints'    => [
+                new AppAssert\CustomField\CustomData([
+                    'context'    => $options['agent_interface'] ? 'agent' : 'user',
+                    'custom_def' => $options['custom_def'],
+                    'target'     => AppAssert\CustomField\CustomData::TARGET_FIELD,
+                ]),
+            ],
+        ]);
+
+        $form->get('custom_def_data')->submit($event->getData());
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
@@ -300,19 +333,6 @@ class CustomDataType extends AbstractType
 
                     return $field && $field->getType() === CustomDefAbstract::TYPE_HIDDEN;
                 },
-                'constraints' => function (Options $options) {
-                    if ($options['ignore_validation']) {
-                        return [];
-                    }
-
-                    return [
-                        new AppAssert\CustomField\CustomData([
-                            'context'    => $options['agent_interface'] ? 'agent' : 'user',
-                            'custom_def' => $options['custom_def'],
-                        ]),
-                    ];
-                },
-
             ])
             ->setRequired([
                 'custom_def',
