@@ -29,14 +29,21 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\FeedbackResults;
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackComment;
+use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\DeskPRO\EntityRepository\Feedback as FeedbackRepository;
+use Application\DeskPRO\EntityRepository\FeedbackCategory as FeedbackCategoryRepository;
+use Application\DeskPRO\EntityRepository\FeedbackComment as FeedbackCommentRepository;
+use Application\DeskPRO\EntityRepository\FeedbackStatusCategory as FeedbackStatusCategoryRepository;
 use Application\DeskPRO\Feedback\FeedbackMerge;
+use Application\DeskPRO\Labels\LabelLister;
 use Application\DeskPRO\Publish\Feedback\GroupingCounter;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
 use Orb\Util\Arrays;
@@ -53,35 +60,51 @@ class FeedbackController extends AbstractController
 
     public function getSectionDataAction()
     {
-        $data = array();
+        /**
+         * @var FeedbackRepository
+         * @var FeedbackCategoryRepository       $feedbackCategoryRepository
+         * @var FeedbackStatusCategoryRepository $feedbackStatusCategoryRepository
+         * @var FeedbackCommentRepository        $feedbackCommentRepository
+         */
+        $feedbackRepository               = $this->em->getRepository(Feedback::class);
+        $feedbackCategoryRepository       = $this->em->getRepository(FeedbackCategory::class);
+        $feedbackStatusCategoryRepository = $this->em->getRepository(FeedbackStatusCategory::class);
+        $feedbackCommentRepository        = $this->em->getRepository(FeedbackComment::class);
 
-        $counts                                 = array();
-        $counts['feedback_awaiting_validation'] = $this->em->getRepository('DeskPRO:Feedback')->countAwaitingValidation();
-        $counts['comments_awaiting_validation'] = $this->em->getRepository('DeskPRO:FeedbackComment')->countAwaitingValidation();
+        $counts = [
+            'feedback_awaiting_validation' => $feedbackRepository->countAwaitingValidation(),
+            'comments_awaiting_validation' => $feedbackCommentRepository->countAwaitingValidation(),
+        ];
 
-        $status_counts           = array();
-        $status_counts['active'] = $this->em->getRepository('DeskPRO:Feedback')->countActiveGrouped();
-        $status_counts['closed'] = $this->em->getRepository('DeskPRO:Feedback')->countClosedGrouped();
-        $status_counts['hidden'] = $this->em->getRepository('DeskPRO:Feedback')->countHiddenGrouped();
+        $statusCounts = [
+            'active' => $feedbackRepository->countActiveGrouped(),
+            'closed' => $feedbackRepository->countClosedGrouped(),
+            'hidden' => $feedbackRepository->countHiddenGrouped(),
+        ];
 
-        $category_counts = $this->em->getRepository('DeskPRO:Feedback')->countAllCategoriesGrouped();
+        $categoryCounts = $feedbackRepository->countAllCategoriesGrouped();
 
-        $feedback_cats      = $this->em->getRepository('DeskPRO:FeedbackCategory')->getFlatHierarchy();
-        $active_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
-        $closed_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
+        $feedbackCategories     = $feedbackCategoryRepository->getFlatHierarchy();
+        $activeStatusCategories = $feedbackStatusCategoryRepository->getActiveCategories();
+        $closedStatusCategories = $feedbackStatusCategoryRepository->getClosedCategories();
 
-        $label_lister       = new \Application\DeskPRO\Labels\LabelLister('feedback');
-        $feedback_tag_index = $label_lister->getIndexList();
+        $labelLister      = new LabelLister('feedback');
+        $feedbackTagIndex = $labelLister->getIndexList();
 
-        $data['section_html'] = $this->renderView('AgentBundle:Feedback:window-section.html.twig', array(
-            'counts'             => $counts,
-            'status_counts'      => $status_counts,
-            'category_counts'    => $category_counts,
-            'feedback_cats'      => $feedback_cats,
-            'active_status_cats' => $active_status_cats,
-            'closed_status_cats' => $closed_status_cats,
-            'feedback_tag_index' => $feedback_tag_index,
-        ));
+        $data = [
+            'section_html' => $this->renderView(
+                'AgentBundle:Feedback:window-section.html.twig',
+                [
+                    'counts'             => $counts,
+                    'status_counts'      => $statusCounts,
+                    'category_counts'    => $categoryCounts,
+                    'feedback_cats'      => $feedbackCategories,
+                    'active_status_cats' => $activeStatusCategories,
+                    'closed_status_cats' => $closedStatusCategories,
+                    'feedback_tag_index' => $feedbackTagIndex,
+                ]
+            ),
+        ];
 
         return $this->createJsonResponse($data);
     }
@@ -127,9 +150,9 @@ class FeedbackController extends AbstractController
 
         $state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editfeedback', $this->person->id);
 
-        $feedback_categories = $this->em->getRepository('DeskPRO:FeedbackCategory')->getInHierarchy();
-        $active_status_cats  = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
-        $closed_status_cats  = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
+        $feedback_categories    = $this->em->getRepository('DeskPRO:FeedbackCategory')->getInHierarchy();
+        $activeStatusCategories = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
+        $closedStatusCategories = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
 
         $category      = $feedback->category;
         $category_path = $category->getTreeParents();
@@ -155,8 +178,8 @@ class FeedbackController extends AbstractController
             'sticky_search_words' => $sticky_search_words,
 
             'feedback_categories' => $feedback_categories,
-            'active_status_cats'  => $active_status_cats,
-            'closed_status_cats'  => $closed_status_cats,
+            'active_status_cats'  => $activeStatusCategories,
+            'closed_status_cats'  => $closedStatusCategories,
             'perms'               => $perms,
         ));
     }
@@ -768,9 +791,9 @@ class FeedbackController extends AbstractController
         }
 
         // Options for the filter form
-        $feedback_cats      = $this->em->getRepository('DeskPRO:FeedbackCategory')->getFlatHierarchy();
-        $active_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
-        $closed_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
+        $feedbackCategories     = $this->em->getRepository('DeskPRO:FeedbackCategory')->getFlatHierarchy();
+        $activeStatusCategories = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
+        $closedStatusCategories = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
 
         $display_fields = $this->person->getPref('agent.ui.feedback-filter-display-fields.0');
         if (!$display_fields) {
@@ -802,9 +825,9 @@ class FeedbackController extends AbstractController
             'user_cat_field' => $user_cat_field,
             'cur_page'       => $page,
 
-            'feedback_cats'      => $feedback_cats,
-            'active_status_cats' => $active_status_cats,
-            'closed_status_cats' => $closed_status_cats,
+            'feedback_cats'      => $feedbackCategories,
+            'active_status_cats' => $activeStatusCategories,
+            'closed_status_cats' => $closedStatusCategories,
 
             'display_fields' => $display_fields,
         ), $template_vars));
@@ -859,16 +882,16 @@ class FeedbackController extends AbstractController
 
     public function newFeedbackAction()
     {
-        $feedback_categories = $this->em->getRepository('DeskPRO:FeedbackCategory')->getFlatHierarchy();
-        $active_status_cats  = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
-        $closed_status_cats  = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
+        $feedback_categories    = $this->em->getRepository('DeskPRO:FeedbackCategory')->getFlatHierarchy();
+        $activeStatusCategories = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
+        $closedStatusCategories = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
 
         $state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newfeedback', $this->person->id);
 
         return $this->render('AgentBundle:Feedback:newfeedback.html.twig', array(
             'feedback_categories' => $feedback_categories,
-            'active_status_cats'  => $active_status_cats,
-            'closed_status_cats'  => $closed_status_cats,
+            'active_status_cats'  => $activeStatusCategories,
+            'closed_status_cats'  => $closedStatusCategories,
             'state'               => $state,
         ));
     }

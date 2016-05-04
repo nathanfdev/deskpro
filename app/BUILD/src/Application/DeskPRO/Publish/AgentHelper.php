@@ -29,12 +29,15 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Publish;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonContextInterface;
+use Application\ImportBundle\Entity\Article;
+use Application\ImportBundle\Entity\Download;
 use Orb\Util\Arrays;
 
 /**
@@ -46,6 +49,8 @@ class AgentHelper implements PersonContextInterface
     const DOWNLOADS = 'downloads';
     const NEWS      = 'news';
     const FEEDBACK  = 'feedback';
+
+    const DEFAULT_LIMIT = 25;
 
     /** @var array */
     protected $enabled_types = array('articles', 'downloads', 'news');
@@ -156,20 +161,20 @@ class AgentHelper implements PersonContextInterface
      */
     public function getValidatingContentCount()
     {
+        $sqlParts = [];
         // TODO -- what??
         // no such thing as validating articels/news/downloads
         $db = App::getDb();
         foreach ($this->enabled_types as $t) {
-            $table       = $db->quoteIdentifier($t);
-            $alias       = $db->quoteIdentifier('count_'.$t);
-            $sql_parts[] = "(
+            $table      = $db->quoteIdentifier($t);
+            $alias      = $db->quoteIdentifier('count_'.$t);
+            $sqlParts[] = "(
                 SELECT COUNT(*)
                 FROM $table
-                WHERE hidden_status = 'validating'
             ) AS $alias";
         }
 
-        $sql     = 'SELECT '.implode(', ', $sql_parts);
+        $sql     = 'SELECT '.implode(', ', $sqlParts);
         $results = $db->fetchAssoc($sql);
 
         return array_sum($results);
@@ -178,32 +183,66 @@ class AgentHelper implements PersonContextInterface
     /**
      * Get an array of all content awaiting validation from each content type.
      *
+     * @param int    $limit
+     * @param string $orderDir
+     *
      * @return array
      */
-    public function getValidatingContent($limit = 25, $order_dir = 'ASC')
+    public function getValidatingContent($limit = self::DEFAULT_LIMIT, $orderDir = 'ASC')
     {
-        $results = $this->getValidatingContentInfo($limit, $order_dir);
+        $results = $this->getValidatingContentInfo($limit, $orderDir);
 
         return $this->getContentFromInfo($results);
     }
 
-    public function getValidatingContentInfo($limit = 25, $order_dir = 'ASC')
+    /**
+     * @param int    $limit
+     * @param string $orderDir
+     *
+     * @return array
+     */
+    public function getValidatingContentInfo($limit = self::DEFAULT_LIMIT, $orderDir = 'ASC')
     {
-        $sql_parts = array();
+        $sqlParts     = [];
+        $defaultLimit = [
+            'max'    => $limit,
+            'offset' => 0,
+        ];
 
+        // I really don't know what should happen if $limit === null, so let's just fallback to defaults
         if ($limit !== null && !is_array($limit)) {
-            $limit = array(
-                'max'    => $limit,
-                'offset' => 0,
-            );
+            $limit = ['max' => $limit];
+        } elseif (null === $limit) {
+            $limit = ['max' => self::DEFAULT_LIMIT];
         }
+        $limit = array_replace($defaultLimit, $limit);
 
-        $types = array(
-            'articles'  => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
-            'downloads' => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
-            'news'      => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
-            'feedback'  => array('content_type' => 'feedback',     'entity' => 'DeskPRO:Feedback',     'id_field' => 'feedback_id',     'rev_table' => 'feedback_revisions'),
-        );
+        $types = [
+            'articles' => [
+                'content_type' => 'articles',
+                'entity'       => Article::class,
+                'id_field'     => 'article_id',
+                'rev_table'    => 'article_revisions',
+            ],
+            'downloads' => [
+                'content_type' => 'downloads',
+                'entity'       => Download::class,
+                'id_field'     => 'download_id',
+                'rev_table'    => 'download_revisions',
+            ],
+            'news' => [
+                'content_type' => 'news',
+                'entity'       => News::class,
+                'id_field'     => 'news_id',
+                'rev_table'    => 'news_revisions',
+            ],
+            'feedback' => [
+                'content_type' => 'feedback',
+                'entity'       => Feedback::class,
+                'id_field'     => 'feedback_id',
+                'rev_table'    => 'feedback_revisions',
+            ],
+        ];
 
         #------------------------------
         # Fetch from each comment table with a union
@@ -211,21 +250,25 @@ class AgentHelper implements PersonContextInterface
 
         $db = App::getDb();
         foreach ($this->enabled_types as $t) {
-            $t_info      = $types[$t];
-            $table       = $db->quoteIdentifier($t);
-            $sql_parts[] = "(
-                SELECT DISTINCT(c.id) as content_id, '{$t_info['content_type']}' as content_type, r.id AS revision_id, c.date_created
+            $typeInfo   = $types[$t];
+            $table      = $db->quoteIdentifier($t);
+            $sqlParts[] = "(
+                SELECT 
+                    DISTINCT(c.id) as content_id, 
+                    '{$typeInfo['content_type']}' as content_type, 
+                    r.id AS revision_id, 
+                    c.date_created
                 FROM $table AS c
-                LEFT JOIN {$t_info['rev_table']} r ON (c.id = r.{$t_info['id_field']})
-                WHERE r.status = 'hidden' OR c.is_reviewed = 0
+                LEFT JOIN {$typeInfo['rev_table']} r ON (c.id = r.{$typeInfo['id_field']})
+                WHERE c.is_reviewed = 0
             )";
         }
 
-        $sql = implode(' UNION ', $sql_parts);
+        $sql = implode(' UNION ', $sqlParts);
         if ($limit) {
-            $sql .= " ORDER BY date_created $order_dir LIMIT {$limit['offset']}, {$limit['max']}";
+            $sql .= " ORDER BY date_created $orderDir LIMIT {$limit['offset']}, {$limit['max']}";
         } else {
-            $sql .= " ORDER BY date_created $order_dir";
+            $sql .= " ORDER BY date_created $orderDir";
         }
 
         $results = $db->fetchAll($sql);
@@ -237,7 +280,7 @@ class AgentHelper implements PersonContextInterface
     # Validating Comments
     ############################################################################
 
-    public function getValidatingComments($limit = 25, $order_dir = 'ASC')
+    public function getValidatingComments($limit = self::DEFAULT_LIMIT, $order_dir = 'ASC')
     {
         $sql_parts = array();
 
@@ -593,34 +636,54 @@ class AgentHelper implements PersonContextInterface
     ############################################################################
 
     /**
-     * @param int $limit
+     * @param array $results
      *
      * @return array
      */
     public function getContentFromInfo($results)
     {
-        $types = array(
-            'articles'  => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
-            'downloads' => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
-            'news'      => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
-            'feedback'  => array('content_type' => 'feedback',     'entity' => 'DeskPRO:Feedback',     'id_field' => 'feedback_id',     'rev_table' => 'feedback_revisions'),
-        );
+        $types = [
+            'articles' => [
+                'content_type' => 'articles',
+                'entity'       => Article::class,
+                'id_field'     => 'article_id',
+                'rev_table'    => 'article_revisions',
+            ],
+            'downloads' => [
+                'content_type' => 'downloads',
+                'entity'       => Download::class,
+                'id_field'     => 'download_id',
+                'rev_table'    => 'download_revisions',
+            ],
+            'news' => [
+                'content_type' => 'news',
+                'entity'       => News::class,
+                'id_field'     => 'news_id',
+                'rev_table'    => 'news_revisions',
+            ],
+            'feedback' => [
+                'content_type' => 'feedback',
+                'entity'       => Feedback::class,
+                'id_field'     => 'feedback_id',
+                'rev_table'    => 'feedback_revisions',
+            ],
+        ];
 
         #------------------------------
         # Fetch each comment in the result
         #------------------------------
 
-        $result_ids_typed = array();
+        $result_ids_typed = [];
 
         foreach ($results as $r) {
             if (!isset($result_ids_typed[$r['content_type']])) {
-                $result_ids_typed[$r['content_type']] = array();
+                $result_ids_typed[$r['content_type']] = [];
             }
 
             $result_ids_typed[$r['content_type']][] = $r['content_id'];
         }
 
-        $results_typed = array();
+        $results_typed = [];
 
         foreach ($result_ids_typed as $t => $ids) {
             $t_info            = $types[$t];
@@ -632,14 +695,14 @@ class AgentHelper implements PersonContextInterface
         # as a combined array
         #------------------------------
 
-        $results_ordered = array();
+        $results_ordered = [];
 
         foreach ($results as $r) {
             if (isset($results_typed[$r['content_type']][$r['content_id']])) {
-                $results_ordered[] = array(
+                $results_ordered[] = [
                     'info' => $r,
                     'obj'  => $results_typed[$r['content_type']][$r['content_id']],
-                );
+                ];
             }
         }
 
