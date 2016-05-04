@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\AntiAbuse\Event;
 
 use Application\DeskPRO\Entity\Person;
@@ -222,10 +223,10 @@ abstract class AntiAbuseEvent extends Event
 
     /**
      * If the event is marked as "check only" then it will ONLY CHECK the state of the abuse system
-     * but it will NOT contribute to the logging/metrics that would influce the anti-abuse system.
+     * but it will NOT contribute to the logging/metrics that would influence the anti-abuse system.
      *
      * Without marking your event as "check only" then it will potentially add logs to the db that are then
-     * used to calculate wether or not there is abuse. For this reason, tests will use an event that is
+     * used to calculate whether or not there is abuse. For this reason, tests will use an event that is
      * "check only" so that it can verify the state of the anti-abuse system.
      *
      * @return bool
