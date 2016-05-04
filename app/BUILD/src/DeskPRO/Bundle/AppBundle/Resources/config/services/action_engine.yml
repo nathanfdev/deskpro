@@ -18,3 +18,4 @@ services:
       - "@ticket_manager"
       - "@security.token_storage"
       - "@app.environment"
+      - "@validator"

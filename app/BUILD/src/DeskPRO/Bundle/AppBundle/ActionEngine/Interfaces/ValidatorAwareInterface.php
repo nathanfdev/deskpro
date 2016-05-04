@@ -29,27 +29,11 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Interfaces;
 
-use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\Validator\Validator\RecursiveValidator;
 
-class ApplySetWorkflowAction extends AbstractTicketApplicator implements ActionApplicatorInterface
+interface ValidatorAwareInterface
 {
-    /**
-     * @param Ticket[] $tickets
-     */
-    public function apply(array $tickets)
-    {
-        $workflow = $this->em->getRepository('DeskPRO:TicketWorkflow')->find($this->options['set_workflow']);
-        if (!$workflow) {
-            throw new BadRequestHttpException('Workflow with ID='.$this->options['set_workflow']." doesn't exists");
-        }
-        foreach ($tickets as $ticket) {
-            $ticket->setWorkflow($workflow);
-//            $this->validateTicket($ticket);
-            $this->saveTicket($ticket, 'set_workflow');
-        }
-    }
+    public function setValidator(RecursiveValidator $validator);
 }

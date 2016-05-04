@@ -36,9 +36,11 @@ use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Interfaces\EnvironmentServiceAwareInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Interfaces\TicketManagerAwareInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Interfaces\TokenStorageAwareInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Interfaces\ValidatorAwareInterface;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices\EnvironmentService;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Validator\Validator\RecursiveValidator;
 
 class TicketApplicatorService extends AbstractApplicatorService
 {
@@ -53,17 +55,21 @@ class TicketApplicatorService extends AbstractApplicatorService
     protected $tokenStorage;
     /** @var  EnvironmentService */
     protected $environmentService;
+    /** @var RecursiveValidator $validator */
+    protected $validator;
 
     public function __construct(
         EntityManager $em,
         TicketManager $tm,
         TokenStorageInterface $tokenStorage,
+        RecursiveValidator $validator,
         EnvironmentService $environmentService
     ) {
         parent::__construct($em);
         $this->tm                 = $tm;
         $this->tokenStorage       = $tokenStorage;
         $this->environmentService = $environmentService;
+        $this->validator          = $validator;
     }
 
     protected function createApplicator($class)
@@ -71,6 +77,9 @@ class TicketApplicatorService extends AbstractApplicatorService
         $applicator = new $class($this->em);
         if ($applicator instanceof TicketManagerAwareInterface) {
             $applicator->setTicketManager($this->tm);
+        }
+        if ($applicator instanceof ValidatorAwareInterface) {
+            $applicator->setValidator($this->validator);
         }
         if ($applicator instanceof TokenStorageAwareInterface) {
             $applicator->setTokenStorage($this->tokenStorage);
