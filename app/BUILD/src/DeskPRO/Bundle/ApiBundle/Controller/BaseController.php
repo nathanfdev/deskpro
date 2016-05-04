@@ -256,8 +256,8 @@ class BaseController extends FOSRestController
      */
     protected function logException(\Exception $exception)
     {
-        $bugsnagSettings = $this->get('settings_resolver')->getGlobalSettings()->get('bugsnag');
-        if ($bugsnagSettings['enable_php']) {
+        $bugsnagSettings = $this->get('deskpro.app_env')->getConfig('settings.bugsnag');
+        if (@$bugsnagSettings['enable_php']) {
             ErrorHandler::bugsnagException($exception);
         }
         $this->get('dp_sys.alerts.event_logger')->log($exception);

@@ -79,6 +79,6 @@ services:
 
   bugsnag_js.listener:
     class: DeskPRO\Bundle\AppBundle\EventListener\BugsnagJsListener
-    arguments: ["@settings_resolver"]
+    arguments: ["@deskpro.app_env"]
     tags:
       - { name: kernel.event_subscriber, priority: -10 }

@@ -114,10 +114,11 @@ abstract class BaseKernel extends Kernel
         if ($this->dpEnv->isDebug()) {
             \Symfony\Component\Debug\Debug::enable(true, true);
         } else {
-            $bugsnagSettings = $this->container->get('settings_resolver')->getGlobalSettings()->get('bugsnag');
-            $bugsnagApiKey   = $bugsnagSettings['enable_php'] && $bugsnagSettings['api_key']
+            $bugsnagSettings = $this->dpEnv->getConfig('settings.bugsnag');
+            $bugsnagApiKey   = @$bugsnagSettings['enable_php'] && @$bugsnagSettings['api_key']
                              ? $bugsnagSettings['api_key']
                              : false;
+
             \DeskPRO\Bundle\SystemBundle\Bridge\ErrorHandler::register(
                 $this->container->get('logger'),
                 [],
@@ -125,13 +126,16 @@ abstract class BaseKernel extends Kernel
                 null,
                 $bugsnagApiKey
             );
-            ini_set('display_errors', 0);
         }
 
         // Symfony sets error_reporting to 0 if not in the Debug mode, resetting this to E_ALL regardless
         // the current mode to catch all errors in the prod mode too.
-        if (!$isCli) {
-            error_reporting(E_ALL);
+        error_reporting(E_ALL);
+
+        if ($isCli) {
+            ini_set('display_errors', 1);
+        } else {
+            ini_set('display_errors', 0);
         }
 
         if ($this->container instanceof DeskproContainer) {

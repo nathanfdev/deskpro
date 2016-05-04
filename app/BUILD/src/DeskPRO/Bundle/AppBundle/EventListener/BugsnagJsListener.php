@@ -32,7 +32,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
-use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\AppEnv\AppEnv;
 use Orb\Util\Strings;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
@@ -49,11 +49,13 @@ class BugsnagJsListener implements EventSubscriberInterface
     private $settings;
 
     /**
-     * @param SettingsResolver $settingsResolver
+     * BugsnagJsListener constructor.
+     *
+     * @param AppEnv $appEnv
      */
-    public function __construct(SettingsResolver $settingsResolver)
+    public function __construct(AppEnv $appEnv)
     {
-        $this->settings = $settingsResolver->getGlobalSettings()->get('bugsnag');
+        $this->settings = $appEnv->getConfig('settings.bugsnag', []);
     }
 
     /**
@@ -73,7 +75,7 @@ class BugsnagJsListener implements EventSubscriberInterface
     {
         $settings = $this->settings;
 
-        if (!$settings || !$settings['enable_js']) {
+        if (!$settings || !@$settings['enable_js'] || !@$settings['api_key']) {
             return;
         }
 

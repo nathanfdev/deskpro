@@ -33,7 +33,6 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use DeskPRO\Bundle\PortalBundle\Controller\Api\AbstractApiController;
-use DeskPRO\Bundle\SystemBundle\Bridge\ErrorHandler;
 use Symfony\Component\Debug\Exception\FlattenException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -47,19 +46,6 @@ class ErrorController extends AbstractController
     {
         if ($response = $this->delegateApi($exception)) {
             return $response;
-        }
-
-        // Send to bugsnag if it's enabled
-        $bugsnagSettings = $this->get('settings_resolver')->getGlobalSettings()->get('bugsnag');
-        if ($bugsnagSettings['enable_php']) {
-            ErrorHandler::bugsnagException(new \ErrorException(
-                $exception->getMessage(),
-                $exception->getCode(),
-                1,
-                $exception->getFile(),
-                $exception->getLine(),
-                $exception->getPrevious()
-            ));
         }
 
         $code     = $exception->getStatusCode();

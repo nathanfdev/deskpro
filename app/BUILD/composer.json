@@ -92,7 +92,8 @@
     "behat/mink-goutte-driver": "^1.2",
     "richsage/rms-push-notifications-bundle": "^0.1.9",
     "symfony/assetic-bundle": "^2.7",
-    "onesky/api-library-php5": "^1.0"
+    "onesky/api-library-php5": "^1.0",
+    "bugsnag/bugsnag": "2.*"
   },
   "preferred-install": "dist"
 }
