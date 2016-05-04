@@ -389,16 +389,18 @@ class CustomDataType extends AbstractType
         });
 
         if (!$customDefData->count()) {
-            $defaultValue = $customDef->getDefaultValue();
-            if ($defaultValue) {
-                $defaultCustomData = $this->createCustomData($customDef);
-                $defaultCustomData
-                    ->setField($customDef)
-                    ->setRootField($customDef)
-                    ->setData($defaultValue)
-                ;
+            if (!$customDef->isChoiceType()) {
+                $defaultValue = $customDef->getDefaultValue();
+                if ($defaultValue) {
+                    $defaultCustomData = $this->createCustomData($customDef);
+                    $defaultCustomData
+                        ->setField($customDef)
+                        ->setRootField($customDef)
+                        ->setData($defaultValue)
+                    ;
 
-                $customDefData->add($defaultCustomData);
+                    $customDefData->add($defaultCustomData);
+                }
             }
         }
 
