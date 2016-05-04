@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\CustomDataAbstract;
@@ -74,14 +70,6 @@ class CustomDataType extends AbstractType
     public function __construct(CustomFieldManager $field_manager)
     {
         $this->field_manager = $field_manager;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'deskpro_custom_data';
     }
 
     /**

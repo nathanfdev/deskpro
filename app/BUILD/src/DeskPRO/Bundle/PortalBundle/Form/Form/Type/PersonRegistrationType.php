@@ -29,12 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\Type\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\DpPassword;
@@ -128,8 +130,7 @@ class PersonRegistrationType extends AbstractType
                     continue;
                 }
 
-                $id = $field_def->getId();
-                $form->add($id, 'deskpro_custom_data', [
+                $form->add($field_def->getId(), CustomDataType::class, [
                     'custom_def'      => $field_def,
                     'property_path'   => 'custom_data',
                     'agent_interface' => false,

@@ -69,7 +69,7 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\CustomDataType
     arguments: ["@custom_field_manager"]
     tags:
-      - { name: form.type, alias: deskpro_custom_data }
+      - { name: form.type }
 
   form.deskpro_custom_per_field_data:
     class: DeskPRO\Bundle\AppBundle\Form\Type\CustomPerFieldType
