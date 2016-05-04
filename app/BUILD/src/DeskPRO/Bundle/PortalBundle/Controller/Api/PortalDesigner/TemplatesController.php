@@ -58,20 +58,25 @@ class TemplatesController extends AbstractApiController
     }
 
     /**
-     * @Route("/portal/api/style/edit-theme-set/template-sources")
+     * @Route("/portal/api/style/edit-theme-set/template-info")
      * @Method({"GET"})
      */
     public function getTemplateSourceAction(Request $request)
     {
         $template_name = $request->get('template');
         if ($template = $this->getEditThemeSetTemplate($template_name)) {
-            $source = $template->getTemplateCode();
+            $source   = $template->getTemplateCode();
+            $isCustom = true;
         } else {
-            $theme  = $this->getTheme();
-            $source = file_get_contents($this->getThemeResolver()->templatePath($theme, $template_name));
+            $theme    = $this->getTheme();
+            $source   = file_get_contents($this->getThemeResolver()->templatePath($theme, $template_name));
+            $isCustom = false;
         }
 
-        return new JsonResponse($source);
+        return new JsonResponse([
+            'source'    => $source,
+            'is_custom' => $isCustom,
+        ]);
     }
 
     /**

@@ -240,9 +240,9 @@
                 <div ng-show="Portal.selected_template">Loading template...</div>
 
                 <dp-code-editor
-                    code="Portal.selected_template_code"
+                    info="Portal.selected_template_info"
                     syntax="twig"
-                    visible="Portal.selected_template && Portal.selected_template_code_loaded"
+                    visible="Portal.selected_template && Portal.selected_template_info_loaded"
                     save="Portal.saveTemplateEditor"
                     cancel="Portal.cancelTemplateEditor"
                     revert="Portal.revertTemplateEditor"

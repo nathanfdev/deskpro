@@ -24,8 +24,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @uploading_files_count = 0
       @template_options = []
       @selected_template = null
-      @selected_template_code = ''
-      @selected_template_code_loaded = false
+      @selected_template_info = {}
+      @selected_template_info_loaded = false
       @preview_as_expanded = false
       @preview_as = 'myself'
       @preview_as_email = null
@@ -157,23 +157,26 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       if parts[1] then parts[1] else parts[0]
 
     editTemplate: () =>
-      @$http.get('/portal/api/style/edit-theme-set/template-sources?template=' + @selected_template).success(
-        (code) => @selected_template_code = angular.fromJson(code); @selected_template_code_loaded = true
+      @$http.get('/portal/api/style/edit-theme-set/template-info?template=' + @selected_template).success((data) =>
+        @selected_template_info = {
+          code: data.source,
+          is_custom: data.is_custom
+        }
+        @selected_template_info_loaded = true
       )
 
     saveTemplateEditor: () =>
       @$http({
         method: 'PUT',
         url: '/portal/api/style/edit-theme-set/template-sources?template=' + @selected_template,
-        data: angular.toJson({code: @selected_template_code})
+        data: angular.toJson({code: @selected_template_info.code})
       })
       .error(@serverError)
 
       @selected_template = null
-      @selected_template_code = null
-      @selected_template_code_loaded = false
+      @selected_template_info_loaded = false
 
-    saveTemplateEditor: () =>
+    revertTemplateEditor: () =>
       @$http({
         method: 'PUT',
         url: '/portal/api/style/edit-theme-set/template-sources?template=' + @selected_template,
@@ -182,13 +185,11 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       .error(@serverError)
 
       @selected_template = null
-      @selected_template_code = null
-      @selected_template_code_loaded = false
+      @selected_template_info_loaded = false
 
     cancelTemplateEditor: () =>
       @selected_template = null
-      @selected_template_code = null
-      @selected_template_code_loaded = false
+      @selected_template_info_loaded = false
 
     loadAdvancedEdits: (success) ->
       @$http.get('/portal/api/style/edit-theme-set/advanced-edits').success(
@@ -212,7 +213,6 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     loadWelcomeBox: () ->
       @$http.get('/portal/api/style/edit-theme-set/welcome-message').success((response) =>
         @welcome_box = response.data
-        console.log(@welcome_box)
       )
 
     loadLogo: () ->
