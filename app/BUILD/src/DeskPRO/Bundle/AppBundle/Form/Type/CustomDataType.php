@@ -236,12 +236,15 @@ class CustomDataType extends AbstractType
                 }
             }
         } else {
+            // Get value from the form or default value if empty
+            $data = $form->get('data')->getData() ?: $customDef->getDefaultValue();
+
             if ($customDefData->count()) {
                 $customData = $customDefData->first();
-                $customData->setData($form->get('data')->getData());
+                $customData->setData($data);
             } else {
                 $customData = $this->createCustomData($customDef);
-                $customData->setData($form->get('data')->getData());
+                $customData->setData($data);
 
                 $customDefData->add($customData);
             }
@@ -347,6 +350,8 @@ class CustomDataType extends AbstractType
     }
 
     /**
+     * Prepare form data from custom def data collection.
+     *
      * @param ArrayCollection   $customData
      * @param CustomDefAbstract $customDef
      *
@@ -381,6 +386,8 @@ class CustomDataType extends AbstractType
     }
 
     /**
+     * Create custom data object.
+     *
      * @param CustomDefAbstract $customDef
      *
      * @return CustomDataAbstract
@@ -401,6 +408,8 @@ class CustomDataType extends AbstractType
     }
 
     /**
+     * Filter custom def data from custom data collection.
+     *
      * @param Collection        $allCustomData
      * @param CustomDefAbstract $customDef
      *
