@@ -11,7 +11,7 @@ DATABASE_NAME=$DATABASE_PREFIX
 
 SECONDS=0
 echo "Init project deps"
-if [ "$1" = "quick" ]; then
+if [ "$1" = "quick" ] || [ "$1" = "sequential-build" ] ; then
     echo "Building on top of the previous build"
     rm -rf $ROOT_DIR/www/BUILD/pub/build
     rm -rf $ROOT_DIR/var/cache/*/
