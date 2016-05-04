@@ -51,7 +51,7 @@ class WidgetBrandChatPopupSettings
      *
      * @JMS\Type("string")
      */
-    private $message = 'Given a string consisting of printable ASCII chars, produce an output consisting of its unique chars in the original order.';
+    private $message = 'Need help? Just reply to start a live chat with one of our team.';
 
     /**
      * @var string
