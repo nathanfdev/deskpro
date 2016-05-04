@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -49,8 +48,7 @@ class ApplySetProductAction extends AbstractTicketApplicator implements ActionAp
         }
         foreach ($tickets as $ticket) {
             $ticket->setProduct($product);
-            $context = $this->tm->createAgentExecutorContext(null, 'set_product', 'mass_actions');
-            $this->tm->saveTicket($ticket, $context);
+            $this->saveTicket($ticket, 'set_product');
         }
     }
 }

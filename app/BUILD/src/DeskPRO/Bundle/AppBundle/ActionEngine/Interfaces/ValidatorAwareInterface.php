@@ -35,5 +35,8 @@ use Symfony\Component\Validator\Validator\RecursiveValidator;
 
 interface ValidatorAwareInterface
 {
+    /**
+     * @param RecursiveValidator $validator
+     */
     public function setValidator(RecursiveValidator $validator);
 }

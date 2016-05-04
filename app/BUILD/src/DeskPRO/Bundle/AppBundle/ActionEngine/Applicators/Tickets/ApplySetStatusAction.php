@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -44,8 +43,7 @@ class ApplySetStatusAction extends AbstractTicketApplicator implements ActionApp
     {
         foreach ($tickets as $ticket) {
             $ticket->setStatus($this->options['set_status']);
-            $context = $this->tm->createAgentExecutorContext(null, 'set_status', 'mass_actions');
-            $this->tm->saveTicket($ticket, $context);
+            $this->saveTicket($ticket, 'set_status');
         }
     }
 }

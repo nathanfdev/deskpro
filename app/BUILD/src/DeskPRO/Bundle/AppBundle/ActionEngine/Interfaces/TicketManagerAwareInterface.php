@@ -29,12 +29,14 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Interfaces;
 
 use Application\DeskPRO\Tickets\TicketManager;
 
 interface TicketManagerAwareInterface
 {
+    /**
+     * @param TicketManager $tm
+     */
     public function setTicketManager(TicketManager $tm);
 }

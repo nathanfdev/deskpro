@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -49,8 +48,7 @@ class ApplySetCategoryAction extends AbstractTicketApplicator implements ActionA
         }
         foreach ($tickets as $ticket) {
             $ticket->setCategory($category);
-            $context = $this->tm->createAgentExecutorContext(null, 'set_category', 'mass_actions');
-            $this->tm->saveTicket($ticket, $context);
+            $this->saveTicket($ticket, 'set_category');
         }
     }
 }

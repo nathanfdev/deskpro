@@ -65,8 +65,7 @@ class ApplyReplyAction extends AbstractTicketApplicator implements ActionApplica
                 ->setHostname($this->environmentService->getHostname())
                 ->setGeoCountry($this->getGeoCountry())
                 ->setAsAgentNote($this->options['reply']['isAgentNote']);
-            $context = $this->tm->createAgentExecutorContext(null, 'mass_reply', 'mass_actions');
-            $this->tm->saveTicket($ticket, $context);
+            $this->saveTicket($ticket, 'mass_reply');
             $this->em->persist($message);
         }
     }

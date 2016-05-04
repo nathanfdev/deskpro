@@ -48,15 +48,13 @@ class ApplySetFollowersAction extends AbstractTicketApplicator implements Action
         if (empty($this->options['set_followers'])) {
             foreach ($tickets as $ticket) {
                 $ticket->resetParticipants();
-                $context = $this->tm->createAgentExecutorContext(null, 'unset_followers', 'mass_actions');
-                $this->tm->saveTicket($ticket, $context);
+                $this->saveTicket($ticket, 'unset_followers');
             }
         } else {
             $this->init();
             foreach ($tickets as $ticket) {
                 $ticket->setAgentParticipants($this->followers);
-                $context = $this->tm->createAgentExecutorContext(null, 'set_followers', 'mass_actions');
-                $this->tm->saveTicket($ticket, $context);
+                $this->saveTicket($ticket, 'set_followers');
             }
         }
     }

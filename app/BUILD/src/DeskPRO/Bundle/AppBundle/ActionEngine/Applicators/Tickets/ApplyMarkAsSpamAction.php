@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -44,8 +43,7 @@ class ApplyMarkAsSpamAction extends AbstractTicketApplicator implements ActionAp
     {
         foreach ($tickets as $ticket) {
             $ticket->setHiddenStatus(Ticket::HIDDEN_STATUS_SPAM);
-            $context = $this->tm->createAgentExecutorContext(null, 'mark_as_spam', 'mass_actions');
-            $this->tm->saveTicket($ticket, $context);
+            $this->saveTicket($ticket, 'mark_as_spam');
         }
     }
 }

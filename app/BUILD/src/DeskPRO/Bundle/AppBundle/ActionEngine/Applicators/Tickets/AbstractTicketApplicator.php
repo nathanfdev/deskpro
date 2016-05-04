@@ -47,16 +47,39 @@ abstract class AbstractTicketApplicator extends AbstractActionApplicator impleme
     /** @var  RecursiveValidator */
     protected $validator;
 
+    /**
+     * {@inheritdoc}
+     */
     public function setTicketManager(TicketManager $tm)
     {
         $this->tm = $tm;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setValidator(RecursiveValidator $validator)
     {
         $this->validator = $validator;
     }
 
+    /**
+     * @param Ticket $ticket
+     * @param string $actionName
+     *
+     * @throws \Exception
+     */
+    protected function saveTicket(Ticket $ticket, $actionName)
+    {
+        $this->validateTicket($ticket);
+
+        $context = $this->tm->createAgentExecutorContext(null, $actionName, 'mass_actions');
+        $this->tm->saveTicket($ticket, $context);
+    }
+
+    /**
+     * @param Ticket $ticket
+     */
     protected function validateTicket(Ticket $ticket)
     {
         $errors = $this->validator->validate(
@@ -67,11 +90,5 @@ abstract class AbstractTicketApplicator extends AbstractActionApplicator impleme
         if ($errors->count() > 0) {
             throw new ValidatorErrorsException($errors);
         }
-    }
-
-    protected function saveTicket(Ticket $ticket, $actionName)
-    {
-        $context = $this->tm->createAgentExecutorContext(null, $actionName, 'mass_actions');
-        $this->tm->saveTicket($ticket, $context);
     }
 }

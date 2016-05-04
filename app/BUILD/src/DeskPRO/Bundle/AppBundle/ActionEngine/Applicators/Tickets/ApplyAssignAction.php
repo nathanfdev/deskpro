@@ -49,21 +49,18 @@ class ApplyAssignAction extends AbstractTicketApplicator implements ActionApplic
                 case 'agent':
                     foreach ($tickets as $ticket) {
                         $ticket->setAgent($value);
-                        $this->validateTicket($ticket);
                         $this->saveTicket($ticket, 'set_status');
                     }
                     break;
                 case 'team':
                     foreach ($tickets as $ticket) {
                         $ticket->setAgentTeam($value);
-                        $this->validateTicket($ticket);
                         $this->saveTicket($ticket, 'set_status');
                     }
                     break;
                 case 'department':
                     foreach ($tickets as $ticket) {
                         $ticket->setDepartment($value);
-                        $this->validateTicket($ticket);
                         $this->saveTicket($ticket, 'set_status');
                     }
                     break;
