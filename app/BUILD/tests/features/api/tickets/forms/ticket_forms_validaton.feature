@@ -512,3 +512,15 @@ Feature: /ticket_forms endpoint
     Then the response status code should be 400
     And the JSON node "errors.fields.fields.fields.fields_6.errors[0].code" should be equal to "length_too_short"
     And the JSON node "errors.fields.fields.fields.fields_6.errors[0].message" should contain "This value is too short. It should have 10 characters or more."
+
+    When I send a PUT request to "/api/v2/ticket_forms/agent/1" with body:
+    """
+{
+  "department": 2,
+  "fields": {
+    "6": ""
+  }
+}
+    """
+    And the JSON node "errors.fields.fields.fields.fields_6.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.fields.fields.fields_6.errors[0].message" should contain "This value should not be blank."
