@@ -9,6 +9,7 @@ cd $ROOT_DIR
 
 DATABASE_NAME=$DATABASE_PREFIX
 
+SECONDS=0
 echo "Init project deps"
 if [ "$1" = "quick" ]; then
     echo "Building on top of the previous build"
@@ -29,7 +30,7 @@ else
     echo "Building from the ground up"
     $ROOT_DIR/dev/bin/init-project
 fi
-echo "--> Done"
+echo "--> Done in $SECONDS seconds"
 
 cd $ROOT_DIR
 
@@ -60,9 +61,10 @@ echo "Ensuring permissions"
 chmod -R 0777 var
 echo "--> Done"
 
+SECONDS=0
 echo "Warming up caches"
 $ROOT_DIR/bin/console cache:warmup
-echo "--> Done"
+echo "--> Done in $SECONDS seconds"
 
 if [ "$1" = "quick" ]; then
     echo "Running quick tests"

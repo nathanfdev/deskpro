@@ -10,77 +10,96 @@ cd ..
 
 ##################################
 # PHPUNIT
-#
-# ToDo: run coverage "-c phpunit.xml.cov --log-junit junit-results.xml" for all suits, combine into a single report
 ##################################
 
 # Hack: see https://trello.com/c/xv8IRWTo/382-test-is-failing-when-running-for-the-first-time
 bin/phpunit phpunit/DpTest/Application/EmailBundle/Templating/EngineTest.php > /dev/null
 # ---
 
+SECONDS=0
 IS_PHPUNIT_ERROR=0
 bin/phpunit --testsuite DeskPRO
 if [[ $? -ne 0 ]] ; then
     IS_PHPUNIT_ERROR=1
 fi
+echo "--> Done in $SECONDS seconds"
 
+SECONDS=0
 IS_PHPUNIT_TERM_ENGINE_ERROR=0
 bin/phpunit --testsuite DeskPRO-TermEngine
 if [[ $? -ne 0 ]] ; then
     IS_PHPUNIT_TERM_ENGINE_ERROR=1
 fi
+echo "--> Done in $SECONDS seconds"
 
+SECONDS=0
 IS_PHPUNIT_PORTAL_ERROR=0
 bin/phpunit --testsuite DeskPRO-Portal
 if [[ $? -ne 0 ]] ; then
     IS_PHPUNIT_PORTAL_ERROR=1
 fi
+echo "--> Done in $SECONDS seconds"
 
 ##################################
 # PHPSPEC
 ##################################
 IS_PHPSPEC_ERROR=0
 
+SECONDS=0
 bin/phpspec run --format=dot
 
 if [[ $? -ne 0 ]] ; then
     IS_PHPSPEC_ERROR=1
 fi
+echo "--> Done in $SECONDS seconds"
 
 ##################################
 # BEHAT
 ##################################
+
+SECONDS=0
 IS_BEHAT_INSTALL_ERROR=0
 bin/behat --config=behat.yml --profile=install
 if [[ $? -ne 0 ]] ; then
     IS_BEHAT_INSTALL_ERROR=1
 fi
+echo "--> Done in $SECONDS seconds"
 
+SECONDS=0
 IS_BEHAT_API_ERROR=0
 bin/behat --config=behat.yml --profile=api
 if [[ $? -ne 0 ]] ; then
     IS_BEHAT_API_ERROR=1
 fi
+echo "--> Done in $SECONDS seconds"
+
+SECONDS=0
 bin/behat --config=behat.yml --profile=system-api
 if [[ $? -ne 0 ]] ; then
     IS_BEHAT_API_ERROR=1
 fi
+echo "--> Done in $SECONDS seconds"
 
+SECONDS=0
 IS_BEHAT_PORTAL_ERROR=0
 bin/behat --config=behat.yml --profile=portal
 if [[ $? -ne 0 ]] ; then
     IS_BEHAT_PORTAL_ERROR=1
 fi
+echo "--> Done in $SECONDS seconds"
 
+SECONDS=0
 IS_BEHAT_PRODUCTION_ERROR=0
 bin/behat --profile=production
 if [[ $? -ne 0 ]] ; then
     IS_BEHAT_PRODUCTION_ERROR=1
 fi
+echo "--> Done in $SECONDS seconds"
 
 ##################################
 # Jest
 ##################################
+SECONDS=0
 IS_JEST_ERROR=0
 
 cd ../../../www/assets/BUILD/pub/
@@ -89,6 +108,7 @@ npm test
 if [[ $? -ne 0 ]] ; then
     IS_JEST_ERROR=1
 fi
+echo "--> Done in $SECONDS seconds"
 
 ##################################
 # EXIT IF ERROR
