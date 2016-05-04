@@ -29,9 +29,11 @@
 namespace Application\DeskPRO\NewSearch\Transformer;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketAttachment;
 use Elastica\Document;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 use Orb\Util\Arrays;
+use Application\DeskPRO\ApacheTika\ClientManager as ApacheTikaManager;
 
 /**
  * Ticket To Elastica Transformer.
@@ -43,9 +45,33 @@ use Orb\Util\Arrays;
 class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
 {
     /**
-     * {@inheritdoc}
+     * @var ApacheTikaManager $apache_tika
+     */
+    private $apache_tika;
+
+    /**
+     * @return ApacheTikaManager
+     */
+    public function getApacheTika()
+    {
+        return $this->apache_tika;
+    }
+
+    /**
+     * @param ApacheTikaManager $apache_tika
+     */
+    public function setApacheTika($apache_tika)
+    {
+        $this->apache_tika = $apache_tika;
+    }
+
+        /**
+     * Transform.
      *
      * @param Ticket $object
+     * @param array  $fields
+     *
+     * @return Document
      */
     public function transform($object, array $fields)
     {
@@ -75,7 +101,10 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
         if ($object->labels) {
             $labels = Arrays::map(function ($l) { return $l->label; }, $object->labels);
             $document->set('labels', $labels);
+        } else {
+            $document->set('labels', []);
         }
+
 
         $messages = [];
         foreach ($object->getMessages() as $message) {
@@ -89,6 +118,30 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
         $dates = Arrays::removeFalsey($dates);
         $d     = max($dates);
         $document->set('date_active', $d->format('Y-m-d H:i:s'));
+
+        if ($this->getApacheTika()->isEnabled()) {
+            $attachments = [];
+            if ($object->has_attachments) {
+                try {
+                    /** @var \Application\DeskPRO\ApacheTika\ClientManager $client */
+                    $client         = $this->getApacheTika()->getClient();
+                    /** @var TicketAttachment $attachment */
+                    foreach ($object->getAttachments() as $attachment) {
+                        $blob = $attachment->getBlob();
+                        if (!$blob->isImage()) {
+                            $attachments[] = array(
+                                'filename' => $blob->getFilenameSafe(),
+                                'content'  => $client->getText($blob->getDownloadUrl(true)),
+                            );
+                        }
+                    }
+                } catch (\Exception $e) {
+                    // TODO log error
+                    $error = $e->getMessage();
+                }
+            }
+            $document->set('attachment', $attachments);
+        }
 
         return $document;
     }

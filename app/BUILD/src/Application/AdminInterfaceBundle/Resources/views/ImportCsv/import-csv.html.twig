@@ -24,7 +24,7 @@
 					  file-upload="fileUploadOptions"
 					  action="{{ ng_var('fileUploadOptions.url') }}">
 
-					<div class="fileinput-button btn btn-success btn-lg" ng-show="!active() && !fileSelected">
+					<div class="fileinput-button btn btn-success btn-lg {{ ng_var('fileUploadOptions.disabled && "disabled"') }}" ng-show="!active() && !fileSelected">
 						<span><i class="fa fa-upload"></i> Select CSV File</span>
 						<input type="file" name="file">
 					</div>
@@ -329,7 +329,9 @@
 			</div>
 
             <br />
-            <span ng-show="!importStarted">Last import state: </span>
+            <span ng-show="!importStarted && !disabledOnDemo">Last import state: </span>
+			<span ng-show="disabledOnDemo">Disabled in trial version</span>
+
             <span dp-status-update="/import_csv_status"
                 status-update-conditions="importStarted"
                 status-update-default-message="Checking status..."

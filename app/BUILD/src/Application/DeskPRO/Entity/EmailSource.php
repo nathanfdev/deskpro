@@ -157,6 +157,11 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     protected $header_subject = '';
 
     /**
+     * @var array
+     */
+    protected $parsed_headers = array();
+
+    /**
      * The current status of the message:
      * - inserted: Only inserted
      * - processing: Currently processing
@@ -362,6 +367,33 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         $data['object_info'] = $this->object_info;
 
         return $data;
+    }
+
+    public function getParsedHeaders()
+    {
+        if ($this->parsed_headers || !strlen($this->headers)) {
+            return $this->parsed_headers;
+        }
+
+        $headers = $this->headers;
+        if (false !== $pos = strpos($this->headers, "\r\n\r\n")) {
+            $headers = substr($this->headers, 0, $pos);
+        }
+
+        $current = null;
+        $headers = explode("\n", $headers);
+        foreach ($headers as $str) {
+            if (preg_match('/^[A-Za-z]/', $str[0])) {
+                $parts                         = explode(':', $str);
+                $header                        = strtolower($parts[0]);
+                $this->parsed_headers[$header] = trim($parts[1]);
+                $current                       = $header;
+            } elseif ($current) {
+                $this->parsed_headers[$current] .= substr($str, 1);
+            }
+        }
+
+        return $this->parsed_headers;
     }
 
     ############################################################################

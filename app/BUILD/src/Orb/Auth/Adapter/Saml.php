@@ -31,6 +31,7 @@
  *
  * @category Auth
  */
+
 namespace Orb\Auth\Adapter;
 
 use Application\DeskPRO\Saml\SamlMetadataBuilder;
@@ -81,6 +82,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
                 'sso_url'           => '',
                 'slo_url'           => '',
                 'cert_fingerprint'  => '',
+                'name_id_format'    => '',
                 'login_custom_text' => '',
             )
         );
@@ -100,8 +102,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
                 'singleLogoutService' => array(
                     'url' => $this->getSingleLogoutServiceUrl(),
                 ),
-                // enforce a persistent ID for person association
-                'NameIDFormat' => \OneLogin_Saml2_Constants::NAMEID_PERSISTENT,
+                'NameIDFormat' => $this->options['name_id_format'] ?: \OneLogin_Saml2_Constants::NAMEID_PERSISTENT,
             ),
             'idp' => array(
                 'entityId'            => $this->options['issuer_id'],
@@ -237,6 +238,12 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
                     "SAML Errors: \n".trim(Arrays::implodeTemplate($errors, "{KEY}: {VAL}\n")),
                     Logger::DEBUG
                 );
+                if ($saml->getLastErrorReason()) {
+                    $this->logger->log(
+                        'Last Error Reason: '.$saml->getLastErrorReason(),
+                        Logger::DEBUG
+                    );
+                }
             }
 
             return new Result(Result::FAILURE, null, array('saml_errors' => $errors));

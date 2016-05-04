@@ -508,6 +508,7 @@ class ErrorReporter
             $client->setUri(\DpSys\License::getSecureLicServer().'/api/data-submit/submit-feedback.json');
             $client->getRequest()->getPost()->fromArray($data);
             $client->setEncType('application/x-www-form-urlencoded; charset=UTF-8');
+            $client->setAdapter('Zend\Http\Client\Adapter\Curl');
             $r = $client->send();
 
             return true;

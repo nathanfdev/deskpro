@@ -1,6 +1,6 @@
 <div class="extended-merge overlay">
 	<div class="overlay-title">
-		<h4>Link Existing Ticket</h4>
+		<h4>{{ phrase('agent.tickets.link_existing_ticket') }}</h4>
 	</div>
 
 	<div class="overlay-content">
@@ -29,7 +29,7 @@
 					<div class="input-wrapper">
 						<div style="display: block;">
 							<input type="checkbox" id="is-parent" name="is_parent">
-							<label for="is-parent">Make the ticket selected below the parent ticket</label>
+							<label for="is-parent">{{ phrase('agent.tickets.link_existing_ticket_make_below') }}</label>
 						</div>
 						<input type="text" style="width: 78%" class="term" placeholder="{{ phrase('agent.tickets.find_ticket') }}" class="user-input" />
 					</div>

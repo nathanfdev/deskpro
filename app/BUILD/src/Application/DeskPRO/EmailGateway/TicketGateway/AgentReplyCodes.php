@@ -489,7 +489,7 @@ class AgentReplyCodes implements Loggable
 
                 if ($obj) {
                     $this->getLogger()->logDebug('[AgentReplyCodes] Set category: '.$obj->id);
-                    $this->props['category'] = $obj;
+                    $this->props['product'] = $obj;
                 } else {
                     $this->getLogger()->logDebug('[AgentReplyCodes] Unknown priority: '.$param);
                 }
