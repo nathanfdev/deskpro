@@ -44,7 +44,7 @@ return array(
     'portal.account.login-captcha-failed'           => 'You have entered an invalid captcha code. Please try again.',
     'portal.account.login-email'                    => 'Your email',
     'portal.account.login-external'                 => 'Login with an external service',
-    'portal.account.login-invalid'                  => 'Bad Credentials. Please try again.',
+    'portal.account.login-invalid'                  => 'Wrong email or password. Please try again.',
     'portal.account.login-lockout'                  => 'You have failed login too many times. For a small period of time your account is locked. Please try again later.',
     'portal.account.login-password'                 => 'Your password',
     'portal.account.login-password-reminder'        => 'Need a password reminder?',
