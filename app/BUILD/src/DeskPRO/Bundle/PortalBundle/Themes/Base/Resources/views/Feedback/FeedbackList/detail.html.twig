@@ -54,7 +54,11 @@
   </div>
 </div>
 {% else %}
-<strong>{{ phrase('portal.feedback.none') }}</strong>
+  {% if filtered %}
+    <strong>{{ phrase('portal.feedback.no_matching') }}</strong>
+  {% else %}
+    <strong>{{ phrase('portal.feedback.none') }}</strong>
+  {% endif %}
 {% endfor %}
 
 {% if show_pager %}
