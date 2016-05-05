@@ -148,6 +148,16 @@ class SideloadSerializationContext extends SerializationContext
     }
 
     /**
+     * @param string $type
+     *
+     * @return bool
+     */
+    public function hasInclude($type)
+    {
+        return in_array($type, $this->includes);
+    }
+
+    /**
      * @return array
      */
     public function getMapping()

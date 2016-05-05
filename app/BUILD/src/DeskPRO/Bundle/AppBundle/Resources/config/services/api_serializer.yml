@@ -183,5 +183,13 @@ services:
     tags:
       - { name: "jms_serializer.event_subscriber" }
 
+  api_serializer.agent_client_settings_listener:
+    class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\AgentClientInfoSettingsListener
+    arguments:
+      - "@deskpro.app_env"
+      - "@assets.packages"
+    tags:
+      - { name: "jms_serializer.event_subscriber" }
+
 parameters:
   fos_rest.view_handler.default.class: "DeskPRO\Bundle\AppBundle\Serializer\ViewHandler"

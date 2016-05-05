@@ -83,8 +83,10 @@ class IdsOnlyListener implements EventSubscriberInterface
      */
     public function onTransformData(ObjectEvent $event)
     {
-        /** @var SideloadSerializationContext $context */
         $context = $event->getContext();
+        if (!$context instanceof SideloadSerializationContext) {
+            return;
+        }
         if (!$context->isIdsOnly()) {
             return;
         }

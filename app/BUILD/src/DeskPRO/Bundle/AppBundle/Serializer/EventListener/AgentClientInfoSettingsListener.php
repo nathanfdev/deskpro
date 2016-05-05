@@ -28,19 +28,42 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\EventListener;
 
-use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
-use DeskPRO\Bundle\AppBundle\Serializer\Deferred\WrappedDeferred;
+use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
+use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\AgentClientInfoSettings;
 use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
-use JMS\Serializer\GenericSerializationVisitor;
+use Symfony\Component\Asset\Packages;
 
 /**
- * Class DeferredPropertiesListener.
+ * Class AgentClientInfoSettingsListener.
  */
-class DeferredPropertiesListener implements EventSubscriberInterface
+class AgentClientInfoSettingsListener implements EventSubscriberInterface
 {
+    /**
+     * @var AppEnvInterface
+     */
+    private $appEnv;
+
+    /**
+     * @var Packages
+     */
+    private $assetPackages;
+
+    /**
+     * Constructor.
+     *
+     * @param AppEnvInterface $appEnv
+     * @param Packages        $assetPackages
+     */
+    public function __construct(AppEnvInterface $appEnv, Packages $assetPackages)
+    {
+        $this->appEnv        = $appEnv;
+        $this->assetPackages = $assetPackages;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -48,52 +71,42 @@ class DeferredPropertiesListener implements EventSubscriberInterface
     {
         return [
             [
-                'event'    => Events::POST_SERIALIZE,
-                'method'   => 'loadDeferred',
-                'class'    => ApiWrapper::class,
-                'format'   => 'json',
-                'priority' => 16,
+                'event'  => Events::PRE_SERIALIZE,
+                'method' => 'onAddLinked',
+                'class'  => AgentClientInfoSettings::class,
             ],
         ];
     }
 
     /**
+     * @internal
+     *
      * @param ObjectEvent $event
      */
-    public function loadDeferred(ObjectEvent $event)
+    public function onAddLinked(ObjectEvent $event)
     {
-        /** @var GenericSerializationVisitor $visitor */
-        $visitor = $event->getVisitor();
         $context = $event->getContext();
         if (!$context instanceof SideloadSerializationContext) {
             return;
         }
 
-        $data = VisitorDataAccessor::getData($visitor);
-        if (is_array($data['data'])) {
-            $data['data'] = $this->resolveArray($data['data'], $context);
-            VisitorDataAccessor::setData($visitor, $data);
+        $sideloads = $context->getSideloadStore();
+
+        if ($context->hasInclude('message_css')) {
+            $sideloads->addCustomSideload('message_css', 0, new CallbackDeferredProperty([$this, 'getMessageCss']));
         }
     }
 
     /**
-     * @param array                        $data
-     * @param SideloadSerializationContext $context
+     * @internal
      *
-     * @return array
+     * @return string|null
      */
-    protected function resolveArray(array $data, SideloadSerializationContext $context)
+    public function getMessageCss()
     {
-        foreach ($data as $key => $value) {
-            if ($value instanceof WrappedDeferred) {
-                $data[$key] = $context->accept($value->getDeferred()->call(), $value->getType());
-            } elseif (is_array($value)) {
-                $data[$key] = $this->resolveArray($value, $context);
-            } else {
-                $data[$key] = $value;
-            }
-        }
+        $assetDir = $this->appEnv->getAppWwwAssetDir();
+        $cssPath  = $assetDir.'/pub/build/api_message_style.css';
 
-        return $data;
+        return file_exists($cssPath) ? file_get_contents($cssPath) : null;
     }
 }
