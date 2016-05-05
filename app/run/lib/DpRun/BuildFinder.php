@@ -73,9 +73,16 @@ class BuildFinder
         /** @var \SplFileInfo $f */
         foreach ($iter as $f) {
             if ($f->isDir() && $f->getBasename() !== 'run') {
-                $time_file = $f->getRealPath().'/sys/config/build-time.txt';
-                if (file_exists($time_file)) {
-                    $time          = intval(trim(file_get_contents($time_file)));
+                $config_dir = $f->getRealPath().'/sys/config';
+                $time_file  = $f->getRealPath().'/sys/config/build-time.txt';
+                if (is_dir($config_dir)) {
+                    if (file_exists($time_file)) {
+                        $time = intval(trim(file_get_contents($time_file)));
+                    } else {
+                        // This case wouldn't happen in prod because a build-time file
+                        // will always exist. So this is a test case generally, or an error case
+                        $time = count($builds);
+                    }
                     $builds[$time] = $f->getBasename();
                 }
             }
@@ -132,6 +139,11 @@ class BuildFinder
 
         if (file_exists($active_build_file)) {
             $exist_build_dir = trim(file_get_contents($active_build_file));
+
+            // The active build dir no longer exists, so we need to re-scan
+            if (!is_dir($this->baseapp_dir.DIRECTORY_SEPARATOR.$exist_build_dir)) {
+                $exist_build_dir = 0;
+            }
         } else {
             $exist_build_dir = 0;
         }
@@ -161,7 +173,7 @@ class BuildFinder
             $build_dir = $this->getLatestBuildDir();
         }
 
-        if ($build_dir != $exist_build_dir) {
+        if ($build_dir !== $exist_build_dir) {
             @file_put_contents($active_build_file, $build_dir);
             @unlink($active_build_file . '.updating');
         }
