@@ -88,7 +88,7 @@ file_put_contents($DP_DIR.'/app/BUILD/sys/config/build-time.txt', $build_time);
 
 if ($build_num && $build_num !== '0.0') {
     if (strpos($build_num, '.')) {
-        list ($build_num_base, $build_rev) = explode($build_num, '.', 2);
+        list ($build_num_base, $build_rev) = explode('.', $build_num, 2);
     } else {
         $build_num_base = $build_num;
         $build_rev = 0;
