@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,8 +31,8 @@ namespace DeskPRO\Bundle\ApiBundle\EventListener;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Controller\ExceptionController;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
+use DeskPRO\Bundle\AppBundle\Annotation\Limits\Metadata\MethodMetadata;
 use DeskPRO\Bundle\AppBundle\Limits\Exception\LimitExhaustedException;
-use DeskPRO\Bundle\AppBundle\Limits\LimitsService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
@@ -50,13 +50,14 @@ class ApiLimitsListener implements EventSubscriberInterface
     protected $container;
 
     /**
-     * ApiLimitsListener constructor.
+     * Constructor.
      *
      * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container)
     {
-        $this->container = $container; // we really do not want to get LimitsService as soon as possible, but only when it would be needed
+        // lazy loading of required services
+        $this->container = $container;
     }
 
     /**
@@ -65,7 +66,7 @@ class ApiLimitsListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-          KernelEvents::CONTROLLER => ['onController', 512],
+            KernelEvents::CONTROLLER => ['onController', 512],
         ];
     }
 
@@ -87,22 +88,24 @@ class ApiLimitsListener implements EventSubscriberInterface
             return;
         }
 
-        $classMetadata = $this->container->get('api_limits.metadata_factory')->getMetadataForClass(get_class($controller['0']));
+        $class  = get_class($controller[0]);
+        $action = $controller[1];
 
-        if ($classMetadata
-            && isset($classMetadata->methodMetadata[$controller[1]])
-            && $classMetadata->methodMetadata[$controller[1]]->isLimitsDisabled()) {
-            return;
+        $classMetadata = $this->container->get('api_limits.metadata_factory')->getMetadataForClass($class);
+        if ($classMetadata) {
+            /** @var MethodMetadata[] $methodMetadata */
+            $methodMetadata = $classMetadata->methodMetadata;
+            if (isset($methodMetadata[$action]) && $methodMetadata[$action]->isLimitsDisabled()) {
+                return;
+            }
         }
 
-        /** @var \DeskPRO\Bundle\AppBundle\Limits\LimitsService $service */
-        $service = $this->container->get('api_limits.limits_service');
         try {
-            $service->checkLimits();
+            $limits = $this->container->get('api_limits.limits_service');
+            $limits->checkLimits();
+            $limits->reduceLimits();
         } catch (LimitExhaustedException $e) {
             throw new AccessDeniedHttpException($e->getMessage(), $e);
         }
-
-        $service->reduceLimits();
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,9 +28,13 @@
 
 namespace DpBehat\Api;
 
+use DeskPRO\Bundle\AppBundle\Entity\ApiKeyLimit;
 use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
 use DpBehat\BaseContext;
 
+/**
+ * Class ApiLimitsContext.
+ */
 class ApiLimitsContext extends BaseContext
 {
     /**
@@ -38,8 +42,7 @@ class ApiLimitsContext extends BaseContext
      */
     public function myKeyLimitAlmostExhausted()
     {
-        $repo  = $this->getRepository('\DeskPRO\Bundle\AppBundle\Entity\ApiKeyLimit');
-        $limit = $repo->findOneBy(['api_key' => 1]);
+        $limit = $this->getApiKeyLimitRepository()->findOneBy(['api_key' => 1]);
         $limit->setCurrent(1);
         $this->persistAndFlush($limit);
     }
@@ -49,10 +52,8 @@ class ApiLimitsContext extends BaseContext
      */
     public function myKeyLimitWillBeReplenished()
     {
-        $repo  = $this->getRepository('\DeskPRO\Bundle\AppBundle\Entity\ApiKeyLimit');
-        $limit = $repo->findOneBy(['api_key' => 1]);
-
-        $date = clone $limit->getStartTime();
+        $limit = $this->getApiKeyLimitRepository()->findOneBy(['api_key' => 1]);
+        $date  = clone $limit->getStartTime();
         $date->modify('-'.($limit->getInterval() + 1).' second');
         $limit->setStartTime($date);
 
@@ -64,12 +65,18 @@ class ApiLimitsContext extends BaseContext
      */
     public function globalLimitsAreExhausted()
     {
-        $repo   = $this->getRepository('\DeskPRO\Bundle\AppBundle\Entity\ApiKeyLimit');
-        $limits = $repo->findBy(['limit_type' => AbstractLimit::TYPE_GLOBAL]);
-
+        $limits = $this->getApiKeyLimitRepository()->findBy(['limit_type' => AbstractLimit::TYPE_GLOBAL]);
         foreach ($limits as $limit) {
             $limit->setCurrent(0);
             $this->persistAndFlush($limit);
         }
+    }
+
+    /**
+     * @return \Doctrine\ORM\EntityRepository
+     */
+    protected function getApiKeyLimitRepository()
+    {
+        return $this->getRepository(ApiKeyLimit::class);
     }
 }
