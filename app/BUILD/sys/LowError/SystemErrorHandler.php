@@ -731,10 +731,17 @@ class SystemErrorHandler
                 return;
             }
 
-            return self::$bugsnagClient = new \Bugsnag_Client(self::$bugsnagApiKey);
+            self::$bugsnagClient = new \Bugsnag_Client(self::$bugsnagApiKey);
+            self::$bugsnagClient->setProjectRoot(self::getDpEnv()->getDpRoot());
+            self::$bugsnagClient->setAutoNotify(false);
+
+            $buildNumFile = self::getDpEnv()->getAppDir().'/sys/config/build-num.txt';
+            if (file_exists($buildNumFile)) {
+                self::$bugsnagClient->setAppVersion(trim(file_get_contents($buildNumFile)));
+            }
         }
 
-        return;
+        return self::$bugsnagClient;
     }
 
     /**
