@@ -760,35 +760,31 @@ class TicketWithLayoutsType extends AbstractType
 
     /**
      * @param TicketWithLayoutsContext $context
-     * @param string                   $property_path
-     * @param CustomDefAbstract        $field_def
-     * @param bool                     $ignore_validation
+     * @param string                   $propertyPath
+     * @param CustomDefAbstract        $def
+     * @param bool                     $ignoreValidation
      *
      * @return FormField
      */
-    private function createCustomField(TicketWithLayoutsContext $context, $property_path, CustomDefAbstract $field_def = null, $ignore_validation = false)
+    private function createCustomField(TicketWithLayoutsContext $context, $propertyPath, CustomDefAbstract $def = null, $ignoreValidation = false)
     {
-        if (!$field_def || !$field_def->isEnabled()) {
+        if (!$def || !$def->isEnabled()) {
             return false;
         }
 
         $options = [
-            'custom_def'      => $field_def,
-            'property_path'   => $property_path,
-            'agent_interface' => $context->getViewContext() === TicketWithLayoutsContext::VIEW_AGENT,
-            'label'           => $field_def->getTitle(),
-            'required'        => $field_def->isRequired(),
+            'custom_def'      => $def,
+            'property_path'   => $propertyPath,
+            'agent_interface' => $context->isAgentView(),
+            'label'           => $def->getTitle(),
+            'required'        => $def->isRequired($context->isAgentView()),
             'inline'          => $context->forApi(),
         ];
 
-        if (in_array($field_def->getHandlerClass(), [
-            'Application\DeskPRO\CustomFields\Handler\Hidden',
-            'Application\DeskPRO\CustomFields\Handler\Display',
-        ])) {
+        if (in_array($def->getType(), [CustomDefAbstract::TYPE_HIDDEN, CustomDefAbstract::TYPE_DISPLAY])) {
             $options['label'] = false;
         }
-
-        if ($ignore_validation) {
+        if ($ignoreValidation) {
             $options                      = $this->markNoValidation($options);
             $options['ignore_validation'] = true;
         }

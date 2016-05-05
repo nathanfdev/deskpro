@@ -46,7 +46,7 @@ class CustomDataValidator extends ConstraintValidator
      */
     public function validate($value, Constraint $constraint)
     {
-        if (!$constraint instanceof AbstractCustomDefConstraint) {
+        if (!$constraint instanceof CustomData) {
             throw new UnexpectedTypeException($constraint, CustomData::class);
         }
         if (!$value instanceof Collection) {
@@ -92,6 +92,11 @@ class CustomDataValidator extends ConstraintValidator
         /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
         $context   = $this->context;
         $validator = $context->getValidator()->inContext($context);
-        $validator->atPath('['.$custom_def->getId().']')->validate($custom_def_data, $validators);
+
+        if ($constraint->target === CustomData::TARGET_COLLECTION) {
+            $validator->atPath('['.$custom_def->getId().']');
+        }
+
+        $validator->validate($custom_def_data, $validators);
     }
 }

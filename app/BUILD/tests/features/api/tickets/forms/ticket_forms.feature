@@ -221,7 +221,7 @@ Feature: /ticket_forms endpoint
 {
   "person": 2,
   "user_fields": {
-    "6": "some text"
+    "6": "some another text"
   }
 }
     """
@@ -248,7 +248,7 @@ Feature: /ticket_forms endpoint
     And the JSON node "data.primary_email" should be equal to "agent@deskpro.dev"
     And the JSON node "data.fields.1.value" should not exist
     And the JSON node "data.fields.5.value" should not exist
-    And the JSON node "data.fields.6.value" should be equal to "some text"
+    And the JSON node "data.fields.6.value" should be equal to "some another text"
     And the JSON node "data.fields.7.value" should not exist
 
   Scenario: I modify ticket person by email

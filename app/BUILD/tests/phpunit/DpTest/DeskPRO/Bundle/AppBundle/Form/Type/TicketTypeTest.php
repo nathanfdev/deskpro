@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DpTest\DeskPRO\Bundle\PortalBundle\Form\Form\Type;
+namespace DpTest\DeskPRO\Bundle\AppBundle\Form\Form\Type;
 
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDefTicket;

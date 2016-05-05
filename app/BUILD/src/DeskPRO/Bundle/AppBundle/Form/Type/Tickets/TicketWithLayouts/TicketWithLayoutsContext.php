@@ -136,6 +136,14 @@ class TicketWithLayoutsContext
     }
 
     /**
+     * @return bool
+     */
+    public function isAgentView()
+    {
+        return $this->getViewContext() === self::VIEW_AGENT;
+    }
+
+    /**
      * The view, such as "new", "edit", "view" (constants of this class).
      *
      * @return string
