@@ -254,11 +254,33 @@ abstract class BaseKernel extends Kernel
         $cacheFile = $cache->getPath();
         $content   = file_get_contents($cacheFile);
 
-        // Re-write absolute paths to use DP_ROOT instead
-        $content = str_replace("'".DP_APP_DIR, 'DP_APP_DIR.\'', $content);
-        // Correct double slash paths
-        // Empty logs dir that isn't used (we get it from conf)
-        $content = preg_replace("#'kernel\\.logs_dir' => '(.*?)'#", "'kernel.logs_dir' => '".$this->getLogDir()."'", $content);
+        // Re-write app dir paths
+        $content = str_replace(
+            '$this->targetDirs[4].\'/app/BUILD',
+            '$this->getDpAppDir().\'',
+            $content
+        );
+
+        $parts = preg_split('/\s*private \$parameters;/', $content);
+
+        $getter = <<<'CODE'
+    private $dpBuildId = null;
+    private function getDpBuildId()
+    {
+        if ($this->dpBuildId !== null) {
+            return $this->dpBuildId;
+        }
+
+        return $this->dpBuildId = basename(realpath(__DIR__.'/../'));
+    }
+    
+    private function getDpAppDir()
+    {
+        return $this->targetDirs[4].'/app/' . $this->getDpBuildId();
+    }
+CODE;
+
+        $content = $parts[0]."\n\n".$getter."\n\n".$parts[1];
 
         $cache->write($content, $container->getResources());
     }
