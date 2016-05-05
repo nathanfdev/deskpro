@@ -105,7 +105,7 @@ return array(
     'portal.tickets.view_label_your_email_placeholder' => 'Email Address (required)',
     'portal.tickets.view_label_your_name'              => 'Your Name',
     'portal.tickets.view_label_your_name_placeholder'  => 'Name (required)',
-    'portal.tickets.view_last_message'                 => 'Your last message was recieved {{ ago }}.',
+    'portal.tickets.view_last_message'                 => 'Your last message was received {{ ago }}.',
     'portal.tickets.view_media'                        => 'Media on this ticket:',
     'portal.tickets.view_more_info'                    => 'Additional ticket information:',
     'portal.tickets.view_now_closed'                   => 'This ticket is now closed',

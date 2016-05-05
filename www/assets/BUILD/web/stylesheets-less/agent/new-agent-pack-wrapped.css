@@ -13610,10 +13610,10 @@ section.new-user-chat-alert footer {
   top: 5px;
   float: right;
 }
-.legacy-dp-interface .chat-transcript .row.user .chatRecieve {
+.legacy-dp-interface .chat-transcript .row.user .chatReceive {
   max-width: 85%;
 }
-.legacy-dp-interface .chat-transcript .row.user .chatMsgRecieve {
+.legacy-dp-interface .chat-transcript .row.user .chatMsgReceive {
   width: auto;
   min-width: 50px;
 }
@@ -13625,10 +13625,10 @@ section.new-user-chat-alert footer {
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
 }
-.legacy-dp-interface .chat-transcript .row.user-typing .chatRecieve {
+.legacy-dp-interface .chat-transcript .row.user-typing .chatReceive {
   max-width: 85%;
 }
-.legacy-dp-interface .chat-transcript .row.user-typing .chatRecieve {
+.legacy-dp-interface .chat-transcript .row.user-typing .chatReceive {
   text-shadow: none;
 }
 .legacy-dp-interface .chat-transcript .row.user-typing label {
@@ -13636,7 +13636,7 @@ section.new-user-chat-alert footer {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 10px !important;
 }
-.legacy-dp-interface .chat-transcript .row.user-typing .chatMsgRecieve {
+.legacy-dp-interface .chat-transcript .row.user-typing .chatMsgReceive {
   width: auto;
   min-width: 50px;
   padding: 3px 5px;

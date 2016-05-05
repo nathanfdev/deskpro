@@ -65,7 +65,7 @@ return array(
     'portal.account.reset-password-invalid-input'   => 'Error: please enter a valid email address or username',
     'portal.account.reset-password-request-desc'    => 'Fill out this form to have a password reset link sent to you.',
     'portal.account.reset-password-request-title'   => 'Forgot your password?',
-    'portal.account.reset-password-sent-desc'       => 'We have recieved your password reset request for the email shown below. If this email address is associated with a registered account, we have sent an email with a password reset link to that account\'s primary email address. Please check your email inbox for further instructions.',
+    'portal.account.reset-password-sent-desc'       => 'We have received your password reset request for the email shown below. If this email address is associated with a registered account, we have sent an email with a password reset link to that account\'s primary email address. Please check your email inbox for further instructions.',
     'portal.account.reset-password-sent-title'      => 'Password Request Received',
     'portal.account.reset-password-sent-to'         => 'We sent an email to',
     'portal.account.reset-password-success'         => 'Your password has been updated.',

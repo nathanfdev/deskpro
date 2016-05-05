@@ -247,8 +247,8 @@ pageMeta.baseId = '{{ baseId }}';
 						{% else %}
 							<div class="message-content">
 								<div class="avatar tipped" title="{{ message.getAuthorName() }}"><img src="{{ message.getAuthorPictureUrl(25) }}" /></div>
-								<div class="chatRecieve">
-									<div class="chatMsgRecieve">
+								<div class="chatReceive">
+									<div class="chatMsgReceive">
 										{% if message.is_html %}
 											{{message.content|raw}}
 										{% else %}
@@ -273,8 +273,8 @@ pageMeta.baseId = '{{ baseId }}';
 				</div>
 				<div class="row user-typing" style="display: none" id="{{baseId}}_user_typing">
 					<div class="message-content">
-						<div class="chatRecieve">
-							<div class="chatMsgRecieve">
+						<div class="chatReceive">
+							<div class="chatMsgReceive">
 								<label>{{ phrase('agent.chat.user_typing') }}: </label>
 								<div class="prop-msg"></div>
 								<span class="bubbleRight"></span>

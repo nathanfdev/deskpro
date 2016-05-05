@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Cache;
 
 /**
- * All cache adapters implement this interface. A cache adapter must return the value exactly as it recieves it. So
+ * All cache adapters implement this interface. A cache adapter must return the value exactly as it receives it. So
  * the adapter must store the cached value in such a way that it can always (obv including future requests if need be)
  * return the same php value back.
  *

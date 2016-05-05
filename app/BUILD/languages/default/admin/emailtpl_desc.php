@@ -105,7 +105,7 @@ return array(
     'admin.emailtpl_desc.deskpro_emails_user_new-ticket-agent_html_twig_title'             => 'New Ticket Created By Agent',
     'admin.emailtpl_desc.deskpro_emails_user_new-ticket-guest_html_twig_desc'              => 'This is an automatic reply sent to a person to confirm that the helpdesk received their ticket.',
     'admin.emailtpl_desc.deskpro_emails_user_new-ticket-guest_html_twig_title'             => 'New Ticket Confirmation',
-    'admin.emailtpl_desc.deskpro_emails_user_new-ticket-reg-closed_html_twig_desc'         => 'If you have disabled registration, this is the email users will recieve if they send an email to helpdesk without already having an account.',
+    'admin.emailtpl_desc.deskpro_emails_user_new-ticket-reg-closed_html_twig_desc'         => 'If you have disabled registration, this is the email users will receive if they send an email to helpdesk without already having an account.',
     'admin.emailtpl_desc.deskpro_emails_user_new-ticket-reg-closed_html_twig_title'        => 'New Ticket Denied (Registration Closed)',
     'admin.emailtpl_desc.deskpro_emails_user_new-ticket-validate_html_twig_desc'           => 'This is an automatic reply sent to the user to tell them that they must validate their email address before their ticket will be read by the helpdesk agents.',
     'admin.emailtpl_desc.deskpro_emails_user_new-ticket-validate_html_twig_title'          => 'New Ticket Confirmation (Awaiting Validation)',

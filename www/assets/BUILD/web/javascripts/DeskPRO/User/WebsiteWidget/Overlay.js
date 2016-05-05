@@ -188,7 +188,7 @@ var DpOverlayWidget = new (function() {
 		lastHash: null,
 		hasPostMessage: window.postMessage && (!isIE || ieVer > 9),
 		cacheBust: 0,
-		recieveCallback: null,
+		receiveCallback: null,
 		send: function(message, targetUrl, target) {
 			if (this.hasPostMessage) {
 				target.postMessage(message, targetUrl.replace( /([^:]+:\/\/[^\/]+).*/, '$1'))
@@ -197,28 +197,28 @@ var DpOverlayWidget = new (function() {
 				target.location = targetLoc.replace(/#.*$/, '') + '#' + (+new Date) + (this.cacheBust++) + '&' + message;
 			}
 		},
-		setupReciever: function(callback, sourceUrl) {
-			this.recieveCallback = callback;
+		setupReceiver: function(callback, sourceUrl) {
+			this.receiveCallback = callback;
 
 			if (this.hasPostMessage) {
 				if (window.addEventListener) {
-					window[this.recieveCallback ? 'addEventListener' : 'removeEventListener']('message', this.recieveCallback, false);
+					window[this.receiveCallback ? 'addEventListener' : 'removeEventListener']('message', this.receiveCallback, false);
 				} else {
-					window[this.recieveCallback ? 'attachEvent' : 'detachEvent' ]('onmessage', this.recieveCallback);
+					window[this.receiveCallback ? 'attachEvent' : 'detachEvent' ]('onmessage', this.receiveCallback);
 				}
 			} else {
 				if (this.intervalId) {
 					window.clearInterval(this.intervalId);
 				}
 
-				if (this.recieveCallback) {
+				if (this.receiveCallback) {
 					var me = this;
 					this.intervalId = window.setInterval(function() {
 						var hash = document.location.hash;
 						var re = /^#?\d+&/;
 						if (hash !== me.lastHash && re.test(hash)) {
 							me.lastHash = hash;
-							me.recieveCallback({ data: hash.replace( re, '') });
+							me.receiveCallback({ data: hash.replace( re, '') });
 						}
 					}, 60);
 				}
@@ -599,7 +599,7 @@ var DpOverlayWidget = new (function() {
 		overlayIframe = util.createEl('<iframe id="dp_overlay_iframe" name="dp_overlay_iframe" allowtransparency="true" src="' + src + '" style="' + css  +'" align="middle" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"></iframe>');
 		overlayWrapInner.appendChild(overlayIframe);
 
-		comms.setupReciever(function(m) {
+		comms.setupReceiver(function(m) {
 			me.childListen(m);
 		}, src);
 		setHeight(500);
