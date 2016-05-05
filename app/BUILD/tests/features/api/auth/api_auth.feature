@@ -86,6 +86,10 @@ Feature: API Authentication
     Then the response status code should be 200
     And the JSON node "data.auth_method" should be equal to "api_key"
     And the JSON node "data.person_id" should be equal to 3
+    And the JSON node "data.person.id" should be equal to 3
+    And the JSON node "data.api_version" should be equal to 2
+    And the JSON node "data.client_type" should be equal to "standard"
+    And the JSON node "data.client_version" should be equal to 0
     And I should have an authenticated token with the role ROLE_API
 
   @reinstall
