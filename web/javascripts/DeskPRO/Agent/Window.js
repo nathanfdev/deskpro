@@ -1433,6 +1433,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var firstTabId = null;
 		var activateSettings = null;
 		var startRestoreHash = this.startRestoreHash || '';
+		var tabsToOpen = [];
+		var openTabsLimit = 20;
 
 		DeskPRO_Window.TabBar.options.activateNew = false;
 
@@ -1523,10 +1525,17 @@ DeskPRO.Agent.Window = new Orb.Class({
 				this.loadingListFragment = hash;
 				this.loadListPane(url, { url_fragment: hash });
 			} else {
-				this.loadingPageFragment = hash;
-				this.loadPage(url, { url_fragment: hash, noToggle: true, ignore_perm_error: startRestoreHash.replace(/\.o/, '').indexOf(hash.replace(/\.o/, '')) != -1 });
+				tabsToOpen.push({hash: hash, url: url});
 			}
 		}, this);
+
+		tabsToOpen = tabsToOpen.slice(-openTabsLimit);
+		for (var i = 0; i < tabsToOpen.length; i++) {
+			var hash = tabsToOpen[i].hash,
+					url = tabsToOpen[i].url;
+			this.loadingPageFragment = hash;
+			this.loadPage(url, { url_fragment: hash, noToggle: true, ignore_perm_error: startRestoreHash.replace(/\.o/, '').indexOf(hash.replace(/\.o/, '')) != -1 });
+		}
 
 		this.cancelHashLoad++;
 		if (activateTabId) {
