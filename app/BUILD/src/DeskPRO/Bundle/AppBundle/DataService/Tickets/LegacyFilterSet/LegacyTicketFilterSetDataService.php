@@ -60,7 +60,7 @@ class LegacyTicketFilterSetDataService
     /**
      * @var array
      */
-    private static $termMapping = [
+    public static $termMapping = [
         TicketGrouping::DEPARTMENT       => TicketSearch::TERM_DEPARTMENT,
         TicketGrouping::ORGANIZATION     => TicketSearch::TERM_ORGANIZATION,
         TicketGrouping::PERSON           => TicketSearch::TERM_PERSON,
