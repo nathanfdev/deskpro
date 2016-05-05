@@ -90,9 +90,7 @@ class ArticlesController extends AbstractController
         // SUBSCRIPTION
         //
         $isSubscribed = false;
-        if (
-        $this->getBrandSetting('user.kb_subscriptions', false) && $this->getUser()
-        ) {
+        if ($this->getUser() && $this->getBrandSetting('user.kb_subscriptions', false)) {
             // waiting info regarding article category subscriptions
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('kb', $this->getUser());
         }

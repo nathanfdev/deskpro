@@ -89,9 +89,7 @@ class NewsController extends AbstractController
         // SUBSCRIPTION
         //
         $isSubscribed = false;
-        if (
-        $this->getBrandSetting('user.news_subscriptions', false) && $this->getUser()
-        ) {
+        if ($this->getUser() && $this->getBrandSetting('user.news_subscriptions', false)) {
             // waiting info regarding article category subscriptions
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('news', $this->getUser());
         }
