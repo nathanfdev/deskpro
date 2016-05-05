@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -50,10 +50,10 @@ class RateLimit
     const ACT_SUBMIT_FEEDBACK = 'submit_feedback';
     const ACT_SUBMIT_TICKET   = 'submit_ticket';
 
-    /** @var DeskproContainer  */
+    /** @var DeskproContainer */
     protected $container;
 
-    protected $params_cache = array();
+    protected $params_cache = [];
 
     public function __construct(DeskproContainer $continer)
     {
@@ -101,7 +101,7 @@ class RateLimit
     /**
      * response. bool for now.
      *
-     * @param $action
+     * @param        $action
      * @param Person $person
      * @param null   $ip
      *
@@ -113,6 +113,10 @@ class RateLimit
     {
         if (!$params = $this->getParams($action, $person, $ip)) {
             throw new \Exception('Invalid rate limit action');
+        }
+
+        if (!$params['enabled']) {
+            return false;
         }
 
         /** @var RateLimitLog $rep */
@@ -128,7 +132,7 @@ class RateLimit
     /**
      * params for current dataset.
      *
-     * @param $action
+     * @param        $action
      * @param Person $person
      * @param null   $ip
      *
@@ -143,8 +147,8 @@ class RateLimit
 
         $settings = $this->container->getSettingsHandler();
 
-        $res = array();
-        foreach (array('limit', 'time', 'response') as $key) {
+        $res = [];
+        foreach (['limit', 'time', 'response', 'enabled'] as $key) {
             // try guest first
             if ($person instanceof PersonGuest) {
                 if (null !== $value = $settings->get(self::KEY.'.'.$action.'.guest.'.$key)) {
@@ -154,7 +158,7 @@ class RateLimit
             }
 
             if (null === $value = $settings->get(self::KEY.'.'.$action.'.'.$key)) {
-                return array();
+                return [];
             }
             $res[$key] = $value;
         }
@@ -192,7 +196,7 @@ class RateLimit
     protected function isWhitelisted($ip)
     {
         $ip          = ip2long($ip);
-        $whitelisted = json_decode($this->container->getSetting(self::IPS), 1) ?: array();
+        $whitelisted = json_decode($this->container->getSetting(self::IPS), 1) ?: [];
         foreach ($whitelisted as $wip) {
             @list($subnet, $bits) = explode('/', $wip);
             $subnet               = ip2long($subnet);

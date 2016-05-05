@@ -8,57 +8,57 @@ Feature: Portal Anti-Abuse Setup
     When I send a GET request to "/api/v2/settings/anti_abuse/portal"
     Then the response should be in JSON
     And the response status code should be 200
-    And the JSON node "data.account_rate_limit.login_settings.enabled" should be equal to 0
+    And the JSON node "data.account_rate_limit.login_settings.enabled" should be equal to 1
     And the JSON node "data.account_rate_limit.login_settings.limit" should be equal to 3
     And the JSON node "data.account_rate_limit.login_settings.time" should be equal to 900
     And the JSON node "data.account_rate_limit.login_settings.response" should be equal to "captcha"
 
-    And the JSON node "data.account_rate_limit.registration_settings.enabled" should be equal to 0
+    And the JSON node "data.account_rate_limit.registration_settings.enabled" should be equal to 1
     And the JSON node "data.account_rate_limit.registration_settings.limit" should be equal to 3
     And the JSON node "data.account_rate_limit.registration_settings.time" should be equal to 900
     And the JSON node "data.account_rate_limit.registration_settings.response" should be equal to "captcha"
 
-    And the JSON node "data.account_rate_limit.reset_password_settings.enabled" should be equal to 0
+    And the JSON node "data.account_rate_limit.reset_password_settings.enabled" should be equal to 1
     And the JSON node "data.account_rate_limit.reset_password_settings.limit" should be equal to 3
     And the JSON node "data.account_rate_limit.reset_password_settings.time" should be equal to 900
     And the JSON node "data.account_rate_limit.reset_password_settings.response" should be equal to "captcha"
 
-    And the JSON node "data.user_rate_limit.submit_ticket.enabled" should be equal to 0
+    And the JSON node "data.user_rate_limit.submit_ticket.enabled" should be equal to 1
     And the JSON node "data.user_rate_limit.submit_ticket.limit" should be equal to 3
     And the JSON node "data.user_rate_limit.submit_ticket.time" should be equal to 900
     And the JSON node "data.user_rate_limit.submit_ticket.response" should be equal to "captcha"
 
-    And the JSON node "data.user_rate_limit.submit_feedback.enabled" should be equal to 0
+    And the JSON node "data.user_rate_limit.submit_feedback.enabled" should be equal to 1
     And the JSON node "data.user_rate_limit.submit_feedback.limit" should be equal to 3
     And the JSON node "data.user_rate_limit.submit_feedback.time" should be equal to 900
     And the JSON node "data.user_rate_limit.submit_feedback.response" should be equal to "captcha"
 
-    And the JSON node "data.user_rate_limit.submit_comment.enabled" should be equal to 0
+    And the JSON node "data.user_rate_limit.submit_comment.enabled" should be equal to 1
     And the JSON node "data.user_rate_limit.submit_comment.limit" should be equal to 3
     And the JSON node "data.user_rate_limit.submit_comment.time" should be equal to 900
     And the JSON node "data.user_rate_limit.submit_comment.response" should be equal to "captcha"
 
-    And the JSON node "data.user_rate_limit.upload_attachment.enabled" should be equal to 0
+    And the JSON node "data.user_rate_limit.upload_attachment.enabled" should be equal to 1
     And the JSON node "data.user_rate_limit.upload_attachment.limit" should be equal to 50
     And the JSON node "data.user_rate_limit.upload_attachment.time" should be equal to 900
     And the JSON node "data.user_rate_limit.upload_attachment.response" should be equal to "lockout"
 
-    And the JSON node "data.guest_rate_limit.submit_ticket.enabled" should be equal to 0
+    And the JSON node "data.guest_rate_limit.submit_ticket.enabled" should be equal to 1
     And the JSON node "data.guest_rate_limit.submit_ticket.limit" should be equal to 3
     And the JSON node "data.guest_rate_limit.submit_ticket.time" should be equal to 900
     And the JSON node "data.guest_rate_limit.submit_ticket.response" should be equal to "captcha"
 
-    And the JSON node "data.guest_rate_limit.submit_feedback.enabled" should be equal to 0
+    And the JSON node "data.guest_rate_limit.submit_feedback.enabled" should be equal to 1
     And the JSON node "data.guest_rate_limit.submit_feedback.limit" should be equal to 3
     And the JSON node "data.guest_rate_limit.submit_feedback.time" should be equal to 900
     And the JSON node "data.guest_rate_limit.submit_feedback.response" should be equal to "captcha"
 
-    And the JSON node "data.guest_rate_limit.submit_comment.enabled" should be equal to 0
+    And the JSON node "data.guest_rate_limit.submit_comment.enabled" should be equal to 1
     And the JSON node "data.guest_rate_limit.submit_comment.limit" should be equal to 3
     And the JSON node "data.guest_rate_limit.submit_comment.time" should be equal to 900
     And the JSON node "data.guest_rate_limit.submit_comment.response" should be equal to "captcha"
 
-    And the JSON node "data.guest_rate_limit.upload_attachment.enabled" should be equal to 0
+    And the JSON node "data.guest_rate_limit.upload_attachment.enabled" should be equal to 1
     And the JSON node "data.guest_rate_limit.upload_attachment.limit" should be equal to 50
     And the JSON node "data.guest_rate_limit.upload_attachment.time" should be equal to 900
     And the JSON node "data.guest_rate_limit.upload_attachment.response" should be equal to "lockout"
