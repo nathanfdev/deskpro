@@ -100,6 +100,7 @@ Feature: /tickets endpoint
     And the JSON node "data.followers[0]" should be equal to 2
     And the JSON node "data.followers[1]" should be equal to 1
     And the JSON node "data.fields.6.value" should be equal to "some text"
+    And the JSON node "data.fields.7.value" should be equal to "default value"
 
     When I send a GET request to "/api/v2/tickets/6"
     Then the response status code should be 200
