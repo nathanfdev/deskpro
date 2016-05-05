@@ -10,7 +10,7 @@
     <br /><br />
 
     {{ phrase('portal.emails.ticket_access_ticket_online') }}
-    <a href="{{ ticket.link }}">{{ ticket.link }}</a>
+    <a href="{{ portal_url(ticket) }}">{{ portal_url(ticket) }}</a>
 {% endif %}
 
 <br /><br />
