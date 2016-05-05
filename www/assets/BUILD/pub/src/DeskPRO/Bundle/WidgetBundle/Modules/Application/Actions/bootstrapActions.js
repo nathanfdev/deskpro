@@ -40,7 +40,7 @@ export const getSession = createAction(
 );
 
 export const setSettings = createAction('WIDGET_SET_SETTINGS', settings => $.extend(true, {}, settings));
-export const setBrandSettings = createAction('WIDGET_SET_BRAND_SETTINGS', settings => $.extend(true, {}, settings));
+
 export const reloadSettings = createAction(
   'WIDGET_RELOAD_SETTINGS',
     settings => (dispatch, getState) => {

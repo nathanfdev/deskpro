@@ -1935,6 +1935,7 @@ $search-btn-height: $search-height - 24;
     height: $search-btn-height;
     @include padding-left(40px);
     font-size: 1em;
+    max-width: none;
 
     &:focus, &.active {
       border: 1px solid #3575bd;
@@ -2201,12 +2202,15 @@ $search-btn-height: $search-height - 24;
       &:hover {
         background: darken(#3575bd, 5%);
       }
-      .fa-comments {
+      &.unpadded {
+        padding-right: 7px;
+      }
+      .fa-comments-o {
         position: relative;
         top: -1px;
         @include margin-right(4px);
       }
-      .fa-support {
+      .fa-thumbs-o-up {
         @include margin-right(4px);
       }
 

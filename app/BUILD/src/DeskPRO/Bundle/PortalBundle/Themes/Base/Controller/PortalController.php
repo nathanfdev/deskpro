@@ -29,9 +29,9 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\UseSectionVoter;
 use DeskPRO\Bundle\PortalBundle\Annotation\Tag;
 use DeskPRO\Bundle\PortalBundle\Annotation\TagOptions;
 use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
@@ -103,9 +103,50 @@ class PortalController extends AbstractController
      */
     public function searchBoxAction(TagRequest $tag_request, array $options)
     {
+        if (isset($options['include_contact_us']) && $options['include_contact_us'] == true) {
+            $chatEnabled = $this->container->get('widget_settings_resolver')
+                                           ->getWidgetOptions()
+                                           ->getBrand()
+                                           ->getChat()
+                                           ->isEnabled();
+            $extendedOptions = [
+                'can_use_tickets'  => $this->isGranted(UseSectionVoter::USE_TICKETS),
+                'can_use_chat'     => $chatEnabled && $this->isGranted(UseSectionVoter::USE_CHAT),
+                'can_use_feedback' => $this->isGranted(UseSectionVoter::USE_FEEDBACK),
+            ];
+
+            $extendedOptions = array_merge(
+                $extendedOptions,
+                [
+                    'include_contact_us' => array_reduce(
+                        $extendedOptions,
+                        function ($carry, $item) {
+                            return $carry || $item;
+                        },
+                        false
+                    ),
+                    'should_display_dropdown' => array_sum($extendedOptions) > 1,
+                ]
+            );
+
+            $extendedOptions['first_link']             = '#';
+            $extendedOptions['use_chat_as_first_link'] = false;
+
+            if ($extendedOptions['can_use_tickets']) {
+                $extendedOptions['first_link'] = $this->get('router')->generate('portal_new_ticket');
+            } elseif ($extendedOptions['can_use_feedback']) {
+                $extendedOptions['first_link'] = $this->get('router')->generate('portal_feedback');
+            } elseif ($extendedOptions['can_use_chat']) {
+                // this is very, very dirty hack
+                $extendedOptions['first_link'] = "javascript: window.dp_loader.postMessage({type: 'openWidget'}, '*');";
+            }
+        } else {
+            $extendedOptions = ['include_contact_us' => false];
+        }
+
         return $this->renderThemeView(
             'Theme:Portal:Header/page_search_box.html.twig',
-            $options
+            array_replace($options, $extendedOptions)
         );
     }
 
@@ -120,7 +161,7 @@ class PortalController extends AbstractController
 
         $page_vars = [
             'display_registration_link'     => $this->get('dp_authentication_manager.user')->isRegistrationFormVisible(),
-            'chat_count'                    => $user ? $this->getChatDataService()->countUserChats($user, "own") : 0,
+            'chat_count'                    => $user ? $this->getChatDataService()->countUserChats($user, 'own') : 0,
             'ticket_count'                  => $user ? $this->getTicketsDataService()->getTicketCount($user, 'all') : 0,
             'ticket_count_org'              => $user ? $this->getTicketsDataService()->getOrganizationTicketCount($user, 'all') : 0,
             'user'                          => $user,
