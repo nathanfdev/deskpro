@@ -138,7 +138,7 @@ class RateLimitEventListener implements EventSubscriberInterface
             throw new \Exception('Invalid rate limit action');
         }
 
-        if (!$params['enabled']) {
+        if (empty($params['enabled'])) {
             return false;
         }
 

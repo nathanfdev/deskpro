@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\AntiAbuse\EventListener;
 
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
@@ -59,6 +60,13 @@ class CaptchaEventListenerTest extends PortalTestCase
         );
     }
 
+    protected function enableRateLimit($type)
+    {
+        $settings                                 = $this->get('settings_resolver')->getGlobalSettings()->toArray();
+        $settings['rate_limit.'.$type.'.enabled'] = 1;
+        $this->get('settings_resolver')->getGlobalSettings()->setArray($settings);
+    }
+
     public function getRateLimitChecks()
     {
         $ip           = '127.0.0.1';
@@ -83,6 +91,8 @@ class CaptchaEventListenerTest extends PortalTestCase
         $this->installDataSet('fresh', true);
         $person = $this->get('test_factory.person')
                        ->createNewInvalidUser('foo@bar.com', 'Foo Bar', 'password123');
+
+        $this->enableRateLimit($type);
 
         $lessThanMaxAttempts = $this->getRateLimitMaxAttempts($type) - 1;
         for ($i = 0; $i < $lessThanMaxAttempts; ++$i) {
