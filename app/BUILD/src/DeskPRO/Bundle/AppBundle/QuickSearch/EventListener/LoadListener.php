@@ -109,9 +109,13 @@ class LoadListener implements EventSubscriberInterface
         /** @var \Application\DeskPRO\Entity\Person[] $people */
         $people = $context->getEntities();
         foreach ($people as $person) {
+            if ($context->isRelatedEntity($person)) {
+                continue;
+            }
+
             $organization = $person->getOrganization();
             if ($organization) {
-                $organizationContext->addEntity($organization);
+                $organizationContext->addRelatedEntity($organization);
             }
         }
     }
@@ -134,13 +138,14 @@ class LoadListener implements EventSubscriberInterface
         /** @var \Application\DeskPRO\Entity\Organization[] $organizations */
         $organizations = $context->getEntities();
 
+        // Fetch users of these organizations too
+        // Skip related organizations (which wasn't found via the searcher)
         $ids = [];
         foreach ($organizations as $organization) {
-            $context->addEntity($organization);
-            $ids[] = $organization->getId();
+            if (!$context->isRelatedEntity($organization)) {
+                $ids[] = $organization->getId();
+            }
         }
-
-        // Fetch users of these organizations too
         if (!empty($ids)) {
             $qb = $this->em->createQueryBuilder();
             $qb
@@ -155,7 +160,7 @@ class LoadListener implements EventSubscriberInterface
             /** @var \Application\DeskPRO\Entity\Person[] $people */
             $people = $qb->getQuery()->getResult();
             foreach ($people as $person) {
-                $personContext->addEntity($person);
+                $personContext->addRelatedEntity($person);
             }
         }
     }
