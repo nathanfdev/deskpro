@@ -1,54 +1,20 @@
 Feature: Quick Search
+  Doctrine search adapter
 
   Background:
     Given I install the api data set
     And my request is authenticated
-    And I remove "admin" usergroup relation "agent_all_perms"
-    And I remove "admin" usergroup relation "agent_all_safe_perms"
 
-  # Doctrine search adapter
   @reinstall
-  Scenario: I send empty query request without "agent_people.use" permission
-    Given I set permission "agent_people.use" = 0 for "registered" usergroup
-    Given the setting "elastica.enabled" is set to 0
-    When I send a GET request to "/api/v2/search"
-    Then the response should be in JSON
-    And the response status code should be 200
-    And the JSON node "data.grouped_results[0].type" should be equal to "article"
-    And the JSON node "data.grouped_results[1].type" should be equal to "download"
-    And the JSON node "data.grouped_results[2].type" should be equal to "feedback"
-    And the JSON node "data.grouped_results[3].type" should be equal to "news"
-    And the JSON node "data.grouped_results[4].type" should be equal to "ticket"
-    And the JSON node "data.grouped_results[5].type" should be equal to "chat_conversation"
-
-  Scenario: I send empty query request with "agent_people.use" permission
-    Given I set permission "agent_people.use" = 1 for "registered" usergroup
-    Given the setting "elastica.enabled" is set to 0
-    When I send a GET request to "/api/v2/search"
-    Then the response should be in JSON
-    And the response status code should be 200
-    And the JSON node "data.grouped_results[0].type" should be equal to "article"
-    And the JSON node "data.grouped_results[0].results" should have 0 elements
-    And the JSON node "data.grouped_results[1].type" should be equal to "download"
-    And the JSON node "data.grouped_results[1].results" should have 0 elements
-    And the JSON node "data.grouped_results[2].type" should be equal to "feedback"
-    And the JSON node "data.grouped_results[2].results" should have 0 elements
-    And the JSON node "data.grouped_results[3].type" should be equal to "news"
-    And the JSON node "data.grouped_results[3].results" should have 0 elements
-    And the JSON node "data.grouped_results[4].type" should be equal to "ticket"
-    And the JSON node "data.grouped_results[4].results" should have 0 elements
-    And the JSON node "data.grouped_results[5].type" should be equal to "person"
-    And the JSON node "data.grouped_results[5].results" should have 0 elements
-    And the JSON node "data.grouped_results[6].type" should be equal to "organization"
-    And the JSON node "data.grouped_results[6].results" should have 0 elements
-    And the JSON node "data.grouped_results[7].type" should be equal to "chat_conversation"
-    And the JSON node "data.grouped_results[7].results" should have 0 elements
-
   Scenario: I search by id
     Given I set permission "agent_people.use" = 1 for "registered" usergroup
-    Given I set permission "agent_tickets.use" = 1 for "registered" usergroup
-    Given I set permission "agent_tickets.view_unassigned" = 1 for "registered" usergroup
-    Given the setting "elastica.enabled" is set to 0
+    And I set permission "articles.use" = 1 for "registered" usergroup
+    And I set permission "downloads.use" = 1 for "registered" usergroup
+    And I set permission "news.use" = 1 for "registered" usergroup
+    And I set permission "feedback.use" = 1 for "registered" usergroup
+    And I set permission "agent_tickets.use" = 1 for "registered" usergroup
+    And I set permission "agent_tickets.view_unassigned" = 1 for "registered" usergroup
+    And the setting "elastica.enabled" is set to 0
     When I send a GET request to "/api/v2/search?q=1"
     Then the response should be in JSON
     And the response status code should be 200
@@ -81,25 +47,7 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[6].results[0].id" should be equal to 1
     And the JSON node "data.grouped_results[6].results[0].name" should be equal to "Organization 1"
 
-  Scenario Outline: I search ticket by id with view restriction
-    Given I set permission "agent_people.use" = <ticket_use> for "registered" usergroup
-    Given I set permission "agent_tickets.use" = <view_unassigned> for "registered" usergroup
-    When I send a GET request to "/api/v2/search?q=1"
-    Then the response should be in JSON
-    And the response status code should be 200
-    And the JSON node "data.grouped_results[4].type" should be equal to "ticket"
-    And the JSON node "data.grouped_results[4].results" should have 0 elements
-
-    Examples:
-      | ticket_use | view_unassigned |
-      | 0          | 0               |
-      | 1          | 0               |
-
   Scenario: I search person by full email
-    Given I set permission "agent_people.use" = 1 for "registered" usergroup
-    Given I set permission "agent_tickets.use" = 1 for "registered" usergroup
-    Given I set permission "agent_tickets.view_unassigned" = 1 for "registered" usergroup
-    Given the setting "elastica.enabled" is set to 0
     When I send a GET request to "/api/v2/search?q=admin@deskpro.dev"
     Then the response should be in JSON
     And the response status code should be 200
@@ -148,10 +96,6 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[7].results" should have 0 elements
 
   Scenario: I search people by partial email (domain)
-    Given I set permission "agent_people.use" = 1 for "registered" usergroup
-    Given I set permission "agent_tickets.use" = 1 for "registered" usergroup
-    Given I set permission "agent_tickets.view_unassigned" = 1 for "registered" usergroup
-    Given the setting "elastica.enabled" is set to 0
     When I send a GET request to "/api/v2/search?q=@deskpro"
     Then the response should be in JSON
     And the JSON node "data.grouped_results[0].type" should be equal to "article"
@@ -182,10 +126,6 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[5].results" should have 0 elements
 
   Scenario: I search people by partial email (name)
-    Given I set permission "agent_people.use" = 1 for "registered" usergroup
-    Given I set permission "agent_tickets.use" = 1 for "registered" usergroup
-    Given I set permission "agent_tickets.view_unassigned" = 1 for "registered" usergroup
-    Given the setting "elastica.enabled" is set to 0
     When I send a GET request to "/api/v2/search?q=agent@"
     Then the response should be in JSON
     And the JSON node "data.grouped_results[0].type" should be equal to "article"
@@ -208,10 +148,6 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[7].results" should have 0 elements
 
   Scenario: I search articles by title
-    Given I set permission "agent_people.use" = 1 for "registered" usergroup
-    Given I set permission "agent_tickets.use" = 1 for "registered" usergroup
-    Given I set permission "agent_tickets.view_unassigned" = 1 for "registered" usergroup
-    Given the setting "elastica.enabled" is set to 0
     When I send a GET request to "/api/v2/search?q=Test%20Article"
     Then the response should be in JSON
     And the JSON node "data.grouped_results[0].type" should be equal to "article"
@@ -239,10 +175,6 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[7].results" should have 0 elements
 
   Scenario: I search downloads by title
-    Given I set permission "agent_people.use" = 1 for "registered" usergroup
-    Given I set permission "agent_tickets.use" = 1 for "registered" usergroup
-    Given I set permission "agent_tickets.view_unassigned" = 1 for "registered" usergroup
-    Given the setting "elastica.enabled" is set to 0
     When I send a GET request to "/api/v2/search?q=Test%20Download"
     Then the response should be in JSON
     And the JSON node "data.grouped_results[0].type" should be equal to "article"
@@ -269,10 +201,6 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[7].results" should have 0 elements
 
   Scenario: I search feedback by title
-    Given I set permission "agent_people.use" = 1 for "registered" usergroup
-    Given I set permission "agent_tickets.use" = 1 for "registered" usergroup
-    Given I set permission "agent_tickets.view_unassigned" = 1 for "registered" usergroup
-    Given the setting "elastica.enabled" is set to 0
     When I send a GET request to "/api/v2/search?q=Test%20Feedback"
     Then the response should be in JSON
     And the JSON node "data.grouped_results[0].type" should be equal to "article"
@@ -297,10 +225,6 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[7].results" should have 0 elements
 
   Scenario: I search news by title
-    Given I set permission "agent_people.use" = 1 for "registered" usergroup
-    Given I set permission "agent_tickets.use" = 1 for "registered" usergroup
-    Given I set permission "agent_tickets.view_unassigned" = 1 for "registered" usergroup
-    Given the setting "elastica.enabled" is set to 0
     When I send a GET request to "/api/v2/search?q=Test%20News"
     Then the response should be in JSON
     And the JSON node "data.grouped_results[0].type" should be equal to "article"
@@ -327,10 +251,6 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[7].results" should have 0 elements
 
   Scenario: I search ticket by subject
-    Given I set permission "agent_people.use" = 1 for "registered" usergroup
-    Given I set permission "agent_tickets.use" = 1 for "registered" usergroup
-    Given I set permission "agent_tickets.view_unassigned" = 1 for "registered" usergroup
-    Given the setting "elastica.enabled" is set to 0
     When I send a GET request to "/api/v2/search?q=Ticket%201"
     Then the response should be in JSON
     And the JSON node "data.grouped_results[0].type" should be equal to "article"
@@ -342,9 +262,10 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[3].type" should be equal to "news"
     And the JSON node "data.grouped_results[3].results" should have 0 elements
     And the JSON node "data.grouped_results[4].type" should be equal to "ticket"
-    And the JSON node "data.grouped_results[4].results" should have 2 elements
+    And the JSON node "data.grouped_results[4].results" should have 3 elements
     And the JSON node "data.grouped_results[4].results[0].subject" should be equal to "Ticket #1"
-    And the JSON node "data.grouped_results[4].results[1].subject" should be equal to "Ticket #3"
+    And the JSON node "data.grouped_results[4].results[1].subject" should be equal to "Ticket #2"
+    And the JSON node "data.grouped_results[4].results[2].subject" should be equal to "Ticket #3"
     And the JSON node "data.grouped_results[5].type" should be equal to "person"
     And the JSON node "data.grouped_results[5].results" should have 0 elements
     And the JSON node "data.grouped_results[6].type" should be equal to "organization"
@@ -353,10 +274,6 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[7].results" should have 0 elements
 
   Scenario: I search organization by name
-    Given I set permission "agent_people.use" = 1 for "registered" usergroup
-    Given I set permission "agent_tickets.use" = 1 for "registered" usergroup
-    Given I set permission "agent_tickets.view_unassigned" = 1 for "registered" usergroup
-    Given the setting "elastica.enabled" is set to 0
     When I send a GET request to "/api/v2/search?q=Organization%201"
     Then the response should be in JSON
     And the JSON node "data.grouped_results[0].type" should be equal to "article"
@@ -380,10 +297,6 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[7].results" should have 0 elements
 
   Scenario: I search by word
-    Given I set permission "agent_people.use" = 1 for "registered" usergroup
-    Given I set permission "agent_tickets.use" = 1 for "registered" usergroup
-    Given I set permission "agent_tickets.view_unassigned" = 1 for "registered" usergroup
-    Given the setting "elastica.enabled" is set to 0
     When I send a GET request to "/api/v2/search?q=Test"
     Then the response should be in JSON
     And the JSON node "data.grouped_results[0].type" should be equal to "article"
@@ -404,10 +317,6 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[7].results" should have 0 elements
 
   Scenario: I search ticket by ref
-    Given I set permission "agent_people.use" = 1 for "registered" usergroup
-    Given I set permission "agent_tickets.use" = 1 for "registered" usergroup
-    Given I set permission "agent_tickets.view_unassigned" = 1 for "registered" usergroup
-    Given the setting "elastica.enabled" is set to 0
     When I send a GET request to "/api/v2/search?q=DIDXGBLWRL-201622485"
     Then the response should be in JSON
     And the JSON node "data.grouped_results[0].type" should be equal to "article"
@@ -430,9 +339,6 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[7].results" should have 0 elements
 
   Scenario: I search ticket by access code
-    Given I set permission "agent_people.use" = 1 for "registered" usergroup
-    Given I set permission "agent_tickets.use" = 1 for "registered" usergroup
-    Given I set permission "agent_tickets.view_unassigned" = 1 for "registered" usergroup
     Given the setting "elastica.enabled" is set to 0
     When I send a GET request to "/api/v2/search?q=ABAFDSFSDJSDFJSDF"
     Then the response should be in JSON
@@ -455,9 +361,6 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[7].results" should have 0 elements
 
   Scenario: I search by label
-    Given I set permission "agent_people.use" = 1 for "registered" usergroup
-    Given I set permission "agent_tickets.use" = 1 for "registered" usergroup
-    Given I set permission "agent_tickets.view_unassigned" = 1 for "registered" usergroup
     Given the setting "elastica.enabled" is set to 0
     When I send a GET request to "/api/v2/search?q=[bar]"
     Then the response should be in JSON
@@ -470,8 +373,9 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[3].type" should be equal to "news"
     And the JSON node "data.grouped_results[3].results" should have 0 elements
     And the JSON node "data.grouped_results[4].type" should be equal to "ticket"
-    And the JSON node "data.grouped_results[4].results" should have 1 element
-    And the JSON node "data.grouped_results[4].results[0].id" should be equal to 4
+    And the JSON node "data.grouped_results[4].results" should have 2 elements
+    And the JSON node "data.grouped_results[4].results[0].id" should be equal to 3
+    And the JSON node "data.grouped_results[4].results[1].id" should be equal to 4
     And the JSON node "data.grouped_results[5].type" should be equal to "person"
     And the JSON node "data.grouped_results[5].results" should have 0 elements
     And the JSON node "data.grouped_results[6].type" should be equal to "organization"
@@ -490,8 +394,9 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[3].type" should be equal to "news"
     And the JSON node "data.grouped_results[3].results" should have 0 elements
     And the JSON node "data.grouped_results[4].type" should be equal to "ticket"
-    And the JSON node "data.grouped_results[4].results" should have 1 element
-    And the JSON node "data.grouped_results[4].results[0].id" should be equal to 4
+    And the JSON node "data.grouped_results[4].results" should have 2 elements
+    And the JSON node "data.grouped_results[4].results[0].id" should be equal to 3
+    And the JSON node "data.grouped_results[4].results[1].id" should be equal to 4
     And the JSON node "data.grouped_results[5].type" should be equal to "person"
     And the JSON node "data.grouped_results[5].results" should have 0 elements
     And the JSON node "data.grouped_results[6].type" should be equal to "organization"
@@ -517,3 +422,55 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[6].results" should have 0 elements
     And the JSON node "data.grouped_results[7].type" should be equal to "chat_conversation"
     And the JSON node "data.grouped_results[7].results" should have 0 elements
+
+  Scenario: I send empty query request without "agent_people.use" permission
+    Given I remove "admin" usergroup relation "agent_all_perms"
+    And I remove "admin" usergroup relation "agent_all_safe_perms"
+    And I set permission "agent_people.use" = 0 for "registered" usergroup
+    And the setting "elastica.enabled" is set to 0
+    When I send a GET request to "/api/v2/search"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data.grouped_results[0].type" should be equal to "article"
+    And the JSON node "data.grouped_results[1].type" should be equal to "download"
+    And the JSON node "data.grouped_results[2].type" should be equal to "feedback"
+    And the JSON node "data.grouped_results[3].type" should be equal to "news"
+    And the JSON node "data.grouped_results[4].type" should be equal to "ticket"
+    And the JSON node "data.grouped_results[5].type" should be equal to "chat_conversation"
+
+  Scenario: I send empty query request with "agent_people.use" permission
+    Given I set permission "agent_people.use" = 1 for "registered" usergroup
+    Given the setting "elastica.enabled" is set to 0
+    When I send a GET request to "/api/v2/search"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data.grouped_results[0].type" should be equal to "article"
+    And the JSON node "data.grouped_results[0].results" should have 0 elements
+    And the JSON node "data.grouped_results[1].type" should be equal to "download"
+    And the JSON node "data.grouped_results[1].results" should have 0 elements
+    And the JSON node "data.grouped_results[2].type" should be equal to "feedback"
+    And the JSON node "data.grouped_results[2].results" should have 0 elements
+    And the JSON node "data.grouped_results[3].type" should be equal to "news"
+    And the JSON node "data.grouped_results[3].results" should have 0 elements
+    And the JSON node "data.grouped_results[4].type" should be equal to "ticket"
+    And the JSON node "data.grouped_results[4].results" should have 0 elements
+    And the JSON node "data.grouped_results[5].type" should be equal to "person"
+    And the JSON node "data.grouped_results[5].results" should have 0 elements
+    And the JSON node "data.grouped_results[6].type" should be equal to "organization"
+    And the JSON node "data.grouped_results[6].results" should have 0 elements
+    And the JSON node "data.grouped_results[7].type" should be equal to "chat_conversation"
+    And the JSON node "data.grouped_results[7].results" should have 0 elements
+
+  Scenario Outline: I search ticket by id with view restriction
+    Given I set permission "agent_people.use" = <ticket_use> for "registered" usergroup
+    Given I set permission "agent_tickets.use" = <view_unassigned> for "registered" usergroup
+    When I send a GET request to "/api/v2/search?q=1"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data.grouped_results[4].type" should be equal to "ticket"
+    And the JSON node "data.grouped_results[4].results" should have 0 elements
+
+    Examples:
+      | ticket_use | view_unassigned |
+      | 0          | 0               |
+      | 1          | 0               |
