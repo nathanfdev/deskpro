@@ -100,7 +100,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
                 return $response;
             }
 
-            $tokenOrResponse = new DpFormLoginToken($request->get('username'), $request->get('password'));
+            $tokenOrResponse = new DpFormLoginToken($request->get('username', ''), $request->get('password', ''));
         } elseif ('portal_agent_login' == $request->attributes->get('_route')) {
             $tokenOrResponse = new AgentImpersonateToken($request->attributes->get('code'));
             $request->getSession()->set('is_impersonating', true);
