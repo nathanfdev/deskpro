@@ -26,6 +26,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @selected_template = null
       @selected_template_info = {}
       @selected_template_info_loaded = false
+      @css_template_info = null
+      @css_template_selected = null
       @preview_as_expanded = false
       @preview_as = 'myself'
       @preview_as_email = null
@@ -196,6 +198,32 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
       @selected_template = null
       @selected_template_info_loaded = false
+
+    openCustomCssEditor: () =>
+      @css_template_selected = true
+      @$http.get('/portal/api/style/edit-theme-set/advanced-edits').success((data) =>
+        @css_template_info = {
+          loaded: true,
+          code: data.scss
+        }
+      )
+
+    cancelCustomCss: () =>
+      @css_template_selected = false
+
+    saveCustomCss: () =>
+      @$http({
+        method: 'PUT',
+        url: '/portal/api/style/edit-theme-set/advanced-edits',
+        data: angular.toJson({scss: @css_template_info.code})
+      })
+      .error(@serverError)
+      .then(() =>
+        @saveValues()
+      )
+
+      @css_template_selected = null
+      @css_template_info = false
 
     cancelTemplateEditor: () =>
       @selected_template = null

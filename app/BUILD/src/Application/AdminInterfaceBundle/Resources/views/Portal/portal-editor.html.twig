@@ -127,36 +127,36 @@
                     </nav>
 
                     <!-- Header -->
-                    <dp-code-editor
-                        code="Portal.advanced.header"
-                        syntax="twig"
-                        visible="Portal.isAdvancedTab('header') && Portal.isAdvancedExpanded()"
-                        close="Portal.collapseAdvanced">
-                    </dp-code-editor>
                     <div class="the-code" ng-show="Portal.isAdvancedTab('header')">
-                        <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-header.html.twig')">Edit Header Template</button>
+                        <p>
+                            The header template is prepended to the very top of the page.
+                        </p>
+                        <div style="text-align: center; padding-top: 8px;"><button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-header.html.twig')">Edit Header Template</button></div>
                     </div>
 
                     <!-- Footer -->
-                    <dp-code-editor
-                        code="Portal.advanced.footer"
-                        syntax="twig"
-                        visible="Portal.isAdvancedTab('footer') && Portal.isAdvancedExpanded()"
-                        close="Portal.collapseAdvanced">
-                    </dp-code-editor>
                     <div class="the-code" ng-show="Portal.isAdvancedTab('footer')">
-                        <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-footer.html.twig')">Edit Footer Template</button>
+                        <p>
+                            The footer template is appended to the very bottom of th epage.
+                        </p>
+                        <div style="text-align: center; padding-top: 8px;"><button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-footer.html.twig')">Edit Footer Template</button></div>
                     </div>
 
                     <!-- CSS -->
                     <dp-code-editor
-                        code="Portal.advanced.scss"
-                        syntax="scss"
-                        visible="Portal.isAdvancedTab('scss') && Portal.isAdvancedExpanded()"
-                        close="Portal.collapseAdvanced">
+                        info="Portal.css_template_info"
+                        syntax="css"
+                        visible="Portal.css_template_selected && Portal.css_template_info.loaded"
+                        save="Portal.saveCustomCss"
+                        cancel="Portal.cancelCustomCss"
+                    >
                     </dp-code-editor>
                     <div class="the-code" ng-show="Portal.isAdvancedTab('scss')">
-                        <button class="btn btn-default">Edit CSS</button>
+                        <p>
+                            Your custom CSS is appended to the main CSS stylesheet. Use this to override default styles
+                            or add custom styles.
+                        </p>
+                        <div style="text-align: center; padding-top: 8px;"><button class="btn btn-default" ng-click="Portal.openCustomCssEditor()">Edit Custom CSS</button></div>
                     </div>
 
                     <!-- Assets -->

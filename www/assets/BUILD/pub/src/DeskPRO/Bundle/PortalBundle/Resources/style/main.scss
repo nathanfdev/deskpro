@@ -1094,6 +1094,7 @@ button, .button, input[type="submit"] {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 .top-bar {
+  @include clearfix;
   border-bottom: 1px solid $divider-color;
   padding: 10px 0;
   margin-bottom: 10px;
@@ -8450,6 +8451,10 @@ ul.big-button-collection {
   @media screen and (max-width: 760px) {
     display: none;
   }
+}
+
+.portal-mode-preview .deskpro-agent-top-bar-wrapper {
+  display: none !important;
 }
 
 body.with-agent-bar {

@@ -69,7 +69,7 @@
   // Theme preview area
   .preview-panel {
     position: absolute;
-    top: 75px;
+    top: 55px;
     left: $panel-width + 10px;
     display: block;
     right: 20px;
@@ -487,7 +487,6 @@
 
       .logo-box {
         img {
-          width: 100%;
           max-width: 100%;
         }
       }
