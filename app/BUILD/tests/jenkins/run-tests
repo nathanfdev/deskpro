@@ -1,81 +1,283 @@
 #!/bin/bash
 
-SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-ROOT_DIR=$SCRIPT_DIR/../../../../
+##############################################
+# DETERMINE THREADS NUMBER
+##############################################
 
-TESTS_ERROR=1
+THREADS_NUM=$1
+if [ "$THREADS_NUM" -eq "$THREADS_NUM" ] 2>/dev/null ; then
+    printf "\n --- Running tests in $THREADS_NUM threads --- \n\n"
+else
+  echo "You must provide integer threads number argument!"
+  exit 1
+fi
 
-cd $ROOT_DIR
+##############################################
+# ESTABLISH CONTEXT
+##############################################
 
-DATABASE_NAME=$DATABASE_PREFIX
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $SCRIPT_DIR
+cd ..
+LOGS_DIR="$SCRIPT_DIR/../../../../var/logs/parallel-tests"
+rm -rf $LOGS_DIR/*
+mkdir -p $LOGS_DIR
+
+##############################################
+# RUN 6 SMALL TEST SUITES IN PARALLEL
+##############################################
+
+# Hack: see https://trello.com/c/xv8IRWTo/382-test-is-failing-when-running-for-the-first-time
+bin/phpunit phpunit/DpTest/Application/EmailBundle/Templating/EngineTest.php > /dev/null
+# ---
 
 SECONDS=0
-echo "Init project deps"
-if [ "$1" = "quick" ] || [ "$1" = "sequential-build" ] ; then
-    echo "Building on top of the previous build"
-    rm -rf $ROOT_DIR/www/BUILD/pub/build
-    rm -rf $ROOT_DIR/var/cache/*/
-    rm -rf $ROOT_DIR/var/kernel_cache/*/
-    rm -rf $ROOT_DIR/var/tmp/*/
-    rm -f $ROOT_DIR/www/BUILD/pub/src/DeskPRO/Bundle/AgentBundle/AgentApp_Reducers.js
-    find $ROOT_DIR/var/ -type d -print0 | xargs -0 chmod 755
-
-    cd $ROOT_DIR/app/BUILD
-    composer install --ignore-platform-reqs -o
-
-    cd $ROOT_DIR/www/assets/BUILD/pub
-    npm install
-    npm run-script gulp-refresh-reducers
-else
-    echo "Building from the ground up"
-    $ROOT_DIR/dev/bin/init-project
-fi
+echo "Running small test suites in parallel (phpunit, phpspec, jest, beaht install/production/system-api)"
+(export DP_PARALLEL_TESTING_PROCESS_NUM=1; bin/phpunit --testsuite DeskPRO &> "$LOGS_DIR/phpunit.txt"; bin/phpunit --testsuite DeskPRO-TermEngine &> "$LOGS_DIR/phpunit-term-engine.txt"; bin/phpunit --testsuite DeskPRO-Portal &> "$LOGS_DIR/phpunit-portal.txt") &
+(bin/phpspec run --format=dot &> "$LOGS_DIR/phpspec.txt") &
+(cd ../../../www/assets/BUILD/pub/ && npm test &> "$LOGS_DIR/jest.txt") &
+(export DP_PARALLEL_TESTING_PROCESS_NUM=2 && bin/behat --profile=install &> "$LOGS_DIR/behat-install.txt") &
+(export DP_PARALLEL_TESTING_PROCESS_NUM=3 && bin/behat --profile=system-api &> "$LOGS_DIR/behat-system-api.txt") &
+(bin/behat --profile=production &> "$LOGS_DIR/behat-production.txt") &
+wait
 echo "--> Done in $SECONDS seconds"
 
-cd $ROOT_DIR
+##############################################
+# TAG FEATURES TO RUN IN THREADS
+##############################################
 
-echo "Creating test databases"
-mysql -e "DROP DATABASE IF EXISTS ${DATABASE_NAME};"
-mysql -e "CREATE DATABASE ${DATABASE_NAME};"
-mysql -e "GRANT ALL PRIVILEGES ON ${DATABASE_NAME}.* TO 'deskpro'@'localhost' identified by 'deskpro' WITH GRANT OPTION;"
-echo "--> Done"
+jenkins/tag-features --tag=parallel --num=$THREADS_NUM
 
-echo "Creating testing config.all.php"
-cp app/BUILD/tests/config/config.all.dist.php app/BUILD/tests/config/config.all.php
-echo "--> Done"
-
-echo "Copying configs"
-cp -a app/BUILD/config_new/. config/
-echo "--> Done"
-
-echo "Modifying copied configs"
-echo "\$DB_CONFIG['user']     = 'deskpro';" >> config/config.database.php
-echo "\$DB_CONFIG['password'] = 'deskpro';" >> config/config.database.php
-echo "\$DB_CONFIG['dbname']   = '${DATABASE_NAME}';" >> config/config.database.php
-echo "\$prodModeFlagFile = realpath(__DIR__ . '/../../var/tmp/behat_production_mode_flag.tmp');" >> config/advanced/config.env.php
-echo "\$ENV_CONFIG['environment'] = file_exists(\$prodModeFlagFile) ? 'prod' : 'dev';" >> config/advanced/config.env.php
-echo "\$CONFIG['database']['dbname'] = '${DATABASE_NAME}';" >> app/BUILD/tests/config/config.all.php
-echo "-- Done"
-
-echo "Ensuring permissions"
-chmod -R 0777 var
-echo "--> Done"
+##############################################
+# BEHAT API IN PARALLEL THREADS
+##############################################
 
 SECONDS=0
-echo "Warming up caches"
-$ROOT_DIR/bin/console cache:warmup
+echo "Running behat api suite in $THREADS_NUM parallel threads"
+for ((i=1;i<=$THREADS_NUM;i++)); do
+    (export DP_PARALLEL_TESTING_PROCESS_NUM=$i && bin/behat --profile=api --tags="@parallel-$i" &> "$LOGS_DIR/behat-api-$i.txt") &
+done
+wait
 echo "--> Done in $SECONDS seconds"
 
-if [ "$1" = "quick" ]; then
-    echo "Running quick tests"
-    app/BUILD/tests/bin/run-tests-quick
+##############################################
+# BEHAT PORTAL IN PARALLEL THREADS
+##############################################
+
+SECONDS=0
+echo "Running behat portal suite in $THREADS_NUM parallel threads"
+for ((i=1;i<=$THREADS_NUM;i++)); do
+    (export DP_PARALLEL_TESTING_PROCESS_NUM=$i && bin/behat --profile=portal --tags="@parallel-$i" &> "$LOGS_DIR/behat-portal-$i.txt") &
+done
+wait
+echo "--> Done in $SECONDS seconds"
+
+##############################################
+# WAIT FOR THREADS TO FINISH GUARANTEED
+##############################################
+
+sleep 3
+
+##############################################
+# PRINT RESULTS
+##############################################
+
+echo ""
+echo ""
+echo "-----------------------------------------------------------------------------------------------------------------"
+echo "PHPUnit"
+echo "-----------------------------------------------------------------------------------------------------------------"
+echo ""
+tail -n 50 "$LOGS_DIR/phpunit.txt"; sleep .1
+tail -n 50 "$LOGS_DIR/phpunit-term-engine.txt"; sleep .1
+tail -n 50 "$LOGS_DIR/phpunit-portal.txt"; sleep .1
+
+echo ""
+echo "-----------------------------------------------------------------------------------------------------------------"
+echo "PHPSpec"
+echo "-----------------------------------------------------------------------------------------------------------------"
+tail -n 50 "$LOGS_DIR/phpspec.txt"; sleep .1
+
+echo ""
+echo "-----------------------------------------------------------------------------------------------------------------"
+echo "Jest"
+echo "-----------------------------------------------------------------------------------------------------------------"
+echo ""
+tail -n 10 "$LOGS_DIR/jest.txt"; sleep .1
+
+echo ""
+echo ""
+echo "-----------------------------------------------------------------------------------------------------------------"
+echo "Behat install"
+echo "-----------------------------------------------------------------------------------------------------------------"
+echo ""
+tail -n 10 "$LOGS_DIR/behat-install.txt"; sleep .1
+
+echo ""
+echo "-----------------------------------------------------------------------------------------------------------------"
+echo "Behat system-api"
+echo "-----------------------------------------------------------------------------------------------------------------"
+echo ""
+tail -n 10 "$LOGS_DIR/behat-system-api.txt"; sleep .1
+
+echo ""
+echo "-----------------------------------------------------------------------------------------------------------------"
+echo "Behat production"
+echo "-----------------------------------------------------------------------------------------------------------------"
+echo ""
+tail -n 25 "$LOGS_DIR/behat-production.txt"; sleep .1
+
+echo ""
+echo "-----------------------------------------------------------------------------------------------------------------"
+echo "Behat api"
+echo "-----------------------------------------------------------------------------------------------------------------"
+for ((i=1;i<=$THREADS_NUM;i++)); do
+    printf "\n\n--- api thread $i ---\n\n"; tail -n 50 "$LOGS_DIR/behat-api-$i.txt"; sleep .1
+done
+
+echo ""
+echo "-----------------------------------------------------------------------------------------------------------------"
+echo "Behat portal"
+echo "-----------------------------------------------------------------------------------------------------------------"
+for ((i=1;i<=$THREADS_NUM;i++)); do
+    printf "\n\n--- portal thread $i ---\n\n"; tail -n 50 "$LOGS_DIR/behat-portal-$i.txt"; sleep .1
+done
+
+##############################################
+# SUMMARIZE RESULTS
+##############################################
+
+echo ""
+echo "-----------------------------------------------------------------------------------------------------------------"
+echo "Build summary"
+echo "-----------------------------------------------------------------------------------------------------------------"
+
+phpunit=$(tail -n 2 "$LOGS_DIR/phpunit.txt" | tr '\n' ' ')
+phpunit_term_engine=$(tail -n 2 "$LOGS_DIR/phpunit-term-engine.txt" | tr '\n' ' ')
+phpunit_portal=$(tail -n 2 "$LOGS_DIR/phpunit-portal.txt" | tr '\n' ' ')
+phpspec=$(tail -n 3 "$LOGS_DIR/phpspec.txt" | tr '\n' ' ')
+jest=$(tail -n 1 "$LOGS_DIR/jest.txt" | tr '\n' ' ')
+behat_install=$(tail -n 3 "$LOGS_DIR/behat-install.txt" | tr '\n' ' ')
+behat_system_api=$(tail -n 3 "$LOGS_DIR/behat-system-api.txt" | tr '\n' ' ')
+behat_production=$(tail -n 3 "$LOGS_DIR/behat-production.txt" | tr '\n' ' ')
+for ((i=1;i<=$THREADS_NUM;i++)); do
+    behat_api[$i]=$(tail -n 3 "$LOGS_DIR/behat-api-$i.txt" | tr '\n' ' ')
+done
+for ((i=1;i<=$THREADS_NUM;i++)); do
+    behat_portal[$i]=$(tail -n 3 "$LOGS_DIR/behat-portal-$i.txt" | tr '\n' ' ')
+done
+
+echo "
+(1) PHPUnit:
+
+ - DeskPRO: $phpunit
+ - DeskPRO-TermEngine: $phpunit_term_engine
+ - DeskPRO-Portal: $phpunit_portal
+
+(2) PHPSpec: $phpspec
+
+---------------
+
+(3) Jest: $jest
+
+---------------
+
+(4) Behat install: $behat_install
+
+(5) Behat system-api: $behat_system_api
+
+(6) Behat production: $behat_production
+
+---------------
+
+Behat api:
+"
+for ((i=1;i<=$THREADS_NUM;i++)); do
+    echo "($i) ${behat_api[i]}"
+done
+
+echo "
+---------------
+
+Behat portal:
+"
+for ((i=1;i<=$THREADS_NUM;i++)); do
+    echo "($i) ${behat_portal[i]}"
+done
+
+echo ""
+echo "-----------------------------------------------------------------------------------------------------------------"
+echo "Build status"
+echo "-----------------------------------------------------------------------------------------------------------------"
+
+phpunit_failed=0
+if [[ "$phpunit" =~ "FAILURES" ]] || [[ "$phpunit_term_engine" =~ "FAILURES" ]] || [[ "$phpunit_portal" =~ "FAILURES" ]] ; then
+    phpunit_failed=1
+    echo "PHPUnit failed"
+fi
+
+phpspec_failed=0
+if [[ "$phpspec" =~ "failed" ]] ; then
+    phpspec_failed=1
+    echo "PHPSpec failed"
+fi
+
+jest_failed=0
+if [[ "$jest" =~ "fail" ]] ; then
+    jest_failed=1
+    echo "Jest failed"
+fi
+
+behat_install_failed=0
+if [[ "$behat_install" =~ "failed" ]] ; then
+    behat_install_failed=1
+    echo "Behat install failed"
+fi
+
+behat_system_api_failed=0
+if [[ "$behat_system_api" =~ "failed" ]] ; then
+    behat_system_api_failed=1
+    echo "Behat system-api failed"
+fi
+
+behat_production_failed=0
+if [[ "$behat_production" =~ "failed" ]] ; then
+    behat_production_failed=1
+    echo "Behat production failed"
+fi
+
+behat_api_failed=0
+for ((i=1;i<=$THREADS_NUM;i++)); do
+    if [[ "${behat_api[i]}" =~ "failed" ]] ; then
+        behat_api_failed=1
+        echo "Behat api failed"
+        break
+    fi
+done
+
+behat_portal_failed=0
+for ((i=1;i<=$THREADS_NUM;i++)); do
+    if [[ "${behat_portal[i]}" =~ "failed" ]] ; then
+        behat_portal_failed=1
+        echo "Behat portal failed"
+        break
+    fi
+done
+
+##############################################
+# EXIT 0/1
+##############################################
+
+echo ""
+status=$((phpunit_failed + phpspec_failed + jest_failed + behat_install_failed + behat_system_api_failed + behat_production_failed + behat_api_failed + behat_portal_failed))
+if [[ "$status" -ne "0" ]]; then
+    echo "-------------------------------------------------------------------------------------------------------------"
+    echo ""
+    echo "--- FAILED --- "
+    echo ""
+    exit 1
 else
-    echo "Running full tests suite"
-    app/BUILD/tests/bin/run-tests coverage
+    echo "--- ALL OK --- "
+    echo ""
+    exit 0
 fi
-
-if [[ $? -eq 0 ]]; then
-    TESTS_ERROR=0
-fi
-
-exit $TESTS_ERROR

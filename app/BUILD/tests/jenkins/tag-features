@@ -1,0 +1,26 @@
+#!/usr/bin/env php
+<?php
+
+
+list($tag, $numThreads) = array_values(getopt('', ['tag:', 'num:']));
+
+$dirs = [
+    realpath(__DIR__ . '/../features/portal'),
+    realpath(__DIR__ . '/../features/api'),
+];
+
+echo "\nTagging the following suites:\n\n";
+echo join("\n", $dirs);
+echo "\n\nwith @{$tag}-N to run in {$numThreads} threads\n\n";
+
+foreach ($dirs as $dir) {
+    $i = 1;
+    $iterator = new RecursiveDirectoryIterator($dir);
+    foreach (new RecursiveIteratorIterator($iterator) as $filename => $file) {
+        /** @var \SplFileInfo $file */
+        if ($file->getExtension() === 'feature') {
+            file_put_contents($filename, "\n@$tag-{$i}\n" , FILE_APPEND);
+            $i = $i % $numThreads + 1;
+        }
+    }
+}

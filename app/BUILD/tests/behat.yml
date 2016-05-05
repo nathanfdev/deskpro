@@ -18,7 +18,7 @@ api:
                     dataset_manager: @dataset_manager
                 - Behat\MinkExtension\Context\MinkContext
                 - behatch:json
-                - DpBehat\DoctrineContext
+                - DpBehat\HooksContext
                 - DpBehat\Api\RestContext
                 - DpBehat\Api\AuthContext
                 - DpBehat\TermEngine\TermEngineBehatContext
@@ -57,7 +57,6 @@ system-api:
                     dataset_manager: @dataset_manager
                 - Behat\MinkExtension\Context\MinkContext
                 - behatch:json
-                - DpBehat\DoctrineContext
                 - DpBehat\Api\RestContext
                 - DpBehat\Api\AuthContext
                 - DpBehat\System\Alerts\IncidentsContext
@@ -106,7 +105,7 @@ portal:
                 - %paths.base%/features/portal
             contexts:
                 - Behat\MinkExtension\Context\MinkContext
-                - DpBehat\DoctrineContext
+                - DpBehat\HooksContext
                 - DpBehat\Portal\TestsContext
                 - behatch:json
                 - behatch:rest
