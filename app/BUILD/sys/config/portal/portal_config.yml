@@ -143,6 +143,7 @@ jms_serializer:
 
 gregwar_captcha:
     reload: true
+    expiration: 120
 
 fos_rest:
     routing_loader:
