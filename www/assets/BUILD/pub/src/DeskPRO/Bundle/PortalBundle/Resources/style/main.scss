@@ -11695,3 +11695,52 @@ body.portal-mode-focus-window {
     }
   }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Date picker widget
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+$datetime-cell-border: lighten($form-border-color, 15%);
+$datetime-active-color: $button-color;
+$datetime-hover-color: lighten($button-color, 10%);
+
+.xdsoft_datetimepicker {
+  border: 1px solid $form-border-color;
+}
+.xdsoft_datetimepicker .xdsoft_label > .xdsoft_select {
+  border: 1px solid $datetime-cell-border;
+}
+.xdsoft_datetimepicker .xdsoft_label > .xdsoft_select > div > .xdsoft_option:hover {
+  background: $datetime-hover-color;
+}
+.xdsoft_datetimepicker .xdsoft_label > .xdsoft_select > div > .xdsoft_option.xdsoft_current {
+  background: $datetime-active-color;
+}
+.xdsoft_datetimepicker .xdsoft_calendar td,.xdsoft_datetimepicker .xdsoft_calendar th {
+  border: 1px solid $datetime-cell-border;
+}
+.xdsoft_datetimepicker .xdsoft_calendar td.xdsoft_today {
+  color: $datetime-active-color;
+}
+.xdsoft_datetimepicker .xdsoft_calendar td.xdsoft_default,
+.xdsoft_datetimepicker .xdsoft_calendar td.xdsoft_current,
+.xdsoft_datetimepicker .xdsoft_timepicker .xdsoft_time_box >div >div.xdsoft_current {
+  background: $datetime-active-color;
+}
+.xdsoft_datetimepicker .xdsoft_calendar td:hover,
+.xdsoft_datetimepicker .xdsoft_timepicker .xdsoft_time_box >div >div:hover {
+  background: $datetime-hover-color !important;
+}
+.xdsoft_datetimepicker .xdsoft_calendar td.xdsoft_current.xdsoft_disabled:hover,
+.xdsoft_datetimepicker .xdsoft_timepicker .xdsoft_time_box>div>div.xdsoft_current.xdsoft_disabled:hover {
+  background: $datetime-active-color !important;
+}
+.xdsoft_time_box {
+  border: 1px solid $datetime-cell-border;
+}
+.xdsoft_datetimepicker .xdsoft_save_selected {
+  border: 1px solid $datetime-cell-border !important;
+}
+.xdsoft_datetimepicker .blue-gradient-button {
+  border: 1px solid $datetime-cell-border;
+}
