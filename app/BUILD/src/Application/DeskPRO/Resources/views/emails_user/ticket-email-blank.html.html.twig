@@ -5,7 +5,7 @@
 	<br /><br />
 
 	{{ phrase('user.emails.ticket_access_ticket_online') }}
-	<a href="{{ url_full('portal_tickets_view', {'ticket_ref': ticket.access_code}) }}">
-		{{ url_full('portal_tickets_view', {'ticket_ref': ticket.access_code}) }}
+	<a href="{{ ticket.link }}">
+		{{ ticket.link }}
 	</a>
 {% endif %}

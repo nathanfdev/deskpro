@@ -84,7 +84,7 @@
 			<div style="padding-bottom: 4px; vertical-align: middle;">
 				{{ phrase('agent.general.category') }}: <select name="category_id" class="category_id" id="%baseId%_editsnippet_category_select">
 					{% for category in snippet_cats %}
-						<option value="{{ category.id }}">{{ category.title }}</option>
+						<option value="{{ category.id }}" {% if loop.first == true %}selected="selected"{% endif %}>{{ category.title }}</option>
 					{% endfor %}
 				</select>
 

@@ -949,7 +949,9 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		if (!snippet) {
 			snippet = {
 				id: 0,
-        category_id: this.getEl('catlist').find('.on').data('category-id') || this.getEl('catlist').find('li').eq(0).data('category-id'),
+				category_id: this.getEl('catlist').find('.on').data('category-id')
+				|| this.getEl('catlist').find('li').eq(0).data('category-id')
+				|| this.getEl('edit_snippet').find('select.category_id').val(),
 				shortcut_code: '',
 				title: [],
 				snippet: []

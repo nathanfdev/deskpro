@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\InstallBundle\Upgrade\Build;
 
 class BuildNewAgent_0023_ticketlayouts extends AbstractBuild
@@ -81,6 +80,9 @@ class BuildNewAgent_0023_ticketlayouts extends AbstractBuild
                     $newFields[] = $this->getPersonFieldDev();
                 }
             } else {
+                if ($field['field_type'] === 'attach') {
+                    $field['field_type'] = 'attachments';
+                }
                 $newFields[] = $field;
             }
         }
