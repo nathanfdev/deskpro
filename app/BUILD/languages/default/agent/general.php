@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
     'agent.general.24x7'                                    => '24x7',
     'agent.general.actions'                                 => 'Actions',
     'agent.general.activity_stream'                         => 'Activity Stream',
@@ -200,7 +200,6 @@ return array(
     'agent.general.current_profile_tz'                      => 'The current time according to your profile',
     'agent.general.date'                                    => 'Date',
     'agent.general.date_archived'                           => 'Date Archived',
-    'agent.general.date_archived'                           => 'Date Archived',
     'agent.general.date_completed'                          => 'Date Completed',
     'agent.general.date_created'                            => 'Date Created',
     'agent.general.date_created_newestoldest'               => 'Date Created (newest-oldest)',
@@ -209,6 +208,7 @@ return array(
     'agent.general.date_of_last_agent_reply'                => 'Date of Last Agent Reply',
     'agent.general.date_of_last_reply'                      => 'Date of Last Reply',
     'agent.general.date_of_last_user_reply'                 => 'Date of Last User Reply',
+    'agent.general.date_opened'                             => 'Date Opened',
     'agent.general.date_published'                          => 'Date Published',
     'agent.general.date_resolved'                           => 'Date Resolved',
     'agent.general.dates_and_times'                         => 'Dates & Times',
@@ -796,4 +796,4 @@ return array(
     'agent.general.tabs_reopen'        => 'Reopen:',
 
     'agent.general.reopen' => 'reopen',
-);
+];
