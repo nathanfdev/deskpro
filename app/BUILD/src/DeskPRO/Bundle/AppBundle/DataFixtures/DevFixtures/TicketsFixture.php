@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\TicketFlagged;
 use Application\DeskPRO\Entity\TicketSla;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures\CustomFields\CustomDataGenerator;
+use DeskPRO\Bundle\AppBundle\Entity\PersonSetting;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Orb\Util\DpStrings;
@@ -576,5 +577,28 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
             }
         }
         $this->db->batchInsert('tickets_flagged', $batch, true);
+        $this->setCustomLabelsForStars();
+    }
+
+    private function setCustomLabelsForStars()
+    {
+        $colors = [
+            TicketFlagged::STAR_BLUE,
+            TicketFlagged::STAR_GREEN,
+            TicketFlagged::STAR_ORANGE,
+            TicketFlagged::STAR_PINK,
+            TicketFlagged::STAR_PURPLE,
+            TicketFlagged::STAR_RED,
+            TicketFlagged::STAR_YELLOW,
+        ];
+        $admin = $this->getReference('admin');
+        foreach ($colors as $color) {
+            if ($color % 2 === 0) {
+                $personSetting = new PersonSetting($admin, 'agent.ticket_stars.name.'.$color);
+                $personSetting->setValue(ucfirst($this->faker->word));
+                $this->manager->persist($personSetting);
+            }
+        }
+        $this->manager->flush();
     }
 }

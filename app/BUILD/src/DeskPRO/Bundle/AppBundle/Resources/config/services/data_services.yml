@@ -44,8 +44,8 @@ services:
     class: DeskPRO\Bundle\AppBundle\DataService\RatingsDataService
     arguments: ["@doctrine.orm.default_entity_manager"]
 
-  data.ticketflags:
-    class: DeskPRO\Bundle\AppBundle\Model\TicketFlags
+  data.ticket_stars:
+    class: DeskPRO\Bundle\AppBundle\Model\TicketStars
     arguments: ["@doctrine.orm.default_entity_manager"]
 
   data.ticketlabels:
