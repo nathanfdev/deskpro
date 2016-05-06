@@ -57,12 +57,11 @@ abstract class AbstractApplicatorService implements ApplicatorServiceInterface
     }
 
     /**
-     * @param array $ids
      * @param array $actions
      */
-    public function apply(array $ids, array $actions)
+    public function apply($object, array $actions)
     {
-        $entities = $this->getEntities($this->class, $ids);
+        //        $entities = $this->getEntities($this->class, $ids);
         // Transform array of actions into ActionInterface collection
         $this->actionCollection->prepare($this->namespace, $actions);
 
@@ -73,7 +72,7 @@ abstract class AbstractApplicatorService implements ApplicatorServiceInterface
             $applicator      = $this->createApplicator($applicatorClass);
             $applicator
                 ->setOptions($options)
-                ->apply($entities);
+                ->apply($object);
         }
 
         $this->em->flush();
@@ -92,17 +91,16 @@ abstract class AbstractApplicatorService implements ApplicatorServiceInterface
     /**
      * Fetch entities for mass action apply.
      *
-     * @param string $class
-     * @param array  $ids
+     * @param array $ids
      *
      * @return array
      */
-    protected function getEntities($class, array $ids)
+    public function getEntities(array $ids)
     {
         $qb = $this->em->createQueryBuilder();
         $qb
             ->select('entity')
-            ->from($class, 'entity')
+            ->from($this->class, 'entity')
             ->where('entity.id IN (:ids)')
             ->setParameter('ids', $ids);
 

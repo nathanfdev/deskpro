@@ -36,18 +36,26 @@ use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ApplyAssignAction extends AbstractTicketApplicator implements ActionApplicatorInterface
 {
+    /** @var  array */
+    private $collection;
+
+    public function __construct(EntityManager $em)
+    {
+        parent::__construct($em);
+        $this->collection = $this->init();
+    }
+
     /**
      * @param Ticket[] $tickets
      */
     public function apply(array $tickets)
     {
-        $collection = $this->init();
-
-        foreach ($collection as $type => $value) {
+        foreach ($this->collection as $type => $value) {
             switch ($type) {
                 case 'agent':
                     foreach ($tickets as $ticket) {
