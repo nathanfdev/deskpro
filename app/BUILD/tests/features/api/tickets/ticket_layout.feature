@@ -25,15 +25,16 @@ Feature: /ticket_layouts endpoint
     And the response should be in JSON
     And the JSON node "[0].department" should be equal to 0
     And the JSON node "[0].context" should be equal to agent
-    And the JSON node "[0].fields" should have 4 elements
+    And the JSON node "[0].fields" should have 5 elements
     And the JSON node "[0].fields[0].field_type" should be equal to "person"
     And the JSON node "[0].fields[0].options.on_newticket" should be equal to 1
     And the JSON node "[0].fields[0].options.on_viewticket" should be equal to 1
     And the JSON node "[0].fields[0].options.on_viewticket_mode" should be equal to "value"
     And the JSON node "[0].fields[0].options.on_editticket" should be equal to 1
     And the JSON node "[0].fields[1].field_type" should be equal to "department"
-    And the JSON node "[0].fields[2].field_type" should be equal to "subject"
-    And the JSON node "[0].fields[3].field_type" should be equal to "message"
+    And the JSON node "[0].fields[2].field_type" should be equal to "labels"
+    And the JSON node "[0].fields[3].field_type" should be equal to "subject"
+    And the JSON node "[0].fields[4].field_type" should be equal to "message"
 
     And the JSON node "[1].department" should be equal to 2
     And the JSON node "[1].context" should be equal to agent
@@ -67,12 +68,12 @@ Feature: /ticket_layouts endpoint
 
     Examples:
       | context | department_id | expected_department_id | expected_fields_count |
-      | agent   |  1            | 1                      | 4                     |
+      | agent   |  1            | 1                      | 5                     |
       | agent   |  2            | 2                      | 31                    |
-      | agent   |  default      | 0                      | 4                     |
-      | user    |  1            | 1                      | 4                     |
-      | user    |  2            | 2                      | 4                     |
-      | user    |  default      | 0                      | 4                     |
+      | agent   |  default      | 0                      | 5                     |
+      | user    |  1            | 1                      | 5                     |
+      | user    |  2            | 2                      | 5                     |
+      | user    |  default      | 0                      | 5                     |
 
   Scenario: I want to see ticket layout with disabled product, priority, category and workflow settings
     Given the setting "core.use_product" is set to 0

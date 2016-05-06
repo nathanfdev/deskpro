@@ -105,7 +105,7 @@ class TicketHandler extends AbstractEntityHandler
      */
     public function getTicketLayout(TicketEntity $ticket)
     {
-        $edit_layout = $this->layoutFactory->getLayoutForTicketForm($ticket->getDepartment());
+        $edit_layout = $this->layoutFactory->getLayoutForTicketForm($ticket->getDepartment(), true);
         $view_layout = $this->layoutFactory->getLayoutForView($ticket->getDepartment());
 
         return [

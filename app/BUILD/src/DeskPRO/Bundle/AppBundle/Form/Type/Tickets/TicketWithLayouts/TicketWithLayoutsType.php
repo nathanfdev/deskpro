@@ -227,9 +227,10 @@ class TicketWithLayoutsType extends AbstractType
         $data   = $event->getData();
         $form   = $event->getForm();
         $config = $form->getConfig();
+        $forApi = $config->getOption('for_api', false);
 
         $person = $config->getOption('person');
-        $layout = $this->ticket_layout_factory->getLayoutForTicketForm($data->getDepartment() ?: null);
+        $layout = $this->ticket_layout_factory->getLayoutForTicketForm($data->getDepartment() ?: null, $forApi);
 
         // Setting ticket person if not defined
         if (!$data->getPerson()) {
@@ -237,7 +238,7 @@ class TicketWithLayoutsType extends AbstractType
         }
 
         if ($config->getOption('full_version')) {
-            $layout = $this->ticket_layout_factory->getFullLayoutForTicketForm();
+            $layout = $this->ticket_layout_factory->getFullLayoutForTicketForm($forApi);
         }
 
         $context = new TicketWithLayoutsContext($form, $data, new TicketLayout());
@@ -269,6 +270,7 @@ class TicketWithLayoutsType extends AbstractType
         $form   = $event->getForm();
         $ticket = $form->getData();
         $data   = $event->getData();
+        $forApi = $form->getConfig()->getOption('for_api', false);
 
         if ($ticket->getDepartment() && isset($data[FormFields::DEPARTMENT])) {
             if ($ticket->getDepartment()->getId() !== $data[FormFields::DEPARTMENT]) {
@@ -278,14 +280,14 @@ class TicketWithLayoutsType extends AbstractType
         }
 
         // calculate the initial layout of the form (before any form submissions took place)
-        $layout  = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->getDepartment() ?: null);
+        $layout  = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->getDepartment() ?: null, $forApi);
         $context = new TicketWithLayoutsContext($form, $ticket, $layout);
 
         // now we need to compare the department's layout, maybe the layout has changed
         if ($form->has(FormFields::DEPARTMENT) && isset($data[FormFields::DEPARTMENT])) {
             $extracted_data     = $this->ticket_layout_helper->getTicketDataIds($data, $context);
             $new_department_id  = $extracted_data[FormFields::DEPARTMENT];
-            $destination_layout = $this->ticket_layout_factory->getLayoutForTicketForm($new_department_id ?: null);
+            $destination_layout = $this->ticket_layout_factory->getLayoutForTicketForm($new_department_id ?: null, $forApi);
 
             $context->setNewLayout($destination_layout);
         }

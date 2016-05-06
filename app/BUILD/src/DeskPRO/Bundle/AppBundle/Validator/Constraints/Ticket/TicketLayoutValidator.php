@@ -114,7 +114,7 @@ class TicketLayoutValidator extends ConstraintValidator
         }
 
         // get layout fields
-        $ticket_layout  = $this->ticket_layout_factory->getLayoutForTicketForm($value->getDepartment() ?: null);
+        $ticket_layout  = $this->ticket_layout_factory->getLayoutForTicketForm($value->getDepartment() ?: null, true);
         $layout         = $constraint->isAgent() ? $ticket_layout->getAgentLayout() : $ticket_layout->getUserLayout();
         $allowed_fields = [];
 

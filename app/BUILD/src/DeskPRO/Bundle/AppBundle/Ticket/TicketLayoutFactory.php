@@ -128,20 +128,24 @@ class TicketLayoutFactory
      * Used in the TicketType form type to detect the layout it should use, given the selected dept (or null for initial layout).
      *
      * @param Department|int $department the department entity or its ID
+     * @param bool           $forApi
      *
      * @return TicketLayout
      */
-    public function getLayoutForTicketForm($department = null)
+    public function getLayoutForTicketForm($department = null, $forApi = false)
     {
         // TODO: add a quick caching layer here so that we only ever calc this once per department in a request
         // TODO: do what we do in the DataService's with the in memory hash map.
         $layout = $this->getLayout($department);
 
         // verify that the user layout has a subject, message, and user email
-        $this->verifyRequiredFields($layout->getUserLayout());
-        $this->verifyRequiredFields($layout->getAgentLayout());
-        $this->checkAntiAbuseCaptcha($layout->getUserLayout());
-        //$this->checkAntiAbuseCaptcha($layout->getAgentLayout()); purposely not checking for agent interface
+        $this->verifyRequiredFields($layout->getUserLayout(), $forApi);
+        $this->verifyRequiredFields($layout->getAgentLayout(), $forApi);
+
+        if (!$forApi) {
+            $this->checkAntiAbuseCaptcha($layout->getUserLayout());
+            //$this->checkAntiAbuseCaptcha($layout->getAgentLayout()); purposely not checking for agent interface
+        }
 
         return $layout;
     }
@@ -150,9 +154,11 @@ class TicketLayoutFactory
      * Gets a combination of all ticket layouts. This is used to output a 'full' form with every field,
      * which is used by JS to dynamically update the UI as a user changes options.
      *
+     * @param bool $forApi
+     *
      * @return TicketLayout
      */
-    public function getFullLayoutForTicketForm()
+    public function getFullLayoutForTicketForm($forApi = false)
     {
         $layout = new TicketLayout();
 
@@ -168,19 +174,22 @@ class TicketLayoutFactory
             }
         }
 
-        $this->verifyRequiredFields($layout->getUserLayout());
-        $this->verifyRequiredFields($layout->getAgentLayout());
+        $this->verifyRequiredFields($layout->getUserLayout(), $forApi);
+        $this->verifyRequiredFields($layout->getAgentLayout(), $forApi);
 
-        $this->checkAntiAbuseCaptcha($layout->getUserLayout());
-        //$this->checkAntiAbuseCaptcha($layout->getAgentLayout()); purposely not checking for agent interface
+        if (!$forApi) {
+            $this->checkAntiAbuseCaptcha($layout->getUserLayout());
+            //$this->checkAntiAbuseCaptcha($layout->getAgentLayout()); purposely not checking for agent interface
+        }
 
         return $layout;
     }
 
     /**
      * @param Layout $layout
+     * @param bool   $forApi
      */
-    public function verifyRequiredFields(Layout $layout)
+    public function verifyRequiredFields(Layout $layout, $forApi = false)
     {
         $required_fields = [
             FormFields::DEPARTMENT => 0,
@@ -213,6 +222,16 @@ class TicketLayoutFactory
             $new->enableOnEdit();
             $new->enableOnView();
             $layout->add($new);
+        }
+
+        if ($forApi) {
+            if (!$layout->has(FormFields::LABELS)) {
+                $new = new LayoutField(FormFields::LABELS);
+                $new->enableOnNew();
+                $new->enableOnEdit();
+                $new->enableOnView();
+                $layout->add($new);
+            }
         }
     }
 
