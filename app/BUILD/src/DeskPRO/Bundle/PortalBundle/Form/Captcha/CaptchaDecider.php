@@ -130,6 +130,9 @@ class CaptchaDecider
 
         $setting = $this->getBrandSetting($setting_name);
 
+        if ($this->getCurrentPerson()->isAgent() || $this->getCurrentPerson()->isAdmin()) {
+            return false;
+        }
         if ($setting) {
             if ($this->authorization_checker->isGranted('ROLE_USER')) {
                 if ($setting === self::CAPTCHA_EVERYONE) {

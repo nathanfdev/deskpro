@@ -97,9 +97,7 @@ class DownloadsController extends AbstractController
         // SUBSCRIPTION
         //
         $isSubscribed = false;
-        if (
-        $this->getBrandSetting('user.downloads_subscriptions', false) && $this->getUser()
-        ) {
+        if ($this->getUser() && $this->getBrandSetting('user.downloads_subscriptions', false)) {
             // waiting info regarding article category subscriptions
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('downloads', $this->getUser());
         }

@@ -106,32 +106,32 @@ if (top === self) {
 					target.location = targetLoc.replace(/#.*$/, '') + '#' + (+new Date) + (this.cacheBust++) + '&' + message;
 				}
 			},
-			setupReciever: function(callback) {				// Unset existing
-				if (callback && comms.recieveCallback) {
-					comms.recieveCallback = null;
-					comms.setupReciever(null);
+			setupReceiver: function(callback) {				// Unset existing
+				if (callback && comms.receiveCallback) {
+					comms.receiveCallback = null;
+					comms.setupReceiver(null);
 				}
 
-				comms.recieveCallback = callback;
+				comms.receiveCallback = callback;
 
 				if (comms.hasPostMessage) {
 					if (window.addEventListener) {
-						window[comms.recieveCallback ? 'addEventListener' : 'removeEventListener']('message', comms.recieveCallback, false);
+						window[comms.receiveCallback ? 'addEventListener' : 'removeEventListener']('message', comms.receiveCallback, false);
 					} else {
-						window[comms.recieveCallback ? 'attachEvent' : 'detachEvent' ]('onmessage', comms.recieveCallback);
+						window[comms.receiveCallback ? 'attachEvent' : 'detachEvent' ]('onmessage', comms.receiveCallback);
 					}
 				} else {
 					if (comms.intervalId) {
 						window.clearInterval(comms.intervalId);
 					}
 
-					if (comms.recieveCallback) {
+					if (comms.receiveCallback) {
 						comms.intervalId = window.setInterval(function() {
 							var hash = document.location.hash;
 							var re = /^#?\d+&/;
 							if (hash !== comms.lastHash && re.test(hash)) {
 								comms.lastHash = hash;
-								comms.recieveCallback({ data: hash.replace( re, '') });
+								comms.receiveCallback({ data: hash.replace( re, '') });
 							}
 						});
 					}
@@ -215,7 +215,7 @@ if (top === self) {
 			lastHeight = currentHeight;
 		}, 115);
 
-		comms.setupReciever(function(m) {
+		comms.setupReceiver(function(m) {
 			childListen(m);
 		});
 	});

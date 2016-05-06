@@ -128,7 +128,6 @@ return array(
     'portal.general.start-chat'                  => 'Start a chat session',
     'portal.general.submit-feedback'             => 'Submit Feedback',
     'portal.general.submit-feedback-desc'        => 'Feedback and suggestions submitted by customers like you',
-    'portal.general.support_powered_by'          => 'Support powered by {{DeskPRO}}',
     'portal.general.tagged_with'                 => 'tagged with',
     'portal.general.tags'                        => 'Tags',
     'portal.general.toggle_off'                  => 'off',

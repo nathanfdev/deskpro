@@ -23,7 +23,7 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 			lastHash: null,
 			hasPostMessage: window.postMessage && (!isIE || ieVer > 9),
 			cacheBust: 0,
-			recieveCallback: null,
+			receiveCallback: null,
 			resetHashTimeout: null,
 			send: function(message, targetUrl, target) {
 				if (this.hasPostMessage) {
@@ -40,34 +40,34 @@ DeskPRO.User.WebsiteWidget.OverlayWin = new Orb.Class({
 					}, 95);
 				}
 			},
-			setupReciever: function(callback, sourceUrl) {
+			setupReceiver: function(callback, sourceUrl) {
 				// Unset existing
-				if (callback && this.recieveCallback) {
-					this.recieveCallback = null;
-					this.setupReciever(null, '');
+				if (callback && this.receiveCallback) {
+					this.receiveCallback = null;
+					this.setupReceiver(null, '');
 				}
 
-				this.recieveCallback = callback;
+				this.receiveCallback = callback;
 
 				if (this.hasPostMessage) {
 					if (window.addEventListener) {
-						window[this.recieveCallback ? 'addEventListener' : 'removeEventListener']('message', this.recieveCallback, false);
+						window[this.receiveCallback ? 'addEventListener' : 'removeEventListener']('message', this.receiveCallback, false);
 					} else {
-						window[this.recieveCallback ? 'attachEvent' : 'detachEvent' ]('onmessage', this.recieveCallback);
+						window[this.receiveCallback ? 'attachEvent' : 'detachEvent' ]('onmessage', this.receiveCallback);
 					}
 				} else {
 					if (this.intervalId) {
 						window.clearInterval(this.intervalId);
 					}
 
-					if (this.recieveCallback) {
+					if (this.receiveCallback) {
 						var me = this;
 						this.intervalId = window.setInterval(function() {
 							var hash = document.location.hash;
 							var re = /^#?\d+&/;
 							if (hash !== me.lastHash && re.test(hash)) {
 								me.lastHash = hash;
-								me.recieveCallback({ data: hash.replace( re, '') });
+								me.receiveCallback({ data: hash.replace( re, '') });
 							}
 						}, 60);
 					}

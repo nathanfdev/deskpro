@@ -832,7 +832,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			} else if (type == 'user') {
 				this.userTyping();
 				html.push(avatarHtml);
-				html.push('<div class="chatRecieve"><div class="chatMsgRecieve"><div class="prop-msg"></div><span class="bubbleRight"></span></div></div><time></time>');
+				html.push('<div class="chatReceive"><div class="chatMsgReceive"><div class="prop-msg"></div><span class="bubbleRight"></span></div></div><time></time>');
 				html.push('<div class="chat-clear"></div>');
 			}
 		html.push('</div></div>');

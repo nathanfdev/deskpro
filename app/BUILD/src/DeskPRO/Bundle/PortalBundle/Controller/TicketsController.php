@@ -856,7 +856,7 @@ class TicketsController extends AbstractController
         // after we add them as a participant, the redirect below to the "normal" view page
         // will work, because they are now granted access to it.
         $person = $this->getCurrentPerson();
-        if (!$ticket->isParticipant($person)) {
+        if (!$ticket->isParticipant($person) && !$ticket->isOwner($person)) {
             $participant = new TicketParticipant();
             $participant->setPerson($person);
             $ticket->addParticipant($participant);

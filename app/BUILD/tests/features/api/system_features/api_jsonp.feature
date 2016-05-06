@@ -1,7 +1,7 @@
 Feature: JSONP
   In order to use the API responses in my javascript
   As a developer
-  I need to be able to recieve a JSONP callback
+  I need to be able to receive a JSONP callback
 
   Background:
     Given I install the api data set
