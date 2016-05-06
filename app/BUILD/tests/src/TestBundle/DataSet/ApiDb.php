@@ -147,14 +147,14 @@ SQL
                 <<<SQL
                 INSERT INTO `$custom_def_table` (`id`, `parent_id`,  `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`, `default_value`)
                 VALUES
-                   ('1', null, '', '0', '0', 'Desired Sizes', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Choice', '?', '1', '1', '12', '0', ''),
+                   ('1', null, '', '0', '0', 'Desired Sizes', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Choice', '?', '1', '1', '12', '0', '2'),
                    ('2', '1', '', '0', '0', 'Small', '', null, '?', '1', '1', '13', '0', ''),
                    ('3', '1', '', '0', '0', 'Medium', '', null, '?', '1', '1', '14', '0', ''),
                    ('4', '1', '', '0', '0', 'Large', '', null, '?', '1', '1', '15', '0', ''),
                    ('5', null, '', '0', '0', 'Delivery Time', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\DateTime', '?', '1', '1', '38', '0', ''),
                    ('6', null, '', '0', '0', 'Widget Type', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Text', 'a:5:{s:20:"custom_css_classname";s:0:"";s:21:"agent_validation_type";s:8:"required";s:14:"agent_required";b:1;s:16:"agent_min_length";s:2:"10";s:16:"agent_max_length";s:0:"";}', '1', '1', '10', '0', ''),
                    ('7', null, '', '0', '0', 'Widget Description', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Textarea', '?', '1', '1', '11', '0', 'default value'),
-                   ('8', null, '', '0', '0', 'Multiple choice', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Choice', 'a:2:{s:8:"multiple";b:1;s:8:"expanded";b:1;}', '1', '1', '12', '0', ''),
+                   ('8', null, '', '0', '0', 'Multiple choice', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Choice', 'a:2:{s:8:"multiple";b:1;s:8:"expanded";b:1;}', '1', '1', '12', '0', '9,10'),
                    ('9', '8', '', '0', '0', 'Choice 1', '', null, '?', '1', '1', '13', '0', ''),
                    ('10', '8', '', '0', '0', 'Choice 2', '', null, '?', '1', '1', '14', '0', ''),
                    ('11', '8', '', '0', '0', 'Choice 3', '', null, '?', '1', '1', '15', '0', ''),
