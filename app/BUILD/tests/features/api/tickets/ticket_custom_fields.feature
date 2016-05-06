@@ -20,6 +20,7 @@ Feature: /person_custom_fields endpoint
     And the JSON node "data[0].parent" should be equal to 0
     And the JSON node "data[0].widget_type" should be equal to "choice"
     And the JSON node "data[0].children" should not exist
+    And the JSON node "data[0].default_value" should contain 2
     And the JSON node "data[0].choices" should have 3 elements
     And the JSON node "data[0].choices[0].id" should be equal to 2
     And the JSON node "data[0].choices[0].title" should be equal to "Small"
@@ -51,6 +52,7 @@ Feature: /person_custom_fields endpoint
     And the JSON node "data[3].parent" should be equal to 0
     And the JSON node "data[3].widget_type" should be equal to "textarea"
     And the JSON node "data[3].choices" should have 0 elements
+    And the JSON node "data[3].default_value" should contain "default value"
 
     And the JSON node "data[4].id" should be equal to 8
     And the JSON node "data[4].title" should be equal to "Multiple choice"
@@ -63,6 +65,8 @@ Feature: /person_custom_fields endpoint
     And the JSON node "data[4].choices[0].id" should be equal to 9
     And the JSON node "data[4].choices[1].id" should be equal to 10
     And the JSON node "data[4].choices[2].id" should be equal to 11
+    And the JSON node "data[4].default_value[0]" should contain 9
+    And the JSON node "data[4].default_value[1]" should contain 10
 
     And the JSON node "data[5].id" should be equal to 12
     And the JSON node "data[5].widget_type" should be equal to "date"

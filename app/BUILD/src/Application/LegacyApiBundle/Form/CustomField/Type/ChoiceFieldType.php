@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,26 +29,36 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Form\CustomField\Type;
 
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 class ChoiceFieldType extends CustomFieldTypeAbstract
 {
     protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('field_type', 'choice', array('choices' => array(
+        $builder->add('field_type', 'choice', ['choices' => [
             'select'       => 'Select box (single selection)',
             'multi_select' => 'Mutli-Select box (multiple selection)',
             'radio'        => 'Radio buttons (single selection)',
             'checkbox'     => 'Checkboxes (multiple selection)',
-        )));
+        ]]);
 
-        $builder->add('min_length', 'text', array('required' => false));
-        $builder->add('max_length', 'text', array('required' => false));
+        $builder->add('min_length', 'text', ['required' => false]);
+        $builder->add('max_length', 'text', ['required' => false]);
 
-        $builder->add('agent_min_length', 'text', array('required' => false));
-        $builder->add('agent_max_length', 'text', array('required' => false));
+        $builder->add('agent_min_length', 'text', ['required' => false]);
+        $builder->add('agent_max_length', 'text', ['required' => false]);
+
+        $builder->get('default_value')->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
+            $data = $event->getData();
+            if (is_array($data)) {
+                $event->setData(implode(',', $data));
+            }
+        });
     }
 
     public function getDefaultOptions(array $options)
