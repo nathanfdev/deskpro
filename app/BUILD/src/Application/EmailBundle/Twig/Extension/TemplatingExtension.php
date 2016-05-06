@@ -52,6 +52,7 @@ use Orb\Util\Strings;
 use Orb\Util\Util;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_GlobalsInterface
 {
@@ -1009,13 +1010,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
 
     public function urlFull($name, array $parameters = array())
     {
-        $router = $this->container->get('router');
-
-        if (!method_exists($router, 'getGenerator')) {
-            return $this->container->get('router')->generateUrl($name, $parameters);
-        } else {
-            return $this->container->get('router')->getGenerator()->generateUrl($name, $parameters, false);
-        }
+        return $this->container->get('router')->generate($name, $parameters, UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
     public function helpdeskUrl($path)

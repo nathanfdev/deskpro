@@ -14,7 +14,7 @@ define [], () ->
       link: (scope, element, attrs) ->
         scope.save   = scope.save();
         scope.cancel = scope.cancel();
-        scope.revert = scope.revert();
+        scope.revert = if scope.revert then scope.revert() else null
     }
   ]
 

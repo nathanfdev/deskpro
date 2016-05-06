@@ -15,16 +15,15 @@
 					<article>
 						<ul>
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="subject" data-is-required="1"><span>Subject</span></li>
-							<li class="dp-layout-editor-layout-field layout-field" data-field-type="message" data-is-required="1"><span>Message</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="message" data-is-required="1"><span>Message &amp; Attachments</span></li>
 
-							<li class="dp-layout-editor-layout-field layout-field" data-field-type="department"><span>Department</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="department" data-is-required="1"><span>Department</span></li>
 							<li class="dp-layout-editor-layout-field layout-field" ng-class="{'disabled': !field_status.product}" data-field-type="product"><span>Product</span></li>
 							<li class="dp-layout-editor-layout-field layout-field" ng-class="{'disabled': !field_status.category}" data-field-type="category"><span>Category</span></li>
 							<li class="dp-layout-editor-layout-field layout-field" ng-class="{'disabled': !field_status.priority}" data-field-type="priority"><span>Priority</span></li>
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="cc"><span>CC</span></li>
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="followers"><span>Followers</span></li>
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="captcha"><span>CAPTCHA</span></li>
-							<li class="dp-layout-editor-layout-field layout-field" data-field-type="attach"><span>Attachments</span></li>
 
 							<li
 								ng-repeat="field in custom_ticket_fields"
@@ -45,7 +44,7 @@
 					</header>
 					<article>
 						<ul>
-							<li class="dp-layout-editor-layout-field layout-field" data-field-type="person"><span>Name & Email</span></li>
+							<li class="dp-layout-editor-layout-field layout-field" data-field-type="person" data-is-required="1"><span>Name &amp; Email</span></li>
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_timezone"><span>Timezone</span></li>
 							<li
 								ng-repeat="field in custom_user_fields"

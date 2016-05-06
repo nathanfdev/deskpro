@@ -15,5 +15,9 @@
 		{{ nav.list_item_group_end() }}
 
 		{{ nav.list_item('Languages', ng_href('setup.languages'), 'setup.languages', 'fa-globe') }}
+
+		{% if app.canResetDemo %}
+			{{ nav.list_item('Reset Demo', ng_href('setup.reset_demo'), 'setup.reset_demo', 'fa-trash-o') }}
+		{% endif %}
 	{{ nav.list_end() }}
 {% endblock %}
