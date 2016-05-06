@@ -45,7 +45,7 @@ class TicketStars
 {
     const CUSTOM_STAR_NAME_SETTING_PREFIX = 'agent.ticket_stars.name.';
 
-    protected $stars = array(
+    private static $stars = [
         'blue',
         'green',
         'orange',
@@ -53,7 +53,7 @@ class TicketStars
         'purple',
         'red',
         'yellow',
-    );
+    ];
 
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -77,7 +77,7 @@ class TicketStars
      */
     public function getStars()
     {
-        return $this->stars;
+        return self::$stars;
     }
 
     /**
@@ -89,7 +89,7 @@ class TicketStars
      */
     public function starIsValid($starName)
     {
-        return in_array($starName, $this->stars);
+        return in_array($starName, self::$stars);
     }
 
     /**
@@ -112,6 +112,13 @@ class TicketStars
             ->findBy(['color' => $star, 'person_id' => $personId]);
     }
 
+    /**
+     * Get custom names for stars, given by current user.
+     *
+     * @param Person $person
+     *
+     * @return array
+     */
     public function getCustomNames(Person $person)
     {
         // Retrieve custom stars name PersonalSetting instances
@@ -181,6 +188,6 @@ class TicketStars
     {
         $id = (int) $id - 1;
 
-        return isset($this->stars[$id]) ? $this->stars[$id] : null;
+        return isset(self::$stars[$id]) ? self::$stars[$id] : null;
     }
 }
