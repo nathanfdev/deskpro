@@ -26,12 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Organizations;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\People;
 
-use Application\DeskPRO\Entity\Organization;
-use Application\DeskPRO\Entity\OrganizationNote;
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
+use Application\DeskPRO\Entity\PersonNote;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -39,9 +38,9 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class OrganizationNoteType.
+ * Class PersonNoteType.
  */
-class OrganizationNoteType extends ApiType
+class PersonNoteType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -59,12 +58,12 @@ class OrganizationNoteType extends ApiType
     {
         $resolver
             ->setDefaults([
-                'data_class' => OrganizationNote::class,
+                'data_class' => PersonNote::class,
             ])
-            ->setRequired(['agent', 'organization'])
+            ->setRequired(['agent', 'person'])
             ->setAllowedTypes([
-                'agent'        => Person::class,
-                'organization' => Organization::class,
+                'person' => Person::class,
+                'agent'  => Person::class,
             ])
         ;
     }
@@ -79,9 +78,9 @@ class OrganizationNoteType extends ApiType
         $data   = $event->getData();
         $config = $event->getForm()->getConfig();
 
-        if ($data instanceof OrganizationNote && !$data->getId()) {
-            $data->setOrganization($config->getOption('organization'));
+        if ($data instanceof PersonNote && !$data->getId()) {
             $data->setAgent($config->getOption('agent'));
+            $data->setPerson($config->getOption('person'));
         }
     }
 }

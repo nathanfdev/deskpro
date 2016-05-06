@@ -35,9 +35,11 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * A note is a private note added by an agent to a persons account.
@@ -59,6 +61,8 @@ class PersonNote extends DomainObject
     /**
      * The person the note is attached to.
      *
+     * @Assert\NotNull()
+     *
      * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
      *
@@ -68,6 +72,9 @@ class PersonNote extends DomainObject
 
     /**
      * The agent that added the note.
+     *
+     * @Assert\NotNull()
+     * @AppAssert\User(type="agent")
      *
      * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
@@ -84,6 +91,8 @@ class PersonNote extends DomainObject
     /**
      * The note contents.
      *
+     * @Assert\NotBlank()
+     *
      * @JMS\Expose()
      * @JMS\Type("string")
      *
@@ -91,6 +100,9 @@ class PersonNote extends DomainObject
      */
     protected $note;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this['date_created'] = new \DateTime();
@@ -102,6 +114,46 @@ class PersonNote extends DomainObject
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return $this
+     */
+    public function setPerson($person)
+    {
+        $this->setModelField('person', $person);
+
+        return $this;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getAgent()
+    {
+        return $this->agent;
+    }
+
+    /**
+     * @param Person $agent
+     *
+     * @return $this
+     */
+    public function setAgent($agent)
+    {
+        $this->setModelField('agent', $agent);
+
+        return $this;
     }
 
     public function getNoteHtml()
