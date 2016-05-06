@@ -20,8 +20,7 @@
 
       <div class="search-and-ticket-dropdown">
         <a href="{{ first_link }}"
-           {% if should_display_dropdown %}class="clickaway-dropdown" data-clickaway-target="top-contactus-dropdown"
-           {% elseif use_chat_as_first_link %}class="widget-button"{% endif %}
+           {% if should_display_dropdown %}class="clickaway-dropdown" data-clickaway-target="top-contactus-dropdown"{% endif %}
         >
           <span class="button select-action {% if not should_display_dropdown %}unpadded{% endif %}" >
             <i class="fa fa-support"></i>

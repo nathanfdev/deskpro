@@ -129,8 +129,7 @@ class PortalController extends AbstractController
                 ]
             );
 
-            $extendedOptions['first_link']             = '#';
-            $extendedOptions['use_chat_as_first_link'] = false;
+            $extendedOptions['first_link'] = '#';
 
             if ($extendedOptions['can_use_tickets']) {
                 $extendedOptions['first_link'] = $this->get('router')->generate('portal_new_ticket');
