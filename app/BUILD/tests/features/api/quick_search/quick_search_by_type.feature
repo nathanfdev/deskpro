@@ -6,6 +6,7 @@ Feature: Quick Search
     And my request is authenticated
     And the setting "elastica.enabled" is set to 0
 
+  @reinstall
   Scenario: I search by specific types
     When I send a GET request to "/api/v2/search?q=1&types=article,ticket,news"
     Then the response should be in JSON

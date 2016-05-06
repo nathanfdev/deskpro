@@ -146,7 +146,7 @@ class RestContext extends BaseContext
     /**
      * Checks, whether the response content is null or empty string.
      *
-     * @Then the  response should be empty
+     * @Then the response should be empty
      */
     public function theResponseShouldBeEmpty()
     {

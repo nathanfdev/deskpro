@@ -17,7 +17,7 @@ Feature: Ticket link endpoint
 }
     """
     Then the response status code should be 204
-    And the response should be in JSON
+    And the response should be empty
     And the header "Location" should be equal to "/api/v2/tickets/1/links"
 
   Scenario Outline: I'm trying to link ticket to itself
@@ -78,7 +78,7 @@ Feature: Ticket link endpoint
 }
     """
     Then the response status code should be 204
-    And the response should be in JSON
+    And the response should be empty
     And the header "Location" should be equal to "/api/v2/tickets/1/links"
     When I send a "GET" request to "/api/v2/tickets/1/links"
     Then the response status code should be 200
@@ -98,7 +98,7 @@ Feature: Ticket link endpoint
 }
     """
     Then the response status code should be 204
-    And the response should be in JSON
+    And the response should be empty
     And the header "Location" should be equal to "/api/v2/tickets/4/links"
     When I send a "GET" request to "/api/v2/tickets/1/links"
     Then the response status code should be 200

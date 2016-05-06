@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -3734,14 +3733,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         );
 
         return App::getObjectRouter()->getPortalPath($this);
-    }
-
-    /**
-     * @deprecated use $this->get('object_router')->getPortalUrl($ticket) instead
-     */
-    public function getLink()
-    {
-        return App::getObjectRouter()->getPortalUrl($this);
     }
 
     public function isAgentCreated()
