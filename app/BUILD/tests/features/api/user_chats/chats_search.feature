@@ -7,6 +7,7 @@ Feature: /user_chats endpoint search (GET)
     Given I install the api data set
     And my request is authenticated
 
+  @reinstall
   Scenario: I search for chats with empty search criteria
     When I send a GET request to "/api/v2/user_chats"
     Then the response should be in JSON

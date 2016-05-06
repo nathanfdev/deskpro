@@ -8,6 +8,7 @@ Feature: /organization_notes endpoint
     Given I install the api data set
     And my request is authenticated
 
+  @reinstall
   Scenario: I try to get notes of not existed organization
     When I send a GET request to "/api/v2/organizations/404/notes"
     Then the response status code should be 404

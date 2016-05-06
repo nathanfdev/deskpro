@@ -8,7 +8,7 @@ Feature: /agent_teams endpoint
     Given I install the api data set
     And my request is authenticated
 
-  @basic
+  @reinstall
   Scenario: I get list of all agent teams
     When I send a GET request to "/api/v2/agent_teams"
     Then the response should be in JSON

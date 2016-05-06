@@ -8,6 +8,7 @@ Feature: /task_lists endpoint
     Given I install the api data set
     And my request is authenticated
 
+  @reinstall
   Scenario: I try to create a new task list with empty request
     When I send a POST request to "/api/v2/task_lists"
     Then the response status code should be 400
@@ -26,7 +27,6 @@ Feature: /task_lists endpoint
     """
     Then the response should be in JSON
     And the response status code should be 201
-    And the JSON node "data.id" should be equal to 1
     And the JSON node "data.title" should be equal to "Task list 1"
     And the JSON node "data.project" should be equal to 1
 
@@ -34,7 +34,6 @@ Feature: /task_lists endpoint
     When I send a GET request to "/api/v2/task_lists"
     Then the response should be in JSON
     And the response status code should be 200
-    And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[0].title" should be equal to "Task list 1"
     And the JSON node "data[0].project" should be equal to 1
 

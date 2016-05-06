@@ -8,6 +8,7 @@ Feature: /user_chats/counts endpoint
     Given I install the api data set
     And my request is authenticated
 
+  @reinstall
   Scenario: I count chats without grouping
     When I send a GET request to "/api/v2/user_chats/counts"
     Then the response should be in JSON

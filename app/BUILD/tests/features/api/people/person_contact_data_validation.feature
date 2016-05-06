@@ -8,6 +8,7 @@ Feature: /people endpoint
     Given I install the api data set
     And my request is authenticated
 
+  @reinstall
   Scenario: I check contact data validation
     When I send a POST request to "/api/v2/people" with body:
     """

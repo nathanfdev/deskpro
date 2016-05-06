@@ -8,6 +8,7 @@ Feature: News subscriptions
     And the default brand is using the standard theme
     And I have "Example News Post" news
 
+  @reinstall
   Scenario: I subscribe to a news category successfully as a user
     Given I login with user credentials
     And I am on "/news/general"

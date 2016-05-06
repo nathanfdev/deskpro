@@ -6,6 +6,7 @@ Feature: task counts endpoints
     Given I install the "api" data set
     And my request is authenticated
 
+  @reinstall
   Scenario: I get group counts
     When I send a GET request to "/api/v2/tasks/counts/groups"
     Then the response should be in JSON

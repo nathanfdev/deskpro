@@ -59,8 +59,6 @@ Feature: /ticket_problems endpoint
     When I send a GET request to "/api/v2/ticket_problems?is_open=1"
     Then the response status code should be 200
     And the JSON node "data" should have 2 element
-    And the JSON node "data[0].title" should be equal to "Problem 3"
-    And the JSON node "data[1].title" should be equal to "Problem 1"
 
   Scenario: I retrieve a list of opened ticket problems
     When I send a GET request to "/api/v2/ticket_problems?is_open=0"

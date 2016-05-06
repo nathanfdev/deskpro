@@ -6,6 +6,7 @@ Feature: Person emails collection CRUD
     And there are no registered users
     And my request is authenticated
 
+  @reinstall
   Scenario: I try to create person w/o emails
     When I send a POST request to "/api/v2/people" with body:
     """

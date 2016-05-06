@@ -8,6 +8,7 @@ Feature: /organizations/{id}/members endpoint
     Given I install the api data set
     And my request is authenticated
 
+  @reinstall
   Scenario: I retrieve list of organization members
     When I send a GET request to "/api/v2/organizations/1/members"
     Then the response should be in JSON
