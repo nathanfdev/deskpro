@@ -230,8 +230,8 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
         foreach ($customDefRepo->getEnabledTopFields() as $customDef) {
             $model->addGroupByField(
                 new TicketGroupFieldSettings(
-                    'ticket_field.'.$customDef->getId(),
-                    'ticket_field',
+                    TicketGrouping::CUSTOM_FIELD_COLUMN_PREFIX.'.'.$customDef->getId(),
+                    TicketGrouping::CUSTOM_FIELD_COLUMN_PREFIX,
                     $customDef->getId()
                 )
             );
