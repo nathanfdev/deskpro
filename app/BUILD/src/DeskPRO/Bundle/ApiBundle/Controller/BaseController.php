@@ -244,6 +244,5 @@ class BaseController extends FOSRestController
     protected function logException(\Exception $exception)
     {
         SystemErrorHandler::logException($exception);
-        $this->get('dp_sys.alerts.event_logger')->log($exception);
     }
 }
