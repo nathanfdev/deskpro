@@ -1,5 +1,5 @@
 @basic @tickets
-Feature: /{id}/ticket_slas endpoint
+Feature: /tickets/{id}/ticket_slas endpoint
   To CRUD DeskPRO ticket's SLAs
   As a developer
   I want an API endpoint
@@ -23,7 +23,6 @@ Feature: /{id}/ticket_slas endpoint
     Then the response status code should be 200
     And the JSON node "meta" should exist
     And the JSON node "data" should have 1 element
-    And print last JSON response
     And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[0].sla_status" should be equal to "warning"
     And the JSON node "data[0].sla" should be equal to 2
