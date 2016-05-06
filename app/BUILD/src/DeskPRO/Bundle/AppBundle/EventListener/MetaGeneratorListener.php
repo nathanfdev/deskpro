@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use DeskPRO\Bundle\AppBundle\Request\RequestUtils;
@@ -47,9 +48,9 @@ class MetaGeneratorListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::RESPONSE => array('onResponse', -10),
-        );
+        return [
+            KernelEvents::RESPONSE => ['onResponse', -10],
+        ];
     }
 
     /**
@@ -64,12 +65,13 @@ class MetaGeneratorListener implements EventSubscriberInterface
             && !$event->getRequest()->isXmlHttpRequest()
             && !RequestUtils::isLowRequest($event->getRequest())
             && strpos($event->getResponse()->headers->get('Content-Type', ''), 'text/html') !== false
-        )) {
+        )
+        ) {
             return;
         }
 
         $version_id   = defined('DP_BUILD_TIME') && DP_BUILD_TIME ? DP_BUILD_TIME : time();
-        $version_name = defined('DP_BUILD_NUM')  && DP_BUILD_NUM  ? DP_BUILD_NUM  : 'DEV';
+        $version_name = defined('DP_BUILD_NUM') && DP_BUILD_NUM ? DP_BUILD_NUM : 'DEV';
         $version_str  = "$version_name/$version_id";
 
         if (defined('DPC_IS_CLOUD')) {

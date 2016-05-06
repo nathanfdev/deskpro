@@ -14,7 +14,13 @@ services:
 
   brand_detector.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\BrandDetectionListener
-    arguments: ["@brand_stack", "@settings_resolver", "@brand_repository", "@default_brand", "@portal_mode_storage", "@logger"]
+    arguments:
+      - "@brand_stack"
+      - "@settings_resolver"
+      - "@brand_repository"
+      - "@default_brand"
+      - "@portal_mode_storage"
+      - "@logger"
     tags:
       - { name: kernel.event_subscriber }
 
@@ -32,6 +38,12 @@ services:
 
   cookie_settings.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\CookieSettingsListener
+    tags:
+      - { name: kernel.event_subscriber }
+
+  google_analytics.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\GoogleAnalyticsListener
+    arguments: ["@settings_resolver"]
     tags:
       - { name: kernel.event_subscriber }
 
