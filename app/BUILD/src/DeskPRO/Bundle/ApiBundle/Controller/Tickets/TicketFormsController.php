@@ -50,8 +50,9 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class TicketFormsController extends AbstractTicketsController
 {
-    public static $exposeOnly = [];
-    public static $type       = TicketWithLayoutsType::class;
+    public static $exposeOnly         = [];
+    public static $type               = TicketWithLayoutsType::class;
+    public static $forcePartialUpdate = true;
 
     /**
      * @ApiDoc(
