@@ -18,7 +18,7 @@ Feature: /ticket_stars endpoint
     And the JSON node "data[3].name" should be equal to "Second custom"
 
   Scenario: I get counts of my ticket flagged by stars
-    When I send a GET request to "/api/v2/ticket_stars_counts"
+    When I send a GET request to "/api/v2/ticket_stars/counts"
     Then the response status code should be 200
     And the JSON node "data.nested" should have 7 element
     And the JSON node "data.nested[0].count" should be equal to 0

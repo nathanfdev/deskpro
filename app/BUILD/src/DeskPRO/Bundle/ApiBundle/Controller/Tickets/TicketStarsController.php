@@ -49,6 +49,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Provides API access to the ticket stars.
  *
  * @ApiModes("all")
+ * @Rest\Route("/ticket_stars")
  */
 class TicketStarsController extends BaseController
 {
@@ -64,7 +65,7 @@ class TicketStarsController extends BaseController
      *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketStar>")
      * )
      *
-     * @Rest\Get("/ticket_stars", name="api_ticket_stars")
+     * @Rest\Get("", name="api_ticket_stars")
      */
     public function listAction()
     {
@@ -102,7 +103,7 @@ class TicketStarsController extends BaseController
      *
      * @return Response
      *
-     * @Rest\Put("/ticket_stars/{id}", requirements={"id"="\d+"})
+     * @Rest\Put("/{id}", requirements={"id"="\d+"})
      */
     public function putAction($id, Request $request)
     {
@@ -142,7 +143,7 @@ class TicketStarsController extends BaseController
      *     output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
      * )
      *
-     * @Rest\Get("/ticket_stars_counts", name="api_ticket_star_all_counts")
+     * @Rest\Get("/counts", name="api_ticket_star_all_counts")
      */
     public function getTicketStarsCountsAction()
     {
@@ -182,7 +183,7 @@ class TicketStarsController extends BaseController
      *
      * @return View
      *
-     * @Rest\Get("/ticket_stars/{star}/count", name="api_ticket_star_count")
+     * @Rest\Get("/{star}/count", name="api_ticket_star_count")
      */
     public function getTicketStarCountAction($star)
     {
@@ -213,7 +214,7 @@ class TicketStarsController extends BaseController
      *
      * @return View
      *
-     * @Rest\Get("/ticket_stars/{star}/tickets", name="api_ticket_star_tickets")
+     * @Rest\Get("/{star}/tickets", name="api_ticket_star_tickets")
      */
     public function getTicketsAction(Request $request, $star)
     {
