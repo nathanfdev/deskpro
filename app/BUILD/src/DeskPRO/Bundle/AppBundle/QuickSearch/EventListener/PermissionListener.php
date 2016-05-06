@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,12 +29,15 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
 
-use Application\DeskPRO\People\PermissionChecker\TicketChecker;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvent;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvents;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
 /**
  * Class PermissionListener.
@@ -42,32 +45,39 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class PermissionListener implements EventSubscriberInterface
 {
     /**
+     * @var AuthorizationChecker
+     */
+    private $authorizationChecker;
+
+    /**
+     * Constructor.
+     *
+     * @param AuthorizationChecker $authorizationChecker
+     */
+    public function __construct(AuthorizationChecker $authorizationChecker)
+    {
+        $this->authorizationChecker = $authorizationChecker;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public static function getSubscribedEvents()
     {
         return [
-            QuickSearchEvents::POST_SEARCH => 'onCheckTickets',
+            QuickSearchEvents::POST_SEARCH => 'onCheckPermissions',
         ];
     }
 
     /**
      * @param QuickSearchEvent $event
      */
-    public function onCheckTickets(QuickSearchEvent $event)
+    public function onCheckPermissions(QuickSearchEvent $event)
     {
         $context = $event->getContext();
-        $request = $event->getRequest();
-
-        if (!$context->isTicket()) {
-            return;
-        }
-
-        /** @var TicketChecker $ticket_checker */
-        $ticket_checker = $request->getPerson()->PermissionsManager->TicketChecker;
 
         foreach ($context->getEntities() as $entity) {
-            if (!$ticket_checker->canView($entity)) {
+            if (!$this->authorizationChecker->isGranted(PermissionGroupVoter::VIEW, new PermissionGroupContext($entity))) {
                 $context->removeEntity($entity);
             }
         }

@@ -53,6 +53,8 @@ services:
 
   quick_search.listener.permission_listener:
     class: DeskPRO\Bundle\AppBundle\QuickSearch\EventListener\PermissionListener
+    arguments:
+      - "@security.authorization_checker"
     tags:
       - { name: quick_search.event_subscriber }
 

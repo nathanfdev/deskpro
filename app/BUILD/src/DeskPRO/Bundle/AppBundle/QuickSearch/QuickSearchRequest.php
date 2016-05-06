@@ -55,6 +55,8 @@ class QuickSearchRequest
 
     /**
      * @var Person
+     *
+     * @deprecated Use Token storage instead
      */
     private $person;
 
@@ -216,6 +218,8 @@ class QuickSearchRequest
 
     /**
      * @return Person
+     *
+     * @deprecated Use Token storage instead
      */
     public function getPerson()
     {

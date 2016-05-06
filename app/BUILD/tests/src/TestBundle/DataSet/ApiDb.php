@@ -710,6 +710,30 @@ SQL
                 (1, 7),
                 (1, 8)
             ;
+
+            INSERT INTO `feedback_category2usergroup`
+                (`category_id`, `usergroup_id`)
+            VALUES
+                (1, 1),
+                (2, 1),
+                (3, 1),
+                (1, 2),
+                (2, 2),
+                (3, 2),
+                (1, 3),
+                (1, 4),
+                (2, 4),
+                (1, 5),
+                (2, 5),
+                (3, 5),
+
+                (1, 7),
+                (1, 8),
+                (2, 7),
+                (2, 8),
+                (3, 7),
+                (3, 8)
+            ;
         "
         );
         // end of "/user_groups"
@@ -902,6 +926,22 @@ SQL
                 (11, 7, 1, 1, NULL, 'Test Category #11', '11', 1, 1)
             ;
 
+            INSERT INTO `article_category2usergroup`
+                (`category_id`, `usergroup_id`)
+            VALUES
+                (1, 7),
+                (2, 7),
+                (3, 7),
+                (4, 7),
+                (5, 7),
+                (6, 7),
+                (7, 7),
+                (8, 7),
+                (9, 7),
+                (10, 7),
+                (11, 7)
+            ;
+
             INSERT INTO `article_to_categories`
                 (`article_id`, `category_id`)
             VALUES
@@ -933,6 +973,23 @@ SQL
                 (11, 7, 'Test Category #11', '11', 2, 1)
             ;
 
+
+            INSERT INTO `news_category2usergroup`
+                (`category_id`, `usergroup_id`)
+            VALUES
+                (1, 7),
+                (2, 7),
+                (3, 7),
+                (4, 7),
+                (5, 7),
+                (6, 7),
+                (7, 7),
+                (8, 7),
+                (9, 7),
+                (10, 7),
+                (11, 7)
+            ;
+
             INSERT INTO `news`
                 (`id`, `category_id`, `person_id`, `slug`, `title`, `content`, `view_count`, `total_rating`, `num_comments`,
                  `num_ratings`, `status`, `hidden_status`, `date_created`, `date_published`, `date_updated`)
@@ -961,6 +1018,22 @@ SQL
                 (9, 7, 'Test Category #9', '9', 2, 1),
                 (10, 7, 'Test Category #10', '10', 2, 1),
                 (11, 7, 'Test Category #11', '11', 2, 1)
+            ;
+
+            INSERT INTO `download_category2usergroup`
+                (`category_id`, `usergroup_id`)
+            VALUES
+                (1, 7),
+                (2, 7),
+                (3, 7),
+                (4, 7),
+                (5, 7),
+                (6, 7),
+                (7, 7),
+                (8, 7),
+                (9, 7),
+                (10, 7),
+                (11, 7)
             ;
 
             INSERT INTO `downloads`
