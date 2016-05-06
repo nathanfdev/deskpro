@@ -68,10 +68,10 @@ class InterfaceUrlCorrectorEventListener implements EventSubscriberInterface
         }
 
         $request  = $event->getRequest();
-        $pathinfo = '/'.ltrim($request->getPathInfo(), '/');
+        $pathInfo = '/'.ltrim($request->getPathInfo(), '/');
 
         $regex    = '#^/(?P<locale>(?:[a-z]{2}_[A-Z0-9]{2}|[a-z]{2}))/(?P<iface>agent|admin|reports)(?:/(?P<path>.*?))?$#';
-        $urlParts = RegexUtils::getMatches($regex, $pathinfo);
+        $urlParts = RegexUtils::getMatches($regex, $pathInfo);
 
         // Not a URL format we care about
         if (!$urlParts || empty($urlParts['iface'])) {
@@ -79,7 +79,7 @@ class InterfaceUrlCorrectorEventListener implements EventSubscriberInterface
         }
 
         $newUrl = $request->getUriForPath("/{$urlParts['iface']}/{$urlParts['path']}");
-        $this->logger->warning(sprintf('[InterfaceUrlCorrector] Correcting: %s -> %s', $pathinfo, $newUrl));
+        $this->logger->warning(sprintf('[InterfaceUrlCorrector] Correcting: %s -> %s', $pathInfo, $newUrl));
 
         $event->setResponse(new RedirectResponse($newUrl));
         $event->stopPropagation();
@@ -90,8 +90,8 @@ class InterfaceUrlCorrectorEventListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::REQUEST => array('onRequest', -1),
-        );
+        return [
+            KernelEvents::REQUEST => ['onRequest', -1],
+        ];
     }
 }
