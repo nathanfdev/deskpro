@@ -26,39 +26,47 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\People;
+namespace DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonNote;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonNoteType;
-use FOS\RestBundle\Controller\Annotations as Rest;
-use Symfony\Component\HttpFoundation\Request;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 
 /**
- * Class PersonNotesController.
- *
- * @ApiModes("all")
- * @Rest\Route("/people/{parentId}/notes")
- * @ApiDoc(target="all", section="People", output="Application\DeskPRO\Entity\PersonNote")
+ * Class PersonNotesVoter.
  */
-class PersonNotesController extends CrudSubController
+class PersonNotesVoter implements PermissionGroupEntityVoterInterface
 {
-    public static $entity         = PersonNote::class;
-    public static $type           = PersonNoteType::class;
-    public static $parentProperty = 'person';
+    /**
+     * {@inheritdoc}
+     */
+    public static function getEntityClass()
+    {
+        return PersonNote::class;
+    }
 
     /**
      * {@inheritdoc}
      */
-    protected function handleForm($model, Request $request, array $options = [])
+    public function voteOnAttributeForAgent($attribute, PermissionGroupContext $context, Person $user)
     {
-        $options = array_merge($options, [
-            'person' => $this->findParentOr404(),
-            'agent'  => $this->getUser(),
-        ]);
+        switch ($attribute) {
+            case PermissionGroupVoter::CREATE:
+            case PermissionGroupVoter::MODIFY:
+            case PermissionGroupVoter::DELETE:
+                return $user->hasPerm('agent_people.notes');
+        }
 
-        return parent::handleForm($model, $request, $options);
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function voteOnAttributeForUser($attribute, PermissionGroupContext $context, Person $user)
+    {
+        // no access for now
+        return false;
     }
 }
