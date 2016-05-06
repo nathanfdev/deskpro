@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Model;
 
 use Application\DeskPRO\Entity\TicketFlagged;
@@ -105,10 +104,8 @@ class TicketFlags
             throw new UnknownTicketFlagException();
         }
 
-        return $this->getEm()->getRepository('DeskPRO:TicketFlagged')->findBy(array(
-            'color'     => $flag,
-            'person_id' => $person_id,
-        ));
+        return $this->getEm()->getRepository(TicketFlagged::class)
+            ->findBy(['color' => $flag, 'person_id' => $person_id]);
     }
 
     /**

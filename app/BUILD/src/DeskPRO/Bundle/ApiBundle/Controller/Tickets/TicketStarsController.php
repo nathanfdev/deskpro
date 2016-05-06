@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -83,8 +82,10 @@ class TicketStarsController extends BaseController
             ->getQuery()
             ->getResult();
         $customNames = [];
+
         foreach ($customNameSettings as $customNameSetting) {
-            $starId               = (int) str_replace(self::CUSTOM_STAR_NAME_SETTING_PREFIX, '', $customNameSetting->getName());
+            $starId = (int) str_replace(self::CUSTOM_STAR_NAME_SETTING_PREFIX, '', $customNameSetting->getName());
+
             $customNames[$starId] = $customNameSetting->getValue();
         }
 
@@ -93,10 +94,7 @@ class TicketStarsController extends BaseController
             $stars[] = new TicketStarModel($i, $name, TicketStar::idToColorHex($i));
         }
 
-        return View::create(
-            $this->wrap($stars),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($stars), Response::HTTP_OK);
     }
 
     /**
@@ -164,9 +162,9 @@ class TicketStarsController extends BaseController
 
         $count = CountModel::create(0, null, null, null, 'ticket_star');
         foreach ($flags_service->getFlags() as $i => $color) {
-            $flagId = $i + 1;
-
-            $flagCount = count($flags_service->getAllRecordsForFlag($this->getUser()->getId(), $flagId));
+            $flagId    = $i + 1;
+            $records   = $flags_service->getAllRecordsForFlag($this->getUser()->getId(), $flagId);
+            $flagCount = count($records);
             $count->addNested($flagCount, $flagId, 'ticket_star', TicketStar::idToColorLabel($flagId), true);
         }
 

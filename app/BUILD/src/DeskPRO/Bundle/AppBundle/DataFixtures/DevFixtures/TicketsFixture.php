@@ -564,12 +564,13 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         ];
         foreach ($this->agentIds as $agentId) {
             foreach ($colors as $color) {
+                $colorName  = TicketFlagged::idToColorName($color);
                 $numTickets = $this->faker->numberBetween(1, 30);
                 for ($x = 0; $x < $numTickets; ++$x) {
                     $batch[] = [
                         'person_id' => $agentId,
                         'ticket_id' => $this->faker->randomElement($this->ticketIds),
-                        'color'     => $color,
+                        'color'     => $colorName,
                     ];
                 }
             }
