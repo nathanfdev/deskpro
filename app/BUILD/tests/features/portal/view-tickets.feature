@@ -8,7 +8,7 @@ Feature: View Tickets
 
   Scenario: I visit the tickets page and I am unauthenticated
     When I go to "/tickets"
-    Then I should be on "/login"
+    Then the url should match ".*/login"
 
 #  Scenario: I visit the tickets page
 #    Given I am authenticated as user
