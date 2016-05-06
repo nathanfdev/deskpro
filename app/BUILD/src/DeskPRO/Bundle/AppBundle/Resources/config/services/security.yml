@@ -194,6 +194,11 @@ services:
     tags:
       - { name: security.voter.permission_groups }
 
+  security.voter.permission_groups.person_notes:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\PersonNotesVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
   security.voter.permission_groups.tasks:
     class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\TasksVoter
     tags:
