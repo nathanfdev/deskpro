@@ -173,10 +173,6 @@ class TicketLayoutHelper extends AbstractType
             }
         }
 
-        if ($context->forApi() && !$new_layout->has(FormFields::LABELS)) {
-            $additional_fields[] = new LayoutField(FormFields::LABELS);
-        }
-
         return new TicketLayoutChanges($fields_requiring_rerender, $fields_to_remove, $additional_fields);
     }
 }

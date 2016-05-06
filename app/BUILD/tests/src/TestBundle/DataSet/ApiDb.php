@@ -186,7 +186,6 @@ SQL
             ->add(new LayoutField(FormFields::PRIORITY))
             ->add(new LayoutField(FormFields::CATEGORY))
             ->add(new LayoutField(FormFields::WORKFLOW))
-            ->add(new LayoutField(FormFields::LABELS))
             ->add(new LayoutField('ticket_field', 1))// Select box
             ->add(new LayoutField('ticket_field', 5))// Datetime
             ->add(new LayoutField('ticket_field', 6))// Text
