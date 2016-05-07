@@ -64,13 +64,13 @@ export const initialLoad        = createAction(
               compileParams({ group_by: filterSetGroupingsSettingsSelector(getState()).toJS() }).replace(/&/g, '%26');
 
       const batch = 'DP_API/batch'
-              + `?get[filterSetsCount]=DP_API/ticket_filter_sets/all/counts%3F${groupingQueryString}`
+              + `?get[filterSetsCount]=DP_API/new/ticket_filter_sets/all/counts%3F${groupingQueryString}`
               + '&get[labels]=DP_API/ticket_labels'
               + '&get[categories]=DP_API/ticket_categories'
               + '&get[workflows]=DP_API/ticket_workflows'
               + '&get[products]=DP_API/ticket_products'
               + '&get[starsCount]=DP_API/ticket_stars_counts'
-              + '&get[filters]=DP_API/ticket_filters'
+              + '&get[filters]=DP_API/new/ticket_filters'
         ;
 
       api.sendGet(batch).success(({ responses }) => {
