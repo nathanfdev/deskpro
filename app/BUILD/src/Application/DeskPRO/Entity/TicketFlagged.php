@@ -31,16 +31,16 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * Flagged tickets.
  */
-class TicketFlagged extends \Application\DeskPRO\Domain\DomainObject
+class TicketFlagged extends DomainObject
 {
     const STAR_BLUE   = 1;
     const STAR_GREEN  = 2;
@@ -50,7 +50,7 @@ class TicketFlagged extends \Application\DeskPRO\Domain\DomainObject
     const STAR_RED    = 6;
     const STAR_YELLOW = 7;
 
-    protected static $id_color_map = array(
+    protected static $id_color_map = [
         self::STAR_BLUE   => 'blue',
         self::STAR_GREEN  => 'green',
         self::STAR_ORANGE => 'orange',
@@ -58,9 +58,9 @@ class TicketFlagged extends \Application\DeskPRO\Domain\DomainObject
         self::STAR_PURPLE => 'purple',
         self::STAR_RED    => 'red',
         self::STAR_YELLOW => 'yellow',
-    );
+    ];
 
-    protected static $color_map = array(
+    protected static $color_map = [
         'blue'   => self::STAR_BLUE,
         'green'  => self::STAR_GREEN,
         'orange' => self::STAR_ORANGE,
@@ -68,7 +68,7 @@ class TicketFlagged extends \Application\DeskPRO\Domain\DomainObject
         'purple' => self::STAR_PURPLE,
         'red'    => self::STAR_RED,
         'yellow' => self::STAR_YELLOW,
-    );
+    ];
 
     /**
      * @param string $color
@@ -121,17 +121,49 @@ class TicketFlagged extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketFlagged';
-        $metadata->setPrimaryTable(array(
-            'name'    => 'tickets_flagged',
-            'indexes' => array(
-                // already have a PK index on (person_id, ticket_id),
-                // but need one on just ticket_id as well (used when merging or deleting tickets):
-                'ticket_id_idx' => array('columns' => array('ticket_id')),
-            ),
-        ));
+        $metadata->setPrimaryTable(
+            [
+                'name'    => 'tickets_flagged',
+                'indexes' => [
+                    // already have a PK index on (person_id, ticket_id),
+                    // but need one on just ticket_id as well (used when merging or deleting tickets):
+                    'ticket_id_idx' => ['columns' => ['ticket_id']],
+                ],
+            ]
+        );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'person_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'person_id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'ticket_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ticket_id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'color', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'color'));
+        $metadata->mapField(
+            [
+                'fieldName'  => 'person_id',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'person_id',
+                'id'         => true,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'ticket_id',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'ticket_id',
+                'id'         => true,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'color',
+                'type'       => 'string',
+                'length'     => 20,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'color',
+            ]
+        );
     }
 }
