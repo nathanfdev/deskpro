@@ -35,12 +35,12 @@ export class DateDue extends CardWidget {
     }
 
     const style = {
-      display:         'inline-block',
-      position:        'relative',
-      paddingLeft:     20,
-      overflow:        'hidden',
-      width:           '100%',
-      'text-overflow': 'ellipsis'
+      display:      'inline-block',
+      position:     'relative',
+      paddingLeft:  20,
+      overflow:     'hidden',
+      width:        '100%',
+      textOverflow: 'ellipsis'
     };
 
     return (
