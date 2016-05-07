@@ -581,7 +581,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		if (agent_id != '0') {
 			$('li.agent-' + agent_id, this.getEl('agent_parts')).hide();
 		}
-		if ($('li:visible', this.getEl).length) {
+		if ($('li:visible', this.getEl('agent_parts')).length) {
 			this.getEl('agent_parts_none').hide();
 		} else {
 			this.getEl('agent_parts_none').show();

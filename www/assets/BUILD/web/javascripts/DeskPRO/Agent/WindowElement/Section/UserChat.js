@@ -772,6 +772,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		});
 		$('.accept-trigger', alertEl).on('click', function(ev) {
 			ev.stopPropagation();
+
 			DeskPRO_Window.runPageRouteFromElement(this);
 			if (audio && audio.pause) {
 				audio.pause();
@@ -916,12 +917,20 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		});
 		$('.accept-trigger, .join-trigger', alertEl).on('click', function(ev) {
 			ev.stopPropagation();
-			DeskPRO_Window.runPageRouteFromElement(this);
 			if (audio) {
 				try {
 					audio.pause();
 				} catch(e) {}
 			}
+			DeskPRO_Window.util.ajaxWithClientMessages({
+				url: BASE_URL + 'agent/chat/join/' + conversation_id,
+				success: function(data) {
+					if (data.result) {
+						$('.chatreply .input-wrap').show();
+						$('.chatreply .agent-join').hide();
+					}
+				}
+			});
 			alertEl.remove();
 			window.clearTimeout(waitTimer);
 
