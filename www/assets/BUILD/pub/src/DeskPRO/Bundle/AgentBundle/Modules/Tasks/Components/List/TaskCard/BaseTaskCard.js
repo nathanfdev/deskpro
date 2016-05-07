@@ -29,4 +29,10 @@ export class BaseTaskCard extends React.Component {
     const { task } = this.props;
     return !this.state.expanded && task.get('is_done');
   }
+
+  onChange = (prop, value) => {
+    if (this.props.onChange) {
+      this.props.onChange(prop, value);
+    }
+  };
 }

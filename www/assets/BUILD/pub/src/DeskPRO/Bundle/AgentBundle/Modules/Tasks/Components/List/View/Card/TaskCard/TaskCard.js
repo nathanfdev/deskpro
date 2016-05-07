@@ -20,7 +20,9 @@ export class TaskCard extends BaseTaskCard {
   };
 
   renderDetails() {
-    const { task, onChange } = this.props;
+    const { task } = this.props;
+    const onChange = this.onChange;
+
     return (
       <div className="details-line">
         <div>
@@ -42,7 +44,8 @@ export class TaskCard extends BaseTaskCard {
 
   render() {
     const { task, moving, selected } = this.props;
-    const { onToggleSelected, onChange } = this.props;
+    const { onToggleSelected } = this.props;
+    const onChange = this.onChange;
 
     return (
       <Card moving={moving} minimized={this.isMinimized()} type="task">
