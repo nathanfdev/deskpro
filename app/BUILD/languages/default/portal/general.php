@@ -120,6 +120,7 @@ return array(
     'portal.general.search-section-title'        => 'Search',
     'portal.general.search_btn'                  => 'Search',
     'portal.general.select_placeholder'          => 'Select...',
+    'portal.general.select_search_placeholder'   => 'Search for option...',
     'portal.general.show'                        => 'Show',
     'portal.general.show_less'                   => 'Show less',
     'portal.general.show_more'                   => 'Show more',

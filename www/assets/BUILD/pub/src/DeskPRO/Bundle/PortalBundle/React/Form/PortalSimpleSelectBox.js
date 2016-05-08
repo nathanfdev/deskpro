@@ -8,12 +8,12 @@ class SelectOption extends React.Component {
 
   static propTypes = {
     onClickOption: PropTypes.func,
-    disabled: PropTypes.bool,
-    displayDepth: PropTypes.number,
-    isFocused: PropTypes.bool,
-    option: PropTypes.object.isRequired,
-    multiple: PropTypes.bool,
-    active: PropTypes.bool
+    disabled:      PropTypes.bool,
+    displayDepth:  PropTypes.number,
+    isFocused:     PropTypes.bool,
+    option:        PropTypes.object.isRequired,
+    multiple:      PropTypes.bool,
+    active:        PropTypes.bool
   };
 
   onClickOption = (event) => {
@@ -30,21 +30,18 @@ class SelectOption extends React.Component {
     const { option, isFocused, active, disabled, displayDepth, multiple } = this.props;
 
     return (
-      <li ref="row"
-          className={classNames({
-            'focused': isFocused,
-            'select-option-disabled': disabled
-          })}>
-
-        <a onClick={this.onClickOption}
-           className={classNames({
-             'active': active,
-             [`display-depth-${displayDepth}`]: displayDepth > 0
-           })}>
+      <li
+        ref="row"
+        className={classNames({ focused: isFocused, ['select-option-disabled']: disabled })}
+      >
+        <a
+          onClick={this.onClickOption}
+          className={classNames({ ['active']: active, [`display-depth-${displayDepth}`]: displayDepth > 0 })}
+        >
 
           {multiple && !disabled
-            ? <span className={classNames('checkbox', {'checked': active})}>
-                <i className="fa fa-check"></i>
+            ? <span className={classNames('checkbox', { checked: active })}>
+                <i className="fa fa-check" />
               </span>
             : null
           }
@@ -59,38 +56,38 @@ export class PortalSimpleSelectBox extends React.Component {
 
   static propTypes = {
     widgetOptions: PropTypes.object,
-    multiple: PropTypes.bool,
-    expanded: PropTypes.bool,
-    level: PropTypes.number,
-    value: PropTypes.any,
-    options: PropTypes.any,
-    onChange: PropTypes.func
+    multiple:      PropTypes.bool,
+    expanded:      PropTypes.bool,
+    level:         PropTypes.number,
+    value:         PropTypes.any,
+    options:       PropTypes.any,
+    onChange:      PropTypes.func
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      id: _.uniqueId('selectbox_'),
-      options: props.options,
+      id:             _.uniqueId('selectbox_'),
+      options:        props.options,
       visibleOptions: props.options,
-      filterText: '',
+      filterText:     '',
       selectedOption: null,
-      value: props.multiple ? (props.value || []) : props.value,
-      expanded: props.expanded || false,
-      level: props.level || 1
+      value:          props.multiple ? (props.value || []) : props.value,
+      expanded:       props.expanded || false,
+      level:          props.level || 1
     };
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.state.options !== nextProps.options) {
       this.setState({
-        options: nextProps.options,
+        options:        nextProps.options,
         visibleOptions: nextProps.options,
-        filterText: '',
+        filterText:     '',
         selectedOption: null,
-        value: nextProps.multiple ? (nextProps.value || []) : nextProps.value,
-        expanded: nextProps.expanded || false,
-        level: nextProps.level || 1
+        value:          nextProps.multiple ? (nextProps.value || []) : nextProps.value,
+        expanded:       nextProps.expanded || false,
+        level:          nextProps.level || 1
       });
     }
   }
@@ -151,16 +148,14 @@ export class PortalSimpleSelectBox extends React.Component {
       } else {
         val = val.filter(opt => parseInt(opt.id, 10) !== parseInt(option.id, 10));
       }
-      val = val.filter((v) => {
-        return typeof v !== 'undefined';
-      });
+      val = val.filter((v) => typeof v !== 'undefined');
     } else {
       val = option;
     }
 
     this.setState({
       value: val,
-      expanded: this.props.multiple ? true : false
+      expanded: this.props.multiple
     });
     this.props.onChange(val);
   }
@@ -222,8 +217,8 @@ export class PortalSimpleSelectBox extends React.Component {
     const selectedOption = visibleOptions.indexOf(this.state.selectedOption) !== -1 ? this.state.selectedOption : visibleOptions[0] || null;
 
     this.setState({
-      visibleOptions: visibleOptions,
-      selectedOption: selectedOption,
+      ['visibleOptions']: visibleOptions,
+      ['selectedOption']: selectedOption,
       filterText: this.refs.filterInput.value
     });
   };
@@ -234,7 +229,7 @@ export class PortalSimpleSelectBox extends React.Component {
     }
 
     if (this.state.selectedOption === null) {
-      this.setState({selectedOption: this.state.visibleOptions[0]});
+      this.setState({ selectedOption: this.state.visibleOptions[0] });
     } else {
       let next = null;
       for (let i = 0; i < this.state.visibleOptions.length; i++) {
@@ -259,7 +254,7 @@ export class PortalSimpleSelectBox extends React.Component {
     }
 
     if (this.state.selectedOption === null) {
-      this.setState({selectedOption: this.state.visibleOptions[this.state.visibleOptions.length - 1]});
+      this.setState({ selectedOption: this.state.visibleOptions[this.state.visibleOptions.length - 1] });
     } else {
       let next = null;
       for (let i = 0; i < this.state.visibleOptions.length; i++) {
@@ -299,7 +294,7 @@ export class PortalSimpleSelectBox extends React.Component {
   }
 
   renderStaticHeader() {
-    const { multiple } = this.props;
+    const { multiple, options } = this.props;
     const classes = ['default'];
     if (this.state.expanded) {
       classes.push('expanded');
@@ -316,13 +311,14 @@ export class PortalSimpleSelectBox extends React.Component {
 
     if (!this.state.expanded && (multiple ? this.state.value.length > 0 : this.state.value)) {
       return (
-        <div className={className}
-             onClick={this.onClickHeader}
-             onKeyDown={this.focusedOnKeyDown}
-             tabIndex="0"
-             role="combobox"
-             ref="defaultRow">
-
+        <div
+          className={className}
+          onClick={this.onClickHeader}
+          onKeyDown={this.focusedOnKeyDown}
+          tabIndex="0"
+          role="combobox"
+          ref="defaultRow"
+        >
           <span className={`multiselect-title_${this.state.id}`}>
             {multiple
               ? this.state.value.map(opt => opt.title || <span>&nbsp;</span>).join(', ')
@@ -337,11 +333,22 @@ export class PortalSimpleSelectBox extends React.Component {
     return (
       <div className={className} onClick={this.onClickHeader}>
         <div className="filter-box">
-          <input type="text"
-                 placeholder={portalPhrases.get('portal.general.select_placeholder')}
-                 ref="filterInput"
-                 onKeyDown={this.filterNav}
-                 onKeyUp={this.filterChange} />
+          { options && options.length > 8
+            ? <input
+              type="text"
+              placeholder={portalPhrases.get('portal.general.select_search_placeholder')}
+              ref="filterInput"
+              onKeyDown={this.filterNav}
+              onKeyUp={this.filterChange}
+            />
+            : <input
+              type="text"
+              disabled
+              placeholder={portalPhrases.get('portal.general.select_placeholder')}
+              onKeyDown={this.filterNav}
+              onKeyUp={this.filterChange}
+            />
+          }
         </div>
       </div>
     );
@@ -367,23 +374,35 @@ export class PortalSimpleSelectBox extends React.Component {
     return (
       <div className="options-wrapper">
         <ul>
-          {options.map((option) => {
-            if (this.isNullOption(option)) {
-              return null;
-            }
+          {options.length > 0
+            ? options.map((option) => {
+              if (this.isNullOption(option)) {
+                return null;
+              }
 
-            return (
-              <SelectOption
-                onClickOption={this.onClickOption}
-                disabled={option.children && option.children.length > 0}
-                displayDepth={option.depth}
-                isFocused={option === this.state.selectedOption}
-                key={option.id}
-                option={option}
-                multiple={!!this.props.multiple}
-                active={isActive(option)} />
-            );
-          })}
+              return (
+                <SelectOption
+                  onClickOption={this.onClickOption}
+                  disabled={option.children && option.children.length > 0}
+                  displayDepth={option.depth}
+                  isFocused={option === this.state.selectedOption}
+                  key={option.id}
+                  option={option}
+                  multiple={!!this.props.multiple}
+                  active={isActive(option)}
+                />
+              );
+            })
+            : <SelectOption
+              onClickOption={this.onClickOption}
+              disabled
+              isFocused={false}
+              key={0}
+              option={ { title: `No matches found for ${this.state.filterText}`, id: 0 } }
+              multiple={!!this.props.multiple}
+              active={false}
+            />
+          }
         </ul>
       </div>
     );
@@ -394,10 +413,11 @@ export class PortalSimpleSelectBox extends React.Component {
     const context = widgetOptions.context || document;
 
     return (
-      <ClickOut onClickOut={this.onClickOut}
-                additionalNodes={[`.multiselect-title_${this.state.id}`]}
-                context={context}>
-
+      <ClickOut
+        onClickOut={this.onClickOut}
+        additionalNodes={[`.multiselect-title_${this.state.id}`]}
+        context={context}
+      >
         <div className={classNames('multiselect', widgetOptions.widgetClassName || null, `level-${this.state.level}`)}>
             {this.renderStaticHeader()}
             {this.renderDropdownList()}
