@@ -211,38 +211,54 @@ echo "Build status"
 echo "-----------------------------------------------------------------------------------------------------------------"
 
 phpunit_failed=0
-if [[ ${phpunit} =~ "FAILURES" ]] || [[ ! ${phpunit} =~ "OK (" ]] || [[ ${phpunit_term_engine} =~ "FAILURES" ]] || [[ ! ${phpunit_term_engine} =~ "OK (" ]] || [[ ${phpunit_portal} =~ "FAILURES" ]] || [[ ! ${phpunit_portal} =~ "OK (" ]] ; then
+if [[ ${phpunit} =~ "FAILURES" ]] || [[ ! ${phpunit} =~ "OK (" ]] ; then
     phpunit_failed=1
+    mv "$LOGS_DIR/phpunit.txt" "$LOGS_DIR/FAILED-phpunit.txt"
     echo "- PHPUnit failed"
+fi
+if [[ ${phpunit_term_engine} =~ "FAILURES" ]] || [[ ! ${phpunit_term_engine} =~ "OK (" ]] ; then
+    phpunit_failed=1
+    mv "$LOGS_DIR/phpunit-term-engine.txt" "$LOGS_DIR/FAILED-phpunit-term-engine.txt"
+    echo "- PHPUnit Term Engine failed"
+fi
+if [[ ${phpunit_portal} =~ "FAILURES" ]] || [[ ! ${phpunit_portal} =~ "OK (" ]] ; then
+    phpunit_failed=1
+    mv "$LOGS_DIR/phpunit-portal.txt" "$LOGS_DIR/FAILED-phpunit-portal.txt"
+    echo "- PHPUnit Portal failed"
 fi
 
 phpspec_failed=0
 if [[ ${phpspec} =~ "failed" ]] || [[ ! ${phpspec} =~ "passed" ]] ; then
     phpspec_failed=1
+    mv "$LOGS_DIR/phpspec.txt" "$LOGS_DIR/FAILED-phpspec.txt"
     echo "- PHPSpec failed"
 fi
 
 jest_failed=0
 if [[ ${jest} =~ "fail" ]] || [[ ! ${jest} =~ "tests passed" ]] ; then
     jest_failed=1
+    mv "$LOGS_DIR/jest.txt" "$LOGS_DIR/FAILED-jest.txt"
     echo "- Jest failed"
 fi
 
 behat_install_failed=0
 if [[ ${behat_install} =~ "failed" ]] || [[ ! ${behat_install} =~ "passed" ]] ; then
     behat_install_failed=1
+    mv "$LOGS_DIR/behat-install.txt" "$LOGS_DIR/FAILED-behat-install.txt"
     echo "- Behat install failed"
 fi
 
 behat_system_api_failed=0
 if [[ ${behat_system_api} =~ "failed" ]] || [[ ! ${behat_system_api} =~ "passed" ]] ; then
     behat_system_api_failed=1
+    mv "$LOGS_DIR/behat-system-api.txt" "$LOGS_DIR/FAILED-behat-system-api.txt"
     echo "- Behat system-api failed"
 fi
 
 behat_production_failed=0
 if [[ ${behat_production} =~ "failed" ]] || [[ ! ${behat_production} =~ "passed" ]] ; then
     behat_production_failed=1
+    mv "$LOGS_DIR/behat-production.txt" "$LOGS_DIR/FAILED-production-install.txt"
     echo "- Behat production failed"
 fi
 
@@ -250,19 +266,24 @@ behat_api_failed=0
 for ((i=1;i<=$THREADS_NUM;i++)); do
     if [[ ${behat_api[i]} =~ "failed" ]] || [[ ! ${behat_api[i]} =~ "passed" ]] ; then
         behat_api_failed=1
-        echo "- Behat api failed"
-        break
+        mv "$LOGS_DIR/behat-api-${i}.txt" "$LOGS_DIR/FAILED-behat-api-${i}.txt"
     fi
 done
+if [[ "$behat_api_failed" -ne "0" ]]; then
+    echo "- Behat api failed"
+fi
+
 
 behat_portal_failed=0
 for ((i=1;i<=$THREADS_NUM;i++)); do
     if [[ ${behat_portal[i]} =~ "failed" ]] || [[ ! ${behat_portal[i]} =~ "passed" ]] ; then
         behat_portal_failed=1
-        echo "- Behat portal failed"
-        break
+        mv "$LOGS_DIR/behat-portal-${i}.txt" "$LOGS_DIR/FAILED-portal-api-${i}.txt"
     fi
 done
+if [[ "$behat_portal_failed" -ne "0" ]]; then
+    echo "- Behat portal failed"
+fi
 
 ##############################################
 # EXIT 0/1
