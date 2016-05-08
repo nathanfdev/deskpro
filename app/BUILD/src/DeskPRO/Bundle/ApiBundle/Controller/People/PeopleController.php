@@ -87,9 +87,7 @@ class PeopleController extends CrudController
         $request = $masterRequest->duplicate(
             array_merge($params, $masterRequest->query->all()),
             null,
-            [
-                '_controller' => 'ApiBundle:People\People:list',
-            ]
+            ['_controller' => 'ApiBundle:People\People:list']
         );
         $request->query->add($params);
 
@@ -106,20 +104,21 @@ class PeopleController extends CrudController
      * @Rest\Get("/{id}/tickets")
      *
      * @param Request $request
+     * @param int     $id      Person ID
      *
      * @return Response
      */
-    public function getTicketsAction(Request $request)
+    public function getTicketsAction(Request $request, $id)
     {
-        $id = $request->get('id');
         /** @var Person $person */
-        $person = $this->getManager()->getRepository(Person::class)->find($id);
+        $person = $this->findEntity($id, $request);
+
         if (null === $person) {
             throw new NotFoundHttpException("Person with ID=$id was not found");
         }
 
-        $personId = $person->getId();
         $options  = ['not-status' => [Ticket::HIDDEN_STATUS_DELETED, Ticket::HIDDEN_STATUS_SPAM]];
+        $personId = $person->getId();
 
         if ($person->isAgent()) {
             $options['agent'] = $personId;
@@ -151,6 +150,9 @@ class PeopleController extends CrudController
      *     }
      * )
      * @Rest\Put("/{id}/permissions")
+     *
+     * @param         $id
+     * @param Request $request
      */
     public function updatePermissionsAction($id, Request $request)
     {
