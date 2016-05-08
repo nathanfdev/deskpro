@@ -32,6 +32,8 @@
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\LabelDef;
+use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use DeskPRO\Bundle\AppBundle\DataFixtures\Tools\RandomFileFromDir;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -288,7 +290,7 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
     private function createOrgExample()
     {
         // the content publisher agent guy
-        $publisher            = new \Application\DeskPRO\Entity\Person();
+        $publisher            = new Person();
         $publisher->name      = 'Corporate Content';
         $publisher->can_agent = true;
         $publisher->is_agent  = true;
@@ -301,14 +303,14 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
         $this->setReference('person.publisher', $publisher);
 
         // an org
-        $organization = new \Application\DeskPRO\Entity\Organization();
+        $organization = new Organization();
         $organization->setName('Mana Publishing');
         $organization->setImportance(5);
 
         $this->setReference('org.mana', $organization);
 
         // a regular dude
-        $person       = new \Application\DeskPRO\Entity\Person();
+        $person       = new Person();
         $person->name = 'Joe Kool';
         $person->addEmailAddressString('joe@deskprodemo.com');
         $person->setPassword('joe');
@@ -317,7 +319,7 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
         $this->setReference('person.joe', $person);
 
         // an organization
-        $mana       = new \Application\DeskPRO\Entity\Person();
+        $mana       = new Person();
         $mana->name = 'Mana Ger';
         $mana->addEmailAddressString('manager@deskprodemo.com');
         $mana->setPassword('manager');

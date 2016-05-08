@@ -34,7 +34,6 @@ namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 use Application\DeskPRO\Entity\LabelDef;
 use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketFlagged;
 use Application\DeskPRO\Entity\TicketSla;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures\CustomFields\CustomDataGenerator;
@@ -154,7 +153,6 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         $this->loadTicketProps();
         $this->loadTicketSlas();
         $this->setParentTicket();
-        $this->ticketStars();
     }
 
     private function initIds()
@@ -548,32 +546,5 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
                 }
             }
         }
-    }
-
-    private function ticketStars()
-    {
-        $batch  = [];
-        $colors = [
-            TicketFlagged::STAR_BLUE,
-            TicketFlagged::STAR_GREEN,
-            TicketFlagged::STAR_ORANGE,
-            TicketFlagged::STAR_PINK,
-            TicketFlagged::STAR_PURPLE,
-            TicketFlagged::STAR_RED,
-            TicketFlagged::STAR_YELLOW,
-        ];
-        foreach ($this->agentIds as $agentId) {
-            foreach ($colors as $color) {
-                $numTickets = $this->faker->numberBetween(1, 30);
-                for ($x = 0; $x < $numTickets; ++$x) {
-                    $batch[] = [
-                        'person_id' => $agentId,
-                        'ticket_id' => $this->faker->randomElement($this->ticketIds),
-                        'color'     => $color,
-                    ];
-                }
-            }
-        }
-        $this->db->batchInsert('tickets_flagged', $batch, true);
     }
 }
