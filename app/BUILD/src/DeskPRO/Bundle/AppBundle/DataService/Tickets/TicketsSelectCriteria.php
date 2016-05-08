@@ -45,7 +45,6 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Term\Problem\ProblemTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateCreated\TicketDateCreatedTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketFlagged\TicketFlaggedTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLabel\TicketLabelTerm;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketParticipant\TicketParticipantTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatus\TicketStatusTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketUrgency\TicketUrgencyTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
@@ -123,15 +122,6 @@ class TicketsSelectCriteria
                     break;
                 case 'person':
                     $composite->addTerm(new PersonTerm(['person_ids' => [$value]]));
-                    break;
-                case 'person-advanced':
-                    $personTerm = new CompositeTerm([], TermInterface::OP_OR);
-                    $personTerm->addTerm(new PersonTerm(['person_ids' => [$value['person']]]));
-                    $personTerm->addTerm(new TicketParticipantTerm(['person_ids' => [$value['person']]]));
-                    if (isset($value['org'])) {
-                        $personTerm->addTerm(new OrganizationTerm(['organization' => $value['org']]));
-                    }
-                    $composite->addTerm($personTerm);
                     break;
                 case 'email':
                     $composite->addTerm(new PersonEmailTerm(['email' => [$value]]));

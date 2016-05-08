@@ -117,10 +117,7 @@ class PeopleController extends CrudController
         if ($person->isAgent()) {
             $options['agent'] = $personId;
         } else {
-            $options['person-advanced']['person'] = $personId;
-            if ($person->isOrganizationManager()) {
-                $options['person-advanced']['org'] = $person->getOrganization()->getId();
-            }
+            $options['person'] = $personId;
         }
 
         return TicketsController::subRequestSearch($this->getKernel(), $request, $options);
