@@ -29,10 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
@@ -47,6 +47,7 @@ use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
@@ -83,9 +84,13 @@ class PeopleController extends CrudController
      */
     public static function subRequestSearch(HttpKernelInterface $kernel, Request $masterRequest, array $params)
     {
-        $request = $masterRequest->duplicate(array_merge($params, $masterRequest->query->all()), null, [
-            '_controller' => 'ApiBundle:People\People:list',
-        ]);
+        $request = $masterRequest->duplicate(
+            array_merge($params, $masterRequest->query->all()),
+            null,
+            [
+                '_controller' => 'ApiBundle:People\People:list',
+            ]
+        );
         $request->query->add($params);
 
         return $kernel->handle($request, HttpKernelInterface::SUB_REQUEST);
@@ -106,7 +111,26 @@ class PeopleController extends CrudController
      */
     public function getTicketsAction(Request $request)
     {
-        return TicketsController::subRequestSearch($this->getKernel(), $request, ['person' => $request->get('id')]);
+        $id = $request->get('id');
+        /** @var Person $person */
+        $person = $this->getManager()->getRepository(Person::class)->find($id);
+        if (null === $person) {
+            throw new NotFoundHttpException("Person with ID=$id was not found");
+        }
+
+        $personId = $person->getId();
+        $options  = ['not-status' => [Ticket::HIDDEN_STATUS_DELETED, Ticket::HIDDEN_STATUS_SPAM]];
+
+        if ($person->isAgent()) {
+            $options['agent'] = $personId;
+        } else {
+            $options['person-advanced']['person'] = $personId;
+            if ($person->isOrganizationManager()) {
+                $options['person-advanced']['org'] = $person->getOrganization()->getId();
+            }
+        }
+
+        return TicketsController::subRequestSearch($this->getKernel(), $request, $options);
     }
 
     // This exists temporarily until we have some real versioned actions ###############################################
@@ -214,8 +238,7 @@ class PeopleController extends CrudController
                     ->leftJoin("$alias.teams", 'teams')
                     ->addSelect('teams.name as title')
                     ->addSelect('teams.id as group_name')
-                    ->groupBy('group_name')
-                ;
+                    ->groupBy('group_name');
 
                 break;
         }

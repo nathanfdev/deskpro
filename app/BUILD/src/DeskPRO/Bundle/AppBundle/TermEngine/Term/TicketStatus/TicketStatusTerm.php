@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -41,21 +41,17 @@ class TicketStatusTerm extends AbstractTerm
 {
     public static function configureOptions(TermOptionsResolver $resolver)
     {
-        $resolver->setDefaults(
-            array(
-                'status' => null,
-            )
-        );
+        $resolver->setDefaults(['status' => null]);
 
         $resolver->setConstraints(
-            array(
-                'status' => array(
+            [
+                'status' => [
                     new Assert\NotBlank(),
                     new Assert\Type('array'),
                     new Assert\Choice(
-                        array(
+                        [
                             'multiple' => true,
-                            'choices'  => array(
+                            'choices'  => [
                                 Ticket::STATUS_ARCHIVED,
                                 Ticket::STATUS_AWAITING_AGENT,
                                 Ticket::STATUS_AWAITING_USER,
@@ -64,11 +60,11 @@ class TicketStatusTerm extends AbstractTerm
                                 Ticket::STATUS_HIDDEN.'.'.Ticket::HIDDEN_STATUS_DELETED,
                                 Ticket::HIDDEN_STATUS_SPAM,
                                 Ticket::STATUS_HIDDEN.'.'.Ticket::HIDDEN_STATUS_SPAM,
-                            ),
-                        )
+                            ],
+                        ]
                     ),
-                ),
-            )
+                ],
+            ]
         );
 
         $resolver->setNormalizer(
@@ -76,21 +72,15 @@ class TicketStatusTerm extends AbstractTerm
             function ($options, $status_array) {
 
                 if (!is_array($status_array)) {
-                    $status_array = array($status_array);
+                    $status_array = [$status_array];
                 }
 
                 // if the passed status is a "hidden" sub-status, the compilers
                 // are expecting to have "hidden." prepended. We ensure that here.
-                $normalized = array();
+                $normalized = [];
 
                 foreach ($status_array as $status) {
-                    if (in_array(
-                        $status,
-                        array(
-                            Ticket::HIDDEN_STATUS_SPAM,
-                            Ticket::HIDDEN_STATUS_DELETED,
-                        )
-                    )) {
+                    if (in_array($status, [Ticket::HIDDEN_STATUS_SPAM, Ticket::HIDDEN_STATUS_DELETED])) {
                         $status = Ticket::STATUS_HIDDEN.'.'.$status;
                     }
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,13 +39,13 @@ class DbalAgentTermCompiler extends AbstractDbalTermCompiler
 {
     public function doCompile(TermInterface $term)
     {
-        $ids = array();
+        $ids = [];
 
-        foreach ($term->getOption('agent_ids') as $agent_id) {
-            if ($agent_id === AgentTerm::ID_ME) {
+        foreach ($term->getOption('agent_ids') as $agentId) {
+            if ($agentId === AgentTerm::ID_ME) {
                 $ids[] = new TermEngineExpression('agent.getId()');
             } else {
-                $ids[] = $agent_id;
+                $ids[] = $agentId;
             }
         }
 
