@@ -87,3 +87,4 @@ export class CalendarView extends React.Component {
     );
   }
 }
+
