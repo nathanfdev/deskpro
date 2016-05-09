@@ -45,12 +45,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Class CustomDataType.
@@ -63,13 +65,20 @@ class CustomDataType extends AbstractType
     protected $fieldManager;
 
     /**
+     * @var ValidatorInterface
+     */
+    protected $validator;
+
+    /**
      * Constructor.
      *
      * @param CustomFieldManager $fieldManager
+     * @param ValidatorInterface $validator
      */
-    public function __construct(CustomFieldManager $fieldManager)
+    public function __construct(CustomFieldManager $fieldManager, ValidatorInterface $validator)
     {
         $this->fieldManager = $fieldManager;
+        $this->validator    = $validator;
     }
 
     /**
@@ -95,7 +104,7 @@ class CustomDataType extends AbstractType
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onGenerateFields']);
         $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onTransformToCustomData'], -1);
-        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onValidateData'], -1);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onValidateData'], -1);
 
         if ($options['inline']) {
             $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetInlineData']);
@@ -279,7 +288,7 @@ class CustomDataType extends AbstractType
      * We need to map errors to the custom data form.
      *
      * Because we have single custom data collection for all custom def fields we need to get validation errors from
-     * unmapped field. Create another field for validation to keep custom data mapped.
+     * unmapped field. So validate the data manually via another validator to keep custom data mapped.
      *
      * @param FormEvent $event
      */
@@ -288,23 +297,28 @@ class CustomDataType extends AbstractType
         $form    = $event->getForm();
         $options = $form->getConfig()->getOptions();
 
+        if (!$form->isSubmitted()) {
+            return;
+        }
         if ($options['ignore_validation']) {
             return;
         }
 
-        $form->add('custom_def_data', HiddenType::class, [
-            'mapped'         => false,
-            'error_bubbling' => true,
-            'constraints'    => [
-                new AppAssert\CustomField\CustomData([
-                    'context'    => $options['agent_interface'] ? 'agent' : 'user',
-                    'custom_def' => $options['custom_def'],
-                    'target'     => AppAssert\CustomField\CustomData::TARGET_FIELD,
-                ]),
-            ],
-        ]);
+        $violations = $this->validator->validate($event->getData(), new AppAssert\CustomField\CustomData([
+            'context'    => $options['agent_interface'] ? 'agent' : 'user',
+            'custom_def' => $options['custom_def'],
+            'target'     => AppAssert\CustomField\CustomData::TARGET_FIELD,
+        ]));
 
-        $form->get('custom_def_data')->submit($event->getData());
+        foreach ($violations as $violation) {
+            $form->addError(new FormError(
+                $violation->getMessage(),
+                $violation->getMessageTemplate(),
+                $violation->getParameters(),
+                $violation->getPlural(),
+                $violation
+            ));
+        }
     }
 
     /**
