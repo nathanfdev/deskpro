@@ -204,14 +204,6 @@ class TicketWithLayoutsType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getName()
-    {
-        return 'ticket_with_layouts';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getBlockPrefix()
     {
         return 'ticket';

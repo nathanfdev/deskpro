@@ -29,8 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsType;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -75,7 +77,7 @@ class TicketController extends AbstractApiController
         $person         = $ticket->getPerson();
         $ticket_message = $ticket->messages[0];
 
-        $form = $this->createForm('ticket_with_layouts', $ticket, [
+        $form = $this->createForm(TicketWithLayoutsType::class, $ticket, [
             'person'                        => $person,
             'settings'                      => $this->getBrandContainer()->getSettings(),
             'action'                        => $this->generateUrl('portal_api_ticket_new'),
@@ -105,7 +107,7 @@ class TicketController extends AbstractApiController
             return new View();
         }
 
-        $form_full = $this->createForm('ticket_with_layouts', $ticket, [
+        $form_full = $this->createForm(TicketWithLayoutsType::class, $ticket, [
             'person'       => $person,
             'settings'     => $this->getBrandContainer()->getSettings(),
             'full_version' => true,

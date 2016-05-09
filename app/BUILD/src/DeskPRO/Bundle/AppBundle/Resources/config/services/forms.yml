@@ -216,7 +216,7 @@ services:
       - "@ticket_with_layouts_helper"
       - "@ticket_field_settings"
     tags:
-      - { name: form.type, alias: ticket_with_layouts }
+      - { name: form.type }
 
   form.ticket_message:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageType
