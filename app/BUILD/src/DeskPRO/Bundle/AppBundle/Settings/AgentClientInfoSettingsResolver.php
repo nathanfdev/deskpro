@@ -208,15 +208,15 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
         // set group fields
         $groupFields = [
             TicketGrouping::DEPARTMENT,
-            TicketGrouping::ORGANIZATION,
-            TicketGrouping::PERSON,
-            TicketGrouping::LANGUAGE,
-            TicketGrouping::URGENCY,
             TicketGrouping::AGENT,
             TicketGrouping::AGENT_TEAM,
+            TicketGrouping::URGENCY,
             TicketGrouping::WAITING_TIME,
             TicketGrouping::ALL_WAITING_TIME,
             TicketGrouping::DATE_CREATED,
+            TicketGrouping::LANGUAGE,
+            TicketGrouping::ORGANIZATION,
+            TicketGrouping::PERSON,
             // not supported by legacy ticket grouping counter
             // temporary disabled until we are using legacy filters
             // TicketGrouping::OPEN_TIME,
