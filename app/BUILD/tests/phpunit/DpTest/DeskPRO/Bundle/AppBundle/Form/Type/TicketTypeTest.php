@@ -28,6 +28,7 @@
 
 namespace DpTest\DeskPRO\Bundle\AppBundle\Form\Form\Type;
 
+use Application\DeskPRO\CustomFields\Handler\Text;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
@@ -355,6 +356,71 @@ class TicketTypeTest extends PortalTestCase
         $client->submit($form);
         $this->assertTrue($client->getResponse()->isRedirection());
         $this->assertRegExp('#/thank-you#', $client->getResponse()->headers->get('Location'));
+    }
+
+    public function testApiCustomFieldLayoutChanges()
+    {
+        /** @var CustomDefTicket[] $f */
+        $f  = [];
+        $em = $this->getEntityManager();
+        $em->getConnection()->executeUpdate('TRUNCATE ticket_layouts');
+
+        for ($i = 1; $i < 5; ++$i) {
+            $f[$i] = new CustomDefTicket();
+            $f[$i]->setTitle('Field '.$i);
+            $f[$i]->setDescription('');
+            $f[$i]->setHandlerClass(Text::class);
+            $f[$i]->setIsEnabled(true);
+            $f[$i]->setIsUserEnabled(true);
+
+            $em->persist($f[$i]);
+        }
+
+        $defaultLayout               = new TicketLayout();
+        $defaultLayout->is_enabled   = true;
+        $defaultLayout->user_layout  = new Layout();
+        $defaultLayout->agent_layout = new Layout();
+        $defaultLayout->department   = null;
+
+        $defaultLayout->user_layout->add(new LayoutField('ticket_field', 1));
+        $defaultLayout->user_layout->add(new LayoutField('ticket_field', 2));
+
+        $em->persist($defaultLayout);
+
+        $depLayout               = new TicketLayout();
+        $depLayout->is_enabled   = true;
+        $depLayout->user_layout  = new Layout();
+        $depLayout->agent_layout = new Layout();
+        $depLayout->department   = $this->getSalesDep();
+
+        $depLayout->user_layout->add(new LayoutField('ticket_field', 3));
+        $depLayout->user_layout->add(new LayoutField('ticket_field', 4));
+
+        $em->persist($depLayout);
+        $em->flush();
+
+        $ticket = new Ticket();
+        $person = $this->getNormalPerson();
+
+        $form = $this->getContainer()->get('form.factory')->create('ticket_with_layouts', $ticket, [
+            'person'   => $person,
+            'settings' => $this->getBrandSettings(),
+            'for_api'  => true,
+        ]);
+
+        $this->assertTrue($form->has('fields'));
+        $this->assertTrue($form->get('fields')->has(1));
+        $this->assertTrue($form->get('fields')->has(2));
+
+        $form->submit([
+            FormFields::DEPARTMENT => 2,
+        ]);
+
+        $this->assertTrue($form->has('fields'));
+        $this->assertFalse($form->get('fields')->has(1));
+        $this->assertFalse($form->get('fields')->has(2));
+        $this->assertTrue($form->get('fields')->has(3));
+        $this->assertTrue($form->get('fields')->has(4));
     }
 
     /**

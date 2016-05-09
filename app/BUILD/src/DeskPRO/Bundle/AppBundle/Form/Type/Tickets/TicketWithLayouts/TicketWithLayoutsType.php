@@ -63,6 +63,7 @@ use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -337,7 +338,7 @@ class TicketWithLayoutsType extends AbstractType
 
         /** @var LayoutField $field */
         foreach ($changes->getAdditionalFields() as $field) {
-            if (!$context->hasValidVisibility($field) || $context->getForm()->has($field->getId())) {
+            if (!$context->hasValidVisibility($field) || $form->has($field->getId())) {
                 continue;
             }
 
@@ -381,10 +382,22 @@ class TicketWithLayoutsType extends AbstractType
             // add custom field groups to the form
             foreach (self::$custom_data_mapping as $field_type => $form_field_name) {
                 if (!empty($custom_field_groups[$field_type])) {
-                    $form->add($form_field_name, CombinedType::class, [
-                        'forms'          => $custom_field_groups[$field_type],
-                        'error_bubbling' => false,
-                    ]);
+                    if (!$form->has($form_field_name)) {
+                        $form->add($form_field_name, CombinedType::class, [
+                            'forms'          => [],
+                            'error_bubbling' => false,
+                        ]);
+                    }
+
+                    $customGroup = $form->get($form_field_name);
+                    $form->remove($form_field_name);
+
+                    foreach ($custom_field_groups[$field_type] as $field) {
+                        $customGroup->add($field['name'], $field['type'], $field['options']);
+                    }
+
+                    // re-add custom field group to proper map data
+                    $form->add($customGroup);
                 }
             }
         } else {
@@ -441,16 +454,28 @@ class TicketWithLayoutsType extends AbstractType
     private function removeField(TicketWithLayoutsContext $context, LayoutField $field)
     {
         $form = $context->getForm();
-        if (!$form->has($field->getId())) {
-            return;
-        }
 
-        $form->remove($field->getId());
+        if ($context->forApi() && isset(self::$custom_data_mapping[$field->getFieldType()])) {
+            // remove custom fields from the layout in api context
+            $groupName = self::$custom_data_mapping[$field->getFieldType()];
+            if ($form->has($groupName)) {
+                $customGroup = $form->get($groupName);
+                if ($customGroup->has($field->getFieldId())) {
+                    $customGroup->remove($field->getFieldId());
+                }
+            }
+        } else {
+            if (!$form->has($field->getId())) {
+                return;
+            }
 
-        // attachments field should have more_attachments button for portal,
-        // so remove it as well
-        if ($field->getFieldType() === FormFields::ATTACHMENTS && $form->has('more_attachments')) {
-            $form->remove('more_attachments');
+            $form->remove($field->getId());
+
+            // attachments field should have more_attachments button for portal,
+            // so remove it as well
+            if ($field->getFieldType() === FormFields::ATTACHMENTS && $form->has('more_attachments')) {
+                $form->remove('more_attachments');
+            }
         }
     }
 
