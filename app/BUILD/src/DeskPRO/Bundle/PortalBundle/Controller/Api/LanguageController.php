@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use DeskPRO\Component\Util\MapUtils;
@@ -62,6 +61,7 @@ class LanguageController extends AbstractApiController
             'portal.general.prop_popularity',
             'portal.general.prop_comments',
             'portal.general.select_placeholder',
+            'portal.general.select_search_placeholder',
             'portal.account.login-btn',
             'portal.account.login-email',
             'portal.account.login-invalid',

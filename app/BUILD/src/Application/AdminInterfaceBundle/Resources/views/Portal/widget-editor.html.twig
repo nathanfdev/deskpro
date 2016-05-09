@@ -2,13 +2,13 @@
 {% block fullpane_content %}
 <div class="content-wrapper">
     <section class="content setup widget-editor">
-        <h1><i class="fa fa-cog"></i> Site Widget & Chat</h1>
+        <h1><i class="fa fa-cog"></i> {{ phrase('admin.widget.settings_heading') }}</h1>
         <form class="widget-editor-form">
             <div class="content-section">
-                <h2 class="with-divider form-header"><span>Button Settings</span></h2>
+                <h2 class="with-divider form-header"><span>{{ phrase('admin.widget.button_settings') }}</span></h2>
                 <ul class="options">
                     <li>
-                        <label class="option-label">Button size:</label>
+                        <label class="option-label">{{ phrase('admin.widget.button_size') }}:</label>
                         <div class="option-group">
                             <select ng-model="brand_settings.button.size">
                                 <option value="small">S</option>
@@ -18,7 +18,7 @@
                         </div>
                     </li>
                     <li>
-                        <label class="option-label">Button word:</label>
+                        <label class="option-label">{{ phrase('admin.widget.button_word') }}:</label>
                         <div class="option-group">
                             <input type="text" ng-model="brand_settings.button.name" />
                             <ul class="errors">
@@ -29,7 +29,7 @@
                         </div>
                     </li>
                     <li>
-                        <label class="option-label">Colors:</label>
+                        <label class="option-label">{{ phrase('admin.widget.colors') }}:</label>
                         <ul class="option-group option-group-row">
                             <li>
                                 <spectrum-colorpicker
@@ -43,7 +43,7 @@
                                     }"
                                     ></spectrum-colorpicker>
 
-                                <label>Background Color</label>
+                                <label>{{ phrase('admin.widget.background_color') }}</label>
                             </li>
                             <li>
                                 <spectrum-colorpicker
@@ -57,7 +57,7 @@
                                     }"
                                     ></spectrum-colorpicker>
 
-                                <label>Text Color</label>
+                                <label>{{ phrase('admin.widget.text_color') }}</label>
                             </li>
                             <li>
                                 <spectrum-colorpicker
@@ -71,33 +71,33 @@
                                     }"
                                     ></spectrum-colorpicker>
 
-                                <label>Border Color</label>
+                                <label>{{ phrase('admin.widget.border_color') }}</label>
                             </li>
                         </ul>
                     </li>
                     <li>
-                        <label class="option-label">Position:</label>
+                        <label class="option-label">{{ phrase('admin.widget.position') }}:</label>
                         <ul class="option-group option-group-inline">
                             <li>
                                 <input type="radio" ng-model="brand_settings.widget.position" value="right" />
-                                <label>Right</label>
+                                <label>{{ phrase('general.phrases.right') }}</label>
                             </li>
                             <li>
                                 <input type="radio" ng-model="brand_settings.widget.position" value="left" />
-                                <label>Left</label>
+                                <label>{{ phrase('general.phrases.left') }}</label>
                             </li>
                         </ul>
                     </li>
                     <li>
-                        <label class="option-label">Widget Size:</label>
+                        <label class="option-label">{{ phrase('admin.widget.widget_size') }}:</label>
                         <ul class="option-group option-group-inline">
                             <li>
                                 <input type="radio" ng-model="brand_settings.widget.type" value="column" />
-                                <label>Column</label>
+                                <label>{{ phrase('admin.widget.column') }}</label>
                             </li>
                             <li>
                                 <input type="radio" ng-model="brand_settings.widget.type" value="bubble" />
-                                <label>Corner</label>
+                                <label>{{ phrase('admin.widget.corner') }}</label>
                             </li>
                         </ul>
                     </li>
@@ -105,35 +105,35 @@
             </div>
 
             <div class="content-section">
-                <h2 class="with-divider form-header"><span>Chat Settings</span></h2>
+                <h2 class="with-divider form-header"><span>{{ phrase('admin.widget.chat_settings') }}</span></h2>
 
                 <div class="switcher">
                     <button dp-toggle-switch ng-model="brand_settings.chat.enabled"></button>
-                    <h4><span class="title-text">Enable / Disable Chat</span></h4>
+                    <h4><span class="title-text">{{ phrase('admin.widget.chat_switcher') }}</span></h4>
                 </div>
 
                 <div ng-if="brand_settings.chat.enabled">
                     <div class="switcher">
                         <button dp-toggle-switch ng-model="global_settings.chat.require_login"></button>
-                        <h4><span class="title-text">Require login</span></h4>
+                        <h4><span class="title-text">{{ phrase('admin.widget.chat_require_login') }}</span></h4>
                     </div>
 
                     <div class="switcher" ng-if="!global_settings.chat.require_login">
                         <button dp-toggle-switch ng-model="brand_settings.chat.request_user_info"></button>
-                        <h4><span class="title-text">Request Name/Email before Chat Commences</span></h4>
+                        <h4><span class="title-text">{{ phrase('admin.widget.chat_request_person_for_comments') }}</span></h4>
 
                         <ul class="options" ng-if="brand_settings.chat.request_user_info">
                             <li>
-                                <label class="option-label">Begin chat mode:</label>
+                                <label class="option-label">{{ phrase('admin.widget.chat_begin_mode') }}:</label>
                                 <div class="option-group">
                                     <select ng-model="brand_settings.chat.begin_mode">
-                                        <option value="conversation">Conversation Style</option>
-                                        <option value="form">Form Style</option>
+                                        <option value="conversation">{{ phrase('admin.widget.chat_mode_conversation_style') }}</option>
+                                        <option value="form">{{ phrase('admin.widget.chat_mode_form_style') }}</option>
                                     </select>
                                 </div>
                             </li>
                             <li>
-                                <label class="option-label">Email validation:</label>
+                                <label class="option-label">{{ phrase('admin.widget.chat_email_validation') }}:</label>
                                 <div class="option-group">
                                     <input type="checkbox" ng-model="global_settings.chat.email_validation" />
                                 </div>
@@ -143,34 +143,40 @@
 
                     <div class="switcher">
                         <button dp-toggle-switch ng-model="brand_settings.chat.proactive"></button>
-                        <h4><span class="title-text">Proactive Chat</span></h4>
+                        <h4><span class="title-text">{{ phrase('admin.widget.proactive_chat') }}</span></h4>
 
                         <ul class="options" ng-if="brand_settings.chat.proactive">
                             <li>
-                                <label class="option-label">Agent Title:</label>
+                                <label class="option-label">{{ phrase('admin.widget.proactive_chat_agent_title') }}:</label>
                                 <div class="option-group">
                                     <input type="text" ng-model="brand_settings.chat.popup.title" />
                                 </div>
                             </li>
                             <li>
-                                <label class="option-label">Agent Message:</label>
+                                <label class="option-label">{{ phrase('admin.widget.proactive_chat_agent_title') }}:</label>
                                 <div class="option-group">
                                     <textarea ng-model="brand_settings.chat.popup.message"></textarea>
                                 </div>
                             </li>
                             <li>
-                                <label class="option-label">Reply Form Type:</label>
+                                <label class="option-label">{{ phrase('admin.widget.proactive_chat_reply_type') }}:</label>
                                 <div class="option-group">
                                     <select ng-model="brand_settings.chat.popup.reply_type">
-                                        <option value="buttons">Reply Button</option>
-                                        <option value="reply">Reply Form</option>
+                                        <option value="buttons">{{ phrase('admin.widget.proactive_chat_reply_form') }}</option>
+                                        <option value="reply">{{ phrase('admin.widget.proactive_chat_reply_button') }}</option>
                                     </select>
                                 </div>
                             </li>
+
+                        </ul>
+                    </div>
+                    <div>
+                        <ul class="options">
                             <li>
-                                <label class="option-label">Waiting Timeout:</label>
+                                <label class="option-label">{{ phrase('admin.widget.chat_waiting_timeout') }}:</label>
                                 <div class="option-group">
                                     <input type="text" ng-model="brand_settings.chat.waiting_timeout" />
+                                    <span class="help-block">{{ phrase('admin.widget.chat_waiting_timeout_help') }}</span>
                                     <ul class="errors">
                                         <li ng-repeat="error in formErrors.brand.fields.chat.fields.waiting_timeout.errors">
                                             {{ ng_var('error.message') }}
@@ -179,7 +185,7 @@
                                 </div>
                             </li>
                             <li>
-                                <label class="option-label">Online agent polling timeout:</label>
+                                <label class="option-label">{{ phrase('admin.widget.chat_agent_polling_timeout') }}:</label>
                                 <div class="option-group">
                                     <input type="text" ng-model="brand_settings.widget.agent_polling_timeout" />
                                     <ul class="errors">
@@ -195,13 +201,13 @@
             </div>
 
             <div class="content-section">
-                <h2 class="with-divider form-header"><span>Ticket Settings</span></h2>
+                <h2 class="with-divider form-header"><span>{{ phrase('admin.widget.ticket_settings') }}</span></h2>
                 <ul class="options">
                     <li>
                         <ul class="option-group no-label option-group-inline float-left">
                             <li>
                                 <input type="radio" ng-model="brand_settings.ticket.select_department" value="default" />
-                                <label>Default Department</label>
+                                <label>{{ phrase('admin.widget.ticket_default_department') }}</label>
 
                                 <div class="sub-options">
                                     <select ng-model="brand_settings.ticket.default_department">
@@ -218,7 +224,7 @@
                             </li>
                             <li>
                                 <input type="radio" ng-model="brand_settings.ticket.select_department" value="custom" />
-                                <label>User Selects Department</label>
+                                <label>{{ phrase('admin.widget.user_selects_department') }}</label>
                             </li>
                         </ul>
                         <ul class="errors">
@@ -239,7 +245,7 @@
                 <hr>
 
                 <div>
-                    <button type="submit" ng-click="Ctrl.updateChatCode()" ng-hide="saving_code">Get Code</button>
+                    <button type="submit" ng-click="Ctrl.updateChatCode()" ng-hide="saving_code">{{ phrase('admin.widget.get_code') }}</button>
                     <div ng-show="saving_code">
                         <i class="spinner-flat"></i>
                     </div>
@@ -249,7 +255,7 @@
             <div class="editor-row" ng-if="!!code">
                 <div class="editor-wrap">
                     <div
-                         style="height: 100px;"
+                         style="height: 500px;"
                          ng-model="code"
                          ui-ace="{
                              mode: 'html',
@@ -266,21 +272,20 @@
                 <br/>
                 <hr>
 
-                <h3>Apply to portal</h3>
+                <h3>{{ phrase('admin.widget.apply_to_portal') }}</h3>
                 <p>
-                    Apply these settings to your DeskPRO portal. This will enable the chat widget
-                    on your helpdesk itself.
+                    {{ phrase('admin.widget.apply_to_portal_help') }}
                 </p>
 
                 <div>
                     <button type="submit" ng-click="Ctrl.applyPortalWidgetSettings()" ng-hide="applying_to_portal">
-                        Apply chat widget to the portal
+                        {{ phrase('admin.widget.apply_widget') }}
                     </button>
                 </div>
 
                 <div ng-if="enabled_on_portal" ng-hide="applying_to_portal">
-                    <h3>Remove from portal</h3>
-                    <button ng-click="Ctrl.removeFromPortal()">Remove chat widget from the portal</button>
+                    <h3>{{ phrase('admin.widget.remove_widget') }}</h3>
+                    <button ng-click="Ctrl.removeFromPortal()">{{ phrase('admin.widget.remove_widget_help') }}</button>
                 </div>
 
                 <div ng-show="applying_to_portal">

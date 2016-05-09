@@ -44,7 +44,7 @@ class WidgetBrandChatPopupSettings
      *
      * @JMS\Type("string")
      */
-    private $title = 'DeskPRO Customer Support';
+    private $title = 'Customer Support';
 
     /**
      * @var string

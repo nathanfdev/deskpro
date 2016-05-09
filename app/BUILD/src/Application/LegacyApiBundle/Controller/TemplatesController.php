@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\ResourceScanner\TemplateFiles;
@@ -168,7 +167,8 @@ class TemplatesController extends AbstractController implements ProtectedControl
 
     public function setTemplateAction($name)
     {
-        $set = $this->getTemplateSet();
+        $set      = $this->getTemplateSet();
+        $template = null;
 
         try {
             $template = $set->getCustomTemplate($name);
@@ -252,7 +252,7 @@ class TemplatesController extends AbstractController implements ProtectedControl
     {
         $set = new TemplateSet(
             $this->em,
-            $this->container->get('twig')
+            $this->container->get('templating.email.twig')
         );
 
         return $set;
