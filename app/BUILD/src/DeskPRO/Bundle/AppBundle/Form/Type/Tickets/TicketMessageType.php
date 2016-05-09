@@ -26,25 +26,26 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\Form\Type\CustomFields\ChoiceType;
+use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\HiddenType;
 use DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormConfigBuilder;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class TicketMessageType.
@@ -87,10 +88,7 @@ class TicketMessageType extends AbstractType
             $builder->add('format', ChoiceType::class, [
                 'mapped'            => false,
                 'choices_as_values' => true,
-                'choices'           => [
-                    'html',
-                    'text',
-                ],
+                'choices'           => ['html', 'text'],
             ]);
         }
 
@@ -116,10 +114,27 @@ class TicketMessageType extends AbstractType
             'mapped'         => false,
         ]);
 
+        if ($options['with_ticket_validation']) {
+            $builder->add('ticket', TicketWithLayoutsType::class, [
+                'person'              => $options['person'],
+                'ticket_view_context' => TicketWithLayoutsContext::VIEW_AGENT,
+                'for_api'             => true,
+                'disabled'            => true,
+                'constraints'         => [
+                    // don't add this constraint on the `ticket_message.ticket` property
+                    // to allow to add replies to not valid ticket
+                    new Assert\Valid(),
+                ],
+            ]);
+
+            $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onValidateTicket']);
+            $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onAccessTicketValidation'], 100);
+        }
+
         $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onSetMessageFromOptions']);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onChangeMessageFormat']);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onChangeMessageFormat'], 100);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations'], 100);
     }
 
     /**
@@ -129,18 +144,19 @@ class TicketMessageType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class'          => TicketMessage::class,
-                'message_label'       => $this->language_manager->phrase('portal.forms.label_message'),
-                'attr'                => ['data-rte' => '1'],
-                'error_bubbling'      => false,
-                'ticket'              => null,
-                'person'              => null,
-                'ticket_message'      => null,
-                'render_is_note'      => true,
-                'has_attachments'     => false,
-                'format'              => '',
-                'message_constraints' => [],
-                'error_mapping'       => [
+                'data_class'             => TicketMessage::class,
+                'message_label'          => $this->language_manager->phrase('portal.forms.label_message'),
+                'attr'                   => ['data-rte' => '1'],
+                'error_bubbling'         => false,
+                'ticket'                 => null,
+                'person'                 => null,
+                'ticket_message'         => null,
+                'render_is_note'         => true,
+                'has_attachments'        => false,
+                'format'                 => '',
+                'with_ticket_validation' => false,
+                'message_constraints'    => [],
+                'error_mapping'          => [
                     // we use custom setters to modify message,
                     // so we need to map entity property with the form field
                     'message' => 'message',
@@ -194,9 +210,10 @@ class TicketMessageType extends AbstractType
         $data   = $event->getData();
         $config = $event->getForm()->getConfig();
 
+        /** @var Ticket $ticket */
+        $ticket = $config->getOption('ticket');
+
         if ($data instanceof TicketMessage) {
-            /** @var Ticket $ticket */
-            $ticket = $config->getOption('ticket');
             if ($ticket && !$ticket->messages->contains($data)) {
                 $ticket->addMessage($data);
             }
@@ -206,5 +223,33 @@ class TicketMessageType extends AbstractType
                 $data->setPerson($person);
             }
         }
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onValidateTicket(FormEvent $event)
+    {
+        $form = $event->getForm()->get('ticket');
+
+        foreach ($form->all() as $child) {
+            FormValidatorChecker::submitForm($child);
+        }
+    }
+
+    /**
+     * We can't get form errors from disabled form so we need to enable the ticket form to access them.
+     *
+     * @param FormEvent $event
+     */
+    public function onAccessTicketValidation(FormEvent $event)
+    {
+        $form   = $event->getForm()->get('ticket');
+        $config = $form->getConfig();
+
+        $property = new \ReflectionProperty(FormConfigBuilder::class, 'disabled');
+        $property->setAccessible(true);
+        $property->setValue($config, false);
+        $property->setAccessible(false);
     }
 }

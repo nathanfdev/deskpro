@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Ticket as TicketEntity;
 use Application\DeskPRO\Entity\TicketMessage;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorMessageFactory;
 use DeskPRO\Bundle\AppBundle\Form\Error\FormErrorsGenerator;
+use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsType;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
@@ -39,13 +40,9 @@ use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket as TicketModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\JsonSerializationVisitor;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormFactory;
-use Symfony\Component\Form\FormInterface;
 
 /**
  * Class TicketHandler.
@@ -68,11 +65,6 @@ class TicketHandler extends AbstractEntityHandler
     private $formFactory;
 
     /**
-     * @var BrandStack
-     */
-    private $brandStack;
-
-    /**
      * @var FormErrorsGenerator
      */
     private $formErrorsGenerator;
@@ -83,20 +75,17 @@ class TicketHandler extends AbstractEntityHandler
      * @param TicketLayoutFactory $layoutFactory
      * @param EntityManager       $em
      * @param FormFactory         $formFactory
-     * @param BrandStack          $brandStack
      * @param FormErrorsGenerator $formErrorsGenerator
      */
     public function __construct(
         TicketLayoutFactory $layoutFactory,
         EntityManager       $em,
         FormFactory         $formFactory,
-        BrandStack          $brandStack,
         FormErrorsGenerator $formErrorsGenerator
     ) {
         $this->layoutFactory       = $layoutFactory;
         $this->em                  = $em;
         $this->formFactory         = $formFactory;
-        $this->brandStack          = $brandStack;
         $this->formErrorsGenerator = $formErrorsGenerator;
     }
 
@@ -209,32 +198,11 @@ class TicketHandler extends AbstractEntityHandler
         $form = $this->formFactory->create(TicketWithLayoutsType::class, $entity, [
             'ticket_view_context' => $viewContext,
             'person'              => $context->getUser(),
-            'settings'            => $this->brandStack->getActive()->getSettings(),
             'for_api'             => true,
             'disabled'            => true,
         ]);
 
-        // "submit" all form fields to proper validation mapping
-        $submitIterator = function (FormInterface $form) use (&$submitIterator) {
-            $form->submit(null);
-            foreach ($form->all() as $child) {
-                $submitIterator($child);
-            }
-        };
-
-        $submitIterator($form);
-
-        // trigger form validation
-        $validationIterator = function (FormInterface $form) use (&$validationIterator) {
-            $dispatcher = $form->getConfig()->getEventDispatcher();
-            $dispatcher->dispatch(FormEvents::POST_SUBMIT, new FormEvent($form, null));
-
-            foreach ($form->all() as $child) {
-                $validationIterator($child);
-            }
-        };
-
-        $validationIterator($form);
+        FormValidatorChecker::submitForm($form);
 
         return $this->formErrorsGenerator->generateFormErrors($form, ErrorMessageFactory::PREFIX_API);
     }

@@ -404,9 +404,8 @@ class TicketTypeTest extends PortalTestCase
         $person = $this->getNormalPerson();
 
         $form = $this->getContainer()->get('form.factory')->create(TicketWithLayoutsType::class, $ticket, [
-            'person'   => $person,
-            'settings' => $this->getBrandSettings(),
-            'for_api'  => true,
+            'person'  => $person,
+            'for_api' => true,
         ]);
 
         $this->assertTrue($form->has('fields'));
@@ -443,14 +442,6 @@ class TicketTypeTest extends PortalTestCase
     protected function extractFormfields(FormInterface $form)
     {
         return array_keys($form->all());
-    }
-
-    /**
-     * @return mixed
-     */
-    protected function getBrandSettings()
-    {
-        return $this->get('brand_stack')->getActive()->getSettings();
     }
 
     /**
@@ -492,7 +483,6 @@ class TicketTypeTest extends PortalTestCase
 
         $form = $this->getContainer()->get('form.factory')->create(TicketWithLayoutsType::class, $ticket, [
             'person'          => $person,
-            'settings'        => $this->getBrandSettings(),
             'csrf_protection' => false,
         ]);
 

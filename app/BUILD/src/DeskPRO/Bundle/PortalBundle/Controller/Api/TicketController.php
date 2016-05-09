@@ -79,7 +79,6 @@ class TicketController extends AbstractApiController
 
         $form = $this->createForm(TicketWithLayoutsType::class, $ticket, [
             'person'                        => $person,
-            'settings'                      => $this->getBrandContainer()->getSettings(),
             'action'                        => $this->generateUrl('portal_api_ticket_new'),
             'csrf_protection'               => false,
             'csrf_double_submit_protection' => false,
@@ -109,7 +108,6 @@ class TicketController extends AbstractApiController
 
         $form_full = $this->createForm(TicketWithLayoutsType::class, $ticket, [
             'person'       => $person,
-            'settings'     => $this->getBrandContainer()->getSettings(),
             'full_version' => true,
             'action'       => $this->generateUrl('portal_api_ticket_new'),
             'use_captcha'  => false,

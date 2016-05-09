@@ -138,7 +138,6 @@ class TicketFormsController extends AbstractTicketsController
     {
         $options = array_merge($options, [
             'person'      => $this->getUser(),
-            'settings'    => $this->get('brand_stack')->getActive()->getSettings(),
             'use_captcha' => false,
             'for_api'     => true,
         ]);

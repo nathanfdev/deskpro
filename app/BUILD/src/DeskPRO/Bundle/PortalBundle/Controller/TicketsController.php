@@ -240,7 +240,6 @@ class TicketsController extends AbstractController
         $form = $this->createForm(TicketWithLayoutsType::class, $ticket, [
             'person'            => $person,
             'ticket_visibility' => 'edit',
-            'settings'          => $this->getBrandContainer()->getSettings(),
         ]);
 
         $form->handleRequest($request);
@@ -266,7 +265,6 @@ class TicketsController extends AbstractController
 
         $form_full = $this->createForm(TicketWithLayoutsType::class, $ticket, [
             'person'            => $person,
-            'settings'          => $this->getBrandContainer()->getSettings(),
             'full_version'      => true,
             'ticket_visibility' => 'edit',
             'action'            => $this->generateUrl('portal_tickets_edit', ['ticket_ref' => $ticket->getPublicId()]),

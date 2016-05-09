@@ -215,6 +215,7 @@ services:
       - "@tickets.custom_per_field_manager"
       - "@ticket_with_layouts_helper"
       - "@ticket_field_settings"
+      - "@brand_aware_settings_resolver"
     tags:
       - { name: form.type }
 

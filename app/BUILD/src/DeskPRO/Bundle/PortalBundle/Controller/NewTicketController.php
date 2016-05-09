@@ -70,7 +70,6 @@ class NewTicketController extends AbstractController
             'person'            => $person,
             'method'            => 'GET',
             'validation_groups' => false,
-            'settings'          => $this->getBrandContainer()->getSettings(),
             'action'            => $this->generateUrl('portal_new_ticket'),
             'department_id'     => $request->query->getInt('department_id'),
         ]);
@@ -84,7 +83,6 @@ class NewTicketController extends AbstractController
 
         $form = $this->createForm(TicketWithLayoutsType::class, $ticket, [
             'person'                => $person,
-            'settings'              => $this->getBrandContainer()->getSettings(),
             'action'                => $this->generateUrl('portal_new_ticket'),
             'saved_form_subrequest' => $this->isSavedFormSubRequest($request),
             'department_id'         => $request->query->getInt('department_id'),
@@ -169,7 +167,6 @@ class NewTicketController extends AbstractController
 
         $form_full = $this->createForm(TicketWithLayoutsType::class, $ticket, [
             'person'        => $person,
-            'settings'      => $this->getBrandContainer()->getSettings(),
             'full_version'  => true,
             'action'        => $this->generateUrl('portal_new_ticket'),
             'department_id' => $request->query->getInt('department_id'),
