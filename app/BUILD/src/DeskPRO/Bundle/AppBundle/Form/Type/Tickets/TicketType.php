@@ -46,6 +46,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -109,8 +110,18 @@ class TicketType extends AbstractType
             ->add('organization', EntityType::class, [
                 'class' => Organization::class,
             ])
-            ->add('status', TextType::class)
-            ->add('hidden_status', TextType::class)
+            ->add('status', ChoiceType::class, [
+                'choices_as_values' => true,
+                'choices'           => [
+                    Ticket::STATUS_AWAITING_AGENT,
+                    Ticket::STATUS_AWAITING_USER,
+                    Ticket::STATUS_ARCHIVED,
+                    Ticket::STATUS_RESOLVED,
+                    Ticket::STATUS_HIDDEN,
+                    Ticket::STATUS_HIDDEN.'.'.Ticket::HIDDEN_STATUS_SPAM,
+                    Ticket::STATUS_HIDDEN.'.'.Ticket::HIDDEN_STATUS_DELETED,
+                ],
+            ])
             ->add('is_hold', ApiBooleanType::class)
             ->add('urgency', NumberType::class)
             ->add('labels', LabelsCollectionType::class, [
