@@ -1182,6 +1182,10 @@ class SystemErrorHandler
      */
     private static function shouldDisplayErrors()
     {
+        if (defined('DPC_IS_CLOUD') && php_sapi_name() !== 'cli') {
+            return false;
+        }
+
         $v = ini_get('display_errors');
 
         return $v === '1' || $v === 1 || strtoupper($v) === 'ON' || strtoupper($v) === 'YES';
