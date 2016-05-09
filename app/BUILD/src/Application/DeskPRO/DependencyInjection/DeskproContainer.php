@@ -314,20 +314,17 @@ class DeskproContainer extends Container
                 while ($read = array_pop($read_configs)) {
                     if ($read && !empty($read['host']) && !empty($read['dbname'])) {
                         try {
-                            $db = $this->get('doctrine.dbal.connection_factory')->createConnection(array(
-                                'driver'   => 'pdo_mysql',
-                                'host'     => $read['host'],
-                                'user'     => $read['user'],
-                                'password' => $read['password'],
-                                'dbname'   => $read['dbname'],
+                            $params = \DpRun\LowUtil::getMysqlInfoFromConfigArray($read);
 
-                                'wrapperClass' => 'Application\\DeskPRO\\DBAL\\Connection',
+                            $doctrine_params                 = $params['doctrine'];
+                            $doctrine_params['wrapperClass'] = 'Application\\DeskPRO\\DBAL\\Connection';
 
-                                // We only want to do the normal retry attempt if there's only one
-                                // reader, because otherwise if there are multiple,
-                                // it'll be faster/more successful to just try the next
-                                'dp_connect_attempts' => $has_multiple ? 1 : 2,
-                            ));
+                            // We only want to do the normal retry attempt if there's only one
+                            // reader, because otherwise if there are multiple,
+                            // it'll be faster/more successful to just try the next
+                            $doctrine_params['dp_connect_attempts'] = $has_multiple ? 1 : 2;
+
+                            $db = $this->get('doctrine.dbal.connection_factory')->createConnection($doctrine_params);
 
                             $db->connect();
 
