@@ -67,7 +67,7 @@ services:
 
   form.custom_data:
     class: DeskPRO\Bundle\AppBundle\Form\Type\CustomDataType
-    arguments: ["@custom_field_manager"]
+    arguments: ["@custom_field_manager", "@validator"]
     tags:
       - { name: form.type }
 
