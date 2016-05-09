@@ -35,7 +35,10 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\Form\Type\CustomFields\ChoiceType;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use DeskPRO\Bundle\AppBundle\Form\Type\HiddenType;
+use DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -68,7 +71,7 @@ class TicketMessageType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('message', 'html_textarea', [
+        $builder->add('message', HtmlTextareaType::class, [
             'property_path' => 'message_html',
             'label'         => $options['message_label'],
             'required'      => $options['required'],
@@ -76,17 +79,18 @@ class TicketMessageType extends AbstractType
         ]);
 
         if ($options['format']) {
-            $builder->add('format', 'deskpro_hidden', [
+            $builder->add('format', HiddenType::class, [
                 'empty_data' => 'hidden',
                 'mapped'     => false,
             ]);
         } else {
-            $builder->add('format', 'choice', [
-                'choices' => [
-                    'html' => 'html',
-                    'text' => 'text',
+            $builder->add('format', ChoiceType::class, [
+                'mapped'            => false,
+                'choices_as_values' => true,
+                'choices'           => [
+                    'html',
+                    'text',
                 ],
-                'mapped' => false,
             ]);
         }
 
@@ -98,14 +102,14 @@ class TicketMessageType extends AbstractType
             ]);
         }
         if ($options['has_attachments']) {
-            $builder->add('attachments', 'ticket_message_attachment_collection', [
+            $builder->add('attachments', TicketMessageAttachmentCollectionType::class, [
                 'required'       => false,
                 'person'         => $options['person'],
                 'ticket_message' => $ticketMessage,
             ]);
         }
 
-        $builder->add('inline_attachments', 'ticket_message_inline_attachment_collection', [
+        $builder->add('inline_attachments', TicketMessageInlineAttachmentCollectionType::class, [
             'required'       => false,
             'person'         => $options['person'],
             'ticket_message' => $ticketMessage,
