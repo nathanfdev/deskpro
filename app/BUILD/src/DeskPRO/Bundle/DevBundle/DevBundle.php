@@ -45,6 +45,7 @@ class DevBundle extends Bundle
         $application->add(new Command\Gen\GenSchemaFileCommand());
         $application->add(new Command\Gen\GenTemplateMapCommand());
 
+        $application->add(new Command\Lang\CheckMissingCommand());
         $application->add(new Command\Lang\CheckUsesCommand());
         $application->add(new Command\Lang\OneSkyDownloadCommand());
         $application->add(new Command\Lang\OneSkyUploadCommand());

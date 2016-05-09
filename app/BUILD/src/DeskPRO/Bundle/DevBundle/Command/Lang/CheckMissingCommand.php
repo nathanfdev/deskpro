@@ -26,37 +26,59 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\DevBundle\Command\Lang;
 
 use DeskPRO\Bundle\DevBundle\Language\PhrasesFinder;
 use DeskPRO\Component\Util\ListUtils;
-use DeskPRO\Component\Util\MapUtils;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 
-class CheckUsesCommand extends ContainerAwareCommand
+class CheckMissingCommand extends ContainerAwareCommand
 {
     /**
      * {@inheritdoc}
      */
     protected function configure()
     {
-        $this->setName('dpdev:lang:check-uses')
-            ->setDescription('Checks all phrases. Use this to see context (where a phrase is used) or to find missing phrases.')
-            ->addOption('zone', 'z', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Specify the zone as comma-sep list: adm, admin, agent, api, portal, user', ['all'])
-            ->addOption('ignore-zone', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Specify the zones to IGNORE as comma-sep list: adm, admin, agent, api, portal, user', [])
-            ->addOption('format', 'o', InputOption::VALUE_REQUIRED, 'Output format: table, json, csv', 'table')
-            ->addOption('filetype', 't', InputOption::VALUE_REQUIRED, 'Scan which files? php or twig or both', 'all')
-            ->addOption('include-dynamic', null, InputOption::VALUE_NONE, 'Attempt to find phrases that we know are used dynamically and have no explicit usage')
-            ->addArgument('report', InputArgument::OPTIONAL, 'Report mode: "context" to show all found uses, or "missing" to only report phrases where we could not find a use.', 'missing');
+        $this->setName('dpdev:lang:check-missing')
+            ->setDescription('Look for phrases missing from the translation files.')
+            ->addOption(
+                'zone',
+                'z',
+                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+                'Specify the zone as comma-sep list: adm, admin, agent, api, portal, user',
+                ['all']
+            )
+            ->addOption(
+                'ignore-zone',
+                null,
+                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+                'Specify the zones to IGNORE as comma-sep list: adm, admin, agent, api, portal, user',
+                []
+            )
+            ->addOption(
+                'format',
+                'o',
+                InputOption::VALUE_REQUIRED,
+                'Output format: table, json, csv',
+                'table'
+            )
+            ->addOption(
+                'filetype',
+                't',
+                InputOption::VALUE_REQUIRED,
+                'Scan which files? js, php or twig or all',
+                'all'
+            )
+            ->addOption(
+                'include-dynamic',
+                null,
+                InputOption::VALUE_NONE,
+                'Attempt to find phrases that we know are used dynamically and have no explicit usage'
+            );
     }
 
     /**
@@ -66,13 +88,6 @@ class CheckUsesCommand extends ContainerAwareCommand
     {
         $env      = $this->getContainer()->get('deskpro.app_env');
         $lang_dir = $env->getAppDir().'/languages/default';
-
-        $report = $input->getArgument('report');
-        if ($report !== 'context' && $report !== 'missing') {
-            $output->writeln('<error>report must be: context or missing</error>');
-
-            return 1;
-        }
 
         $format = $input->getOption('format');
         if ($format !== 'table' && $format !== 'json' && $format !== 'csv') {
@@ -125,19 +140,19 @@ class CheckUsesCommand extends ContainerAwareCommand
         }
         unset($tmp);
 
+        $prefixes = [];
+        foreach ($phrase_ids as $phrase_id) {
+            $prefix            = preg_replace('/\.[^\.]+$/', '.', $phrase_id);
+            $prefixes[$prefix] = $prefix;
+        };
+
         if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
-            $output->writeln(sprintf('Finding uses for %d phrases', count($phrase_ids)));
+            $output->writeln(sprintf('Found %d prefixes', count($prefixes)));
         }
 
         #------------------------------
         # Find uses
         #------------------------------
-
-        if ($report === 'missing') {
-            $limit = 1;
-        } else {
-            $limit = 0;
-        }
 
         $types = [];
         switch ($input->getOption('filetype')) {
@@ -156,7 +171,7 @@ class CheckUsesCommand extends ContainerAwareCommand
                 $types[] = 'js';
                 break;
             default:
-                $output->writeln("<error>Invalid --filetype param. Must be either 'js', 'php' or 'twig' or 'all'.</error>");
+                $output->writeln("<error>Invalid --filetype param. Must be either 'php' or 'twig' or 'both'.</error>");
 
                 return 1;
         }
@@ -165,38 +180,25 @@ class CheckUsesCommand extends ContainerAwareCommand
             $output->writeln(sprintf('Finding uses in files: %s', implode(', ', $types)));
         }
 
-        $pfinder = new PhrasesFinder($env->getAppDir(), $phrase_ids, $limit, $types);
+        $pfinder = new PhrasesFinder($env->getAppDir(), $prefixes, 1, $types);
 
         if ($input->getOption('include-dynamic')) {
             $output->writeln('Including known dynamic phrases');
             $pfinder->includeKnownDynamic();
         }
 
-        $use_info = $pfinder->getUseInfo();
+        $phrases_found = $pfinder->getPhrasesByPrefix();
+
+        if ($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+            $output->writeln(sprintf('Found %d phrases matching prefixes', count($phrases_found)));
+        }
 
         #------------------------------
         # Prepare output
         #------------------------------
 
-        if ($report === 'missing') {
-            $cols = ['unusedPhraseId'];
-            $data = MapUtils::mapToList($use_info['phrase_counts'], function ($phrase_id, $count) {
-                if ($count === 0) {
-                    return [$phrase_id];
-                } else {
-                    return;
-                }
-            });
-            $data = ListUtils::filterOutFalsey($data);
-        } else {
-            $cols = ['phraseId', 'templateNames'];
-            $data = MapUtils::mapToList($use_info['phrase_uses'], function ($phrase_id, $tpls) {
-                return [
-                    $phrase_id,
-                    $tpls,
-                ];
-            });
-        }
+        $cols = ['MissingPhrases'];
+        $data = array_diff($phrases_found, $phrase_ids);
 
         #------------------------------
         # Output
@@ -208,29 +210,14 @@ class CheckUsesCommand extends ContainerAwareCommand
                 $table = $this->getHelper('table');
                 $table->setHeaders($cols);
                 foreach ($data as $row) {
-                    $row = array_map(function ($r) {
-                        if (is_array($r)) {
-                            return implode("\n", $r);
-                        }
-
-                        return $r;
-                    }, $row);
-                    $table->addRow($row);
+                    $table->addRow([$row]);
                 }
                 $table->addRow(['TOTAL: '.count($data)]);
                 $table->render($output);
                 break;
 
             case 'json':
-                $json_data = array_map(function ($x) use ($cols) {
-                    $row = [];
-                    foreach ($cols as $idx => $key) {
-                        $row[$key] = $x[$idx];
-                    }
-
-                    return $row;
-                }, $data);
-                echo json_encode($json_data, JSON_PRETTY_PRINT);
+                echo json_encode($data, JSON_PRETTY_PRINT);
                 break;
 
             case 'csv':

@@ -112,6 +112,14 @@ class PhrasesFinder
                 ->getIterator());
         }
 
+        if (in_array('js', $this->types)) {
+            $iter->append(Finder::create()
+                ->name('*.js')
+                ->in($this->app_root.'/../../www/assets/BUILD/pub/src/DeskPRO/Bundle/PortalBundle')
+                ->in($this->app_root.'/../../www/assets/BUILD/pub/src/DeskPRO/Bundle/WidgetBundle')
+                ->getIterator());
+        }
+
         return $iter;
     }
 
@@ -158,6 +166,33 @@ class PhrasesFinder
             'phrase_uses'   => $uses,
             'phrase_counts' => $phrase_use_counts,
         ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getPhrasesByPrefix()
+    {
+        $files = $this->getTplList();
+
+        $phrases   = [];
+        $skip_pids = [];
+
+        foreach ($files as $f) {
+            $content = file_get_contents($f->getRealPath());
+
+            foreach ($this->phrase_ids as $id) {
+                if ($this->exclude_dynamic && $this->isDynamicPhrase($id)) {
+                    $skip_pids[$id] = true;
+                    continue;
+                }
+                if (preg_match_all('/'.preg_quote($id).'[-_0-9a-zA-Z\.]+/', $content, $matches) > 0) {
+                    $phrases = array_merge($phrases, $matches[0]);
+                }
+            }
+        }
+
+        return array_unique($phrases);
     }
 
     /**
