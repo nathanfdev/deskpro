@@ -358,7 +358,7 @@ class QueueRunner
             ORDER BY status ASC, id ASC
             LIMIT {$this->per_batch}
             FOR UPDATE
-        ", array(date('Y-m-d H:i:s'), $this->done_ids), array(\PDO::PARAM_STR, \Doctrine\DBAL\Connection::PARAM_INT_ARRAY));
+        ", array(date('Y-m-d H:i:s', time() + 5 /* +4 sec to account for time drift */), $this->done_ids), array(\PDO::PARAM_STR, \Doctrine\DBAL\Connection::PARAM_INT_ARRAY));
 
         if ($batch) {
             $batch_ids = array_map(function ($r) { return $r['id']; }, $batch);
