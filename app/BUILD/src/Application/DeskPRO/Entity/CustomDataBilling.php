@@ -107,9 +107,9 @@ class CustomDataBilling extends CustomDataAbstract
                 'indexes' => [
                     'field_id_idx' => ['columns' => ['field_id', 'ticket_charge_id']],
                 ],
-                'uniqueConstraints' => [
-                    'unique_idx' => ['columns' => ['field_id', 'ticket_charge_id', 'root_field_id']],
-                ],
+                //'uniqueConstraints' => [
+                //    'unique_idx' => ['columns' => ['field_id', 'ticket_charge_id', 'root_field_id']],
+                //],
             ]
         );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);

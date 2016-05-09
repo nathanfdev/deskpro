@@ -104,9 +104,9 @@ class CustomDataFeedback extends CustomDataAbstract
                  'indexes' => [
                      'field_id_idx' => ['columns' => [0 => 'field_id', 1 => 'feedback_id']],
                  ],
-                 'uniqueConstraints' => [
-                     'unique_idx' => ['columns' => ['field_id', 'feedback_id', 'root_field_id']],
-                 ],
+                 //'uniqueConstraints' => [
+                 //    'unique_idx' => ['columns' => ['field_id', 'feedback_id', 'root_field_id']],
+                 //],
             ]
         );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
