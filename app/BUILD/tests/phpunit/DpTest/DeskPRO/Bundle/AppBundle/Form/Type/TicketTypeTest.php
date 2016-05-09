@@ -403,7 +403,7 @@ class TicketTypeTest extends PortalTestCase
         $ticket = new Ticket();
         $person = $this->getNormalPerson();
 
-        $form = $this->getContainer()->get('form.factory')->create('ticket_with_layouts', $ticket, [
+        $form = $this->getContainer()->get('form.factory')->create(TicketWithLayoutsType::class, $ticket, [
             'person'   => $person,
             'settings' => $this->getBrandSettings(),
             'for_api'  => true,

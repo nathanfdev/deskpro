@@ -522,3 +522,28 @@ Feature: /ticket_forms endpoint
     """
     And the JSON node "errors.fields.fields.fields.fields_6.errors[0].code" should be equal to "required"
     And the JSON node "errors.fields.fields.fields.fields_6.errors[0].message" should contain "This value should not be blank."
+
+  Scenario: I check sideloading of form errors
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "department": 2
+}
+    """
+    Then the response status code should be 201
+    And the JSON node "data.id" should be equal to 6
+
+    When I send a GET request to "/api/v2/tickets/6?include=ticket_agent_errors,ticket_user_errors"
+    Then the response status code should be 200
+
+    And the JSON node "linked.ticket_agent_errors.6.fields.subject.errors[0].code" should be equal to "required"
+    And the JSON node "linked.ticket_agent_errors.6.fields.subject.errors[0].message" should contain "This value should not be blank."
+    And the JSON node "linked.ticket_agent_errors.6.fields.fields.fields.fields_6.errors[0].code" should be equal to "required"
+    And the JSON node "linked.ticket_agent_errors.6.fields.fields.fields.fields_6.errors[0].message" should contain "This value should not be blank."
+    And the JSON node "linked.ticket_agent_errors.6.fields.organization_fields.fields.organization_fields_6.errors[0].code" should be equal to "required"
+    And the JSON node "linked.ticket_agent_errors.6.fields.organization_fields.fields.organization_fields_6.errors[0].message" should contain "This value should not be blank."
+    And the JSON node "linked.ticket_agent_errors.6.fields.user_fields.fields.user_fields_6.errors[0].code" should be equal to "required"
+    And the JSON node "linked.ticket_agent_errors.6.fields.user_fields.fields.user_fields_6.errors[0].message" should contain "This value should not be blank."
+
+    And the JSON node "linked.ticket_user_errors.6.fields.subject.errors[0].code" should be equal to "required"
+    And the JSON node "linked.ticket_user_errors.6.fields.subject.errors[0].message" should contain "This value should not be blank."

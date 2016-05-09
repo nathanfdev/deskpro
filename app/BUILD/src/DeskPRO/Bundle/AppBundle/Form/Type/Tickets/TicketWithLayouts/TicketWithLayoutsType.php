@@ -563,7 +563,6 @@ class TicketWithLayoutsType extends AbstractType
             'label'       => $this->phrase('portal.forms.label_subject'),
             'required'    => true,
             'constraints' => [
-                new Assert\NotBlank(),
                 new Assert\Length(['min' => 5]),
             ],
         ];

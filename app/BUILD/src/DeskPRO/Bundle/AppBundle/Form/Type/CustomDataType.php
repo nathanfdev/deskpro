@@ -304,7 +304,7 @@ class CustomDataType extends AbstractType
             return;
         }
 
-        $violations = $this->validator->validate($event->getData(), new AppAssert\CustomField\CustomData([
+        $violations = $this->validator->validate($form->getData(), new AppAssert\CustomField\CustomData([
             'context'    => $options['agent_interface'] ? 'agent' : 'user',
             'custom_def' => $options['custom_def'],
             'target'     => AppAssert\CustomField\CustomData::TARGET_FIELD,
