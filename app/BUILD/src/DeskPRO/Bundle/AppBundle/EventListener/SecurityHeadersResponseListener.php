@@ -109,6 +109,9 @@ class SecurityHeadersResponseListener implements EventSubscriberInterface
     private function buildCspString(array $options)
     {
         $parts = MapUtils::mapToList($options, function ($k, $v) {
+            if ($v === true) {
+                return $k;
+            }
             if (!is_array($v)) {
                 $v = [$v];
             }
@@ -121,10 +124,6 @@ class SecurityHeadersResponseListener implements EventSubscriberInterface
                         return "'$v'";
                         break;
                     default:
-                        if ($v === true) {
-                            return;
-                        }
-
                         return $v;
                 }
             }, $v));
