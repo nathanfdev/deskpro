@@ -119,7 +119,7 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType
     arguments: ["@custom_field_manager"]
     tags:
-      - { name: form.type, alias: ticket }
+      - { name: form.type }
 
   form.ticket_sla:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketSlaType

@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -73,14 +69,6 @@ class TicketType extends AbstractType
     public function __construct(CustomFieldManager $field_manager)
     {
         $this->field_manager = $field_manager;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'ticket';
     }
 
     /**
