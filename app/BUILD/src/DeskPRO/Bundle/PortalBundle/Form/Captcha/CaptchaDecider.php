@@ -134,11 +134,10 @@ class CaptchaDecider
             return false;
         }
         if ($setting) {
-            if ($this->authorization_checker->isGranted('ROLE_USER')) {
-                if ($setting === self::CAPTCHA_EVERYONE) {
-                    return true;
-                }
-            } else {
+            if ($setting === self::CAPTCHA_EVERYONE) {
+                return true;
+            }
+            if (!$this->authorization_checker->isGranted('ROLE_USER')) {
                 if ($setting === self::CAPTCHA_GUESTS) {
                     return true;
                 }
