@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -462,7 +463,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      * @Assert\NotBlank()
      * @Assert\Type(type="string")
      */
-    protected $subject;
+    protected $subject = '';
 
     /**
      * @var string
