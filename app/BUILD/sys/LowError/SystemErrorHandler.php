@@ -645,7 +645,7 @@ class SystemErrorHandler
                     );
                 } else {
                     $level = isset(self::$errorLevelMap[$errinfo['errno']]) ? self::$errorLevelMap[$errinfo['errno']] : LogLevel::CRITICAL;
-                    self::$errorLogger->log($level, $errinfo['errname'].': '.$errinfo['errstr'], array('code' => $errinfo['errno '], 'message' => $errinfo['errstr'], 'file' => $errinfo['errfile'], 'line' => $errinfo['errline']));
+                    self::$errorLogger->log($level, $errinfo['errname'].': '.$errinfo['errstr'], array('code' => $errinfo['errno'], 'message' => $errinfo['errstr'], 'file' => $errinfo['errfile'], 'line' => $errinfo['errline']));
                 }
             }
 
