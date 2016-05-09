@@ -158,14 +158,6 @@ class TicketMessageType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'ticket_message';
-    }
-
-    /**
      * @param FormEvent $event
      */
     public function onSetMessageFromOptions(FormEvent $event)

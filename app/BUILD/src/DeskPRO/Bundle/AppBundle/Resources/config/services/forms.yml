@@ -222,7 +222,7 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageType
     arguments: ["@language_manager"]
     tags:
-      - { name: form.type, alias: ticket_message }
+      - { name: form.type }
 
   form.ticket_participants:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsType
