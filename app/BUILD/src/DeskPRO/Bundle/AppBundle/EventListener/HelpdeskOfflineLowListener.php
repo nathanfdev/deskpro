@@ -45,6 +45,10 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * Check if the helpdesk is offline.
+ *
+ * Note that this checks for upgrade pending and if the helpdesk was manually shut
+ * down based on a setting. There exists OfflineCheckBootTask which happens
+ * before Symfony to check for low-level offline trigger.
  */
 class HelpdeskOfflineLowListener implements EventSubscriberInterface
 {
@@ -190,12 +194,6 @@ class HelpdeskOfflineLowListener implements EventSubscriberInterface
     private function isHelpdeskOffline()
     {
         if (isset($GLOBALS['DP_HELPDESK_DISABLED']) && $GLOBALS['DP_HELPDESK_DISABLED']) {
-            return true;
-        }
-
-        // Offline file is inserted on cmdline upgrade,
-        // we want to disable all access
-        if (is_file($this->data_dir.'/helpdesk-offline.trigger')) {
             return true;
         }
 

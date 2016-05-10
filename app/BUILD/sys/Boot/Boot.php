@@ -131,6 +131,7 @@ class Boot
             'Lib',
             'PreparePaths',
             'Request',
+            'OfflineCheck',
         ];
 
         $res = self::runBootTasks($env, $tasks);
@@ -242,6 +243,7 @@ class Boot
             'Loader',
             'Lib',
             'PreparePaths',
+            'OfflineCheck',
             'CliKernel',
         ];
 
