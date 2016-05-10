@@ -94,7 +94,7 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
     public function addTermFromArray(array $term_info)
     {
         if (isset($term_info['set_terms'])) {
-            $composite = new TriggerTermComposite(array(), TriggerTermComposite::OP_AND);
+            $composite = new TriggerTermComposite([], TriggerTermComposite::OP_AND);
             foreach ($term_info['set_terms'] as $ti) {
                 $t = $this->getTermFromArray($ti);
                 $composite->add($t);
@@ -141,7 +141,7 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
      */
     public function exportToArray()
     {
-        $data = array();
+        $data = [];
 
         $data['version'] = $this->getVersion();
         $data['terms']   = $this->getTerms();

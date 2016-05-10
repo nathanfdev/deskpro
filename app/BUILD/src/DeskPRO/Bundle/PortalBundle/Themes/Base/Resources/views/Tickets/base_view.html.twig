@@ -163,7 +163,7 @@
                                 {% endif %}
                                 <h1>{{ phrase('portal.tickets.view_more_info') }}</h1>
                                 <ul>
-                                    {# see the TicketViewService in AppBundle's data services #}
+                                    {# see the TicketViewDataService in AppBundle's data services #}
                                     {% for property in ticket_view.properties %}
                                         {% if property.isVisible %}
                                             <li>
