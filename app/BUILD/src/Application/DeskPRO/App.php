@@ -101,10 +101,12 @@ class App
     {
         if (!self::$_current_person) {
             $tokenStorage = self::$container->get('security.token_storage');
-            $tokenPerson  = $tokenStorage->getToken()->getUser();
 
-            if ($tokenPerson instanceof Entity\Person) {
-                self::$_current_person = $tokenPerson;
+            $token  = $tokenStorage->getToken();
+            $person = $token ? $token->getUser() : null;
+
+            if ($person instanceof Entity\Person) {
+                self::$_current_person = $person;
             }
         }
 
