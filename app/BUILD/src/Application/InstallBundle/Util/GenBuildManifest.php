@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -41,7 +41,7 @@ class GenBuildManifest
     /**
      * @var array
      */
-    private $add = array();
+    private $add = [];
 
     public function __construct($builds_path, array $add = null)
     {
@@ -61,7 +61,7 @@ class GenBuildManifest
         $finder    = Finder::create()->in($builds_path)->files()->name('/^Build.*?(\\d+)(.*?)\.php$/');
         $start_ids = [];
 
-        $builds = array();
+        $builds = [];
 
         foreach ($finder as $file) {
             /* @var $file \SplFileInfo */
@@ -91,10 +91,10 @@ class GenBuildManifest
             $trim_path = str_replace(DP_ROOT, '', $file->getRealPath());
             $classname = 'Application\\InstallBundle\\Upgrade\\Build\\'.str_replace('.php', '', $file->getBasename());
 
-            $builds[$build_id] = array(
+            $builds[$build_id] = [
                 'file'      => $trim_path,
                 'classname' => $classname,
-            );
+            ];
         }
 
         if ($this->add) {
@@ -106,10 +106,10 @@ class GenBuildManifest
                 $classname = 'Application\\InstallBundle\\Upgrade\\Build\\'.str_replace('.php', '', $file->getBasename());
 
                 if ($build_id) {
-                    $builds[$build_id] = array(
+                    $builds[$build_id] = [
                         'file'      => $trim_path,
                         'classname' => $classname,
-                    );
+                    ];
                 }
             }
         }
@@ -126,6 +126,8 @@ class GenBuildManifest
     {
         $indent = '    ';
 
+        $year = date('Y');
+
         $header = <<<CODE
 <?php
 
@@ -133,7 +135,7 @@ class GenBuildManifest
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) $year, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -157,7 +159,7 @@ class GenBuildManifest
 
 CODE;
 
-        $file   = array();
+        $file   = [];
         $file[] = $header.PHP_EOL.'return array(';
 
         $builds_array       = $this->getBuildsArray();
