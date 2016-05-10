@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\EventListener\JsonHeadersResponseListener;
 use DeskPRO\Bundle\ApiBundle\Traits\Labels\LabelsHelper;
 use DeskPRO\Bundle\ApiBundle\Traits\TicketsPagerTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -135,9 +136,11 @@ class TicketsController extends AbstractTicketsController
 
         // otherwise search for IDs using term engine and return Pagerfanta instance
         else {
+            // todo refactor
             $params = $request->query->all();
+            $reset  = ['include', 'count', 'page', 'ids_only', JsonHeadersResponseListener::INCLUDE_HEADERS_PARAM];
 
-            foreach (['include', 'count', 'page', 'ids_only'] as $param) {
+            foreach ($reset as $param) {
                 if (array_key_exists($param, $params)) {
                     unset($params[$param]);
                 }

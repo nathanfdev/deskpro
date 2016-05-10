@@ -29,10 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\View;
 
 use DeskPRO\Bundle\ApiBundle\View\Representation\StandardRepresentation;
-use Pagerfanta\Pagerfanta;
 use Symfony\Component\Form\FormInterface;
 
 class ApiViewRepresentationFactory
@@ -43,55 +43,6 @@ class ApiViewRepresentationFactory
     const DATATYPE_GROUPED_COUNT = 2;
     /** @const DATATYPE_COUNT_ONLY Standard datatype, but we only want the total results */
     const DATATYPE_COUNT_ONLY = 3;
-
-    /**
-     * @param mixed $data
-     * @param int   $datatype is one of the datatype class constants that describes the type of data provided
-     *
-     * @return StandardRepresentation
-     *
-     * @deprecated this is the "old way". use createFractalRepresentation instead. this method will be deleted soon.
-     */
-    public function createRepresentation($data, $datatype = self::DATATYPE_STANDARD)
-    {
-        if (!$data instanceof Pagerfanta) {
-            if (self::DATATYPE_GROUPED_COUNT === $datatype) {
-                $representation = $this->serializeGroupedCount($data);
-            } elseif (is_array($data)) {
-                $representation = new StandardRepresentation($data, array(
-                    'count'       => count($data),
-                    'total_count' => count($data),
-                ));
-            } elseif (is_object($data) && method_exists($data, 'count')) { // A bit of duck-typing.
-                $representation = new StandardRepresentation($data, array(
-                    'count'       => $data->count(),
-                    'total_count' => $data->count(),
-                ));
-            } else {
-                $representation = new StandardRepresentation($data);
-            }
-        } else {
-            $results = $data->getCurrentPageResults();
-            $results = (array) $results;
-
-            $meta = array(
-                'count'       => count($results),
-                'total_count' => $data->getNbResults(),
-                'page'        => $data->getCurrentPage(),
-                'total_pages' => $data->getNbPages(),
-            );
-
-            $representation = new StandardRepresentation(
-                $results,
-                $meta
-            );
-        }
-
-        $meta                = $representation->getMeta();
-        $meta['!!WARNING!!'] = 'This result was returned via createRepresentation. This method is deprecated. You should use $this->wrap() from within the controller.';
-
-        return $representation;
-    }
 
     /**
      * Format a set of responses for batch response.
