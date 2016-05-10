@@ -1819,10 +1819,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     {
         $changed = false;
         foreach ($this->custom_data as $data) {
-            if ($data->field === $field || $data->root_field == $field) {
+            if ($data->field->getId() === $field->getId() || $data->root_field->getId() == $field->getId()) {
                 $changed = true;
                 $this->custom_data->removeElement($data);
-            } elseif ($field->parent && ($data->field === $field->parent || $data->root_field === $field->parent)) {
+            } elseif ($field->parent && ($data->field->getId() === $field->parent->getId()
+                    || $data->root_field->getId() === $field->parent->getId())) {
                 $changed = true;
                 $this->custom_data->removeElement($data);
             }
