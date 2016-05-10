@@ -463,7 +463,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      * @Assert\NotBlank()
      * @Assert\Type(type="string")
      */
-    protected $subject = '';
+    protected $subject = '(No Subject)';
 
     /**
      * @var string
@@ -811,9 +811,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             $subject = Strings::standardEol($subject);
             $subject = Strings::trimLines($subject);
             $subject = preg_replace("#\n+#", ' ', $subject);
-        }
-        if (!$subject) {
-            $subject = '(No Subject)';
         }
 
         $this->setModelField('subject', $subject);
