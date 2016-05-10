@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
@@ -304,9 +305,20 @@ class CustomDataType extends AbstractType
             return;
         }
 
+        /** @var CustomDefAbstract $customDef */
+        $customDef = $options['custom_def'];
+        $context   = $options['agent_interface'] ? 'agent' : 'user';
+
+        if ($context === 'agent' && $customDef->getOption('agent_validation_resolve')) {
+            $ticket = $options['ticket'];
+            if ($ticket instanceof Ticket && !$ticket->isResolved()) {
+                return;
+            }
+        }
+
         $violations = $this->validator->validate($form->getData(), new AppAssert\CustomField\CustomData([
-            'context'    => $options['agent_interface'] ? 'agent' : 'user',
-            'custom_def' => $options['custom_def'],
+            'context'    => $context,
+            'custom_def' => $customDef,
             'target'     => AppAssert\CustomField\CustomData::TARGET_FIELD,
         ]));
 
@@ -341,6 +353,7 @@ class CustomDataType extends AbstractType
                 'owner_form'        => false,
                 'error_bubbling'    => false,
                 'ignore_validation' => false,
+                'ticket'            => false,
             ])
             ->setRequired([
                 'custom_def',
@@ -350,6 +363,7 @@ class CustomDataType extends AbstractType
                 'custom_def'      => CustomDefAbstract::class,
                 'agent_interface' => 'bool',
                 'inline'          => 'bool',
+                'ticket'          => ['bool', Ticket::class],
             ])
         ;
     }

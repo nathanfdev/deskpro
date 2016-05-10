@@ -144,7 +144,7 @@ class TicketType extends AbstractType
                 'view_type'     => 'array',
             ])
             ->add('fields', CombinedType::class, [
-                'forms'          => $this->getCustomDataFields($options),
+                'forms'          => $this->getCustomDataFields($builder, $options),
                 'error_bubbling' => false,
             ])
         ;
@@ -164,11 +164,12 @@ class TicketType extends AbstractType
     }
 
     /**
-     * @param array $options
+     * @param FormBuilderInterface $builder
+     * @param array                $options
      *
      * @return array
      */
-    private function getCustomDataFields(array $options)
+    private function getCustomDataFields(FormBuilderInterface $builder, array $options)
     {
         $field_defs  = $this->field_manager->getAvailableTicketDefs();
         $form_fields = [];
@@ -183,6 +184,7 @@ class TicketType extends AbstractType
                     'agent_interface' => $options['agent_interface'],
                     'label'           => $field_def->getTitle(),
                     'inline'          => true,
+                    'ticket'          => $builder->getData(),
                 ],
             ];
         }

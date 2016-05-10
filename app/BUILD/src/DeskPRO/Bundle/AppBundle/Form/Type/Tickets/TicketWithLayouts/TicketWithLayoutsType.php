@@ -800,6 +800,7 @@ class TicketWithLayoutsType extends AbstractType
             'label'           => $def->getTitle(),
             'required'        => $def->isRequired($context->isAgentView()),
             'inline'          => $context->forApi(),
+            'ticket'          => $context->getTicket(),
         ];
 
         if (in_array($def->getType(), [CustomDefAbstract::TYPE_HIDDEN, CustomDefAbstract::TYPE_DISPLAY])) {
