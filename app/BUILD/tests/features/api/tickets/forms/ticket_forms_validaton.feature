@@ -96,17 +96,6 @@ Feature: /ticket_forms endpoint
     And the JSON node "errors.fields.message.fields.message.errors[0].code" should be equal to "length_too_short"
     And the JSON node "errors.fields.message.fields.message.errors[0].message" should be equal to "This value is too short. It should have 10 characters or more."
 
-  Scenario: I try to create a ticket with empty subject (empty subject)
-    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
-    """
-{
-  "subject": ""
-}
-    """
-    Then the response status code should be 400
-    And the JSON node "errors.fields.subject.errors[0].code" should be equal to "required"
-    And the JSON node "errors.fields.subject.errors[0].message" should be equal to "This value should not be blank."
-
   Scenario: I try to create a ticket with empty subject (too short)
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:
     """
@@ -536,8 +525,6 @@ Feature: /ticket_forms endpoint
     When I send a GET request to "/api/v2/tickets/6?include=ticket_agent_errors,ticket_user_errors"
     Then the response status code should be 200
 
-    And the JSON node "linked.ticket_agent_errors.6.fields.subject.errors[0].code" should be equal to "required"
-    And the JSON node "linked.ticket_agent_errors.6.fields.subject.errors[0].message" should contain "This value should not be blank."
     And the JSON node "linked.ticket_agent_errors.6.fields.fields.fields.fields_6.errors[0].code" should be equal to "required"
     And the JSON node "linked.ticket_agent_errors.6.fields.fields.fields.fields_6.errors[0].message" should contain "This value should not be blank."
     And the JSON node "linked.ticket_agent_errors.6.fields.organization_fields.fields.organization_fields_6.errors[0].code" should be equal to "required"
@@ -545,5 +532,61 @@ Feature: /ticket_forms endpoint
     And the JSON node "linked.ticket_agent_errors.6.fields.user_fields.fields.user_fields_6.errors[0].code" should be equal to "required"
     And the JSON node "linked.ticket_agent_errors.6.fields.user_fields.fields.user_fields_6.errors[0].message" should contain "This value should not be blank."
 
-    And the JSON node "linked.ticket_user_errors.6.fields.subject.errors[0].code" should be equal to "required"
-    And the JSON node "linked.ticket_user_errors.6.fields.subject.errors[0].message" should contain "This value should not be blank."
+    And the JSON node "linked.ticket_user_errors.6" should have 0 elements
+
+  Scenario: I test validation on resolved
+    When I send a PUT request to "/api/v2/tickets/6" with body:
+    """
+{
+  "fields": {
+    "7": "too long text"
+  }
+}
+    """
+    Then the response status code should be 204
+    When I send a GET request to "/api/v2/tickets/6"
+    Then the JSON node "data.fields.7.value" should be equal to "too long text"
+
+    When I send a PUT request to "/api/v2/ticket_forms/agent/6" with body:
+    """
+{
+  "fields": {
+    "7": "too long text2"
+  }
+}
+    """
+    Then the response status code should be 204
+    When I send a GET request to "/api/v2/tickets/6"
+    Then the JSON node "data.fields.7.value" should be equal to "too long text2"
+
+    When I send a PUT request to "/api/v2/tickets/6" with body:
+    """
+{
+  "status": "resolved"
+}
+    """
+    Then the response status code should be 204
+
+    When I send a PUT request to "/api/v2/tickets/6" with body:
+    """
+{
+  "fields": {
+    "7": "too long text"
+  }
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.fields.fields.fields_7.errors[0].code" should be equal to "length_too_long"
+    And the JSON node "errors.fields.fields.fields.fields_7.errors[0].message" should contain "This value is too long. It should have 10 characters or less."
+
+    When I send a PUT request to "/api/v2/ticket_forms/agent/6" with body:
+    """
+{
+  "fields": {
+    "7": "too long text"
+  }
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.fields.fields.fields_7.errors[0].code" should be equal to "length_too_long"
+    And the JSON node "errors.fields.fields.fields.fields_7.errors[0].message" should contain "This value is too long. It should have 10 characters or less."
