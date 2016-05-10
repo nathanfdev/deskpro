@@ -69,7 +69,7 @@ export const initialLoad        = createAction(
               + '&get[categories]=DP_API/ticket_categories'
               + '&get[workflows]=DP_API/ticket_workflows'
               + '&get[products]=DP_API/ticket_products'
-              + '&get[starsCount]=DP_API/ticket_stars_counts'
+              + '&get[starsCount]=DP_API/ticket_stars/counts'
               + '&get[filters]=DP_API/new/ticket_filters'
         ;
 
