@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Services;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -80,5 +81,19 @@ class TicketApplicatorService extends AbstractApplicatorService
         }
 
         return $applicator;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getEntities($class, array $ids)
+    {
+        /** @var Ticket[] $entities */
+        $entities = parent::getEntities($class, $ids);
+        foreach ($entities as $entity) {
+            $entity->disableAutoTicketProcess();
+        }
+
+        return $entities;
     }
 }
