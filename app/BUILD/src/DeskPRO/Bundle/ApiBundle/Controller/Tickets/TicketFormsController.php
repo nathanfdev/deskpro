@@ -46,7 +46,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Class TicketFormsController.
  *
  * @ApiModes("all")
- * @Rest\Route("/ticket_forms")
+ * @Rest\Route("/ticket_forms/{context}", requirements={"context"="(agent|user)"})
  */
 class TicketFormsController extends AbstractTicketsController
 {
@@ -73,7 +73,7 @@ class TicketFormsController extends AbstractTicketsController
      *     },
      *     output="Application\DeskPRO\Entity\Ticket"
      * )
-     * @Rest\Post("/{context}", requirements={"context"="(agent|user)"})
+     * @Rest\Post("")
      *
      * @param string  $context
      * @param Request $request
@@ -113,7 +113,7 @@ class TicketFormsController extends AbstractTicketsController
      *         403="You are not allowed to edit this layout"
      *     }
      * )
-     * @Rest\Put("/{context}/{id}", requirements={"id"="\d+", "context"="(agent|user)"})
+     * @Rest\Put("/{id}", requirements={"id"="\d+"})
      *
      * @param string  $context
      * @param int     $id
