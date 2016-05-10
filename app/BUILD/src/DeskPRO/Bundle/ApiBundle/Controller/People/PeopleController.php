@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\Person;
@@ -55,6 +56,17 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  * @ApiModes("all")
  * @Rest\Route("/people")
  * @ApiDoc(target="all", section="People", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
+ * @ApiDoc(
+ *     target="listAction,countAction",
+ *     filters={
+ *          {"name"="is_agent", "description"="agents filter", "dataType"="boolean"},
+ *          {"name"="is_deleted", "description"="deleted filter", "dataType"="boolean"},
+ *          {"name"="not_me", "description"="exclude yourself filter", "dataType"="boolean"},
+ *          {"name"="agent_team", "description"="agent teams filter", "dataType"="array|integer|null", "pattern"="[\d+,]+"},
+ *          {"name"="user_group", "description"="usergroups filter", "dataType"="array|integer|null", "pattern"="[\d+,]+"},
+ *          {"name"="labels", "description"="labels filter option", "dataType"="array", "pattern"="[\w+,]+"}
+ *     }
+ * )
  */
 class PeopleController extends CrudController
 {

@@ -49,6 +49,14 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiModes("all")
  * @Rest\Route("/organizations")
  * @ApiDoc(target="all", section="Organizations", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Organization")
+ * @ApiDoc(
+ *     target="listAction,countAction",
+ *     filters={
+ *          {"name"="period_created", "description"="period created filter", "dataType"="string", "pattern"="\w+"},
+ *          {"name"="user_group", "description"="usergroups filter", "dataType"="array|integer|null", "pattern"="[\d+,]+"},
+ *          {"name"="labels", "description"="labels filter option", "dataType"="array", "pattern"="[\w+,]+"}
+ *     }
+ * )
  */
 class OrganizationsController extends CrudController
 {
