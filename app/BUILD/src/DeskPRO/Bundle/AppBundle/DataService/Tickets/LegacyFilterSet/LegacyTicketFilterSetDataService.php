@@ -91,11 +91,13 @@ class LegacyTicketFilterSetDataService
         /** @var \Application\DeskPRO\EntityRepository\CustomDefTicket $customDefRepo */
         $customDefRepo = $this->em->getRepository(CustomDefTicket::class);
         foreach ($customDefRepo->getEnabledTopFields() as $customDef) {
-            $customDefId = $customDef->getId();
-            $queryParam  = TicketGrouping::CUSTOM_FIELD_COLUMN_PREFIX.'_'.$customDefId;
-            $customTerm  = TicketSearch::TERM_TICKET_FIELD.'_'.$customDefId;
+            foreach (['.', '_'] as $delimiter) {
+                $customDefId = $customDef->getId();
+                $queryParam  = TicketGrouping::CUSTOM_FIELD_COLUMN_PREFIX.$delimiter.$customDefId;
+                $customTerm  = TicketSearch::TERM_TICKET_FIELD.'_'.$customDefId;
 
-            $termMapping[$queryParam] = $customTerm;
+                $termMapping[$queryParam] = $customTerm;
+            }
         }
 
         return $termMapping;
