@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\EventListener\JsonHeadersResponseListener;
@@ -45,11 +41,12 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  * Class BatchController.
  *
  * @ApiModes("all")
+ * @Rest\Route("/batch")
  */
 class BatchController extends BaseController
 {
     /**
-     * @Rest\Post("/batch", name="api_batch_post")
+     * @Rest\Post("")
      *
      * @param Request $request
      *
@@ -73,7 +70,7 @@ class BatchController extends BaseController
     }
 
     /**
-     * @Rest\Get("/batch", name="api_batch_get")
+     * @Rest\Get("")
      *
      * @param Request $request
      *
