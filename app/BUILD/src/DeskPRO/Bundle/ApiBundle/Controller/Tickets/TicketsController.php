@@ -93,7 +93,7 @@ class TicketsController extends AbstractTicketsController
      *          {"name"="page", "description"="pagination page parameter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="count", "description"="pagination results per page parameter.", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="filter", "description"="TicketFilter ID option", "dataType"="integer", "pattern"="\d+"},
-     *          {"name"="labels", "description"="labels filter option", "dataType"="array", "pattern"="[\d+,]+"},
+     *          {"name"="labels", "description"="labels filter option", "dataType"="array", "pattern"="[\w+,]+"},
      *          {"name"="star", "description"="star filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="status", "description"="status filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="agent", "description"="agent filter", "dataType"="integer", "pattern"="\d+"},
