@@ -171,7 +171,9 @@ class CheckMissingCommand extends ContainerAwareCommand
                 $types[] = 'js';
                 break;
             default:
-                $output->writeln("<error>Invalid --filetype param. Must be either 'php' or 'twig' or 'both'.</error>");
+                $output->writeln(
+                    "<error>Invalid --filetype param. Must be either 'js', 'php' or 'twig' or 'all'.</error>"
+                );
 
                 return 1;
         }

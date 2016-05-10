@@ -83,7 +83,7 @@
     "zendframework/zend-queue": "dev-master",
     "nesbot/carbon": "^1.21",
     "nelmio/cors-bundle": "^1.4",
-    "gregwar/captcha-bundle": "^1.1",
+    "gregwar/captcha-bundle": "^2.0",
     "google/recaptcha": "~1.1",
     "slushie/recaptcha-secure-token": "^1.1",
     "symfony/proxy-manager-bridge": "~2.3",

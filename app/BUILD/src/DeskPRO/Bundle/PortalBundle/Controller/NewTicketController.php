@@ -181,10 +181,17 @@ class NewTicketController extends AbstractController
         // show ticket deflection? (suggestions)
         $show_ticket_suggestions = (bool) $this->getBrandSetting('core.show_ticket_suggestions');
 
+        $formView     = $form->createView();
+        $formFullView = $form_full->createView();
+
+        if (isset($formView->children['captcha_captcha_auto_added'])) {
+            $formFullView->children['captcha_captcha_auto_added'] = $formView->children['captcha_captcha_auto_added'];
+        }
+
         return $this->renderThemeView(
             'Theme:NewTicket:new_ticket.html.twig', [
-                'form'                    => $form->createView(),
-                'form_full'               => $form_full->createView(),
+                'form'                    => $formView,
+                'form_full'               => $formFullView,
                 'ticket_display_js'       => $ticket_display_js,
                 'rerendering'             => $rerendering,
                 'rerendering_saved'       => $rerendering_saved,
