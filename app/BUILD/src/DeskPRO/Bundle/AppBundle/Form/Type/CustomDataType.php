@@ -329,27 +329,18 @@ class CustomDataType extends AbstractType
         $resolver
             ->setDefaults([
                 'label' => function (Options $options) {
-                    /** @var \Application\DeskPRO\Entity\CustomDefAbstract $field */
-                    $field = $options['custom_def'];
-
-                    return $field ? $field->getTitle() : '';
+                    return $options['custom_def']->getTitle();
                 },
                 'help' => function (Options $options) {
-                    /** @var \Application\DeskPRO\Entity\CustomDefAbstract $field */
-                    $field = $options['custom_def'];
-
-                    return $field ? $field->getDescription() : '';
+                    return $options['custom_def']->getDescription();
+                },
+                'fully_hidden' => function (Options $options) {
+                    return $options['custom_def']->getType() === CustomDefAbstract::TYPE_HIDDEN;
                 },
                 'inline'            => false,
                 'owner_form'        => false,
                 'error_bubbling'    => false,
                 'ignore_validation' => false,
-                'fully_hidden'      => function (Options $options) {
-                    /** @var \Application\DeskPRO\Entity\CustomDefAbstract $field */
-                    $field = $options['custom_def'];
-
-                    return $field && $field->getType() === CustomDefAbstract::TYPE_HIDDEN;
-                },
             ])
             ->setRequired([
                 'custom_def',
