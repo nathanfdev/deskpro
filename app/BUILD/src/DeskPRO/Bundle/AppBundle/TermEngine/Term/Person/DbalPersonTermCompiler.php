@@ -49,9 +49,24 @@ class DbalPersonTermCompiler extends AbstractDbalTermCompiler
 
         $qp = new DbalQueryPart();
         $qp
-            ->setParameter('ids', array_map(function ($id) { return (int) $id; }, $term->getOption('person_ids')))
-            ->setWhereString("
-                ticket.person_id $notPrefix IN(:ids) $composite $notPrefix EXISTS(
+            ->setParameter(
+                'ids',
+                array_map(
+                    function ($id) {
+                        return (int) $id;
+                    },
+                    $term->getOption('person_ids')
+                )
+            )
+            ->setWhereString(
+                "
+                ticket.person_id $notPrefix IN(:ids) 
+                $composite ticket.organization_id $notPrefix IN (
+                  SELECT p.organization_id from people p
+                  INNER JOIN tickets t ON t.organization_id = p.organization_id
+                  WHERE p.organization_manager = 1 AND p.id IN(:ids)
+                )
+                $composite $notPrefix EXISTS(
                   SELECT * FROM
                     tickets_participants tp
                         JOIN
@@ -59,8 +74,8 @@ class DbalPersonTermCompiler extends AbstractDbalTermCompiler
                   WHERE
                     p.is_agent = 0 AND p.id $notPrefix IN(:ids) AND ticket.id = tp.ticket_id
                 )
-            ")
-        ;
+            "
+            );
 
         $this->logQueryPart($qp);
 
