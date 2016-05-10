@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -74,6 +75,34 @@ class TicketMessagesController extends CrudSubController
     /**
      * {@inheritdoc}
      */
+    protected function instantiateEntity(Request $request)
+    {
+        $ent = parent::instantiateEntity($request);
+
+        if ($ent && $ent instanceof TicketMessage && $ent->getTicket()) {
+            $this->getContainer()->getTicketManager()->markAsManaged($ent->getTicket());
+        }
+
+        return $ent;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function findEntity($id, Request $request)
+    {
+        $ent = parent::findEntity($id, $request);
+
+        if ($ent && $ent instanceof TicketMessage && $ent->getTicket()) {
+            $this->getContainer()->getTicketManager()->markAsManaged($ent->getTicket());
+        }
+
+        return $ent;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function persistModel($entity)
     {
         /* @var TicketMessage $entity */
@@ -105,7 +134,13 @@ class TicketMessagesController extends CrudSubController
     {
         /** @var TicketManager $manager */
         $manager = $this->getContainer()->getTicketManager();
-        $context = $manager->createAgentExecutorContext($this->getUser(), 'update', 'api');
+
+        if ($ticket->getStateChangeRecorder()->hasNewReply()) {
+            $context = $manager->createAgentExecutorContext($this->getUser(), 'newreply', 'api');
+        } else {
+            $context = $manager->createAgentExecutorContext($this->getUser(), 'update', 'api');
+        }
+
         $manager->saveTicket($ticket, $context);
     }
 }
