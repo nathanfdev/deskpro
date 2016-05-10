@@ -54,8 +54,8 @@ export const deleteProject = createAction(
   })
 );
 
-export const initialLoad = createAction(
-  'TASKS_NAV_INITIAL_LOAD',
+export const loadCounts = createAction(
+  'TASKS_NAV_COUNTS_LOAD',
   () => new Promise(resolve => {
     const batch = 'DP_API/batch'
             + '?get[groups]=DP_API/tasks/counts/groups'
@@ -69,4 +69,9 @@ export const initialLoad = createAction(
       resolve(payload);
     });
   })
+);
+
+export const initialLoad = createAction(
+  'TASKS_NAV_INITIAL_LOAD',
+  () => (dispatch) => dispatch(loadCounts())
 );

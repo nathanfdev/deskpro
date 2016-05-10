@@ -11,6 +11,7 @@ import invariant from 'invariant';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { myAgentTeamsSelector, myDepartmentsSelector }
   from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/common';
+import { loadCounts } from './navActions';
 
 const prepareLinkedData = (linked) => {
   const result = [];
@@ -216,6 +217,7 @@ export const editTask = createAction(
     promise.success(() => {
       if (updates[id] !== promise) return;
       delete updates[id];
+      dispatch(loadCounts());
       dispatch(getTask(id));
     }).error(() => {
       if (updates[id] !== promise) return;
