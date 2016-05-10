@@ -117,9 +117,9 @@ class CustomDataArticle extends CustomDataAbstract
                 'indexes' => [
                     'field_id_idx' => ['columns' => [0 => 'field_id', 1 => 'article_id']],
                 ],
-                //'uniqueConstraints' => [
-                //    'unique_idx' => ['columns' => ['field_id', 'article_id', 'root_field_id']],
-                //],
+                'uniqueConstraints' => [
+                    'unique_idx' => ['columns' => ['field_id', 'article_id', 'root_field_id']],
+                ],
             ]
         );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
