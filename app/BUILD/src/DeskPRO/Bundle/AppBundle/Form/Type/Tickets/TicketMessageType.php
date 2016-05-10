@@ -112,6 +112,7 @@ class TicketMessageType extends AbstractType
             'mapped'         => false,
         ]);
 
+        $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onSetMessageFromOptions']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onChangeMessageFormat']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations']);

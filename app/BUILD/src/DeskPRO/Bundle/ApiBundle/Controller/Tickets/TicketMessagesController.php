@@ -75,34 +75,6 @@ class TicketMessagesController extends CrudSubController
     /**
      * {@inheritdoc}
      */
-    protected function instantiateEntity(Request $request)
-    {
-        $ent = parent::instantiateEntity($request);
-
-        if ($ent && $ent instanceof TicketMessage && $ent->getTicket()) {
-            $this->getContainer()->getTicketManager()->markAsManaged($ent->getTicket());
-        }
-
-        return $ent;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function findEntity($id, Request $request)
-    {
-        $ent = parent::findEntity($id, $request);
-
-        if ($ent && $ent instanceof TicketMessage && $ent->getTicket()) {
-            $this->getContainer()->getTicketManager()->markAsManaged($ent->getTicket());
-        }
-
-        return $ent;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function persistModel($entity)
     {
         /* @var TicketMessage $entity */
