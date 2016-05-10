@@ -99,6 +99,15 @@ class App
      */
     public static function getCurrentPerson()
     {
+        if (!self::$_current_person) {
+            $tokenStorage = self::$container->get('security.token_storage');
+            $tokenPerson  = $tokenStorage->getToken()->getUser();
+
+            if ($tokenPerson instanceof Entity\Person) {
+                self::$_current_person = $tokenPerson;
+            }
+        }
+
         return self::$_current_person;
     }
 
