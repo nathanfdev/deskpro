@@ -1,3 +1,3 @@
-import createMemoryHistory from 'history/lib/createMemoryHistory';
+import { createMemoryHistory } from 'react-router';
 
 export const history = createMemoryHistory();
