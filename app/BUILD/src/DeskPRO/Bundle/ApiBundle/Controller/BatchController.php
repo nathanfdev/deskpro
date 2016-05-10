@@ -166,7 +166,7 @@ class BatchController extends BaseController
     protected function matchRouteUrl($url)
     {
         try {
-            return $this->get('router')->match($url);
+            return $this->get('router')->matchRequest(Request::create($url));
         } catch (\Exception $e) {
             return false;
         }
