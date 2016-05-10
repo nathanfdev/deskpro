@@ -28,17 +28,13 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\LegacyFilters;
 
-use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Searcher\SearcherAbstract;
-use Application\DeskPRO\Searcher\TicketSearch;
 use Application\DeskPRO\Tickets\GroupingCounter;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Traits\TicketsPagerTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\DataService\Tickets\LegacyFilterSet\LegacyTicketFilterSetDataService;
-use DeskPRO\Bundle\AppBundle\Model\TicketGrouping;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -109,7 +105,8 @@ class TicketFiltersController extends CrudController
      */
     public function getFilterTicketsAction(Request $request, LegacyTicketFilter $filter)
     {
-        $searcher = $this->get('data.ticket_legacy_filter_sets')->getFilterSearcher($filter);
+        $filterSets = $this->get('data.ticket_legacy_filter_sets');
+        $searcher   = $filterSets->getFilterSearcher($filter);
 
         // ordering
         $orderDir = $request->get('order_dir') === 'asc' ? SearcherAbstract::ORDER_ASC : SearcherAbstract::ORDER_DESC;
@@ -120,19 +117,7 @@ class TicketFiltersController extends CrudController
         }
 
         // sub filters
-        $termMapping = LegacyTicketFilterSetDataService::$termMapping;
-
-        /** @var \Application\DeskPRO\EntityRepository\CustomDefTicket $customDefRepo */
-        $customDefRepo = $this->getManager()->getRepository(CustomDefTicket::class);
-        foreach ($customDefRepo->getEnabledTopFields() as $customDef) {
-            $customDefId = $customDef->getId();
-            $queryParam  = TicketGrouping::CUSTOM_FIELD_COLUMN_PREFIX.'_'.$customDefId;
-            $customTerm  = TicketSearch::TERM_TICKET_FIELD.'_'.$customDefId;
-
-            $termMapping[$queryParam] = $customTerm;
-        }
-
-        foreach ($termMapping as $queryParam => $term) {
+        foreach ($filterSets->getTermMapping() as $queryParam => $term) {
             if ($request->query->has($queryParam)) {
                 $searchTerm = GroupingCounter::getSearchTerm($term, $request->query->get($queryParam));
                 if ($searchTerm) {

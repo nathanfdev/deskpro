@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataService\Tickets\LegacyFilterSet;
 
+use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Searcher\TicketSearch;
@@ -58,22 +59,6 @@ class LegacyTicketFilterSetDataService
     private $tokenStorage;
 
     /**
-     * @var array
-     */
-    public static $termMapping = [
-        TicketGrouping::DEPARTMENT       => TicketSearch::TERM_DEPARTMENT,
-        TicketGrouping::ORGANIZATION     => TicketSearch::TERM_ORGANIZATION,
-        TicketGrouping::PERSON           => TicketSearch::TERM_PERSON,
-        TicketGrouping::LANGUAGE         => TicketSearch::TERM_LANGUAGE,
-        TicketGrouping::URGENCY          => TicketSearch::TERM_URGENCY,
-        TicketGrouping::AGENT            => TicketSearch::TERM_AGENT,
-        TicketGrouping::AGENT_TEAM       => TicketSearch::TERM_AGENT_TEAM,
-        TicketGrouping::WAITING_TIME     => TicketSearch::TERM_USER_WAITING,
-        TicketGrouping::ALL_WAITING_TIME => TicketSearch::TERM_TOTAL_USER_WAITING,
-        TicketGrouping::DATE_CREATED     => TicketSearch::TERM_DATE_CREATED,
-    ];
-
-    /**
      * Constructor.
      *
      * @param EntityManager         $em
@@ -83,6 +68,39 @@ class LegacyTicketFilterSetDataService
     {
         $this->em           = $em;
         $this->tokenStorage = $tokenStorage;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTermMapping()
+    {
+        $termMapping = [
+            TicketGrouping::DEPARTMENT       => TicketSearch::TERM_DEPARTMENT,
+            TicketGrouping::ORGANIZATION     => TicketSearch::TERM_ORGANIZATION,
+            TicketGrouping::PERSON           => TicketSearch::TERM_PERSON,
+            TicketGrouping::LANGUAGE         => TicketSearch::TERM_LANGUAGE,
+            TicketGrouping::URGENCY          => TicketSearch::TERM_URGENCY,
+            TicketGrouping::AGENT            => TicketSearch::TERM_AGENT,
+            TicketGrouping::AGENT_TEAM       => TicketSearch::TERM_AGENT_TEAM,
+            TicketGrouping::WAITING_TIME     => TicketSearch::TERM_USER_WAITING,
+            TicketGrouping::ALL_WAITING_TIME => TicketSearch::TERM_TOTAL_USER_WAITING,
+            TicketGrouping::DATE_CREATED     => TicketSearch::TERM_DATE_CREATED,
+        ];
+
+        /** @var \Application\DeskPRO\EntityRepository\CustomDefTicket $customDefRepo */
+        $customDefRepo = $this->em->getRepository(CustomDefTicket::class);
+        foreach ($customDefRepo->getEnabledTopFields() as $customDef) {
+            foreach (['.', '_'] as $delimiter) {
+                $customDefId = $customDef->getId();
+                $queryParam  = TicketGrouping::CUSTOM_FIELD_COLUMN_PREFIX.$delimiter.$customDefId;
+                $customTerm  = TicketSearch::TERM_TICKET_FIELD.'_'.$customDefId;
+
+                $termMapping[$queryParam] = $customTerm;
+            }
+        }
+
+        return $termMapping;
     }
 
     /**
@@ -186,7 +204,8 @@ class LegacyTicketFilterSetDataService
     public function getFilterCount(LegacyTicketFilter $filter, $groupBy = null)
     {
         $searcher      = $this->getFilterSearcher($filter);
-        $legacyGroupBy = isset(self::$termMapping[$groupBy]) ? self::$termMapping[$groupBy] : null;
+        $termMapping   = $this->getTermMapping();
+        $legacyGroupBy = isset($termMapping[$groupBy]) ? $termMapping[$groupBy] : null;
 
         if ($legacyGroupBy) {
             $ticketIds = $searcher->getMatches();

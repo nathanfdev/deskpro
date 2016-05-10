@@ -98,7 +98,7 @@ abstract class AbstractApplicatorService implements ApplicatorServiceInterface
      *
      * @return array
      */
-    private function getEntities($class, array $ids)
+    protected function getEntities($class, array $ids)
     {
         $qb = $this->em->createQueryBuilder();
         $qb

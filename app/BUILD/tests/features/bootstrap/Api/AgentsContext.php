@@ -90,6 +90,7 @@ class AgentsContext extends BaseContext
         $this->lastAgentTickets = [];
         for ($i = 1; $i <= $num; ++$i) {
             $ticket = new Ticket();
+            $ticket->disableAutoTicketProcess();
             $ticket->setSubject("$name ticket #$i");
             $ticket->setAgent($this->lastAgent);
             $this->saveTicket($ticket);

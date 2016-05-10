@@ -115,13 +115,14 @@ class TicketFormsController extends AbstractTicketsController
      * @Rest\Put("/{context}/{id}", requirements={"id"="\d+", "context"="(agent|user)"})
      *
      * @param string  $context
-     * @param Ticket  $ticket
+     * @param int     $id
      * @param Request $request
      *
      * @return View
      */
-    public function putContextAction($context, Ticket $ticket, Request $request)
+    public function putContextAction($context, $id, Request $request)
     {
+        $ticket = $this->findEntity($id, $request);
         $this->denyAccessUnlessGranted(PermissionGroupVoter::MODIFY, new PermissionGroupContext($ticket));
 
         return $this->handleForm($ticket, $request, [
