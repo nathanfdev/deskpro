@@ -82,7 +82,7 @@ Feature: API batch requests
     And the JSON node "responses.new_stuff.headers.status-code" should be equal to 201
 
   Scenario: I perform batch requests via GET providing comma separated list of requests
-    When I send a GET request to "/api/v2/batch?get=/api/v2/ticket_stars,/api/v2/ticket_departments,/api/v2/organizations/counts,/api/v2/tickets"
+    When I send a GET request to "/api/v2/batch?get=/api/v2/ticket_stars,/api/v2/ticket_departments,/api/v2/organizations/counts,/tickets"
     Then the response status code should be 200
     And the JSON node "responses" should have 4 elements
     And the JSON node "responses[0].data[0].color" should exist

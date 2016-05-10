@@ -118,6 +118,16 @@ class BatchController extends BaseController
             $info = array_merge($info, ['url' => $subRequestInfo]);
         }
 
+        // verify sub request url
+        if (strpos($info['url'], '/api/v2') !== 0) {
+            $info['url'] = '/api/v2/'.ltrim($info['url'], '/');
+        }
+        if (!$this->matchRouteUrl($info['url'])) {
+            if (!$this->matchRouteUrl($info['url'])) {
+                throw $this->createBadRequestException("Route path for '{$info['url']}' not found");
+            }
+        }
+
         $json_serialized = null;
         if ($info['data']) {
             $json            = $info['data'];
@@ -146,5 +156,19 @@ class BatchController extends BaseController
         $response = $this->getKernel()->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
 
         return $this->get('serializer')->deserialize($response->getContent(), 'array', 'json');
+    }
+
+    /**
+     * @param string $url
+     *
+     * @return array|false
+     */
+    protected function matchRouteUrl($url)
+    {
+        try {
+            return $this->get('router')->match($url);
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }
