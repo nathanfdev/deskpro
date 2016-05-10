@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\InstallBundle\Command;
 
 use DeskPRO\Bundle\InstallBundle\Installer\InstallerContext;
