@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\Triggers;
 
 use Application\DeskPRO\Criteria\CriteriaTermInterface;
@@ -190,7 +191,7 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
                 }
 
                 if ($set_terms) {
-                    $data['terms'][] = [
+                    $terms[] = [
                         'set_terms' => $set_terms,
                     ];
                 }
