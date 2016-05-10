@@ -50,6 +50,7 @@ export class ListGroupContainer extends React.Component {
       task = task.set(key, val);
     }
 
+    // todo this is a duplicate of TaskCardEditContainer.onChange()
     this.props.dispatch(addToCollection('Task', 'all', Immutable.List([task])));
     this.props.dispatch(editTask(taskId, updateData));
   };

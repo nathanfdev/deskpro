@@ -1,19 +1,23 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { updateRoutingState } from '../../../../Application/Actions/routingActions';
+import { pureRender } from 'Ampliflux';
 
 @connect(state => ({
   state: state.Application.routing.get('hash')
 }))
+
+@pureRender
+
 export class ListItemStatefulContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    state: PropTypes.object.isRequired,
-    active: PropTypes.string,
-    groupId: PropTypes.string.isRequired,
-    itemId: PropTypes.string.isRequired,
-    onClick: PropTypes.func.isRequired,
+    state:    PropTypes.object.isRequired,
+    active:   PropTypes.string,
+    groupId:  PropTypes.string.isRequired,
+    itemId:   PropTypes.string.isRequired,
+    onClick:  PropTypes.func.isRequired,
     children: PropTypes.node.isRequired
   };
 

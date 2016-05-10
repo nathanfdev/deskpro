@@ -119,6 +119,7 @@ export const addTask = createAction(
 );
 
 const isTaskMatch = function (task, state) {
+  let me;
   for (const [k, v] of listParamsNavSelector(state)) {
     switch (k) {
       // project
@@ -131,7 +132,7 @@ const isTaskMatch = function (task, state) {
       // me or other agent
       case 'assigned_agent':
         const set = v.toSet();
-        const me = meSelector(state);
+        me = meSelector(state);
         if (set.has('me') && task.get('agents').toSet().has(me.get('id'))) {
           return true;
         }
@@ -144,7 +145,7 @@ const isTaskMatch = function (task, state) {
 
       // only other agent
       case 'not_assigned_agent':
-        const me = meSelector(state);
+        me = meSelector(state);
         if (!v.toSet().has('me')) {
           return true;
         }
