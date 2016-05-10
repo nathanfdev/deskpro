@@ -117,6 +117,11 @@ class PermissionGroupVoter extends Voter
         }
 
         if ($user->isAgent()) {
+            $user->loadHelper('Agent');
+            $user->loadHelper('AgentTeam');
+            $user->loadHelper('AgentPermissions');
+            $user->loadHelper('PermissionsManager');
+
             return $entityVoter->voteOnAttributeForAgent($attribute, $subject, $user);
         } else {
             return $entityVoter->voteOnAttributeForUser($attribute, $subject, $user);
