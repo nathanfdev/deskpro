@@ -58,7 +58,7 @@
                             </th>
                             <th> {{ phrase('adm.api_logs.response_status') }}</th>
                             <th> {{ phrase('adm.api_logs.start_time') }}</th>
-                            <th> {{ phrase('adm.api_logs.end_time') }}</th>
+                            <th> {{ phrase('adm.api_logs.time_taken') }}</th>
                         </tr>
 						</thead>
 						<tbody>
@@ -69,8 +69,8 @@
 							<td>{{ ng_var('log.requested_uri') }}</td>
 							<td>{{ ng_var('log.method') }}</td>
 							<td>{{ ng_var('log.status') }}</td>
-							<td>{{ ng_var('log.start_time') }}</td>
-							<td>{{ ng_var('log.end_time') }}</td>
+							<td nowrap="nowrap">{{ ng_var('log.start_date_time') }}</td>
+							<td>{{ ng_var('log.end_time - log.start_time') }}</td>
 						</tr>
 						</tbody>
 					</table>
