@@ -207,16 +207,16 @@ class TicketsController extends AbstractTicketsController
 
     /**
      * {@inheritdoc}
+     *
+     * @param Ticket $entity
      */
     protected function deleteEntity($entity)
     {
-        /* @var Ticket $entity */
+        $entity->disableAutoTicketProcess();
         $entity->setHiddenStatus(Ticket::HIDDEN_STATUS_DELETED);
 
-        $tm      = $this->getTicketManager();
-        $context = $tm->createAgentExecutorContext($this->getUser(), 'delete', 'api');
-
-        $tm->saveTicket($entity, $context);
+        $context = $this->getTicketManager()->createAgentExecutorContext($this->getUser(), 'delete', 'api');
+        $this->getTicketManager()->saveTicket($entity, $context);
         $entity->deleteTicket($this->getUser(), '', false);
     }
 }

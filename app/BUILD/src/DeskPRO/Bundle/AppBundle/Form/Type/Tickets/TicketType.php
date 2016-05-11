@@ -150,6 +150,8 @@ class TicketType extends AbstractType
                 'error_bubbling' => false,
             ])
         ;
+
+        $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
     }
 
     /**

@@ -53,6 +53,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketCategoryType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDepartmentChoiceType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDescriptionType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDisableAutoProcessListener;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketPriorityType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketProductType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWorkflowType;
@@ -171,6 +172,7 @@ class TicketWithLayoutsType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreData']);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onUpdateRelatedData']);
+        $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
     }
 
     /**
