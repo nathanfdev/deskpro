@@ -107,3 +107,8 @@ Feature: API batch requests
     And the JSON node "responses.departments.data" should have 1 element
     And the JSON node "responses.departments.meta.pagination.current_page" should be equal to 2
     And the JSON node "responses.counts.data.count" should exist
+
+  Scenario: I perform batch requests with sideloading
+    When I send a GET request to "/api/v2/batch?get[tickets]=/tickets?include=person"
+    Then the response status code should be 200
+    And the JSON node "responses.tickets.linked.person.1.id" should be equal to 1
