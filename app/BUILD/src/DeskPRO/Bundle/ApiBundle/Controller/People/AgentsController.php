@@ -26,17 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
@@ -64,6 +60,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class AgentsController extends CrudController
 {
+    use TicketSaveTrait;
+
     public static $entity       = Person::class;
     public static $exposeOnly   = ['list', 'delete'];
     public static $listPaginate = false;
@@ -128,9 +126,8 @@ class AgentsController extends CrudController
 
         $isDeleted = $request->get('is_deleted', 0);
         if ($isDeleted != -1) {
-            $qb
-                ->andWhere("$alias.is_deleted = :is_deleted")
-                ->setParameter('is_deleted', (bool) $isDeleted);
+            $qb->andWhere("$alias.is_deleted = :is_deleted");
+            $qb->setParameter('is_deleted', (bool) $isDeleted);
         }
     }
 
@@ -163,11 +160,9 @@ class AgentsController extends CrudController
      */
     private function unassignTicket(Ticket $ticket)
     {
+        $ticket->disableAutoTicketProcess();
         $ticket->setAgent(null);
 
-        /* @var TicketManager $manager */
-        $manager = $this->container->getTicketManager();
-        $context = $manager->createAgentExecutorContext($this->getUser(), 'update', 'api');
-        $manager->saveTicket($ticket, $context);
+        $this->saveTicket($ticket);
     }
 }

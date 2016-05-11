@@ -82,8 +82,12 @@ class TicketUnlinkType extends AbstractType
         $form = $event->getForm();
 
         /** @var Ticket $ticket */
-        $ticket     = $form->getData();
+        $ticket = $form->getData();
+        $ticket->disableAutoTicketProcess();
+
+        /* @var Ticket $ticket */
         $linkTicket = $form->get('link_ticket')->getData();
+        $linkTicket->disableAutoTicketProcess();
 
         switch ($form->get('link_type')->getData()) {
             case self::LINK_TYPE_PARENT:

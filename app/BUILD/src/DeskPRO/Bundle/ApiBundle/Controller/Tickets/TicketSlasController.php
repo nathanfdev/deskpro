@@ -29,11 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\TicketSla;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
+use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketAwarePersistModelTrait;
+use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketSlaType;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -49,6 +52,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class TicketSlasController extends CrudSubController
 {
+    use TicketSaveTrait, TicketAwarePersistModelTrait;
+
     public static $parentProperty = 'ticket';
     public static $entity         = TicketSla::class;
     public static $type           = TicketSlaType::class;
@@ -221,5 +226,17 @@ class TicketSlasController extends CrudSubController
         }
 
         return parent::putAction($ticketSla->getId(), $request);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function deleteEntity($entity)
+    {
+        /* @var TicketSla $entity */
+        $ticket = $entity->getTicket();
+        $ticket->getTicketSlas()->removeElement($entity);
+
+        $this->saveTicket($ticket);
     }
 }

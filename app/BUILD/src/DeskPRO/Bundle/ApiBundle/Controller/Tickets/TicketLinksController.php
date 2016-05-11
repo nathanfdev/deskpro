@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketLinks\TicketLinkType;
@@ -45,11 +46,13 @@ use Symfony\Component\HttpFoundation\Response;
  * Class TicketLinksController.
  *
  * @ApiModes("all")
- * @Rest\Route("/tickets/{ticketId}/links")
+ * @Rest\Route("/tickets/{ticket}/links")
  * @ApiDoc(target="all", section="Tickets", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\LinkedTickets")
  */
 class TicketLinksController extends BaseController
 {
+    use TicketSaveTrait;
+
     /**
      * @ApiDoc(
      *     description="link two tickets",
@@ -64,15 +67,15 @@ class TicketLinksController extends BaseController
      * )
      *
      * @param Request $request
-     * @param int     $ticketId
-     
+     * @param Ticket  $ticket
+     *
      * @return View
      *
      * @Rest\Post("")
      */
-    public function postAction(Request $request, $ticketId)
+    public function postAction(Request $request, Ticket $ticket)
     {
-        return $this->handleForm($request, $ticketId, TicketLinkType::class);
+        return $this->handleForm($request, $ticket, TicketLinkType::class);
     }
 
     /**
@@ -87,15 +90,15 @@ class TicketLinksController extends BaseController
      *     }
      * )
      *
-     * @param int $ticketId
+     * @param Ticket $ticket
      *
      * @Rest\Get("", name="api_tickets_link_list")
      *
      * @return View
      */
-    public function listAction($ticketId)
+    public function listAction(Ticket $ticket)
     {
-        return View::create($this->wrap(new LinkedTickets($this->getTicket($ticketId))));
+        return View::create($this->wrap(new LinkedTickets($ticket)));
     }
 
     /**
@@ -124,30 +127,28 @@ class TicketLinksController extends BaseController
      *     }
      * )
      *
-     * @param int     $ticketId
+     * @param Ticket  $ticket
      * @param Request $request
      *
      * @Rest\Delete("")
      *
      * @return View
      */
-    public function deleteAction(Request $request, $ticketId)
+    public function deleteAction(Request $request, Ticket $ticket)
     {
-        return $this->handleForm($request, $ticketId, TicketUnlinkType::class);
+        return $this->handleForm($request, $ticket, TicketUnlinkType::class);
     }
 
     /**
      * @param Request $request
-     * @param int     $ticketId
+     * @param Ticket  $ticket
      * @param string  $formType
      *
      * @return View
      */
-    protected function handleForm(Request $request, $ticketId, $formType)
+    protected function handleForm(Request $request, Ticket $ticket, $formType)
     {
-        $ticket = $this->getTicket($ticketId);
-        $form   = $this->createForm($formType, $ticket);
-
+        $form = $this->createForm($formType, $ticket);
         $form->submit($request->request->all());
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
@@ -156,31 +157,7 @@ class TicketLinksController extends BaseController
         $this->saveTicket($ticket);
 
         return View::create(null, Response::HTTP_NO_CONTENT, [
-            'Location' => $this->generateUrl('api_tickets_link_list', ['ticketId' => $ticketId]),
+            'Location' => $this->generateUrl('api_tickets_link_list', ['ticket' => $ticket->getId()]),
         ]);
-    }
-
-    /**
-     * @param int $id
-     *
-     * @return \Application\DeskPRO\Entity\Ticket
-     */
-    protected function getTicket($id)
-    {
-        $ticket = $this->get('ticket_manager')->getTicket($id);
-        if (!$ticket) {
-            throw $this->createNotFoundException();
-        }
-
-        return $ticket;
-    }
-
-    /**
-     * @param Ticket $ticket
-     */
-    protected function saveTicket(Ticket $ticket)
-    {
-        $context = $this->get('ticket_manager')->createAgentExecutorContext($this->getUser(), 'update', 'api');
-        $this->get('ticket_manager')->saveTicket($ticket, $context);
     }
 }

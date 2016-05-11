@@ -37,6 +37,7 @@ use Application\DeskPRO\Entity\TicketMacro;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Bundle\AppBundle\Validator\ValidatorErrorsException;
@@ -55,6 +56,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class TicketMacrosController extends CrudController
 {
+    use TicketSaveTrait;
+
     public static $exposeOnly = ['get', 'list'];
     public static $entity     = TicketMacro::class;
     public static $listOrder  = 'asc';
@@ -79,19 +82,18 @@ class TicketMacrosController extends CrudController
      *     }
      * )
      *
-     * @Rest\Post("/{id}/apply/{ticketId}")
+     * @Rest\Post("/{id}/apply/{ticket}")
      *
      * @param int     $id
-     * @param int     $ticketId/api/v2/ticket_layouts/agent
+     * @param Ticket  $ticket
      * @param Request $request
      *
      * @throws \Exception
      *
      * @return View
      */
-    public function applyMacroAction($id, $ticketId, Request $request)
+    public function applyMacroAction($id, Ticket $ticket, Request $request)
     {
-        $ticket  = $this->getTicketManager()->getTicket($ticketId);
         $macro   = $this->findEntity($id, $request);
         $actions = $macro->getActionsCollection();
 
@@ -106,9 +108,10 @@ class TicketMacrosController extends CrudController
 
         try {
             $em->beginTransaction();
+            $ticket->disableAutoTicketProcess();
 
-            $this->applyActions($actions->getUpdateActionsCollection(), $ticket, 'update');
-            $this->applyActions($actions->getReplyActionsCollection(), $ticket, 'reply');
+            $this->applyActions($actions->getUpdateActionsCollection(), $ticket);
+            $this->applyActions($actions->getReplyActionsCollection(), $ticket);
 
             $em->commit();
         } catch (\Exception $e) {
@@ -146,11 +149,10 @@ class TicketMacrosController extends CrudController
     /**
      * @param ActionsCollection $actions
      * @param Ticket            $ticket
-     * @param string            $eventType
      *
      * @throws ValidatorErrorsException
      */
-    protected function applyActions(ActionsCollection $actions, Ticket $ticket, $eventType)
+    protected function applyActions(ActionsCollection $actions, Ticket $ticket)
     {
         $actions->apply($ticket->getTicketLogger(), $ticket, $this->getUser());
 
@@ -165,15 +167,6 @@ class TicketMacrosController extends CrudController
             throw new ValidatorErrorsException($errors);
         }
 
-        $context = $this->getTicketManager()->createAgentExecutorContext($this->getUser(), $eventType, 'api');
-        $this->getTicketManager()->saveTicket($ticket, $context);
-    }
-
-    /**
-     * @return \Application\DeskPRO\Tickets\TicketManager
-     */
-    protected function getTicketManager()
-    {
-        return $this->getContainer()->getTicketManager();
+        $this->saveTicket($ticket);
     }
 }

@@ -140,6 +140,7 @@ class TicketSla extends DomainObject
     public function setTicket(Ticket $ticket)
     {
         $this->setModelField('ticket', $ticket);
+        $ticket->getTicketSlas()->add($this);
 
         return $this;
     }

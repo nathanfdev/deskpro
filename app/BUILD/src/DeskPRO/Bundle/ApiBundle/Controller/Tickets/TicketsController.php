@@ -36,7 +36,8 @@ use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\EventListener\JsonHeadersResponseListener;
 use DeskPRO\Bundle\ApiBundle\Traits\Labels\LabelsHelper;
-use DeskPRO\Bundle\ApiBundle\Traits\TicketsPagerTrait;
+use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
+use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketsPagerTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
@@ -57,7 +58,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  */
 class TicketsController extends AbstractTicketsController
 {
-    use LabelsHelper, TicketsPagerTrait;
+    use LabelsHelper, TicketsPagerTrait, TicketSaveTrait;
 
     public static $type = TicketType::class;
 
@@ -215,8 +216,7 @@ class TicketsController extends AbstractTicketsController
         $entity->disableAutoTicketProcess();
         $entity->setHiddenStatus(Ticket::HIDDEN_STATUS_DELETED);
 
-        $context = $this->getTicketManager()->createAgentExecutorContext($this->getUser(), 'delete', 'api');
-        $this->getTicketManager()->saveTicket($entity, $context);
+        $this->saveTicket($entity);
         $entity->deleteTicket($this->getUser(), '', false);
     }
 }

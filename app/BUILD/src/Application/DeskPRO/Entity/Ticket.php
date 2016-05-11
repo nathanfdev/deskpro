@@ -4183,7 +4183,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
-     * @return TicketSla[]
+     * @return TicketSla[]|ArrayCollection
      */
     public function getTicketSlas()
     {

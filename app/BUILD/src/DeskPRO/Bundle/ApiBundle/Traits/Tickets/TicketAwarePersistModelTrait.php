@@ -26,33 +26,23 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
-namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
+namespace DeskPRO\Bundle\ApiBundle\Traits\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 
 /**
- * Class AbstractTicketsController.
+ * Class TicketAwarePersistModelTrait.
+ *
+ * @method saveTicket(Ticket $ticket)
  */
-abstract class AbstractTicketsController extends CrudController
+trait TicketAwarePersistModelTrait
 {
-    use TicketSaveTrait;
-
-    public static $entity = Ticket::class;
-
     /**
      * {@inheritdoc}
-     *
-     * @param Ticket $entity
      */
     protected function persistModel($entity)
     {
-        $this->saveTicket($entity);
+        $this->saveTicket($entity->getTicket());
 
         return $entity;
     }
