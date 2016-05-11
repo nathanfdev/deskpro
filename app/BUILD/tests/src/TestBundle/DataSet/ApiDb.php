@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -1173,7 +1174,9 @@ SQL
                 (7, 1, 4, 'chat_snippet2', 1),
                 (8, 1, 5, 'chat_snippet3', 0),
                 (9, 2, 4, 'chat_snippet4', 0),
-                (10, 1, 6, 'chat_snippet5', 1)
+                (10, 1, 6, 'chat_snippet5', 1),
+
+                (11, 1, 2, 'ticket_snippet_wo_content', 1)
             ;
 
             INSERT INTO `object_lang`
