@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -57,10 +58,10 @@ class AgentChatController extends AbstractController
     {
         $info = $this->agent_chat->sendMessage($this->in->getString('content'), $conversation_id);
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'conversation_id' => $info['conversation']['id'],
             'new_message_id'  => $info['chat_message']['id'],
-        ));
+        ]);
     }
 
     /**
@@ -68,7 +69,11 @@ class AgentChatController extends AbstractController
      * create conversations based on time, instead of having
      * chats created first.
      *
-     * @param string $agent_id One or more agent ID's
+     * @param int $convo_id
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @internal param string $agent_id One or more agent ID's
      */
     public function sendAgentMessageAction($convo_id = 0)
     {
@@ -80,30 +85,30 @@ class AgentChatController extends AbstractController
         $date->setTimeZone(App::getCurrentPerson()->getDateTimezone());
         $time = App::getContainer()->getTranslator()->date('g:ia', $date, 'agent.time');
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'conversation_id' => $info['conversation']['id'],
             'new_message_id'  => $info['new_message']['id'],
             'time'            => $time,
-        ));
+        ]);
     }
 
     public function getOnlineAgentsAction()
     {
         $cutoff = date('Y-m-d H:i:s', time() - $this->container->getSetting('core_chat.agent_timeout'));
 
-        $agent_info    = array();
-        $online_agents = array();
+        $agent_info    = [];
+        $online_agents = [];
 
         $agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
 
         foreach ($agents as $agent) {
-            $agent_info[$agent['id']] = array(
+            $agent_info[$agent['id']] = [
                 'agent_id'            => $agent['id'],
                 'agent_name'          => $agent['display_name'],
                 'agent_short_name'    => $agent->getDisplayContactShort(4),
                 'picture_url'         => $agent->getPictureUrl(10),
                 'picture_url_sizable' => $agent->getPictureUrl('{SIZE}'),
-            );
+            ];
         }
 
         $sessions = $this->em->createQuery('
@@ -116,18 +121,18 @@ class AgentChatController extends AbstractController
         ')->setParameter(1, $cutoff)->execute();
 
         foreach ($sessions as $sess) {
-            $online_agents[] = array(
+            $online_agents[] = [
                 'agent_id'         => $sess->person['id'],
                 'agent_name'       => $sess->person['display_name'],
                 'agent_short_name' => $sess->person->getDisplayContactShort(4),
                 'picture_url'      => $sess->person->getPictureUrl(10),
-            );
+            ];
         }
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'agent_info'    => $agent_info,
             'online_agents' => $online_agents,
-        ));
+        ]);
     }
 
     /**
@@ -143,9 +148,9 @@ class AgentChatController extends AbstractController
 
         $conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getRecentForPeople($find_agent_ids, $date_cut);
         if (!$conversation) {
-            return $this->createJsonResponse(array(
-                'messages' => array(),
-            ));
+            return $this->createJsonResponse([
+                'messages' => [],
+            ]);
         }
 
         $messages = $this->em->createQuery('
@@ -153,20 +158,20 @@ class AgentChatController extends AbstractController
             FROM DeskPRO:ChatMessage m
             WHERE m.conversation = ?0
             ORDER BY m.id ASC
-        ')->setParameters(array($conversation))->execute();
+        ')->setParameters([$conversation])->execute();
 
-        $data                    = array();
+        $data                    = [];
         $data['conversation_id'] = $conversation->getId();
-        $data['messages']        = array();
+        $data['messages']        = [];
         foreach ($messages as $message) {
             $date = clone $message->date_created;
             $date->setTimezone($this->person->getDateTimezone());
-            $data['messages'][] = array(
+            $data['messages'][] = [
                 'id'       => $message->id,
                 'agent_id' => $message->author ? $message->author->id : 0,
                 'message'  => $message->content,
                 'time'     => $date->format($this->settings->get('core.date_time')),
-            );
+            ];
         }
 
         return $this->createJsonResponse($data);
@@ -190,24 +195,24 @@ class AgentChatController extends AbstractController
         $agent_team_chatted_counts    = $this->em->getRepository('DeskPRO:ChatConversation')->getTeamConvoCounts($this->person);
         $agent_team_chatted_counts[0] = array_sum($agent_team_chatted_counts);
 
-        $html = $this->renderView('AgentBundle:AgentChat:window-section.html.twig', array(
+        $html = $this->renderView('AgentBundle:AgentChat:window-section.html.twig', [
             'agent_chatted'       => $agent_chatted,
             'chatted_counts'      => $agent_chatted_counts,
             'agent_team_chatted'  => $agent_team_chatted,
             'chatted_team_counts' => $agent_team_chatted_counts,
-        ));
+        ]);
 
-        return $this->createJsonResponse(array('section_html' => $html));
+        return $this->createJsonResponse(['section_html' => $html]);
     }
 
     public function agentHistoryAction($agent_id)
     {
         if ($agent_id) {
             $agent         = $this->em->find('DeskPRO:Person', $agent_id);
-            $conversations = $this->em->getRepository('DeskPRO:ChatConversation')->getChatsForPeople(array(
+            $conversations = $this->em->getRepository('DeskPRO:ChatConversation')->getChatsForPeople([
                 $this->person['id'],
                 $agent['id'],
-            ));
+            ]);
         } else {
             $agent         = null;
             $conversations = $this->em->getRepository('DeskPRO:ChatConversation')->getAgentChatsForPerson($this->person);
@@ -218,10 +223,10 @@ class AgentChatController extends AbstractController
             $tpl = 'AgentBundle:AgentChat:list-part.html.twig';
         }
 
-        return $this->render($tpl, array(
+        return $this->render($tpl, [
             'agent'         => $agent,
             'conversations' => $conversations,
-        ));
+        ]);
     }
 
     public function agentTeamHistoryAction($agent_team_id)
@@ -239,10 +244,10 @@ class AgentChatController extends AbstractController
             $tpl = 'AgentBundle:AgentChat:list-team-part.html.twig';
         }
 
-        return $this->render($tpl, array(
+        return $this->render($tpl, [
             'agent_team'    => $agent_team,
             'conversations' => $conversations,
-        ));
+        ]);
     }
 
     public function agentChatTranscriptAction($conversation_id)
@@ -256,9 +261,9 @@ class AgentChatController extends AbstractController
             ORDER BY m.id DESC
         ')->setParameter(1, $conversation)->execute();
 
-        return $this->render('AgentBundle:AgentChat:view.html.twig', array(
+        return $this->render('AgentBundle:AgentChat:view.html.twig', [
             'convo_messages' => $convo_messages,
             'convo'          => $conversation,
-        ));
+        ]);
     }
 }
