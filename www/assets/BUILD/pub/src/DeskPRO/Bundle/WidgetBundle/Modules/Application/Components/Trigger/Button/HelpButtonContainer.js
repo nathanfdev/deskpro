@@ -124,12 +124,13 @@ export class HelpButtonContainer extends React.Component {
 
   renderPopup() {
     const { widgetPosition, helpPopupTitle, helpPopupMessage, helpPopupReplyType } = this.props;
-    const { backgroundColor, textColor, borderColor } = this.props;
+    const { backgroundColor, textColor, borderColor, liveDemo } = this.props;
     const popupProps = {
       widgetPosition,
       backgroundColor,
       textColor,
       borderColor,
+      liveDemo,
       onClick: this.onClick,
       onClose: this.onClosePopup
     };
