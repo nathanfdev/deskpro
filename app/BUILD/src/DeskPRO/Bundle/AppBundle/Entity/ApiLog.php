@@ -196,6 +196,7 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
      *
      * @JMS\Expose()
      * @JMS\Type("string")
+     * @JMS\Groups({"list"})
      *
      * @var string
      */
