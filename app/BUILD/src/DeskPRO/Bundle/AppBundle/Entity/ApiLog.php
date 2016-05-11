@@ -203,6 +203,19 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
     protected $request_id;
 
     /**
+     * Unique request identity (could be provided by client, see docs).
+     *
+     * @ORM\Column(type="boolean", nullable=false, name="is_dupe")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     * @JMS\Groups({"list"})
+     *
+     * @var bool
+     */
+    private $isDupe = false;
+
+    /**
      * @return int
      */
     public function getId()
@@ -460,6 +473,26 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
     public function setResponseData(array $response_data)
     {
         $this->response_data = $response_data;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isIsDupe()
+    {
+        return $this->isDupe;
+    }
+
+    /**
+     * @param bool $isDupe
+     *
+     * @return $this
+     */
+    public function setIsDupe($isDupe)
+    {
+        $this->isDupe = $isDupe;
 
         return $this;
     }
