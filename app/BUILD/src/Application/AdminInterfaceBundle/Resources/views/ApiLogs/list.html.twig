@@ -15,6 +15,9 @@
 			<article>
 				<div dp-tab-body="logs.list" class="dp-tabletabs-contentwrap">
                     <div class="dp-btn-pagination">
+                        <button class="btn btn-primary" ng-click="LogsCtrl.refreshList()">
+                            {{ phrase('adm.api_logs.refresh') }}
+                        </button>
                         <select
                                 ng-model="LogsCtrl.pagination.page"
                                 ui-select2
@@ -27,7 +30,7 @@
                             </option>
                         </select>
                     </div>
-					<table class="table table-hover">
+					<table dp-hide-spinning="loading" class="table table-hover">
 						<thead>
 						<tr>
 							<th> {{ phrase('adm.api_logs.request_id') }}</th>
@@ -74,6 +77,9 @@
 						</tr>
 						</tbody>
 					</table>
+                    <div dp-show-spinning="loading" class="dp-layout-loading">
+                        <i></i>
+                    </div>
                     <div class="dp-btn-pagination">
                         <select
                                 ng-model="LogsCtrl.pagination.page"

@@ -44,4 +44,5 @@ return [
     'adm.api_logs.end_time'        => 'End time (timestamp)',
     'adm.api_logs.time_taken'      => 'Time taken (sec)',
     'adm.api_logs.replay_it'       => 'Replay it!',
+    'adm.api_logs.refresh'         => 'Refresh',
 ];
