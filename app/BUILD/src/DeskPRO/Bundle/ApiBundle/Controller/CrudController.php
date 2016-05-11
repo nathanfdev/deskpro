@@ -77,6 +77,13 @@ abstract class CrudController extends BaseController
     public static $listMaxResults = 200;
 
     /**
+     * Enable the option to force partial updates for POST requests (i.e. for new entities).
+     *
+     * @var bool
+     */
+    public static $forcePartialUpdate = false;
+
+    /**
      * Get resource with provided id.
      *
      * @ApiDoc(
@@ -475,8 +482,20 @@ abstract class CrudController extends BaseController
      */
     protected function handleForm($model, Request $request, array $options = [])
     {
-        $partialUpdate = $model && $model->getId();
-        $status        = $partialUpdate ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
+        $isModify = $model && $model->getId();
+        $status   = $isModify ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
+
+        // the trigger for POST/PATCH requests
+        // if 'partial update' is disabled (for new entities by default) then **ALL** form fields will be submitted
+        // (event they are not in the request) and the form will show all validation errors,
+        // else the form will apply just fields from the request and skip failed validation of unsubmitted ones
+
+        // you can force enable `partial updates` for new entities using `$forcePartialUpdate` option
+
+        $partialUpdate = $isModify;
+        if (static::$forcePartialUpdate) {
+            $partialUpdate = true;
+        }
 
         $form    = $this->createForm(static::$type, $model, $options);
         $decoded = $this->getRequestContent($request);

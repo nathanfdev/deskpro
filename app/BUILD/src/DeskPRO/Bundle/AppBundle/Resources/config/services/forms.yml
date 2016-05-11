@@ -119,7 +119,7 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType
     arguments: ["@custom_field_manager"]
     tags:
-      - { name: form.type, alias: ticket }
+      - { name: form.type }
 
   form.ticket_sla:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketSlaType
@@ -215,14 +215,15 @@ services:
       - "@tickets.custom_per_field_manager"
       - "@ticket_with_layouts_helper"
       - "@ticket_field_settings"
+      - "@brand_aware_settings_resolver"
     tags:
-      - { name: form.type, alias: ticket_with_layouts }
+      - { name: form.type }
 
   form.ticket_message:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageType
     arguments: ["@language_manager"]
     tags:
-      - { name: form.type, alias: ticket_message }
+      - { name: form.type }
 
   form.ticket_participants:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsType

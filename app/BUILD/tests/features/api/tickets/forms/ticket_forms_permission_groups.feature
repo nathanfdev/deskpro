@@ -21,7 +21,7 @@ Feature: /ticket_forms endpoint
     Given I grant department 1 permission of "tickets" app for "admin"
 
     When I send a POST request to "/api/v2/ticket_forms/agent"
-    Then the response status code should be 400
+    Then the response status code should be 201
 
     When I send a PUT request to "/api/v2/ticket_forms/agent/1"
     Then the response status code should be 403

@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
@@ -304,9 +305,20 @@ class CustomDataType extends AbstractType
             return;
         }
 
-        $violations = $this->validator->validate($event->getData(), new AppAssert\CustomField\CustomData([
-            'context'    => $options['agent_interface'] ? 'agent' : 'user',
-            'custom_def' => $options['custom_def'],
+        /** @var CustomDefAbstract $customDef */
+        $customDef = $options['custom_def'];
+        $context   = $options['agent_interface'] ? 'agent' : 'user';
+
+        if ($context === 'agent' && $customDef->getOption('agent_validation_resolve')) {
+            $ticket = $options['ticket'];
+            if ($ticket instanceof Ticket && !$ticket->isResolved()) {
+                return;
+            }
+        }
+
+        $violations = $this->validator->validate($form->getData(), new AppAssert\CustomField\CustomData([
+            'context'    => $context,
+            'custom_def' => $customDef,
             'target'     => AppAssert\CustomField\CustomData::TARGET_FIELD,
         ]));
 
@@ -329,27 +341,19 @@ class CustomDataType extends AbstractType
         $resolver
             ->setDefaults([
                 'label' => function (Options $options) {
-                    /** @var \Application\DeskPRO\Entity\CustomDefAbstract $field */
-                    $field = $options['custom_def'];
-
-                    return $field ? $field->getTitle() : '';
+                    return $options['custom_def']->getTitle();
                 },
                 'help' => function (Options $options) {
-                    /** @var \Application\DeskPRO\Entity\CustomDefAbstract $field */
-                    $field = $options['custom_def'];
-
-                    return $field ? $field->getDescription() : '';
+                    return $options['custom_def']->getDescription();
+                },
+                'fully_hidden' => function (Options $options) {
+                    return $options['custom_def']->getType() === CustomDefAbstract::TYPE_HIDDEN;
                 },
                 'inline'            => false,
                 'owner_form'        => false,
                 'error_bubbling'    => false,
                 'ignore_validation' => false,
-                'fully_hidden'      => function (Options $options) {
-                    /** @var \Application\DeskPRO\Entity\CustomDefAbstract $field */
-                    $field = $options['custom_def'];
-
-                    return $field && $field->getType() === CustomDefAbstract::TYPE_HIDDEN;
-                },
+                'ticket'            => false,
             ])
             ->setRequired([
                 'custom_def',
@@ -359,6 +363,7 @@ class CustomDataType extends AbstractType
                 'custom_def'      => CustomDefAbstract::class,
                 'agent_interface' => 'bool',
                 'inline'          => 'bool',
+                'ticket'          => ['bool', Ticket::class],
             ])
         ;
     }

@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -50,6 +46,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -78,18 +75,12 @@ class TicketType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getName()
-    {
-        return 'ticket';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('subject', TextType::class)
+            ->add('subject', TextType::class, [
+                'empty_data' => '(No Subject)',
+            ])
             ->add('department', EntityType::class, [
                 'class' => Department::class,
             ])
@@ -121,8 +112,18 @@ class TicketType extends AbstractType
             ->add('organization', EntityType::class, [
                 'class' => Organization::class,
             ])
-            ->add('status', TextType::class)
-            ->add('hidden_status', TextType::class)
+            ->add('status', ChoiceType::class, [
+                'choices_as_values' => true,
+                'choices'           => [
+                    Ticket::STATUS_AWAITING_AGENT,
+                    Ticket::STATUS_AWAITING_USER,
+                    Ticket::STATUS_ARCHIVED,
+                    Ticket::STATUS_RESOLVED,
+                    Ticket::STATUS_HIDDEN,
+                    Ticket::STATUS_HIDDEN.'.'.Ticket::HIDDEN_STATUS_SPAM,
+                    Ticket::STATUS_HIDDEN.'.'.Ticket::HIDDEN_STATUS_DELETED,
+                ],
+            ])
             ->add('is_hold', ApiBooleanType::class)
             ->add('urgency', NumberType::class)
             ->add('labels', LabelsCollectionType::class, [
@@ -145,7 +146,7 @@ class TicketType extends AbstractType
                 'view_type'     => 'array',
             ])
             ->add('fields', CombinedType::class, [
-                'forms'          => $this->getCustomDataFields($options),
+                'forms'          => $this->getCustomDataFields($builder, $options),
                 'error_bubbling' => false,
             ])
         ;
@@ -165,11 +166,12 @@ class TicketType extends AbstractType
     }
 
     /**
-     * @param array $options
+     * @param FormBuilderInterface $builder
+     * @param array                $options
      *
      * @return array
      */
-    private function getCustomDataFields(array $options)
+    private function getCustomDataFields(FormBuilderInterface $builder, array $options)
     {
         $field_defs  = $this->field_manager->getAvailableTicketDefs();
         $form_fields = [];
@@ -184,6 +186,7 @@ class TicketType extends AbstractType
                     'agent_interface' => $options['agent_interface'],
                     'label'           => $field_def->getTitle(),
                     'inline'          => true,
+                    'ticket'          => $builder->getData(),
                 ],
             ];
         }

@@ -64,9 +64,10 @@ class TicketMessagesController extends CrudSubController
     protected function handleForm($model, Request $request, array $options = [])
     {
         $options = array_merge($options, [
-            'ticket'          => $this->findParentOr404(),
-            'person'          => $this->getUser(),
-            'has_attachments' => true,
+            'ticket'                 => $this->findParentOr404(),
+            'person'                 => $this->getUser(),
+            'has_attachments'        => true,
+            'with_ticket_validation' => $request->get('with_ticket_validation'),
         ]);
 
         return parent::handleForm($model, $request, $options);

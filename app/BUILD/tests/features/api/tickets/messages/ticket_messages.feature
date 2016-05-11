@@ -8,6 +8,7 @@ Feature: /tickets/{id}/messages endpoint
     Given I install the api data set
     And my request is authenticated
 
+  @reinstall
   Scenario: I retrieve a ticket messages
     When I send a GET request to "/api/v2/tickets/1/messages"
     Then the response status code should be 200
@@ -196,3 +197,28 @@ Feature: /tickets/{id}/messages endpoint
 
     When I send a GET request to "/api/v2/tickets/1/messages/5"
     Then the response status code should be 404
+
+  Scenario: I check sideloading of form errors
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "department": 2
+}
+    """
+    Then the response status code should be 201
+    And the JSON node "data.id" should be equal to 5
+
+  Scenario: I add ticket messages
+    When I send a POST request to "/api/v2/tickets/5/messages?with_ticket_validation=1" with body:
+    """
+{
+  "message": "my message"
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.ticket.fields.fields.fields.fields_6.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.ticket.fields.fields.fields.fields_6.errors[0].message" should contain "This value should not be blank."
+    And the JSON node "errors.fields.ticket.fields.organization_fields.fields.organization_fields_6.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.ticket.fields.organization_fields.fields.organization_fields_6.errors[0].message" should contain "This value should not be blank."
+    And the JSON node "errors.fields.ticket.fields.user_fields.fields.user_fields_6.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.ticket.fields.user_fields.fields.user_fields_6.errors[0].message" should contain "This value should not be blank."

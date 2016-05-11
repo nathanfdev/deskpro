@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -124,10 +125,8 @@ class TicketMacrosController extends CrudController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        $qb
-            ->andWhere('e.is_global = 1 OR e.person = :user_id')
-            ->setParameter('user_id', $this->getUser()->getId())
-        ;
+        $qb->andWhere('e.is_global = 1 OR e.person = :user_id');
+        $qb->setParameter('user_id', $this->getUser()->getId());
     }
 
     /**

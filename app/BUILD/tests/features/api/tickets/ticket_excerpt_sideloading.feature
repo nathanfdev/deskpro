@@ -12,7 +12,10 @@ Feature: /tickets endpoint
     When I send a POST request to "/api/v2/tickets" with body:
     """
 {
-  "subject": "Sample Ticket"
+  "subject": "Sample Ticket",
+  "fields": {
+    "6": "some custom text"
+  }
 }
     """
     Then the response status code should be 201

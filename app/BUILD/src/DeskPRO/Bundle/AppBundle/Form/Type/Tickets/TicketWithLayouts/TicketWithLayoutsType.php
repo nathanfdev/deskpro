@@ -39,7 +39,6 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomFieldTicketContext;
 use DeskPRO\Bundle\AppBundle\CustomField\Context\CustomPerFieldManager;
@@ -58,12 +57,12 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketPriorityType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketProductType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWorkflowType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketFieldSettings;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -122,26 +121,33 @@ class TicketWithLayoutsType extends AbstractType
     private $field_settings;
 
     /**
+     * @var BrandAwareSettingsResolver
+     */
+    private $settingsResolver;
+
+    /**
      * Constructor.
      *
-     * @param CustomFieldManager    $field_manager
-     * @param TicketLayoutFactory   $ticket_layout_factory
-     * @param HierarchyGenerator    $hierarchy_generator
-     * @param EntityManager         $em
-     * @param LanguageManager       $language_manager
-     * @param CustomPerFieldManager $custom_per_field_manager
-     * @param TicketLayoutHelper    $ticket_layout_helper
-     * @param TicketFieldSettings   $field_settings
+     * @param CustomFieldManager         $field_manager
+     * @param TicketLayoutFactory        $ticket_layout_factory
+     * @param HierarchyGenerator         $hierarchy_generator
+     * @param EntityManager              $em
+     * @param LanguageManager            $language_manager
+     * @param CustomPerFieldManager      $custom_per_field_manager
+     * @param TicketLayoutHelper         $ticket_layout_helper
+     * @param TicketFieldSettings        $field_settings
+     * @param BrandAwareSettingsResolver $settingsResolver
      */
     public function __construct(
-        CustomFieldManager $field_manager,
-        TicketLayoutFactory $ticket_layout_factory,
-        HierarchyGenerator $hierarchy_generator,
-        EntityManager $em,
-        LanguageManager $language_manager,
-        CustomPerFieldManager $custom_per_field_manager,
-        TicketLayoutHelper $ticket_layout_helper,
-        TicketFieldSettings $field_settings
+        CustomFieldManager         $field_manager,
+        TicketLayoutFactory        $ticket_layout_factory,
+        HierarchyGenerator         $hierarchy_generator,
+        EntityManager              $em,
+        LanguageManager            $language_manager,
+        CustomPerFieldManager      $custom_per_field_manager,
+        TicketLayoutHelper         $ticket_layout_helper,
+        TicketFieldSettings        $field_settings,
+        BrandAwareSettingsResolver $settingsResolver
     ) {
         $this->field_manager            = $field_manager;
         $this->ticket_layout_factory    = $ticket_layout_factory;
@@ -151,6 +157,7 @@ class TicketWithLayoutsType extends AbstractType
         $this->custom_per_field_manager = $custom_per_field_manager;
         $this->ticket_layout_helper     = $ticket_layout_helper;
         $this->field_settings           = $field_settings;
+        $this->settingsResolver         = $settingsResolver;
     }
 
     /**
@@ -183,10 +190,7 @@ class TicketWithLayoutsType extends AbstractType
                 'for_api'             => false,
                 'department_id'       => null,
             ])
-            ->setRequired([
-                'person',
-                'settings',
-            ])
+            ->setRequired(['person'])
             ->addAllowedValues([
                 'ticket_visibility' => [
                     TicketWithLayoutsContext::VISIBILITY_NEW,
@@ -196,17 +200,8 @@ class TicketWithLayoutsType extends AbstractType
             ])
             ->setAllowedTypes([
                 'person'        => Person::class,
-                'settings'      => SettingsBag::class,
                 'department_id' => ['null', 'integer'],
             ]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'ticket_with_layouts';
     }
 
     /**
@@ -570,8 +565,8 @@ class TicketWithLayoutsType extends AbstractType
         $options = [
             'label'       => $this->phrase('portal.forms.label_subject'),
             'required'    => true,
+            'empty_data'  => '(No Subject)',
             'constraints' => [
-                new Assert\NotBlank(),
                 new Assert\Length(['min' => 5]),
             ],
         ];
@@ -806,6 +801,7 @@ class TicketWithLayoutsType extends AbstractType
             'label'           => $def->getTitle(),
             'required'        => $def->isRequired($context->isAgentView()),
             'inline'          => $context->forApi(),
+            'ticket'          => $context->getTicket(),
         ];
 
         if (in_array($def->getType(), [CustomDefAbstract::TYPE_HIDDEN, CustomDefAbstract::TYPE_DISPLAY])) {
@@ -868,7 +864,7 @@ class TicketWithLayoutsType extends AbstractType
             return false;
         }
 
-        $default = $context->getSetting('core.default_ticket_cat', null);
+        $default = $this->settingsResolver->getSetting('core.default_ticket_cat', null);
         if ($default) {
             if (!$context->getTicket()->getCategoryId()) {
                 $context->getTicket()->setCategoryId($default);
@@ -892,7 +888,7 @@ class TicketWithLayoutsType extends AbstractType
             return false;
         }
 
-        $default = $context->getSetting('core.default_ticket_pri', null);
+        $default = $this->settingsResolver->getSetting('core.default_ticket_pri', null);
         if ($default) {
             if (!$context->getTicket()->getPriorityId()) {
                 $context->getTicket()->setPriorityId($default);
@@ -916,7 +912,7 @@ class TicketWithLayoutsType extends AbstractType
             return false;
         }
 
-        $default = $context->getSetting('core.default_ticket_work', null);
+        $default = $this->settingsResolver->getSetting('core.default_ticket_work', null);
         if ($default) {
             if (!$context->getTicket()->getWorkflowId()) {
                 $context->getTicket()->setWorkflowId($default);
@@ -939,7 +935,7 @@ class TicketWithLayoutsType extends AbstractType
             return false;
         }
 
-        $default = $context->getSetting('core.default_prod_id', null);
+        $default = $this->settingsResolver->getSetting('core.default_prod_id', null);
         if ($default) {
             if (!$context->getTicket()->getProductId()) {
                 $context->getTicket()->setProductId($default);

@@ -13,6 +13,7 @@ Feature: /ticket_filters endpoint
 {
   "subject": "Ticket 1",
   "fields": {
+    "6": "some custom text",
     "8": ["10", "11"]
   }
 }
@@ -25,6 +26,7 @@ Feature: /ticket_filters endpoint
 {
   "subject": "Ticket 2",
   "fields": {
+    "6": "some custom text",
     "8": ["9"]
   }
 }
@@ -37,6 +39,7 @@ Feature: /ticket_filters endpoint
 {
   "subject": "Ticket 3",
   "fields": {
+    "6": "some custom text",
     "8": ["10"]
   }
 }

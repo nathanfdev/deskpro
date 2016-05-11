@@ -12,7 +12,10 @@ Feature: /ticket_filters endpoint
     """
 {
   "subject": "Ticket 1",
-  "agent_team":  2
+  "agent_team":  2,
+  "fields": {
+    "6": "some custom text"
+  }
 }
     """
     Then the response status code should be 201
@@ -22,7 +25,10 @@ Feature: /ticket_filters endpoint
     """
 {
   "subject": "Ticket 2",
-  "agent_team":  2
+  "agent_team":  2,
+  "fields": {
+    "6": "some custom text"
+  }
 }
     """
     Then the response status code should be 201
@@ -32,7 +38,10 @@ Feature: /ticket_filters endpoint
     """
 {
   "subject": "Ticket 3",
-  "agent_team":  1
+  "agent_team":  1,
+  "fields": {
+    "6": "some custom text"
+  }
 }
     """
     Then the response status code should be 201

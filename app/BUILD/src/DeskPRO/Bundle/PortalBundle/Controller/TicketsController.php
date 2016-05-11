@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\People\PersonGuest;
 use Carbon\Carbon;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsType;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter;
 use DeskPRO\Bundle\AppBundle\Ticket\Timeline\TicketTimelinePagerfantaAdapter;
@@ -236,10 +237,9 @@ class TicketsController extends AbstractController
 
         $person = $this->getUser();
 
-        $form = $this->createForm('ticket_with_layouts', $ticket, [
+        $form = $this->createForm(TicketWithLayoutsType::class, $ticket, [
             'person'            => $person,
             'ticket_visibility' => 'edit',
-            'settings'          => $this->getBrandContainer()->getSettings(),
         ]);
 
         $form->handleRequest($request);
@@ -263,9 +263,8 @@ class TicketsController extends AbstractController
 
         list($last_user_reply_in_seconds, $created_in_seconds) = $this->getRecentTimes($ticket);
 
-        $form_full = $this->createForm('ticket_with_layouts', $ticket, [
+        $form_full = $this->createForm(TicketWithLayoutsType::class, $ticket, [
             'person'            => $person,
-            'settings'          => $this->getBrandContainer()->getSettings(),
             'full_version'      => true,
             'ticket_visibility' => 'edit',
             'action'            => $this->generateUrl('portal_tickets_edit', ['ticket_ref' => $ticket->getPublicId()]),

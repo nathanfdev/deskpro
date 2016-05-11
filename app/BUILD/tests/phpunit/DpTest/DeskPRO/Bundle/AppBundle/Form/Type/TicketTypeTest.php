@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsType;
 use DpTest\PortalTestCase;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -402,10 +403,9 @@ class TicketTypeTest extends PortalTestCase
         $ticket = new Ticket();
         $person = $this->getNormalPerson();
 
-        $form = $this->getContainer()->get('form.factory')->create('ticket_with_layouts', $ticket, [
-            'person'   => $person,
-            'settings' => $this->getBrandSettings(),
-            'for_api'  => true,
+        $form = $this->getContainer()->get('form.factory')->create(TicketWithLayoutsType::class, $ticket, [
+            'person'  => $person,
+            'for_api' => true,
         ]);
 
         $this->assertTrue($form->has('fields'));
@@ -445,14 +445,6 @@ class TicketTypeTest extends PortalTestCase
     }
 
     /**
-     * @return mixed
-     */
-    protected function getBrandSettings()
-    {
-        return $this->get('brand_stack')->getActive()->getSettings();
-    }
-
-    /**
      * @return Person
      */
     protected function getNormalPerson()
@@ -489,9 +481,8 @@ class TicketTypeTest extends PortalTestCase
         $message->setPerson($person);
         $ticket->addMessage($message);
 
-        $form = $this->getContainer()->get('form.factory')->create('ticket_with_layouts', $ticket, [
+        $form = $this->getContainer()->get('form.factory')->create(TicketWithLayoutsType::class, $ticket, [
             'person'          => $person,
-            'settings'        => $this->getBrandSettings(),
             'csrf_protection' => false,
         ]);
 
