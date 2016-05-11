@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\Model;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonPref;
 use Application\DeskPRO\Entity\TicketFlagged;
 use DeskPRO\Bundle\AppBundle\Entity\PersonSetting;
 use DeskPRO\Bundle\AppBundle\Exception\UnknownTicketFlagException;
@@ -43,9 +44,9 @@ use Doctrine\ORM\EntityManager;
  */
 class TicketStars
 {
-    const CUSTOM_STAR_NAME_SETTING_PREFIX = 'agent.ticket_stars.name.';
+    const CUSTOM_STAR_NAME_SETTING_PREFIX = 'agent.ui.flag.';
 
-    private static $stars = [
+    public static $stars = [
         'blue',
         'green',
         'orange',
@@ -122,21 +123,21 @@ class TicketStars
     public function getCustomNames(Person $person)
     {
         // Retrieve custom stars name PersonalSetting instances
-        $customNameSettings = $this->em->getRepository(PersonSetting::class)
-            ->createQueryBuilder('ps')
-            ->where('ps.name LIKE :name')
-            ->andWhere('ps.person = :person')
+        $customNameSettings = $this->em->getRepository(PersonPref::class)
+            ->createQueryBuilder('pref')
+            ->where('pref.name LIKE :name')
+            ->andWhere('pref.person = :person')
             ->setParameter('name', self::CUSTOM_STAR_NAME_SETTING_PREFIX.'%')
             ->setParameter('person', $person)
             ->getQuery()
             ->getResult();
         $customNames = [];
 
-        /** @var PersonSetting $customNameSetting */
+        /** @var PersonPref $customNameSetting */
         foreach ($customNameSettings as $customNameSetting) {
-            $starId = (int) str_replace(self::CUSTOM_STAR_NAME_SETTING_PREFIX, '', $customNameSetting->getName());
+            $starId = str_replace(self::CUSTOM_STAR_NAME_SETTING_PREFIX, '', $customNameSetting->getName());
 
-            $customNames[$starId] = $customNameSetting->getValue();
+            $customNames[$starId] = $customNameSetting->getValueStr();
         }
 
         return $customNames;
@@ -148,16 +149,17 @@ class TicketStars
      *
      * @return PersonSetting
      */
-    public function findOrCreateStarNamePersonSetting(Person $person, $starId)
+    public function findOrCreateStarNamePersonPref(Person $person, $starId)
     {
         $settingName = self::CUSTOM_STAR_NAME_SETTING_PREFIX.$starId;
 
-        $personSetting = $this->em->find(PersonSetting::class, ['person' => $person, 'name' => $settingName]);
-        if (!$personSetting) {
-            $personSetting = new PersonSetting($person, $settingName);
+        $personPref = $this->em->find(PersonPref::class, ['person' => $person, 'name' => $settingName]);
+        if (!$personPref) {
+            $personPref = new PersonPref();
+            $personPref->setName($settingName)->setPerson($person);
         }
 
-        return $personSetting;
+        return $personPref;
     }
 
     /**
@@ -168,13 +170,13 @@ class TicketStars
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      */
-    public function removeStarNamePersonSetting(Person $person, $starId)
+    public function removeStarNamePersonPref(Person $person, $starId)
     {
         $settingName = self::CUSTOM_STAR_NAME_SETTING_PREFIX.$starId;
 
-        $personSetting = $this->em->find(PersonSetting::class, ['person' => $person, 'name' => $settingName]);
-        if ($personSetting) {
-            $this->em->remove($personSetting);
+        $personPref = $this->em->find(PersonPref::class, ['person' => $person, 'name' => $settingName]);
+        if ($personPref) {
+            $this->em->remove($personPref);
             $this->em->flush();
         }
     }

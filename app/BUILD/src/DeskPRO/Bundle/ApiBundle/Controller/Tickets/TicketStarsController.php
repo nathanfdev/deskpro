@@ -73,11 +73,12 @@ class TicketStarsController extends BaseController
         /** @var TicketStars $service */
         $service     = $this->get('data.ticket_stars');
         $customNames = $service->getCustomNames($this->getUser());
+        $stars       = [];
 
-        $stars = [];
-        for ($i = 1; $i <= 7; ++$i) {
-            $name    = array_key_exists($i, $customNames) ? $customNames[$i] : TicketStar::idToColorLabel($i);
-            $stars[] = new TicketStarModel($i, $name, TicketStar::idToColorHex($i));
+        foreach (TicketStars::$stars as $color) {
+            $colorId = TicketStar::colorToId($color);
+            $name    = array_key_exists($color, $customNames) ? $customNames[$color] : TicketStar::idToColorLabel($colorId);
+            $stars[] = new TicketStarModel($colorId, $name, TicketStar::idToColorHex($colorId));
         }
 
         return View::create($this->wrap($stars), Response::HTTP_OK);
@@ -115,15 +116,15 @@ class TicketStarsController extends BaseController
         /** @var TicketStars $service */
         $service = $this->get('data.ticket_stars');
         $person  = $this->getUser();
-
         $content = json_decode($request->getContent(), true);
+
         if (!array_key_exists('name', $content) || !$content['name']) {
-            $service->removeStarNamePersonSetting($person, $id);
+            $service->removeStarNamePersonPref($person, $id);
 
             return new Response(null, Response::HTTP_NO_CONTENT);
         }
 
-        $model = $service->findOrCreateStarNamePersonSetting($person, $id);
+        $model = $service->findOrCreateStarNamePersonPref($person, $id);
         $form  = $this->createForm(new TaskStarType(), $model);
         $form->submit($content, true);
 
@@ -155,15 +156,15 @@ class TicketStarsController extends BaseController
         /** @var TicketStars $service */
         $service     = $this->get('data.ticket_stars');
         $customNames = $service->getCustomNames($this->getUser());
+        $count       = CountModel::create(0, null, null, null, 'ticket_star');
 
-        $count = CountModel::create(0, null, null, null, 'ticket_star');
-        foreach ($service->getStars() as $i => $color) {
-            $starId = $i + 1;
-            $name   = array_key_exists($starId, $customNames) ?
-                $customNames[$starId] : TicketStar::idToColorLabel($starId);
-            $records   = $service->getAllRecordsForStar($this->getUser()->getId(), $starId);
+        foreach ($service->getStars() as $color) {
+            $colorId = TicketStar::colorToId($color);
+            $name    = array_key_exists($color, $customNames) ?
+                $customNames[$color] : TicketStar::idToColorLabel($colorId);
+            $records   = $service->getAllRecordsForStar($this->getUser()->getId(), $colorId);
             $starCount = count($records);
-            $count->addNested($starCount, $starId, 'ticket_star', $name, true);
+            $count->addNested($starCount, $colorId, 'ticket_star', $name, true);
         }
 
         return View::create($this->wrap($count), Response::HTTP_OK);
@@ -193,8 +194,7 @@ class TicketStarsController extends BaseController
     public function getTicketStarCountAction($star)
     {
         $tickets = $this->get('data.ticket_stars')->getAllRecordsForStar($this->getUser()->getId(), $star);
-
-        $count = count($tickets);
+        $count   = count($tickets);
 
         return View::create($this->wrap(CountModel::fromValue($count)), Response::HTTP_OK);
     }
