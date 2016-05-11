@@ -80,16 +80,16 @@ class SetPersonListener
         $repository = $this->em->getRepository('DeskPRO:Person');
         $person     = $repository->findOneByEmail($email);
 
+        if ($this->email_account_manager->findAccountForEmailAddress($email)) {
+            return;
+        }
+
         if (!$person) {
             $person = new Person();
             $person->setName($conversation->getPersonName());
             $person->setEmail($email);
             $this->em->persist($person);
             $this->em->flush();
-        }
-
-        if ($this->email_account_manager->findAccountForEmailAddress($email)) {
-            return;
         }
 
         $entered_name = $conversation->getPersonName();
