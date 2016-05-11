@@ -76,7 +76,7 @@ do
         -o -iname 'Makefile' -o -name 'Rakefile' -o -name 'phpunit.xsd' -o -name 'phpunit.bat' -o -name 'phpunit.xml.dist' -o -iname 'CHANGELOG' -o -iname 'CHANGELOG.md' \
         -o -name 'build.gradle' -o -name 'gradlew' -o -name 'Gemfile*' -o -name '.npmignore' -o -name 'jshint.json' -o -name 'tests.js' -o -name 'component.json' -o -name 'jshintrc' -o -name 'karma.conf.js' \
         -o -iname 'CHANGELOG*' -o -name 'CHANGES*' -o -iname 'CONTRIBUTING*' -o -iname 'CONTRIBUTORS*' -o -name 'AUTHORS*' \
-        -o -iname 'NOTICE.md' -o -iname 'README' -o -iname 'README.*' -o -iname 'VERSION*' \
+        -o -iname 'NOTICE.md' -o -iname 'README' -o -iname 'README.*' -o -name 'VERSION*' \
         -o -name 'UPGRADE*' -o -name 'UPGRADING*' \
         -o -name 'Dockerfile' -o -name 'docker-compose.yml' \
         -o -iname 'Rakefile' -o -iname 'Gemfile' -o -iname 'Vagrantfile' \
