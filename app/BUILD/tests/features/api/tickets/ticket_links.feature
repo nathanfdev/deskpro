@@ -9,6 +9,7 @@ Feature: Ticket link endpoint
 
   @reinstall
   Scenario: I link two tickets
+    Given I reset ticket with id=1 logs
     When I send a "POST" request to "/api/v2/tickets/1/links" with body:
     """
 {
@@ -19,6 +20,11 @@ Feature: Ticket link endpoint
     Then the response status code should be 204
     And the response should be empty
     And the header "Location" should be equal to "/api/v2/tickets/1/links"
+    And print ticket with id=1 logs
+
+    When I send a GET request to "/api/v2/tickets/1/links"
+    Then the JSON node "data.children[0].id" should be equal to 2
+    Then the JSON node "data.count" should be equal to 1
 
   Scenario Outline: I'm trying to link ticket to itself
     When I send a "POST" request to "/api/v2/tickets/1/links" with body:

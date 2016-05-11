@@ -38,6 +38,7 @@ Feature: /tickets/{id}/followers and /tickets/{id}/cc endpoints
     And the JSON node "errors.fields.person.errors[0].message" should contain "agent@deskpro.dev"
 
   Scenario: I add a ticket cc
+    Given I reset ticket with id=1 logs
     When I send a POST request to "/api/v2/tickets/1/cc" with body:
     """
 {
@@ -47,6 +48,7 @@ Feature: /tickets/{id}/followers and /tickets/{id}/cc endpoints
     Then the response status code should be 201
     And the JSON node "data.id" should be equal to 3
     And the JSON node "data.primary_email" should be equal to "user@deskpro.dev"
+    And ticket with id=1 has "changed_user_participants" log
 
   Scenario: I retrieve lists of participants w/o sideloading
     When I send a GET request to "/api/v2/tickets/1/cc"
@@ -107,8 +109,13 @@ Feature: /tickets/{id}/followers and /tickets/{id}/cc endpoints
     And the JSON node "linked" should have 0 elements
 
   Scenario: I delete follower
+    Given I reset ticket with id=1 logs
     When I send a DELETE request to "/api/v2/tickets/1/followers/2"
     Then the response status code should be 200
+    And ticket with id=1 has "changed_agent_participants" log
+
+    When I send a GET request to "/api/v2/tickets/1/followers/2"
+    Then the response status code should be 404
 
     When I send a GET request to "/api/v2/tickets/1/followers"
     Then the response status code should be 200

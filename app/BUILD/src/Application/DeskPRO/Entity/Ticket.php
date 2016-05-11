@@ -118,7 +118,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @property array                              $waiting_times
  * @property TicketParticipant[]                $participants
  * @property TicketCharge[]                     $charges
- * @property TicketSla[]                        $ticket_slas
+ * @property TicketSla[]|ArrayCollection        $ticket_slas
  *
  * REPEAT THESE ANNOTATIONS IN DeskPRO\Bundle\AppBundle\Model\TicketView
  * @PortalLinkRoute("portal_tickets_guest_view", route_param_map={"auth":"auth"}, type="view_only")
@@ -910,8 +910,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function addChildrenTicket(Ticket $ticket)
     {
-        $this->children_tickets->add($ticket);
         $ticket->setParentTicket($this);
+
+        $this->children_tickets->add($ticket);
+        $this->_onPropertyChanged('children_tickets', null, $this->children_tickets);
 
         return $this;
     }
@@ -923,8 +925,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function removeChildrenTicket(Ticket $ticket)
     {
-        $this->children_tickets->removeElement($ticket);
         $ticket->setParentTicket(null);
+
+        $this->children_tickets->removeElement($ticket);
+        $this->_onPropertyChanged('children_tickets', null, $this->children_tickets);
 
         return $this;
     }
@@ -1612,6 +1616,20 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
         $this->_onPropertyChanged('sms_messages', null, $this->sms_messages, true);
         $this->getStateChangeRecorder()->record('sms_message', null, $message);
+    }
+
+    /**
+     * @param TicketMessage $message
+     *
+     * @return $this
+     */
+    public function removeMessage(TicketMessage $message)
+    {
+        $this->messages->removeElement($message);
+        $this->_onPropertyChanged('messages', null, $this->messages);
+        $this->getStateChangeRecorder()->record('message', $message, null);
+
+        return $this;
     }
 
     /**
@@ -4188,6 +4206,19 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     public function getTicketSlas()
     {
         return $this->ticket_slas;
+    }
+
+    /**
+     * @param TicketSla $ticketSla
+     *
+     * @return $this
+     */
+    public function removeTicketSla(TicketSla $ticketSla)
+    {
+        $this->ticket_slas->removeElement($ticketSla);
+        $this->_onPropertyChanged('ticket_slas', null, $this->ticket_slas);
+
+        return $this;
     }
 
     /**

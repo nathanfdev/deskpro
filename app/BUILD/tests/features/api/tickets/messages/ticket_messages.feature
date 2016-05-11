@@ -26,6 +26,7 @@ Feature: /tickets/{id}/messages endpoint
     Then the response status code should be 404
 
   Scenario: I add ticket messages
+    Given I reset ticket with id=1 logs
     When I send a POST request to "/api/v2/tickets/1/messages" with body:
     """
     {
@@ -39,6 +40,7 @@ Feature: /tickets/{id}/messages endpoint
     And the JSON node "data.is_agent_note" should be equal to 0
     And the JSON node "data.message" should be equal to "my message"
     And the JSON node "data.attachments" should have 0 elements
+    And ticket with id=1 has "message_created" log
 
     When I send a POST request to "/api/v2/tickets/1/messages" with body:
     """
@@ -192,8 +194,10 @@ Feature: /tickets/{id}/messages endpoint
     And the JSON node "data.attachments" should have 0 elements
 
   Scenario: I delete message
+    Given I reset ticket with id=1 logs
     When I send a DELETE request to "/api/v2/tickets/1/messages/5"
     Then the response status code should be 200
+    And ticket with id=1 has "message_removed" log
 
     When I send a GET request to "/api/v2/tickets/1/messages/5"
     Then the response status code should be 404

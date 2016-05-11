@@ -73,12 +73,13 @@ class TicketMessagesController extends CrudSubController
 
     /**
      * {@inheritdoc}
+     *
+     * @param TicketMessage $entity
      */
     protected function deleteEntity($entity)
     {
-        /* @var TicketMessage $entity */
         $ticket = $entity->getTicket();
-        $ticket->messages->removeElement($entity);
+        $ticket->removeMessage($entity);
 
         $this->saveTicket($ticket);
     }

@@ -93,17 +93,23 @@ abstract class AbstractTicketParticipantsController extends CrudSubController
             ->setParameter('person_id', $id)
         ;
 
-        return $qb->getQuery()->getSingleResult();
+        $entity = $qb->getQuery()->getOneOrNullResult();
+        if (!$entity) {
+            throw $this->createNotFoundException();
+        }
+
+        return $entity;
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @param TicketParticipant $entity
      */
     protected function deleteEntity($entity)
     {
-        /* @var TicketParticipant $entity */
         $ticket = $entity->getTicket();
-        $ticket->getParticipants()->removeElement($entity);
+        $ticket->removeParticipantPerson($entity->getPerson());
 
         $this->saveTicket($ticket);
     }

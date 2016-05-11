@@ -230,12 +230,13 @@ class TicketSlasController extends CrudSubController
 
     /**
      * {@inheritdoc}
+     *
+     * @param TicketSla $entity
      */
     protected function deleteEntity($entity)
     {
-        /* @var TicketSla $entity */
         $ticket = $entity->getTicket();
-        $ticket->getTicketSlas()->removeElement($entity);
+        $ticket->removeTicketSla($entity);
 
         $this->saveTicket($ticket);
     }
