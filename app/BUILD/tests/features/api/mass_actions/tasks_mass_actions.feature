@@ -7,7 +7,6 @@ Feature: /mass_actions/tickets endpoint
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I apply set of actions on task with ID=1
     When I send a POST request to "/api/v2/mass_actions/tasks" with body:
 """

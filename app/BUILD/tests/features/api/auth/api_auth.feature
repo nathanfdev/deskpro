@@ -78,7 +78,6 @@ Feature: API Authentication
     Then the JSON node "code" should be equal to "invalid_session_id"
     And the JSON node "message" should be equal to "Invalid session ID."
 
-  @reinstall
   Scenario: I have a valid api key (user "user" id=3 in the "api" data set)
     Given a valid api key exists with the code "XYZ" and id 1 for user
     When I add Authorization header equal to "key 1:XYZ"
@@ -92,7 +91,6 @@ Feature: API Authentication
     And the JSON node "data.client_version" should be equal to 0
     And I should have an authenticated token with the role ROLE_API
 
-  @reinstall
   Scenario: I have a valid api token (user "agent" id=2 in the "api" data set)
     Given a valid api token exists with the code "SECRETCODE" and id 1 for agent
     When I add Authorization header equal to "token 1:SECRETCODE"

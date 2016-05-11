@@ -7,7 +7,6 @@ Feature: /mass_actions/feedback_comments endpoint
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I get feedback comments and check if all mass actions was applied
     When I send a GET request to "/api/v2/feedback_comments"
     Then the response status code should be 200

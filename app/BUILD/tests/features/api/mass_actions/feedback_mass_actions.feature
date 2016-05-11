@@ -7,7 +7,6 @@ Feature: /mass_actions/feedback endpoint
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I set incorrect hidden_status for feedback with ID=1
     When I send a POST request to "/api/v2/mass_actions/feedback" with body:
     """

@@ -35,6 +35,11 @@ use Sanpi\Behatch\Context\BaseContext;
 
 class RestContext extends BaseContext
 {
+    /**
+     * @var string
+     */
+    private static $lastPostResponse;
+
     protected $server_params = array();
 
     /**
@@ -68,6 +73,8 @@ class RestContext extends BaseContext
      */
     public function iSendARequestTo($method, $url)
     {
+        $url = $this->replaceLastCreatedId($url);
+
         $client = $this->getSession()->getDriver()->getClient();
         // intercept redirection
         $client->followRedirects(false);
@@ -75,7 +82,12 @@ class RestContext extends BaseContext
         $client->request($method, $this->locatePath($url), array(), array(), $this->server_params);
         $client->followRedirects(true);
 
-        return $this->getSession()->getPage();
+        $page = $this->getSession()->getPage();
+        if (strtoupper($method) === 'POST') {
+            self::$lastPostResponse = $page->getContent();
+        }
+
+        return $page;
     }
 
     /**
@@ -108,7 +120,12 @@ class RestContext extends BaseContext
         $client->request($method, $this->locatePath($url), $parameters, array(), $this->server_params);
         $client->followRedirects(true);
 
-        return $this->getSession()->getPage();
+        $page = $this->getSession()->getPage();
+        if (strtoupper($method) === 'POST') {
+            self::$lastPostResponse = $page->getContent();
+        }
+
+        return $page;
     }
 
     /**
@@ -127,7 +144,12 @@ class RestContext extends BaseContext
             array(), array(), $this->server_params, $body->getRaw());
         $client->followRedirects(true);
 
-        return $this->getSession()->getPage();
+        $page = $this->getSession()->getPage();
+        if (strtoupper($method) === 'POST') {
+            self::$lastPostResponse = $page->getContent();
+        }
+
+        return $page;
     }
 
     /**
@@ -176,6 +198,7 @@ class RestContext extends BaseContext
      */
     public function theHeaderShouldBeEqualTo($name, $value)
     {
+        $value  = $this->replaceLastCreatedId($value);
         $actual = $this->getHttpHeader($name);
         $this->assertEquals(strtolower($value), strtolower($actual),
             sprintf('The header "%s" is equal to "%s"', $name, $actual)
@@ -328,5 +351,31 @@ class RestContext extends BaseContext
             $this->getSession()->getResponseHeaders(),
             CASE_LOWER
         );
+    }
+
+    /**
+     * @throws \Exception
+     *
+     * @return mixed
+     */
+    private function replaceLastCreatedId($string)
+    {
+        if (strpos($string, '{lastCreatedId}')) {
+            if (!$lastPostResponseData = json_decode(self::$lastPostResponse, true)) {
+                throw new \Exception('Last POST response is not a valid JSON');
+            }
+            if (!array_key_exists('data', $lastPostResponseData)) {
+                throw new \Exception('Last POST response JSON does not contain "data"');
+            }
+            if (!array_key_exists('id', $lastPostResponseData['data'])) {
+                throw new \Exception('Last POST response JSON data does not contain "id"');
+            }
+            if (strpos($string, '{lastCreatedId}') !== false) {
+                $string = str_replace('{lastCreatedId}', $lastPostResponseData['data']['id'], $string);
+                echo $string;
+            }
+        }
+
+        return $string;
     }
 }

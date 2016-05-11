@@ -7,7 +7,6 @@ Feature: /organization_notes endpoint
     And I remove "admin" usergroup relation "agent_all_perms"
     And I remove "admin" usergroup relation "agent_all_safe_perms"
 
-  @reinstall
   Scenario: I have no organization note permissions
     When I send a GET request to "/api/v2/organizations/1/notes"
     Then the response status code should be 200
@@ -32,8 +31,8 @@ Feature: /organization_notes endpoint
     """
     Then the response status code should be 201
 
-    When I send a PUT request to "/api/v2/organizations/1/notes/1"
+    When I send a PUT request to "/api/v2/organizations/1/notes/{lastCreatedId}"
     Then the response status code should be 204
 
-    When I send a DELETE request to "/api/v2/organizations/1/notes/1"
+    When I send a DELETE request to "/api/v2/organizations/1/notes/{lastCreatedId}"
     Then the response status code should be 200
