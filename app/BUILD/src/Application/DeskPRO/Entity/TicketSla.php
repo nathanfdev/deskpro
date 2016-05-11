@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -131,11 +132,24 @@ class TicketSla extends DomainObject
      */
     protected $sla;
 
+    /**
+     * @param Ticket $ticket
+     *
+     * @return $this
+     */
     public function setTicket(Ticket $ticket)
     {
-        $this->ticket = $ticket;
+        $this->setModelField('ticket', $ticket);
 
         return $this;
+    }
+
+    /**
+     * @return Ticket
+     */
+    public function getTicket()
+    {
+        return $this->ticket;
     }
 
     public function setSlaStatus($s)
