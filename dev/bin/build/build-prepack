@@ -65,28 +65,119 @@ do
     cd $dir
 
 	find . -type d \( \
-        -name ".git" \
+        -name '.git' \
     \) -exec rm -rf {} \;
 
     find . -type f \( \
-        -name ".gitignore" -o -name ".gitmodules" -o -name ".gitattributes" -o -name ".gitkeep" -o -name ".editorconfig" \
-        -o -name ".travis.yml" -o -name ".coveralls.yml" -o -name ".scrutinizer.yml" -o -name "composer.json" \
-        -o -name "composer.lock" -o -name "build.xml" -o -name "build.properties" -o -name "build.properties.dev" \
-        -o -name "package.xml" -o -name "package.json" -o -name "bower.json" -o -name "gulpfile.js" -o -name "Gruntfile.js" -o -name "phpdoc.dist.xml" -o -name "phpdoc.ini.dist" -o -name "phpunit.functional.xml.dist" \
-        -o -iname "Makefile" -o -name "Rakefile" -o -name "phpunit.xsd" -o -name "phpunit.bat" -o -name "phpunit.xml.dist" -o -iname "CHANGELOG" -o -iname "CHANGELOG.md" \
-        -o -iname "CHANGELOG*" -o -name "CHANGES*" -o -iname "CONTRIBUTING*" -o -iname "CONTRIBUTORS*" \
-        -o -iname "NOTICE.md" -o -iname "README" -o -iname "README.*" \
-        -o -iname "UPGRADE" -o -name "UPGRADING*" \
-        -o -iname "Rakefile" -o -iname "Gemfile" -o -iname "Vagrantfile" \
+        -name '.gitignore' -o -name '.gitmodules' -o -name '.gitattributes' -o -name '.gitkeep' -o -name '.editorconfig' \
+        -o -name '.travis.yml' -o -name '.coveralls.yml' -o -name '.scrutinizer.yml' -o -name 'composer.json' \
+        -o -name 'composer.lock' -o -name 'build.xml' -o -name 'build.properties' -o -name 'build.properties.dev' \
+        -o -name 'package.xml' -o -name 'package.json' -o -name 'bower.json' -o -name '.bower.json' -o -name 'gulpfile.js' -o -name 'phar-stub.php' -o -iname 'Gruntfile.js' -o -name 'phpdoc.dist.xml' -o -name 'phpdoc.ini.dist' -o -name 'phpunit.functional.xml.dist' \
+        -o -iname 'Makefile' -o -name 'Rakefile' -o -name 'phpunit.xsd' -o -name 'phpunit.bat' -o -name 'phpunit.xml.dist' -o -iname 'CHANGELOG' -o -iname 'CHANGELOG.md' \
+        -o -name 'build.gradle' -o -name 'gradlew' -o -name 'Gemfile*' -o -name '.npmignore' -o -name 'jshint.json' -o -name 'tests.js' -o -name 'component.json' -o -name 'jshintrc' -o -name 'karma.conf.js' \
+        -o -iname 'CHANGELOG*' -o -name 'CHANGES*' -o -iname 'CONTRIBUTING*' -o -iname 'CONTRIBUTORS*' -o -name 'AUTHORS*' \
+        -o -iname 'NOTICE.md' -o -iname 'README' -o -iname 'README.*' -o -iname 'VERSION*' \
+        -o -name 'UPGRADE*' -o -name 'UPGRADING*' \
+        -o -name 'Dockerfile' -o -name 'docker-compose.yml' \
+        -o -iname 'Rakefile' -o -iname 'Gemfile' -o -iname 'Vagrantfile' \
     \) -exec rm -rf {} \;
 
     find . -type d \( \
-        -name "test" -o -name "tests" -o -name "test-suite" -o -name "doc" -o -name "docs" -o -name "bench" \
-        -o -name "spec" -o -name "examples" -o -name "example" \
+        -name 'test' -o -name 'tests' -o -name 'Tests' -o -name '__tests__' -o -name 'test-suite' -o -name 'doc' -o -name 'docs' -o -name 'bench' \
+        -o -name 'spec' -o -name 'examples' -o -name 'example' \
     \) -exec rm -rf {} \;
 done
 
-find $DIR_ROOT/app/BUILD/vendor -type d -path "*swiftmailer/notes"
+rm -rf $DIR_ROOT/app/BUILD/vendor/swiftmailer/swiftmailer/notes
+rm -rf $DIR_ROOT/app/BUILD/vendor/aws/aws-sdk-php/src/build
+rm -rf $DIR_ROOT/app/BUILD/vendor/guzzle/guzzle/phing
+rm -rf $DIR_ROOT/app/BUILD/vendor/vendor/bugsnag/bugsnag/build
+rm -f $DIR_ROOT/app/BUILD/vendor/firebase/php-jwt/composer.phar
+
+########################################################################################################################
+# Remove potentially bad files from assets
+########################################################################################################################
+
+clean_dirs=("$DIR_ROOT/www/assets/BUILD/pub/node_modules" "$DIR_ROOT/www/assets/BUILD/web/bower_components")
+
+for dir in "${clean_dirs[@]}"
+do
+    cd $dir
+
+    find . -type f \( \
+        -name '*.php' \
+        -o -name '*.sh' \
+        -o -name '*.bat' \
+    \) -exec rm -rf {} \;
+done
+
+########################################################################################################################
+# Legacy web file cleanup
+########################################################################################################################
+
+cd $DIR_WEB_BOWER/ace-builds
+rm -rf demo/ kitchen-sink/ src/ src-min/ src-noconflict/ textarea/
+rm -rf editor.html kitchen-sink-req.html kitchen-sink.html scrollable-page.html
+
+cd $DIR_WEB_BOWER/angular
+rm -rf angular-csp.css angular.min.js.gzip README.md
+
+cd $DIR_WEB_BOWER/angular-grid
+rm -rf config/ lib/ plugins/ scripts/ src/ test/ workbench/
+rm -rf conf.js
+
+cd $DIR_WEB_BOWER/angular-slider
+rm -rf src/
+
+cd $DIR_WEB_BOWER/angular-ui-router
+rm -rf config/ lib/ release/doc sample/ src/ test/
+
+cd $DIR_WEB_BOWER/angular-ui-select2
+rm -rf docs/ test/
+
+cd $DIR_WEB_BOWER/animate.css
+rm -rf source/
+
+cd $DIR_WEB_BOWER/bootstrap
+rm -rf _includes/ _layouts/ dist/ docs-assets/ examples/
+rm -rf _config.yml about.html browserstack.json css.html customize.html DOCS-LICENSE getting-started.html index.html javascript.html
+
+cd $DIR_WEB_BOWER/font-awesome
+rm -rf scss/ src/
+rm -rf _config.yml
+
+cd $DIR_WEB_BOWER/jquery
+rm -rf jquery-migrate.js jquery-migrate.min.js
+
+cd $DIR_WEB_BOWER/jquery-ui
+mv ui/minified/jquery-ui.min.js /tmp/jquery-ui.min.js
+mv ui/minified/i18n/jquery-ui-i18n.min.js /tmp/jquery-ui-i18n.min.js
+rm -rf ui/minified/*.js
+rm -rf ui/minified/i18n/*.js
+rm -rf ui/*.js
+rm -rf ui/i18n
+mv /tmp/jquery-ui-i18n.min.js ui/minified/i18n/jquery-ui-i18n.min.js
+mv /tmp/jquery-ui.min.js ui/minified/jquery-ui.min.js
+
+cd $DIR_WEB_BOWER/jquery-ui/themes
+rm -rf black-tie/ blitzer/ cupertino/ dark-hive/ dot-luv/ eggplant/ excite-bike/ flick/ hot-sneaks/ humanity/ le-frog/ mint-choc/ overcast/ pepper-grinder/ redmond/ smoothness/ south-street/ start/ sunny/ swanky-purse/ trontastic/ ui-darkness/ vader/
+
+cd $DIR_WEB_BOWER/requirejs
+rm -rf dist/
+rm -rf index.html tasks.txt testBaseUrl.js
+
+cd $DIR_WEB_BOWER/stacktrace
+rm -rf gradle/ test
+rm -rf stacktrace-bookmarklet.js
+
+cd $DIR_WEB_BOWER/underscore
+rm -rf docs/ test/
+rm -rf favicon.ico index.html
+
+cd $DIR_WEB_BOWER/ng-clip
+rm -rf example
+
+exit;
 
 ########################################################################################################################
 # Make sure cleaned files arent in checksum file
