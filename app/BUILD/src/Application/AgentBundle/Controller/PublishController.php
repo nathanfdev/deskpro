@@ -178,10 +178,10 @@ class PublishController extends AbstractController
             $currentPage = 1;
         }
 
-        $limit = array(
+        $limit = [
             'max'    => $perPage,
             'offset' => ($currentPage - 1) * $perPage,
-        );
+        ];
 
         $pageinfo = null;
         $total    = null;
@@ -447,10 +447,10 @@ class PublishController extends AbstractController
             $currentPage = 1;
         }
 
-        $limit = array(
+        $limit = [
             'max'    => $perPage,
             'offset' => ($currentPage - 1) * $perPage,
-        );
+        ];
 
         $pageinfo = null;
         $total    = null;

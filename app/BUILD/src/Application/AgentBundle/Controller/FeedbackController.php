@@ -1046,11 +1046,12 @@ class FeedbackController extends AbstractController
         $feedbackRepository = $this->em->getRepository(Feedback::class);
         /** @var Feedback[] $awaitingValidation */
         $awaitingValidation = $feedbackRepository->getAwaitingValidation(1000);
-        do {
+        while (current($awaitingValidation)) {
             if ($current->getId() !== current($awaitingValidation)->getId()) {
                 return current($awaitingValidation);
             }
-        } while (next($awaitingValidation));
+            next($awaitingValidation);
+        }
 
         return;
     }
