@@ -78,8 +78,8 @@ do
     \) -exec rm -rf {} \;
 
     find . -type d \( \
-        -iname "test" -o -iname "tests" -o -iname "test-suite" -o -iname "doc" -o -iname "docs" -o -iname "bench" \
-        -o -iname "spec" -o -iname "examples" -o -iname "example" \
+        -name "test" -o -name "tests" -o -name "test-suite" -o -name "doc" -o -name "docs" -o -name "bench" \
+        -o -name "spec" -o -name "examples" -o -name "example" \
     \) -exec rm -rf {} \;
 done
 
