@@ -52,7 +52,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  * @Rest\Route("/{context}_snippets", requirements={"context"="(ticket|chat)"})
  * @ApiDoc(
  *     target="all",
- *     section="TaskProjects",
+ *     section="Tickets",
  *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\TextSnippets\TextSnippet"
  * )
  */
@@ -133,7 +133,7 @@ class TextSnippetsController extends CrudController
             }
         }
 
-        return $this->wrap($contents);
+        return $this->wrap($contents ?: null);
     }
 
     /**
