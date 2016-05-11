@@ -26,15 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonPref;
 use Application\DeskPRO\Entity\TicketFlagged;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
-use DeskPRO\Bundle\AppBundle\Entity\PersonSetting;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -102,22 +99,18 @@ class TicketStarsFixture extends DeskProAbstractFixture implements OrderedFixtur
 
     private function setCustomLabelsForStars()
     {
-        $colors = [
-            TicketFlagged::STAR_BLUE,
-            TicketFlagged::STAR_GREEN,
-            TicketFlagged::STAR_ORANGE,
-            TicketFlagged::STAR_PINK,
-            TicketFlagged::STAR_PURPLE,
-            TicketFlagged::STAR_RED,
-            TicketFlagged::STAR_YELLOW,
-        ];
+
         /** @var Person $admin */
         $admin = $this->getReference('admin');
-        foreach ($colors as $color) {
+        foreach (self::$colors as $color) {
             if ($color % 2 === 0) {
-                $personSetting = new PersonSetting($admin, 'agent.ticket_stars.name.'.$color);
-                $personSetting->setValue(ucfirst($this->faker->word));
-                $this->manager->persist($personSetting);
+                $personPref = new PersonPref();
+                $colorName  = TicketFlagged::idToColorName($color);
+                $personPref
+                    ->setPerson($admin)
+                    ->setName('agent.ui.flag.'.$colorName)
+                    ->setValueStr(ucfirst($this->faker->word));
+                $this->manager->persist($personPref);
             }
         }
         $this->manager->flush();
