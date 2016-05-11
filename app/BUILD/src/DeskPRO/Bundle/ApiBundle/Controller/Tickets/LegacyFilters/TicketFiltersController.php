@@ -148,7 +148,7 @@ class TicketFiltersController extends CrudController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        $qb->andWhere('NOT REGEXP(e.sys_name, :regexp) = 1');
+        $qb->andWhere('NOT REGEXP(e.sys_name, :regexp) = 1 OR e.sys_name IS NULL');
         $qb->setParameter('regexp', '^problem_[0-9]+$');
     }
 
