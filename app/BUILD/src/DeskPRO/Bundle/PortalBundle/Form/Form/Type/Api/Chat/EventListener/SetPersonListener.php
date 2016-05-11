@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener;
 
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\Person;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\FormEvent;
 
@@ -78,8 +80,16 @@ class SetPersonListener
         $repository = $this->em->getRepository('DeskPRO:Person');
         $person     = $repository->findOneByEmail($email);
 
-        if ($this->email_account_manager->findAccountForEmailAddress($email) || !$person) {
+        if ($this->email_account_manager->findAccountForEmailAddress($email)) {
             return;
+        }
+
+        if (!$person) {
+            $person = new Person();
+            $person->setName($conversation->getPersonName());
+            $person->setEmail($email);
+            $this->em->persist($person);
+            $this->em->flush();
         }
 
         $entered_name = $conversation->getPersonName();
