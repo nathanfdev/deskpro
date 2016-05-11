@@ -67,7 +67,10 @@ Feature: API batch requests
                     "authorize": "key se3LaKeY5"
                 },
                 "data": {
-                    "subject": "My ticket"
+                    "subject": "My ticket",
+                    "fields": {
+                      "6": "some custom text"
+                    }
                 }
             },
             "an_identifier": "/api/v2/user_groups"
@@ -76,6 +79,7 @@ Feature: API batch requests
     """
     Then the response should be in JSON
     And the response status code should be 200
+
     And the JSON node "responses.an_identifier" should exist
     And the JSON node "responses.new_stuff" should exist
     And the JSON node "responses.an_identifier.headers.status-code" should be equal to 200

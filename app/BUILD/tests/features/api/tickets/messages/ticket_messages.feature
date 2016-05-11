@@ -8,6 +8,7 @@ Feature: /tickets/{id}/messages endpoint
     Given I install the api data set
     And my request is authenticated
 
+  @reinstall
   Scenario: I retrieve a ticket messages
     When I send a GET request to "/api/v2/tickets/1/messages"
     Then the response status code should be 200
@@ -215,8 +216,6 @@ Feature: /tickets/{id}/messages endpoint
 }
     """
     Then the response status code should be 400
-    And the JSON node "errors.fields.ticket.fields.subject.errors[0].code" should be equal to "required"
-    And the JSON node "errors.fields.ticket.fields.subject.errors[0].message" should contain "This value should not be blank."
     And the JSON node "errors.fields.ticket.fields.fields.fields.fields_6.errors[0].code" should be equal to "required"
     And the JSON node "errors.fields.ticket.fields.fields.fields.fields_6.errors[0].message" should contain "This value should not be blank."
     And the JSON node "errors.fields.ticket.fields.organization_fields.fields.organization_fields_6.errors[0].code" should be equal to "required"
