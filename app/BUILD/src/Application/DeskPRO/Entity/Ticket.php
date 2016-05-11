@@ -4358,6 +4358,22 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         return $this->urgency;
     }
 
+    /**
+     * @return array
+     */
+    public static function getTicketStatuses()
+    {
+        return [
+            self::STATUS_AWAITING_AGENT,
+            self::STATUS_AWAITING_USER,
+            self::STATUS_ARCHIVED,
+            self::STATUS_RESOLVED,
+            self::STATUS_HIDDEN,
+            self::STATUS_HIDDEN.'.'.self::HIDDEN_STATUS_SPAM,
+            self::STATUS_HIDDEN.'.'.self::HIDDEN_STATUS_DELETED,
+        ];
+    }
+
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;

@@ -26,24 +26,21 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * API access to ticket labels.
  *
  * @ApiModes("all")
+ * @Rest\Route("/ticket_statuses")
  */
 class TicketStatusesController extends BaseController
 {
@@ -59,16 +56,11 @@ class TicketStatusesController extends BaseController
      *     output="array<string>"
      * )
      *
-     * @Rest\Get("/ticket_statuses", name="api_ticket_statuses")
+     * @Rest\Get("")
      */
     public function listAction()
     {
-        $service = $this->get('data.ticketstatuses');
-
-        return View::create(
-            $this->wrap($service->getStatuses()),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap(Ticket::getTicketStatuses()));
     }
 
     /**
@@ -83,7 +75,7 @@ class TicketStatusesController extends BaseController
      *     },
      *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket>"
      * )
-     * @Rest\Get("/ticket_statuses/{status}/tickets", name="api_ticket_statuses_tickets")
+     * @Rest\Get("/{status}/tickets")
      *
      * @param Request $request
      * @param string  $status
@@ -93,9 +85,5 @@ class TicketStatusesController extends BaseController
     public function getTicketsForStatusAction(Request $request, $status)
     {
         return TicketsController::subRequestSearch($this->getKernel(), $request, ['status' => $status]);
-    }
-    protected function getEm()
-    {
-        return $this->getDoctrine()->getManager();
     }
 }

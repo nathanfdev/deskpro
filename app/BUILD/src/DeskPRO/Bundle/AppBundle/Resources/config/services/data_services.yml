@@ -56,16 +56,8 @@ services:
     class: DeskPRO\Bundle\AppBundle\DataService\TicketCustomFieldsDataService
     arguments: ["@doctrine.orm.default_entity_manager"]
 
-  data.user_groups:
-    class: DeskPRO\Bundle\AppBundle\DataService\UserGroups\UserGroupsDataService
-    arguments: ["@doctrine.orm.default_entity_manager"]
-
   data.slas:
     class: DeskPRO\Bundle\AppBundle\DataService\SlasDataService
-    arguments: ["@doctrine.orm.default_entity_manager"]
-
-  data.ticketstatuses:
-    class: DeskPRO\Bundle\AppBundle\Model\TicketStatuses
     arguments: ["@doctrine.orm.default_entity_manager"]
 
   data.ticket_legacy_filter_sets:
@@ -74,26 +66,6 @@ services:
 
   data.chat:
     class: DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService
-    arguments: ["@doctrine.orm.default_entity_manager"]
-
-  data.agent_teams:
-    class: DeskPRO\Bundle\AppBundle\DataService\AgentTeams\AgentTeamsDataService
-    arguments: ["@doctrine.orm.default_entity_manager"]
-
-  data.content_counts:
-    class: DeskPRO\Bundle\AppBundle\DataService\Content\ContentCount\ContentCountsDataService
-    arguments: ["@doctrine.orm.default_entity_manager", "@data.categories"]
-
-  data.comments:
-    class: DeskPRO\Bundle\AppBundle\DataService\Content\Comment\CommentsDataService
-    arguments: ["@doctrine.orm.default_entity_manager"]
-
-  data.categories:
-    class: DeskPRO\Bundle\AppBundle\DataService\Content\Category\CategoriesDataService
-    arguments: ["@doctrine.orm.default_entity_manager"]
-
-  data.apc:
-    class: DeskPRO\Bundle\AppBundle\DataService\Content\ArticlePendingCreateDataService
     arguments: ["@doctrine.orm.default_entity_manager"]
 
   data.agent:
