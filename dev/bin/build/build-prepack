@@ -49,6 +49,9 @@ find . -type f \( \
     -o -name ".php_cs" -o -name ".php_cs.cache" -o -name ".eslintignore" \
 \) -exec rm -rf {} \;
 
+# dont need web/ node_modules at all
+rm -rf $DIR_ROOT/www/assets/BUILD/web/node_modules
+
 ########################################################################################################################
 # General cleanup
 ########################################################################################################################
