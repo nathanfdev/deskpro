@@ -29,18 +29,17 @@ export class TabsPane extends React.Component {
     const tabs     = [];
     const children = this.props.children.length ? this.props.children : [this.props.children];
     for (let i = 0; i < children.length; i++) {
-      if (children[i].type.name !== 'Tab') {
+/*      if (children[i].type.name !== 'Tab') {
         throw new Error('TabsPane can only contain Tab components as first level children');
-      }
+      }*/
 
       this.titles.push(children[i].props.title);
 
-      tabs.push({
-        index:   i,
-        title:   children[i].props.title,
-        icon:    children[i].props.icon,
-        content: children[i].props.children
-      });
+      tabs.push({ index:   i,
+                  title:   children[i].props.title,
+                  icon:    children[i].props.icon,
+                  content: children[i].props.children
+                });
     }
 
     return tabs;
@@ -50,7 +49,7 @@ export class TabsPane extends React.Component {
     const className = index === this.state.active ? 'active' : '';
     const onClick   = this.activate(index).bind(this);
     const content   = icon
-      ? (<span className="icon"><i className={`fa${icon}`}></i></span>)
+      ? (<span className="icon"><i className={`fa${icon}`} /></span>)
       : title;
 
     return (<li key={index} className={className}><a href="#" onClick={onClick}>{content}</a></li>);
