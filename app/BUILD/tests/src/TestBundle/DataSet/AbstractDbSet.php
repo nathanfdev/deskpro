@@ -29,9 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Util;
@@ -118,21 +120,6 @@ abstract class AbstractDbSet implements DataSetInterface
     }
 
     /**
-     * @return int Number of tables dropped
-     */
-    private function clearDatabase()
-    {
-        $this->getDb()->exec("DROP DATABASE IF EXISTS {$this->getDatabaseName()}");
-        $this->getDb()->exec("CREATE DATABASE {$this->getDatabaseName()}");
-        $this->getDb()->exec("USE {$this->getDatabaseName()}");
-
-        // Clear the ORM
-        $this->getEm()->clear();
-
-        return 1;
-    }
-
-    /**
      * @param string $fname
      * @param string $lname
      * @param string $email
@@ -212,9 +199,10 @@ abstract class AbstractDbSet implements DataSetInterface
      */
     private function dumpToCache()
     {
+        $modifiers = '--no-create-info --skip-triggers --extended-insert --lock-tables --quick';
         if (strlen($GLOBALS['DP_ENV']->getConfig('database.password'))) {
             $cmd = sprintf(
-                '%s --opt -Q -h%s --port=%s -u%s -p%s %s > %s',
+                "%s --opt -Q -h%s --port=%s -u%s -p%s %s $modifiers > %s",
                 $this->mysqldump_bin_path,
                 escapeshellarg($GLOBALS['DP_ENV']->getConfig('database.host')),
                 escapeshellarg(3306),
@@ -225,7 +213,7 @@ abstract class AbstractDbSet implements DataSetInterface
             );
         } else {
             $cmd = sprintf(
-                '%s --opt -Q -h%s --port=%s -u%s %s > %s',
+                "%s --opt -Q -h%s --port=%s -u%s %s $modifiers > %s",
                 $this->mysqldump_bin_path,
                 escapeshellarg($GLOBALS['DP_ENV']->getConfig('database.host')),
                 escapeshellarg(3306),
@@ -285,21 +273,33 @@ abstract class AbstractDbSet implements DataSetInterface
         }
     }
 
+    private static $isStructureCreated = false;
+
     /**
      * Installs this db set.
      */
     public function install()
     {
-        $this->clearDatabase();
+        if (!self::$isStructureCreated) {
+            $this->getDb()->exec("DROP DATABASE IF EXISTS {$this->getDatabaseName()}");
+            $this->getDb()->exec("CREATE DATABASE {$this->getDatabaseName()}");
+            $this->getDb()->exec("USE {$this->getDatabaseName()}");
+            $this->installDatabase('default', true);
+            $this->installDatabase('system');
+
+            self::$isStructureCreated = true;
+        }
+
+        $purger = new ORMPurger();
+        $purger->setEntityManager($this->getEm());
+        $purger->purge();
+
         if ($this->isCached()) {
             $this->installFromCache();
         } else {
-            $this->installDatabase('default', true);
-            $this->installDatabase('system');
             $this->installSet();
 
-            // This is required or else some e2e tests
-            // might fail early because it thinks the isntall failed
+            // This is required or else some e2e tests might fail early because it thinks the install failed
             $this->getDb()->insert('settings', [
                 'name'  => 'installer.done',
                 'value' => 1,
@@ -309,6 +309,8 @@ abstract class AbstractDbSet implements DataSetInterface
                 $this->dumpToCache();
             }
         }
+
+        $this->getEm()->clear();
     }
 
     /**
@@ -319,8 +321,8 @@ abstract class AbstractDbSet implements DataSetInterface
      *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
-     * @return int The number of queries executed
      *
+     * @return int The number of queries executed
      */
     private function installDatabase($em_name, $is_master_schema = false)
     {
