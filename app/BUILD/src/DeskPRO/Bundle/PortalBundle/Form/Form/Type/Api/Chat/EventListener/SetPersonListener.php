@@ -90,7 +90,7 @@ class SetPersonListener
             $person->setEmail($email);
             $this->em->persist($person);
             $this->em->flush();
-        } else {
+        } elseif (!$email) {
             return;
         }
 

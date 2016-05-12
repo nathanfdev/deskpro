@@ -10,6 +10,7 @@ Feature: Widget Settings
     And the response should be in JSON
     And the JSON node "data.global.company.name" should be equal to "My helpdesk"
 
+    # Test disabled according to https://trello.com/c/x3cmtaoD
   Scenario Outline: I change chat settings
     Given the setting "portal.chat.email_validation" is set to <email_validation>
     Given the setting "portal.chat.require_login" is set to <require_login>
@@ -23,5 +24,5 @@ Feature: Widget Settings
       | email_validation | require_login |
       | 0                | 0             |
       | 0                | 1             |
-      | 1                | 0             |
-      | 1                | 1             |
+    #  | 1                | 0             |
+    #  | 1                | 1             |
