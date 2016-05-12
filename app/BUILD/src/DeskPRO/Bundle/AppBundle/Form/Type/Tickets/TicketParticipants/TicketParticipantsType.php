@@ -35,6 +35,7 @@ use DeskPRO\Bundle\AppBundle\Form\DataTransformer\ArrayOfStringsTransformer;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\ArrayToStringTransformer;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -243,6 +244,13 @@ class TicketParticipantsType extends AbstractType
      */
     protected function getFormParticipants(FormEvent $event)
     {
-        return new ArrayCollection($event->getForm()->getData() ?: []);
+        $data = $event->getForm()->getData();
+        if ($data instanceof Collection) {
+            return $data;
+        } elseif (is_array($data)) {
+            return new ArrayCollection($data);
+        }
+
+        return new ArrayCollection();
     }
 }
