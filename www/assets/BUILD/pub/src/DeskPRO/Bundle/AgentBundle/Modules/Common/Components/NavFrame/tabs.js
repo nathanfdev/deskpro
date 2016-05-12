@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { updateRoutingState } from '../../../Application/Actions/routingActions';
 import { connect } from 'react-redux';
+import { updateRoutingState } from '../../../Application/Actions/routingActions';
 import { routingStateSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
 
 export class TabsPane extends React.Component {
@@ -29,9 +29,9 @@ export class TabsPane extends React.Component {
     const tabs     = [];
     const children = this.props.children.length ? this.props.children : [this.props.children];
     for (let i = 0; i < children.length; i++) {
-/*      if (children[i].type.name !== 'Tab') {
+      if (children[i].type.displayName !== 'Tab') {
         throw new Error('TabsPane can only contain Tab components as first level children');
-      }*/
+      }
 
       this.titles.push(children[i].props.title);
 
@@ -100,6 +100,8 @@ export class TabsPaneStatefulContainer extends TabsPane {
 }
 
 export class Tab extends React.Component {
+  static displayName = 'Tab';
+
   render() {
     return null;
   }

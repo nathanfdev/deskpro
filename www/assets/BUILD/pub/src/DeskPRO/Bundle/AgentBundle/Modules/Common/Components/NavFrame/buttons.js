@@ -9,7 +9,7 @@ export class ButtonsPane extends Component {
     const buttons  = [];
     const children = this.props.children.length ? this.props.children : [this.props.children];
     for (let i = 0; i < children.length; i++) {
-      if (children[i].type.name !== 'Button') {
+      if (children[i].type.displayName !== 'Button') {
         throw new Error('ButtonsPane can only contain Button components as first level children');
       }
 
@@ -46,7 +46,9 @@ export class ButtonsPane extends Component {
 }
 
 export class Button extends React.Component {
-  render () {
+  static displayName = 'Button';
+
+  render() {
     return null;
   }
 }

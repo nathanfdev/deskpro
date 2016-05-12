@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import createFragment from 'react-addons-create-fragment';
 import classNames from 'classnames';
-import { Menu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
-import { ItemFormat } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/ItemFormat';
+import { Menu } from './Menu';
+import { ItemFormat } from './ItemFormat';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 
@@ -152,7 +152,7 @@ export class BaseItem extends Component {
     if (this.props.hasMenu) {
       return React.Children.map(this.props.children, child => {
         const isOpen = this.state.openMenu;
-        if (child && child.type && child.type.name === 'Menu') {
+        if (child && child.type && child.type.displayName === 'Menu') {
           const parentLevel = this.props.parentMenuLevel ? this.props.parentMenuLevel : 1;
           const childProps  = child.props;
           const menuLevel   = parentLevel + 1;
@@ -186,7 +186,7 @@ export class BaseItem extends Component {
   renderItemList(expanded) {
     if (this.props.hasItemList) {
       return React.Children.map(this.props.children, child => {
-        if (child && child.type && child.type.name === 'ItemList' && expanded) {
+        if (child && child.type && child.type.displayName === 'ItemList' && expanded) {
           return child;
         }
         return null;

@@ -42,7 +42,7 @@ export class Nav extends Component {
           <Pending
             feedbackToReviewCount={feedbackToReviewCount}
             commentsToReviewCount={commentsToReviewCount}
-            />
+          />
 
           <TabsPaneStatefulContainer id="tab">
             <Tab title={this.props.intl.formatMessage({ id: 'feedback.nav.tabs.status' })}>
