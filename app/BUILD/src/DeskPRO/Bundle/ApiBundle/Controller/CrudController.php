@@ -38,6 +38,7 @@ use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
+use DeskPRO\Component\Pagerfanta\LimitedPager;
 use DeskPRO\Component\Util\ControllerUtils;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -75,6 +76,7 @@ abstract class CrudController extends BaseController
     public static $listPaginate   = true;
     public static $listPerPage    = 10;
     public static $listMaxResults = 200;
+    public static $listLimit      = 0;
 
     /**
      * Enable the option to force partial updates for POST requests (i.e. for new entities).
@@ -181,6 +183,7 @@ abstract class CrudController extends BaseController
      *      filters={
      *          {"name"="page", "pattern"="\d", "description"="Which page to display", "dataType"="integer"},
      *          {"name"="count", "pattern"="\d", "description"="Resource per page count", "dataType"="integer"},
+     *          {"name"="limit", "pattern"="\d", "description"="Max number of resources to return", "dataType"="integer"},
      *          {"name"="ids", "pattern"="[\d,]+", "description"="Comma separated list of IDs", "dataType"="string"},
      *      },
      *      statusCodes={
@@ -221,20 +224,43 @@ abstract class CrudController extends BaseController
             $qb->setParameters(compact('ids'));
         }
 
+        $limit = (int) $request->query->get('limit', static::$listLimit);
+        if ($limit && $limit < 0) {
+            throw $this->createBadRequestException('You must select a limit of at least 1');
+        }
+
         // return QueryBuilder result or Pagerfanta depending on if pagination is enabled for the controller
         if (static::$listPaginate) {
-            $page  = $request->query->get('page', 1);
-            $count = $request->query->get('count', static::$listPerPage);
+            $page  = (int) $request->query->get('page', 1);
+            $count = (int) $request->query->get('count', static::$listPerPage);
+
             if ($count > static::$listMaxResults) {
                 throw $this->createBadRequestException('You can select maximum '.static::$listMaxResults.' entities');
+            } elseif ($count <= 0) {
+                throw $this->createBadRequestException('You must select at least 1 entity');
             }
 
-            $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
+            if ($limit) {
+                // adding limit to the initial qb will
+                // make the initial COUNT have a limit, which
+                // might speed it up a bit
+                $qb->setMaxResults($limit);
+
+                $pagerAdapter = new DoctrineORMAdapter($qb);
+                $pager        = new LimitedPager($pagerAdapter, $limit);
+            } else {
+                $pagerAdapter = new DoctrineORMAdapter($qb);
+                $pager        = new Pagerfanta($pagerAdapter);
+            }
+
             $pager->setMaxPerPage($count);
             $pager->setCurrentPage($page);
 
             $result = $pager;
         } else {
+            if ($limit) {
+                $qb->setMaxResults($limit);
+            }
             $result = $qb->getQuery()->getResult();
         }
 
