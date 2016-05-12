@@ -328,7 +328,7 @@ Feature: Widget Chat
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "chat_info.data.id" should exist
-    And the JSON node "new_messages.data[0].id" should be equal to 9
+    And the JSON node "new_messages.data[0].id" should be equal to 6
     And the JSON node "new_messages.data[0].content" should contain "my message text"
     And the JSON node "new_messages.data[0].is_sys" should be equal to 0
     And the JSON node "new_messages.data[0].is_user" should be equal to 1
