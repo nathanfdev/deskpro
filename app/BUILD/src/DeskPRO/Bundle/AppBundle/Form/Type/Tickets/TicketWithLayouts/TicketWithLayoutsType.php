@@ -49,11 +49,13 @@ use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
+use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketCategoryType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDepartmentChoiceType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDescriptionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDisableAutoProcessListener;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketPriorityType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketProductType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWorkflowType;
@@ -615,7 +617,7 @@ class TicketWithLayoutsType extends AbstractType
     private function createPerson(TicketWithLayoutsContext $context)
     {
         if ($context->forApi()) {
-            return new FormField('deskpro_person_identity', [
+            return new FormField(PersonAssignType::class, [
                 'property_path'    => 'person',
                 'person'           => $context->getPerson(),
                 'label_name'       => $this->phrase('portal.forms.label_name'),
@@ -984,7 +986,7 @@ class TicketWithLayoutsType extends AbstractType
      */
     private function createCc(TicketWithLayoutsContext $context)
     {
-        return new FormField('ticket_participants', [
+        return new FormField(TicketParticipantsType::class, [
             'label'         => $this->phrase('portal.forms.label_cc'),
             'owner'         => $context->getTicket(),
             'is_agent'      => false,
@@ -1001,7 +1003,7 @@ class TicketWithLayoutsType extends AbstractType
      */
     private function createFollowers(TicketWithLayoutsContext $context)
     {
-        return new FormField('ticket_participants', [
+        return new FormField(TicketParticipantsType::class, [
             'label'         => $this->phrase('portal.forms.label_followers'),
             'owner'         => $context->getTicket(),
             'is_agent'      => true,

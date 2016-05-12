@@ -109,15 +109,17 @@ Feature: /ticket_forms endpoint
     """
     Then the response status code should be 204
     And ticket with id=5 has logs:
-      | type               |
-      | changed_department |
-      | changed_subject    |
-      | changed_labels     |
-      | changed_product    |
-      | changed_priority   |
-      | changed_category   |
-      | changed_category   |
-      | changed_workflow   |
+      | type                       |
+      | changed_department         |
+      | changed_subject            |
+      | changed_labels             |
+      | changed_product            |
+      | changed_priority           |
+      | changed_category           |
+      | changed_category           |
+      | changed_workflow           |
+      | changed_user_participants  |
+      | changed_agent_participants |
 
     When I send a GET request to "/api/v2/tickets/5"
     Then the response status code should be 200

@@ -151,6 +151,7 @@ Feature: /tickets endpoint
     And ticket with id=5 has logs:
       | type                       |
       | changed_subject            |
+      | changed_agent_participants |
 
   Scenario: I modify ticket custom fields
     When I send a GET request to "/api/v2/tickets/5"

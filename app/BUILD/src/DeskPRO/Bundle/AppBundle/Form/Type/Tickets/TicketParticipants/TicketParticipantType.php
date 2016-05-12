@@ -87,7 +87,7 @@ class TicketParticipantType extends AbstractType
         $form = $event->getForm();
         $data = $event->getData();
 
-        if ($data instanceof TicketParticipant) {
+        if (!$data->getId() && $data instanceof TicketParticipant) {
             $form->getConfig()->getOption('owner')->addParticipant($data);
         }
     }

@@ -61,64 +61,64 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class Ticket.
  *
- * @property int                                $id
- * @property string                             $ref
- * @property string                             $auth
- * @property Language                           $language
- * @property Department                         $department
- * @property TicketCategory                     $category
- * @property TicketWorkflow                     $workflow
- * @property TicketPriority                     $priority
- * @property Product                            $product
- * @property Person                             $person
- * @property PersonEmail                        $person_email
- * @property Person                             $agent
- * @property AgentTeam                          $agent_team
- * @property Organization                       $organization
- * @property ChatConversation                   $linked_chat
- * @property TicketAttachment[]                 $attachments
- * @property TicketAccessCode[]                 $access_codes
- * @property TicketMessage[]|ArrayCollection    $messages
- * @property TicketSms[]                        $sms_messages
- * @property CustomDataTicket[]|ArrayCollection $custom_data
- * @property LabelTicket[]                      $labels
- * @property string                             $sent_to_address
- * @property EmailAccount                       $email_account
- * @property string                             $email_account_address
- * @property string                             $creation_system
- * @property string                             $creation_system_option
- * @property string                             $ticket_hash
- * @property string                             $status
- * @property string                             $hidden_status
- * @property bool                               $is_hold
- * @property int                                $urgency
- * @property int                                $feedback_rating
- * @property \DateTime                          $date_feedback_rating
- * @property \DateTime                          $date_created
- * @property \DateTime                          $date_resolved
- * @property \DateTime                          $date_archived
- * @property \DateTime                          $date_first_agent_assign
- * @property \DateTime                          $date_first_agent_reply
- * @property \DateTime                          $date_last_agent_reply
- * @property \DateTime                          $date_last_user_reply
- * @property \DateTime                          $date_agent_waiting
- * @property \DateTime                          $date_user_waiting
- * @property \DateTime                          $date_status
- * @property int                                $total_user_waiting
- * @property int                                $total_to_first_reply
- * @property Person                             $locked_by_agent
- * @property \DateTime                          $date_locked
- * @property bool                               $has_attachments
- * @property string                             $subject
- * @property string                             $original_subject
- * @property array                              $properties
- * @property int                                $count_agent_replies
- * @property int                                $count_user_replies
- * @property string|null                        $worst_sla_status
- * @property array                              $waiting_times
- * @property TicketParticipant[]                $participants
- * @property TicketCharge[]                     $charges
- * @property TicketSla[]|ArrayCollection        $ticket_slas
+ * @property int                                 $id
+ * @property string                              $ref
+ * @property string                              $auth
+ * @property Language                            $language
+ * @property Department                          $department
+ * @property TicketCategory                      $category
+ * @property TicketWorkflow                      $workflow
+ * @property TicketPriority                      $priority
+ * @property Product                             $product
+ * @property Person                              $person
+ * @property PersonEmail                         $person_email
+ * @property Person                              $agent
+ * @property AgentTeam                           $agent_team
+ * @property Organization                        $organization
+ * @property ChatConversation                    $linked_chat
+ * @property TicketAttachment[]                  $attachments
+ * @property TicketAccessCode[]                  $access_codes
+ * @property TicketMessage[]|ArrayCollection     $messages
+ * @property TicketSms[]                         $sms_messages
+ * @property CustomDataTicket[]|ArrayCollection  $custom_data
+ * @property LabelTicket[]                       $labels
+ * @property string                              $sent_to_address
+ * @property EmailAccount                        $email_account
+ * @property string                              $email_account_address
+ * @property string                              $creation_system
+ * @property string                              $creation_system_option
+ * @property string                              $ticket_hash
+ * @property string                              $status
+ * @property string                              $hidden_status
+ * @property bool                                $is_hold
+ * @property int                                 $urgency
+ * @property int                                 $feedback_rating
+ * @property \DateTime                           $date_feedback_rating
+ * @property \DateTime                           $date_created
+ * @property \DateTime                           $date_resolved
+ * @property \DateTime                           $date_archived
+ * @property \DateTime                           $date_first_agent_assign
+ * @property \DateTime                           $date_first_agent_reply
+ * @property \DateTime                           $date_last_agent_reply
+ * @property \DateTime                           $date_last_user_reply
+ * @property \DateTime                           $date_agent_waiting
+ * @property \DateTime                           $date_user_waiting
+ * @property \DateTime                           $date_status
+ * @property int                                 $total_user_waiting
+ * @property int                                 $total_to_first_reply
+ * @property Person                              $locked_by_agent
+ * @property \DateTime                           $date_locked
+ * @property bool                                $has_attachments
+ * @property string                              $subject
+ * @property string                              $original_subject
+ * @property array                               $properties
+ * @property int                                 $count_agent_replies
+ * @property int                                 $count_user_replies
+ * @property string|null                         $worst_sla_status
+ * @property array                               $waiting_times
+ * @property TicketParticipant[]|ArrayCollection $participants
+ * @property TicketCharge[]                      $charges
+ * @property TicketSla[]|ArrayCollection         $ticket_slas
  *
  * REPEAT THESE ANNOTATIONS IN DeskPRO\Bundle\AppBundle\Model\TicketView
  * @PortalLinkRoute("portal_tickets_guest_view", route_param_map={"auth":"auth"}, type="view_only")
@@ -1263,12 +1263,30 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
     /**
      * @param TicketParticipant $part
+     *
+     * @return $this
      */
     public function addParticipant(TicketParticipant $part)
     {
         $part->ticket = $this;
         $this->participants->add($part);
         $this->_onPropertyChanged('participants', null, $this->participants);
+
+        return $this;
+    }
+
+    /**
+     * @param TicketParticipant $part
+     *
+     * @return $this
+     */
+    public function removeParticipant(TicketParticipant $part)
+    {
+        $part->ticket = $this;
+        $this->participants->removeElement($part);
+        $this->_onPropertyChanged('participants', null, $this->participants);
+
+        return $this;
     }
 
     /**
