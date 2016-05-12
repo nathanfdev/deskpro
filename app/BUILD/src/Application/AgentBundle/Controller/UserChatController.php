@@ -406,18 +406,21 @@ class UserChatController extends AbstractController
 
     /**
      * @param $conversation_id
+     *
+     * @return Response
      */
     public function syncPartsAction($conversation_id)
     {
+        /** @var ChatConversation $convo */
         $convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
 
         if (!$this->person->getPermissionsManager()->ChatChecker->canView($convo)) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw $this->createNotFoundException();
         }
 
         $have = [];
-        foreach ($convo->participants as $part) {
-            if ($convo->agent && $convo->agent->id == $part->id) {
+        foreach ($convo->getParticipants() as $part) {
+            if ($convo->getAgentId() == $part->id) {
                 continue;
             }
 
@@ -426,7 +429,7 @@ class UserChatController extends AbstractController
 
         $target = $this->container->getIn()->getCleanValueArray('agent_ids', 'uint', 'discard');
 
-        $add = array_diff($have, $target);
+        $add = array_diff($target, $have);
 
         $clientMessages = [];
         if ($add) {
@@ -870,7 +873,7 @@ class UserChatController extends AbstractController
      *
      * @param array $otherData
      *
-     * @return \Application\DeskPRO\HttpKernel\Controller\Response
+     * @return Response
      */
     protected function createJsonCmResponse(array $otherData = [])
     {

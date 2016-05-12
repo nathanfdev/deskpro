@@ -729,12 +729,11 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		Array.each(agent_ids, function(id) {
 			postData.push({ name: 'agent_ids[]', value: id });
 		});
-		$.ajax({
+		DeskPRO_Window.util.ajaxWithClientMessages({
 			url: BASE_URL + 'agent/chat/sync-parts/' + this.meta.conversation_id,
 			data: postData,
 			type: 'POST',
-			context: this,
-			contentType: 'json'
+			context: this
 		});
 	},
 

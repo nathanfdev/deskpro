@@ -861,6 +861,14 @@ class ChatConversation extends DomainObject
     }
 
     /**
+     * @return Person[]
+     */
+    public function getParticipants()
+    {
+        return $this->participants;
+    }
+
+    /**
      * Department name which chat was assigned.
      *
      * @JMS\VirtualProperty()

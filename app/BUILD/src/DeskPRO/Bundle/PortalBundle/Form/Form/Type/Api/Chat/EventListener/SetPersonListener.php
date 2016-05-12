@@ -84,12 +84,14 @@ class SetPersonListener
             return;
         }
 
-        if (!$person) {
+        if (!$person && $email) {
             $person = new Person();
             $person->setName($conversation->getPersonName());
             $person->setEmail($email);
             $this->em->persist($person);
             $this->em->flush();
+        } elseif (!$email) {
+            return;
         }
 
         $entered_name = $conversation->getPersonName();
