@@ -8,8 +8,8 @@
             <nav class="dp-blocktabs responsive">
                 <ul>
                     <li class="active" dp-tab-btn="api.keys"><a href="#"><i class="fa fa-pencil"/> {{ phrase('adm.api_keys.keys_title') }}</a></li>
-                    <li class="pipe" ng-if="EditCtrl.tags && EditCtrl.form.id">|</li>
-                    <li ng-if="EditCtrl.tags && EditCtrl.form.id" dp-tab-btn="api.tags"><a href="#"><i class="fa fa-tag"/> {{ phrase('adm.api_keys.tags_title') }}</a></li>
+                    <li class="pipe">|</li>
+                    <li dp-tab-btn="api.tags"><a href="#"><i class="fa fa-tag"/> {{ phrase('adm.api_keys.tags_title') }}</a></li>
                     <li class="pipe" ng-if="EditCtrl.logs && EditCtrl.logs.length">|</li>
                     <li dp-tab-btn="api.logs" ng-if="EditCtrl.logs && EditCtrl.logs.length">
 	                    <a href="#"><i class="fa fa-key"/> {{ phrase('adm.api_keys.logs_title') }}</a>
@@ -182,7 +182,7 @@
                 <div dp-tab-body="api.tags">
 					<div class="panel panel-fill indent">
 						<div class="panel-body">
-							<div class="form-group" ng-if="EditCtrl.form.id">
+							<div class="form-group">
 								<div class="col-lg-2">
 									<h3>Tags</h3>
 								</div>

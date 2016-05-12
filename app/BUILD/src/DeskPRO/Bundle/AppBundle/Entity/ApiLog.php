@@ -203,8 +203,8 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
     protected $request_id;
 
     /**
-     * Unique request identity (could be provided by client, see docs).
-     *
+     * Flag indicates that request is dupe.
+     * 
      * @ORM\Column(type="boolean", nullable=false, name="is_dupe")
      *
      * @JMS\Expose()
@@ -480,7 +480,7 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
     /**
      * @return bool
      */
-    public function isIsDupe()
+    public function isDupe()
     {
         return $this->isDupe;
     }

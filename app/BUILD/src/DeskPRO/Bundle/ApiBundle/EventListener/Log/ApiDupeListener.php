@@ -76,21 +76,20 @@ class ApiDupeListener extends AbstractLogListener
             $this->composer->createApiLog($request);
             try {
                 $this->processRequestDupe($event, $options);
-
                 $this->processEager($options);
             } catch (LogSaveException $logException) {
                 // we can't log such error in db cause EntityManager is closed and no need to trick
                 throw new ConflictHttpException('Request with same ID already processed');
                 //just need this to determine for finally if HttpException was thrown
             } catch (HttpException $e) {
+                $this->saveDupe($options);
                 throw $e;
-            } finally {
-                if (($event->hasResponse() || isset($e)) && !isset($logException)) {
-                    $this->saveDupe($options);
-                    if ($event->hasResponse() && !isset($e)) {
-                        return $event->getResponse();
-                    }
-                }
+            }
+
+            if ($event->hasResponse()) {
+                $this->saveDupe($options);
+
+                return $event->getResponse();
             }
         }
 

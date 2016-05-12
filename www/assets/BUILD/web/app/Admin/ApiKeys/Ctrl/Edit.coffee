@@ -77,6 +77,8 @@ define [
         @service.keys.getLogs({id: @$stateParams.id}).then((data) =>
           @logs = data.logs
         )
+      else
+        @tags = '*'
 
 
       return @$q.all([p1, p2])
