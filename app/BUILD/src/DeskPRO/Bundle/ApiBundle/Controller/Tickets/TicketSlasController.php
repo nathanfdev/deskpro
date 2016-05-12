@@ -236,6 +236,7 @@ class TicketSlasController extends CrudSubController
     protected function deleteEntity($entity)
     {
         $ticket = $entity->getTicket();
+        $ticket->disableAutoTicketProcess();
         $ticket->removeTicketSla($entity);
 
         $this->saveTicket($ticket);

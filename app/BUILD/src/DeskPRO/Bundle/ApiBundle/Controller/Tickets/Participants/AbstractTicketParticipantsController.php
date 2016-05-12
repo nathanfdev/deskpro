@@ -109,6 +109,7 @@ abstract class AbstractTicketParticipantsController extends CrudSubController
     protected function deleteEntity($entity)
     {
         $ticket = $entity->getTicket();
+        $ticket->disableAutoTicketProcess();
         $ticket->removeParticipantPerson($entity->getPerson());
 
         $this->saveTicket($ticket);

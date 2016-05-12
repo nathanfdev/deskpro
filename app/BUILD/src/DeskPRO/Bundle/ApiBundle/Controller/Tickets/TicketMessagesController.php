@@ -79,6 +79,7 @@ class TicketMessagesController extends CrudSubController
     protected function deleteEntity($entity)
     {
         $ticket = $entity->getTicket();
+        $ticket->disableAutoTicketProcess();
         $ticket->removeMessage($entity);
 
         $this->saveTicket($ticket);
