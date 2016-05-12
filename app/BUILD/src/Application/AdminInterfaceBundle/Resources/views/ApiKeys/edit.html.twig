@@ -180,43 +180,6 @@
 				    </div>
                 </div>
                 <div dp-tab-body="api.tags">
-                    <script type="text/ng-template" id="nodes_renderer.html">
-                        <div ui-tree-handle>
-                            <a  ng-click="toggle(this)" ng-if="node.nodes && node.nodes.length > 0" data-nodrag=true>
-								<span class="fa fa-chevron-right" ng-class="{
-										'fa fa-chevron-right': collapsed,
-										'fa fa-chevron-down': !collapsed
-									}">
-								</span>
-                            </a>
-                            {{ ng_var('node.title')}}
-                            <span ng-if="!node.nodes || !collapsed">
-								<span
-										class="fa"
-										ng-click="enable(node)"
-										ng-class="{'fa-check-square': node.value > 0, 'fa-check-square-o': node.value <= 0}"
-										>
-								</span>
-								<span ng-if="node.value == 0"
-									  class="fa"
-									  ng-click="default(node)"
-									  ng-class="{'fa-square': node.value == 0, 'fa-square-o': node.value != 0}"
-										>
-								</span>
-								<span
-										class="fa"
-										ng-click="disable(node)"
-										ng-class="{'fa-minus-square': node.value < 0, 'fa-minus-square-o': node.value >= 0}"
-										>
-
-								</span>
-							</span>
-                        </div>
-                        <ol ui-tree-nodes ng-model="node.nodes" ng-class="{hidden: collapsed}">
-                            <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer.html'" collapsed="true">
-                            </li>
-                        </ol>
-                    </script>
 					<div class="panel panel-fill indent">
 						<div class="panel-body">
 							<div class="form-group" ng-if="EditCtrl.form.id">
@@ -225,18 +188,7 @@
 								</div>
 								<div class="col-lg-10">
 									<div class="inner-group" >
-										<div ui-tree data-drag-enabled="false">
-											<ol ui-tree-nodes id="tree-root" ng-model="tags">
-												<li
-													ng-repeat="node in tags"
-													ui-tree-node
-													ng-include="'nodes_renderer.html'"
-													collapsed="true"
-													ng-class="{collapsed: collapsed}"
-												>
-												</li>
-											</ol>
-										</div>
+										<textarea style="width: 400px; height: 150px;" ng-model="EditCtrl.tags"></textarea>
 									</div>
 								</div>
 							</div>

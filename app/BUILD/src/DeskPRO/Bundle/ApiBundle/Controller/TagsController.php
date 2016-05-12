@@ -62,7 +62,7 @@ class TagsController extends BaseController
      *     },
      *     output="array<DeskPRO\Bundle\AppBundle\ApiTag\Model\Tag>"
      * )
-     * @Rest\Get("/api_tags/{id}", name="api_tags_list_for_key")
+     * @Rest\Get("/api_tags/{id}")
      *
      * @param int $id
      *
@@ -76,6 +76,42 @@ class TagsController extends BaseController
 
         return View::create(
             $this->wrap($tagsCollector->getTagsHierarchyForApi($gatheredTags)),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * Fetch api tags collection with permissions.
+     *
+     * @ApiDoc(
+     *     section="Tags",
+     *     resourceDescription="Operations about tags",
+     *     description="get api tags faltten collection",
+     *     requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="The id of key",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *     statusCodes={
+     *         200="Returned if everything is OK",
+     *     },
+     *     output="array<string>"
+     * )
+     * @Rest\Get("/api_tags/{id}/flatten")
+     *
+     * @param int $id
+     *
+     * @return Response
+     */
+    public function flattenListAction($id)
+    {
+        $gatheredTags = $this->get('api_tags.tags_manipulator')->gatherTagsForKey($id);
+
+        return View::create(
+            $this->wrap($gatheredTags),
             Response::HTTP_OK
         );
     }
@@ -118,10 +154,9 @@ class TagsController extends BaseController
      */
     public function putAction(Request $request, $id)
     {
-        $value       = $request->request->getInt('value');
-        $action      = $request->request->get('action');
+        $tags        = $request->request->get('tags');
         $manipulator = $this->get('api_tags.tags_manipulator');
-        $manipulator->updateTags($id, $action, $value);
+        $manipulator->updateTags($id, $tags);
 
         return View::create(null, Response::HTTP_NO_CONTENT);
     }

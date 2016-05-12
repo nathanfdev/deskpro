@@ -71,8 +71,7 @@ define [
       # Load logs separately
       if @$stateParams.id
         @service.tags.getTags(@$stateParams.id).then((data) =>
-          @$scope.tags = data
-          @tags = data
+          @tags = data.join(',')
         )
 
         @service.keys.getLogs({id: @$stateParams.id}).then((data) =>
@@ -100,13 +99,23 @@ define [
           @form.flags = @form.flags || []
           @form.isSuperUser = @form.flags.indexOf('super') > -1
           @form.isAdminManage = @form.flags.indexOf('admin_manage') > -1
-          @stopSpinner 'saving', true
-          @Growl.success 'Saved'
-          @skipDirtyState()
-          if is_new then @$state.go 'apps.api_keys.gocreate'
+          @form
         =>
           @stopSpinner 'saving', true
           @Growl.error 'Error'
+      ).then(
+        (form) =>
+          console.log(@tags)
+          @service.tags.updateTags(@tags, form.id).then(
+            (data) =>
+              @stopSpinner 'saving', true
+              @Growl.success 'Saved'
+              @skipDirtyState()
+              if is_new then @$state.go 'apps.api_keys.gocreate'
+            (reason) =>
+              @stopSpinner 'saving', true
+              @Growl.error 'Error'
+          )
       )
 
 
