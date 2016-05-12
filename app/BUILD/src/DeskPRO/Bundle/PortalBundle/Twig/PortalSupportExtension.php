@@ -92,6 +92,7 @@ class PortalSupportExtension extends \Twig_Extension
         $funcs = [
             new \Twig_SimpleFunction('can_use_*', [$this, 'canUseCheck']),
             new \Twig_SimpleFunction('can_rate_*', [$this, 'canRateCheck']),
+            new \Twig_SimpleFunction('can_view_tickets_link', [$this, 'canViewTicketsLink']),
             new \Twig_SimpleFunction('show_tab_*', [$this, 'showTab']),
             new \Twig_SimpleFunction('has_any_*', [$this, 'hasAnyCheck']),
             new \Twig_SimpleFunction('is_user', [$this, 'isUser']),
@@ -179,6 +180,16 @@ class PortalSupportExtension extends \Twig_Extension
     }
 
     /**
+     * Check if the current user can see new ticket link.
+     *
+     * @return bool
+     */
+    public function canViewTicketsLink()
+    {
+        return $this->container->get('security.authorization_checker')->isGranted('VIEW_TICKETS_LINK');
+    }
+
+    /**
      * Check if the current user can rate a certain content entity.
      *
      * @param string $name
@@ -221,10 +232,13 @@ class PortalSupportExtension extends \Twig_Extension
         $count = 0;
         foreach ($tabs as $tab) {
             if ($tab == 'newticket') {
-                $tab = 'tickets';
-            }
-            if ($this->container->get('brand_stack')->getActive()->getSetting(sprintf('user.portal_tab_%s', strtolower($tab)))
-            && $this->container->get('security.authorization_checker')->isGranted('USE_'.strtoupper($tab))) {
+                if ($this->container->get('brand_stack')->getActive()->getSetting('user.portal_tab_tickets')
+                    && $this->container->get('security.authorization_checker')->isGranted('VIEW_TICKETS_LINK')) {
+                    ++$count;
+                }
+            } elseif ($this->container->get('brand_stack')->getActive()->getSetting(
+                    sprintf('user.portal_tab_%s', strtolower($tab))
+                ) && $this->container->get('security.authorization_checker')->isGranted('USE_'.strtoupper($tab))) {
                 ++$count;
             }
         }

@@ -36,7 +36,7 @@
         {% if should_display_dropdown %}
           <div class="dropdown-content" id="top-contactus-dropdown" style="display: none;">
             <ul>
-              {% if can_use_tickets %}
+              {% if can_view_tickets_link %}
               <li>
                 <a href="{{ path('portal_new_ticket') }}">
                   <i class="fa fa-envelope"></i>
