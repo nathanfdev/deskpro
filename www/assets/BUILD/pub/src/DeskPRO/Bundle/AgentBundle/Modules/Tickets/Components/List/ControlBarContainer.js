@@ -49,7 +49,7 @@ export class ControlBarContainer extends Component {
           type:      'labels',
           param:     'labels',
           modeParam: 'labels_mode',
-          labels:    this.props.labels.toJS()
+          labels:    this.props.labels
         },
         {
           label:   'Status',
