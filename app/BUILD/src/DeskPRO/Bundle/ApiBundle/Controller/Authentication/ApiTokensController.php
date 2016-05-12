@@ -131,7 +131,7 @@ class ApiTokensController extends BaseController
      *          404="Auth code not found"
      *      }
      * )
-     * @Rest\Get("/device_setup/{auth}")
+     * @Rest\Get("/device_setup/{auth}", name="api_authenticate_device")
      * @Rest\View(serializerGroups={"token", "discover"})
      *
      * @param string $auth
