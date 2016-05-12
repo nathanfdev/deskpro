@@ -26,22 +26,30 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\People;
+namespace DeskPRO\Bundle\ApiBundle\Controller;
 
-use Application\DeskPRO\Entity\CustomDefPerson;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\AbstractCustomFieldsController;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations as Rest;
+use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class PersonCustomFieldsController.
- *
- * @ApiModes("all")
- * @Rest\Route("/person_custom_fields")
- * @ApiDoc(target="all", section="People")
+ * Class AbstractCustomFieldsController.
  */
-class PersonCustomFieldsController extends AbstractCustomFieldsController
+abstract class AbstractCustomFieldsController extends CrudController
 {
-    public static $entity = CustomDefPerson::class;
+    public static $exposeOnly = ['list', 'get'];
+    public static $listOrder  = 'asc';
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
+    {
+        $qb->andWhere("$alias.parent is null");
+
+        $isEnabled = $request->query->getInt('is_enabled', 1);
+        if ($isEnabled !== -1) {
+            $qb->andWhere("$alias.is_enabled = :is_enabled");
+            $qb->setParameter('is_enabled', $isEnabled);
+        }
+    }
 }
