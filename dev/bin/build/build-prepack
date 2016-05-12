@@ -22,7 +22,15 @@ DIR_WEB_NODE=$DIR_ROOT/www/assets/BUILD/web/node_modules
 # Reinstall only prod deps
 ########################################################################################################################
 
+# re-install composer deps
+cd $DP_DIR/app/BUILD
+rm -rf vendor/
+composer install --no-dev --ignore-platform-reqs -o --prefer-dist --no-scripts
 
+# re-install npm deps
+cd $DP_DIR/www/assets/BUILD/pub
+rm -rf node_modules/
+npm install --production
 
 ########################################################################################################################
 # Cleanup for distro
