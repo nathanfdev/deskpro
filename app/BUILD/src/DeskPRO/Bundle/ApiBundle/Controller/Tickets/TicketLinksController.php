@@ -155,6 +155,9 @@ class TicketLinksController extends BaseController
         }
 
         $this->saveTicket($ticket);
+        if ($form->has('link_ticket')) {
+            $this->saveTicket($form->get('link_ticket')->getData());
+        }
 
         return View::create(null, Response::HTTP_NO_CONTENT, [
             'Location' => $this->generateUrl('api_tickets_link_list', ['ticket' => $ticket->getId()]),
