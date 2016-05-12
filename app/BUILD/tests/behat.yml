@@ -20,6 +20,7 @@ api:
                 - behatch:json
                 - DpBehat\HooksContext
                 - DpBehat\Api\RestContext
+                - DpBehat\Api\JsonContext
                 - DpBehat\Api\AuthContext
                 - DpBehat\TermEngine\TermEngineBehatContext
                 - DpBehat\Api\PeopleContext
