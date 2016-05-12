@@ -108,6 +108,16 @@ class CustomDataPerson extends CustomDataAbstract
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @return Person
+     */
+    public function getOwner()
+    {
+        return $this->person;
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################

@@ -1746,6 +1746,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function setCustomData(Collection $custom_data)
     {
+        $this->custom_data = $custom_data;
         foreach ($custom_data as $cd) {
             $cd->ticket = $this;
         }
@@ -1821,11 +1822,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             if ($data->field === $field || $data->root_field == $field) {
                 $changed = true;
                 $this->custom_data->removeElement($data);
-                $this->getStateChangeRecorder()->record('custom_data.'.$field->getId(), $data, null, true);
             } elseif ($field->parent && ($data->field === $field->parent || $data->root_field === $field->parent)) {
                 $changed = true;
                 $this->custom_data->removeElement($data);
-                $this->getStateChangeRecorder()->record('custom_data.'.$field->parent->getId(), $data, null, true);
             }
         }
 
@@ -1858,26 +1857,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             $this->custom_data = new ArrayCollection();
         }
 
-        $exist = $this->getCustomDataForField($data->field) ?: null;
-        if ($exist) {
-            $exist = clone $exist;
-        }
-
         $this->custom_data->add($data);
         $data['ticket'] = $this;
-
-        $field     = $data->field;
-        $parent_id = null;
-        $field_id  = $field['id'];
-        if ($field->parent) {
-            $parent_id = $field->parent['id'];
-        }
-
-        if ($parent_id) {
-            $this->getStateChangeRecorder()->record("custom_data.$parent_id", $exist, $data, true);
-        } else {
-            $this->getStateChangeRecorder()->record("custom_data.$field_id", $exist, $data, true);
-        }
 
         $this->_onPropertyChanged('custom_data', null, $this->custom_data);
     }

@@ -120,6 +120,7 @@ Feature: /ticket_forms endpoint
       | changed_workflow           |
       | changed_user_participants  |
       | changed_agent_participants |
+      | changed_custom_field       |
 
     When I send a GET request to "/api/v2/tickets/5"
     Then the response status code should be 200

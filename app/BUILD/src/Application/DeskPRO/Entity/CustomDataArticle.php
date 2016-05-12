@@ -93,6 +93,16 @@ class CustomDataArticle extends CustomDataAbstract
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @return Article
+     */
+    public function getOwner()
+    {
+        return $this->article;
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################

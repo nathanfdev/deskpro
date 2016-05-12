@@ -90,6 +90,16 @@ class CustomDataFeedback extends CustomDataAbstract
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @return Feedback
+     */
+    public function getOwner()
+    {
+        return $this->feedback;
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################

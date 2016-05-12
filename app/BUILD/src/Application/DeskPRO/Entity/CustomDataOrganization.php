@@ -90,6 +90,16 @@ class CustomDataOrganization extends CustomDataAbstract
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @return Organization
+     */
+    public function getOwner()
+    {
+        return $this->organization;
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################

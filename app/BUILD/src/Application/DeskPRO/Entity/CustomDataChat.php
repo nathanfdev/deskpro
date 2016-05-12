@@ -64,6 +64,16 @@ class CustomDataChat extends CustomDataAbstract
         return $this->conversation->getId();
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @return ChatConversation
+     */
+    public function getOwner()
+    {
+        return $this->conversation;
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
