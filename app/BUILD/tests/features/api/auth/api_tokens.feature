@@ -60,7 +60,12 @@ Feature: /api_tokens endpoint
 
   Scenario: I successfully handle user source callback
     When I send a GET request to "/api/v2/api_tokens/callback/4"
-    Then the response status code should be 201
+    Then the response status code should be 200
     And the JSON response should contain "<script>sendPayload("
     And the JSON response should contain "person_id"
     And the JSON response should contain "token"
+
+    When I send a GET request to "/api/v2/api_tokens/callback/4?format=ios"
+    Then the response status code should be 200
+    And the JSON response should contain "iOSDeskPro"
+    And the JSON response should contain "Return to DeskPRO"

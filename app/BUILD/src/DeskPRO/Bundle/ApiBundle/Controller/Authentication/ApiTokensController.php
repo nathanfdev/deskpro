@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Authentication;
 
 use Application\DeskPRO\Auth\LoginProcessor;
@@ -48,7 +44,6 @@ use DeskPRO\Bundle\AppBundle\Form\Error\Exception\BadCredentialsFormException;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\AuthenticationRequestType;
 use DeskPRO\Bundle\AppBundle\Form\Type\AuthenticationType;
-use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Orb\Auth\Adapter\CallbackInterface;
@@ -171,11 +166,12 @@ class ApiTokensController extends BaseController
      *
      * @Rest\Get("/callback/{usersource}")
      *
+     * @param Request    $request
      * @param Usersource $usersource
      *
      * @return View
      */
-    public function processCallbackAction(Usersource $usersource)
+    public function processCallbackAction(Request $request, Usersource $usersource)
     {
         /** @var UsersourceAuthAdapterFactory $adapterFactory */
         $adapterFactory = $this->getContainer()->getSystemService('usersource_auth_adapter_factory');
@@ -204,13 +200,14 @@ class ApiTokensController extends BaseController
             $this->throwUnauthorized();
         }
 
-        $context = new SideloadSerializationContext();
-        $context->setGroups(['wrapper', 'token']);
+        $format = $request->get('format', 'default');
+        if (!in_array($format, ['ios', 'default'])) {
+            throw $this->createBadRequestException('Unknown output format');
+        }
 
-        $token   = $this->createToken($person);
-        $payload = $this->get('serializer')->serialize($this->wrap($token), 'json', $context);
-
-        return new View("<script>sendPayload($payload)</script>", Response::HTTP_CREATED);
+        return $this->render("ApiBundle::ApiTokens/$format.html.twig", [
+            'token' => $this->createToken($person),
+        ]);
     }
 
     /**
