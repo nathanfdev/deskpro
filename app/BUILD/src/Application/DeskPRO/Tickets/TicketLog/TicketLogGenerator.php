@@ -708,14 +708,14 @@ return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_ad
                     $value_before = $old->getData();
 
                     if ($is_choice) {
-                        $value_before = $old->field->getTitle();
+                        $value_before = $old->field ? $old->field->getTitle() : null;
                     }
                 }
                 if ($new) {
                     $value_after = $new->getData();
 
                     if ($is_choice) {
-                        $value_after = $new->field->getTitle();
+                        $value_after = $new->field ? $new->field->getTitle() : null;
                     }
                 }
 
