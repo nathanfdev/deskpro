@@ -22,6 +22,11 @@ export const projectsCountSelector = createSelector(
   state => state.get('projects')
 );
 
+export const labelsSelector = createSelector(
+  stateSelector,
+  state => state.get('labels')
+);
+
 export const groupsCountMapSelector = createSelector(
   groupsCountSelector,
   groupsCount => {
