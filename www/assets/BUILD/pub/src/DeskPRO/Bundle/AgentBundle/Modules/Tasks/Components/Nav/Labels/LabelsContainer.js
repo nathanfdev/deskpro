@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
+import Immutable from 'immutable';
 import { connect } from 'react-redux';
 import { Labels } from './Labels';
-import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
-import Immutable from 'immutable';
+import { labelsSelector } from '../../../Selectors/nav';
 
 @connect(state => ({
-  labels: allSelectorFactory('TaskLabel')(state)
+  labels: labelsSelector(state)
 }))
 export class LabelsContainer extends React.Component {
 
@@ -14,7 +14,8 @@ export class LabelsContainer extends React.Component {
   };
 
   render() {
-    const { labels = [] } = this.props;
+    const { labels } = this.props;
+    console.log(labels);
     const labelGroups = {};
 
     labels.forEach(label => {
@@ -28,6 +29,6 @@ export class LabelsContainer extends React.Component {
       labelGroups[char].push(label.toJS());
     });
 
-    return <Labels labelGroups={Immutable.fromJS(labelGroups)} />;
+    return labels.size > 0 && <Labels labelGroups={Immutable.fromJS(labelGroups)} />;
   }
 }

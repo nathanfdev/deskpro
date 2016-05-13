@@ -2,7 +2,11 @@ import { createAction } from 'Ampliflux';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import Immutable from 'immutable';
-import { addToCollection, collectionSelectorFactory, removeFromCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import {
+  addToCollection,
+  collectionSelectorFactory,
+  removeFromCollection
+} from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 export const createProject = createAction(
   'TASKS_NAV_POST_PROJECT',
@@ -21,14 +25,14 @@ export const getProject = createAction(
   })
 );
 
-const updates = {};
+const updates            = {};
 export const editProject = createAction(
   'TASKS_NAV_EDIT_PROJECT',
   (id, data) => (dispatch, getState) => {
-    const projects = collectionSelectorFactory('Project', 'all')(getState());
+    const projects   = collectionSelectorFactory('Project', 'all')(getState());
     const oldProject = projects.get(id);
-    const promise = api.sendPut(`DP_API/task_projects/${id}`, data);
-    updates[id] = promise;
+    const promise    = api.sendPut(`DP_API/task_projects/${id}`, data);
+    updates[id]      = promise;
 
     // todo show errors (alert?)
     promise.success(() => {
@@ -57,6 +61,7 @@ export const initialLoad = createAction(
             + '?get[groups]=DP_API/tasks/counts/groups'
             + '&get[agents]=DP_API/tasks/counts/agents'
             + '&get[projects]=DP_API/tasks/counts/projects'
+            + '&get[labels]=DP_API/task_labels'
       ;
 
     api.sendGet(batch).success(({ responses }) => {
