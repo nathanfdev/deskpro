@@ -78,16 +78,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingContent = new Orb.Class({
 		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {
 			onButtonClick: function(ev) {
 				self.actionsMenu.open(ev);
-			}/*,
-			onCountChange: function(count) {
-				var isOpen = self.actionsMenu.isOpen();
-
-				if (count > 0 && !isOpen) {
-					self.actionsMenu.open();
-				} else if (count <= 0 && isOpen) {
-					self.actionsMenu.close();
-				}
-			}*/
+			}
 		});
 		this.ownObject(this.selectionBar);
 
@@ -104,6 +95,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingContent = new Orb.Class({
 		var validation = $('#validation-list-header-count');
 		var text = validation.text();
 		var val         = parseInt(text, 10) - 1;
+    val = (val < 0) ? 0 : val;
 		validation.text(text.replace(/(\d+)/, val));
 	}
 });
