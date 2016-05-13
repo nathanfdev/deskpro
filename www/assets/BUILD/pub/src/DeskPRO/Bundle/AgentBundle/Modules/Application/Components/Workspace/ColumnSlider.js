@@ -5,35 +5,42 @@ import 'jquery-ui/slider';
 export class ColumnSlider extends React.Component {
 
   static propTypes = {
-    columnDimensions: PropTypes.number.isRequired,
+    columnDimensions:   PropTypes.number.isRequired,
     onChangeDimensions: PropTypes.func.isRequired
   };
 
   componentDidMount() {
     const { columnDimensions, onChangeDimensions } = this.props;
-
-    jQuery('#workspace-column-slider').slider({
+    const sliderOptions = {
       value: columnDimensions,
-      min: 0,
-      max: 100,
-      step: 5,
+      min:   0,
+      max:   100,
+      step:  5,
       slide: (event, ui) => {
         if (ui.value < 20 || ui.value > 80) {
           return false;
         }
 
         onChangeDimensions(ui.value);
+        return null;
       }
-    });
+    };
+
+    jQuery('#workspace-column-slider').slider(sliderOptions);
   }
 
+  reset = () => {
+    const { onChangeDimensions } = this.props;
+    onChangeDimensions(0);
+  };
+
   render() {
-    const { columnDimensions, onChangeDimensions } = this.props;
+    const { columnDimensions } = this.props;
 
     return (
       <div className="dpw-workspace-state dpw-workspace-slider-container">
         <div>
-          <h2>Column Dimensions <a href="#" onClick={onChangeDimensions.bind(this, 0)}>Reset</a></h2>
+          <h2>Column Dimensions <a href="#" onClick={this.reset}>Reset</a></h2>
           <div className="dpw-workspace-slider">
             <div className="dpw-workspace-slider-count-container">
               <span className="dpw-workspace-slider-count">{columnDimensions}%</span>
@@ -41,9 +48,9 @@ export class ColumnSlider extends React.Component {
 
             <div className="dpw-workspace-slider-slide-container">
               <span className="dpw-workspace-slider-slide" id="workspace-column-slider">
-                <span className="slider-blocked-left"></span>
-                <span className="slider-blocked-right"></span>
-                <span className="slider-button ui-slider-handle"></span>
+                <span className="slider-blocked-left" />
+                <span className="slider-blocked-right" />
+                <span className="slider-button ui-slider-handle" />
               </span>
             </div>
           </div>
