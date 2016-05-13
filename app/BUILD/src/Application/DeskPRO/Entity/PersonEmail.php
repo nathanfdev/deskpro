@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -40,7 +41,6 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Strings;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -57,7 +57,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @property \DateTime $date_created
  * @property \DateTime $date_validated
  *
- * @UniqueEntity("email", message="This email already exists in the system.")
+ * @AppAssert\FreeEmail()
  *
  * @JMS\ExclusionPolicy("all")
  */

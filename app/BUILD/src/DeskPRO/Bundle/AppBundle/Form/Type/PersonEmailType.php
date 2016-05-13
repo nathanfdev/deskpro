@@ -33,7 +33,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\PersonEmail;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\FreeEmail;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -64,10 +64,7 @@ class PersonEmailType extends AbstractType
             'data_class'  => PersonEmail::class,
             'email_label' => false,
             'constraints' => [
-                new UniqueEntity([
-                    'fields'    => 'email',
-                    'errorPath' => 'email',
-                ]),
+                new FreeEmail(),
             ],
         ]);
     }

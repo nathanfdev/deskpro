@@ -45,7 +45,8 @@ Feature: User Profile
     And I am on "/profile/emails"
     When I fill in "Email" with "agent@deskpro.dev"
     And I press "Save"
-    Then I should see a form error with "This value already exists in the system."
+    Then I should see a form error with "is already in use by other user."
+    Then I should see a form error with "agent@deskpro.dev"
 
   Scenario: A user successfully adds and verifies an email
     Given I login with user credentials
