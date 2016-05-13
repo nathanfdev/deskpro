@@ -12,7 +12,7 @@ pageMeta.labelsSaveUrl = '{{ path('agent_feedback_ajax_labels_save', {'feedback_
 pageMeta.canEdit   = {% if not perms.can_edit %}false{% else %}true{% endif %};
 pageMeta.canDelete = {% if not perms.can_delete %}false{% else %}true{% endif %};
 
-{% if not feedback.is_reviewed and feedback.status == 'hidden' %}
+{% if not feedback.is_reviewed %}
 pageMeta.isValidating = true;
 {% endif %}
 
@@ -29,7 +29,7 @@ pageMeta.baseId = '{{ baseId }}';
 	{{ phrase('agent.general.record_marked_spam') }} <button class="clean-gray xxx-small unspam">{{ phrase('agent.feedback.status_closed') }}</button>
 </div>
 
-{% if feedback.status == "hidden" and not feedback.is_reviewed %}
+{% if not feedback.is_reviewed %}
 	{% include 'AgentBundle:Publish:view-approve-header.html.twig' %}
 {% endif %}
 

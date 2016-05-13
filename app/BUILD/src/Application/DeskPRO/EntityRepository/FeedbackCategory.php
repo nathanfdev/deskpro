@@ -45,6 +45,7 @@ use Orb\Util\Strings;
  * Class FeedbackCategory.
  *
  * @method array getFlatHierarchy()
+ * @method array getInHierarchy()
  */
 class FeedbackCategory extends AbstractCategoryRepository
 {

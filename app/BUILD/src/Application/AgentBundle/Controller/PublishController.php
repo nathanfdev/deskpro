@@ -35,7 +35,6 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\ContentAbstract;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\ResultCache;
 use Application\DeskPRO\People\PermissionUtil;
 use Application\DeskPRO\Publish\AgentHelper as PublishHelper;
@@ -134,7 +133,6 @@ class PublishController extends AbstractController
 
         $counts                        = [];
         $counts['validating_comments'] = $this->publish_helper->getValidatingCommentsCount();
-        $counts['validating_content']  = $this->publish_helper->getValidatingContentCount();
         $counts['drafts']              = $this->publish_helper->getDraftsCount();
         $counts['all_drafts']          = $this->publish_helper->getDraftsCount(false);
         $counts['pending']             = $this->db->fetchColumn('SELECT COUNT(*) FROM article_pending_create');
@@ -478,198 +476,11 @@ class PublishController extends AbstractController
         ]);
     }
 
-    ############################################################################
-    # content validating
-    ############################################################################
-
-    public function listValidatingContentAction()
-    {
-        $perPage = 25;
-
-        $currentPage = $this->in->getUint('page');
-        if (!$currentPage) {
-            $currentPage = 1;
-        }
-
-        $limit = [
-            'max'    => $perPage,
-            'offset' => ($currentPage - 1) * $perPage,
-        ];
-
-        $pageinfo = null;
-        $total    = null;
-        if (!@$_REQUEST['_partial']) {
-            $total    = $this->publish_helper->getValidatingContentCount();
-            $pageinfo = Numbers::getPaginationPages($total, $currentPage, $perPage);
-        }
-
-        $content_validating = $this->publish_helper->getValidatingContent($limit);
-
-        $tpl = 'AgentBundle:Publish:validating-content.html.twig';
-        if (@$_REQUEST['_partial']) {
-            $tpl = 'AgentBundle:Publish:validating-content-page.html.twig';
-        }
-
-        return $this->render($tpl, [
-            'single_type'        => $this->publish_helper->getSingleSpecificType(),
-            'content_validating' => $content_validating,
-            'total'              => $total,
-            'pageinfo'           => $pageinfo,
-        ]);
-    }
-
     public function listValidatingFeedbackCommentsAction()
     {
         $this->publish_helper->setEnabledTypes(['feedback']);
 
         return $this->listValidatingCommentsAction();
-    }
-
-    public function approveContentAction($type, $content_id)
-    {
-        if (!$this->person->hasPerm('agent_publish.validate')) {
-            throw $this->createNotFoundException();
-        }
-
-        $content_validating = $this->publish_helper->getValidatingContentInfo(1000);
-
-        $entity = $this->publish_helper->getEntityNameFor($type);
-        $obj    = $this->em->getRepository($entity)->find($content_id);
-
-        if ($obj) {
-            if ($obj instanceof \Application\DeskPRO\Entity\Feedback) {
-                $this->approveFeedback($obj);
-            } else {
-                $obj->status = 'published';
-                $this->em->beginTransaction();
-                $this->em->persist($obj);
-                $this->em->flush();
-                $this->em->commit();
-            }
-        }
-
-        $next = $this->_findNextValidating($content_validating, $type, $content_id);
-
-        $next_url = null;
-        if ($next) {
-            $next_url = $this->get('router')->getGenerator()->generateObjectUrl($next, [], 'agent');
-        }
-
-        return $this->createJsonResponse([
-            'success'  => true,
-            'next_url' => $next_url,
-        ]);
-    }
-
-    public function approveFeedback(\Application\DeskPRO\Entity\Feedback $feedback)
-    {
-        if (!$this->person->hasPerm('agent_publish.validate')) {
-            throw $this->createNotFoundException();
-        }
-
-        $feedback_moderate = new \Application\DeskPRO\Feedback\FeedbackModerate($this->container, $this->person);
-        $feedback_moderate->approveFeedback($feedback);
-    }
-
-    public function disapproveFeedback(\Application\DeskPRO\Entity\Feedback $feedback, $reason)
-    {
-        if (!$this->person->hasPerm('agent_publish.validate')) {
-            throw $this->createNotFoundException();
-        }
-
-        $feedback_moderate = new \Application\DeskPRO\Feedback\FeedbackModerate($this->container, $this->person);
-        $feedback_moderate->disapproveFeedback($feedback, $reason);
-    }
-
-    public function disapproveContentAction($type, $content_id)
-    {
-        if (!$this->person->hasPerm('agent_publish.validate')) {
-            throw $this->createNotFoundException();
-        }
-
-        $content_validating = $this->publish_helper->getValidatingContentInfo(1000);
-
-        $entity = $this->publish_helper->getEntityNameFor($type);
-        $obj    = $this->em->getRepository($entity)->find($content_id);
-
-        if ($obj) {
-            if ($obj instanceof \Application\DeskPRO\Entity\Feedback) {
-                $this->disapproveFeedback($obj, $this->in->getString('reason'));
-            } else {
-                $obj->status_code = 'hidden.draft';
-                $reason           = $this->in->getString('reason');
-                if (0 && $reason) {
-                    $agent_chat = new \Application\DeskPRO\Chat\AgentChat($this->person, $this->session->getEntity());
-                    $reason .= ' (<a data-route="'.$this->get('router')->getGenerator()->generateObjectUrl($obj, [], 'agent').'">'.htmlentities($obj->title).'</a>)';
-                    $agent_chat->sendAgentMessage($reason, [$obj->person['id']]);
-                }
-
-                $this->em->beginTransaction();
-                $this->em->persist($obj);
-                $this->em->flush();
-                $this->em->commit();
-            }
-        }
-
-        $next = $this->_findNextValidating($content_validating, $type, $content_id);
-
-        $next_url = null;
-        if ($next) {
-            $next_url = $this->get('router')->getGenerator()->generateObjectUrl($next, [], 'agent');
-        }
-
-        return $this->createJsonResponse([
-            'success'  => true,
-            'next_url' => $next_url,
-        ]);
-    }
-
-    public function nextValidatingContentAction($type, $content_id)
-    {
-        $content_validating = $this->publish_helper->getValidatingContentInfo(1000);
-
-        $next = $this->_findNextValidating($content_validating, $type, $content_id);
-
-        $next_url = null;
-        if ($next) {
-            $next_url = $this->get('router')->getGenerator()->generateObjectUrl($next, [], 'agent');
-        }
-
-        return $this->createJsonResponse([
-            'success'  => true,
-            'next_url' => $next_url,
-        ]);
-    }
-
-    protected function _findNextValidating($content_validating, $type, $content_id)
-    {
-        $do_ret = false;
-
-        foreach ($content_validating as $info) {
-            if ($do_ret) {
-                $entity = $this->publish_helper->getEntityNameFor($info['content_type']);
-                $obj    = $this->em->getRepository($entity)->find($info['content_id']);
-                if ($obj) {
-                    return $obj;
-                }
-            } elseif ($info['content_type'] == $type && $info['content_id'] == $content_id) {
-                $do_ret = true;
-            }
-        }
-
-        if (!$content_validating) {
-            return;
-        }
-
-        // If we got here, just return the first
-        $info   = array_shift($content_validating);
-        $entity = $this->publish_helper->getEntityNameFor($info['content_type']);
-        $obj    = $this->em->getRepository($entity)->find($info['content_id']);
-        if ($obj) {
-            return $obj;
-        }
-
-        return;
     }
 
     public function validatingMassActionsAction($action)

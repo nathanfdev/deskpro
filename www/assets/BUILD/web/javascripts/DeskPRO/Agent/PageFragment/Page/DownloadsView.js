@@ -38,14 +38,6 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		if (this.meta.canEdit) {
 			this._initPostArea();
 
-			if (this.meta.isValidating) {
-				this.validatingEdit = new DeskPRO.Agent.PageHelper.ValidatingEdit(this, {
-					typename: 'downloads',
-					contentId: this.meta.download_id
-				});
-				this.ownObject(this.validatingEdit);
-			}
-
 			this.getEl('edit_btn').on('click', this.showEditor.bind(this));
 			this._initEditSlug();
 		}

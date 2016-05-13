@@ -40,14 +40,6 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 			var btn = $('.kb-editor-edit', this.wrapper);
 			btn.on('click', this.showEditor.bind(this));
-
-			if (this.meta.isValidating) {
-				this.validatingEdit = new DeskPRO.Agent.PageHelper.ValidatingEdit(this, {
-					typename: 'articles',
-					contentId: this.meta.article_id
-				});
-				this.ownObject(this.validatingEdit);
-			}
 		}
 
 		this.relatedContent = new DeskPRO.Agent.PageHelper.RelatedContent(this, {

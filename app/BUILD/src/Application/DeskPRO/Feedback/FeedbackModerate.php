@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,7 +39,7 @@ use Application\DeskPRO\People\PersonContextInterface;
 class FeedbackModerate implements PersonContextInterface
 {
     /**
-     * @var \Application\DeskPRO\Mail\Mailer
+     * @var \Application\EmailBundle\SwiftMailer\Mailer
      */
     protected $mailer;
 
@@ -81,10 +81,14 @@ class FeedbackModerate implements PersonContextInterface
 
     /**
      * @param \Application\DeskPRO\Entity\Feedback $feedback
+     *
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function approveFeedback(Feedback $feedback)
     {
-        $feedback->status = 'new';
+        $feedback->setIsReviewed(true);
+        $feedback->setStatus(Feedback::STATUS_ACTIVE);
 
         $this->em->getConnection()->beginTransaction();
         try {
@@ -92,30 +96,36 @@ class FeedbackModerate implements PersonContextInterface
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
-            $this->em->getConnection()->rollback();
+            $this->em->getConnection()->rollBack();
             throw $e;
         }
 
         $agent  = $this->person_context;
         $mailer = $this->mailer;
 
-        $this->translator->setTemporaryLanguage($feedback->person->getLanguage(), function () use ($mailer, $feedback, $agent) {
-            $vars = array(
-                'feedback' => $feedback,
-                'agent'    => $agent,
-            );
+        $this->translator->setTemporaryLanguage(
+            $feedback->getPerson()->getLanguage(),
+            function () use ($mailer, $feedback, $agent) {
+                $vars = [
+                    'feedback' => $feedback,
+                    'agent'    => $agent,
+                ];
 
-            $message = $mailer->createMessage();
-            $message->setToPerson($feedback->person);
-            $message->setTemplate('DeskPRO:emails_user:feedback-approved.html.twig', $vars);
+                $message = $mailer->createMessage();
+                $message->setToPerson($feedback->getPerson());
+                $message->setTemplate('DeskPRO:emails_user:feedback-approved.html.twig', $vars);
 
-            $mailer->send($message);
-        });
+                $mailer->send($message);
+            }
+        );
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\Feedback $feedback
-     * @param string                               $reason
+     * @param Feedback $feedback
+     * @param string   $reason
+     *
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
     public function disapproveFeedback(Feedback $feedback, $reason = '')
     {
@@ -129,25 +139,28 @@ class FeedbackModerate implements PersonContextInterface
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
-            $this->em->getConnection()->rollback();
+            $this->em->getConnection()->rollBack();
             throw $e;
         }
 
         $agent  = $this->person_context;
         $mailer = $this->mailer;
 
-        $this->translator->setTemporaryLanguage($feedback->person->getLanguage(), function () use ($mailer, $feedback, $agent, $reason) {
-            $vars = array(
-                'feedback' => $feedback,
-                'agent'    => $agent,
-                'reason'   => $reason,
-            );
+        $this->translator->setTemporaryLanguage(
+            $feedback->getPerson()->getLanguage(),
+            function () use ($mailer, $feedback, $agent, $reason) {
+                $vars = [
+                    'feedback' => $feedback,
+                    'agent'    => $agent,
+                    'reason'   => $reason,
+                ];
 
-            $message = $mailer->createMessage();
-            $message->setToPerson($feedback->person);
-            $message->setTemplate('DeskPRO:emails_user:feedback-disapproved.html.twig', $vars);
+                $message = $mailer->createMessage();
+                $message->setToPerson($feedback->getPerson());
+                $message->setTemplate('DeskPRO:emails_user:feedback-disapproved.html.twig', $vars);
 
-            $mailer->send($message);
-        });
+                $mailer->send($message);
+            }
+        );
     }
 }

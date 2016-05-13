@@ -32,11 +32,11 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 use DpSys\LowError\SystemErrorHandler;
 use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Strings;
@@ -147,7 +147,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     protected $total_rating = 0;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     protected $comments;
 
@@ -218,7 +218,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     // Implement in children
     ///**
-    // * @var \Doctrine\Common\Collections\ArrayCollection
+    // * @var ArrayCollection
     // */
     //protected $revisions;
 
@@ -270,10 +270,10 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         $this->setModelField('date_updated', new \DateTime());
         $this['date_created'] = new \DateTime();
-        $this->revisions      = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->labels         = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->slug_history   = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->comments       = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->revisions      = new ArrayCollection();
+        $this->labels         = new ArrayCollection();
+        $this->slug_history   = new ArrayCollection();
+        $this->comments       = new ArrayCollection();
 
         $this['status']        = self::STATUS_HIDDEN;
         $this['hidden_status'] = self::HIDDEN_STATUS_DRAFT;
@@ -552,7 +552,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @return \Doctrine\Common\Collections\ArrayCollection
+     * @return ArrayCollection
      */
     public function getSlugHistory()
     {
@@ -741,6 +741,14 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function removeComment()
     {
         $this->setModelField('num_comments', $this->num_comments - 1);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getComments()
+    {
+        return $this->comments;
     }
 
     /**

@@ -47,7 +47,6 @@ return array(
     'agent.publish.comments_list_title'           => '1 Komentarz|{{count}} Komentarzy',
     'agent.publish.comments_to_validate'          => 'Komentarze do przejrzenia',
     'agent.publish.compare_selected'              => 'Porównaj wybrane',
-    'agent.publish.content_to_validate'           => 'Zawartość do potwierdzenia',
     'agent.publish.create_artilce'                => 'Utwórz Artykuł',
     'agent.publish.create_pending_article'        => 'Tworzenie oczekującego artykułu',
     'agent.publish.delete_category'               => 'Usuń Kategorię',

@@ -47,7 +47,6 @@ return array(
     'agent.publish.comments_list_title'           => '1 komentár|{{count}} komentárov',
     'agent.publish.comments_to_validate'          => 'Komentáre na prezretie',
     'agent.publish.compare_selected'              => 'Porovnať zvolené',
-    'agent.publish.content_to_validate'           => 'Obsah na schválenie',
     'agent.publish.create_artilce'                => 'Vytvoriť článok',
     'agent.publish.create_pending_article'        => 'Vytvoriť trvajúci článok',
     'agent.publish.delete_category'               => 'Zmazať kategóriu',

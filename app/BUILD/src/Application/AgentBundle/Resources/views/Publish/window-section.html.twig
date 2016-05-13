@@ -23,14 +23,6 @@
 						</div>
 					</li>
 				{% endif %}
-				{% if counts.validating_content %}
-					<li class="is-nav-item auto-load-route" data-route="listpane:{{ path('agent_publish_validatingcontent') }}">
-						<div class="item">
-							<h3>{{ phrase('agent.publish.content_to_validate') }}</h3>
-							<em class="counter list-counter" id="publish_validating_count">{{ counts.validating_content|default(0) }}</em>
-						</div>
-					</li>
-				{% endif %}
 				<li class="is-nav-item" data-route="listpane:{{ path('agent_kb_pending') }}">
 					<div class="item">
 						<h3>{{ phrase('agent.publish.pending_articles') }}</h3>

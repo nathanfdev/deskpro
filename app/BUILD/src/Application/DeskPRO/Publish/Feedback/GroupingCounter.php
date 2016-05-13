@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Publish\Feedback;
 
 use Application\DeskPRO\App;
@@ -403,10 +402,14 @@ class GroupingCounter
      *
      * @param string $grouping1
      * @param string $grouping2
+     *
+     * @return $this
      */
     public function setGrouping($grouping1, $grouping2 = null)
     {
         $this->grouping1 = $grouping1 ? $grouping1 : 'category';
         $this->grouping2 = $grouping2;
+
+        return $this;
     }
 }

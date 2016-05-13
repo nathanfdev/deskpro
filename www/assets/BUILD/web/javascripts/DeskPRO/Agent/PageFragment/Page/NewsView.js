@@ -38,14 +38,6 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		this._initCommentForm();
 
 		if (this.meta.canEdit) {
-			if (this.meta.isValidating) {
-				this.validatingEdit = new DeskPRO.Agent.PageHelper.ValidatingEdit(this, {
-					typename: 'news',
-					contentId: this.meta.news_id
-				});
-				this.ownObject(this.validatingEdit);
-			}
-
 			this.getEl('edit_btn').on('click', this.showEditor.bind(this));
 
 			this._initEditSlug();

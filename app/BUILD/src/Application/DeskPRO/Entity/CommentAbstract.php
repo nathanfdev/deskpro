@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use JMS\Serializer\Annotation as JMS;
@@ -252,10 +251,14 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @param bool $is_reviewed
+     *
+     * @return $this
      */
     public function setIsReviewed($is_reviewed)
     {
         $this->setModelField('is_reviewed', $is_reviewed);
+
+        return $this;
     }
 
     /**

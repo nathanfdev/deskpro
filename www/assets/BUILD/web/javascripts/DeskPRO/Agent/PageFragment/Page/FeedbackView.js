@@ -694,5 +694,5 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 				});
 			});
 		});
-	}
+	},
 });
