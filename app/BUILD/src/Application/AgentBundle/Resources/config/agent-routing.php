@@ -1553,7 +1553,7 @@ $collection->create('agent_publish_validatingcontent', [
 
 $collection->create('agent_feedback_validatingcontent', [
     'path'       => '/feedback/content/validating',
-    'controller' => 'AgentBundle:Publish:listValidatingFeedbackContent',
+    'controller' => 'AgentBundle:Feedback:listValidatingContent',
     'options'    => ['fragment_type' => 'list', 'fragment_name' => 'fb_content'],
 ]);
 

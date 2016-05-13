@@ -47,6 +47,7 @@ use Application\DeskPRO\Labels\LabelLister;
 use Application\DeskPRO\Publish\Feedback\GroupingCounter;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
 use Orb\Util\Arrays;
+use Orb\Util\Numbers;
 use Orb\Util\Strings;
 
 /**
@@ -110,12 +111,65 @@ class FeedbackController extends AbstractController
     }
 
     ############################################################################
+    # validating content actions
+    ############################################################################
+
+    public function listValidatingContentAction()
+    {
+        $perPage = 25;
+        /** @var \Application\DeskPRO\EntityRepository\Feedback $feedbackRepository */
+        $feedbackRepository = $this->em->getRepository(Feedback::class);
+
+        $currentPage = $this->in->getUint('page');
+        if (!$currentPage) {
+            $currentPage = 1;
+        }
+
+        $offset = (($currentPage - 1 >= 0) ? $currentPage - 1 : 1) * $perPage;
+
+        $pageinfo = null;
+        $total    = null;
+        if (!@$_REQUEST['_partial']) {
+            $total    = $feedbackRepository->countAwaitingValidation();
+            $pageinfo = Numbers::getPaginationPages($total, $currentPage, $perPage);
+        }
+
+        $content_validating = $feedbackRepository->getAwaitingValidation($perPage, $offset);
+        $info               = [];
+        foreach ($content_validating as $feedback) {
+            /* @var Feedback $feedback */
+            $lastRevision = $feedback->revisions->current();
+            $info[]       = [
+                'info' => [
+                    'content_type' => 'feedback',
+                    'content_id'   => $feedback->getId(),
+                    'revision_id'  => $lastRevision ? $lastRevision->getId() : null,
+                    'date_created' => $feedback->getDateCreated()->format('Y-m-d H:i:s'),
+                ],
+                'obj' => $feedback,
+            ];
+        }
+
+        $tpl = 'AgentBundle:Publish:validating-content.html.twig';
+        if (@$_REQUEST['_partial']) {
+            $tpl = 'AgentBundle:Publish:validating-content-page.html.twig';
+        }
+
+        return $this->render($tpl, array(
+            'single_type'        => 'feedback',
+            'content_validating' => $info,
+            'total'              => $total,
+            'pageinfo'           => $pageinfo,
+        ));
+    }
+
+    ############################################################################
     # view
     ############################################################################
 
     public function viewAction($feedback_id)
     {
-        $feedback = $this->em->find('DeskPRO:Feedback', $feedback_id);
+        $feedback = $this->em->find(Feedback::class, $feedback_id);
 
         if (!$feedback) {
             throw $this->createNotFoundException();

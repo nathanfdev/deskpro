@@ -29,13 +29,13 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\ContentAbstract;
+use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\ResultCache;
 use Application\DeskPRO\People\PermissionUtil;
 use Application\DeskPRO\Publish\AgentHelper as PublishHelper;
@@ -173,23 +173,23 @@ class PublishController extends AbstractController
 
     public function listValidatingCommentsAction()
     {
-        $per_page = 25;
+        $perPage = 25;
 
-        $curpage = $this->in->getUint('page');
-        if (!$curpage) {
-            $curpage = 1;
+        $currentPage = $this->in->getUint('page');
+        if (!$currentPage) {
+            $currentPage = 1;
         }
 
-        $limit = [
-            'max'    => $per_page,
-            'offset' => ($curpage - 1) * $per_page,
-        ];
+        $limit = array(
+            'max'    => $perPage,
+            'offset' => ($currentPage - 1) * $perPage,
+        );
 
         $pageinfo = null;
         $total    = null;
         if (!@$_REQUEST['_partial']) {
             $total    = $this->publish_helper->getValidatingCommentsCount();
-            $pageinfo = Numbers::getPaginationPages($total, $curpage, $per_page);
+            $pageinfo = Numbers::getPaginationPages($total, $currentPage, $perPage);
         }
 
         $validating_comments = $this->publish_helper->getValidatingComments($limit);
@@ -442,17 +442,17 @@ class PublishController extends AbstractController
             $this->publish_helper->setEnabledTypes([$type]);
         }
 
-        $per_page = 25;
+        $perPage = 25;
 
-        $curpage = $this->in->getUint('page');
-        if (!$curpage) {
-            $curpage = 1;
+        $currentPage = $this->in->getUint('page');
+        if (!$currentPage) {
+            $currentPage = 1;
         }
 
-        $limit = [
-            'max'    => $per_page,
-            'offset' => ($curpage - 1) * $per_page,
-        ];
+        $limit = array(
+            'max'    => $perPage,
+            'offset' => ($currentPage - 1) * $perPage,
+        );
 
         $pageinfo = null;
         $total    = null;
@@ -460,7 +460,7 @@ class PublishController extends AbstractController
             $counts = $this->publish_helper->getCommentsCountInfo();
             $total  = $counts[$type];
 
-            $pageinfo = Numbers::getPaginationPages($total, $curpage, $per_page);
+            $pageinfo = Numbers::getPaginationPages($total, $currentPage, $perPage);
         }
 
         $comments = $this->publish_helper->getComments($limit);
@@ -484,23 +484,23 @@ class PublishController extends AbstractController
 
     public function listValidatingContentAction()
     {
-        $per_page = 25;
+        $perPage = 25;
 
-        $curpage = $this->in->getUint('page');
-        if (!$curpage) {
-            $curpage = 1;
+        $currentPage = $this->in->getUint('page');
+        if (!$currentPage) {
+            $currentPage = 1;
         }
 
         $limit = [
-            'max'    => $per_page,
-            'offset' => ($curpage - 1) * $per_page,
+            'max'    => $perPage,
+            'offset' => ($currentPage - 1) * $perPage,
         ];
 
         $pageinfo = null;
         $total    = null;
         if (!@$_REQUEST['_partial']) {
             $total    = $this->publish_helper->getValidatingContentCount();
-            $pageinfo = Numbers::getPaginationPages($total, $curpage, $per_page);
+            $pageinfo = Numbers::getPaginationPages($total, $currentPage, $perPage);
         }
 
         $content_validating = $this->publish_helper->getValidatingContent($limit);
@@ -523,13 +523,6 @@ class PublishController extends AbstractController
         $this->publish_helper->setEnabledTypes(['feedback']);
 
         return $this->listValidatingCommentsAction();
-    }
-
-    public function listValidatingFeedbackContentAction()
-    {
-        $this->publish_helper->setEnabledTypes(['feedback']);
-
-        return $this->listValidatingContentAction();
     }
 
     public function approveContentAction($type, $content_id)
@@ -744,18 +737,18 @@ class PublishController extends AbstractController
 
     protected function listDrafts($get_all)
     {
-        $per_page = 25;
+        $perPage = 25;
 
-        $curpage = $this->in->getUint('page');
-        if (!$curpage) {
-            $curpage = 1;
+        $currentPage = $this->in->getUint('page');
+        if (!$currentPage) {
+            $currentPage = 1;
         }
 
         $pageinfo = null;
         $total    = null;
         if (!@$_REQUEST['_partial']) {
             $total    = $this->publish_helper->getDraftsCount();
-            $pageinfo = Numbers::getPaginationPages($total, $curpage, $per_page);
+            $pageinfo = Numbers::getPaginationPages($total, $currentPage, $perPage);
         }
 
         $drafts = $this->publish_helper->getDraftContent(null, 'ASC', $get_all);
@@ -1290,25 +1283,25 @@ class PublishController extends AbstractController
         if (!$page || $page < 1) {
             $page = 1;
         }
-        $per_page = 50;
+        $perPage = 50;
 
         $helper = "\\Application\\AgentBundle\\Controller\\Helper\\$helper";
         $helper = $helper::newFromResultCache($this, $result_cache);
 
         $count = count($result_cache['results']);
 
-        $pageinfo = Numbers::getPaginationPages($count, $page, $per_page);
+        $pageinfo = Numbers::getPaginationPages($count, $page, $perPage);
 
         $vars = [
             'cache'       => $result_cache,
             'cache_id'    => $result_cache['id'],
             'result_ids'  => $result_cache['results'],
             'num_results' => $count,
-            'results'     => $helper->getForPage($page - 1, $per_page),
+            'results'     => $helper->getForPage($page - 1, $perPage),
             'pageinfo'    => $pageinfo,
             'type'        => $result_cache['criteria']['type'],
             'page'        => $page,
-            'per_page'    => $per_page,
+            'per_page'    => $perPage,
         ];
 
         return $this->render('AgentBundle:Publish:search-results-'.$type.'.html.twig', $vars);
