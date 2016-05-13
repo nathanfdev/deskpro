@@ -33,6 +33,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsType;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\UseSectionVoter;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -72,6 +73,18 @@ class TicketController extends AbstractApiController
      */
     public function newTicketAction(Request $request, $visitor_id)
     {
+        if (!$this->isGranted(UseSectionVoter::USE_TICKETS)) {
+            $can_open_ticket = $this->isGranted(UseSectionVoter::VIEW_TICKETS_LINK);
+            $params          = [
+                'can_open_ticket' => $can_open_ticket,
+            ];
+            $content = [
+                'data' => $this->render('Theme:NewTicket:guest_new_ticket_not_allowed.html.twig', $params)
+                    ->getContent(),
+            ];
+
+            return new View($content, Response::HTTP_OK);
+        }
         $ticket_service = $this->get('tickets.new_ticket');
         $ticket         = $ticket_service->createNewTicket($request, $visitor_id, $this->getUser());
         $person         = $ticket->getPerson();
