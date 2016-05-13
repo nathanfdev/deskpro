@@ -41,7 +41,9 @@ Feature: /tickets/{id}/messages endpoint
     And the JSON node "data.ticket" should be equal to 1
     And the JSON node "data.person" should be equal to 1
     And the JSON node "data.is_agent_note" should be equal to 0
-    And the JSON node "data.message" should be equal to 'My Message <a href="http://localhost/file.php/IMGAAAAAAAAAAAAAAA/image.jpg" target="_blank" class="dp-is-image dragout dp-embed-blob-a-IMGAAAAAAAAAAAAAAA" data-downloadurl="http://localhost/file.php/IMGAAAAAAAAAAAAAAA/image.jpg" data-blob-authid="IMGAAAAAAAAAAAAAAA"><img src="http://localhost/file.php/IMGAAAAAAAAAAAAAAA/image.jpg?s=350" title="image.jpg" class="dp-embed-blob-img-IMGAAAAAAAAAAAAAAA" /></a>'
+    And the JSON node "data.message" should contain 'My Message'
+    And the JSON node "data.message" should contain 'IMGAAAAAAAAAAAAAAA/image.jpg'
+    And the JSON node "data.message" should contain '<img'
     And the JSON node "data.attachments" should have 1 element
     And ticket with id=1 has "message_created" log
 
