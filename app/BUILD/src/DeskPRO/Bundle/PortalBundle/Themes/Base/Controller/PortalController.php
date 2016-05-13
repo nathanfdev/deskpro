@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\UseSectionVoter;
@@ -105,14 +106,14 @@ class PortalController extends AbstractController
     {
         if (isset($options['include_contact_us']) && $options['include_contact_us'] == true) {
             $chatEnabled = $this->container->get('widget_settings_resolver')
-                                           ->getWidgetOptions()
-                                           ->getBrand()
-                                           ->getChat()
-                                           ->isEnabled();
+                ->getWidgetOptions()
+                ->getBrand()
+                ->getChat()
+                ->isEnabled();
             $extendedOptions = [
-                'can_use_tickets'  => $this->isGranted(UseSectionVoter::USE_TICKETS),
-                'can_use_chat'     => $chatEnabled && $this->isGranted(UseSectionVoter::USE_CHAT),
-                'can_use_feedback' => $this->isGranted(UseSectionVoter::USE_FEEDBACK),
+                'can_view_tickets_link' => $this->isGranted(UseSectionVoter::VIEW_TICKETS_LINK),
+                'can_use_chat'          => $chatEnabled && $this->isGranted(UseSectionVoter::USE_CHAT),
+                'can_use_feedback'      => $this->isGranted(UseSectionVoter::USE_FEEDBACK),
             ];
 
             $extendedOptions = array_merge(
@@ -131,7 +132,7 @@ class PortalController extends AbstractController
 
             $extendedOptions['first_link'] = '#';
 
-            if ($extendedOptions['can_use_tickets']) {
+            if ($extendedOptions['can_view_tickets_link']) {
                 $extendedOptions['first_link'] = $this->get('router')->generate('portal_new_ticket');
             } elseif ($extendedOptions['can_use_feedback']) {
                 $extendedOptions['first_link'] = $this->get('router')->generate('portal_feedback');

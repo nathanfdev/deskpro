@@ -52,7 +52,7 @@
 
     {% elseif 'newticket' == tab %}
 
-      {% if can_use_tickets() and show_tab_tickets() %}
+      {% if can_view_tickets_link() and show_tab_tickets() %}
         <li class="item-tickets {{ is_page_tickets() ? 'active' }}">
           <a href="{{ path('portal_new_ticket') }}">
             <i class="fa fa-envelope-o"></i>
