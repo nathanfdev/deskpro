@@ -52,4 +52,21 @@ class BlobContext extends BaseContext
         $this->em()->persist($blob);
         $this->em()->flush($blob);
     }
+
+    /**
+     * @Given I create an image blob with auth code :auth_code
+     *
+     * @param string $auth_code
+     */
+    public function iCreateImageBlobWithAuthCode($auth_code)
+    {
+        $blob_storage = $this->getContainer()->get('blob.storage');
+
+        $blob           = $blob_storage->createBlobRecordFromFile(__DIR__.'/../../../src/DeskPRO/Bundle/AppBundle/DataFixtures/res/avatars/superman_.jpg', 'image.jpg', 'image/jpeg');
+        $blob->authcode = $auth_code;
+        $blob->is_temp  = true;
+
+        $this->em()->persist($blob);
+        $this->em()->flush($blob);
+    }
 }
