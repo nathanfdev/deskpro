@@ -109,7 +109,7 @@ class LabelsCollectionTransformer implements DataTransformerInterface
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
 
         /** @var ArrayCollection $entities */
-        $entities = $propertyAccessor->getValue($this->labelsOwner, $this->labelsProperty);
+        $entities = clone $propertyAccessor->getValue($this->labelsOwner, $this->labelsProperty);
         $result   = [];
 
         foreach ($labels as $label) {
@@ -120,7 +120,10 @@ class LabelsCollectionTransformer implements DataTransformerInterface
                 ->first()
             ;
 
-            if (!$entity) {
+            if ($entity) {
+                // remove used entity to proper handle duplicates
+                $entities->removeElement($entity);
+            } else {
                 $entity = new $this->labelsClass();
                 if (!$entity instanceof Label) {
                     throw new \InvalidArgumentException('Entity '.get_class($entity).' is not instance of '.Label::class);

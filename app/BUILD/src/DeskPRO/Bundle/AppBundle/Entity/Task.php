@@ -43,6 +43,7 @@ use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle;
 use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat;
 use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
@@ -65,6 +66,7 @@ class Task implements EntityInterface
 
     /**
      * @var int
+     *
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
@@ -73,6 +75,7 @@ class Task implements EntityInterface
 
     /**
      * @var string
+     *
      * @ORM\Column(type="string")
      *
      * @Assert\NotBlank()
@@ -83,18 +86,21 @@ class Task implements EntityInterface
      * Complete or incomplete.
      *
      * @var bool
+     *
      * @ORM\Column(type="boolean", nullable=true)
      */
     protected $is_done = false;
 
     /**
      * @var int
+     *
      * @ORM\Column(type="integer", nullable=true)
      */
     protected $percent_complete = 0;
 
     /**
      * @var \DateTime
+     *
      * @ORM\Column(type="datetime")
      *
      * @Assert\NotNull()
@@ -105,6 +111,7 @@ class Task implements EntityInterface
      * Either task or event.
      *
      * @var string
+     *
      * @ORM\Column(type="string")
      *
      * @Assert\NotNull()
@@ -113,24 +120,28 @@ class Task implements EntityInterface
 
     /**
      * @var \DateTime
+     *
      * @ORM\Column(type="datetime", nullable=true)
      */
     protected $date_due;
 
     /**
      * @var \DateTime
+     *
      * @ORM\Column(type="datetime", nullable=true)
      */
     protected $date_event_start;
 
     /**
      * @var \DateTime
+     *
      * @ORM\Column(type="datetime", nullable=true)
      */
     protected $date_event_end;
 
     /**
      * @var Person
+     *
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="creator_person_id", referencedColumnName="id", onDelete="SET NULL")
      */
@@ -140,6 +151,7 @@ class Task implements EntityInterface
      * Project, public or private.
      *
      * @var string
+     *
      * @ORM\Column(type="string")
      *
      * @Assert\NotNull()
@@ -148,6 +160,7 @@ class Task implements EntityInterface
 
     /**
      * @var TaskProject
+     *
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskProject")
      * @ORM\JoinColumn(name="project_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      */
@@ -155,6 +168,7 @@ class Task implements EntityInterface
 
     /**
      * @var TaskList
+     *
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskList")
      * @ORM\JoinColumn(name="list_id", referencedColumnName="id", onDelete="CASCADE")
      */
@@ -164,6 +178,7 @@ class Task implements EntityInterface
      * Between 1 and 10.
      *
      * @var int
+     *
      * @ORM\Column(type="integer")
      *
      * @Assert\NotNull()
@@ -172,30 +187,38 @@ class Task implements EntityInterface
 
     /**
      * @var TaskSubtask[]|ArrayCollection
+     *
      * @ORM\OneToMany(targetEntity="TaskSubtask", mappedBy="task")
      */
     protected $subtasks;
 
     /**
      * @var LabelTask[]|ArrayCollection
+     *
      * @ORM\OneToMany(targetEntity="LabelTask", mappedBy="task", cascade={"all"}, orphanRemoval=true)
+     *
+     * @Assert\Valid()
+     * @AppAssert\UniqueCollection(property={"label"})
      */
     protected $labels;
 
     /**
      * @var TaskComment[]|ArrayCollection
+     *
      * @ORM\OneToMany(targetEntity="TaskComment", mappedBy="task")
      */
     protected $comments;
 
     /**
      * @var TaskAttachment[]|ArrayCollection
+     *
      * @ORM\OneToMany(targetEntity="TaskAttachment", mappedBy="task")
      */
     protected $attachments;
 
     /**
      * @var TaskLinkedArticle[]|ArrayCollection
+     *
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle", mappedBy="task",
      *     cascade={"persist", "remove"}, orphanRemoval=true)
      */
@@ -203,6 +226,7 @@ class Task implements EntityInterface
 
     /**
      * @var TaskLinkedChat[]|ArrayCollection
+     *
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat", mappedBy="task",
      *     cascade={"persist", "remove"}, orphanRemoval=true)
      */
@@ -210,6 +234,7 @@ class Task implements EntityInterface
 
     /**
      * @var TaskLinkedTicket[]|ArrayCollection
+     *
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket", mappedBy="task",
      *     cascade={"persist", "remove"}, orphanRemoval=true)
      */
@@ -217,6 +242,7 @@ class Task implements EntityInterface
 
     /**
      * @var TaskAssignment[]|ArrayCollection
+     *
      * @ORM\OneToMany(targetEntity="TaskAssignment", mappedBy="task", cascade={"persist"}, orphanRemoval=true)
      */
     protected $assigned;
@@ -225,18 +251,21 @@ class Task implements EntityInterface
      * The date the task was completed.
      *
      * @var \DateTime
+     *
      * @ORM\Column(type="datetime", nullable=true)
      */
     protected $date_done;
 
     /**
      * @var int
+     *
      * @ORM\Column(type="integer")
      */
     protected $display_order = 1;
 
     /**
      * @var bool
+     *
      * @ORM\Column(type="boolean")
      */
     protected $for_del = false;

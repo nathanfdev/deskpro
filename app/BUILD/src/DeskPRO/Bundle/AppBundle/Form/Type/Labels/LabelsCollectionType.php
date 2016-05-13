@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Labels;
 
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\ArrayOfStringsTransformer;
@@ -55,7 +51,7 @@ class LabelsCollectionType extends AbstractType
                 $options['labels_property'],
                 $options['owner_property']
             ))
-            ->addViewTransformer(new ArrayOfStringsTransformer(true)
+            ->addViewTransformer(new ArrayOfStringsTransformer()
         );
     }
 
@@ -79,6 +75,7 @@ class LabelsCollectionType extends AbstractType
                 'allow_add'       => true,
                 'allow_delete'    => true,
                 'by_reference'    => true,
+                'error_bubbling'  => false,
             ])
             ->setAllowedTypes([
                 'labels_class'    => 'string',

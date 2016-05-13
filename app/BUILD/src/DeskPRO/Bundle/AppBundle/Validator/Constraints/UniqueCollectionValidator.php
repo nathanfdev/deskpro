@@ -26,12 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
+use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
@@ -54,10 +51,30 @@ class UniqueCollectionValidator extends ConstraintValidator
         }
 
         /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
-        $context = $this->context;
-        $unique  = [];
+        $context  = $this->context;
+        $unique   = [];
+        $accessor = PropertyAccess::createPropertyAccessor();
+
         foreach ($value as $item) {
-            if (in_array($item, $unique)) {
+            if (is_object($item) && $constraint->property) {
+                $matched = false;
+
+                foreach ($unique as $uniqueItem) {
+                    $matched = true;
+                    foreach ((array) $constraint->property as $property) {
+                        if ($accessor->getValue($item, $property) !== $accessor->getValue($uniqueItem, $property)) {
+                            $matched = false;
+                        }
+                    }
+                    if ($matched) {
+                        break;
+                    }
+                }
+            } else {
+                $matched = in_array($item, $unique);
+            }
+
+            if ($matched) {
                 $context
                     ->buildViolation($constraint->message)
                     ->setCode(UniqueCollection::NOT_UNIQUE)

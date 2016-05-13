@@ -114,7 +114,7 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      * @var \Doctrine\Common\Collections\ArrayCollection
      *
      * @Assert\Valid()
-     * @AppAssert\UniqueCollection()
+     * @AppAssert\UniqueCollection(property={"label"})
      */
     protected $labels;
 

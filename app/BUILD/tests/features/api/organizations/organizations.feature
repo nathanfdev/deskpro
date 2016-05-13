@@ -62,7 +62,7 @@ Feature: /organizations endpoint
   "name": "Organization 3",
   "summary": "test organization",
   "picture_blob": "AAAAAAAAAAAAAAAAAA",
-  "labels": ["label1", "label1", "label2"],
+  "labels": ["label1", "label2"],
   "email_domains": ["domain1.com", "domain2.com"],
   "user_groups": [3, 5],
   "contact_data": {

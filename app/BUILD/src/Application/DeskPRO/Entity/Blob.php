@@ -35,6 +35,8 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\DpStrings;
@@ -207,6 +209,10 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     protected $is_temp = false;
 
     /**
+     * @Assert\Valid()
+     * @AppAssert\UniqueCollection(property={"label"})
+     *
+     * @var ArrayCollection|LabelBlob[]
      */
     protected $labels;
 
