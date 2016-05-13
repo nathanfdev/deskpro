@@ -8,22 +8,24 @@ export class Menu extends React.Component {
    * @type {Object}
    */
   static propTypes = {
-    widgetClass: React.PropTypes.string,
+    widgetClass:         React.PropTypes.string,
     overrideWidgetClass: React.PropTypes.bool,
-    children: React.PropTypes.node,
-    menuLevel: React.PropTypes.number,
-    isOpen: React.PropTypes.bool
+    children:            React.PropTypes.node,
+    menuLevel:           React.PropTypes.number,
+    isOpen:              React.PropTypes.bool
   };
 
+  static displayName = 'Menu';
+
   render() {
-    const isOpen = typeof this.props.isOpen !== 'undefined' ? this.props.isOpen : true;
+    const isOpen   = typeof this.props.isOpen !== 'undefined' ? this.props.isOpen : true;
     const divClass = classNames(this.props.widgetClass, { 'dpw-navigation-dropdown': !this.props.overrideWidgetClass });
 
     if (isOpen) {
       const menuLevel = this.props.menuLevel ? this.props.menuLevel : 1;
 
       return (
-        <div className={divClass} style={{zIndex: 1000 + menuLevel}}>
+        <div className={divClass} style={{ zIndex: 1000 + menuLevel }}>
           <ul>
             {this.props.children}
           </ul>
@@ -31,6 +33,6 @@ export class Menu extends React.Component {
       );
     }
 
-    return <div />;
+    return null;
   }
 }
