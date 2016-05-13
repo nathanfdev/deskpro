@@ -648,6 +648,7 @@ SQL
         $organizationType = LabelDef::TYPE_ORGS;
         $peopleType       = LabelDef::TYPE_PEOPLE;
         $ticketType       = LabelDef::TYPE_TICKETS;
+        $taskType         = LabelDef::TYPE_TASKS;
         $this->getDb()->exec(
             "
             INSERT INTO `label_defs`
@@ -664,7 +665,10 @@ SQL
                 ('$peopleType', 'CCC-person', 'yellow', 3),
                 ('$ticketType', 'AAA-ticket', 'white', 1),
                 ('$ticketType', 'BBB-ticket', 'red', 3),
-                ('$ticketType', 'CCC-ticket', 'green', 13)
+                ('$ticketType', 'CCC-ticket', 'green', 13),
+                ('$taskType', 'AAA-task', 'red', 0),
+                ('$taskType', 'BBB-task', 'white', 0),
+                ('$taskType', 'CCC-task', 'red', 0)
             ;
         "
         );

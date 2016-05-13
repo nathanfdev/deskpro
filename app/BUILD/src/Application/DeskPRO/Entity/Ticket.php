@@ -307,7 +307,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      * @var \Doctrine\Common\Collections\ArrayCollection
      *
      * @Assert\Valid()
-     * @AppAssert\UniqueCollection()
+     * @AppAssert\UniqueCollection(property={"label"})
      */
     protected $labels;
 
@@ -1914,10 +1914,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function addLabel(Label $label)
     {
-        if ($ret = $this->findLabelByString($label->label)) {
-            return $ret;
-        }
-
         $label->ticket = $this;
         $this->labels->add($label);
         $this->_onPropertyChanged('labels', null, $this->labels);

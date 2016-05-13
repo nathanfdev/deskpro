@@ -1,4 +1,4 @@
-@crm-nav
+@crm-nav @labels
 Feature: /*_labels endpoints
   To retrieve labels of different DeskPRO objects
   As a developer
@@ -20,6 +20,7 @@ Feature: /*_labels endpoints
       | person       | AAA-person   |
       | organization | AAA-org      |
       | ticket       | AAA-ticket   |
+      | task         | AAA-task     |
 
   Scenario Outline: I search for labels
     When I send a GET request to "/api/v2/<target>_labels?term=BBB"
@@ -33,3 +34,33 @@ Feature: /*_labels endpoints
       | person       |
       | organization |
       | ticket       |
+      | task         |
+
+  Scenario Outline: I try to add duplicate labels
+    When I send a POST request to "/api/v2/<endpoint>" with body:
+    """
+{
+  "labels": ["label1", "label1", "label2"]
+}
+    """
+    And the response status code should be 400
+    And the JSON node "errors.fields.labels.errors[0].code" should be equal to "not_unique_collection"
+    And the JSON node "errors.fields.labels.errors[0].message" should be equal to "One or more of the given values is not unique."
+
+    When I send a PUT request to "/api/v2/<endpoint>/1" with body:
+    """
+{
+  "labels": ["label1", "label2", "label1"]
+}
+    """
+    And the response status code should be 400
+    And the JSON node "errors.fields.labels.errors[0].code" should be equal to "not_unique_collection"
+    And the JSON node "errors.fields.labels.errors[0].message" should be equal to "One or more of the given values is not unique."
+
+
+    Examples:
+      | endpoint      |
+      | people        |
+      | organizations |
+      | tickets       |
+      | tasks         |

@@ -37,10 +37,12 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Labels\LabelManager;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @PortalLinkRoute("portal_feedback_view", route_param_map={"slug":"slug"})
@@ -99,7 +101,10 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     /**
      * String array of labels associated with this news.
      *
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @Assert\Valid()
+     * @AppAssert\UniqueCollection(property={"label"})
+     *
+     * @var \Doctrine\Common\Collections\ArrayCollection|LabelFeedback[]
      */
     protected $labels;
 

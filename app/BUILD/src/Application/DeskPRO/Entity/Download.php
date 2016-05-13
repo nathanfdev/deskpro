@@ -37,12 +37,14 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @PortalLinkRoute("portal_downloads_view", route_param_map={"slug":"slug"})
@@ -106,7 +108,10 @@ class Download extends ContentAbstract implements HighlightableModelInterface
      * @JMS\Expose()
      * @JMS\Type("array<to_string<Application\DeskPRO\Entity\DownloadLabel>>")
      *
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @Assert\Valid()
+     * @AppAssert\UniqueCollection(property={"label"})
+     *
+     * @var \Doctrine\Common\Collections\ArrayCollection|LabelDownload[]
      */
     protected $labels;
 

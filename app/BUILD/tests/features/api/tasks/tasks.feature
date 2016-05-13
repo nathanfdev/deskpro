@@ -72,7 +72,7 @@ Feature: /tasks endpoint
     When I send a PUT request to "/api/v2/tasks/3" with body:
     """
 {
-  "labels": ["test", "test", "labels"]
+  "labels": ["test", "labels"]
 }
     """
     Then the response status code should be 204
