@@ -213,3 +213,8 @@ services:
     class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\TicketMessagesVoter
     tags:
       - { name: security.voter.permission_groups }
+
+  security.voter.permission_groups.client_devices:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\ClientDeviceVoter
+    tags:
+      - { name: security.voter.permission_groups }
