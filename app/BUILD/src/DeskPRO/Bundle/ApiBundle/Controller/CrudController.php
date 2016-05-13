@@ -292,14 +292,7 @@ abstract class CrudController extends BaseController
         $this->checkExposed(__METHOD__);
         $this->denyAccessUnlessGranted(PermissionGroupVoter::CREATE, $this->getPermissionGroupContext($request));
 
-        $entity = $this->instantiateEntity($request);
-        $view   = $this->handleForm($entity, $request);
-
-        if ($this->isExposed('get')) {
-            $view->setLocation($this->getLocationUrl($entity, $request));
-        }
-
-        return $view;
+        return $this->handleForm($this->instantiateEntity($request), $request);
     }
 
     /**
@@ -540,7 +533,12 @@ abstract class CrudController extends BaseController
             throw new InvalidFormException($form);
         }
 
-        return View::create($this->wrap($this->persistModel($model)), $status);
+        $view = View::create($this->wrap($this->persistModel($model)), $status);
+        if ($this->isExposed('get')) {
+            $view->setLocation($this->getLocationUrl($model, $request));
+        }
+
+        return $view;
     }
 
     /**
