@@ -25,8 +25,8 @@ import {
 export class TaskCardNew extends React.Component {
 
   static propTypes = {
-    onClose: PropTypes.func,
-    dispatch: PropTypes.func.isRequired,
+    onClose:   PropTypes.func,
+    dispatch:  PropTypes.func.isRequired,
     isChanged: PropTypes.func
   };
 
@@ -34,27 +34,27 @@ export class TaskCardNew extends React.Component {
     super(props);
 
     this.model = {
-      title: null,
-      due: null,
+      title:    null,
+      due:      null,
       assignee: Immutable.fromJS({
-        agents: [],
-        teams: [],
+        agents:      [],
+        teams:       [],
         departments: []
       }),
-      project: null
+      project:  null
     };
   }
 
   onReset = () => {
     this.model = {
-      title: null,
-      due: null,
+      title:    null,
+      due:      null,
       assignee: Immutable.fromJS({
-        agents: [],
-        teams: [],
+        agents:      [],
+        teams:       [],
         departments: []
       }),
-      project: null
+      project:  null
     };
     this.forceUpdate();
   };
@@ -63,10 +63,12 @@ export class TaskCardNew extends React.Component {
     this.refs.reset.onSetEditing(isEditing);
   };
 
-  onChange(prop, value) {
+  onChange = (prop, value) => {
     this.model[prop] = value;
-    value && this.refs.reset.onChange();
-  }
+    if (value) {
+      this.refs.reset.onChange();
+    }
+  };
 
   onAssign = (assignee) => {
     return new Promise(resolve => {
@@ -81,15 +83,15 @@ export class TaskCardNew extends React.Component {
     const { dispatch, onClose } = this.props;
 
     const submitData = {
-      title: this.model.title,
-      task_type: 'task',
-      visibility: 'public',
-      urgency: 1,
-      date_due: this.model.due,
-      project: this.model.project,
-      agents: this.model.assignee.get('agents') || [],
+      title:       this.model.title,
+      task_type:   'task',
+      visibility:  'public',
+      urgency:     1,
+      date_due:    this.model.due,
+      project:     this.model.project,
+      agents:      this.model.assignee.get('agents') || [],
       departments: this.model.assignee.get('departments') || [],
-      teams: this.model.assignee.get('teams') || []
+      teams:       this.model.assignee.get('teams') || []
     };
 
     this.setState({
@@ -97,17 +99,19 @@ export class TaskCardNew extends React.Component {
     });
 
     dispatch(addTask(submitData));
-    onClose && onClose();
+    if (onClose) {
+      onClose();
+    }
   };
 
   render() {
     const { submit, isChanged } = this.props;
-    const { title, due, project, assignee } = this.model;
+    const { assignee } = this.model;
 
     return (
       <Card type="task">
-        <SaveTaskButton onClick={this.onSave} submit={submit}/>
-        <CardReset ref="reset" onReset={this.onReset} isChanged={isChanged}/>
+        <SaveTaskButton onClick={this.onSave} submit={submit} />
+        <CardReset ref="reset" onReset={this.onReset} isChanged={isChanged} />
         <CardLine>
           <CardLineLeft>
             <div className="dpwd--card-title">
@@ -121,17 +125,23 @@ export class TaskCardNew extends React.Component {
 
         <CardLine>
           <CardLineLeft>
-            <DateDue value={this.model.due}
-                     onChange={this.onChange.bind(this, 'due')}
-                     onSetEditing={this.onSetEditing}
-                     openBySingleClick/>
-            <CardProjectContainer value={this.model.project}
-                                  onChange={this.onChange.bind(this, 'project')}
-                                  onSetEditing={this.onSetEditing}
-                                  openBySingleClick={true} />
+            <div className="dpwd--card-line-item-container">
+              <DateDue value={this.model.due}
+                onChange={val => this.onChange('due', val)}
+                onSetEditing={this.onSetEditing}
+                openBySingleClick
+              />
+            </div>
+            <div className="dpwd--card-line-item-container">
+              <CardProjectContainer value={this.model.project}
+                onChange={val => this.onChange('project', val)}
+                onSetEditing={this.onSetEditing}
+                openBySingleClick
+              />
+            </div>
           </CardLineLeft>
         </CardLine>
       </Card>
-    );
+  );
   }
-}
+  }

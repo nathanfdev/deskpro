@@ -44,7 +44,7 @@ export class DateDue extends CardWidget {
     };
 
     return (
-      <div className="dpwd--card-line-item" style={{ display: 'inline-block', maxWidth: '30%' }}>
+      <div className="dpwd--card-line-item">
         <div className={classNames({ overdue: isOverdue })} {...prop} ref="trigger" style={style}>
           <i className="fa fa-calendar-o" style={{ position: 'absolute', left: 2, top: 2 }} />
           <span title={title}>Due: {title}</span>

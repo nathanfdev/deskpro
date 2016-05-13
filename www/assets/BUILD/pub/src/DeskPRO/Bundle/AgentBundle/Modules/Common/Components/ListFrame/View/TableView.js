@@ -68,10 +68,8 @@ export class Th extends Component {
 
     return (
       <th onClick={this.onChange}
-          className={classNames(
-            { hidden: !visible },
-            { sortable: !!onChange }
-          )}>
+        className={classNames({ hidden: !visible }, { sortable: !!onChange })}
+      >
 
         {title}
         {sort && orderBy === sort &&

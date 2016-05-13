@@ -29,9 +29,15 @@ export class TaskCard extends BaseTaskCard {
     return (
       <div className="details-line">
         <div>
-          <DateDue value={task.get('date_due')} onChange={val => onChange('date_due', val)} />
-          <CardProjectContainer value={task.get('project')} onChange={val => onChange('project', val)} />
-          <LinkedItemContainer value={task} onChange={val => onChange('linked_items', val)} />
+          <div className="dpwd--card-line-item-container">
+            <DateDue value={task.get('date_due')} onChange={val => onChange('date_due', val)} />
+          </div>
+          <div className="dpwd--card-line-item-container">
+            <CardProjectContainer value={task.get('project')} onChange={val => onChange('project', val)} />
+          </div>
+          <div className="dpwd--card-line-item-container">
+            <LinkedItemContainer value={task} onChange={val => onChange('linked_items', val)} />
+          </div>
         </div>
         <div className="icon-block">
           <Comments count={this.state.comments} />

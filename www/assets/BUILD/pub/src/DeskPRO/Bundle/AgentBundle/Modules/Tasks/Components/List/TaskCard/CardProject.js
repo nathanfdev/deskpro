@@ -72,17 +72,17 @@ export class CardProject extends CardWidget {
     const title = project ? project.get('title') : 'N/A';
 
     return (
-      <div style={{ display: 'inline-block', maxWidth: '30%' }}>
+      <div>
         <div className="dpwd--card-line-item" ref="button" {...prop}
           style={{ display: 'inline-block', position: 'relative', paddingLeft: 20, overflow: 'hidden', width: '100%' }}
-          >
+        >
           <i className="fa fa-book" style={{ position: 'absolute', left: 2, top: 2 }} />
           <span title={title}>{title}</span>
         </div>
 
         <Positioned isOpen={this.state.isOpen} positionTarget={this} positionAt="right+5 top-23" collision="fit"
           zIndex={1002}
-          >
+        >
 
           <ClickOut onClickOut={this.onClose} additionalNodes={[this.refs.button, '.fa-check']}>
 

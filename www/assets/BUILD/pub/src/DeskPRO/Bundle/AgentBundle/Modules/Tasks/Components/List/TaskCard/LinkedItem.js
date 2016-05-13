@@ -199,7 +199,7 @@ export class LinkedItem extends CardWidget {
     }
 
     return (
-      <div style={{display: 'inline-block', maxWidth: '30%'}}>
+      <div>
         <div className="dpwd--card-line-item" {...prop}
              style={{display: 'inline-block', position: 'relative', paddingLeft: 20, overflow: 'hidden', width: '100%'}}>
           <i className="fa fa-link" style={{position: 'absolute', left: 2, top: 2}} />

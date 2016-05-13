@@ -26,11 +26,21 @@ export class TaskCard extends BaseTaskCard {
     return (
       <div className="details-line">
         <div>
-          <DateDue value={task.get('date_due')} onChange={value => onChange('date_due', value)} />
+          <div className="dpwd--card-line-item-container">
+            <DateDue value={task.get('date_due')} onChange={value => onChange('date_due', value)} />
+          </div>
+
           <span className="dpw--card-disc" />
-          <CardProjectContainer value={task.get('project')} onChange={value => onChange('project', value)} />
+
+          <div className="dpwd--card-line-item-container">
+            <CardProjectContainer value={task.get('project')} onChange={value => onChange('project', value)} />
+          </div>
+
           <span className="dpw--card-disc" />
-          <LinkedItemContainer value={task} onChange={value => onChange('linked_items', value)} />
+
+          <div className="dpwd--card-line-item-container">
+            <LinkedItemContainer value={task} onChange={value => onChange('linked_items', value)} />
+          </div>
         </div>
         <div className="icon-block">
           <Comments count={this.state.comments} />
