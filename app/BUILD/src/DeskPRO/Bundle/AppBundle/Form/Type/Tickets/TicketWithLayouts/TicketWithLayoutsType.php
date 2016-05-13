@@ -273,7 +273,7 @@ class TicketWithLayoutsType extends AbstractType
         $forApi = $form->getConfig()->getOption('for_api', false);
 
         if ($ticket->getDepartment() && isset($data[FormFields::DEPARTMENT])) {
-            if ($ticket->getDepartment()->getId() !== $data[FormFields::DEPARTMENT]) {
+            if ($ticket->getDepartment()->getId() != $data[FormFields::DEPARTMENT]) {
                 // if department was changed, we need to clear its related data
                 $ticket->resetCustomData();
             }

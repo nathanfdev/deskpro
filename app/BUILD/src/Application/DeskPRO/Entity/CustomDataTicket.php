@@ -155,10 +155,9 @@ class CustomDataTicket extends CustomDataAbstract
                 'indexes' => [
                     'field_id_idx' => ['columns' => [0 => 'field_id', 1 => 'ticket_id']],
                 ],
-                // TODO: This can't be here until this is fixed https://trello.com/c/mHvpJsZF
-                //'uniqueConstraints' => [
-                //    'unique_idx' => ['columns' => ['field_id', 'ticket_id', 'root_field_id']],
-                //],
+                'uniqueConstraints' => [
+                    'unique_idx' => ['columns' => ['field_id', 'ticket_id', 'root_field_id']],
+                ],
             ]
         );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);

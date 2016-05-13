@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Model;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -38,7 +39,7 @@ use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 /**
  * These mirror the link annotations from Application\DeskPRO\Entity\Ticket.
  *
- * We build this in the TicketViewService data service (it calcs all the $attributes for us, so we only do that once per request)
+ * We build this in the TicketViewDataService data service (it calcs all the $attributes for us, so we only do that once per request)
  *
  * @PortalLinkRoute("portal_tickets_guest_view", route_param_map={"auth":"auth"}, type="view_only")
  * @PortalLinkCustom()
@@ -94,7 +95,7 @@ class TicketView
      * Gets a ticket proprty by ID.
      *
      * The IDs are consts on this class, but also require a DB ID separated by _. For example, ticket_def_6.
-     * IDs are generated consistently in the TicketViewService
+     * IDs are generated consistently in the TicketDataViewService
      *
      * @param string $id the id of the property
      *
