@@ -48,8 +48,8 @@ export const listFiltersSelector = createSelector(
     // Category options
     if (!currentListParams.get('navItem') || (!currentListParams.get('navItem').get('custom_category'))) {
       const categoryOptions = categories.toArray().map(cat => ({
-        label: cat.get('input'),
-        value: cat.get('input')
+        label: cat.get('title'),
+        value: cat.get('title')
       }));
       filterSelector.push({
         label:       'Category',
