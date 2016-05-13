@@ -680,15 +680,13 @@ class FieldManager
 
         $old_custom_data = $object->getCustomDataForField($set_field);
 
-        $custom_data              = $this->createDataClass();
+        $custom_data              = $old_custom_data ?: $this->createDataClass();
         $custom_data->field       = $set_field;
         $custom_data->root_field  = $field_def;
         $custom_data[$value_type] = $value;
 
-        $object->addCustomData($custom_data);
-
-        if ($old_custom_data) {
-            $object->custom_data->removeElement($old_custom_data);
+        if (!$old_custom_data) {
+            $object->addCustomData($custom_data);
         }
 
         return $custom_data;

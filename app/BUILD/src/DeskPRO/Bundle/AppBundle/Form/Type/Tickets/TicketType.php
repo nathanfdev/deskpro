@@ -114,15 +114,7 @@ class TicketType extends AbstractType
             ])
             ->add('status', ChoiceType::class, [
                 'choices_as_values' => true,
-                'choices'           => [
-                    Ticket::STATUS_AWAITING_AGENT,
-                    Ticket::STATUS_AWAITING_USER,
-                    Ticket::STATUS_ARCHIVED,
-                    Ticket::STATUS_RESOLVED,
-                    Ticket::STATUS_HIDDEN,
-                    Ticket::STATUS_HIDDEN.'.'.Ticket::HIDDEN_STATUS_SPAM,
-                    Ticket::STATUS_HIDDEN.'.'.Ticket::HIDDEN_STATUS_DELETED,
-                ],
+                'choices'           => Ticket::getTicketStatuses(),
             ])
             ->add('is_hold', ApiBooleanType::class)
             ->add('urgency', NumberType::class)
@@ -150,6 +142,8 @@ class TicketType extends AbstractType
                 'error_bubbling' => false,
             ])
         ;
+
+        $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
     }
 
     /**

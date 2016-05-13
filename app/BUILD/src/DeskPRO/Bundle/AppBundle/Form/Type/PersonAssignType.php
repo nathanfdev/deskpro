@@ -189,12 +189,4 @@ class PersonAssignType extends AbstractType
             ])
         ;
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'deskpro_person_identity';
-    }
 }

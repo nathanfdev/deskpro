@@ -26,17 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
+use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketAwarePersistModelTrait;
+use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageType;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -51,6 +47,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class TicketMessagesController extends CrudSubController
 {
+    use TicketSaveTrait, TicketAwarePersistModelTrait;
+
     public static $entity         = TicketMessage::class;
     public static $type           = TicketMessageType::class;
     public static $parentProperty = 'ticket';
@@ -75,45 +73,15 @@ class TicketMessagesController extends CrudSubController
 
     /**
      * {@inheritdoc}
-     */
-    protected function persistModel($entity)
-    {
-        /* @var TicketMessage $entity */
-        $ticket = $entity->getTicket();
-
-        $this->saveTicket($ticket);
-
-        return $entity;
-    }
-
-    /**
-     * {@inheritdoc}
+     *
+     * @param TicketMessage $entity
      */
     protected function deleteEntity($entity)
     {
-        /* @var TicketMessage $entity */
         $ticket = $entity->getTicket();
-        $ticket->messages->removeElement($entity);
+        $ticket->disableAutoTicketProcess();
+        $ticket->removeMessage($entity);
 
         $this->saveTicket($ticket);
-    }
-
-    /**
-     * @param Ticket $ticket
-     *
-     * @throws \Exception
-     */
-    protected function saveTicket(Ticket $ticket)
-    {
-        /** @var TicketManager $manager */
-        $manager = $this->getContainer()->getTicketManager();
-
-        if ($ticket->getStateChangeRecorder()->hasNewReply()) {
-            $context = $manager->createAgentExecutorContext($this->getUser(), 'newreply', 'api');
-        } else {
-            $context = $manager->createAgentExecutorContext($this->getUser(), 'update', 'api');
-        }
-
-        $manager->saveTicket($ticket, $context);
     }
 }

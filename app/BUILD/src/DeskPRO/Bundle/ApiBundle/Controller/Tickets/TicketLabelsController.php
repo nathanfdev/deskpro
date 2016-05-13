@@ -64,7 +64,7 @@ class TicketLabelsController extends BaseController
      *
      * @return View
      *
-     * @Rest\Get("/ticket_labels/{label}/tickets", name="api_ticket_labels_tickets")
+     * @Rest\Get("/ticket_labels/{label}/tickets")
      */
     public function getTicketsAction(Request $request, $label)
     {

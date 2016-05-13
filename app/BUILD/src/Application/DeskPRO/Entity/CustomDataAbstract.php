@@ -227,4 +227,9 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
             $this->getData()
         );
     }
+
+    /**
+     * @return mixed
+     */
+    abstract public function getOwner();
 }

@@ -62,6 +62,16 @@ class CustomDataProduct extends CustomDataAbstract
         return $this->product['id'];
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @return Product
+     */
+    public function getOwner()
+    {
+        return $this->product;
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################

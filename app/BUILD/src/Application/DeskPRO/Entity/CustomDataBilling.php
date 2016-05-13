@@ -93,6 +93,16 @@ class CustomDataBilling extends CustomDataAbstract
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @return TicketCharge
+     */
+    public function getOwner()
+    {
+        return $this->ticket_charge;
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################

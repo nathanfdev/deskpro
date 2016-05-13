@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
 use Application\DeskPRO\Entity\Sla;
@@ -42,6 +39,9 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class TicketSlaType.
+ */
 class TicketSlaType extends AbstractType
 {
     /**
@@ -50,19 +50,21 @@ class TicketSlaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('sla', EntityType::class, ['class' => Sla::class])
-            ->add(
-                'sla_status',
-                ChoiceType::class,
-                [
-                    'choices' => [
-                        TicketSla::STATUS_OK      => 'OK',
-                        TicketSla::STATUS_WARNING => 'Warning',
-                        TicketSla::STATUS_FAIL    => 'Fail',
-                    ],
-                ]
-            )
-            ->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetRelations']);
+            ->add('sla', EntityType::class, [
+                'class' => Sla::class,
+            ])
+            ->add('sla_status', ChoiceType::class, [
+                'choices_as_values' => true,
+                'choices'           => [
+                    TicketSla::STATUS_OK,
+                    TicketSla::STATUS_WARNING,
+                    TicketSla::STATUS_FAIL,
+                ],
+            ])
+        ;
+
+        $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetRelations']);
     }
 
     /**
@@ -71,9 +73,14 @@ class TicketSlaType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['ticket'])
-            ->setDefaults(['data_class' => TicketSla::class])
-            ->setAllowedTypes(['ticket' => Ticket::class]);
+            ->setRequired('ticket')
+            ->setDefaults([
+                'data_class' => TicketSla::class,
+            ])
+            ->setAllowedTypes([
+                'ticket' => Ticket::class,
+            ])
+        ;
     }
 
     /**
@@ -81,14 +88,11 @@ class TicketSlaType extends AbstractType
      */
     public function onSetRelations(FormEvent $event)
     {
-        $form   = $event->getForm();
-        $config = $form->getConfig();
-
-        /** @var TicketSla $data */
+        $form = $event->getForm();
         $data = $form->getData();
 
-        $ticket = $config->getOption('ticket');
-
-        $data->setTicket($ticket);
+        if ($data instanceof TicketSla) {
+            $data->setTicket($form->getConfig()->getOption('ticket'));
+        }
     }
 }

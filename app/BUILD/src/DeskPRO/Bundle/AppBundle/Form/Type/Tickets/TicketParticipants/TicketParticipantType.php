@@ -56,7 +56,7 @@ class TicketParticipantType extends AbstractType
         ]);
 
         $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetTicket']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations']);
     }
 
     /**
@@ -82,13 +82,13 @@ class TicketParticipantType extends AbstractType
     /**
      * @param FormEvent $event
      */
-    public function onSetTicket(FormEvent $event)
+    public function onSetRelations(FormEvent $event)
     {
         $form = $event->getForm();
         $data = $event->getData();
 
-        /** @var Ticket $owner */
-        $owner = $form->getConfig()->getOption('owner');
-        $owner->addParticipant($data);
+        if (!$data->getId() && $data instanceof TicketParticipant) {
+            $form->getConfig()->getOption('owner')->addParticipant($data);
+        }
     }
 }

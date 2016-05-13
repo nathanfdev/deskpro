@@ -34,6 +34,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomDataChangeListener;
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -72,6 +74,14 @@ class CustomDataTicket extends CustomDataAbstract
     }
 
     /**
+     * @return CustomDefAbstract
+     */
+    public function getField()
+    {
+        return $this->field;
+    }
+
+    /**
      * @param Ticket $ticket
      *
      * @return $this
@@ -98,11 +108,37 @@ class CustomDataTicket extends CustomDataAbstract
     }
 
     /**
+     * @return Ticket
+     */
+    public function getTicket()
+    {
+        return $this->ticket;
+    }
+
+    /**
      * @return int
      */
     public function getTicketId()
     {
         return $this->ticket['id'];
+    }
+
+    /**
+     * @return CustomDefTicket
+     */
+    public function getRootField()
+    {
+        return $this->root_field;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return Ticket
+     */
+    public function getOwner()
+    {
+        return $this->ticket;
     }
 
     ############################################################################
@@ -204,5 +240,9 @@ class CustomDataTicket extends CustomDataAbstract
                 ),
             )
         );
+
+        $metadata->addEntityListener(Events::postPersist, CustomDataChangeListener::class, Events::postPersist);
+        $metadata->addEntityListener(Events::preUpdate, CustomDataChangeListener::class, Events::preUpdate);
+        $metadata->addEntityListener(Events::preRemove, CustomDataChangeListener::class, Events::preRemove);
     }
 }

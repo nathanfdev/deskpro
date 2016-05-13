@@ -26,49 +26,40 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Traits;
+namespace DeskPRO\Bundle\ApiBundle\Traits\Tickets;
 
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use Doctrine\ORM\EntityManager;
-use Pagerfanta\Adapter\FixedAdapter;
-use Pagerfanta\Pagerfanta;
 
 /**
- * Class TicketsPagerTrait.
+ * Class SaveTicketTrait.
  *
- * @method EntityManager getManager()
+ * @method DeskproContainer getContainer()
+ * @method Person           getUser()
  */
-trait TicketsPagerTrait
+trait TicketSaveTrait
 {
     /**
-     * @param int   $total
-     * @param array $ids
-     * @param int   $currentPage
-     * @param int   $maxPerPage
+     * @param Ticket $ticket
      *
-     * @return Pagerfanta
+     * @throws \Exception
      */
-    public function getTicketsPager($total, array $ids, $currentPage, $maxPerPage)
+    protected function saveTicket(Ticket $ticket)
     {
-        $tickets = [];
-        if (count($ids)) {
-            $qb = $this->getManager()->createQueryBuilder();
-            $qb
-                ->select('t, field(t.id, :ids) as HIDDEN field')
-                ->from(Ticket::class, 't')
-                ->where('t.id IN (:ids)')
-                ->orderBy('field')
-                ->setParameter('ids', $ids)
-            ;
+        $manager = $this->getContainer()->getTicketManager();
+        $changes = $ticket->getStateChangeRecorder();
 
-            $tickets = $qb->getQuery()->getResult();
+        if ($changes->isNewTicket()) {
+            $event = 'new';
+        } elseif ($changes->hasNewReply()) {
+            $event = 'newreply';
+        } elseif ($changes->isDeleted()) {
+            $event = 'delete';
+        } else {
+            $event = 'update';
         }
 
-        $pager = new Pagerfanta(new FixedAdapter($total, $tickets));
-
-        $pager->setMaxPerPage($maxPerPage);
-        $pager->setCurrentPage($currentPage);
-
-        return $pager;
+        $manager->saveTicket($ticket, $manager->createAgentExecutorContext($this->getUser(), $event, 'api'));
     }
 }

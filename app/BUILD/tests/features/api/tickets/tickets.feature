@@ -112,7 +112,17 @@ Feature: /tickets endpoint
     And the JSON node "data.followers[0]" should be equal to 2
     And the JSON node "data.followers[1]" should be equal to 1
 
+    And ticket with id=5 has logs:
+      | type               |
+      | action_starter     |
+      | ticket_created     |
+      | changed_subject    |
+      | changed_department |
+      | changed_person     |
+      | changed_agent      |
+
   Scenario: I modify and retrieve a ticket
+    Given I reset ticket with id=5 logs
     When I send a PUT request to "/api/v2/tickets/5" with body:
     """
 {
@@ -130,6 +140,18 @@ Feature: /tickets endpoint
     And the JSON node "data.followers" should have 2 elements
     And the JSON node "data.followers[0]" should be equal to 1
     And the JSON node "data.followers[1]" should be equal to 4
+
+    And ticket with id=5 has no logs:
+      | type                      |
+      | changed_department        |
+      | changed_person            |
+      | changed_agent             |
+      | changed_user_participants |
+
+    And ticket with id=5 has logs:
+      | type                       |
+      | changed_subject            |
+      | changed_agent_participants |
 
   Scenario: I modify ticket custom fields
     When I send a GET request to "/api/v2/tickets/5"
@@ -170,15 +192,19 @@ Feature: /tickets endpoint
     And the JSON node "data.fields.8.detail.11.title" should be equal to "Choice 3"
 
   Scenario: I delete a ticket
+    Given I reset ticket with id=5 logs
     When I send a DELETE request to "/api/v2/tickets/5"
     Then the response should be in JSON
     And the response status code should be 200
 
-  Scenario: I try to get deleted ticket
     When I send a GET request to "/api/v2/tickets/5"
     Then the response status code should be 200
     And the JSON node "data.status" should be equal to "hidden"
     And the JSON node "data.hidden_status" should be equal to "deleted"
+    And ticket with id=5 has logs:
+      | type                  |
+      | changed_status        |
+      | changed_hidden_status |
 
   Scenario: I try to get not existing ticket
     When I send a GET request to "/api/v2/tickets/40404"

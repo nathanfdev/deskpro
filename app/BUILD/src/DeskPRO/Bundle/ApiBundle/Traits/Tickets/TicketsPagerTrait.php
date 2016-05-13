@@ -26,34 +26,49 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
-namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
+namespace DeskPRO\Bundle\ApiBundle\Traits\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
+use Doctrine\ORM\EntityManager;
+use Pagerfanta\Adapter\FixedAdapter;
+use Pagerfanta\Pagerfanta;
 
 /**
- * Class AbstractTicketsController.
+ * Class TicketsPagerTrait.
+ *
+ * @method EntityManager getManager()
  */
-abstract class AbstractTicketsController extends CrudController
+trait TicketsPagerTrait
 {
-    use TicketSaveTrait;
-
-    public static $entity = Ticket::class;
-
     /**
-     * {@inheritdoc}
+     * @param int   $total
+     * @param array $ids
+     * @param int   $currentPage
+     * @param int   $maxPerPage
      *
-     * @param Ticket $entity
+     * @return Pagerfanta
      */
-    protected function persistModel($entity)
+    public function getTicketsPager($total, array $ids, $currentPage, $maxPerPage)
     {
-        $this->saveTicket($entity);
+        $tickets = [];
+        if (count($ids)) {
+            $qb = $this->getManager()->createQueryBuilder();
+            $qb
+                ->select('t, field(t.id, :ids) as HIDDEN field')
+                ->from(Ticket::class, 't')
+                ->where('t.id IN (:ids)')
+                ->orderBy('field')
+                ->setParameter('ids', $ids)
+            ;
 
-        return $entity;
+            $tickets = $qb->getQuery()->getResult();
+        }
+
+        $pager = new Pagerfanta(new FixedAdapter($total, $tickets));
+
+        $pager->setMaxPerPage($maxPerPage);
+        $pager->setCurrentPage($currentPage);
+
+        return $pager;
     }
 }

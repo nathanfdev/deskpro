@@ -50,7 +50,7 @@ services:
     arguments:
       - "@doctrine.orm.default_entity_manager"
     tags:
-      - { name: form.type, alias: deskpro_person_identity }
+      - { name: form.type }
 
   form.person_email_choice:
     class: DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailChoiceType
@@ -120,11 +120,6 @@ services:
     arguments: ["@custom_field_manager"]
     tags:
       - { name: form.type }
-
-  form.ticket_sla:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketSlaType
-    tags:
-      - { name: form.type, alias: ticket_sla }
 
   form.organization:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Organizations\OrganizationType
@@ -230,7 +225,7 @@ services:
     arguments:
       - "@doctrine.orm.default_entity_manager"
     tags:
-      - { name: form.type, alias: ticket_participants }
+      - { name: form.type }
 
   form.widget_ticket_setup:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\WidgetTicketSetupType

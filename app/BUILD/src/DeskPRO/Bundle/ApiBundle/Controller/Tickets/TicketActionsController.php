@@ -29,9 +29,9 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
@@ -44,11 +44,13 @@ use Symfony\Component\HttpFoundation\Response;
  * Class TicketActionsController.
  *
  * @ApiModes("all")
- * @Rest\Route("/tickets/{id}/actions")
+ * @Rest\Route("/tickets/{ticket}/actions")
  * @ApiDoc(target="all", section="Tickets", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket")
  */
 class TicketActionsController extends BaseController
 {
+    use TicketSaveTrait;
+
     /**
      * Lock a ticket.
      *
@@ -70,20 +72,24 @@ class TicketActionsController extends BaseController
      * @Rest\PUT("/lock")
      *
      * @param Request $request
+     * @param Ticket  $ticket
      *
      * @return View
      */
-    public function lockAction(Request $request)
+    public function lockAction(Request $request, Ticket $ticket)
     {
-        $ticket = $this->getTicket($request);
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::MODIFY, new PermissionGroupContext($ticket));
 
         if (!$ticket->hasLock() || $this->isForce($request)) {
+            $ticket->disableAutoTicketProcess();
             $ticket->setLockedByAgent($this->getUser());
         } else {
             throw $this->createBadRequestException('Ticket is already locked');
         }
 
-        return $this->saveTicket($ticket);
+        $this->saveTicket($ticket);
+
+        return new View(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -107,59 +113,25 @@ class TicketActionsController extends BaseController
      * @Rest\PUT("/unlock")
      *
      * @param Request $request
+     * @param Ticket  $ticket
      *
      * @return View
      */
-    public function unlockAction(Request $request)
+    public function unlockAction(Request $request, Ticket $ticket)
     {
-        $ticket = $this->getTicket($request);
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::MODIFY, new PermissionGroupContext($ticket));
 
         if (!$ticket->hasLock()) {
             throw $this->createBadRequestException('Ticket is not locked');
         }
         if ($ticket->getLockedByAgent() === $this->getUser() || $this->isForce($request)) {
+            $ticket->disableAutoTicketProcess();
             $ticket->unlockTicket();
         } else {
             throw $this->createBadRequestException('Ticket is locked by another agent');
         }
 
-        return $this->saveTicket($ticket);
-    }
-
-    /**
-     * @return TicketManager
-     */
-    protected function getTicketManager()
-    {
-        return $this->getContainer()->getTicketManager();
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return Ticket
-     */
-    protected function getTicket(Request $request)
-    {
-        $ticket = $this->getTicketManager()->getTicket($request->attributes->get('id'));
-        if (!$ticket) {
-            throw $this->createNotFoundException();
-        }
-
-        $this->denyAccessUnlessGranted(PermissionGroupVoter::MODIFY, new PermissionGroupContext($ticket));
-
-        return $ticket;
-    }
-
-    /**
-     * @param Ticket $ticket
-     *
-     * @return View
-     */
-    protected function saveTicket(Ticket $ticket)
-    {
-        $context = $this->getTicketManager()->createAgentExecutorContext($this->getUser(), 'update', 'api');
-        $this->getTicketManager()->saveTicket($ticket, $context);
+        $this->saveTicket($ticket);
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }
