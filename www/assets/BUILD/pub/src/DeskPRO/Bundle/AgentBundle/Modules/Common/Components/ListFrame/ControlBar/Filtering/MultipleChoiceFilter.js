@@ -6,11 +6,11 @@ import { FilterItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components
 
 export class MultipleChoiceFilter extends Component {
   static propTypes = {
-    setParam: PropTypes.func.isRequired,
-    unsetParam: PropTypes.func.isRequired,
-    activeItem: PropTypes.object,
+    setParam:      PropTypes.func.isRequired,
+    unsetParam:    PropTypes.func.isRequired,
+    activeItem:    PropTypes.object,
     currentParams: PropTypes.object.isRequired,
-    filter: PropTypes.object.isRequired
+    filter:        PropTypes.object.isRequired
   };
 
   getSelected(options, filterValue) {
@@ -20,7 +20,7 @@ export class MultipleChoiceFilter extends Component {
         flatOptions.push(...opt.nested);
       }
     });
-    const value = filterValue instanceof Array ? filterValue : [filterValue];
+    const value    = filterValue instanceof Array ? filterValue : [filterValue];
     const selected = [];
     value.forEach(val => {
       flatOptions.forEach(opt => {
@@ -32,20 +32,27 @@ export class MultipleChoiceFilter extends Component {
     return selected;
   }
 
+  reset = () => {
+    const { filter, unsetParam } = this.props;
+    unsetParam(filter.param);
+  };
+
   render() {
-    const { setParam, filter, activeItem, unsetParam, currentParams } = this.props;
+    const { setParam, filter, activeItem, currentParams } = this.props;
     const { label, icon, param, quickFilter, options } = filter;
     const params = [param];
-    options.map(option=> {
+    options.map(option => {
       if (option.hasOwnProperty('nested')) {
         option.nested.map(opt => {
           params.push(opt.param);
+          return null;
         });
       }
+      return null;
     });
     let filterValues = currentParams[param];
 
-    const onClick = (value, newParam = null) => () => {
+    const onClick  = (value, newParam = null) => () => {
       filterValues = newParam ? currentParams[newParam] : filterValues;
       filterValues = filterValues ? filterValues : [];
       if (filterValues.indexOf(value) === -1) {
@@ -58,28 +65,34 @@ export class MultipleChoiceFilter extends Component {
     const isActive = filterValues ? Boolean(filterValues.length) : false;
 
     return (
-      <FilterItem activeItem={activeItem}
-                  selected={this.getSelected(options, filterValues)}
-                  icon={icon || 'filter'}
-                  label={label}
-                  isActive={isActive}
-                  resetFilter={unsetParam.bind(this, params)}>
+      <FilterItem
+        activeItem={activeItem}
+        selected={this.getSelected(options, filterValues)}
+        icon={icon || 'filter'}
+        label={label}
+        isActive={isActive}
+        resetFilter={this.reset}
+      >
         <Menu>
           <ChoiceMenu title={label} quickFilter={quickFilter} submenu>
             <ul>
               {options.map((option, index) =>
-                  <CheckboxOption key={index}
-                                  value={option.value}
-                                  values={currentParams[param]}
-                                  label={option.label}
-                                  onClick={onClick(option.value)}>
-                    {
-                      option.nested && option.nested.length > 0
-                      && <NestedMultipleChoice nested={option.nested}
-                                               filterValue={currentParams}
-                                               onClick={onClick}/>
-                    }
-                  </CheckboxOption>
+                             <CheckboxOption
+                               key={index}
+                               value={option.value}
+                               values={currentParams[param]}
+                               label={option.label}
+                               onClick={onClick(option.value)}
+                             >
+                               {
+                                 option.nested && option.nested.length > 0
+                                 && <NestedMultipleChoice
+                                   nested={option.nested}
+                                   filterValue={currentParams}
+                                   onClick={onClick}
+                                 />
+                               }
+                             </CheckboxOption>
               )}
             </ul>
           </ChoiceMenu>
@@ -92,21 +105,23 @@ export class MultipleChoiceFilter extends Component {
 
 export class NestedMultipleChoice extends Component {
   static propTypes = {
-    nested: PropTypes.array.isRequired,
+    nested:      PropTypes.array.isRequired,
     filterValue: PropTypes.object.isRequired,
-    onClick: PropTypes.func.isRequired
+    onClick:     PropTypes.func.isRequired
   };
 
   render() {
-    const {nested, filterValue, onClick} = this.props;
+    const { nested, filterValue, onClick } = this.props;
     return (
       <ul>
         {nested.map((option, index) =>
-            <CheckboxOption key={index}
-                            value={option.value}
-                            values={filterValue[option.param]}
-                            label={option.label}
-                            onClick={onClick(option.value, option.param)}/>
+                      <CheckboxOption
+                        key={index}
+                        value={option.value}
+                        values={filterValue[option.param]}
+                        label={option.label}
+                        onClick={onClick(option.value, option.param)}
+                      />
         )}
       </ul>
     );
