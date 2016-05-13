@@ -35,6 +35,8 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Usersource\Adapter as UsersourceAdapter;
+use deskpro_us_jwt\Usersource\Adapter\Jwt as JwtAdapter;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
@@ -409,6 +411,8 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * Source type.
+     *
      * @JMS\VirtualProperty()
      * @JMS\SerializedName("source_type")
      * @JMS\Type("string")
@@ -421,6 +425,30 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * Display type.
+     *
+     * @JMS\VirtualProperty()
+     * @JMS\Type("string")
+     */
+    public function getDisplayType()
+    {
+        switch ($this->source_type) {
+            case UsersourceAdapter\GooglePlus::class:
+            case UsersourceAdapter\Google::class:
+            case UsersourceAdapter\Facebook::class:
+            case UsersourceAdapter\Twitter::class:
+                return 'social';
+            case JwtAdapter::class:
+            case UsersourceAdapter\Saml::class:
+                return 'button';
+            default:
+                return 'none';
+        }
+    }
+
+    /**
+     * Display options.
+     *
      * @JMS\VirtualProperty()
      * @JMS\Type("array")
      */
