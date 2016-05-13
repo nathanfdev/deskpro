@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,43 +26,36 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
+use Application\DeskPRO\Entity\PersonPref;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class TaskStarType extends AbstractType
+/**
+ * Class TicketStarType.
+ */
+class TicketStarType extends AbstractType
 {
     /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'task_star';
-    }
-
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array                $options
+     * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        // TaskStarType only accepts 'name' and saves it as PersonSetting,
-        // so binding the name to PersonSetting.value property
-        $builder->add('name', 'text', ['property_path' => 'value', 'required' => false]);
+        $builder->add('name', TextType::class, [
+            'property_path' => 'value',
+        ]);
     }
 
     /**
-     * @param OptionsResolverInterface $resolver
+     * {@inheritdoc}
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\PersonSetting',
-        ));
+        $resolver->setDefaults([
+            'data_class' => PersonPref::class,
+        ]);
     }
 }

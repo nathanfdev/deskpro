@@ -25,3 +25,29 @@ Feature: /ticket_stars endpoint
     And the JSON node "data.nested[0].title" should be equal to "Blue"
     And the JSON node "data.nested[1].count" should be equal to 2
     And the JSON node "data.nested[1].title" should be equal to "First custom"
+
+  Scenario: I modify custom name
+    When I send a PUT request to "/api/v2/ticket_stars/1"
+    Then the response status code should be 204
+
+    When I send a PUT request to "/api/v2/ticket_stars/1" with body:
+    """
+{
+  "name": "blue custom"
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/ticket_stars"
+    And the JSON node "data[0].name" should be equal to "Blue custom"
+
+    When I send a PUT request to "/api/v2/ticket_stars/1" with body:
+    """
+{
+  "name": ""
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/ticket_stars"
+    And the JSON node "data[0].name" should be equal to "Blue"

@@ -26,25 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
+use Application\DeskPRO\Entity\TicketFlagged;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count as CountModel;
-use DeskPRO\Bundle\AppBundle\Entity\TicketStar;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use DeskPRO\Bundle\AppBundle\Form\Type\TaskStarType;
-use DeskPRO\Bundle\AppBundle\Model\TicketStars;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketStar as TicketStarModel;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketStarType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Provides API access to the ticket stars.
@@ -66,22 +60,11 @@ class TicketStarsController extends BaseController
      *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketStar>")
      * )
      *
-     * @Rest\Get("", name="api_ticket_stars")
+     * @Rest\Get("")
      */
     public function listAction()
     {
-        /** @var TicketStars $service */
-        $service     = $this->get('data.ticket_stars');
-        $customNames = $service->getCustomNames($this->getUser());
-        $stars       = [];
-
-        foreach (TicketStars::$stars as $color) {
-            $colorId = TicketStar::colorToId($color);
-            $name    = array_key_exists($color, $customNames) ? $customNames[$color] : TicketStar::idToColorLabel($colorId);
-            $stars[] = new TicketStarModel($colorId, $name, TicketStar::idToColorHex($colorId));
-        }
-
-        return View::create($this->wrap($stars), Response::HTTP_OK);
+        return View::create($this->wrap($this->getTicketStars()));
     }
 
     /**
@@ -109,34 +92,23 @@ class TicketStarsController extends BaseController
      */
     public function putAction($id, Request $request)
     {
-        $numOfStars = count(TicketStar::getAll());
-        if ($id > $numOfStars) {
-            throw new BadRequestHttpException("Ticket star with ID=$id can't exist. Max ID = $numOfStars");
-        }
-        /** @var TicketStars $service */
-        $service = $this->get('data.ticket_stars');
-        $person  = $this->getUser();
-        $content = json_decode($request->getContent(), true);
-
-        if (!array_key_exists('name', $content) || !$content['name']) {
-            $service->removeStarNamePersonPref($person, $id);
-
-            return new Response(null, Response::HTTP_NO_CONTENT);
+        if (!isset(TicketFlagged::$colorMap[$id])) {
+            throw $this->createNotFoundException();
         }
 
-        $model = $service->findOrCreateStarNamePersonPref($person, $id);
-        $form  = $this->createForm(new TaskStarType(), $model);
-        $form->submit($content, true);
+        $color = TicketFlagged::$colorMap[$id];
+        $model = $this->get('data.ticket_stars')->findOrCreateStarNamePersonPref($this->getUser(), $color);
 
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($model);
-            $em->flush();
-
-            return new Response(null, Response::HTTP_NO_CONTENT);
+        $form = $this->createForm(TicketStarType::class, $model);
+        $form->submit($request->request->all());
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
         }
 
-        throw new InvalidFormException($form);
+        $this->getManager()->persist($model);
+        $this->getManager()->flush();
+
+        return new Response(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -149,54 +121,25 @@ class TicketStarsController extends BaseController
      *     output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
      * )
      *
-     * @Rest\Get("/counts", name="api_ticket_star_all_counts")
+     * @Rest\Get("/counts")
      */
     public function getTicketStarsCountsAction()
     {
-        /** @var TicketStars $service */
-        $service     = $this->get('data.ticket_stars');
-        $customNames = $service->getCustomNames($this->getUser());
-        $count       = CountModel::create(0, null, null, null, 'ticket_star');
+        /** @var \Application\DeskPRO\EntityRepository\TicketFlagged $repository */
+        $repository    = $this->getManager()->getRepository(TicketFlagged::class);
+        $countsMapping = [];
 
-        foreach ($service->getStars() as $color) {
-            $colorId = TicketStar::colorToId($color);
-            $name    = array_key_exists($color, $customNames) ?
-                $customNames[$color] : TicketStar::idToColorLabel($colorId);
-            $records   = $service->getAllRecordsForStar($this->getUser()->getId(), $colorId);
-            $starCount = count($records);
-            $count->addNested($starCount, $colorId, 'ticket_star', $name, true);
+        foreach ($repository->getCountsForPerson($this->getUser()) as $color => $starCount) {
+            $countsMapping[$color] = $starCount;
         }
 
-        return View::create($this->wrap($count), Response::HTTP_OK);
-    }
+        $count = CountModel::create(0, null, null, null, 'ticket_star');
+        foreach ($this->getTicketStars() as $star) {
+            $starCount = isset($countsMapping[$star->getColor()]) ? $countsMapping[$star->getColor()] : 0;
+            $count->addNested($starCount, $star->getId(), 'ticket_star', $star->getName(), true);
+        }
 
-    /**
-     * Get a count of tickets that current person flagged with provided star.
-     *
-     * @ApiDoc(
-     *     section="Tickets",
-     *     description="Get the count of tickets marked with given star",
-     *     requirements={
-     *         {"name" = "star", "requirement" = "\d+", "dataType" = "integer", "description" = "the id of star to filter"},
-     *     },
-     *     statusCodes={
-     *         200="Returned if success"
-     *     },
-     *     output="DeskPRO\Bundle\AppBundle\CountBadge\Count"
-     * )
-     *
-     * @param int $star
-     *
-     * @return View
-     *
-     * @Rest\Get("/{star}/count", name="api_ticket_star_count")
-     */
-    public function getTicketStarCountAction($star)
-    {
-        $tickets = $this->get('data.ticket_stars')->getAllRecordsForStar($this->getUser()->getId(), $star);
-        $count   = count($tickets);
-
-        return View::create($this->wrap(CountModel::fromValue($count)), Response::HTTP_OK);
+        return View::create($this->wrap($count));
     }
 
     /**
@@ -219,10 +162,18 @@ class TicketStarsController extends BaseController
      *
      * @return View
      *
-     * @Rest\Get("/{star}/tickets", name="api_ticket_star_tickets")
+     * @Rest\Get("/{star}/tickets")
      */
     public function getTicketsAction(Request $request, $star)
     {
         return TicketsController::subRequestSearch($this->getKernel(), $request, ['star' => $star]);
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketStar[]
+     */
+    protected function getTicketStars()
+    {
+        return $this->get('data.ticket_stars')->getTicketStars($this->getUser());
     }
 }
