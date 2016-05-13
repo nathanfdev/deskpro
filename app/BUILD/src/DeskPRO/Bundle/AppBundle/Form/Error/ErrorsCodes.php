@@ -84,6 +84,7 @@ final class ErrorsCodes
     const NO_PERSON                   = 'person_not_found';
     const NOT_AGENT                   = 'person_not_agent';
     const NOT_USER                    = 'person_not_user';
+    const NUMERIC                     = 'numeric';
 
     /** Term Engine Specific */
     const TERM_TYPE_DOES_NOT_EXIST = 'term_type_does_not_exist';
