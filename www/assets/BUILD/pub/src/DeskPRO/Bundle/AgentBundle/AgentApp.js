@@ -76,6 +76,6 @@ export class AgentApp {
     );
     const makeStore = compose(middleware)(createStore);
 
-    return makeStore(reducer);
+    return makeStore(reducer, {}, window.devToolsExtension ? window.devToolsExtension() : f => f);
   }
 }

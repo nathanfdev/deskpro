@@ -13,7 +13,7 @@ export class ActionAlertsHandler
     this.options.dispatch(newActionAlerts(data));
     switch (data.type) {
       case 'notification.agent_chat.new_message':
-        this.options.dispatch(markMessages([data.data.id], [data.data.uuid], data.data.agent_chat_id, 1));
+        this.options.dispatch(markMessages([data.data.id], [data.data.uuid], data.data.chat, 1));
         this.options.dispatch(startChat(null, null, data.data.agent_chat_id, true));
         break;
       default:

@@ -14,6 +14,7 @@ export const preloadData = createAction(
       const batch = 'DP_API/batch?get='
           + 'DP_API/ticket_departments'
           + ',DP_API/ticket_departments%3Fmy%3Dtrue'
+          + ',DP_API/chat_departments%3Fmy%3Dtrue'
           + ',DP_API/agents'
           + ',DP_API/agent_teams'
           + ',DP_API/agent_teams%3Fmy%3Dtrue'
@@ -28,14 +29,15 @@ export const preloadData = createAction(
           const data = flattenBatchResponses(responses);
           dispatch(setCollection('Department', 'all', data[0]));
           dispatch(setCollection('Department', 'my', data[1]));
-          dispatch(setCollection('Person', 'agents', data[2]));
-          dispatch(setCollection('AgentTeam', 'all', data[3]));
-          dispatch(setCollection('AgentTeam', 'my', data[4]));
-          dispatch(setCollection('Language', 'all', data[5]));
-          dispatch(setCollection('UserGroup', 'all', data[6]));
-          dispatch(setAgentSettings(data[7]));
-          dispatch(setupActionAlerts(data[8]));
-          dispatch(setCollection('Person', 'me', [data[9].person]));
+          dispatch(setCollection('ChatDepartment', 'my', data[2]));
+          dispatch(setCollection('Person', 'agents', data[3]));
+          dispatch(setCollection('AgentTeam', 'all', data[4]));
+          dispatch(setCollection('AgentTeam', 'my', data[5]));
+          dispatch(setCollection('Language', 'all', data[6]));
+          dispatch(setCollection('UserGroup', 'all', data[7]));
+          dispatch(setAgentSettings(data[8]));
+          dispatch(setupActionAlerts(data[9]));
+          dispatch(setCollection('Person', 'me', [data[10].person]));
 
           dispatch(donePreloading());
         })

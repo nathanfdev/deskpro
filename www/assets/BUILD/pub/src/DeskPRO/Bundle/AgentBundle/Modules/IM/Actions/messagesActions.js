@@ -27,16 +27,15 @@ export const addMessageOptimistic = createAction(
     return {
       data: {
         agent_chat_id: chatId,
-        date_created: null,
-        timestamp: new Date().getTime() / 1000,
-        id: null,
-        uuid: uuid,
-        message: message,
-        status: 0,
-        metadata: null,
-        person_id: me.get('id'),
-        person_name: me.get('name'),
-        old: false
+        date_created:  new Date(),
+        id:            null,
+        uuid:          uuid,
+        message:       message,
+        status:        0,
+        metadata:      null,
+        person:        me.get('id'),
+        person_name:   me.get('name'),
+        old:           false
       }
     };
   }

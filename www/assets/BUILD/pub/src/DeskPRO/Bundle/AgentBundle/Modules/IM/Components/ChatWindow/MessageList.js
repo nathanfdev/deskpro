@@ -76,18 +76,20 @@ export class MessageList extends React.Component {
 
   markNewMessages() {
     if (!this.props.updatingMessages) {
+      console.log(this.props.current);
       const ids = [];
       const uuids = [];
       const { messages, dispatch } = this.props;
 
       const msg = messages.hasIn(this.getPath()) ? messages.getIn(this.getPath()).messages : [];
       msg.map((message) => {
-        if (message.id && message.status === 1 && message.person_id !== this.props.me.get('id')) {
+        if (message.id && message.status === 1 && message.person !== this.props.me.get('id')) {
           ids.push(message.id);
           uuids.push(message.uuid);
         }
       });
       if (ids.length > 0) {
+        console.log(this.props.current.id , 'messageList:92');
         dispatch(markMessages(ids, uuids, this.props.current.id));
       }
     }
@@ -125,13 +127,15 @@ export class MessageList extends React.Component {
           msg.map((message, index) => {
             const result = (
               <Message
-              key={index}
-              message={message}
-              size={msg.size}
-              current={index}
-              previousMessage={previous}
-              agents={this.props.agents}
-              me={this.props.me}/>);
+                key={index}
+                message={message}
+                size={msg.size}
+                current={parseInt(index)}
+                previousMessage={previous}
+                agents={this.props.agents}
+                me={this.props.me}
+              />
+            );
             previous = message;
             return result;
           })

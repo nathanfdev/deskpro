@@ -3,17 +3,17 @@ import { Avatar, DepartmentAvatar, PersonAvatar, AgentTeamAvatar } from 'DeskPRO
 export class Item extends React.Component {
 
   static propTypes = {
-    agents: PropTypes.object.isRequired,
-    teams: PropTypes.object.isRequired,
-    departments: PropTypes.object.isRequired,
-    me: PropTypes.object.isRequired,
-    chat: PropTypes.object.isRequired,
-    counts: PropTypes.object.isRequired,
+    agents:        PropTypes.object.isRequired,
+    teams:         PropTypes.object.isRequired,
+    departments:   PropTypes.object.isRequired,
+    me:            PropTypes.object.isRequired,
+    chat:          PropTypes.object.isRequired,
+    counts:        PropTypes.object.isRequired,
     loadingCounts: PropTypes.bool.isRequired,
-    dispatch: PropTypes.func.isRequired,
-    startChat: PropTypes.func.isRequired,
-    current: PropTypes.object.isRequired,
-    chating: PropTypes.bool.isRequired
+    dispatch:      PropTypes.func.isRequired,
+    startChat:     PropTypes.func.isRequired,
+    current:       PropTypes.object.isRequired,
+    chating:       PropTypes.bool.isRequired
   };
 
   getEntity = () => {

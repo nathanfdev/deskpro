@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -285,8 +284,8 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
                     $addPerson($person);
                 }
             }
-            if ($participant->getDepartment()) {
-                foreach ($participant->getDepartment()->getPersonList() as $person) {
+            if ($participant->getDepartment() && $persons = $participant->getDepartment()->getPersonList()) {
+                foreach ($persons as $person) {
                     $addPerson($person);
                 }
             }
@@ -303,7 +302,7 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
     public function containsParticipant($participant)
     {
         if ($participant instanceof Person) {
-            return in_array($participant, $this->getAgents());
+            return in_array($participant, $this->getAgents(), true);
         } elseif ($participant instanceof AgentTeam) {
             return in_array($participant, $this->getAgentTeams());
         } elseif ($participant instanceof Department) {

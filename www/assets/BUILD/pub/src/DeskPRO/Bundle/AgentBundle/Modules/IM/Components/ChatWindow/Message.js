@@ -22,16 +22,16 @@ export class Message extends React.Component {
   };
 
   dateSep() {
-    const date = moment.unix(this.props.message.timestamp);
+    const date = moment(this.props.message.date_created);
 
-    const previousDate = moment.unix(this.props.previousMessage.timestamp);
+    const previousDate = moment(this.props.previousMessage.date_created);
     if (this.props.previousMessage && previousDate.dayOfYear() !== date.dayOfYear()) {
-      return this.renderSeparator(this.props.previousMessage.timestamp);
+      return this.renderSeparator(this.props.previousMessage.date_created);
     }
   }
 
-  renderSeparator(timestamp) {
-    const date = moment.unix(timestamp);
+  renderSeparator(date_created) {
+    const date = moment(date_created);
     let fromNow;
     if (date.fromNow(true) === 'a day') {
       fromNow = 'yesterday';
@@ -58,7 +58,7 @@ export class Message extends React.Component {
           {this.props.message.status > 1 && <i className="fa fa-check" />}
         </div>
         <span className="time">
-          <TimeAgo date={this.props.message.timestamp * 1000} />
+          <TimeAgo date={moment(this.props.message.date_created).unix()} />
           <i className="fa fa-clock-o" />
         </span>
         <div className="message-content" dangerouslySetInnerHTML={this.getMessage()}></div>
@@ -67,7 +67,7 @@ export class Message extends React.Component {
   };
 
   renderNotMy = () => {
-    const author = this.props.agents.get(this.props.message.person_id);
+    const author = this.props.agents.get(this.props.message.person);
     let className = 'chat-message';
     if (this.props.message.old === true) {
       className += ' old';
@@ -75,7 +75,7 @@ export class Message extends React.Component {
     return (
       <li className={className}>
         <a title={this.props.message.person_name} className="chat-avatar">
-          <PersonAvatar person={author} size="22" />
+          <PersonAvatar person={author} size={22} />
         </a>
         <span className="time">
           <TimeAgo date={this.props.message.date_created} />
@@ -90,7 +90,7 @@ export class Message extends React.Component {
     return (
       <span>
         {this.dateSep()}
-        {this.props.message.person_id === this.props.me.get('id') ? this.renderMy() : this.renderNotMy()}
+        {this.props.message.person === this.props.me.get('id') ? this.renderMy() : this.renderNotMy()}
       </span>);
   }
 }

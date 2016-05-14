@@ -79,7 +79,7 @@ abstract class AbstractAgentChatVoter implements PermissionGroupEntityVoterInter
 
                 break;
             case AgentChat::TYPE_AGENT:
-                if (!in_array($user, $agentChat->getAgents())) {
+                if (!in_array($user, $agentChat->getAgents(), true)) {
                     return false;
                 }
 

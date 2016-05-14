@@ -6,20 +6,20 @@ import * as actions from '../../Actions/chatsActions';
 import * as messagesActions from '../../Actions/messagesActions';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
-import { myDepartmentsSelector, myAgentTeamsSelector, addToCollection, loadFromApi, isLoadedCollectionSelectorFactory,
+import { myChatsDepartmentsSelector, myAgentTeamsSelector, addToCollection, loadFromApi, isLoadedCollectionSelectorFactory,
   collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 @connect(state => ({
-  me: meSelector(state),
-  agents: agentsSelector(state),
-  teams: myAgentTeamsSelector(state),
-  departments: myDepartmentsSelector(state),
-  recentChats: collectionSelectorFactory('AgentChat', 'recent')(state),
-  current: state.IM.chats.get('current'),
-  chating: state.IM.chats.get('chating'),
-  counts: state.IM.messages.get('counts'),
+  me:            meSelector(state),
+  agents:        agentsSelector(state),
+  teams:         myAgentTeamsSelector(state),
+  departments:   myChatsDepartmentsSelector(state),
+  recentChats:   collectionSelectorFactory('AgentChat', 'recent')(state),
+  current:       state.IM.chats.get('current'),
+  chating:       state.IM.chats.get('chating'),
+  counts:        state.IM.messages.get('counts'),
   loadingCounts: state.IM.messages.get('loadingCounts'),
-  loaded: isLoadedCollectionSelectorFactory('AgentChat', 'recent')(state)
+  loaded:        isLoadedCollectionSelectorFactory('AgentChat', 'recent')(state)
 }))
 export class List extends React.Component {
 

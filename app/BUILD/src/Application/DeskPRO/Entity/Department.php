@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -463,6 +462,37 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
      */
     public function getPersonList()
     {
+        // OMG this should be refactored somehow, but right now it works
+        if (!$this->_people) {
+
+            /** @var \Application\DeskPRO\EntityRepository\Department $repository */
+            $repository  = $this->getRepository();
+            $permissions = $repository->getPermissionsInfo($this);
+            $db          = App::getDb();
+            $ids         = [];
+            foreach ($permissions['usergroups'] as $usergroup) {
+                if ($usergroup['perm_name'] === 'full') {
+                    $ids[] = $usergroup['usergroup_id'];
+                }
+            }
+            foreach ($permissions['agentgroups'] as $usergroup) {
+                if ($usergroup['perm_name'] === 'full') {
+                    $ids[] = $usergroup['usergroup_id'];
+                }
+            }
+            $usergroups = implode(',', $ids);
+            $sql        = "SELECT DISTINCT(person_id) FROM person2usergroups WHERE usergroup_id IN ({$usergroups})";
+            $personIds  = $db->fetchColumn($sql);
+
+            foreach ($permissions['agents'] as $agent) {
+                if ($agent['perm_name'] === 'full') {
+                    $personIds[] = $agent['agent_id'];
+                }
+            }
+
+            $this->_people = App::getOrm()->getRepository(Person::class)->findBy(['id' => $personIds]);
+        }
+
         return $this->_people;
     }
 

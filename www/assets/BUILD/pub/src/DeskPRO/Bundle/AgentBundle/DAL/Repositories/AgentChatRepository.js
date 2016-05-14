@@ -16,7 +16,7 @@ export class AgentChatRepository extends ApiRepository {
       params.participant = entityId;
     }
 
-    return this.api.sendPost(`DP_API/${this.url}?follow_redirect`, params);
+    return this.api.sendPost(`DP_API/${this.url}?follow_location=1`, params);
   }
 
   /**

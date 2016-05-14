@@ -7,13 +7,13 @@ import TimeAgo from 'react-timeago';
 @connect()
 export class AgentsListItem extends React.Component {
   static propTypes = {
-    agent: PropTypes.object.isRequired,
-    dispatch: PropTypes.func.isRequired,
+    agent:     PropTypes.object.isRequired,
+    dispatch:  PropTypes.func.isRequired,
     highlight: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired
   };
 
-  startChat = (id, type) => {
-    this.props.dispatch(actions.startChat(id, type));
+  startChat = (id) => {
+    this.props.dispatch(actions.startChat(this.props.agent.get('id'), 'agent'));
   };
 
   render() {
@@ -29,9 +29,10 @@ export class AgentsListItem extends React.Component {
 
     return (
       <li>
-        <a href="#"
-           onClick={this.startChat.bind(null, this.props.agent.get('id'), 'agent')}
-          >
+        <a
+          href="#"
+          onClick={this.startChat}
+        >
           <PersonAvatar person={this.props.agent} size={22} />
           <span className="agent"><span dangerouslySetInnerHTML={{__html: name}}/><span
             className="datestamp">{this.props.agent.get('last_seen') ? <TimeAgo date={this.props.agent.get('last_seen')} /> : 'never'}</span></span>
