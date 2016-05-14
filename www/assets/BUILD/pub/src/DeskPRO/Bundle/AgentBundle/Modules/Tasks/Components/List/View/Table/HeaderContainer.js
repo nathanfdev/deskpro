@@ -28,16 +28,16 @@ export class HeaderContainer extends React.Component {
       onChange: this.onChange
     };
     const isVisible = type => props.visibleFields.includes(type);
-
+    console.info(columnProps);
     return (
       <thead>
-      <tr>
-        <Th />
-        <Th title="Id" sort="id" visible={isVisible('id')} {...columnProps} />
-        <Th title="Title" sort="title" {...columnProps} />
+      <tr className="tickets-tabular">
+        <Th className="bulk-edit-col" />
+        <Th title="Id" className="id-col" sort="id" cvisible={isVisible('id')} {...columnProps} />
+        <Th title="Title" className="subject-col" sort="title" {...columnProps} />
         <Th title="Project" sort="project" visible={isVisible('project')} {...columnProps} />
         <Th title="Due" sort="date_due" visible={isVisible('date_due')} {...columnProps} />
-        <Th title="Assignee" sort="assignee" visible={isVisible('assignee')} {...columnProps} />
+        <Th title="Assignee" className="agent-col" sort="assignee" visible={isVisible('assignee')} {...columnProps} />
       </tr>
       </thead>
     );

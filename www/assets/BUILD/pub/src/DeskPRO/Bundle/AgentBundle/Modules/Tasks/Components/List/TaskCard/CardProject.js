@@ -12,7 +12,9 @@ export class CardProject extends CardWidget {
     projects:          PropTypes.object.isRequired,
     openBySingleClick: PropTypes.bool,
     onSetEditing:      PropTypes.func,
-    onChange:          PropTypes.func.isRequired
+    onChange:          PropTypes.func.isRequired,
+    withoutIcon:       PropTypes.bool,
+    className:         PropTypes.string
   };
 
   constructor(props) {
@@ -44,9 +46,7 @@ export class CardProject extends CardWidget {
   filterProjects = (str) => {
     const search = (str || '').toLowerCase();
     this.setState({
-      projects: this.props.projects.filter((item) => {
-        return (item.get('title', '')).toLowerCase().indexOf(search) !== -1;
-      })
+      projects: this.props.projects.filter((item) => (item.get('title', '')).toLowerCase().indexOf(search) !== -1)
     });
   };
 
@@ -66,19 +66,28 @@ export class CardProject extends CardWidget {
   };
 
   render() {
+    const { withoutIcon } = this.props;
     const { projects, value } = this.state;
     const project = value ? projects.get(value) : null;
     const prop = { [this.props.openBySingleClick ? 'onClick' : 'onDoubleClick']: this.onOpen };
     const title = project ? project.get('title') : 'N/A';
+    const iconStyle = {
+      display:     'inline-block',
+      position:    'relative',
+      paddingLeft: 20,
+      overflow:    'hidden',
+      width:       '100%'
+    };
 
     return (
-      <div>
-        <div className="dpwd--card-line-item" ref="button" {...prop}
-          style={{ display: 'inline-block', position: 'relative', paddingLeft: 20, overflow: 'hidden', width: '100%' }}
-        >
-          <i className="fa fa-book" style={{ position: 'absolute', left: 2, top: 2 }} />
-          <span title={title}>{title}</span>
-        </div>
+      <div className={this.props.className}>
+        {withoutIcon
+          ? <span title={title} ref="button" {...prop}>{title}</span>
+          : <div className="dpwd--card-line-item" ref="button" {...prop} style={iconStyle}>
+              <i className="fa fa-book" style={{ position: 'absolute', left: 2, top: 2 }} />
+              <span title={title}>{title}</span>
+            </div>
+        }
 
         <Positioned isOpen={this.state.isOpen} positionTarget={this} positionAt="right+5 top-23" collision="fit"
           zIndex={1002}
@@ -91,7 +100,7 @@ export class CardProject extends CardWidget {
                 <div className="dpw-navigation-dropdown-panel-content-line">
                   <div className="dpw-navigation-dropdown-panel-content-full">
                     <div className="dpw-departments-long-list">
-                      <QuickFilter onChange={this.filterProjects} />
+                      <QuickFilter onChange={this.filterProjects}/>
                       <div className="dpw--popup-item-collection">
                         <ul>
                           {projects.map((item) =>

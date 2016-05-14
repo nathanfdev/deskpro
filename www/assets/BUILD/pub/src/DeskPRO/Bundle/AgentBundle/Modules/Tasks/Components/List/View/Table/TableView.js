@@ -4,7 +4,7 @@ import { TaskCardPreviewContainer } from '../../TaskCard/TaskCardPreviewContaine
 import { TaskCardPreview } from '../Card/TaskCard/TaskCardPreview';
 import { ListGroup } from './ListGroup';
 import { Table, CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
-import { Immutable } from 'immutable';
+import Immutable from 'immutable';
 
 export class TableView extends React.Component {
 
@@ -46,7 +46,7 @@ export class TableView extends React.Component {
 
     return (
       <div>
-        <Table>
+        <Table tableClassName="fixed-layout">
           <HeaderContainer />
 
           {groups.map((taskGroup, index) =>

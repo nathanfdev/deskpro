@@ -13,11 +13,14 @@ export class DateDue extends CardWidget {
     value:             PropTypes.string,
     onChange:          PropTypes.func.isRequired,
     onSetEditing:      PropTypes.func,
-    openBySingleClick: PropTypes.bool
+    openBySingleClick: PropTypes.bool,
+    withoutIcon:       PropTypes.bool,
+    className:         PropTypes.string
   };
 
   render() {
     const { value } = this.state;
+    const { withoutIcon } = this.props;
     const isOverdue = value && moment(value).isBefore();
     const prop = { [this.props.openBySingleClick ? 'onClick' : 'onDoubleClick']: this.onOpen };
 
@@ -44,11 +47,16 @@ export class DateDue extends CardWidget {
     };
 
     return (
-      <div className="dpwd--card-line-item">
-        <div className={classNames({ overdue: isOverdue })} {...prop} ref="trigger" style={style}>
-          <i className="fa fa-calendar-o" style={{ position: 'absolute', left: 2, top: 2 }} />
-          <span title={title}>Due: {title}</span>
-        </div>
+      <div className={classNames('dpwd--card-line-item', this.props.className)}>
+
+        {withoutIcon
+          ? <span title={title} ref="trigger" {...prop}>{title}</span>
+          : <div className={classNames({ overdue: isOverdue })} {...prop} ref="trigger" {...prop} style={style}>
+              <i className="fa fa-calendar-o" style={{ position: 'absolute', left: 2, top: 2 }} />
+              <span title={title}>Due: {title}</span>
+            </div>
+        }
+
         <Positioned isOpen={this.state.isOpen} positionTarget={this} positionAt="left bottom" collision="fit"
           zIndex={1002}
         >
