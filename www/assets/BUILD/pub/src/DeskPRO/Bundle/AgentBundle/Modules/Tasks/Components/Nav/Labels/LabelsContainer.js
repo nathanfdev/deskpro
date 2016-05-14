@@ -15,7 +15,6 @@ export class LabelsContainer extends React.Component {
 
   render() {
     const { labels } = this.props;
-    console.log(labels);
     const labelGroups = {};
 
     labels.forEach(label => {

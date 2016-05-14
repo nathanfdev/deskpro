@@ -5,11 +5,10 @@ import classNames from 'classnames';
 import { DragSource, DropTarget } from 'react-dnd';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
-
 export const cardSource = {
   beginDrag({ value }, {}, component) {
     return {
-      id: value,
+      id:    value,
       width: jQuery(findDOMNode(component)).width()
     };
   },
@@ -19,14 +18,14 @@ export const cardSource = {
 };
 
 export const cardSourceCollect = (dragConnect, monitor) => ({
-  connectDragSource: dragConnect.dragSource(),
+  connectDragSource:  dragConnect.dragSource(),
   connectDragPreview: dragConnect.dragPreview(),
-  isDragging: monitor.isDragging()
+  isDragging:         monitor.isDragging()
 });
 
 export const cardTarget = {
   hover(props, monitor, component) {
-    const dragIndex = monitor.getItem().index;
+    const dragIndex  = monitor.getItem().index;
     const hoverIndex = props.index;
 
     // Don't replace items with themselves
@@ -73,7 +72,7 @@ export const cardTarget = {
 
 export const targetCollect = (dragConnect, monitor) => ({
   connectDropTarget: dragConnect.dropTarget(),
-  isOver: monitor.isOver()
+  isOver:            monitor.isOver()
 });
 
 @DragSource(constants.DRAGGABLE_TYPE_FIELD, cardSource, cardSourceCollect)
@@ -85,24 +84,24 @@ export class ViewField extends Component {
    * @type {Object}
    */
   static propTypes = {
-    fixed: PropTypes.bool,
-    isShown: PropTypes.any,
-    changeState: PropTypes.func,
-    value: PropTypes.string.isRequired,
-    label: PropTypes.string.isRequired,
+    fixed:             PropTypes.bool,
+    isShown:           PropTypes.any,
+    changeState:       PropTypes.func,
+    value:             PropTypes.string.isRequired,
+    label:             PropTypes.string.isRequired,
     connectDragSource: PropTypes.func.isRequired,
     connectDropTarget: PropTypes.func.isRequired,
-    isDragging: PropTypes.bool.isRequired,
-    moveCard: PropTypes.func.isRequired
+    isDragging:        PropTypes.bool.isRequired,
+    moveCard:          PropTypes.func.isRequired
   };
 
-  clickHandle(event) {
+  clickHandle = (event) => {
     event.preventDefault();
     const { isShown, changeState, value } = this.props;
     if (changeState) {
       changeState(value, !isShown);
     }
-  }
+  };
 
   renderStatus() {
     const style = {};
@@ -112,7 +111,7 @@ export class ViewField extends Component {
 
     return (
       <span className="dpw-navigation-dropdown-column-list-status" style={style}>
-        <i className="fa fa-check"></i>
+        <i className="fa fa-check" />
       </span>
     );
   }
@@ -125,11 +124,11 @@ export class ViewField extends Component {
     const moveIconClass = classNames('fa', { 'fa-minus': fixed, 'fa-navicon': !fixed });
 
     return connectDragSource(connectDropTarget(
-      <li className={classNames({ 'dragging-item': isDragging })} onClick={this.clickHandle.bind(this)}>
+      <li className={classNames({ 'dragging-item': isDragging })} onClick={this.clickHandle}>
         <a className={anchorClasses} href="#">
           {this.renderStatus()}
           <span className="dpw-navigation-dropdown-column-list-move">
-            <i className={moveIconClass}></i>
+            <i className={moveIconClass} />
           </span>
           <span className="dpw-navigation-dropdown-column-list-title">{label}</span>
         </a>

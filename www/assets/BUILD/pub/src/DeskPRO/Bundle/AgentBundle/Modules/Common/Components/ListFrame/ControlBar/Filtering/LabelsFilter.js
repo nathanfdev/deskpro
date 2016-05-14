@@ -14,6 +14,11 @@ export class LabelsFilter extends Component {
     filter:        PropTypes.object.isRequired
   };
 
+  reset = () => {
+    const { filter, unsetParam } = this.props;
+    unsetParam(filter.param);
+  };
+
   render() {
     const { setParam, currentParams, filter, unsetParam, activeItem, setActiveItem, matchMode } = this.props;
     const { label, icon, labels, param, modeParam } = filter;
@@ -49,7 +54,7 @@ export class LabelsFilter extends Component {
         isActive={isActive}
         setActiveItem={setActiveItem}
         selected={selected}
-        resetFilter={unsetParam.bind(this, param)}
+        resetFilter={this.reset}
       >
         <Menu>
           <LabelsForm
