@@ -73,16 +73,20 @@ class CollectionFieldFilter implements FieldFilterInterface
         }
 
         $ids = [];
-        foreach ($values as $item) {
-            if ($item instanceof EntityInterface || $item instanceof DomainObject) {
-                $ids[] = $this->language->evaluate(new Expression($expression), ['item' => $item]);
-            } elseif ($item instanceof \Traversable || is_array($item)) {
-                $ids[] = $this->filter($item);
-            } elseif (is_scalar($item)) {
-                $ids[] = $item;
-            } elseif (is_object($item)) {
-                $ids[] = TypeUtils::getBaseTypeName($item);
+        try {
+            foreach ($values as $item) {
+                if ($item instanceof EntityInterface || $item instanceof DomainObject) {
+                    $ids[] = $this->language->evaluate(new Expression($expression), ['item' => $item]);
+                } elseif ($item instanceof \Traversable || is_array($item)) {
+                    $ids[] = $this->filter($item);
+                } elseif (is_scalar($item)) {
+                    $ids[] = $item;
+                } elseif (is_object($item)) {
+                    $ids[] = TypeUtils::getBaseTypeName($item);
+                }
             }
+        } catch (\Exception $e) {
+            $exception = $e;
         }
 
         return sprintf('[ %s ]', implode(', ', $ids));

@@ -308,6 +308,9 @@ return [
                 'password' => [
                     ['mask', ['*']],
                 ],
+                'labels' => [
+                    ['collection', ['item.getLabel()']],
+                ],
             ],
         ],
         AuditListener::INSERT => true,
