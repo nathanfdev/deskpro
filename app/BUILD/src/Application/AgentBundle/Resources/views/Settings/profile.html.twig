@@ -220,6 +220,16 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 				</div>
 			</div>
 		{% endif %}
+        <div class="dp-form-row">
+            <div class="dp-form-label"><label>{{ phrase('agent.general.setup_device_token') }}</label></div>
+            <div class="dp-form-input">
+                <div class="dp-device-qr-code">
+                </div>
+            </div>
+            <div class="button-container">
+                <button type="button" class="dp-refresh-device-token">{{ phrase('agent.general.refresh_device_token') }}</button>
+            </div>
+        </div>
 	</div>
 
 	<div class="button-container">

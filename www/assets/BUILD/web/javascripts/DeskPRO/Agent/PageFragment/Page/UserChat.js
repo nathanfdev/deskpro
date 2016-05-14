@@ -266,9 +266,18 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 							var editable = $.browser.webkit ? ' contenteditable="false"' : '';
 							api.insertHtml('<span class="editor-inserting-var snippet-' + snippetId + '" ' + editable + ' data-snippet-id="' + snippetId + '">Inserting snippet...</span>');
 
+							if (!self.page) {
+								self.page = self.el.closest('.with-page-fragment').data('page-fragment');
+							}
+
+							self.page.pauseSend = true;
+
 							$.ajax({
 								url: BASE_URL + 'agent/text-snippets/chat/' + snippetId + '.json',
 								dataType: 'json',
+								complete: function () {
+									if (self.page) self.page.pauseSend = false;
+								},
 								success: function (data) {
 
 									var snippet = data.snippet;
@@ -296,7 +305,35 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 										useText = defaultText;
 									}
 
+									try {
+										var tpl = twig({
+											data: useText,
+											strict_variables: false
+										});
+										if (tpl) {
+											result = tpl.render({
+												ticket: self.page.meta.api_data
+											}, {
+												strict_variables: false
+											});
+											if (!result) {
+												result = useText;
+											}
+										} else {
+											result = useText;
+										}
+									} catch (e) {
+										console.log("Snippet render failed: %o", e);
+										result = useText;
+									}
+
 									var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
+
+									data = result;
+									data = data.replace(/<\/p>\s*<p>/g, '<br/>');
+									data = data.replace(/^<p>/, '');
+									data = data.replace(/<\/p>$/, '');
+									data = $('<div>' + data + '</div>');
 
 									var wrapper = $('<div/>');
 									wrapper.html(useText);
@@ -337,6 +374,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 									el.after(data);
 									el.remove();
 									api.setSelection(cursor[0], 0, cursor[0], 0);
+									api.syncCode();
 								}
 							});
 						}
@@ -379,7 +417,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 				var val = useText;
 
-				var messageTextarea = self.getEl('replybox_txt')
+				var messageTextarea = self.getEl('replybox_txt');
 
 				var data = $('<div></div>').html(val);
 				if (data.find('> span, > div, > p').length == 1) {
