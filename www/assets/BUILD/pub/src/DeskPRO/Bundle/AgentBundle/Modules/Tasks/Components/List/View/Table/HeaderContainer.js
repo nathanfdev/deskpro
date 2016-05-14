@@ -28,7 +28,7 @@ export class HeaderContainer extends React.Component {
       onChange: this.onChange
     };
     const isVisible = type => props.visibleFields.includes(type);
-    console.info(columnProps);
+
     return (
       <thead>
       <tr className="tickets-tabular">

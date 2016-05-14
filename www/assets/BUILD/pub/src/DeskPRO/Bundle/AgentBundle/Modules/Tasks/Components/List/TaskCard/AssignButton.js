@@ -72,7 +72,7 @@ export class AssignButton extends CardWidget {
           positionAt="right+5 top-10"
           collision="fit"
           zIndex={1002}
-          >
+        >
 
           <ClickOut onClickOut={this.onClose} additionalNodes={[this.refs.button, '.assign-form', '.fa-check']}>
             <AssignForm task={this.state.value} onChange={this.onChange} />
