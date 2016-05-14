@@ -56,7 +56,7 @@ class BaseNotification extends React.Component {
   }
 
   componentDidMount() {
-    this.letGoTimeout = setTimeout(this.letGo.bind(this), (this.props.alive || BaseNotification.defaultAlive) * 1000);
+    this.letGoTimeout = setTimeout(this.letGo, (this.props.alive || BaseNotification.defaultAlive) * 1000);
   }
 
   componentWillUnmount() {
@@ -71,10 +71,10 @@ class BaseNotification extends React.Component {
     return { marginBottom: `${75 * (this.props.num - 1)}px` };
   }
 
-  letGo() {
+  letGo = () => {
     this.setState({ hide: true });
     setTimeout(this.props.destroy, 500);
-  }
+  };
 
   renderIcon() {
     throw new Error('Children classes must re-declare renderIcon()');

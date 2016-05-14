@@ -26,28 +26,32 @@ export class Nav extends Component {
   // @todo Remove
   demoNotifications = () => {
     const { dispatch } = this.props;
-    dispatch(delayedActionNotification({
-                                         alive:  25,
-                                         title:  'Are you sure you want to send 42 emails to your colleagues?',
-                                         text:   'This one has custom alive period of 25 sec',
-                                         commit: () => alert('Committing the action: sending emails'),
-                                         undo:   () => alert(
-                                           '"undo" callback for delayedActionNotification is optional, usually there will be nothing to undo because ' +
-                                           'changes are not committed, yet we may want to redirect somewhere on undo or something like that.'
-                                         )
-                                       }));
-    dispatch(undoableActionNotification({
-                                          title: 'You\'ve gone invisible',
-                                          text:  'No one will know you are online',
-                                          undo:  () => alert('Undoing: dispatching actions to reach the previous state')
-                                        }));
-    dispatch(infoNotification({
-                                title: 'Your profile information has been updated'
-                              }));
-    dispatch(errorNotification({
-                                 title: 'Cannot retrieve the attachment, server responded with error',
-                                 text:  'Sorry for the inconvenience, we\'re notified about the problem and will fix it ASAP. Please try again later.'
-                               }));
+    dispatch(delayedActionNotification(
+      {
+        alive:  25,
+        title:  'Are you sure you want to send 42 emails to your colleagues?',
+        text:   'This one has custom alive period of 25 sec',
+        commit: () => alert('Committing the action: sending emails'),
+        undo:   () => alert(
+          '"undo" callback for delayedActionNotification is optional, usually there will be nothing to undo because ' +
+          'changes are not committed, yet we may want to redirect somewhere on undo or something like that.'
+        )
+      }
+    ));
+    dispatch(undoableActionNotification(
+      {
+        title: 'You\'ve gone invisible',
+        text:  'No one will know you are online',
+        undo:  () => alert('Undoing: dispatching actions to reach the previous state')
+      }
+    ));
+    dispatch(infoNotification({ title: 'Your profile information has been updated' }));
+    dispatch(errorNotification(
+      {
+        title: 'Cannot retrieve the attachment, server responded with error',
+        text:  'Sorry for the inconvenience, we\'re notified about the problem and will fix it ASAP. Please try again later.'
+      }
+    ));
   };
 
   render() {
