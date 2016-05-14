@@ -1,0 +1,69 @@
+body, div, td, p, span {
+  font-family: Calibri, Helvetica, Arial, sans-serif;
+  line-height: 125%;
+  color: #242424;
+  font-size: 14px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: bold;
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 7px;
+  margin-bottom: 7px;
+}
+
+h1 { font-size: 36px; }
+h2 { font-size: 30px; }
+h3 { font-size: 24px; }
+h4 { font-size: 18px; }
+h5 { font-size: 14px; }
+
+a {
+  color: #0065A3;
+  text-decoration: underline;
+}
+
+blockquote {
+  margin: 15px 0 15px 0 !important;
+  border-left: 2px solid #777 !important;
+  color: #777 !important;
+  font-style: normal !important;
+  padding-left: 8px;
+}
+
+pre, code {
+  background: #f8f8f8;
+  border: 1px solid #ddd;
+  padding: 6px;
+  white-space: pre;
+  margin: 15px 0 15px 0;
+}
+
+.plaintext-email {
+  font-family: monospace;
+  font-size: 90%;
+}
+
+table, td, tr {
+  border: 1px solid black;
+}
+
+td, tr {
+  padding: 4px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+tr {
+  font-weight: bold;
+  text-align: center;
+}
+
+table.dp_message_table { border: none; }
+table.dp_message_table > tr td,
+table.dp_message_table > tbody tr td { border: none; padding: 0; }

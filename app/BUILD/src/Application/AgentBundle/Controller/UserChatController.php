@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -40,6 +39,7 @@ use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\CustomDefChat;
+use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Searcher\ChatConversationSearch;
 use Application\DeskPRO\Searcher\SearcherAbstract;
 use Orb\Util\Dates;
@@ -53,23 +53,19 @@ class UserChatController extends AbstractController
     /** @var array */
     protected $groups = ['none', 'department', 'agent', 'date_created', 'total_to_ended'];
 
-    public function viewAction($conversation_id)
+    public function viewAction($conversation_id, $action)
     {
+        /** @var ChatConversation $convo */
         $convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
 
-        if (!$convo || !$this->person->PermissionsManager->ChatChecker->canView($convo)) {
+        if (!$convo || !$this->person->getPermissionsManager()->ChatChecker->canView($convo)) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-        /** @var $chatManager \Application\DeskPRO\Chat\UserChat\UserChatManager */
-        $chatManager = $this->container->getSystemObject('user_chat_manager', ['session' => $this->session->getEntity()]);
+        $hasJoined = (bool) $convo->hasParticipant($this->person) || ($convo->getAgentId() == $this->person->getId());
 
-        $chatManager->personJoined($convo, $this->person);
-
-        if ($convo->status == 'open') {
-            if (!$convo['agent']) {
-                $chatManager->assignAgent($convo, $this->person);
-            }
+        if (!$hasJoined && $action == 'join') {
+            $this->joinConvo($convo);
         }
 
         $convoMessages = $this->em->createQuery('
@@ -79,7 +75,7 @@ class UserChatController extends AbstractController
             ORDER BY m.id DESC
         ')->setParameter(1, $convo)->execute();
 
-        $session = $convo->session;
+        $session = $convo->getSession();
 
         // For selector
         $agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
@@ -88,11 +84,11 @@ class UserChatController extends AbstractController
         foreach (['id', 'subject', 'person_name', 'person_email', 'status', 'ended_by'] as $key) {
             $convoApi[$key] = $convo->$key;
         }
-        if ($convo->person) {
-            $convoApi['person'] = $convo->person->getDataForWidget();
+        if ($convo->getPerson()) {
+            $convoApi['person'] = $convo->getPerson()->getDataForWidget();
         }
-        if ($convo->agent) {
-            $convoApi['agent'] = $convo->agent->getDataForWidget();
+        if ($convo->getAgent()) {
+            $convoApi['agent'] = $convo->getAgent()->getDataForWidget();
         }
 
         $block = null;
@@ -109,20 +105,73 @@ class UserChatController extends AbstractController
             'block'          => $block,
             '$field_manager' => $fieldManager,
             'custom_fields'  => $customFields,
+            'has_joined'     => $hasJoined,
         ]);
+    }
+
+    public function joinChatAction($conversation_id)
+    {
+        /** @var ChatConversation $convo */
+        $convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
+
+        if (!$convo || !$this->person->getPermissionsManager()->ChatChecker->canView($convo)) {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+        }
+
+        $hasJoined = (bool) $convo->hasParticipant($this->person) || ($convo->getAgentId() == $this->person->getId());
+
+        $assigned = $this->joinConvo($convo);
+
+        if (!$hasJoined) {
+        }
+
+        return $this->createJsonCmResponse([
+            'result'   => 'success',
+            'assigned' => $assigned,
+        ]);
+    }
+
+    private function joinConvo($convo)
+    {
+        $assigned = false;
+
+        /** @var $chatManager \Application\DeskPRO\Chat\UserChat\UserChatManager */
+        $chatManager = $this->container->getSystemObject('user_chat_manager',
+            ['session' => $this->session->getEntity()]
+        );
+
+        $chatManager->personJoined($convo, $this->person);
+
+        if ($convo->status == 'open') {
+            if (!$convo['agent']) {
+                $assigned = true;
+                $chatManager->assignAgent($convo, $this->person);
+            }
+        }
+
+        return $assigned;
     }
 
     /**
      * Reassign a chat.
      *
-     * @param  $conversation_id
-     * @param  $agent_id
+     * @param $conversation_id
+     * @param $agent_id
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Exception
+     *
+     * @return \Application\DeskPRO\HttpKernel\Controller\Response
+     *
+     * @internal param $quick_reply_id
      */
     public function assignChatAction($conversation_id, $agent_id)
     {
         $convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
 
-        if (!$this->person->PermissionsManager->ChatChecker->canView($convo)) {
+        if (!$this->person->getPermissionsManager()->ChatChecker->canView($convo)) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
@@ -176,14 +225,22 @@ class UserChatController extends AbstractController
     /**
      * Reassign a chat.
      *
-     * @param  $conversation_id
-     * @param  $agent_id
+     * @param $conversation_id
+     * @param $agent_id
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return Response
+     *
+     * @internal param $quick_reply_id
      */
     public function sendInviteAction($conversation_id, $agent_id)
     {
         $convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
 
-        if (!$this->person->PermissionsManager->ChatChecker->canView($convo)) {
+        if (!$this->person->getPermissionsManager()->ChatChecker->canView($convo)) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
@@ -209,9 +266,10 @@ class UserChatController extends AbstractController
      */
     public function changePropertiesAction($conversation_id)
     {
+        /** @var ChatConversation $convo */
         $convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
 
-        if (!$this->person->PermissionsManager->ChatChecker->canView($convo)) {
+        if (!$this->person->getPermissionsManager()->ChatChecker->canView($convo)) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
@@ -223,6 +281,7 @@ class UserChatController extends AbstractController
         if (isset($props['department_id'])) {
             $dep = null;
             if ($props['department_id']) {
+                /** @var Department $dep */
                 $dep = $this->em->find('DeskPRO:Department', $props['department_id']);
             }
             $chatManager->setDepartment($convo, $dep, $this->person);
@@ -238,7 +297,7 @@ class UserChatController extends AbstractController
     {
         $convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
 
-        if (!$this->person->PermissionsManager->ChatChecker->canView($convo)) {
+        if (!$this->person->getPermissionsManager()->ChatChecker->canView($convo)) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
@@ -297,9 +356,10 @@ class UserChatController extends AbstractController
      */
     public function addPartAction($conversation_id, $agent_id)
     {
+        /** @var ChatConversation $convo */
         $convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
 
-        if (!$this->person->PermissionsManager->ChatChecker->canView($convo)) {
+        if (!$this->person->getPermissionsManager()->ChatChecker->canView($convo)) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
@@ -345,18 +405,21 @@ class UserChatController extends AbstractController
 
     /**
      * @param $conversation_id
+     *
+     * @return Response
      */
     public function syncPartsAction($conversation_id)
     {
+        /** @var ChatConversation $convo */
         $convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
 
-        if (!$this->person->PermissionsManager->ChatChecker->canView($convo)) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+        if (!$this->person->getPermissionsManager()->ChatChecker->canView($convo)) {
+            throw $this->createNotFoundException();
         }
 
         $have = [];
-        foreach ($convo->participants as $part) {
-            if ($convo->agent && $convo->agent->id == $part->id) {
+        foreach ($convo->getParticipants() as $part) {
+            if ($convo->getAgentId() == $part->id) {
                 continue;
             }
 
@@ -365,7 +428,7 @@ class UserChatController extends AbstractController
 
         $target = $this->container->getIn()->getCleanValueArray('agent_ids', 'uint', 'discard');
 
-        $add = array_diff($have, $target);
+        $add = array_diff($target, $have);
 
         $clientMessages = [];
         if ($add) {
@@ -422,7 +485,7 @@ class UserChatController extends AbstractController
     {
         $convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
 
-        if (!$this->person->PermissionsManager->ChatChecker->canView($convo)) {
+        if (!$this->person->getPermissionsManager()->ChatChecker->canView($convo)) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
@@ -514,7 +577,7 @@ class UserChatController extends AbstractController
     {
         $convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
 
-        if (!$this->person->PermissionsManager->ChatChecker->canView($convo)) {
+        if (!$this->person->getPermissionsManager()->ChatChecker->canView($convo)) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
@@ -809,7 +872,7 @@ class UserChatController extends AbstractController
      *
      * @param array $otherData
      *
-     * @return \Application\DeskPRO\HttpKernel\Controller\Response
+     * @return Response
      */
     protected function createJsonCmResponse(array $otherData = [])
     {
@@ -931,7 +994,7 @@ class UserChatController extends AbstractController
     {
         $convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
 
-        if (!$convo || !$this->person->PermissionsManager->ChatChecker->canView($convo)) {
+        if (!$convo || !$this->person->getPermissionsManager()->ChatChecker->canView($convo)) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
@@ -949,7 +1012,7 @@ class UserChatController extends AbstractController
     {
         $convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
 
-        if (!$convo || !$this->person->PermissionsManager->ChatChecker->canView($convo)) {
+        if (!$convo || !$this->person->getPermissionsManager()->ChatChecker->canView($convo)) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
@@ -960,7 +1023,7 @@ class UserChatController extends AbstractController
     {
         $convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
 
-        if (!$convo || !$this->person->PermissionsManager->ChatChecker->canView($convo)) {
+        if (!$convo || !$this->person->getPermissionsManager()->ChatChecker->canView($convo)) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 

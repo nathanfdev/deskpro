@@ -1,5 +1,9 @@
 $default-layout-direction: "RTL";
 $layout-direction: "RTL";
+$text-left: right !default;
+$text-right: left !default;
+$float-left: right !default;
+$float-right: left !default;
 @import "../../../../../../node_modules/bi-app-sass/bi-app/bi-app-rtl";
 
 @import "portal-style";

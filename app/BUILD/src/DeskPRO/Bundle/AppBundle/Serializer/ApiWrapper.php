@@ -82,17 +82,12 @@ class ApiWrapper
     protected function checkPagination($data)
     {
         if ($data instanceof Pagerfanta) {
-            $total_pages = ceil($data->count() / $data->getMaxPerPage());
-            if ($total_pages < 1) {
-                $total_pages = 1; // we shouldn't ever report less than 1 total pages
-            }
-
             $pagination = [
                 'total'        => $data->count(),
                 'count'        => count($data->getCurrentPageResults()),
                 'per_page'     => $data->getMaxPerPage(),
                 'current_page' => $data->getCurrentPage(),
-                'total_pages'  => $total_pages,
+                'total_pages'  => $data->getNbPages(),
             ];
 
             $results = $data->getCurrentPageResults();

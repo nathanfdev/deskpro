@@ -27,10 +27,12 @@
  */
 
 return [
-    'portal.news.none'          => 'No news yet',
-    'portal.news.recent-title'  => 'Recent News',
-    'portal.news.search-title'  => 'News Articles',
-    'portal.news.section-title' => 'News',
-    'portal.news.view-x-news'   => 'View 1 article|View {{count}} articles',
-    'portal.news.view-as-agent' => 'You can see this page because you are an agent. Normal users will not be able to view this page.',
+    'portal.news.none'           => 'No news yet',
+    'portal.news.recent-title'   => 'Recent News',
+    'portal.news.search-title'   => 'News Articles',
+    'portal.news.section-title'  => 'News',
+    'portal.news.section-desc'   => '',
+    'portal.news.homepage-desc ' => '',
+    'portal.news.view-x-news'    => 'View 1 article|View {{count}} articles',
+    'portal.news.view-as-agent'  => 'You can see this page because you are an agent. Normal users will not be able to view this page.',
 ];

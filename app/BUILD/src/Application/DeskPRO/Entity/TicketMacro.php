@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -43,6 +42,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Arrays;
+use Orb\Util\Strings;
 
 /**
  * Ticket macros.
@@ -202,7 +202,12 @@ class TicketMacro extends DomainObject
      */
     public function getSummary()
     {
-        return $this->getActionDescriptions(false);
+        $descriptions = [];
+        foreach ($this->getActionDescriptions(false) as $description) {
+            $descriptions[] = Strings::html2Text($description);
+        }
+
+        return $descriptions;
     }
 
     /**

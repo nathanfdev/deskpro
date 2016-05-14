@@ -114,8 +114,13 @@ class ThemeSet implements EntityInterface, NotifyPropertyChanged
 
     public function setOption($name, $value)
     {
-        $options        = $this->options;
-        $options[$name] = $value;
+        $options = $this->options;
+
+        if ($value !== null) {
+            $options[$name] = $value;
+        } else {
+            unset($options[$name]);
+        }
 
         $this->setModelField('options', $options);
     }

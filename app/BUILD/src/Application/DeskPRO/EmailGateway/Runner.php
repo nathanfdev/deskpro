@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
@@ -582,6 +581,35 @@ class Runner
         if ($do_retry) {
             $source_logger->logInfo('Scheduling a retry -- status set to inserted');
             $source->status = 'retry';
+        }
+
+        if ($source->status === 'rejected' && App::getSetting('core.email_source_alert_rejection')) {
+            $mailer  = App::getMailer();
+            $message = $mailer->createMessage();
+            $message->setTo(App::getSetting('core.email_source_alert_rejection'));
+            $message->setSubject('Rejected: '.$reader->getSubject()->getSubjectUtf8());
+            $message->getHeaders()->addTextHeader('Auto-Submitted', 'auto-generated');
+            $message->getHeaders()->addTextHeader('X-Auto-Response-Suppress', 'All');
+            $message->getHeaders()->addTextHeader('X-DeskPRO-Build', DP_BUILD_TIME); // used if this were to come back to us, prevents loops
+            $hd_url       = App::getSetting('core.deskpro_url');
+            $download_url = $source->blob->getDownloadUrl(true);
+            $to_list      = implode(', ', array_map(function ($t) {
+                return trim($t->getNameUtf8().' <'.$t->getRealEmail().'>');
+            }, $reader->getToAddresses()));
+            $body = <<<BODY
+Subject:  {$reader->getSubject()->getSubjectUtf8()}
+From:     {$reader->getFromAddress()->getNameUtf8()} <{$reader->getFromAddress()->getEmail()}>
+To:       {$to_list}
+Rejected: {$source->error_code}
+
+Download the raw email here:
+$download_url
+
+View more information about this email online:
+{$hd_url}admin/#/tickets/ticket_accounts/incoming-email/{$source->id}
+BODY;
+            $message->setBody($body);
+            $mailer->send($message);
         }
 
         $this->ensureSourceStatus($source);

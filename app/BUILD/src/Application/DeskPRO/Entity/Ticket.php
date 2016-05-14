@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -61,64 +60,64 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class Ticket.
  *
- * @property int                                $id
- * @property string                             $ref
- * @property string                             $auth
- * @property Language                           $language
- * @property Department                         $department
- * @property TicketCategory                     $category
- * @property TicketWorkflow                     $workflow
- * @property TicketPriority                     $priority
- * @property Product                            $product
- * @property Person                             $person
- * @property PersonEmail                        $person_email
- * @property Person                             $agent
- * @property AgentTeam                          $agent_team
- * @property Organization                       $organization
- * @property ChatConversation                   $linked_chat
- * @property TicketAttachment[]                 $attachments
- * @property TicketAccessCode[]                 $access_codes
- * @property TicketMessage[]|ArrayCollection    $messages
- * @property TicketSms[]                        $sms_messages
- * @property CustomDataTicket[]|ArrayCollection $custom_data
- * @property LabelTicket[]                      $labels
- * @property string                             $sent_to_address
- * @property EmailAccount                       $email_account
- * @property string                             $email_account_address
- * @property string                             $creation_system
- * @property string                             $creation_system_option
- * @property string                             $ticket_hash
- * @property string                             $status
- * @property string                             $hidden_status
- * @property bool                               $is_hold
- * @property int                                $urgency
- * @property int                                $feedback_rating
- * @property \DateTime                          $date_feedback_rating
- * @property \DateTime                          $date_created
- * @property \DateTime                          $date_resolved
- * @property \DateTime                          $date_archived
- * @property \DateTime                          $date_first_agent_assign
- * @property \DateTime                          $date_first_agent_reply
- * @property \DateTime                          $date_last_agent_reply
- * @property \DateTime                          $date_last_user_reply
- * @property \DateTime                          $date_agent_waiting
- * @property \DateTime                          $date_user_waiting
- * @property \DateTime                          $date_status
- * @property int                                $total_user_waiting
- * @property int                                $total_to_first_reply
- * @property Person                             $locked_by_agent
- * @property \DateTime                          $date_locked
- * @property bool                               $has_attachments
- * @property string                             $subject
- * @property string                             $original_subject
- * @property array                              $properties
- * @property int                                $count_agent_replies
- * @property int                                $count_user_replies
- * @property string|null                        $worst_sla_status
- * @property array                              $waiting_times
- * @property TicketParticipant[]                $participants
- * @property TicketCharge[]                     $charges
- * @property TicketSla[]                        $ticket_slas
+ * @property int                                 $id
+ * @property string                              $ref
+ * @property string                              $auth
+ * @property Language                            $language
+ * @property Department                          $department
+ * @property TicketCategory                      $category
+ * @property TicketWorkflow                      $workflow
+ * @property TicketPriority                      $priority
+ * @property Product                             $product
+ * @property Person                              $person
+ * @property PersonEmail                         $person_email
+ * @property Person                              $agent
+ * @property AgentTeam                           $agent_team
+ * @property Organization                        $organization
+ * @property ChatConversation                    $linked_chat
+ * @property TicketAttachment[]                  $attachments
+ * @property TicketAccessCode[]                  $access_codes
+ * @property TicketMessage[]|ArrayCollection     $messages
+ * @property TicketSms[]                         $sms_messages
+ * @property CustomDataTicket[]|ArrayCollection  $custom_data
+ * @property LabelTicket[]                       $labels
+ * @property string                              $sent_to_address
+ * @property EmailAccount                        $email_account
+ * @property string                              $email_account_address
+ * @property string                              $creation_system
+ * @property string                              $creation_system_option
+ * @property string                              $ticket_hash
+ * @property string                              $status
+ * @property string                              $hidden_status
+ * @property bool                                $is_hold
+ * @property int                                 $urgency
+ * @property int                                 $feedback_rating
+ * @property \DateTime                           $date_feedback_rating
+ * @property \DateTime                           $date_created
+ * @property \DateTime                           $date_resolved
+ * @property \DateTime                           $date_archived
+ * @property \DateTime                           $date_first_agent_assign
+ * @property \DateTime                           $date_first_agent_reply
+ * @property \DateTime                           $date_last_agent_reply
+ * @property \DateTime                           $date_last_user_reply
+ * @property \DateTime                           $date_agent_waiting
+ * @property \DateTime                           $date_user_waiting
+ * @property \DateTime                           $date_status
+ * @property int                                 $total_user_waiting
+ * @property int                                 $total_to_first_reply
+ * @property Person                              $locked_by_agent
+ * @property \DateTime                           $date_locked
+ * @property bool                                $has_attachments
+ * @property string                              $subject
+ * @property string                              $original_subject
+ * @property array                               $properties
+ * @property int                                 $count_agent_replies
+ * @property int                                 $count_user_replies
+ * @property string|null                         $worst_sla_status
+ * @property array                               $waiting_times
+ * @property TicketParticipant[]|ArrayCollection $participants
+ * @property TicketCharge[]                      $charges
+ * @property TicketSla[]|ArrayCollection         $ticket_slas
  *
  * REPEAT THESE ANNOTATIONS IN DeskPRO\Bundle\AppBundle\Model\TicketView
  * @PortalLinkRoute("portal_tickets_guest_view", route_param_map={"auth":"auth"}, type="view_only")
@@ -307,7 +306,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      * @var \Doctrine\Common\Collections\ArrayCollection
      *
      * @Assert\Valid()
-     * @AppAssert\UniqueCollection()
+     * @AppAssert\UniqueCollection(property={"label"})
      */
     protected $labels;
 
@@ -463,7 +462,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      * @Assert\NotBlank()
      * @Assert\Type(type="string")
      */
-    protected $subject;
+    protected $subject = '(No Subject)';
 
     /**
      * @var string
@@ -812,9 +811,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             $subject = Strings::trimLines($subject);
             $subject = preg_replace("#\n+#", ' ', $subject);
         }
-        if (!$subject) {
-            $subject = '(No Subject)';
-        }
 
         $this->setModelField('subject', $subject);
 
@@ -913,8 +909,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function addChildrenTicket(Ticket $ticket)
     {
-        $this->children_tickets->add($ticket);
         $ticket->setParentTicket($this);
+
+        $this->children_tickets->add($ticket);
+        $this->_onPropertyChanged('children_tickets', null, $this->children_tickets);
 
         return $this;
     }
@@ -926,8 +924,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function removeChildrenTicket(Ticket $ticket)
     {
-        $this->children_tickets->removeElement($ticket);
         $ticket->setParentTicket(null);
+
+        $this->children_tickets->removeElement($ticket);
+        $this->_onPropertyChanged('children_tickets', null, $this->children_tickets);
 
         return $this;
     }
@@ -1262,12 +1262,30 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
     /**
      * @param TicketParticipant $part
+     *
+     * @return $this
      */
     public function addParticipant(TicketParticipant $part)
     {
         $part->ticket = $this;
         $this->participants->add($part);
         $this->_onPropertyChanged('participants', null, $this->participants);
+
+        return $this;
+    }
+
+    /**
+     * @param TicketParticipant $part
+     *
+     * @return $this
+     */
+    public function removeParticipant(TicketParticipant $part)
+    {
+        $part->ticket = $this;
+        $this->participants->removeElement($part);
+        $this->_onPropertyChanged('participants', null, $this->participants);
+
+        return $this;
     }
 
     /**
@@ -1618,6 +1636,20 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @param TicketMessage $message
+     *
+     * @return $this
+     */
+    public function removeMessage(TicketMessage $message)
+    {
+        $this->messages->removeElement($message);
+        $this->_onPropertyChanged('messages', null, $this->messages);
+        $this->getStateChangeRecorder()->record('message', $message, null);
+
+        return $this;
+    }
+
+    /**
      * Add a ticket attachment.
      *
      * @param TicketAttachment $attach
@@ -1713,6 +1745,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function setCustomData(Collection $custom_data)
     {
+        $this->custom_data = $custom_data;
         foreach ($custom_data as $cd) {
             $cd->ticket = $this;
         }
@@ -1785,14 +1818,13 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     {
         $changed = false;
         foreach ($this->custom_data as $data) {
-            if ($data->field === $field || $data->root_field == $field) {
+            if ($data->field->getId() === $field->getId() || $data->root_field->getId() == $field->getId()) {
                 $changed = true;
                 $this->custom_data->removeElement($data);
-                $this->getStateChangeRecorder()->record('custom_data.'.$field->getId(), $data, null, true);
-            } elseif ($field->parent && ($data->field === $field->parent || $data->root_field === $field->parent)) {
+            } elseif ($field->parent && ($data->field->getId() === $field->parent->getId()
+                    || $data->root_field->getId() === $field->parent->getId())) {
                 $changed = true;
                 $this->custom_data->removeElement($data);
-                $this->getStateChangeRecorder()->record('custom_data.'.$field->parent->getId(), $data, null, true);
             }
         }
 
@@ -1825,26 +1857,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             $this->custom_data = new ArrayCollection();
         }
 
-        $exist = $this->getCustomDataForField($data->field) ?: null;
-        if ($exist) {
-            $exist = clone $exist;
-        }
-
         $this->custom_data->add($data);
         $data['ticket'] = $this;
-
-        $field     = $data->field;
-        $parent_id = null;
-        $field_id  = $field['id'];
-        if ($field->parent) {
-            $parent_id = $field->parent['id'];
-        }
-
-        if ($parent_id) {
-            $this->getStateChangeRecorder()->record("custom_data.$parent_id", $exist, $data, true);
-        } else {
-            $this->getStateChangeRecorder()->record("custom_data.$field_id", $exist, $data, true);
-        }
 
         $this->_onPropertyChanged('custom_data', null, $this->custom_data);
     }
@@ -1899,10 +1913,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function addLabel(Label $label)
     {
-        if ($ret = $this->findLabelByString($label->label)) {
-            return $ret;
-        }
-
         $label->ticket = $this;
         $this->labels->add($label);
         $this->_onPropertyChanged('labels', null, $this->labels);
@@ -3736,14 +3746,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         return App::getObjectRouter()->getPortalPath($this);
     }
 
-    /**
-     * @deprecated use $this->get('object_router')->getPortalUrl($ticket) instead
-     */
-    public function getLink()
-    {
-        return App::getObjectRouter()->getPortalUrl($this);
-    }
-
     public function isAgentCreated()
     {
         return strpos($this->creation_system, '.agent') !== false;
@@ -4194,11 +4196,24 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
-     * @return TicketSla[]
+     * @return TicketSla[]|ArrayCollection
      */
     public function getTicketSlas()
     {
         return $this->ticket_slas;
+    }
+
+    /**
+     * @param TicketSla $ticketSla
+     *
+     * @return $this
+     */
+    public function removeTicketSla(TicketSla $ticketSla)
+    {
+        $this->ticket_slas->removeElement($ticketSla);
+        $this->_onPropertyChanged('ticket_slas', null, $this->ticket_slas);
+
+        return $this;
     }
 
     /**
@@ -4367,6 +4382,22 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     public function getUrgency()
     {
         return $this->urgency;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getTicketStatuses()
+    {
+        return [
+            self::STATUS_AWAITING_AGENT,
+            self::STATUS_AWAITING_USER,
+            self::STATUS_ARCHIVED,
+            self::STATUS_RESOLVED,
+            self::STATUS_HIDDEN,
+            self::STATUS_HIDDEN.'.'.self::HIDDEN_STATUS_SPAM,
+            self::STATUS_HIDDEN.'.'.self::HIDDEN_STATUS_DELETED,
+        ];
     }
 
     public static function loadMetadata(ClassMetadata $metadata)

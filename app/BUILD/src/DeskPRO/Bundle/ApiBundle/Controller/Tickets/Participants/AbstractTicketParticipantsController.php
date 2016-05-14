@@ -26,15 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\Participants;
 
 use Application\DeskPRO\Entity\TicketParticipant;
-use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
+use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketAwarePersistModelTrait;
+use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantType;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,6 +41,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 abstract class AbstractTicketParticipantsController extends CrudSubController
 {
+    use TicketSaveTrait, TicketAwarePersistModelTrait;
+
     public static $entity         = TicketParticipant::class;
     public static $type           = TicketParticipantType::class;
     public static $parentProperty = 'ticket';
@@ -94,23 +93,26 @@ abstract class AbstractTicketParticipantsController extends CrudSubController
             ->setParameter('person_id', $id)
         ;
 
-        return $qb->getQuery()->getSingleResult();
+        $entity = $qb->getQuery()->getOneOrNullResult();
+        if (!$entity) {
+            throw $this->createNotFoundException();
+        }
+
+        return $entity;
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @param TicketParticipant $entity
      */
-    protected function persistModel($entity)
+    protected function deleteEntity($entity)
     {
-        /* @var TicketParticipant $entity */
         $ticket = $entity->getTicket();
+        $ticket->disableAutoTicketProcess();
+        $ticket->removeParticipantPerson($entity->getPerson());
 
-        /** @var TicketManager $manager */
-        $manager = $this->getContainer()->getTicketManager();
-        $context = $manager->createAgentExecutorContext($this->getUser(), 'update', 'api');
-        $manager->saveTicket($ticket, $context);
-
-        return $entity;
+        $this->saveTicket($ticket);
     }
 
     /**

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,7 +35,6 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use Symfony\Component\Form\FormInterface;
@@ -132,6 +131,14 @@ class TicketWithLayoutsContext
     public function getViewContext()
     {
         return $this->getOption('ticket_view_context', self::VIEW_USER);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAgentView()
+    {
+        return $this->getViewContext() === self::VIEW_AGENT;
     }
 
     /**
@@ -249,14 +256,6 @@ class TicketWithLayoutsContext
     }
 
     /**
-     * @param TicketLayout $previous_layout
-     */
-    public function setPreviousLayout(TicketLayout $previous_layout)
-    {
-        $this->previous_layout = $previous_layout;
-    }
-
-    /**
      * @param $field
      *
      * @return bool
@@ -264,20 +263,6 @@ class TicketWithLayoutsContext
     public function fieldWasDisplayedBefore(LayoutField $field)
     {
         return $this->getPreviouslyActiveLayout()->has($field->getId());
-    }
-
-    /**
-     * @param string $name
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function getSetting($name, $default = null)
-    {
-        /** @var SettingsBag $settings_bag */
-        $settings_bag = $this->form->getConfig()->getOption('settings');
-
-        return $settings_bag->get($name, $default);
     }
 
     /**

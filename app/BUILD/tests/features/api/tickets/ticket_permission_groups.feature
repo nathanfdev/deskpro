@@ -56,7 +56,7 @@ Feature: /tickets endpoint
     And the response status code should be 200
 
     When I send a POST request to "/api/v2/tickets"
-    And the response status code should be 201
+    And the response status code should be 400
 
     When I send a PUT request to "/api/v2/tickets/2"
     And the response status code should be 403
@@ -75,7 +75,7 @@ Feature: /tickets endpoint
     And the response status code should be 200
 
     When I send a POST request to "/api/v2/tickets"
-    And the response status code should be 201
+    And the response status code should be 400
 
     When I send a PUT request to "/api/v2/tickets/2"
     And the response status code should be 204
@@ -94,7 +94,7 @@ Feature: /tickets endpoint
     And the response status code should be 200
 
     When I send a POST request to "/api/v2/tickets"
-    And the response status code should be 201
+    And the response status code should be 400
 
     When I send a PUT request to "/api/v2/tickets/2"
     And the response status code should be 204

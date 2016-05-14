@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\ObjectTranslatable;
@@ -105,7 +104,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
      * @JMS\Type("array<to_string<Application\DeskPRO\Entity\ArticleLabel>>")
      *
      * @Assert\Valid()
-     * @AppAssert\UniqueCollection()
+     * @AppAssert\UniqueCollection(property={"label"})
      *
      * \Doctrine\Common\Collections\ArrayCollection.
      */

@@ -8,7 +8,7 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
 
 
     init: ->
-      @$scope.fileUploadOptions = {url: @$http.formatApiUrl('/import_csv_upload')}
+      @$scope.fileUploadOptions = {url: @$http.formatApiUrl('/import_csv_upload'), disabled: true}
       @$scope.fileUploadResults = null
       @$scope.fileSelected = false
       @$scope.processStarted = false
@@ -30,6 +30,11 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
         @$scope.importSettings.showExtraMappings[key] = []
 
       @$scope.$on 'dp-status-update', (e, data) =>
+        if data.status == 'disabled_on_demo'
+          @$scope.disabledOnDemo = true
+        else
+          @$scope.fileUploadOptions.disabled = false
+
         @$scope.log = data.log
         @updateLogs()
 

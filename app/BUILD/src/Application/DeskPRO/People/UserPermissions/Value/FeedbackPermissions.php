@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,23 +35,23 @@ namespace Application\DeskPRO\People\UserPermissions\Value;
 
 class FeedbackPermissions implements PermissionValueInterface
 {
-    /** @var bool  */
+    /** @var bool */
     public $use = false;
-    /** @var bool  */
+    /** @var bool */
     public $submit = false;
-    /** @var bool  */
+    /** @var bool */
     public $no_submit_validate = false;
-    /** @var bool  */
+    /** @var bool */
     public $rate = false;
-    /** @var bool  */
+    /** @var bool */
     public $comment = false;
-    /** @var bool  */
+    /** @var bool */
     public $no_comment_validate = false;
 
     public function getNames()
     {
-        return array(
-            'use', 'submit', 'no_submit_validate', 'rate',  'comment', 'no_comment_validate',
-        );
+        return [
+            'use', 'submit', 'no_submit_validate', 'rate', 'comment', 'no_comment_validate',
+        ];
     }
 }

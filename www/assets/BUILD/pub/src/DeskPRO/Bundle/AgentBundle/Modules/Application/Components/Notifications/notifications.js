@@ -2,10 +2,10 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { destroyNotification } from '../../Actions/notificationActions';
 
-@connect(state => ({notifications: state.Application.notifications.getIn(['notifications'])}))
+@connect(state => ({ notifications: state.Application.notifications.getIn(['notifications']) }))
 export class NotificationsContainer extends React.Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
+    dispatch:      PropTypes.func.isRequired,
     notifications: PropTypes.object.isRequired
   };
 
@@ -22,7 +22,7 @@ export class NotificationsContainer extends React.Component {
       case 'undoable':
         return <UndoableActionNotification {...props} key={props.id} destroy={this.destroyNotification(props.id)} />;
       default:
-        throw new Error('Unknown notifications type: ' + props.type);
+        throw new Error(`Unknown notifications type: ${props.type}`);
     }
   }
 
@@ -31,7 +31,7 @@ export class NotificationsContainer extends React.Component {
 
     return (
       <div>
-        {this.props.notifications.map(notification => this.renderNotification({...notification, num: num++}))}
+        {this.props.notifications.map(notification => this.renderNotification({ ...notification, num: num++ }))}
       </div>
     );
   }
@@ -40,10 +40,10 @@ export class NotificationsContainer extends React.Component {
 class BaseNotification extends React.Component {
   static propTypes = {
     destroy: PropTypes.func.isRequired,
-    alive: PropTypes.number,
-    num: PropTypes.number.isRequired,
-    title: PropTypes.string.isRequired,
-    text: PropTypes.string
+    alive:   PropTypes.number,
+    num:     PropTypes.number.isRequired,
+    title:   PropTypes.string.isRequired,
+    text:    PropTypes.string
   };
 
   static defaultAlive = 9;
@@ -55,9 +55,26 @@ class BaseNotification extends React.Component {
     };
   }
 
-  getStyle() {
-    return {marginBottom: (75 * (this.props.num - 1)) + 'px'};
+  componentDidMount() {
+    this.letGoTimeout = setTimeout(this.letGo, (this.props.alive || BaseNotification.defaultAlive) * 1000);
   }
+
+  componentWillUnmount() {
+    clearTimeout(this.letGoTimeout);
+  }
+
+  onClick = () => {
+    this.letGo();
+  };
+
+  getStyle() {
+    return { marginBottom: `${75 * (this.props.num - 1)}px` };
+  }
+
+  letGo = () => {
+    this.setState({ hide: true });
+    setTimeout(this.props.destroy, 500);
+  };
 
   renderIcon() {
     throw new Error('Children classes must re-declare renderIcon()');
@@ -67,21 +84,12 @@ class BaseNotification extends React.Component {
     return null;
   }
 
-  letGo() {
-    this.setState({hide: true});
-    setTimeout(this.props.destroy, 500);
-  }
-
-  onClick() {
-    this.letGo();
-  }
-
   render() {
     const { title, text } = this.props;
-    const className = 'dpwd--notication--growl' + (this.state.hide ? ' hide' : '');
+    const className = `dpwd--notication--growl${this.state.hide ? ' hide' : ''}`;
 
     return (
-      <div className={className} style={this.getStyle()} onClick={this.onClick.bind(this)}>
+      <div className={className} style={this.getStyle()} onClick={this.onClick}>
         <span className="dpwd--notication--growl-icon">{this.renderIcon()}</span>
         <h1>{title}</h1>
         <p>{text}</p>
@@ -91,21 +99,16 @@ class BaseNotification extends React.Component {
     );
   }
 
-  componentDidMount() {
-    this.letGoTimeout = setTimeout(this.letGo.bind(this), (this.props.alive || BaseNotification.defaultAlive) * 1000);
-  }
-  componentWillUnmount() {
-    clearTimeout(this.letGoTimeout);
-  }
 }
 
 class BaseCountdownNotification extends BaseNotification {
   constructor(props) {
     super(props);
     this.state = {
-      hide: false,
+      hide:    false,
       counter: props.alive || BaseNotification.defaultAlive
     };
+
     this.interval = null;
   }
 
@@ -115,7 +118,7 @@ class BaseCountdownNotification extends BaseNotification {
 
   setCountdownInterval() {
     this.interval = setInterval(
-      () => this.setState({counter: this.state.counter > 1 ? this.state.counter - 1 : ''}),
+      () => this.setState({ counter: this.state.counter > 1 ? this.state.counter - 1 : '' }),
       1000
     );
   }
@@ -138,7 +141,7 @@ class BaseCountdownNotification extends BaseNotification {
 class DelayedActionNotification extends BaseCountdownNotification {
   static propTypes = {
     commit: PropTypes.func.isRequired,
-    undo: PropTypes.func
+    undo:   PropTypes.func
   };
 
   constructor(props) {
@@ -150,13 +153,13 @@ class DelayedActionNotification extends BaseCountdownNotification {
     this.props.undo && this.props.undo();
   }
 
-  onClick() {
+  onClick = () => {
     if (!this.commited) {
       this.props.commit();
       this.commited = true;
     }
     this.letGo();
-  }
+  };
 
   onUndoClick = (e) => {
     e.stopPropagation();
@@ -167,7 +170,7 @@ class DelayedActionNotification extends BaseCountdownNotification {
   renderOther() {
     return (
       <div className="dpwd--notication--growl-undo-button">
-        <a href="#" onClick={this.onUndoClick}><i className="fa fa-undo"></i> Undo</a>
+        <a href="#" onClick={this.onUndoClick}><i className="fa fa-undo" /> Undo</a>
       </div>
     );
   }
@@ -176,7 +179,7 @@ class DelayedActionNotification extends BaseCountdownNotification {
     this.setCountdownInterval();
 
     // Perform commit() before destroying a DelayedActionNotification
-    const onDestroy = () => {
+    const onDestroy       = () => {
       if (!this.commited) {
         this.props.commit();
         this.commited = true;
@@ -185,6 +188,7 @@ class DelayedActionNotification extends BaseCountdownNotification {
     };
     this.onDestroyTimeout = setTimeout(onDestroy, (this.props.alive || BaseNotification.defaultAlive) * 1000);
   }
+
   componentWillUnmount() {
     super.componentWillUnmount();
     clearTimeout(this.onDestroyTimeout);
@@ -199,7 +203,7 @@ class UndoableActionNotification extends BaseCountdownNotification {
   renderOther() {
     return (
       <div className="dpwd--notication--growl-undo-button">
-        <a href="#" onClick={e => {e.preventDefault(); this.props.undo();}}><i className="fa fa-undo"></i> Undo</a>
+        <a href="#" onClick={e => {e.preventDefault(); this.props.undo();}}><i className="fa fa-undo" /> Undo</a>
       </div>
     );
   }
@@ -208,7 +212,7 @@ class UndoableActionNotification extends BaseCountdownNotification {
 class InfoNotification extends BaseNotification {
   renderIcon() {
     return (
-      <i className="fa fa-info"></i>
+      <i className="fa fa-info" />
     );
   }
 }
@@ -216,7 +220,7 @@ class InfoNotification extends BaseNotification {
 class ErrorNotification extends BaseNotification {
   renderIcon() {
     return (
-      <i className="fa fa-exclamation-triangle"></i>
+      <i className="fa fa-exclamation-triangle" />
     );
   }
 }

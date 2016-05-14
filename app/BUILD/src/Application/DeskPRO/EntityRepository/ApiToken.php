@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -69,7 +69,7 @@ class ApiToken extends AbstractEntityRepository
             SELECT t
             FROM DeskPRO:ApiToken t
             WHERE t.person = ?0 AND t.scope = 'client'
-        ")->setParameters(array($person))->getOneOrNullResult();
+        ")->setParameters(array($person))->setMaxResults(1)->getOneOrNullResult();
     }
 
     public function getRateLimitInfo(\Application\DeskPRO\Entity\ApiToken $api_token)

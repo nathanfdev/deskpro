@@ -29,61 +29,30 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use Symfony\Component\HttpFoundation\Request;
+use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 
 /**
  * Class AbstractTicketsController.
  */
 abstract class AbstractTicketsController extends CrudController
 {
+    use TicketSaveTrait;
+
     public static $entity = Ticket::class;
 
     /**
-     * @return TicketManager
-     */
-    protected function getTicketManager()
-    {
-        return $this->getContainer()->getTicketManager();
-    }
-
-    /**
      * {@inheritdoc}
+     *
+     * @param Ticket $entity
      */
     protected function persistModel($entity)
     {
-        /* @var Ticket $entity */
-        $tm      = $this->getTicketManager();
-        $action  = $entity->getId() ? 'update' : 'new';
-        $context = $tm->createAgentExecutorContext($this->getUser(), $action, 'api');
-        $tm->saveTicket($entity, $context);
+        $this->saveTicket($entity);
 
         return $entity;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function findEntity($id, Request $request)
-    {
-        $entity = $this->getTicketManager()->getTicket($id);
-        if (!$entity) {
-            throw $this->createNotFoundException();
-        }
-
-        return $entity;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function instantiateEntity(Request $request)
-    {
-        return $this->getTicketManager()->createTicket();
     }
 }

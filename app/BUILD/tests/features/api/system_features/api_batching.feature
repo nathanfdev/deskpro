@@ -67,7 +67,10 @@ Feature: API batch requests
                     "authorize": "key se3LaKeY5"
                 },
                 "data": {
-                    "subject": "My ticket"
+                    "subject": "My ticket",
+                    "fields": {
+                      "6": "some custom text"
+                    }
                 }
             },
             "an_identifier": "/api/v2/user_groups"
@@ -76,18 +79,20 @@ Feature: API batch requests
     """
     Then the response should be in JSON
     And the response status code should be 200
+
     And the JSON node "responses.an_identifier" should exist
     And the JSON node "responses.new_stuff" should exist
     And the JSON node "responses.an_identifier.headers.status-code" should be equal to 200
     And the JSON node "responses.new_stuff.headers.status-code" should be equal to 201
 
   Scenario: I perform batch requests via GET providing comma separated list of requests
-    When I send a GET request to "/api/v2/batch?get=/api/v2/ticket_stars,/api/v2/ticket_departments,/api/v2/organizations/counts"
+    When I send a GET request to "/api/v2/batch?get=/api/v2/ticket_stars,/api/v2/ticket_departments,/api/v2/organizations/counts,/tickets"
     Then the response status code should be 200
-    And the JSON node "responses" should have 3 elements
+    And the JSON node "responses" should have 4 elements
     And the JSON node "responses[0].data[0].color" should exist
     And the JSON node "responses[1].data[0].title" should exist
     And the JSON node "responses[2].data.count" should exist
+    And the JSON node "responses[3].data[0].subject" should exist
 
   Scenario: I perform batch requests via GET providing string request identifiers
     When I send a GET request to "/api/v2/batch?get[stars]=/api/v2/ticket_stars&get[departments]=/api/v2/ticket_departments&get[counts]=/api/v2/organizations/counts"
@@ -106,3 +111,8 @@ Feature: API batch requests
     And the JSON node "responses.departments.data" should have 1 element
     And the JSON node "responses.departments.meta.pagination.current_page" should be equal to 2
     And the JSON node "responses.counts.data.count" should exist
+
+  Scenario: I perform batch requests with sideloading
+    When I send a GET request to "/api/v2/batch?get[tickets]=/tickets?include=person"
+    Then the response status code should be 200
+    And the JSON node "responses.tickets.linked.person.1.id" should be equal to 1

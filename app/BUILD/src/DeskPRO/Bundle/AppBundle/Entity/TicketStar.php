@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,7 +37,7 @@ use Application\DeskPRO\Entity\TicketFlagged;
 
 class TicketStar extends TicketFlagged
 {
-    private static $id_color_hex_map = array(
+    private static $id_color_hex_map = [
         self::STAR_BLUE   => '#0000FF',
         self::STAR_GREEN  => '#008000',
         self::STAR_ORANGE => '#FFA500',
@@ -45,7 +45,7 @@ class TicketStar extends TicketFlagged
         self::STAR_PURPLE => '#800080',
         self::STAR_RED    => '#FF0000',
         self::STAR_YELLOW => '#FFFF00',
-    );
+    ];
 
     /**
      * @param int $id

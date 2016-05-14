@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -62,6 +61,16 @@ class CustomDataChat extends CustomDataAbstract
     public function getConversationId()
     {
         return $this->conversation->getId();
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return ChatConversation
+     */
+    public function getOwner()
+    {
+        return $this->conversation;
     }
 
     ############################################################################

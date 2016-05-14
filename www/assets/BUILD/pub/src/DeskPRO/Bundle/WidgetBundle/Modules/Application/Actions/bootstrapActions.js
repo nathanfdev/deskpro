@@ -4,8 +4,14 @@ import { loadOnlineAgents } from './peopleActions';
 import { loadOptions, openWidget } from './dpWindowActions';
 import { loadChatPhraseTranslations, loadChatInfo, setChatId, unsetChatId, updateChatInfo } from '../../Chat/Actions/chatActions';
 import { loadTicketDisplayFields } from '../../Ticket/Actions/ticketActions';
-import { widgetSessionCodeSelector, requireChatLoginSelector, requireChatEmailValidationSelector } from '../Selectors/bootstrap';
-import { widgetHasChatSelector, liveDemoSelector } from '../Selectors/dpWindow';
+import {
+  widgetSessionCodeSelector,
+  requireChatLoginSelector,
+  requireChatEmailValidationSelector,
+  widgetBrandSettingsChatEnabledSelector
+} from '../Selectors/bootstrap';
+
+import { liveDemoSelector } from '../Selectors/dpWindow';
 import { onlineAgentsCountSelector } from '../Selectors/peopleSelectors';
 import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
@@ -34,6 +40,7 @@ export const getSession = createAction(
 );
 
 export const setSettings = createAction('WIDGET_SET_SETTINGS', settings => $.extend(true, {}, settings));
+
 export const reloadSettings = createAction(
   'WIDGET_RELOAD_SETTINGS',
     settings => (dispatch, getState) => {
@@ -59,7 +66,9 @@ export const loadSettings = createAction(
   () => dispatch =>
     widgetApi
       .sendGet('DP_API/widget/settings', { ...ajaxOptions })
-      .success(response => dispatch(setSettings(response.data)))
+      .success(response => {
+        dispatch(setSettings(response.data));
+      })
 );
 
 export const loadPortalPhraseTranslations = createAction(
@@ -76,7 +85,7 @@ export const chatResume = createAction(
   () => (dispatch, getState) => {
     const state = getState();
     const storedChatId = Number(localStorage.getItem('dpWidget.chat.chatId'));
-    const widgetHasChat = widgetHasChatSelector(state);
+    const widgetHasChat = widgetBrandSettingsChatEnabledSelector(state);
     const agentsCounts = onlineAgentsCountSelector(state);
     const liveDemo = liveDemoSelector(state);
 

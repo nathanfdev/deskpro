@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
@@ -79,7 +78,7 @@ class CustomFieldChoiceType extends AbstractType
                 // for radio boxes ChoiceType uses PRE_SET_DATA callback,
                 // so we need to transform our choice to HierarchyNode before it called
                 $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onTransformRadioData'], 100);
-                $builder->addViewTransformer(new ReversedTransformer(new CustomDefHierarchyNodeTransformer($options['choice_list'])));
+                $builder->addViewTransformer(new ReversedTransformer(new CustomDefHierarchyNodeTransformer($options['choice_list'])), true);
             }
         }
 

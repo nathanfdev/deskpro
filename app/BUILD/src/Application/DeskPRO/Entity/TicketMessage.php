@@ -239,6 +239,7 @@ class TicketMessage extends DomainObject
      *
      * @JMS\Expose()
      * @JMS\Type("string")
+     * @JMS\Accessor(getter="getMessageHtml")
      *
      * @var string
      *
@@ -582,6 +583,7 @@ class TicketMessage extends DomainObject
             $m       = null;
             $changed = false;
 
+            // [attach:type:auth_id:filename]
             if (preg_match('#\[attach:([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\. ]+)\]#', $message, $m)) {
                 $changed = true;
                 $pos     = strpos($message, $m[0]);

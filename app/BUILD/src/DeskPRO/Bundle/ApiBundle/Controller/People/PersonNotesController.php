@@ -26,17 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\PersonNote;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Form\Type\PersonNoteType;
+use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonNoteType;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class PersonNotesController.
@@ -47,8 +45,20 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  */
 class PersonNotesController extends CrudSubController
 {
-    public static $exposeOnly     = ['list', 'post', 'put', 'delete'];
     public static $entity         = PersonNote::class;
     public static $type           = PersonNoteType::class;
     public static $parentProperty = 'person';
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleForm($model, Request $request, array $options = [])
+    {
+        $options = array_merge($options, [
+            'person' => $this->findParentOr404(),
+            'agent'  => $this->getUser(),
+        ]);
+
+        return parent::handleForm($model, $request, $options);
+    }
 }

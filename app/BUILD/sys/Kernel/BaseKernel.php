@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpSys\Kernel;
 
 use Application\AgentBundle\AgentBundle;
@@ -38,6 +37,7 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use DeskPRO\Bundle\ApiBundle\ApiBundle;
 use DeskPRO\Bundle\AppBundle\AppBundle;
 use DeskPRO\Bundle\PortalBundle\PortalBundle;
+use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -101,31 +101,14 @@ abstract class BaseKernel extends Kernel
      */
     public function boot()
     {
-        // Configure Symfony error handler to throw exceptions on PHP errors depending on the current environment
-        // (setting it here right before container is compiled)
-        $this->getContainerBuilder()->setParameter('debug.error_handler.throw_at', $this->dpEnv->isDebug() ? -1 : 0);
-
-        // Boot kernel, compile the container
         parent::boot();
-
-        $isCli = php_sapi_name() === 'cli';
-
-        // Registering error handlers right after container is compiled and we can access the logger service
-        if ($this->dpEnv->isDebug() || $isCli) {
-            \Symfony\Component\Debug\Debug::enable(true, true);
-        } else {
-            \Monolog\ErrorHandler::register($this->container->get('logger'));
-            ini_set('display_errors', 0);
-        }
-
-        // Symfony sets error_reporting to 0 if not in the Debug mode, resetting this to E_ALL regardless
-        // the current mode to catch all errors in the prod mode too.
-        if (!$isCli) {
-            error_reporting(E_ALL);
-        }
 
         if ($this->container instanceof DeskproContainer) {
             $this->container->kernel = $this;
+        }
+
+        if ($this->container->has('logger')) {
+            SystemErrorHandler::setErrorLogger($this->container->get('logger'));
         }
 
         // Legacy
@@ -270,11 +253,33 @@ abstract class BaseKernel extends Kernel
         $cacheFile = $cache->getPath();
         $content   = file_get_contents($cacheFile);
 
-        // Re-write absolute paths to use DP_ROOT instead
-        $content = str_replace("'".DP_APP_DIR, 'DP_APP_DIR.\'', $content);
-        // Correct double slash paths
-        // Empty logs dir that isn't used (we get it from conf)
-        $content = preg_replace("#'kernel\\.logs_dir' => '(.*?)'#", "'kernel.logs_dir' => '".$this->getLogDir()."'", $content);
+        // Re-write app dir paths
+        $content = str_replace(
+            '$this->targetDirs[4].\'/app/BUILD',
+            '$this->getDpAppDir().\'',
+            $content
+        );
+
+        $parts = preg_split('/\s*private \$parameters;/', $content);
+
+        $getter = <<<'CODE'
+    private $dpBuildId = null;
+    private function getDpBuildId()
+    {
+        if ($this->dpBuildId !== null) {
+            return $this->dpBuildId;
+        }
+
+        return $this->dpBuildId = basename(realpath(__DIR__.'/../'));
+    }
+    
+    private function getDpAppDir()
+    {
+        return $this->targetDirs[4].'/app/' . $this->getDpBuildId();
+    }
+CODE;
+
+        $content = $parts[0]."\n\n".$getter."\n\n".$parts[1];
 
         $cache->write($content, $container->getResources());
     }

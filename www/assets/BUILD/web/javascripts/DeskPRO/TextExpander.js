@@ -35,7 +35,7 @@ DeskPRO.TextExpander = new Orb.Class({
 			// of combo string
 			} else if (self.comboString) {
 				var chr = String.fromCharCode(ev.which);
-				if (chr.match(/[a-zA-Z0-9:\.\-_]/)) {
+				if (chr.match(/[a-zA-Z0-9:\.\-_\s]/)) {
 					self.comboString += chr;
 				} else {
 					self.comboString = null;

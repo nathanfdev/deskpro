@@ -613,6 +613,12 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             ));
             $this->container->getMailer()->send($message);
         }
+
+        // For feedback we also notify everyone involved
+        if ($comment instanceof \Application\DeskPRO\Entity\FeedbackComment) {
+            $commenting = new \Application\DeskPRO\Feedback\FeedbackCommenting($this->container, $this->person);
+            $commenting->newCommentNotify($comment);
+        }
     }
 
     protected function _sendCommentDeletedNotification($comment)

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,7 +33,6 @@ namespace Application\DeskPRO\ServerReportFile;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\ORM\Util\Util;
-use Application\DeskPRO\Service\ErrorReporter;
 use Doctrine\ORM\EntityManager;
 use DpSys\License;
 use Orb\Util\Files;
@@ -453,10 +452,8 @@ class ServerReportFile
 
         $sections = array();
 
-        $sections['Info']          = Strings::keyValueAsciiTable($items);
-        $sections['Reporter Info'] = Strings::keyValueAsciiTable(ErrorReporter::getBasicData(true));
-
-        $out = '';
+        $sections['Info'] = Strings::keyValueAsciiTable($items);
+        $out              = '';
 
         foreach ($sections as $title => $content) {
             $out .= "\n\n\n\n\n";

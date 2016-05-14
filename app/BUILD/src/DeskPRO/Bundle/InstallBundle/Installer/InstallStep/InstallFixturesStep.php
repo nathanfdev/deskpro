@@ -35,6 +35,8 @@ class InstallFixturesStep extends AbstractStep
 {
     public function run()
     {
+        ini_set('memory_limit', '512M');
+
         $this->writeBigTitle('Initializing database');
 
         $this->writeln('We will now initialize the database. This may take a few minutes.');

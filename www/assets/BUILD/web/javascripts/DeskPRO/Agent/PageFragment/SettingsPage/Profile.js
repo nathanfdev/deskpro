@@ -238,5 +238,32 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 				li.remove();
 			}
 		});
+
+		this.getDeviceToken(el);
+		var that = this;
+		el.find('.dp-refresh-device-token').on('click', function(){
+			that.getDeviceToken(el);
+		});
+	},
+
+	getDeviceToken: function(el) {
+		jQuery.get(
+			'/api/v2/me/device-setup-token',
+			function(data){
+				var tokenContainer = el.find('.dp-device-qr-code');
+				tokenContainer.html('');
+				tokenContainer.qrcode(
+					{
+						render: 'canvas',
+						ecLevel: 'H',
+						minVersion: 6,
+						maxVersion: 12,
+						size: 200,
+						text: data.data.setup_token
+					}
+				)
+			},
+			'json'
+		);
 	}
 });

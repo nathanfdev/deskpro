@@ -23,11 +23,13 @@ export class DpAppContainer extends React.Component {
   };
 
   componentWillMount() {
-    $.ajaxSetup({
-      statusCode: {
-        401: () => history.replace(`${DP_BASE_URL_RELATIVE}/${DP_AGENT_INTERFACE_PATH_NAMESPACE}/login`)
+    $.ajaxSetup(
+      {
+        statusCode: {
+          401: () => history.replace(`${DP_BASE_URL_RELATIVE}/${DP_AGENT_INTERFACE_PATH_NAMESPACE}/login`)
+        }
       }
-    });
+    );
   }
 
   componentDidMount() {
@@ -55,22 +57,22 @@ export class DpAppContainer extends React.Component {
   }
 
   render() {
-    const basePath = this.workOutBasePath();
+    const basePath    = this.workOutBasePath();
     const defaultPath = `${basePath}/tasks`;
 
     return (
       <Router history={history}>
-        <Redirect from={basePath} to={defaultPath}/>
+        <Redirect from={basePath} to={defaultPath} />
         <Route path={basePath} component={DpAppRouteContainer}>
-          <Route name="crm" path="crm" component={CrmApp}/>
-          <Route name="chat" path="chat" component={ChatApp}/>
-          <Route name="tickets" path="tickets" component={TicketsApp}/>
-          <Route name="tasks" path="tasks" component={TasksApp}/>
-          <Route name="publish" path="publish" component={PublishApp}/>
-          <Route name="feedback" path="feedback" component={FeedbackApp}/>
+          <Route name="crm" path="crm" component={CrmApp} />
+          <Route name="chat" path="chat" component={ChatApp} />
+          <Route name="tickets" path="tickets" component={TicketsApp} />
+          <Route name="tasks" path="tasks" component={TasksApp} />
+          <Route name="publish" path="publish" component={PublishApp} />
+          <Route name="feedback" path="feedback" component={FeedbackApp} />
         </Route>
         <Route path={basePath}>
-          <Route name="login" path="login" component={LoginApp}/>
+          <Route name="login" path="login" component={LoginApp} />
         </Route>
       </Router>
     );

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -46,6 +46,23 @@ class BlobContext extends BaseContext
         $blob_storage = $this->getContainer()->get('blob.storage');
 
         $blob           = $blob_storage->createBlobRecordFromString('blob content', 'file.txt', 'text/plain');
+        $blob->authcode = $auth_code;
+        $blob->is_temp  = true;
+
+        $this->em()->persist($blob);
+        $this->em()->flush($blob);
+    }
+
+    /**
+     * @Given I create an image blob with auth code :auth_code
+     *
+     * @param string $auth_code
+     */
+    public function iCreateImageBlobWithAuthCode($auth_code)
+    {
+        $blob_storage = $this->getContainer()->get('blob.storage');
+
+        $blob           = $blob_storage->createBlobRecordFromFile(__DIR__.'/../../../src/DeskPRO/Bundle/AppBundle/DataFixtures/res/avatars/superman_.jpg', 'image.jpg', 'image/jpeg');
         $blob->authcode = $auth_code;
         $blob->is_temp  = true;
 

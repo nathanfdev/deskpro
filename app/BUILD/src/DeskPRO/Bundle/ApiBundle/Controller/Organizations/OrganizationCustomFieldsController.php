@@ -26,18 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Organizations;
 
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\ApiBundle\Controller\AbstractCustomFieldsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class OrganizationCustomFieldsController.
@@ -46,17 +41,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @Rest\Route("/organization_custom_fields")
  * @ApiDoc(target="all", section="Organizations", output="Application\DeskPRO\Entity\CustomDefOrganization")
  */
-class OrganizationCustomFieldsController extends CrudController
+class OrganizationCustomFieldsController extends AbstractCustomFieldsController
 {
-    public static $exposeOnly = ['list', 'get'];
-    public static $entity     = CustomDefOrganization::class;
-    public static $listOrder  = 'asc';
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
-    {
-        $qb->andWhere('e.parent is null');
-    }
+    public static $entity = CustomDefOrganization::class;
 }

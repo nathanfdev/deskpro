@@ -53,8 +53,9 @@ Feature: /tickets endpoint
   Scenario: I try to create a ticket providing empty data
     When I send a POST request to "/api/v2/tickets"
     Then the response should be in JSON
-    And the response status code should be 201
-    And the JSON node "data.subject" should be equal to "(No Subject)"
+    And the response status code should be 400
+    And the JSON node "errors.fields.fields.fields.fields_6.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.fields.fields.fields_6.errors[0].message" should contain "This value should not be blank."
 
   Scenario: I try to create a ticket with not correct user types
     When I send a POST request to "/api/v2/tickets" with body:
@@ -82,13 +83,13 @@ Feature: /tickets endpoint
   "followers": ["agent@deskpro.dev", 1],
   "cc": ["user@deskpro.dev"],
   "fields": {
-    "6": "some text"
+    "6": "some custom text"
   }
 }
     """
     Then the response status code should be 201
-    And the header "Location" should be equal to "/api/v2/tickets/6"
-    And the JSON node "data.id" should be equal to 6
+    And the header "Location" should be equal to "/api/v2/tickets/5"
+    And the JSON node "data.id" should be equal to 5
     And the JSON node "data.subject" should be equal to "Sample Ticket"
     And the JSON node "data.is_hold" should be equal to 1
     And the JSON node "data.parent" should be equal to 1
@@ -99,9 +100,10 @@ Feature: /tickets endpoint
     And the JSON node "data.followers" should have 2 elements
     And the JSON node "data.followers[0]" should be equal to 2
     And the JSON node "data.followers[1]" should be equal to 1
-    And the JSON node "data.fields.6.value" should be equal to "some text"
+    And the JSON node "data.fields.6.value" should be equal to "some custom text"
+    And the JSON node "data.fields.7.value" should be equal to "default value"
 
-    When I send a GET request to "/api/v2/tickets/6"
+    When I send a GET request to "/api/v2/tickets/5"
     Then the response status code should be 200
     And the JSON node "data.subject" should be equal to "Sample Ticket"
     And the JSON node "data.cc" should have 1 element
@@ -110,8 +112,18 @@ Feature: /tickets endpoint
     And the JSON node "data.followers[0]" should be equal to 2
     And the JSON node "data.followers[1]" should be equal to 1
 
+    And ticket with id=5 has logs:
+      | type               |
+      | action_starter     |
+      | ticket_created     |
+      | changed_subject    |
+      | changed_department |
+      | changed_person     |
+      | changed_agent      |
+
   Scenario: I modify and retrieve a ticket
-    When I send a PUT request to "/api/v2/tickets/6" with body:
+    Given I reset ticket with id=5 logs
+    When I send a PUT request to "/api/v2/tickets/5" with body:
     """
 {
   "subject": "Modified subject",
@@ -120,7 +132,7 @@ Feature: /tickets endpoint
     """
     Then the response status code should be 204
 
-    When I send a GET request to "/api/v2/tickets/6"
+    When I send a GET request to "/api/v2/tickets/5"
     Then the response status code should be 200
     And the JSON node "data.subject" should be equal to "Modified subject"
     And the JSON node "data.cc" should have 1 element
@@ -129,13 +141,25 @@ Feature: /tickets endpoint
     And the JSON node "data.followers[0]" should be equal to 1
     And the JSON node "data.followers[1]" should be equal to 4
 
+    And ticket with id=5 has no logs:
+      | type                      |
+      | changed_department        |
+      | changed_person            |
+      | changed_agent             |
+      | changed_user_participants |
+
+    And ticket with id=5 has logs:
+      | type                       |
+      | changed_subject            |
+      | changed_agent_participants |
+
   Scenario: I modify ticket custom fields
-    When I send a GET request to "/api/v2/tickets/6"
+    When I send a GET request to "/api/v2/tickets/5"
     Then the response status code should be 200
-    And the JSON node "data.fields.6.value" should be equal to "some text"
+    And the JSON node "data.fields.6.value" should be equal to "some custom text"
     And the JSON node "data.fields.7.value" should be equal to 0
 
-    When I send a PUT request to "/api/v2/tickets/6" with body:
+    When I send a PUT request to "/api/v2/tickets/5" with body:
     """
 {
   "fields": {
@@ -153,7 +177,7 @@ Feature: /tickets endpoint
     """
     Then the response status code should be 204
 
-    When I send a GET request to "/api/v2/tickets/6"
+    When I send a GET request to "/api/v2/tickets/5"
     Then the response status code should be 200
     And the JSON node "data.fields.1.value" should have 1 element
     And the JSON node "data.fields.1.value[0]" should be equal to 2
@@ -168,15 +192,19 @@ Feature: /tickets endpoint
     And the JSON node "data.fields.8.detail.11.title" should be equal to "Choice 3"
 
   Scenario: I delete a ticket
+    Given I reset ticket with id=5 logs
     When I send a DELETE request to "/api/v2/tickets/5"
     Then the response should be in JSON
     And the response status code should be 200
 
-  Scenario: I try to get deleted ticket
     When I send a GET request to "/api/v2/tickets/5"
     Then the response status code should be 200
     And the JSON node "data.status" should be equal to "hidden"
     And the JSON node "data.hidden_status" should be equal to "deleted"
+    And ticket with id=5 has logs:
+      | type                  |
+      | changed_status        |
+      | changed_hidden_status |
 
   Scenario: I try to get not existing ticket
     When I send a GET request to "/api/v2/tickets/40404"

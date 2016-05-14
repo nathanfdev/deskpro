@@ -5,6 +5,7 @@ import { TicketFormSpinner } from './TicketFormSpinner';
 import { loadNewTicketForm, saveNewTicketForm } from '../../Actions/ticketActions';
 import { contentSelector, contentLoadingSelector, contentSavingSelector } from '../../Selectors/ticket';
 import { history } from '../../../../Services/history';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 
 @connect(state => ({
   content: contentSelector(state),
@@ -35,8 +36,17 @@ export class TicketFormContentContainer extends React.Component {
     const { loading, saving, content } = this.props;
     return loading
       ? <TicketFormSpinner />
-      : <TicketFormContent content={content}
-                           saving={saving}
-                           onSubmit={this.onSubmit} />;
+      : <div>
+          <div className="header">
+            <span className="img" />
+            <h1>{portalPhrases.get('portal.tickets.new-title')}</h1>
+            <p>{portalPhrases.get('portal.tickets.new-intro')}</p>
+          </div>
+          <div className="dpdesignportal-form">
+            <TicketFormContent content={content}
+                               saving={saving}
+                               onSubmit={this.onSubmit} />
+          </div>
+        </div>;
   }
 }

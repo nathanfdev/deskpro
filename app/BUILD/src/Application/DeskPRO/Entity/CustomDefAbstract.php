@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -198,9 +197,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 
     /**
      * Default field value.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("integer")
      *
      * @var string
      */
@@ -828,7 +824,9 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * @return string
+     * @JMS\VirtualProperty()
+     *
+     * @return mixed
      */
     public function getDefaultValue()
     {
@@ -845,6 +843,17 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
             } else {
                 return;
             }
+        } elseif ($this->isMulti()) {
+            if ($this->default_value) {
+                $ids = explode(',', $this->default_value);
+                $ids = array_map(function ($id) { return (int) $id; }, $ids);
+
+                return $ids;
+            }
+
+            return [];
+        } elseif ($this->isChoiceType()) {
+            return $this->default_value ? (int) $this->default_value : null;
         }
 
         return $this->default_value;
@@ -1067,14 +1076,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
                     'display_order' => $c->display_order,
                 );
             }
-
-            $defaults = array();
-            foreach (explode(',', $data['default_value']) as $val) {
-                if (strlen($val)) {
-                    $defaults[] = (int) $val;
-                }
-            }
-            $data['default_value'] = $defaults;
         }
 
         if ($data['options']) {

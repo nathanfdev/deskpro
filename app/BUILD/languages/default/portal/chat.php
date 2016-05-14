@@ -108,6 +108,7 @@ return array(
     'portal.chat.reopen_chat'                => 'Reopen this chat',
     'portal.chat.reopen_chat_action'         => 'Reopen chat',
     'portal.chat.reply_to'                   => 'Reply to {{firstName}}',
+    'portal.chat.support_powered_by'         => 'Support powered by {{DeskPRO}}',
     'portal.chat.start'                      => 'Start a new chat',
     'portal.chat.starting'                   => 'Your chat is starting...',
     'portal.chat.label-details'              => 'Your Details',

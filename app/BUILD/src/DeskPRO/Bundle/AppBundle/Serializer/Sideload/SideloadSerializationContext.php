@@ -75,7 +75,7 @@ class SideloadSerializationContext extends SerializationContext
     protected $request;
 
     /**
-     * SideloadSerializationContext constructor.
+     * Constructor.
      *
      * @param array                 $includes
      * @param TokenStorageInterface $tokenStorage
@@ -96,7 +96,7 @@ class SideloadSerializationContext extends SerializationContext
      */
     public static function createContext(ContainerInterface $container)
     {
-        $request     = $container->get('request_stack')->getMasterRequest();
+        $request     = $container->get('request_stack')->getCurrentRequest();
         $rawIncludes = $request->query->get('include');
         $idsOnly     = $request->query->get('ids_only');
 
@@ -145,6 +145,16 @@ class SideloadSerializationContext extends SerializationContext
     public function getIncludes()
     {
         return $this->includes;
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return bool
+     */
+    public function hasInclude($type)
+    {
+        return in_array($type, $this->includes);
     }
 
     /**

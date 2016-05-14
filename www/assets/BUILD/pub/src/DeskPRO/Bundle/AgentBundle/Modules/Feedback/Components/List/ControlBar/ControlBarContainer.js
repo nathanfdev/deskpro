@@ -1,8 +1,19 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { currentListParamsSelector, currentViewModeSelector, isCommentsSelector, visibleFieldsSelector } from '../../../Selectors/list';
+import {
+  currentListParamsSelector,
+  currentViewModeSelector,
+  isCommentsSelector,
+  visibleFieldsSelector
+} from '../../../Selectors/list';
 import { listFiltersSelector } from '../../../Selectors/filters';
-import { applyParams, toggleTableFieldVisibility, toggleCardFieldVisibility, storeDisplayFieldsToPersonSetting, updateDisplayFieldsToPersonSetting }
+import {
+  applyParams,
+  toggleTableFieldVisibility,
+  toggleCardFieldVisibility,
+  storeDisplayFieldsToPersonSetting,
+  updateDisplayFieldsToPersonSetting
+}
   from '../../../Actions/FeedbackListActions';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
@@ -27,6 +38,7 @@ export class ControlBarContainer extends Component {
 
   render() {
     const sorting = { date_created: { label: 'Date', icon: 'calendar' } };
+    const { filters, currentParams } = this.props;
 
     if (!this.props.isComments) {
       Object.assign(sorting, {
@@ -38,10 +50,10 @@ export class ControlBarContainer extends Component {
     const config = {
       applyParams,
       sorting,
+      currentParams,
+      filters,
 
-      currentParams: this.props.currentParams,
-      filters:       this.props.filters,
-      view:          {
+      view: {
         options: {
           [constants.VIEW_MODE_CARD]: {
             label: 'Card View',

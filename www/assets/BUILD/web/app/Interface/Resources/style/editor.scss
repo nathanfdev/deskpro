@@ -34,14 +34,13 @@
 
   // Width of the preview
   $preview-panel-width: 960px;
-  $editor-gutters: 20px;
+  $editor-gutters: 0;
 
   // Total width of the dark background panel is the width of the editor sidebar + the preview + the gutters(padding of the overall wrapper)
   $total-width: $panel-width + 960px + $editor-gutters;
 
   // Overall wrapper
   .editor {
-    background: url("#{$web-path}/web/app/Interface/Resources/img/grid.png");
     position: absolute;
     top: 0;
     right: 0;
@@ -57,20 +56,21 @@
     right: $editor-gutters;
     left: $editor-gutters;
     bottom: $editor-gutters;
-    padding: 8px;
+    padding: 0;
   }
 
   // Holds the panel sidebar stuff
   .panel-wrapper {
     float: left;
     width: $panel-width;
+    padding: 8px;
   }
 
   // Theme preview area
   .preview-panel {
     position: absolute;
-    top: 75px;
-    left: $panel-width + 40px;
+    top: 55px;
+    left: $panel-width + 10px;
     display: block;
     right: 20px;
     border-radius: 2px;
@@ -487,7 +487,6 @@
 
       .logo-box {
         img {
-          width: 100%;
           max-width: 100%;
         }
       }
@@ -596,6 +595,7 @@
         padding-left: 5px;
         padding-right: 5px;
         text-transform: uppercase;
+        cursor: pointer;
       }
 
       i {

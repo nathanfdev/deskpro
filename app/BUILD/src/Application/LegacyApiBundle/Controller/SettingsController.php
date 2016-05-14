@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Blob;
@@ -444,7 +443,7 @@ class SettingsController extends AbstractController implements ProtectedControll
         $rate_limit_settings->setArray($this->in->getArrayValue('rate_limit_settings'));
         $rate_limit_settings->saveSettings();
 
-        return $this->createSuccessResponse();
+        return $this->passwordSettingsAction();
     }
 
     ############################################################################

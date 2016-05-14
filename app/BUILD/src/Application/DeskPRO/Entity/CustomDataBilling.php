@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -91,6 +90,16 @@ class CustomDataBilling extends CustomDataAbstract
         $this->setModelField('root_field', $field);
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return TicketCharge
+     */
+    public function getOwner()
+    {
+        return $this->ticket_charge;
     }
 
     ############################################################################

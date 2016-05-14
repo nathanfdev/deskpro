@@ -29,16 +29,14 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Service;
 
 use Application\DeskPRO\App;
-use Doctrine\DBAL\DBALException;
 use DpSys\License;
 
 class ErrorReporter
 {
-    public static function getBasicData($send_all_stats = false)
+    private static function getBasicData($send_all_stats = false)
     {
         if (isset($GLOBALS['DP_DISABLE_SENDREPORTS'])) {
             return array();
@@ -145,247 +143,6 @@ class ErrorReporter
     }
 
     /**
-     * Checks a hash against the db to see if we should avoid sending the error report
-     * too many times. The system sends at most one report a day.
-     *
-     * @static
-     *
-     * @param $hash
-     */
-    public static function shouldThrottleReport($hash)
-    {
-        if (!class_exists('Application\\DeskPRO\\App')) {
-            return false;
-        }
-
-        try {
-            $db         = App::getDb();
-            $exist_date = $db->fetchColumn('
-                SELECT date_expire
-                FROM tmp_data
-                WHERE name = ?
-                LIMIT 1
-            ', array('submitreport_'.$hash));
-
-            if ($exist_date) {
-                $date = \DateTime::createFromFormat('Y-m-d H:i:s', $exist_date);
-
-                // If its under 24 hours, then we dont send the report
-                if (time() - $date->getTimestamp() < 86400) {
-                    return true;
-                }
-            }
-        } catch (\Exception $e) {
-        };
-
-        return false;
-    }
-
-    /**
-     * Submits a PHP error. $errinfo is a standard error info array, see SystemErrorHandler::getExceptionInfo.
-     *
-     * @static
-     *
-     * @param array $errinfo
-     */
-    public static function reportPhpError(array $errinfo)
-    {
-        if (isset($GLOBALS['DP_DISABLE_SENDREPORTS'])) {
-            return array();
-        }
-
-        if (!defined('DP_BUILD_NUM')) {
-            return array();
-        }
-
-        $info = self::getBasicData();
-
-        if ($errinfo['type'] == 'exception') {
-            $ignore_types = array(
-                'Application\\DeskPRO\\Command\\Exception\\CronRunningException',
-                'Application\\DeskPRO\\FileStorage\\Exception\\PermissionException',
-                'Application\\DeskPRO\\HttpKernel\\Exception\\NoPermissionException',
-                'Symfony\\Component\\HttpKernel\\Exception\\NotFoundHttpException',
-            );
-
-            if (in_array($errinfo['exception_type'], $ignore_types)) {
-                return;
-            }
-
-            if (isset($errinfo['exception']) && ($errinfo['exception'] instanceof \PDOException || $errinfo['exception'] instanceof DBALException)) {
-                $ignore_codes = array(
-                    'HY000', // MySQL server has gone away
-                    '1203',  // more than 'max_user_connections' active connections
-                );
-
-                if (in_array($errinfo['exception']->getCode(), $ignore_codes)) {
-                    return;
-                }
-            }
-
-            $copy_keys = array(
-                'type', 'session_name', 'exception_type', 'die', 'pri',
-                'trace', 'summary', 'errstr', 'errname', 'errno', 'errfile', 'errline',
-                'display', 'process_log',
-            );
-            $info['local_hash'] = md5('php'.$errinfo['exception_type'].$errinfo['errfile'].$errinfo['errline']);
-        } else {
-            $copy_keys = array(
-                'type', 'session_name', 'die', 'pri',
-                'trace', 'summary', 'errstr', 'errname', 'errno', 'errfile', 'errline',
-                'display', 'process_log',
-            );
-            $info['local_hash'] = md5('php'.$errinfo['errname'].$errinfo['errfile'].$errinfo['errline']);
-        }
-
-        $send_info = array();
-        foreach ($copy_keys as $k) {
-            $send_info[$k] = isset($errinfo[$k]) ? $errinfo[$k] : null;
-        }
-
-        $info['error_type'] = 'php';
-        $info['error_info'] = $send_info;
-
-        // Attempt to attach trailing errors from server log files
-        foreach (array('server-phperr-web.log', 'cli-phperr.log') as $logfile) {
-            $logpath = dp_get_log_dir().'/'.$logfile;
-            if (!file_exists($logpath)) {
-                continue;
-            }
-
-            $log = @file_get_contents($logpath, false, null, max(0, @filesize($logpath) - 40960));
-
-            $info[$logfile] = $log;
-        }
-
-        if (!self::shouldThrottleReport($info['local_hash'])) {
-            self::sendReport('report-error', $info, 10);
-        }
-    }
-
-    /**
-     * Submits a JS error. $errinfo is a standard error info array from \Application\DeskPRO\Controller\DataController::logJsErrorAction.
-     *
-     * @static
-     *
-     * @param array $errinfo
-     */
-    public static function reportJsError(array $errinfo)
-    {
-        if (isset($GLOBALS['DP_DISABLE_SENDREPORTS'])) {
-            return;
-        }
-
-        $info = array();
-
-        if (isset($errinfo['script']) && isset($errinfo['line'])) {
-            $info['local_hash'] = md5('js'.$errinfo['script'].$errinfo['line']);
-        } else {
-            $info['local_hash'] = md5('js'.$errinfo['message']);
-        }
-
-        $info['error_type'] = 'js';
-        $info['error_info'] = $errinfo;
-
-        if (!self::shouldThrottleReport($info['local_hash'])) {
-            self::sendReport('report-error', $info, 10);
-        }
-    }
-
-    public static function sendInstallReport($data)
-    {
-        $info = $data;
-
-        if (isset($info['errinfo'])) {
-            $errinfo = $info['errinfo'];
-            unset($info['errinfo']);
-
-            if ($errinfo['type'] == 'exception') {
-                $copy_keys = array(
-                    'type', 'session_name', 'exception_type', 'die', 'pri',
-                    'trace', 'summary', 'errstr', 'errname', 'errno', 'errfile', 'errline',
-                    'display',
-                );
-                $info['local_hash'] = md5('php'.$errinfo['exception_type'].$errinfo['errfile'].$errinfo['errline']);
-            } else {
-                $copy_keys = array(
-                    'type', 'session_name', 'die', 'pri',
-                    'trace', 'summary', 'errstr', 'errname', 'errno', 'errfile', 'errline',
-                    'display',
-                );
-                $info['local_hash'] = md5('php'.$errinfo['errname'].$errinfo['errfile'].$errinfo['errline']);
-            }
-
-            $send_info = array();
-            foreach ($copy_keys as $k) {
-                $send_info[$k] = isset($errinfo[$k]) ? $errinfo[$k] : null;
-            }
-
-            $info['error_type'] = 'php';
-            $info['error_info'] = $send_info;
-        }
-
-        unset($info['local_hash']);
-        self::sendReport('report-install', $info, 12);
-    }
-
-    /**
-     * Sends a report to the logging server if local_hash exists in $data, it'll save the hash
-     * to ensure the report isn't re-sent too many times (once every 24 hours).
-     *
-     * @static
-     *
-     * @param $service
-     * @param array $data
-     * @param int   $timeout
-     */
-    public static function sendReport($service, array $data = array(), $timeout = 8)
-    {
-        if (isset($GLOBALS['DP_DISABLE_SENDREPORTS'])) {
-            return;
-        }
-
-        $data = array_merge(self::getBasicData(), $data);
-
-        if (isset($data['local_hash'])) {
-            try {
-                App::getDb()->replace('tmp_data', array(
-                    'name'         => 'submitreport_'.$data['local_hash'],
-                    'auth'         => substr(md5(microtime()).mt_rand(1, 999), 0, 15),
-                    'data'         => serialize(array()),
-                    'date_created' => date('Y-m-d H:i:s'),
-                    'date_expire'  => date('Y-m-d H:i:s', strtotime('+24 hours')),
-                ));
-            } catch (\Exception $e) {
-                return;
-            }
-        }
-
-        // Make sure payload isnt too big
-        foreach ($data as &$d) {
-            if (!is_string($d)) {
-                continue;
-            }
-            if (isset($d[512001])) {
-                $d = substr($d, 0, 512000);
-                $d .= ' (Truncated)';
-            }
-        }
-        unset($d);
-
-        try {
-            $client = new \Zend\Http\Client(null, array('timeout' => $timeout, 'strictredirects' => true, 'sslverifypeer' => false));
-            $client->setMethod(\Zend\Http\Request::METHOD_POST);
-
-            $url = \DpSys\License::getSecureLicServer().'/api/data-submit/'.$service.'.json';
-            $client->setUri($url);
-            $client->getRequest()->getPost()->fromArray($data);
-            $r = $client->send();
-        } catch (\Exception $e) {
-        }
-    }
-
-    /**
      * Sends a heartbeat.
      */
     public static function sendHeartbeat()
@@ -429,63 +186,6 @@ class ErrorReporter
     }
 
     /**
-     * Sends a ping to the install log server about status of an installation.
-     *
-     * @param $step
-     */
-    public static function sendInstallStatusPing($step)
-    {
-        $data = array(
-            'install_token' => App::getSetting('core.install_token'),
-            'step'          => $step,
-        );
-
-        try {
-            $client = new \Zend\Http\Client(null, array('timeout' => 5, 'strictredirects' => true, 'sslverifypeer' => false));
-            $client->setMethod(\Zend\Http\Request::METHOD_POST);
-            $client->setUri(\DpSys\License::getSecureLicServer().'/api/data-submit/ping-install.json');
-            $client->getRequest()->getPost()->fromArray($data);
-            $client->send();
-        } catch (\Exception $e) {
-            error_log(sprintf('sendInstallStatusPing %s %s', $e->getCode(), $e->getMessage()));
-        }
-    }
-
-    /**
-     * @static
-     *
-     * @param $person
-     * @param $message
-     */
-    public static function sendFeedback($person, $message, $email_address = null, $type = null)
-    {
-        if (!$email_address || !\Orb\Validator\StringEmail::isValueValid($email_address)) {
-            $email_address = $person->email_address;
-        }
-
-        $data = array(
-            'message' => $message,
-            'name'    => $person->getDisplayName(),
-            'email'   => $email_address,
-            'url'     => App::getSetting('core.deskpro_url'),
-            'type'    => $type,
-        );
-
-        try {
-            $client = new \Zend\Http\Client(null, array('timeout' => 5, 'strictredirects' => true));
-            $client->setMethod(\Zend\Http\Request::METHOD_POST);
-            $client->setUri(\DpSys\License::getSecureLicServer().'/api/data-submit/submit-feedback.json');
-            $client->getRequest()->getPost()->fromArray($data);
-            $client->setEncType('application/x-www-form-urlencoded; charset=UTF-8');
-            $r = $client->send();
-
-            return true;
-        } catch (\Exception $e) {
-            return false;
-        }
-    }
-
-    /**
      * @static
      *
      * @param $person
@@ -508,6 +208,7 @@ class ErrorReporter
             $client->setUri(\DpSys\License::getSecureLicServer().'/api/data-submit/submit-feedback.json');
             $client->getRequest()->getPost()->fromArray($data);
             $client->setEncType('application/x-www-form-urlencoded; charset=UTF-8');
+            $client->setAdapter('Zend\Http\Client\Adapter\Curl');
             $r = $client->send();
 
             return true;

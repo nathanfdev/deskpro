@@ -224,6 +224,11 @@ return [
     'core.email_source_storetime_rejection' => 1296000, // 15 days
 
     /*
+     * An email address to email whenever there is a rejection
+     */
+    'core.email_source_alert_rejection' => '',
+
+    /*
      * How long to store sendmail sources
      */
     'core.sendmail_source_storetime'       => 1728000, // 20 days
@@ -870,6 +875,7 @@ return [
     # user
     ####################################################################################################################
 
+    // alias for core.iface_portal
     'user.portal_enabled'          => true,
     'user.portal_title'            => 'Support Center',
     'user.portal_header'           => 'My Title',
@@ -968,50 +974,62 @@ return [
     ####################################################################################################################
     # rate limit
     ####################################################################################################################
+    'rate_limit.upload_attachment.enabled'  => true,
     'rate_limit.upload_attachment.limit'    => 50,
     'rate_limit.upload_attachment.time'     => 15 * 60, // 15 min
     'rate_limit.upload_attachment.response' => 'lockout',
 
+    'rate_limit.login.enabled'  => true,
     'rate_limit.login.limit'    => 3,
     'rate_limit.login.time'     => 15 * 60, // 15 min
     'rate_limit.login.response' => 'captcha',
 
+    'rate_limit.registration.enabled'  => true,
     'rate_limit.registration.limit'    => 3,
     'rate_limit.registration.time'     => 15 * 60, // 15 min
     'rate_limit.registration.response' => 'captcha',
 
+    'rate_limit.reset_password.enabled'  => true,
     'rate_limit.reset_password.limit'    => 3,
     'rate_limit.reset_password.time'     => 15 * 60, // 15 min
     'rate_limit.reset_password.response' => 'captcha',
 
+    'rate_limit.token_exchange.enabled'  => true,
     'rate_limit.token_exchange.limit'    => 50,
     'rate_limit.token_exchange.time'     => 15 * 60, // 15 min
     'rate_limit.token_exchange.response' => 'captcha',
 
+    'rate_limit.submit_comment.enabled'  => true,
     'rate_limit.submit_comment.limit'    => 3,
     'rate_limit.submit_comment.time'     => 15 * 60, // 15 min
     'rate_limit.submit_comment.response' => 'captcha',
 
+    'rate_limit.submit_feedback.enabled'  => true,
     'rate_limit.submit_feedback.limit'    => 3,
     'rate_limit.submit_feedback.time'     => 15 * 60, // 15 min
     'rate_limit.submit_feedback.response' => 'captcha',
 
+    'rate_limit.submit_ticket.enabled'  => true,
     'rate_limit.submit_ticket.limit'    => 3,
     'rate_limit.submit_ticket.time'     => 15 * 60, // 15 min
     'rate_limit.submit_ticket.response' => 'captcha',
 
+    'rate_limit.upload_attachment.guest.enabled'  => true,
     'rate_limit.upload_attachment.guest.limit'    => 50,
     'rate_limit.upload_attachment.guest.time'     => 15 * 60, // 15 min
     'rate_limit.upload_attachment.guest.response' => 'lockout',
 
+    'rate_limit.submit_comment.guest.enabled'  => true,
     'rate_limit.submit_comment.guest.limit'    => 3,
     'rate_limit.submit_comment.guest.time'     => 15 * 60, // 15 min
     'rate_limit.submit_comment.guest.response' => 'captcha',
 
+    'rate_limit.submit_feedback.guest.enabled'  => true,
     'rate_limit.submit_feedback.guest.limit'    => 3,
     'rate_limit.submit_feedback.guest.time'     => 15 * 60, // 15 min
     'rate_limit.submit_feedback.guest.response' => 'captcha',
 
+    'rate_limit.submit_ticket.guest.enabled'  => true,
     'rate_limit.submit_ticket.guest.limit'    => 3,
     'rate_limit.submit_ticket.guest.time'     => 15 * 60, // 15 min
     'rate_limit.submit_ticket.guest.response' => 'captcha',
@@ -1034,13 +1052,13 @@ return [
                 'db',
             ],
         ],
-        #'notification.yet.another.system.event' => [
-        #    'strategy' => 'deferred',
-        #    'delivery' => [
-        #        'db',
-        #    ],
-        #    'persistance' => 'db',
-        #],
+        //        'notification.yet.another.system.event' => [
+        //            'strategy' => 'deferred',
+        //            'delivery' => [
+        //                'db',
+        //            ],
+        //            'persistance' => 'db',
+        //        ],
     ],
 
     # Also you MUST provide default strategy. It will be used to handle events that was not described.

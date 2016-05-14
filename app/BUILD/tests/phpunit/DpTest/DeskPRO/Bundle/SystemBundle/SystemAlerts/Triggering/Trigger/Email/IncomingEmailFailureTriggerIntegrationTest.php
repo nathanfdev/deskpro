@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpTest\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger;
 
 use Application\DeskPRO\Entity\EmailAccount;
@@ -150,25 +149,25 @@ class IncomingEmailFailureTriggerIntegrationTest extends BaseIntegrationTest
         $this->assertEquals(1, $this->countRaisedIncidents());
     }
 
-    /**
-     * @test
-     */
-    public function it_should_notify_all_admins_via_email_when_an_incident_is_raised()
-    {
-        /* @var \Swift_Plugins_MessageLogger $mailer */
-        $logger = $this->get('swiftmailer.mailer.default.plugin.messagelogger');
-        $logger->clear();
-        $this->assertEquals(0, $this->countRaisedIncidents());
-        $this->assertEquals(0, $logger->countMessages());
-
-        $this->trigger->setSilenceTime(7);
-        $this->event_logger->log($this->dummyFailure('-10 minutes', 1));
-        $this->event_logger->log($this->dummyFailure('now', 1));
-        $this->triggering_process->run();
-
-        $this->assertEquals(1, $this->countRaisedIncidents());
-        $this->assertEquals(1, $logger->countMessages());
-    }
+//    /**
+//     * @test
+//     */
+//    public function it_should_notify_all_admins_via_email_when_an_incident_is_raised()
+//    {
+//        /* @var \Swift_Plugins_MessageLogger $mailer */
+//        $logger = $this->get('swiftmailer.mailer.default.plugin.messagelogger');
+//        $logger->clear();
+//        $this->assertEquals(0, $this->countRaisedIncidents());
+//        $this->assertEquals(0, $logger->countMessages());
+//
+//        $this->trigger->setSilenceTime(7);
+//        $this->event_logger->log($this->dummyFailure('-10 minutes', 1));
+//        $this->event_logger->log($this->dummyFailure('now', 1));
+//        $this->triggering_process->run();
+//
+//        $this->assertEquals(1, $this->countRaisedIncidents());
+//        $this->assertEquals(1, $logger->countMessages());
+//    }
 
     /**
      * @test

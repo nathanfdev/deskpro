@@ -32,6 +32,7 @@ require_once __DIR__.'/BootTask/BootTaskInterface.php';
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\HttpFoundation\Request;
 
 class Boot
 {
@@ -130,6 +131,7 @@ class Boot
             'Lib',
             'PreparePaths',
             'Request',
+            'OfflineCheck',
         ];
 
         $res = self::runBootTasks($env, $tasks);
@@ -173,6 +175,26 @@ class Boot
 
             return;
         }
+
+        #------------------------------
+        # Set trusted proxies
+        #------------------------------
+        $proxies     = [];
+        $proxyConfig = $env->getConfig('env.trust_proxy_data', []);
+        foreach ($proxyConfig as $item) {
+
+            // Config can contain file paths to read proxies from e.g. @/etc/proxy_list.php
+            if (strpos($item, '@') === 0) {
+                $array = include $item;
+                if (!is_array($array)) {
+                    die("Trusted proxies source file $item must define an array of proxies");
+                }
+                $proxies = array_merge($proxies, $array);
+            } else {
+                $proxies[] = $item;
+            }
+        }
+        Request::setTrustedProxies($proxies);
 
         #------------------------------
         # Boot to a normal symfony request
@@ -221,6 +243,7 @@ class Boot
             'Loader',
             'Lib',
             'PreparePaths',
+            'OfflineCheck',
             'CliKernel',
         ];
 

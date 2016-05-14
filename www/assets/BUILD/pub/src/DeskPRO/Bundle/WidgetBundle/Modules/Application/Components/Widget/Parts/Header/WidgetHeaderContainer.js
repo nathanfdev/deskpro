@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { closeWidget } from '../../../../Actions/dpWindowActions';
+import { closeWidget, closeTriggerPopup } from '../../../../Actions/dpWindowActions';
 import { unsetChatId } from '../../../../../Chat/Actions/chatActions';
 import { companyNameSelector, companyLogoSelector } from '../../../../Selectors/bootstrap';
 import { isEndedSelector } from '../../../../../Chat/Selectors/chat';
@@ -26,6 +26,9 @@ export class WidgetHeaderContainer extends React.Component {
     const { chatEnded, dispatch } = this.props;
 
     dispatch(closeWidget());
+
+    this.props.dispatch(closeTriggerPopup());
+    localStorage['dpWidget.dpWindow.popupShown'] = 'none';
 
     // If chat was ended then we can unset chat on close button
     if (chatEnded) {

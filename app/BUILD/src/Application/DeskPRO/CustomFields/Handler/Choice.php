@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
@@ -42,26 +41,48 @@ class Choice extends HandlerAbstract
 {
     /** @var bool */
     protected $multiple = false;
+
     /** @var bool */
     protected $expanded = false;
 
+    /**
+     * return $this.
+     */
     public function init()
     {
         $this->multiple = $this->field_def->getOption('multiple', false);
         $this->expanded = $this->field_def->getOption('expanded', false);
+
+        return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function enableMultiple()
     {
         $this->multiple = true;
+
+        return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function disableMultiple()
     {
         $this->multiple = false;
+
+        return $this;
     }
 
-    public function renderHtml($data = null, array $template_vars = array())
+    /**
+     * @param null  $data
+     * @param array $templateVars
+     *
+     * @return string
+     */
+    public function renderHtml($data = null, array $templateVars = [])
     {
         if ($data === null) {
             return '';
@@ -69,10 +90,16 @@ class Choice extends HandlerAbstract
 
         $data['value'] = $this->_getRenderableString($data);
 
-        return parent::renderHtml($data, $template_vars);
+        return parent::renderHtml($data, $templateVars);
     }
 
-    public function renderText($data = null, array $template_vars = array())
+    /**
+     * @param array|null $data
+     * @param array      $templateVars
+     *
+     * @return string
+     */
+    public function renderText($data = null, array $templateVars = [])
     {
         if ($data === null) {
             return '';
@@ -80,12 +107,17 @@ class Choice extends HandlerAbstract
 
         $data['value'] = $this->_getRenderableString($data);
 
-        return  parent::renderText($data, $template_vars);
+        return parent::renderText($data, $templateVars);
     }
 
+    /**
+     * @param $data
+     *
+     * @return void|string
+     */
     protected function _getRenderableString($data)
     {
-        $val      = array();
+        $val      = [];
         $children = $this->getFieldChildren();
 
         if (!isset($data['children'])) {
@@ -109,43 +141,49 @@ class Choice extends HandlerAbstract
         return implode(', ', $val);
     }
 
+    /**
+     * @param null $data
+     * @param bool $availableOnly
+     *
+     * @return \Symfony\Component\Form\FormBuilderInterface
+     */
     public function getFormField($data = null, $availableOnly = false)
     {
         $children = $this->getFieldChildren();
-        $choices  = array();
-        $selected = array();
-        $map      = array();
+        $choices  = [];
+        $selected = [];
+        $map      = [];
         // client-side hierarchy
-        $root      = array();
-        $max_depth = 1;
-        $sort_map  = array();
+        $root     = [];
+        $maxDepth = 1;
+        $sortMap  = [];
 
         foreach ($children as $id => $child) {
 
             // map for client-side
-            $map[$id]        = new \StdClass();
+            $map[$id]        = new \stdClass();
             $map[$id]->id    = $id;
             $map[$id]->title = $child['title'];
 
             // add choices
-            $title         = $child['title'];
-            $sort_map[$id] = array($child['display_order']);
-            $d             = 1;
+            $title        = $child['title'];
+            $sortMap[$id] = [$child['display_order']];
+            $d            = 1;
 
-            $sub_child = $child;
-            while ($parent = @$children[$sub_child->getOption('parent_id')]) {
+            $subChild = $child;
+            while ($parent = @$children[$subChild->getOption('parent_id')]) {
                 ++$d;
-                if ($d > $max_depth) {
-                    $max_depth = $d;
+                if ($d > $maxDepth) {
+                    $maxDepth = $d;
                 }
 
-                $title           = $parent['title'].' > '.$title;
-                $sort_map[$id][] = $parent['display_order'];
+                $title          = $parent['title'].' > '.$title;
+                $sortMap[$id][] = $parent['display_order'];
 
-                $sub_child = $parent;
+                $subChild = $parent;
             }
-            $sort_map[$id] = array_reverse($sort_map[$id]);
-            $choices[$id]  = $title;
+            $sortMap[$id] = array_reverse($sortMap[$id]);
+            $choices[$id] = $title;
 
             // set values
             if (!isset($data['children'][$id]['value'])) {
@@ -154,28 +192,31 @@ class Choice extends HandlerAbstract
             $selected[] = $id;
         }
 
-        uksort($choices, function ($a_opt, $b_opt) use ($sort_map) {
-            $a_depth = count($sort_map[$a_opt]);
-            $b_depth = count($sort_map[$b_opt]);
+        uksort(
+            $choices,
+            function ($aOpt, $bOpt) use ($sortMap) {
+                $aDepth = count($sortMap[$aOpt]);
+                $bDepth = count($sortMap[$bOpt]);
 
-            $max_depth = max($a_depth, $b_depth);
+                $maxDepth = max($aDepth, $bDepth);
 
-            $an = $bn = 0;
-            for ($i = 0; $i < $max_depth; ++$i) {
-                $an = @$sort_map[$a_opt][$i] ?: 0;
-                $bn = @$sort_map[$b_opt][$i] ?: 0;
+                $an = $bn = 0;
+                for ($i = 0; $i < $maxDepth; ++$i) {
+                    $an = @$sortMap[$aOpt][$i] ?: 0;
+                    $bn = @$sortMap[$bOpt][$i] ?: 0;
 
-                if ($an != $bn) {
-                    break;
+                    if ($an != $bn) {
+                        break;
+                    }
                 }
-            }
 
-            if ($an == $bn) {
-                return 0;
-            }
+                if ($an == $bn) {
+                    return 0;
+                }
 
-            return $an < $bn ? -1 : 1;
-        });
+                return $an < $bn ? -1 : 1;
+            }
+        );
 
         // map for client-side
         foreach ($children as $id => $child) {
@@ -190,12 +231,12 @@ class Choice extends HandlerAbstract
         }
 
         // For max 2-level multi-select, use optgroups
-        if ($max_depth <= 2 && $this->multiple && !$this->expanded) {
-            $choices = array();
+        if ($maxDepth <= 2 && $this->multiple && !$this->expanded) {
+            $choices = [];
 
             foreach ($root as $opt) {
                 if (!empty($opt->children)) {
-                    $optgroup = array();
+                    $optgroup = [];
                     foreach ($opt->children as $sub_opt) {
                         $optgroup[$sub_opt->id] = $sub_opt->title;
                     }
@@ -207,22 +248,21 @@ class Choice extends HandlerAbstract
         }
 
         // required
-        $required = defined('DP_INTERFACE') && (
-            ('user' === DP_INTERFACE && $this->field_def->getOption('required'))
-            ||
-            ('agent' === DP_INTERFACE && $this->field_def->getOption('agent_required'))
-        );
+        $required = defined('DP_INTERFACE')
+                    && (
+                        ('user' === DP_INTERFACE && $this->field_def->getOption('required'))
+                        || ('agent' === DP_INTERFACE && $this->field_def->getOption('agent_required'))
+                    );
 
-        $attr                      = $this->field_def->getOption('attr', array());
+        $attr                      = $this->field_def->getOption('attr', []);
         $attr['data-map']          = json_encode($root);
-        $attr['data-custom-field'] = 'choice-'.($this->expanded ? 'expanded' : 'collapsed').($this->multiple ? '-multiple' : null);
-        $attr['data-max-depth']    = $max_depth;
+        $attr['data-custom-field'] = 'choice-'.($this->expanded ? 'expanded' : 'collapsed').($this->multiple
+                ? '-multiple' : null);
+        $attr['data-max-depth'] = $maxDepth;
 
         if ($class = $this->field_def->getOption('custom_css_classname')) {
             $attr['class'] = @$attr['class'].' '.$class;
         }
-
-        $field_opts = array('choices' => $choices);
 
         if (!$this->multiple) {
             // turns off legacy select2 handler
@@ -237,15 +277,15 @@ class Choice extends HandlerAbstract
         // will still have field values for them; we need a blank option to send in a case like that).
         if ($this->expanded) {
             if ($selected && $required) {
-                $empty_val = '---';
+                $emptyVal = '---';
             } else {
-                $empty_val = false;
+                $emptyVal = false;
             }
         } else {
-            $empty_val = '';
+            $emptyVal = '';
         }
 
-        $field_opts = array(
+        $fieldOpts = [
             'choices' => $choices,
             // no required for radios because it adds required="required" to HTML,
             // and if they're hidden, Chrome will error-out because it cant focus the element
@@ -254,9 +294,9 @@ class Choice extends HandlerAbstract
             'required'    => $required && !($this->expanded && !$this->multiple),
             'multiple'    => $this->multiple,
             'expanded'    => $this->expanded,
-            'empty_value' => $empty_val,
+            'empty_value' => $emptyVal,
             'attr'        => $attr,
-        );
+        ];
 
         if (!$this->multiple) {
             // selected value for single select
@@ -267,50 +307,62 @@ class Choice extends HandlerAbstract
             $this->getFormFieldName(),
             'choice',
             $selected,
-            $field_opts
+            $fieldOpts
         );
     }
 
-    public function getDataFromForm(array $form_data)
+    /**
+     * @param array $formData
+     *
+     * @return array
+     */
+    public function getDataFromForm(array $formData)
     {
         $name = $this->getFormFieldName();
 
         $value = null;
-        if (!empty($form_data[$name])) {
-            $value = $form_data[$name];
+        if (!empty($formData[$name])) {
+            $value = $formData[$name];
         }
 
         if ($value) {
             if (is_array($value)) {
                 // Multiple selections in the form of field_1[] = childid
-                $ret = array();
+                $ret = [];
                 foreach ($value as $k) {
-                    $ret[] = array($k, 'value', 1);
+                    $ret[] = [$k, 'value', 1];
                 }
             } else {
                 // Single selections in the form of field_1 = childid
-                $ret = array(
-                    array($value, 'value', 1),
-                );
+                $ret = [
+                    [$value, 'value', 1],
+                ];
             }
 
             return $ret;
         }
 
-        return array();
+        return [];
     }
 
-    public function validateFormData(array $form_data, $context = self::CONTEXT_USER, $context_data = null)
+    /**
+     * @param array  $formData
+     * @param string $context
+     * @param null   $contextData
+     *
+     * @return array
+     */
+    public function validateFormData(array $formData, $context = self::CONTEXT_USER, $contextData = null)
     {
-        $data = isset($form_data[$this->getFormFieldName()]) ? $form_data[$this->getFormFieldName()] : array();
+        $data = isset($formData[$this->getFormFieldName()]) ? $formData[$this->getFormFieldName()] : [];
 
         // Single-selections dont come in as arrays,
         // but we treat them the same so need this casting
         if (!is_array($data)) {
-            $data = array($data);
+            $data = [$data];
         }
 
-        $data = Arrays::func($data, array('Orb\Util\Strings', 'trimWhitespace'));
+        $data = Arrays::func($data, ['Orb\Util\Strings', 'trimWhitespace']);
         $data = Arrays::removeFalsey($data);
 
         // - Choice values are always ints
@@ -318,26 +370,29 @@ class Choice extends HandlerAbstract
         // it's possible a JS null value is sent, which when sent as a POST
         // to PHP becomes the string 'null', which in turn will become a validation error
         // - So this is removing those possible 'null' strings
-        $data = array_filter($data, function ($d) {
-            return $d !== 'null';
-        });
+        $data = array_filter(
+            $data,
+            function ($d) {
+                return $d !== 'null';
+            }
+        );
 
         #------------------------------
         # Validate selections
         #------------------------------
 
-        $children          = $this->getFieldChildren();
-        $parent_option_ids = array();
+        $children        = $this->getFieldChildren();
+        $parentOptionIds = [];
 
         foreach ($children as $c) {
             if ($pid = $c->getOption('parent_id')) {
-                $parent_option_ids[$pid] = $pid;
+                $parentOptionIds[$pid] = $pid;
             }
         }
 
         foreach ($data as $id) {
-            if (!is_numeric($id) || !isset($children[$id]) || isset($parent_option_ids[$id])) {
-                return $this->makeErrorArray(array('invalid_choice'));
+            if (!is_numeric($id) || !isset($children[$id]) || isset($parentOptionIds[$id])) {
+                return $this->makeErrorArray(['invalid_choice']);
             }
         }
 
@@ -345,37 +400,43 @@ class Choice extends HandlerAbstract
         # Validate options
         #------------------------------
 
-        $opt_prefix = '';
+        $optPrefix = '';
         if ($context == self::CONTEXT_AGENT) {
-            $opt_prefix = 'agent_';
+            $optPrefix = 'agent_';
         }
 
-        $options = array();
-        foreach (array('required', 'min_length', 'max_length') as $k) {
-            $options[$k] = $this->field_def->getOption($opt_prefix.$k);
+        $options = [];
+        foreach (['required', 'min_length', 'max_length'] as $k) {
+            $options[$k] = $this->field_def->getOption($optPrefix.$k);
         }
 
         // Without required there are no requirements
         if (!$options['required']) {
-            return array();
+            return [];
         }
 
         if ($options['min_length'] && count($data) < $options['min_length']) {
             if ($options['min_length'] == 1) {
-                return $this->makeErrorArray(array('required'));
+                return $this->makeErrorArray(['required']);
             } else {
-                return $this->makeErrorArray(array('min_length'));
+                return $this->makeErrorArray(['min_length']);
             }
         }
 
         if ($options['max_length'] && count($data) > $options['max_length']) {
-            return $this->makeErrorArray(array('max_length'));
+            return $this->makeErrorArray(['max_length']);
         }
 
-        return array();
+        return [];
     }
 
-    public function renderFormHtml($formView, array $template_vars = array())
+    /**
+     * @param       $formView
+     * @param array $templateVars
+     *
+     * @return string
+     */
+    public function renderFormHtml($formView, array $templateVars = [])
     {
         // In the agent interface, we render single instances of forms many times
         // and that screws up the IDs used in the markup
@@ -383,27 +444,36 @@ class Choice extends HandlerAbstract
         // we need this hack to generate unique IDs for expanded choice fields
         // see also Application/DeskPRO/Resources/views/Form/form_div_layout.html.twig - choice_widget_expanded
 
-        $html = parent::renderFormHtml($formView, $template_vars);
+        $html = parent::renderFormHtml($formView, $templateVars);
 
         if ($this->expanded) {
-            $rand_id = uniqid('dp_').'_';
-            $html    = preg_replace('#<label([^>]+)for="DP_BASE_ID_#', '<label$1for="'.$rand_id, $html);
-            $html    = preg_replace('#<input([^>]+)id="DP_BASE_ID_#', '<input$1id="'.$rand_id, $html);
+            $randId = uniqid('dp_').'_';
+            $html   = preg_replace('#<label([^>]+)for="DP_BASE_ID_#', '<label$1for="'.$randId, $html);
+            $html   = preg_replace('#<input([^>]+)id="DP_BASE_ID_#', '<input$1id="'.$randId, $html);
         }
 
         return $html;
     }
 
+    /**
+     * @return array
+     */
     public function getSearchCapabilities()
     {
-        return array('is', 'not', 'isset', 'not_isset');
+        return ['is', 'not', 'isset', 'not_isset'];
     }
 
+    /**
+     * @return array
+     */
     public function getFilterCapabilities()
     {
-        return array('is', 'not');
+        return ['is', 'not'];
     }
 
+    /**
+     * @return string
+     */
     public function getSearchType()
     {
         return 'id';

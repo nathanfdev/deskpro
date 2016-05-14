@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\DevBundle\Command\Lang;
 
 use DeskPRO\Bundle\DevBundle\Language\PhrasesFinder;
@@ -50,13 +49,49 @@ class CheckUsesCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this->setName('dpdev:lang:check-uses')
-            ->setDescription('Checks all phrases. Use this to see context (where a phrase is used) or to find missing phrases.')
-            ->addOption('zone', 'z', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Specify the zone as comma-sep list: adm, admin, agent, api, portal, user', ['all'])
-            ->addOption('ignore-zone', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Specify the zones to IGNORE as comma-sep list: adm, admin, agent, api, portal, user', [])
-            ->addOption('format', 'o', InputOption::VALUE_REQUIRED, 'Output format: table, json, csv', 'table')
-            ->addOption('filetype', 't', InputOption::VALUE_REQUIRED, 'Scan which files? php or twig or both', 'both')
-            ->addOption('include-dynamic', null, InputOption::VALUE_NONE, 'Attempt to find phrases that we know are used dynamically and have no explicit usage')
-            ->addArgument('report', InputArgument::OPTIONAL, 'Report mode: "context" to show all found uses, or "missing" to only report phrases where we could not find a use.', 'missing');
+            ->setDescription(
+                'Checks all phrases. Use this to see context (where a phrase is used) or to find missing phrases.'
+            )
+            ->addOption(
+                'zone',
+                'z',
+                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+                'Specify the zone as comma-sep list: adm, admin, agent, api, portal, user',
+                ['all']
+            )
+            ->addOption(
+                'ignore-zone',
+                null,
+                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+                'Specify the zones to IGNORE as comma-sep list: adm, admin, agent, api, portal, user',
+                []
+            )
+            ->addOption(
+                'format',
+                'o',
+                InputOption::VALUE_REQUIRED,
+                'Output format: table, json, csv',
+                'table'
+            )
+            ->addOption(
+                'filetype',
+                't',
+                InputOption::VALUE_REQUIRED,
+                'Scan which files? js, php or twig or all',
+                'all'
+            )
+            ->addOption(
+                'include-dynamic',
+                null,
+                InputOption::VALUE_NONE,
+                'Attempt to find phrases that we know are used dynamically and have no explicit usage'
+            )
+            ->addArgument(
+                'report',
+                InputArgument::OPTIONAL,
+                'Report mode: "context" to show all found uses, or "missing" to only report phrases where we could not find a use.',
+                'missing'
+            );
     }
 
     /**
@@ -147,12 +182,18 @@ class CheckUsesCommand extends ContainerAwareCommand
             case 'twig':
                 $types[] = 'twig';
                 break;
-            case 'both':
+            case 'js':
+                $types[] = 'js';
+                break;
+            case 'all':
                 $types[] = 'twig';
                 $types[] = 'php';
+                $types[] = 'js';
                 break;
             default:
-                $output->writeln("<error>Invalid --filetype param. Must be either 'php' or 'twig' or 'both'.</error>");
+                $output->writeln(
+                    "<error>Invalid --filetype param. Must be either 'js', 'php' or 'twig' or 'all'.</error>"
+                );
 
                 return 1;
         }

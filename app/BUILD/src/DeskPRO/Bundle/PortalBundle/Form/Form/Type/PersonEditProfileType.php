@@ -29,11 +29,11 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\Type\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
@@ -219,8 +219,7 @@ class PersonEditProfileType extends AbstractType
                 continue;
             }
 
-            $id = 'user_field_'.$field_def->getId();
-            $form->add($id, 'deskpro_custom_data', [
+            $form->add('user_field_'.$field_def->getId(), CustomDataType::class, [
                 'custom_def'      => $field_def,
                 'property_path'   => 'custom_data',
                 'agent_interface' => false,

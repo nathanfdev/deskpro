@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
@@ -134,6 +133,7 @@ class CaptchaType extends AbstractType
      */
     protected function isRecaptchaEnabled()
     {
-        return $this->brand_stack->getActive()->getSetting('core.use_recaptcha2') || ReCaptchaType::isCloudRecapchaEnabled();
+        return $this->brand_stack->getActive()->getSetting('core.use_recaptcha2')
+            || ReCaptchaType::isCloudRecapchaEnabled();
     }
 }

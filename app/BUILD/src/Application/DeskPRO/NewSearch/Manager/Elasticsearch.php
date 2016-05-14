@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,6 +28,7 @@
 
 namespace Application\DeskPRO\NewSearch\Manager;
 
+use Application\DeskPRO\EntityRepository\Ticket;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Validator\StringEmail;
@@ -111,9 +112,20 @@ class Elasticsearch implements SearchManagerInterface, ContainerAwareInterface
             }
 
             if ($model == 'DeskPRO:Ticket' && preg_match('#^[0-9A-Z\-_\.]+$#', $q)) {
-                $result = $ent_repos->findTicketRef($q);
-                if ($result) {
-                    $this->handleResult($object, $result);
+                /** @var Ticket $ent_repos */
+                if ($ticket = $ent_repos->findTicketRef(strtoupper($q))) {
+                    if ($this->person->PermissionsManager->TicketChecker->canView($ticket)) {
+                        $this->handleResult($object, $ticket);
+                    }
+                } elseif (strlen($q) >= 3) {
+                    $tickets = $ent_repos->searchTicketRef($q);
+                    $results = array();
+                    foreach ($tickets as $ticket) {
+                        if ($this->person->PermissionsManager->TicketChecker->canView($ticket)) {
+                            $results[] = $ticket;
+                        }
+                    }
+                    $this->handleResult($object, $results);
                 }
             }
 

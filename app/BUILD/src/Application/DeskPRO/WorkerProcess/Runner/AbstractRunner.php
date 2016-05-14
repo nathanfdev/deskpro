@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -165,7 +165,7 @@ abstract class AbstractRunner
 
         if ($run_e) {
             $logger->log(sprintf('Exception: %s[%d]: %s', get_class($run_e), $run_e->getCode(), $run_e->getMessage()), Logger::ERR);
-            \DpSys\LowError\SystemErrorHandler::handleException($run_e);
+            \DpSys\LowError\SystemErrorHandler::logException($run_e);
         } else {
             $worker_job['last_run_date'] = new \DateTime();
             App::getDb()->update('worker_jobs', array('last_run_date' => date('Y-m-d H:i:s')), array('id' => $worker_job->getId()));

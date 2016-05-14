@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,6 +33,7 @@ namespace DeskPRO\Bundle\PortalBundle\Helper;
 
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\UseSectionVoter;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use Orb\Util\Arrays;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
 class PortalTabsHelper
@@ -58,7 +59,7 @@ class PortalTabsHelper
      */
     public function getTabsDisplay()
     {
-        $tabs = array();
+        $tabs = [];
 
         $order = $this->findTabOrder();
 
@@ -66,27 +67,32 @@ class PortalTabsHelper
             switch ($tab_type) {
 
                 case 'news':
-                    if ($this->getBrandSetting('user.portal_tab_news') && $this->auth_checker->isGranted(UseSectionVoter::USE_NEWS)) {
+                    if ($this->getBrandSetting('user.portal_tab_news')
+                        && $this->auth_checker->isGranted(UseSectionVoter::USE_NEWS)) {
                         $tabs[] = $tab_type;
                     }
                     break;
                 case 'articles':
-                    if ($this->getBrandSetting('user.portal_tab_articles') && $this->auth_checker->isGranted(UseSectionVoter::USE_ARTICLES)) {
+                    if ($this->getBrandSetting('user.portal_tab_articles')
+                        && $this->auth_checker->isGranted(UseSectionVoter::USE_ARTICLES)) {
                         $tabs[] = $tab_type;
                     }
                     break;
                 case 'feedback':
-                    if ($this->getBrandSetting('user.portal_tab_feedback') && $this->auth_checker->isGranted(UseSectionVoter::USE_FEEDBACK)) {
+                    if ($this->getBrandSetting('user.portal_tab_feedback')
+                        && $this->auth_checker->isGranted(UseSectionVoter::USE_FEEDBACK)) {
                         $tabs[] = $tab_type;
                     }
                     break;
                 case 'downloads':
-                    if ($this->getBrandSetting('user.portal_tab_downloads') && $this->auth_checker->isGranted(UseSectionVoter::USE_DOWNLOADS)) {
+                    if ($this->getBrandSetting('user.portal_tab_downloads')
+                        && $this->auth_checker->isGranted(UseSectionVoter::USE_DOWNLOADS)) {
                         $tabs[] = $tab_type;
                     }
                     break;
                 case 'newticket':
-                    if ($this->getBrandSetting('user.portal_tab_tickets') && $this->auth_checker->isGranted(UseSectionVoter::USE_TICKETS)) {
+                    if ($this->getBrandSetting('user.portal_tab_tickets')
+                        && $this->auth_checker->isGranted(UseSectionVoter::VIEW_TICKETS_LINK)) {
                         $tabs[] = $tab_type;
                     }
                     break;
@@ -105,18 +111,18 @@ class PortalTabsHelper
 
         if ($order) {
             $order = explode(',', $order);
-            $order = \Orb\Util\Arrays::removeFalsey($order);
+            $order = Arrays::removeFalsey($order);
         } else {
-            $order = array();
+            $order = [];
         }
 
-        $order = array_merge($order, array(
+        $order = array_merge($order, [
             'articles',
             'news',
             'feedback',
             'downloads',
             'newticket',
-        ));
+        ]);
 
         $order = array_unique($order);
 

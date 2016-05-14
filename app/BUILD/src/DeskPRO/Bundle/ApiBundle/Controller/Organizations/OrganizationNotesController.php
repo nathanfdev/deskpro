@@ -59,22 +59,9 @@ class OrganizationNotesController extends CrudSubController
     {
         $options = array_merge($options, [
             'organization' => $this->findParentOr404(),
-            'person'       => $this->getUser(),
+            'agent'        => $this->getUser(),
         ]);
 
         return parent::handleForm($model, $request, $options);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function findEntity($id, Request $request)
-    {
-        $entity = parent::findEntity($id, $request);
-        if ($entity->getAgent() !== $this->getUser()) {
-            throw $this->createAccessDeniedException();
-        }
-
-        return $entity;
     }
 }

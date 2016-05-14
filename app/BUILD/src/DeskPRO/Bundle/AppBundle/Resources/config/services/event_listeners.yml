@@ -29,6 +29,11 @@ services:
     tags:
       - { name: doctrine.entity_listener }
 
+  event_listener.custom_data_ticket:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomDataChangeListener
+    tags:
+      - { name: doctrine.entity_listener }
+
   event_listener.listener.client_message_listener:
     class: DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageListener
     arguments:

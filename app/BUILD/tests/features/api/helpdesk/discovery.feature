@@ -55,32 +55,32 @@ Feature: Discover settings
     And the JSON node "data.tickets.group_fields[0].id" should be equal to "department"
     And the JSON node "data.tickets.group_fields[0].type" should be equal to "department"
 
-    And the JSON node "data.tickets.group_fields[1].id" should be equal to "organization"
-    And the JSON node "data.tickets.group_fields[1].type" should be equal to "organization"
+    And the JSON node "data.tickets.group_fields[1].id" should be equal to "agent"
+    And the JSON node "data.tickets.group_fields[1].type" should be equal to "agent"
 
-    And the JSON node "data.tickets.group_fields[2].id" should be equal to "person"
-    And the JSON node "data.tickets.group_fields[2].type" should be equal to "person"
+    And the JSON node "data.tickets.group_fields[2].id" should be equal to "agent_team"
+    And the JSON node "data.tickets.group_fields[2].type" should be equal to "agent_team"
 
-    And the JSON node "data.tickets.group_fields[3].id" should be equal to "language"
-    And the JSON node "data.tickets.group_fields[3].type" should be equal to "language"
+    And the JSON node "data.tickets.group_fields[3].id" should be equal to "urgency"
+    And the JSON node "data.tickets.group_fields[3].type" should be equal to "urgency"
 
-    And the JSON node "data.tickets.group_fields[4].id" should be equal to "urgency"
-    And the JSON node "data.tickets.group_fields[4].type" should be equal to "urgency"
+    And the JSON node "data.tickets.group_fields[4].id" should be equal to "waiting_time"
+    And the JSON node "data.tickets.group_fields[4].type" should be equal to "waiting_time"
 
-    And the JSON node "data.tickets.group_fields[5].id" should be equal to "agent"
-    And the JSON node "data.tickets.group_fields[5].type" should be equal to "agent"
+    And the JSON node "data.tickets.group_fields[5].id" should be equal to "all_waiting_time"
+    And the JSON node "data.tickets.group_fields[5].type" should be equal to "all_waiting_time"
 
-    And the JSON node "data.tickets.group_fields[6].id" should be equal to "agent_team"
-    And the JSON node "data.tickets.group_fields[6].type" should be equal to "agent_team"
+    And the JSON node "data.tickets.group_fields[6].id" should be equal to "date_created"
+    And the JSON node "data.tickets.group_fields[6].type" should be equal to "date_created"
 
-    And the JSON node "data.tickets.group_fields[7].id" should be equal to "waiting_time"
-    And the JSON node "data.tickets.group_fields[7].type" should be equal to "waiting_time"
+    And the JSON node "data.tickets.group_fields[7].id" should be equal to "language"
+    And the JSON node "data.tickets.group_fields[7].type" should be equal to "language"
 
-    And the JSON node "data.tickets.group_fields[8].id" should be equal to "all_waiting_time"
-    And the JSON node "data.tickets.group_fields[8].type" should be equal to "all_waiting_time"
+    And the JSON node "data.tickets.group_fields[8].id" should be equal to "organization"
+    And the JSON node "data.tickets.group_fields[8].type" should be equal to "organization"
 
-    And the JSON node "data.tickets.group_fields[9].id" should be equal to "date_created"
-    And the JSON node "data.tickets.group_fields[9].type" should be equal to "date_created"
+    And the JSON node "data.tickets.group_fields[9].id" should be equal to "person"
+    And the JSON node "data.tickets.group_fields[9].type" should be equal to "person"
 
     And the JSON node "data.tickets.group_fields[10].id" should be equal to "ticket_field.6"
     And the JSON node "data.tickets.group_fields[10].type" should be equal to "ticket_field"

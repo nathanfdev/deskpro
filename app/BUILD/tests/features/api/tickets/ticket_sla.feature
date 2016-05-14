@@ -1,5 +1,5 @@
 @basic @tickets
-Feature: /{id}/ticket_slas endpoint
+Feature: /tickets/{id}/ticket_slas endpoint
   To CRUD DeskPRO ticket's SLAs
   As a developer
   I want an API endpoint
@@ -8,7 +8,9 @@ Feature: /{id}/ticket_slas endpoint
     Given I install the api data set
     And my request is authenticated
 
+  @reinstall
   Scenario: I create a ticket SLA
+    Given I reset ticket with id=3 logs
     When I send a POST request to "/api/v2/tickets/3/ticket_slas" with body:
 """
 {
@@ -17,13 +19,13 @@ Feature: /{id}/ticket_slas endpoint
 }
     """
     Then the response status code should be 201
+    And ticket with id=3 has "changed_sla_status" log
 
   Scenario: I get created ticket SLA
     When I send a GET request to "/api/v2/tickets/3/ticket_slas?include=ticket,sla"
     Then the response status code should be 200
     And the JSON node "meta" should exist
     And the JSON node "data" should have 1 element
-    And print last JSON response
     And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[0].sla_status" should be equal to "warning"
     And the JSON node "data[0].sla" should be equal to 2
@@ -96,3 +98,9 @@ Feature: /{id}/ticket_slas endpoint
     Then the response status code should be 404
     And the JSON node "status" should be equal to 404
     And the JSON node "message" should be equal to "Ticket SLA for ticket ID=3 and SLA ID=3000 not found"
+
+  Scenario: I delete ticket sla
+    Given I reset ticket with id=3 logs
+    When I send a DELETE request to "/api/v2/tickets/3/ticket_slas/1"
+    Then the response status code should be 200
+    And ticket with id=3 has "changed_slas" log

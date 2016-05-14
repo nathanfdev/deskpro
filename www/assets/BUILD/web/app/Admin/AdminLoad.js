@@ -114,6 +114,7 @@ define([
   'Admin/Portal/Ctrl/Nav',
   'Admin/Portal/Ctrl/PortalEditor',
   'Admin/Portal/Ctrl/WidgetEditor',
+  'Admin/Portal/Ctrl/TicketFormWidget',
   'Admin/Portal/Ctrl/Setup',
   'Admin/Server/Ctrl/ServerReqs',
   'Admin/Server/Ctrl/ServerPhpInfo',

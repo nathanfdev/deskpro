@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,7 +39,7 @@ return array(
     'agent.userchat.ended_by_reason'        => 'Chat ended by {{name}}: {{reason}}',
     'agent.userchat.ended_user'             => 'Chat ended by user',
     'agent.userchat.full_message'           => 'Full Message',
-    'agent.userchat.ident_unconfirmed'      => 'Identity not confirmed, email has not been validated',
+    'agent.userchat.ident_unconfirmed'      => 'Identity not confirmed, user is not logged in',
     'agent.userchat.list_title'             => '1 Chat|{{count}} Chats',
     'agent.userchat.message_agent-timeout'  => '{{name}} is not responding. Please wait while will try to find another agent.',
     'agent.userchat.message_assigned'       => 'Chat assigned to {{name}}',

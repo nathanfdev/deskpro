@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\Person;
@@ -188,13 +187,5 @@ class PersonAssignType extends AbstractType
                 'allow_create' => 'boolean',
             ])
         ;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'deskpro_person_identity';
     }
 }

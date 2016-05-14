@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\InstallBundle\Command;
 
 use DeskPRO\Bundle\InstallBundle\Installer\InstallerContext;
@@ -215,14 +212,14 @@ class InstallCommand extends ContainerAwareCommand
         if ($input->getOption('skip-wizard')) {
             array_unshift($steps, new InstallStep\SkipWizardStep($context));
 
-            $skipList[] = 'file_integrity';
-            $skipList[] = 'own_requirements';
-            $skipList[] = 'check_existing';
-            $skipList[] = 'accept_paths';
-            $skipList[] = 'accept_web_url';
-            $skipList[] = 'accept_database';
-            $skipList[] = 'install_config';
-            $skipList[] = 'install_cron';
+            $skip_list[] = 'file_integrity';
+            $skip_list[] = 'own_requirements';
+            $skip_list[] = 'check_existing';
+            $skip_list[] = 'accept_paths';
+            $skip_list[] = 'accept_web_url';
+            $skip_list[] = 'accept_database';
+            $skip_list[] = 'install_config';
+            $skip_list[] = 'install_cron_command';
         }
 
         /** @var InstallStep\AbstractStep $step */

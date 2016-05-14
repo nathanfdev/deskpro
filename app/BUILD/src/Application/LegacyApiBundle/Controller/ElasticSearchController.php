@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,9 +29,9 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\DeskPRO\ApacheTika\ClientManager;
 use Application\DeskPRO\Elastica\ClientFactory;
 use Application\DeskPRO\Monolog\Logger;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
@@ -63,6 +63,9 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
             'enabled'        => (bool) $this->settings->get('elastica.enabled'),
             'requires_reset' => (bool) $this->settings->get('elastica.requires_reset'),
             'url'            => $this->settings->get('elastica.clients.default.url'),
+            'tika_enabled'   => (bool) $this->settings->get('elastica.tika.enabled'),
+            'tika_ip'        => $this->settings->get('elastica.tika.ip_address'),
+            'tika_port'      => $this->settings->get('elastic_settings.tika_port'),
         );
 
         return $this->createApiResponse(array('elastic_settings' => $values));
@@ -78,6 +81,9 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
 
         $this->settings->setSetting('elastica.enabled', $this->in->getBoolInt('elastic_settings.enabled'));
         $this->settings->setSetting('elastica.clients.default.url', $this->in->getString('elastic_settings.url') ?: '');
+        $this->settings->setSetting('elastica.tika.enabled', $this->in->getBoolInt('elastic_settings.tika_enabled') ?: '');
+        $this->settings->setSetting('elastica.tika.ip_address', $this->in->getString('elastic_settings.tika_ip') ?: '');
+        $this->settings->setSetting('elastica.tika.port', $this->in->getInt('elastic_settings.tika_port') ?: '9998');
 
         if ($this->in->getBoolInt('elastic_settings.enabled')) {
             try {
@@ -164,6 +170,26 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
         } catch (\Exception $e) {
             $elastica_logger->error("Exception: {$e->getMessage()}");
             $error = true;
+        }
+
+        if (!$error && $this->in->getBoolInt('tika_enabled')) {
+            try {
+                /** @var ClientManager $tika_client_manager */
+                $tika_client_manager = $this->container->get('deskpro.apache_tika.client_manager');
+                $config              = $tika_client_manager->createConfigFromUrl(
+                    $this->in->getString('tika_ip'),
+                    $this->in->getString('tika_port')
+                );
+                $tika_client = $tika_client_manager->getClientFromConfig($config);
+
+                $version = $tika_client->request('version');
+                $elastica_logger->debug('Apache Tika');
+                $elastica_logger->debug('checking version');
+                $elastica_logger->debug('Version: '.$version);
+            } catch (\Exception $e) {
+                $elastica_logger->error("Exception: {$e->getMessage()}");
+                $error = true;
+            }
         }
 
         return $this->createApiResponse(array(

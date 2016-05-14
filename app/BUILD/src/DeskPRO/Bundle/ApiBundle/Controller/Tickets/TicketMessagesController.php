@@ -26,16 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
+use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketAwarePersistModelTrait;
+use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageType;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -50,6 +47,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class TicketMessagesController extends CrudSubController
 {
+    use TicketSaveTrait, TicketAwarePersistModelTrait;
+
     public static $entity         = TicketMessage::class;
     public static $type           = TicketMessageType::class;
     public static $parentProperty = 'ticket';
@@ -63,9 +62,10 @@ class TicketMessagesController extends CrudSubController
     protected function handleForm($model, Request $request, array $options = [])
     {
         $options = array_merge($options, [
-            'ticket'          => $this->findParentOr404(),
-            'person'          => $this->getUser(),
-            'has_attachments' => true,
+            'ticket'                 => $this->findParentOr404(),
+            'person'                 => $this->getUser(),
+            'has_attachments'        => true,
+            'with_ticket_validation' => $request->get('with_ticket_validation'),
         ]);
 
         return parent::handleForm($model, $request, $options);
@@ -73,39 +73,15 @@ class TicketMessagesController extends CrudSubController
 
     /**
      * {@inheritdoc}
-     */
-    protected function persistModel($entity)
-    {
-        /* @var TicketMessage $entity */
-        $ticket = $entity->getTicket();
-
-        $this->saveTicket($ticket);
-
-        return $entity;
-    }
-
-    /**
-     * {@inheritdoc}
+     *
+     * @param TicketMessage $entity
      */
     protected function deleteEntity($entity)
     {
-        /* @var TicketMessage $entity */
         $ticket = $entity->getTicket();
-        $ticket->messages->removeElement($entity);
+        $ticket->disableAutoTicketProcess();
+        $ticket->removeMessage($entity);
 
         $this->saveTicket($ticket);
-    }
-
-    /**
-     * @param Ticket $ticket
-     *
-     * @throws \Exception
-     */
-    protected function saveTicket(Ticket $ticket)
-    {
-        /** @var TicketManager $manager */
-        $manager = $this->getContainer()->getTicketManager();
-        $context = $manager->createAgentExecutorContext($this->getUser(), 'update', 'api');
-        $manager->saveTicket($ticket, $context);
     }
 }

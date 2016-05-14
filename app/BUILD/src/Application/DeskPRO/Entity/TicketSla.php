@@ -131,11 +131,25 @@ class TicketSla extends DomainObject
      */
     protected $sla;
 
+    /**
+     * @param Ticket $ticket
+     *
+     * @return $this
+     */
     public function setTicket(Ticket $ticket)
     {
-        $this->ticket = $ticket;
+        $this->setModelField('ticket', $ticket);
+        $ticket->getTicketSlas()->add($this);
 
         return $this;
+    }
+
+    /**
+     * @return Ticket
+     */
+    public function getTicket()
+    {
+        return $this->ticket;
     }
 
     public function setSlaStatus($s)

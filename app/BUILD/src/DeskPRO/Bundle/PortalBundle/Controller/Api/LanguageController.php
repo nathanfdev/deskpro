@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use DeskPRO\Component\Util\MapUtils;
@@ -62,6 +61,7 @@ class LanguageController extends AbstractApiController
             'portal.general.prop_popularity',
             'portal.general.prop_comments',
             'portal.general.select_placeholder',
+            'portal.general.select_search_placeholder',
             'portal.account.login-btn',
             'portal.account.login-email',
             'portal.account.login-invalid',
@@ -74,7 +74,6 @@ class LanguageController extends AbstractApiController
             'portal.general.show_x_more',
             'portal.general.select_placeholder',
             'portal.general.delete',
-            'portal.general.support_powered_by',
             'portal.tickets.thank_you',
             'portal.tickets.thank_you_desc',
             'portal.tickets.new-title',
@@ -91,6 +90,7 @@ class LanguageController extends AbstractApiController
             'portal.general.no-agents-available',
             'portal.general.toggle_on',
             'portal.general.toggle_off',
+            'portal.forms.error_upload_file',
             'portal.forms.label_choose',
             'portal.forms.label_drag',
             'portal.forms.label_drag_overlay',
@@ -129,6 +129,7 @@ class LanguageController extends AbstractApiController
             'portal.chat.screen_share',
             'portal.chat.start',
             'portal.chat.starting',
+            'portal.chat.support_powered_by',
             'portal.chat.transcript_desc',
             'portal.chat.transcript_title',
             'portal.chat.transcript_action',

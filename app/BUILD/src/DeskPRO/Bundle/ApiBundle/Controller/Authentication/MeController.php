@@ -26,17 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Authentication;
 
 use Application\DeskPRO\Entity\TmpData;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Model\Me;
-use DeskPRO\Bundle\ApiBundle\Security\Token\AgentSessionSecurityToken;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -62,24 +57,14 @@ class MeController extends BaseController
      *     output="DeskPRO\Bundle\ApiBundle\Model\Me"
      * )
      *
-     * @Rest\Get("/me", name="api_me")
+     * @Rest\Get("/me")
      */
     public function meAction()
     {
-        /** @var \DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken $token */
-        $token  = $this->get('security.token_storage')->getToken();
-        $person = $token->getUser();
+        $token      = $this->get('security.token_storage')->getToken();
+        $clientInfo = $this->get('api_client_info');
 
-        $me              = new Me();
-        $me->auth_method = $token->getName();
-        $me->person_id   = $person->getId();
-        $me->person      = $person;
-
-        if ($token instanceof AgentSessionSecurityToken) {
-            $me->app_id = $token->getAppId();
-        }
-
-        return View::create($this->wrap($me), Response::HTTP_OK);
+        return View::create($this->wrap(new Me($token, $clientInfo, 2)));
     }
 
     /**

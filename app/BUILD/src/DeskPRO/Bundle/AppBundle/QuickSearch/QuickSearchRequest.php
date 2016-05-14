@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\QuickSearch;
 
 use Application\DeskPRO\Entity\Person;
@@ -55,6 +54,8 @@ class QuickSearchRequest
 
     /**
      * @var Person
+     *
+     * @deprecated Use Token storage instead
      */
     private $person;
 
@@ -216,6 +217,8 @@ class QuickSearchRequest
 
     /**
      * @return Person
+     *
+     * @deprecated Use Token storage instead
      */
     public function getPerson()
     {

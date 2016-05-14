@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Department;
@@ -149,7 +148,7 @@ class TicketLayoutsController extends BaseController
         $department    = $department ?: $ticketLayout->department;
 
         $this->getLayoutFieldFilter()->filterInvalid($contextLayout);
-        $this->get('ticket_layout_factory')->verifyRequiredFields($contextLayout);
+        $this->get('ticket_layout_factory')->verifyRequiredFields($contextLayout, true);
 
         return new TicketLayoutModel($contextLayout, $context, $department);
     }

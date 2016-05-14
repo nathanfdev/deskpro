@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataService\Tickets;
 
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
@@ -114,6 +113,9 @@ class TicketsSelectCriteria
                     break;
                 case 'status':
                     $composite->addTerm(new TicketStatusTerm(['status' => $value]));
+                    break;
+                case 'not-status':
+                    $composite->addTerm(new TicketStatusTerm(['status' => $value], TermInterface::OP_NOT));
                     break;
                 case 'agent':
                     $composite->addTerm(new AgentTerm(['agent_ids' => [$value]]));

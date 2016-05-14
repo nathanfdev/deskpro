@@ -11,7 +11,7 @@ Feature: /ticket_snippets endpoint
   Scenario: I retrieve a list of text snippets
     When I send a GET request to "/api/v2/ticket_snippets"
     Then the response status code should be 200
-    And the JSON node "data" should have 3 elements
+    And the JSON node "data" should have 4 elements
 
     And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[0].title" should be equal to "Ticket Snippet {{ ticket.subject }} (en) 1"
@@ -34,6 +34,13 @@ Feature: /ticket_snippets endpoint
     And the JSON node "data[2].shortcut_code" should be equal to "ticket_snippet3"
     And the JSON node "data[2].is_draft" should be equal to 0
 
+    And the JSON node "data[3].id" should be equal to 11
+    And the JSON node "data[3].title" should be equal to 0
+    And the JSON node "data[3].category" should be equal to 2
+    And the JSON node "data[3].person" should be equal to 1
+    And the JSON node "data[3].shortcut_code" should be equal to "ticket_snippet_wo_content"
+    And the JSON node "data[3].is_draft" should be equal to 1
+
     When I send a GET request to "/api/v2/ticket_snippets/1"
     Then the response status code should be 200
 
@@ -52,8 +59,9 @@ Feature: /ticket_snippets endpoint
 
     When I send a GET request to "/api/v2/ticket_snippets?category=2"
     Then the response status code should be 200
-    And the JSON node "data" should have 1 element
+    And the JSON node "data" should have 2 element
     And the JSON node "data[0].id" should be equal to 3
+    And the JSON node "data[1].id" should be equal to 11
 
   Scenario: I filter by person
     When I send a GET request to "/api/v2/ticket_snippets?global=1"
@@ -63,16 +71,18 @@ Feature: /ticket_snippets endpoint
 
     When I send a GET request to "/api/v2/ticket_snippets?my=1"
     Then the response status code should be 200
-    And the JSON node "data" should have 2 elements
+    And the JSON node "data" should have 3 elements
     And the JSON node "data[0].id" should be equal to 2
     And the JSON node "data[1].id" should be equal to 3
+    And the JSON node "data[2].id" should be equal to 11
 
   Scenario: I filter by draft
     When I send a GET request to "/api/v2/ticket_snippets?draft=1"
     Then the response status code should be 200
-    And the JSON node "data" should have 2 elements
+    And the JSON node "data" should have 3 elements
     And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[1].id" should be equal to 2
+    And the JSON node "data[2].id" should be equal to 11
 
     When I send a GET request to "/api/v2/ticket_snippets?draft=0"
     Then the response status code should be 200
@@ -107,10 +117,10 @@ Feature: /ticket_snippets endpoint
   Scenario: I retrieve ticket snippet content
     When I send a GET request to "/api/v2/ticket_snippets/1/content"
     Then the response status code should be 200
-    And the JSON node "data.en_US.title" should be equal to "Ticket Snippet {{ ticket.subject }} (en) 1"
-    And the JSON node "data.en_US.content" should be equal to "Ticket Snippet Content {{ ticket.person.name }} (en) 1"
-    And the JSON node "data.fr.title" should be equal to "Ticket Snippet (fr) 1"
-    And the JSON node "data.fr.content" should be equal to "Ticket Snippet Content (fr) 1"
+    And the JSON node "data.en_US.title" should be equal to the string "Ticket Snippet {{ ticket.subject }} (en) 1"
+    And the JSON node "data.en_US.content" should be equal to the string "Ticket Snippet Content {{ ticket.person.name }} (en) 1"
+    And the JSON node "data.fr.title" should be equal to the string "Ticket Snippet (fr) 1"
+    And the JSON node "data.fr.content" should be equal to the string "Ticket Snippet Content (fr) 1"
 
   Scenario: I retrieve ticket snippet content with replacements
     When I send a GET request to "/api/v2/ticket_snippets/1/content?ticket=2"
@@ -121,17 +131,26 @@ Feature: /ticket_snippets endpoint
   Scenario: I retrieve ticket snippets with sideloading
     When I send a GET request to "/api/v2/ticket_snippets?include=text_snippet_content"
     Then the response status code should be 200
-    And the JSON node "linked.text_snippet_content.1.en_US.title" should be equal to "Ticket Snippet {{ ticket.subject }} (en) 1"
-    And the JSON node "linked.text_snippet_content.1.en_US.content" should be equal to "Ticket Snippet Content {{ ticket.person.name }} (en) 1"
-    And the JSON node "linked.text_snippet_content.1.fr.title" should be equal to "Ticket Snippet (fr) 1"
-    And the JSON node "linked.text_snippet_content.1.fr.content" should be equal to "Ticket Snippet Content (fr) 1"
-    And the JSON node "linked.text_snippet_content.2.fr.title" should be equal to "Ticket Snippet 2"
-    And the JSON node "linked.text_snippet_content.2.fr.content" should be equal to "Ticket Snippet Content 2"
+    And the JSON node "linked.text_snippet_content.1.en_US.title" should be equal to the string "Ticket Snippet {{ ticket.subject }} (en) 1"
+    And the JSON node "linked.text_snippet_content.1.en_US.content" should be equal to the string "Ticket Snippet Content {{ ticket.person.name }} (en) 1"
+    And the JSON node "linked.text_snippet_content.1.fr.title" should be equal to the string "Ticket Snippet (fr) 1"
+    And the JSON node "linked.text_snippet_content.1.fr.content" should be equal to the string "Ticket Snippet Content (fr) 1"
+    And the JSON node "linked.text_snippet_content.2.fr.title" should be equal to the string "Ticket Snippet 2"
+    And the JSON node "linked.text_snippet_content.2.fr.content" should be equal to the string "Ticket Snippet Content 2"
 
     When I send a GET request to "/api/v2/ticket_snippets?include=text_snippet_content&ticket=2"
     Then the response status code should be 200
-    And the JSON node "linked.text_snippet_content.1.en_US.title" should be equal to "Ticket Snippet Ticket #1 (en) 1"
-    And the JSON node "linked.text_snippet_content.1.en_US.content" should be equal to "Ticket Snippet Content Ganon User (en) 1"
+    And the JSON node "linked.text_snippet_content.1.en_US.title" should be equal to the string "Ticket Snippet Ticket #1 (en) 1"
+    And the JSON node "linked.text_snippet_content.1.en_US.content" should be equal to the string "Ticket Snippet Content Ganon User (en) 1"
+
+  Scenario: I sideload snippet w/o content
+    When I send a GET request to "/api/v2/ticket_snippets/11/content"
+    Then the response status code should be 200
+    And the JSON node "data" should be null
+
+    When I send a GET request to "/api/v2/ticket_snippets/11?include=text_snippet_content"
+    Then the response status code should be 200
+    And the JSON node "linked.text_snippet_content.11" should be null
 
   Scenario: I try to create a ticket snippet with empty request
     When I send a POST request to "/api/v2/ticket_snippets"
@@ -222,14 +241,14 @@ Feature: /ticket_snippets endpoint
 }
     """
     Then the response status code should be 201
-    And the JSON node "data.id" should be equal to 11
+    And the JSON node "data.id" should be equal to 12
     And the JSON node "data.title" should be equal to "My Snippet"
     And the JSON node "data.person" should be equal to 1
     And the JSON node "data.shortcut_code" should be equal to "my_snippet"
     And the JSON node "data.is_draft" should be equal to 0
 
   Scenario: I modify text snippet
-    When I send a PUT request to "/api/v2/ticket_snippets/11" with body:
+    When I send a PUT request to "/api/v2/ticket_snippets/12" with body:
     """
 {
   "category": 2,
@@ -239,17 +258,17 @@ Feature: /ticket_snippets endpoint
     """
     Then the response status code should be 204
 
-    When I send a GET request to "/api/v2/ticket_snippets/11"
+    When I send a GET request to "/api/v2/ticket_snippets/12"
     Then the response status code should be 200
-    And the JSON node "data.id" should be equal to 11
+    And the JSON node "data.id" should be equal to 12
     And the JSON node "data.title" should be equal to "My Snippet"
     And the JSON node "data.person" should be equal to 0
     And the JSON node "data.shortcut_code" should be equal to "my_snippet"
     And the JSON node "data.is_draft" should be equal to 1
 
   Scenario: I delete ticket snippet
-    When I send a DELETE request to "/api/v2/ticket_snippets/11"
+    When I send a DELETE request to "/api/v2/ticket_snippets/12"
     Then the response status code should be 200
 
-    When I send a GET request to "/api/v2/ticket_snippets/11"
+    When I send a GET request to "/api/v2/ticket_snippets/12"
     Then the response status code should be 404

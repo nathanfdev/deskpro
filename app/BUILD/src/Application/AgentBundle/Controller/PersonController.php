@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -39,6 +38,7 @@ use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonFile;
 use Application\DeskPRO\Entity\PersonNote;
+use Application\DeskPRO\EntityRepository\Ticket;
 use Application\DeskPRO\Form\Type\PhoneNumberType;
 use Application\DeskPRO\Log\Event\UserMerged;
 use Application\DeskPRO\Mail\Mailer;
@@ -98,9 +98,14 @@ class PersonController extends AbstractController
         # Misc info needed
         #------------------------------
 
-        $notes                = $this->em->getRepository('DeskPRO:PersonNote')->getNotesForPerson($person);
-        $person_tickets       = $this->em->getRepository('DeskPRO:Ticket')->getPersonTickets($person, 251, 'status');
-        $person_tickets_count = $this->em->getRepository('DeskPRO:Ticket')->countTicketsForPerson($person);
+        $notes = $this->em->getRepository('DeskPRO:PersonNote')->getNotesForPerson($person);
+        /** @var Ticket $rep */
+        $rep                  = $this->em->getRepository('DeskPRO:Ticket');
+        $person_tickets       = $rep->getPersonTickets($person, 251, 'status');
+        $person_tickets_count = $rep->countTicketsForPerson(
+            $person,
+            array('awaiting_agent', 'awaiting_user', 'resolved', 'archived', 'hidden')
+        );
 
         $person_files       = $this->em->getRepository('DeskPRO:PersonFile')->getFilesForPerson($person);
         $person_files_count = count($person_files);

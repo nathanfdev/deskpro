@@ -28,7 +28,7 @@ services:
     - { name: 'kernel.event_subscriber' }
 
   follow_redirect_listener:
-    class: DeskPRO\Bundle\ApiBundle\EventListener\FollowRedirectListener
+    class: DeskPRO\Bundle\ApiBundle\EventListener\FollowLocationListener
     tags:
     - { name: 'kernel.event_subscriber' }
 
@@ -51,3 +51,7 @@ services:
       - "@doctrine.orm.entity_manager"
       - "@job.scheduler"
 
+  api_client_info:
+    class: DeskPRO\Bundle\ApiBundle\Request\ApiClientInfo
+    factory: [DeskPRO\Bundle\ApiBundle\Request\ApiClientInfo, createFromRequestStack]
+    arguments: ["@request_stack"]

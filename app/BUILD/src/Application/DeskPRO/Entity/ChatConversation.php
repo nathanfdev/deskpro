@@ -31,18 +31,19 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Labels\LabelManager;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Strings;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * A conversation between one or more people.
@@ -85,7 +86,10 @@ class ChatConversation extends DomainObject
     protected $department = null;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var \Doctrine\Common\Collections\ArrayCollection|LabelChatConversation[]
+     *
+     * @Assert\Valid()
+     * @AppAssert\UniqueCollection(property={"label"})
      */
     protected $labels;
 
@@ -308,7 +312,7 @@ class ChatConversation extends DomainObject
     /**
      * @var array
      */
-    protected $_created_messages = array();
+    protected $_created_messages = [];
 
     /**
      * @var null
@@ -560,7 +564,7 @@ class ChatConversation extends DomainObject
     }
 
     /**
-     * If the person given is the manager of the organization of a user on the ticket, they 
+     * If the person given is the manager of the organization of a user on the ticket, they
      * will be able to see the chat. This is used in portal security checks.
      *
      * @param Person $person
@@ -571,7 +575,8 @@ class ChatConversation extends DomainObject
     {
         // if this is the person on the chat
         if ($this->person->getOrganization() === $person->getOrganization()
-            && $person->organization_manager) {
+            && $person->organization_manager
+        ) {
             return true;
         }
 
@@ -589,7 +594,7 @@ class ChatConversation extends DomainObject
             return $this->_user_participants;
         }
 
-        $this->_user_participants = array();
+        $this->_user_participants = [];
 
         foreach ($this->participants as $p) {
             if (!$p['is_agent']) {
@@ -611,7 +616,7 @@ class ChatConversation extends DomainObject
             return $this->_agent_participants;
         }
 
-        $this->_agent_participants = array();
+        $this->_agent_participants = [];
 
         foreach ($this->participants as $p) {
             if ($p['is_agent']) {
@@ -635,7 +640,7 @@ class ChatConversation extends DomainObject
      */
     public function getParticipantIds()
     {
-        $ids = array();
+        $ids = [];
         foreach ($this->participants as $p) {
             $ids[] = $p['id'];
         }
@@ -755,7 +760,7 @@ class ChatConversation extends DomainObject
     /**
      * Set the agent.
      *
-     * @param  $agent
+     * @param $agent
      */
     public function setAgent($agent = null)
     {
@@ -860,6 +865,14 @@ class ChatConversation extends DomainObject
     }
 
     /**
+     * @return Person[]
+     */
+    public function getParticipants()
+    {
+        return $this->participants;
+    }
+
+    /**
      * Department name which chat was assigned.
      *
      * @JMS\VirtualProperty()
@@ -879,7 +892,7 @@ class ChatConversation extends DomainObject
 
     public function _clearCreatedMessages()
     {
-        $this->_created_messages = array();
+        $this->_created_messages = [];
     }
 
     /**
@@ -992,7 +1005,7 @@ class ChatConversation extends DomainObject
      */
     public function getInfo()
     {
-        $info = array();
+        $info = [];
 
         $info['conversation_id'] = $this->id;
 
@@ -1081,10 +1094,10 @@ class ChatConversation extends DomainObject
             } else {
                 $url = App::get('router')->generate(
                     'serve_default_picture',
-                    array(
+                    [
                         's'        => $size,
                         'size-fit' => 1,
-                    ),
+                    ],
                     true
                 );
             }
@@ -1323,11 +1336,11 @@ class ChatConversation extends DomainObject
         return $this;
     }
 
-    public function toApiData($primary = true, $deep = true, array $visited = array())
+    public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);
         if ($deep) {
-            $data['labels'] = array();
+            $data['labels'] = [];
             foreach ($this->labels as $label) {
                 $data['labels'][] = $label['label'];
             }
@@ -1346,16 +1359,16 @@ class ChatConversation extends DomainObject
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ChatConversation';
         $metadata->setPrimaryTable(
-            array(
+            [
                 'name'    => 'chat_conversations',
-                'indexes' => array(
-                    'status_idx'                 => array('columns' => array('status')),
-                    'should_send_transcript_idx' => array('columns' => array('should_send_transcript')),
-                ),
-            )
+                'indexes' => [
+                    'status_idx'                 => ['columns' => ['status']],
+                    'should_send_transcript_idx' => ['columns' => ['should_send_transcript']],
+                ],
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'id',
                 'type'       => 'integer',
                 'precision'  => 0,
@@ -1363,10 +1376,10 @@ class ChatConversation extends DomainObject
                 'nullable'   => false,
                 'columnName' => 'id',
                 'id'         => true,
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'subject',
                 'type'       => 'string',
                 'length'     => 255,
@@ -1374,10 +1387,10 @@ class ChatConversation extends DomainObject
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'subject',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'status',
                 'type'       => 'string',
                 'length'     => 15,
@@ -1385,10 +1398,10 @@ class ChatConversation extends DomainObject
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'status',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'person_name',
                 'type'       => 'string',
                 'length'     => 255,
@@ -1396,10 +1409,10 @@ class ChatConversation extends DomainObject
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'person_name',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'person_email',
                 'type'       => 'string',
                 'length'     => 255,
@@ -1407,150 +1420,150 @@ class ChatConversation extends DomainObject
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'person_email',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'rating_response_time',
                 'type'       => 'integer',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'rating_response_time',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'rating_overall',
                 'type'       => 'integer',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'rating_overall',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'rating_comment',
                 'type'       => 'text',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'rating_comment',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'is_agent',
                 'type'       => 'boolean',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'is_agent',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'is_window',
                 'type'       => 'boolean',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'is_window',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'date_created',
                 'type'       => 'datetime',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'date_created',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'date_user_waiting',
                 'type'       => 'datetime',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'date_user_waiting',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'date_assigned',
                 'type'       => 'datetime',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'date_assigned',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'date_agent_typing',
                 'type'       => 'datetime',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'date_agent_typing',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'date_first_agent_message',
                 'type'       => 'datetime',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'date_first_agent_message',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'date_ended',
                 'type'       => 'datetime',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'date_ended',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'should_send_transcript',
                 'type'       => 'boolean',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'should_send_transcript',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'date_transcript_sent',
                 'type'       => 'datetime',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'date_transcript_sent',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'total_to_ended',
                 'type'       => 'integer',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'total_to_ended',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'ended_by',
                 'type'       => 'string',
                 'length'     => 15,
@@ -1558,10 +1571,10 @@ class ChatConversation extends DomainObject
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'ended_by',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'email_validation_code',
                 'type'       => 'string',
                 'length'     => 15,
@@ -1569,20 +1582,20 @@ class ChatConversation extends DomainObject
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'email_validation_code',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'email_validated',
                 'type'       => 'boolean',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'email_validated',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'visitor_id',
                 'type'       => 'string',
                 'length'     => 120,
@@ -1590,157 +1603,157 @@ class ChatConversation extends DomainObject
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'visitor_id',
-            )
+            ]
         );
 
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'department',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department',
                 'mappedBy'     => null,
                 'inversedBy'   => null,
-                'joinColumns'  => array(
-                    0 => array(
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'department_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'set null',
                         'columnDefinition'     => null,
-                    ),
-                ),
+                    ],
+                ],
                 'dpApi' => true,
-            )
+            ]
         );
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'agent',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
                 'mappedBy'     => null,
                 'inversedBy'   => null,
-                'joinColumns'  => array(
-                    0 => array(
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'agent_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'set null',
                         'columnDefinition'     => null,
-                    ),
-                ),
+                    ],
+                ],
                 'dpApi' => true,
-            )
+            ]
         );
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'agent_team',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
                 'mappedBy'     => null,
                 'inversedBy'   => null,
-                'joinColumns'  => array(
-                    0 => array(
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'agent_team_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'set null',
                         'columnDefinition'     => null,
-                    ),
-                ),
+                    ],
+                ],
                 'dpApi' => true,
-            )
+            ]
         );
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'person',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
                 'mappedBy'     => null,
                 'inversedBy'   => null,
-                'joinColumns'  => array(
-                    0 => array(
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'person_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'set null',
                         'columnDefinition'     => null,
-                    ),
-                ),
+                    ],
+                ],
                 'dpApi' => true,
-            )
+            ]
         );
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'session',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Session',
                 'mappedBy'     => null,
                 'inversedBy'   => null,
-                'joinColumns'  => array(
-                    0 => array(
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'session_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'set null',
                         'columnDefinition'     => null,
-                    ),
-                ),
-            )
+                    ],
+                ],
+            ]
         );
         $metadata->mapManyToMany(
-            array(
+            [
                 'fieldName'    => 'participants',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
                 'inversedBy'   => 'chats',
-                'joinTable'    => array(
+                'joinTable'    => [
                     'name'        => 'chat_conversation_to_person',
                     'schema'      => null,
-                    'joinColumns' => array(
-                        0 => array(
+                    'joinColumns' => [
+                        0 => [
                             'name'                 => 'conversation_id',
                             'referencedColumnName' => 'id',
                             'nullable'             => true,
                             'onDelete'             => 'cascade',
                             'columnDefinition'     => null,
-                        ),
-                    ),
-                    'inverseJoinColumns' => array(
-                        0 => array(
+                        ],
+                    ],
+                    'inverseJoinColumns' => [
+                        0 => [
                             'name'                 => 'person_id',
                             'referencedColumnName' => 'id',
                             'nullable'             => true,
                             'onDelete'             => 'cascade',
                             'columnDefinition'     => null,
-                        ),
-                    ),
-                ),
+                        ],
+                    ],
+                ],
                 'indexBy' => 'id',
                 'dpApi'   => true,
-            )
+            ]
         );
         $metadata->mapOneToMany(
-            array(
+            [
                 'fieldName'    => 'messages',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\ChatMessage',
-                'cascade'      => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
+                'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
                 'mappedBy'     => 'conversation',
-            )
+            ]
         );
         $metadata->mapOneToMany(
-            array(
+            [
                 'fieldName'     => 'custom_data',
                 'targetEntity'  => 'Application\\DeskPRO\\Entity\\CustomDataChat',
-                'cascade'       => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
+                'cascade'       => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
                 'mappedBy'      => 'conversation',
                 'orphanRemoval' => true,
                 'dpApi'         => true,
-            )
+            ]
         );
         $metadata->mapOneToMany(
-            array(
+            [
                 'fieldName'     => 'labels',
                 'targetEntity'  => 'Application\\DeskPRO\\Entity\\LabelChatConversation',
-                'cascade'       => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
+                'cascade'       => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
                 'mappedBy'      => 'chat',
                 'orphanRemoval' => true,
                 'dpApi'         => true,
-            )
+            ]
         );
     }
 }

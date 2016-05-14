@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -405,7 +405,7 @@ class TicketLogGenerator
                         'action_type' => 'changed_user_participants',
                         'added'       => array_map(function ($part) { $p = $part->person;
 
-return array('id'                 => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $added_users),
+return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $added_users),
                         'removed' => array_map(function ($part) { $p = $part->person;
 
 return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $removed_users),
@@ -416,7 +416,7 @@ return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_ad
                         'action_type' => 'changed_agent_participants',
                         'added'       => array_map(function ($part) { $p = $part->person;
 
-return array('id'                 => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $added_agents),
+return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $added_agents),
                         'removed' => array_map(function ($part) { $p = $part->person;
 
 return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $removed_agents),
@@ -494,7 +494,7 @@ return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_ad
                 return array(
                     'action_type' => 'changed_slas',
                     'added'       => array_map(function ($ts) { return array('id' => $ts->sla->id, 'title' => $ts->sla->title); }, $added),
-                    'removed'                                                     => array_map(function ($ts) { return array('id' => $ts->sla->id, 'title' => $ts->sla->title); }, $removed),
+                    'removed' => array_map(function ($ts) { return array('id' => $ts->sla->id, 'title' => $ts->sla->title); }, $removed),
                 );
                 break;
 
@@ -707,14 +707,14 @@ return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_ad
                     $value_before = $old->getData();
 
                     if ($is_choice) {
-                        $value_before = $old->field->getTitle();
+                        $value_before = $old->field ? $old->field->getTitle() : null;
                     }
                 }
                 if ($new) {
                     $value_after = $new->getData();
 
                     if ($is_choice) {
-                        $value_after = $new->field->getTitle();
+                        $value_after = $new->field ? $new->field->getTitle() : null;
                     }
                 }
 
@@ -736,6 +736,12 @@ return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_ad
                     'new'         => $new ? $new->address : null,
                 );
                 break;
+            case 'parent_ticket':
+                return [
+                    'action_type' => 'parent_ticket',
+                    'old'         => $old ? $old->id : null,
+                    'new'         => $new ? $new->id : null,
+                ];
 
             default:
                 return array();

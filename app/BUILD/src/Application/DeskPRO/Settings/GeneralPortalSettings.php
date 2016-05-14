@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Settings;
 
 class GeneralPortalSettings
@@ -53,6 +52,7 @@ class GeneralPortalSettings
         'apps_news'      => array('core.apps_news', 'bool'),
         'apps_downloads' => array('core.apps_downloads', 'bool'),
 
+        'iface_portal' => array('core.iface_portal', 'bool'),
         'iface_portal' => array('core.iface_portal', 'bool'),
         'iface_widget' => array('core.iface_widget', 'bool'),
 
@@ -224,5 +224,7 @@ class GeneralPortalSettings
         foreach ($this->map as $name => $info) {
             $this->settings->setSetting($info[0], $this->$name);
         }
+
+        $this->settings->setSetting('user.portal_enabled', $this->iface_portal);
     }
 }

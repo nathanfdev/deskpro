@@ -29,12 +29,12 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
+use DeskPRO\Bundle\AppBundle\Form\Type\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
@@ -187,7 +187,7 @@ class NewFeedbackType extends AbstractType
         foreach ($field_defs as $field_def) {
             $forms[] = [
                 'name'    => 'custom_feedback_def_'.$field_def->getId(),
-                'type'    => 'deskpro_custom_data',
+                'type'    => CustomDataType::class,
                 'options' => [
                     'custom_def'      => $field_def,
                     'property_path'   => 'custom_data',

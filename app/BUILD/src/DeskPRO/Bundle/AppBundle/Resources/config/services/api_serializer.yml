@@ -112,6 +112,8 @@ services:
     arguments:
       - "@ticket_layout_factory"
       - "@doctrine.orm.default_entity_manager"
+      - "@form.factory"
+      - "@form_error.form_errors_generator"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
@@ -129,6 +131,13 @@ services:
 
   api_serializer.handler.layout_field:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets\LayoutFieldHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.api_token:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\ApiTokenHandler
+    arguments:
+      - "@discover_settings_resolver"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
@@ -175,6 +184,19 @@ services:
     arguments: ["@jms_serializer.metadata_factory"]
     tags:
       - { name: "jms_serializer.event_subscriber" }
+
+  api_serializer.agent_client_settings_listener:
+    class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\AgentClientInfoSettingsListener
+    arguments:
+      - "@deskpro.app_env"
+      - "@assets.packages"
+    tags:
+      - { name: "jms_serializer.event_subscriber" }
+
+  api_serializer.twig:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Twig\SerializerTwigExtension
+    tags:
+      - { name: twig.extension }
 
 parameters:
   fos_rest.view_handler.default.class: "DeskPRO\Bundle\AppBundle\Serializer\ViewHandler"

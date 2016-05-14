@@ -547,7 +547,8 @@ $text-faded: lighten($text-color, 20%);
   }
 }
 
-.ticket-success-blurb {
+.ticket-success-blurb,
+.ticket-not-available {
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 2px;
   text-align: center;
@@ -598,5 +599,12 @@ $text-faded: lighten($text-color, 20%);
     p {
       opacity: 0.9;
     }
+  }
+}
+
+.ticket-not-available {
+  padding: 0 10px 10px;
+  h1 {
+    font-size: 18px;
   }
 }

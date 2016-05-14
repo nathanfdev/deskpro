@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\CustomDataAbstract;
@@ -42,6 +38,7 @@ use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
@@ -49,12 +46,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Class CustomDataType.
@@ -64,24 +63,23 @@ class CustomDataType extends AbstractType
     /**
      * @var \DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager
      */
-    protected $field_manager;
+    protected $fieldManager;
+
+    /**
+     * @var ValidatorInterface
+     */
+    protected $validator;
 
     /**
      * Constructor.
      *
-     * @param CustomFieldManager $field_manager
+     * @param CustomFieldManager $fieldManager
+     * @param ValidatorInterface $validator
      */
-    public function __construct(CustomFieldManager $field_manager)
+    public function __construct(CustomFieldManager $fieldManager, ValidatorInterface $validator)
     {
-        $this->field_manager = $field_manager;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'deskpro_custom_data';
+        $this->fieldManager = $fieldManager;
+        $this->validator    = $validator;
     }
 
     /**
@@ -92,9 +90,9 @@ class CustomDataType extends AbstractType
         foreach ($form->all() as $child) {
             // set it to the first child's label
             if (!$view->vars['help']) {
-                $child_help = $child->getConfig()->getOption('help');
-                if ($child_help) {
-                    $view->vars['help'] = $child_help;
+                $option = $child->getConfig()->getOption('help');
+                if ($option) {
+                    $view->vars['help'] = $option;
                 }
             }
         }
@@ -107,6 +105,7 @@ class CustomDataType extends AbstractType
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onGenerateFields']);
         $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onTransformToCustomData'], -1);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onValidateData'], -1);
 
         if ($options['inline']) {
             $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetInlineData']);
@@ -127,9 +126,9 @@ class CustomDataType extends AbstractType
         $form   = $event->getForm();
         $config = $form->getConfig();
 
-        /** @var CustomDefAbstract $custom_def */
-        $custom_def = $config->getOption('custom_def');
-        $field      = $this->field_manager->createCustomField($custom_def, $config->getOption('inline'));
+        /** @var CustomDefAbstract $customDef */
+        $customDef = $config->getOption('custom_def');
+        $field     = $this->fieldManager->createCustomField($customDef, $config->getOption('inline'));
 
         // custom fields are implemented as a compound type
         // and this label is for the 'data' attribute, whereas
@@ -165,7 +164,7 @@ class CustomDataType extends AbstractType
 
         // child field is not mapped so the form tries to get data from the options
         // so we should pass stored value via its options
-        $options['data'] = $this->getFormData($data, $custom_def);
+        $options['data'] = $this->getFormData($data, $customDef);
 
         $form->add('data', $field->getType(), $options);
 
@@ -208,21 +207,21 @@ class CustomDataType extends AbstractType
         $form   = $event->getForm();
         $config = $form->getConfig();
 
-        /** @var CustomDefAbstract $custom_def */
-        $custom_def = $config->getOption('custom_def');
+        /** @var CustomDefAbstract $customDef */
+        $customDef = $config->getOption('custom_def');
 
-        /* @var CustomDataAbstract[]|ArrayCollection $all_custom_data */
-        $all_custom_data = $form->getData() ?: new ArrayCollection();
-        $custom_def_data = $this->filterCustomDefData($all_custom_data, $custom_def);
+        /* @var CustomDataAbstract[]|ArrayCollection $allCustomData */
+        $allCustomData = $form->getData() ?: new ArrayCollection();
+        $customDefData = $this->filterCustomDefData($allCustomData, $customDef);
 
-        if ($custom_def->isChoiceType()) {
+        if ($customDef->isChoiceType()) {
             $data = $form->get('data')->getNormData();
             $data = is_array($data) ? $data : ($data ? [$data] : []);
-            $data = array_map(function (HierarchyNode $choice_custom_def) {
-                return $choice_custom_def->getData()->getId();
+            $data = array_map(function (HierarchyNode $choiceCustomDef) {
+                return $choiceCustomDef->getData()->getId();
             }, $data);
 
-            $exist = $custom_def_data
+            $exist = $customDefData
                 ->map(function (CustomDataAbstract $custom_data) {
                     return $custom_data->field->getId();
                 })
@@ -230,57 +229,108 @@ class CustomDataType extends AbstractType
             ;
 
             // remove deleted items
-            foreach ($custom_def_data as $custom_data) {
-                if (!in_array($custom_data->field->getId(), $data)) {
-                    $custom_def_data->removeElement($custom_data);
+            foreach ($customDefData as $customData) {
+                if (!in_array($customData->field->getId(), $data)) {
+                    $customDefData->removeElement($customData);
                 }
             }
 
             // add new items
-            foreach ($data as $field_id) {
-                if (!in_array($field_id, $exist)) {
-                    $custom_data = $this->createCustomData($custom_def);
-                    $custom_data->setValue(1);
-                    $custom_data->setField($custom_def->getChildById($field_id));
+            foreach ($data as $fieldId) {
+                if (!in_array($fieldId, $exist)) {
+                    $customData = $this->createCustomData($customDef);
+                    $customData->setValue(1);
+                    $customData->setField($customDef->getChildById($fieldId));
 
-                    $custom_def_data->add($custom_data);
+                    $customDefData->add($customData);
                 }
             }
         } else {
-            if ($custom_def_data->count()) {
-                $custom_data = $custom_def_data->first();
-                $custom_data->setData($form->get('data')->getData());
-            } else {
-                $custom_data = $this->createCustomData($custom_def);
-                $custom_data->setData($form->get('data')->getData());
+            // Get value from the form or default value if empty
+            $data = $form->get('data')->getData() ?: $customDef->getDefaultValue();
 
-                $custom_def_data->add($custom_data);
+            if ($customDefData->count()) {
+                $customData = $customDefData->first();
+                $customData->setData($data);
+            } else {
+                $customData = $this->createCustomData($customDef);
+                $customData->setData($data);
+
+                $customDefData->add($customData);
             }
         }
 
         // Set reference to custom def field.
-        foreach ($custom_def_data as $custom_data) {
-            $custom_data->root_field = $custom_def;
+        foreach ($customDefData as $customData) {
+            $customData->root_field = $customDef;
 
-            if ($custom_def->getType() !== 'choice') {
+            if (!$customDef->isChoiceType()) {
                 // for simple custom data field = root field
-                $custom_data->field = $custom_def;
+                $customData->field = $customDef;
             }
         }
 
         // Merge custom def data with existing owner custom data collection.
-        foreach ($custom_def_data as $custom_data) {
-            if (!$all_custom_data->contains($custom_data)) {
-                $all_custom_data->add($custom_data);
+        foreach ($customDefData as $customData) {
+            if (!$allCustomData->contains($customData)) {
+                $allCustomData->add($customData);
             }
         }
-        foreach ($all_custom_data as $custom_data) {
-            if ($custom_data->root_field === $custom_def && !$custom_def_data->contains($custom_data)) {
-                $all_custom_data->removeElement($custom_data);
+        foreach ($allCustomData as $customData) {
+            if ($customData->root_field === $customDef && !$customDefData->contains($customData)) {
+                $allCustomData->removeElement($customData);
             }
         }
 
-        $event->setData(clone $all_custom_data);
+        $event->setData(clone $allCustomData);
+    }
+
+    /**
+     * We need to map errors to the custom data form.
+     *
+     * Because we have single custom data collection for all custom def fields we need to get validation errors from
+     * unmapped field. So validate the data manually via another validator to keep custom data mapped.
+     *
+     * @param FormEvent $event
+     */
+    public function onValidateData(FormEvent $event)
+    {
+        $form    = $event->getForm();
+        $options = $form->getConfig()->getOptions();
+
+        if (!$form->isSubmitted()) {
+            return;
+        }
+        if ($options['ignore_validation']) {
+            return;
+        }
+
+        /** @var CustomDefAbstract $customDef */
+        $customDef = $options['custom_def'];
+        $context   = $options['agent_interface'] ? 'agent' : 'user';
+
+        if ($context === 'agent' && $customDef->getOption('agent_validation_resolve')) {
+            $ticket = $options['ticket'];
+            if ($ticket instanceof Ticket && !$ticket->isResolved()) {
+                return;
+            }
+        }
+
+        $violations = $this->validator->validate($form->getData(), new AppAssert\CustomField\CustomData([
+            'context'    => $context,
+            'custom_def' => $customDef,
+            'target'     => AppAssert\CustomField\CustomData::TARGET_FIELD,
+        ]));
+
+        foreach ($violations as $violation) {
+            $form->addError(new FormError(
+                $violation->getMessage(),
+                $violation->getMessageTemplate(),
+                $violation->getParameters(),
+                $violation->getPlural(),
+                $violation
+            ));
+        }
     }
 
     /**
@@ -291,41 +341,19 @@ class CustomDataType extends AbstractType
         $resolver
             ->setDefaults([
                 'label' => function (Options $options) {
-                    /** @var \Application\DeskPRO\Entity\CustomDefAbstract $field */
-                    $field = $options['custom_def'];
-                    if ($field) {
-                        return $field->getTitle();
-                    }
+                    return $options['custom_def']->getTitle();
                 },
                 'help' => function (Options $options) {
-                    /** @var \Application\DeskPRO\Entity\CustomDefAbstract $field */
-                    $field = $options['custom_def'];
-                    if ($field) {
-                        return $field->getDescription();
-                    }
+                    return $options['custom_def']->getDescription();
+                },
+                'fully_hidden' => function (Options $options) {
+                    return $options['custom_def']->getType() === CustomDefAbstract::TYPE_HIDDEN;
                 },
                 'inline'            => false,
                 'owner_form'        => false,
                 'error_bubbling'    => false,
                 'ignore_validation' => false,
-                'fully_hidden'      => function (Options $options) {
-                    /** @var \Application\DeskPRO\Entity\CustomDefAbstract $field */
-                    $field = $options['custom_def'];
-                    if ($field) {
-                        return $field->getHandlerClass() === 'Application\DeskPRO\CustomFields\Handler\Hidden';
-                    }
-
-                    return false;
-                },
-                'constraints' => function (Options $options) {
-                    return [
-                        new AppAssert\CustomField\CustomData([
-                            'context'    => $options['agent_interface'] ? 'agent' : 'user',
-                            'custom_def' => $options['custom_def'],
-                        ]),
-                    ];
-                },
-
+                'ticket'            => false,
             ])
             ->setRequired([
                 'custom_def',
@@ -335,11 +363,14 @@ class CustomDataType extends AbstractType
                 'custom_def'      => CustomDefAbstract::class,
                 'agent_interface' => 'bool',
                 'inline'          => 'bool',
+                'ticket'          => ['bool', Ticket::class],
             ])
         ;
     }
 
     /**
+     * Prepare form data from custom def data collection.
+     *
      * @param ArrayCollection   $customData
      * @param CustomDefAbstract $customDef
      *
@@ -374,49 +405,57 @@ class CustomDataType extends AbstractType
     }
 
     /**
-     * @param CustomDefAbstract $custom_def
+     * Create custom data object.
+     *
+     * @param CustomDefAbstract $customDef
      *
      * @return CustomDataAbstract
      */
-    protected function createCustomData(CustomDefAbstract $custom_def)
+    protected function createCustomData(CustomDefAbstract $customDef)
     {
-        if ($custom_def instanceof CustomDefTicket) {
+        if ($customDef instanceof CustomDefTicket) {
             return new CustomDataTicket();
-        } elseif ($custom_def instanceof CustomDefPerson) {
+        } elseif ($customDef instanceof CustomDefPerson) {
             return new CustomDataPerson();
-        } elseif ($custom_def instanceof CustomDefOrganization) {
+        } elseif ($customDef instanceof CustomDefOrganization) {
             return new CustomDataOrganization();
-        } elseif ($custom_def instanceof CustomDefFeedback) {
+        } elseif ($customDef instanceof CustomDefFeedback) {
             return new CustomDataFeedback();
         }
 
-        throw new \RuntimeException('Unsupported custom data owner '.get_class($custom_def));
+        throw new \RuntimeException('Unsupported custom data owner '.get_class($customDef));
     }
 
     /**
-     * @param Collection        $all_custom_data
-     * @param CustomDefAbstract $custom_def
+     * Filter custom def data from custom data collection.
+     *
+     * @param Collection        $allCustomData
+     * @param CustomDefAbstract $customDef
      *
      * @return CustomDataAbstract[]|ArrayCollection
      */
-    protected function filterCustomDefData(Collection $all_custom_data, CustomDefAbstract $custom_def)
+    protected function filterCustomDefData(Collection $allCustomData, CustomDefAbstract $customDef)
     {
-        $custom_def_data = $all_custom_data->filter(function (CustomDataAbstract $custom_data) use ($custom_def) {
-            return $custom_data->root_field === $custom_def;
+        $customDefData = $allCustomData->filter(function (CustomDataAbstract $custom_data) use ($customDef) {
+            return $custom_data->root_field === $customDef;
         });
 
-        if (!$custom_def_data->count()) {
-            $default_value = $custom_def->getDefaultValue();
-            if ($default_value) {
-                $default_custom_data = $this->createCustomData($custom_def);
-                $default_custom_data->setField($custom_def);
-                $default_custom_data->setRootField($custom_def);
-                $default_custom_data->setData($default_value);
+        if (!$customDefData->count()) {
+            if (!$customDef->isChoiceType()) {
+                $defaultValue = $customDef->getDefaultValue();
+                if ($defaultValue) {
+                    $defaultCustomData = $this->createCustomData($customDef);
+                    $defaultCustomData
+                        ->setField($customDef)
+                        ->setRootField($customDef)
+                        ->setData($defaultValue)
+                    ;
 
-                $custom_def_data->add($default_custom_data);
+                    $customDefData->add($defaultCustomData);
+                }
             }
         }
 
-        return $custom_def_data;
+        return $customDefData;
     }
 }

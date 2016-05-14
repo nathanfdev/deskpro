@@ -13,6 +13,11 @@ class PortalPhrases {
   }
 
   get(phraseId, vars) {
+    // Prevent to complain before getting any translation
+    if (Object.keys(this.phrases).length == 0) {
+      return '';
+    }
+
     if (!this.phrases[phraseId]) {
       console.error('Missing phrase: ' + phraseId);
       return '[missing phrase ' + phraseId + ']';

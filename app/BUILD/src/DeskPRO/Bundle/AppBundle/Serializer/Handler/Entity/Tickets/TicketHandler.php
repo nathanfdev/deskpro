@@ -30,6 +30,11 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets;
 
 use Application\DeskPRO\Entity\Ticket as TicketEntity;
 use Application\DeskPRO\Entity\TicketMessage;
+use DeskPRO\Bundle\AppBundle\Form\Error\ErrorMessageFactory;
+use DeskPRO\Bundle\AppBundle\Form\Error\FormErrorsGenerator;
+use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsType;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket as TicketModel;
@@ -37,6 +42,7 @@ use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\JsonSerializationVisitor;
+use Symfony\Component\Form\FormFactory;
 
 /**
  * Class TicketHandler.
@@ -54,15 +60,33 @@ class TicketHandler extends AbstractEntityHandler
     private $em;
 
     /**
+     * @var FormFactory
+     */
+    private $formFactory;
+
+    /**
+     * @var FormErrorsGenerator
+     */
+    private $formErrorsGenerator;
+
+    /**
      * TicketHandler constructor.
      *
      * @param TicketLayoutFactory $layoutFactory
      * @param EntityManager       $em
+     * @param FormFactory         $formFactory
+     * @param FormErrorsGenerator $formErrorsGenerator
      */
-    public function __construct(TicketLayoutFactory $layoutFactory, EntityManager $em)
-    {
-        $this->layoutFactory = $layoutFactory;
-        $this->em            = $em;
+    public function __construct(
+        TicketLayoutFactory $layoutFactory,
+        EntityManager       $em,
+        FormFactory         $formFactory,
+        FormErrorsGenerator $formErrorsGenerator
+    ) {
+        $this->layoutFactory       = $layoutFactory;
+        $this->em                  = $em;
+        $this->formFactory         = $formFactory;
+        $this->formErrorsGenerator = $formErrorsGenerator;
     }
 
     /**
@@ -95,6 +119,24 @@ class TicketHandler extends AbstractEntityHandler
             new CallbackDeferredProperty([$this, 'getExcerpt'], [$entity, $context])
         );
 
+        // validation
+        $sideloads->addCustomSideload(
+            'ticket_agent_errors',
+            $entity->getId(),
+            new CallbackDeferredProperty(
+                [$this, 'getTicketErrors'],
+                [$entity, $context, TicketWithLayoutsContext::VIEW_AGENT]
+            )
+        );
+        $sideloads->addCustomSideload(
+            'ticket_user_errors',
+            $entity->getId(),
+            new CallbackDeferredProperty(
+                [$this, 'getTicketErrors'],
+                [$entity, $context, TicketWithLayoutsContext::VIEW_USER]
+            )
+        );
+
         return parent::serialize($visitor, $entity, $type, $context);
     }
 
@@ -105,7 +147,7 @@ class TicketHandler extends AbstractEntityHandler
      */
     public function getTicketLayout(TicketEntity $ticket)
     {
-        $edit_layout = $this->layoutFactory->getLayoutForTicketForm($ticket->getDepartment());
+        $edit_layout = $this->layoutFactory->getLayoutForTicketForm($ticket->getDepartment(), true);
         $view_layout = $this->layoutFactory->getLayoutForView($ticket->getDepartment());
 
         return [
@@ -142,6 +184,27 @@ class TicketHandler extends AbstractEntityHandler
             'message_id' => $message->getId(),
             'excerpt'    => $excerpt,
         ];
+    }
+
+    /**
+     * @param TicketEntity                 $entity
+     * @param SideloadSerializationContext $context
+     * @param string                       $viewContext
+     *
+     * @return array
+     */
+    public function getTicketErrors(TicketEntity $entity, SideloadSerializationContext $context, $viewContext)
+    {
+        $form = $this->formFactory->create(TicketWithLayoutsType::class, $entity, [
+            'ticket_view_context' => $viewContext,
+            'person'              => $context->getUser(),
+            'for_api'             => true,
+            'disabled'            => true,
+        ]);
+
+        FormValidatorChecker::submitForm($form);
+
+        return $this->formErrorsGenerator->generateFormErrors($form, ErrorMessageFactory::PREFIX_API);
     }
 
     /**

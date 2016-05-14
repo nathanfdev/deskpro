@@ -1,29 +1,25 @@
-var gulp = require('gulp');
-var gutil = require('gulp-util');
-var webpack = require('webpack');
-var express = require('express');
-var cors = require('cors');
-var del = require('del');
-var runSeq = require('run-sequence');
-var path = require('path');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var WebpackNotifierPlugin = require('webpack-notifier');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
-var glob = require('glob');
-var babel = require('babel-core');
-var uglify = require('uglify-js');
-var fs = require('fs');
-var mkdirp = require('mkdirp');
-var watch = require('gulp-watch');
-var notifier = require('node-notifier');
-var reducerRefresh = require('./build-tools/app-reducer-gen/loader').refreshBundle;
+const gulp = require('gulp');
+const gutil = require('gulp-util');
+const webpack = require('webpack');
+const express = require('express');
+const cors = require('cors');
+const del = require('del');
+const runSeq = require('run-sequence');
+const path = require('path');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const WebpackNotifierPlugin = require('webpack-notifier');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const babel = require('babel-core');
+const uglify = require('uglify-js');
+const fs = require('fs');
+const reducerRefresh = require('./build-tools/app-reducer-gen/loader').refreshBundle;
 
 // ######################################################################################################################
 // # Task Runners
 // ######################################################################################################################
 
 gulp.task('clean', cb => {
-  del(['./build']).then(()=> {
+  del(['./build']).then(() => {
     cb();
   });
 });
@@ -341,9 +337,13 @@ function getWebpackConfig(mode, isProd) {
     config.entry['DeskPRO_PortalBundle_style'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-ltr-style.scss'];
     config.entry['DeskPRO_PortalBundle_rtl_style'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-rtl-style.scss'];
 
+    config.entry['DeskPRO_PortalBundle_vendors_style'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/vendors-style.scss'];
+
     config.entry['DeskPRO_PortalBundle_iestyle'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/ie-overrides.scss'];
     config.entry['DeskPRO_PortalBundle_ie8style'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/ie8-overrides.scss'];
     config.entry['DeskPRO_PortalBundle_ie9style'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/ie9-overrides.scss'];
+
+    config.entry['api_message_style'] = ['./src/DeskPRO/Bundle/AppBundle/Resources/style/api/message.scss'];
   }
   if (mode === 'all' || mode === 'widget') {
     config.entry['DeskPRO_WidgetBundle'] = ['./src/DeskPRO/Bundle/WidgetBundle/DeskPRO_WidgetBundle'];

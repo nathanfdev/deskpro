@@ -8,6 +8,7 @@ Feature: /tickets/{id}/messages endpoint
     Given I install the api data set
     And my request is authenticated
 
+  @reinstall
   Scenario: I retrieve a ticket messages
     When I send a GET request to "/api/v2/tickets/1/messages"
     Then the response status code should be 200
@@ -25,10 +26,14 @@ Feature: /tickets/{id}/messages endpoint
     Then the response status code should be 404
 
   Scenario: I add ticket messages
+    Given I create an image blob with auth code "IMGAAAAAAAAAAAAAAA"
     When I send a POST request to "/api/v2/tickets/1/messages" with body:
     """
     {
-      "message": "my message"
+      "message": "My Message [attach:image:IMGAAAAAAAAAAAAAAA:image.jpg]",
+      "attachments": [
+        { "blob_auth": "IMGAAAAAAAAAAAAAAA" }
+      ]
     }
     """
     Then the response status code should be 201
@@ -36,8 +41,11 @@ Feature: /tickets/{id}/messages endpoint
     And the JSON node "data.ticket" should be equal to 1
     And the JSON node "data.person" should be equal to 1
     And the JSON node "data.is_agent_note" should be equal to 0
-    And the JSON node "data.message" should be equal to "my message"
-    And the JSON node "data.attachments" should have 0 elements
+    And the JSON node "data.message" should contain 'My Message'
+    And the JSON node "data.message" should contain 'IMGAAAAAAAAAAAAAAA/image.jpg'
+    And the JSON node "data.message" should contain '<img'
+    And the JSON node "data.attachments" should have 1 element
+    And ticket with id=1 has "message_created" log
 
     When I send a POST request to "/api/v2/tickets/1/messages" with body:
     """
@@ -85,7 +93,7 @@ Feature: /tickets/{id}/messages endpoint
   Scenario: I retrieve a ticket messages after adding
     When I send a GET request to "/api/v2/tickets/1/messages?include=person"
     Then the response status code should be 200
-    And the JSON node "data" should have 4 element
+    And the JSON node "data" should have 4 elements
     And the JSON node "data[0].message" should contain "my message"
     And the JSON node "data[1].message" should contain "my html message"
     And the JSON node "data[3].message" should contain "my note"
@@ -117,20 +125,20 @@ Feature: /tickets/{id}/messages endpoint
     Then the response status code should be 201
     And the JSON node "data.id" should be equal to 5
     And the JSON node "data.attachments" should have 2 elements
-    And the JSON node "data.attachments[0]" should be equal to 1
-    And the JSON node "data.attachments[1]" should be equal to 2
+    And the JSON node "data.attachments[0]" should be equal to 2
+    And the JSON node "data.attachments[1]" should be equal to 3
 
   Scenario: I'm checking last created message with sideloading
     When I send a GET request to "/api/v2/tickets/1/messages/5?include=ticket_attachment"
     Then the response status code should be 200
     And the JSON node "data.id" should be equal to 5
 
-    And the JSON node "linked.ticket_attachment.1.id" should be equal to 1
-    And the JSON node "linked.ticket_attachment.1.blob.blob_id" should be equal to 5
-    And the JSON node "linked.ticket_attachment.1.blob.content_type" should be equal to "text/plain"
     And the JSON node "linked.ticket_attachment.2.id" should be equal to 2
     And the JSON node "linked.ticket_attachment.2.blob.blob_id" should be equal to 6
     And the JSON node "linked.ticket_attachment.2.blob.content_type" should be equal to "text/plain"
+    And the JSON node "linked.ticket_attachment.3.id" should be equal to 3
+    And the JSON node "linked.ticket_attachment.3.blob.blob_id" should be equal to 7
+    And the JSON node "linked.ticket_attachment.3.blob.content_type" should be equal to "text/plain"
 
   Scenario: I create a text message with is_note = false
     When I send a POST request to "/api/v2/tickets/1/messages" with body:
@@ -191,8 +199,35 @@ Feature: /tickets/{id}/messages endpoint
     And the JSON node "data.attachments" should have 0 elements
 
   Scenario: I delete message
+    Given I reset ticket with id=1 logs
     When I send a DELETE request to "/api/v2/tickets/1/messages/5"
     Then the response status code should be 200
+    And ticket with id=1 has "message_removed" log
 
     When I send a GET request to "/api/v2/tickets/1/messages/5"
     Then the response status code should be 404
+
+  Scenario: I check sideloading of form errors
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "department": 2
+}
+    """
+    Then the response status code should be 201
+    And the JSON node "data.id" should be equal to 5
+
+  Scenario: I add ticket messages
+    When I send a POST request to "/api/v2/tickets/5/messages?with_ticket_validation=1" with body:
+    """
+{
+  "message": "my message"
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.ticket.fields.fields.fields.fields_6.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.ticket.fields.fields.fields.fields_6.errors[0].message" should contain "This value should not be blank."
+    And the JSON node "errors.fields.ticket.fields.organization_fields.fields.organization_fields_6.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.ticket.fields.organization_fields.fields.organization_fields_6.errors[0].message" should contain "This value should not be blank."
+    And the JSON node "errors.fields.ticket.fields.user_fields.fields.user_fields_6.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.ticket.fields.user_fields.fields.user_fields_6.errors[0].message" should contain "This value should not be blank."

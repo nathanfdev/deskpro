@@ -2847,7 +2847,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			data = null;
 		}
 
-		if (xhr && xhr.status && data && data.error && data.error == 'update_running') {
+		if (xhr && xhr.status == '423') {
 			this.showUpdateRunning();
 			return;
 		}

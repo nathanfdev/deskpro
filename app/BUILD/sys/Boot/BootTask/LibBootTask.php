@@ -29,14 +29,37 @@
 namespace DpSys\Boot\BootTask;
 
 use DeskPRO\Component\Filesystem\SafeFile;
+use DpSys\LowError\SystemErrorHandler;
+use Symfony\Component\Debug\Debug;
 
 /**
- * This makes sure the require lib files are included.
+ * This makes sure the require lib files are included and basic env stuff is set.
  */
 class LibBootTask implements BootTaskInterface
 {
     public function run(\DpRun\DpEnv $env, array $resources)
     {
+        if ($env->isDebug()) {
+            Debug::enable(-1, true);
+        } else {
+            set_error_handler([SystemErrorHandler::class, 'handleError'], E_ALL);
+            set_exception_handler([SystemErrorHandler::class, 'handleException']);
+            SystemErrorHandler::enableFatalErrorHandler();
+
+            $bugsnagSettings = $env->getConfig('settings.bugsnag');
+            if ($bugsnagSettings && @$bugsnagSettings['enable_php'] && @$bugsnagSettings['api_key']) {
+                SystemErrorHandler::setBugsnagApiKey($bugsnagSettings['api_key']);
+            }
+        }
+
+        error_reporting(E_ALL);
+
+        if ($env->isDebug() || php_sapi_name() === 'cli') {
+            ini_set('display_errors', 1);
+        } else {
+            ini_set('display_errors', 0);
+        }
+
         if (!defined('DP_BUILD_TIME')) {
             if (file_exists(DP_APP_DIR.'/sys/config/build-time.php')) {
                 require DP_APP_DIR.'/sys/config/build-time.php';
@@ -44,6 +67,7 @@ class LibBootTask implements BootTaskInterface
                 define('DP_BUILD_TIME', 1323444089); // would be used by someone who hasnt built yet
             }
         }
+
         if (!defined('DP_BUILD_NUM')) {
             if (file_exists(DP_APP_DIR.'/sys/config/build-num.php')) {
                 require DP_APP_DIR.'/sys/config/build-num.php';
@@ -52,6 +76,14 @@ class LibBootTask implements BootTaskInterface
             }
         }
 
+        // Normalise some env
+        @setlocale(LC_CTYPE, 'C');
+        @date_default_timezone_set('UTC');
+        @ini_set('default_charset', 'UTF-8');
+        @ini_set('zlib.output_compression', '0');
+        @ini_set('xdebug.max_nesting_level', 1000000);
+
+        // legacy
         require DP_APP_DIR.'/sys/load_config.php';
 
         \Orb\Util\Strings::setPhpUtf8Dir(DP_APP_DIR.'/vendor-src/php-utf8');

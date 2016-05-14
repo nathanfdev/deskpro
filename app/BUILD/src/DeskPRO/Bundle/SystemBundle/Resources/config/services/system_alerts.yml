@@ -43,14 +43,14 @@ services:
       -  { name: dp_sys.alerts.trigger }
     calls:
       - [setSilenceTime, [10]]
-      -
-        - setRaisedCallback
-        -
-          - ["@dp_sys.alerts.email_notification_action", "notifyAdmins"]
-          -
-            - "%dp_sys.alerts.email.from%"
-            - "DeskPRO incoming email continuing failures"
-            - "%dp_sys.alerts.email.incident_raised_admins_message%"
+#      -
+#        - setRaisedCallback
+#        -
+#          - ["@dp_sys.alerts.email_notification_action", "notifyAdmins"]
+#          -
+#            - "%dp_sys.alerts.email.from%"
+#            - "DeskPRO incoming email continuing failures"
+#            - "%dp_sys.alerts.email.incident_raised_admins_message%"
 
   dp_sys.alerts.outgoing_email_failure_trigger:
     class: DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\Email\OutgoingEmailFailureTrigger
@@ -58,14 +58,14 @@ services:
       -  { name: dp_sys.alerts.trigger }
     calls:
       - [setSilenceTime, [10]]
-      -
-        - setRaisedCallback
-        -
-          - ["@dp_sys.alerts.email_notification_action", "notifyAdmins"]
-          -
-            - "%dp_sys.alerts.email.from%"
-            - "DeskPRO outgoing email continuing failures"
-            - "%dp_sys.alerts.email.incident_raised_admins_message%"
+#      -
+#        - setRaisedCallback
+#        -
+#          - ["@dp_sys.alerts.email_notification_action", "notifyAdmins"]
+#          -
+#            - "%dp_sys.alerts.email.from%"
+#            - "DeskPRO outgoing email continuing failures"
+#            - "%dp_sys.alerts.email.incident_raised_admins_message%"
 
   dp_sys.alerts.php_critical_error_trigger:
     class: DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\PHP\PhpCriticalErrorTrigger
@@ -75,14 +75,14 @@ services:
       # Configure to raise an incident on a single fatal error within a year period
       - [setPeriodMinutes, ["@= 60 * 24 * 365"]]
       - [setIncidentErrorsCount, [1]]
-      -
-        - setRaisedCallback
-        -
-          - ["@dp_sys.alerts.email_notification_action", "notifyAdmins"]
-          -
-            - "%dp_sys.alerts.email.from%"
-            - "DeskPRO critical PHP error"
-            - "%dp_sys.alerts.email.incident_raised_admins_message%"
+#      -
+#        - setRaisedCallback
+#        -
+#          - ["@dp_sys.alerts.email_notification_action", "notifyAdmins"]
+#          -
+#            - "%dp_sys.alerts.email.from%"
+#            - "DeskPRO critical PHP error"
+#            - "%dp_sys.alerts.email.incident_raised_admins_message%"
 
   dp_sys.alerts.php_notice_trigger:
     class: DeskPRO\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger\PHP\PhpNoticeTrigger
@@ -101,14 +101,14 @@ services:
       # Configure to raise an incident on a single exception within a year period
       - [setPeriodMinutes, ["@= 60 * 24 * 365"]]
       - [setIncidentErrorsCount, [1]]
-      -
-        - setRaisedCallback
-        -
-          - ["@dp_sys.alerts.email_notification_action", "notifyAdmins"]
-          -
-            - "%dp_sys.alerts.email.from%"
-            - "Exception occurred"
-            - "%dp_sys.alerts.email.incident_raised_admins_message%"
+#      -
+#        - setRaisedCallback
+#        -
+#          - ["@dp_sys.alerts.email_notification_action", "notifyAdmins"]
+#          -
+#            - "%dp_sys.alerts.email.from%"
+#            - "Exception occurred"
+#            - "%dp_sys.alerts.email.incident_raised_admins_message%"
 
   # --------------------------------------------------------------------------------------------------------------------
   # Trigger action services

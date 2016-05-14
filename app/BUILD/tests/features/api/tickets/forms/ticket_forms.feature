@@ -34,6 +34,14 @@ Feature: /ticket_forms endpoint
     And the JSON node "data.priority" should be equal to 0
     And the JSON node "data.cc" should have 0 elements
     And the JSON node "data.followers" should have 0 elements
+    And ticket with id=5 has logs:
+      | type               |
+      | action_starter     |
+      | ticket_created     |
+      | message_created    |
+      | changed_subject    |
+      | changed_department |
+      | changed_person     |
 
     When I send a GET request to "/api/v2/tickets/5/messages"
     Then the response status code should be 200
@@ -48,6 +56,7 @@ Feature: /ticket_forms endpoint
     And the JSON node "data.primary_email" should be equal to "admin@deskpro.dev"
 
   Scenario: I modify and retrieve a ticket
+    Given I reset ticket with id=5 logs
     When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
     """
 {
@@ -99,6 +108,19 @@ Feature: /ticket_forms endpoint
 }
     """
     Then the response status code should be 204
+    And ticket with id=5 has logs:
+      | type                       |
+      | changed_department         |
+      | changed_subject            |
+      | changed_labels             |
+      | changed_product            |
+      | changed_priority           |
+      | changed_category           |
+      | changed_category           |
+      | changed_workflow           |
+      | changed_user_participants  |
+      | changed_agent_participants |
+      | changed_custom_field       |
 
     When I send a GET request to "/api/v2/tickets/5"
     Then the response status code should be 200
@@ -189,11 +211,19 @@ Feature: /ticket_forms endpoint
 
     When I send a GET request to "/api/v2/tickets/5"
     Then the response status code should be 200
+
     And the JSON node "data.fields.8.value" should have 2 element
     And the JSON node "data.fields.8.value[0]" should be equal to 11
     And the JSON node "data.fields.8.value[1]" should be equal to 9
     And the JSON node "data.fields.8.detail.9.title" should be equal to "Choice 1"
     And the JSON node "data.fields.8.detail.11.title" should be equal to "Choice 3"
+
+    And the JSON node "data.fields.1.value" should have 1 element
+    And the JSON node "data.fields.1.value[0]" should be equal to 2
+    And the JSON node "data.fields.1.detail.2.title" should be equal to "Small"
+    And the JSON node "data.fields.5.value" should be equal to "2016-02-09T17:28:00+0000"
+    And the JSON node "data.fields.6.value" should be equal to "inline text"
+    And the JSON node "data.fields.7.value" should be equal to "textarea text"
 
   Scenario: I modify custom text field in data serializer format
     When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
@@ -214,6 +244,7 @@ Feature: /ticket_forms endpoint
     When I send a GET request to "/api/v2/tickets/5"
     Then the response status code should be 200
     And the JSON node "data.fields.6.value" should be equal to "edited inline text"
+    And the JSON node "data.fields.7.value" should be equal to "textarea text"
 
   Scenario: I modify ticket person by id
     When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
@@ -221,7 +252,7 @@ Feature: /ticket_forms endpoint
 {
   "person": 2,
   "user_fields": {
-    "6": "some text"
+    "6": "some another text"
   }
 }
     """
@@ -248,7 +279,7 @@ Feature: /ticket_forms endpoint
     And the JSON node "data.primary_email" should be equal to "agent@deskpro.dev"
     And the JSON node "data.fields.1.value" should not exist
     And the JSON node "data.fields.5.value" should not exist
-    And the JSON node "data.fields.6.value" should be equal to "some text"
+    And the JSON node "data.fields.6.value" should be equal to "some another text"
     And the JSON node "data.fields.7.value" should not exist
 
   Scenario: I modify ticket person by email

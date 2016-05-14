@@ -182,6 +182,7 @@ return array(
     'admin.general.dismiss'                             => 'Dismiss',
     'admin.general.revert_notifications'                => 'Revert Notifications',
     'admin.general.incident'                            => 'Incident',
+    'admin.general.resolved'                            => 'Resolved',
     'admin.general.instructions'                        => 'Instructions',
     'admin.general.website_embed'                       => 'Website Embed',
     'admin.general.x_departments'                       => '{{count}} Department|{{count}} Departments',

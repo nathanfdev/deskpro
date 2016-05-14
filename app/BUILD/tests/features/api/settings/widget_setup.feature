@@ -30,8 +30,8 @@ Feature: Widget Setup
     And the JSON node "data.settings.brand.chat.enabled" should be equal to 1
     And the JSON node "data.settings.brand.chat.request_user_info" should be equal to 1
     And the JSON node "data.settings.brand.chat.proactive" should be equal to 1
-    And the JSON node "data.settings.brand.chat.popup.title" should be equal to "DeskPRO Customer Support"
-    And the JSON node "data.settings.brand.chat.popup.message" should be equal to "Given a string consisting of printable ASCII chars, produce an output consisting of its unique chars in the original order."
+    And the JSON node "data.settings.brand.chat.popup.title" should be equal to "Customer Support"
+    And the JSON node "data.settings.brand.chat.popup.message" should be equal to "Need help? Just reply to start a live chat with one of our team."
     And the JSON node "data.settings.brand.chat.popup.reply_type" should be equal to "buttons"
     And the JSON node "data.settings.brand.chat.begin_mode" should be equal to "form"
     And the JSON node "data.settings.brand.chat.waiting_timeout" should be equal to 30
@@ -53,7 +53,7 @@ Feature: Widget Setup
     {
       "global": {
         "chat": {
-          "email_validation": true,
+          "email_validation": false,
           "require_login": true
         }
       },
@@ -88,7 +88,9 @@ Feature: Widget Setup
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data.settings.global.chat.require_login" should be equal to 1
-    And the JSON node "data.settings.global.chat.email_validation" should be equal to 1
+    # Test disabled according to https://trello.com/c/x3cmtaoD
+    #And the JSON node "data.settings.global.chat.email_validation" should be equal to 1
+    And the JSON node "data.settings.global.chat.email_validation" should be equal to 0
     And the JSON node "data.enabled_on_portal" should be equal to 0
 
     And the JSON node "data.settings.brand.widget.type" should be equal to "bubble"

@@ -31,3 +31,4 @@ Feature: API limits
     When I send a GET request to "/api/v2/user_groups"
     Then the response status code should be 403
     And the response should be in JSON
+    And the JSON node "message" should be equal to "Your limit for api calls is exhausted"

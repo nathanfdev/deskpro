@@ -48,7 +48,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
 
     getOptions: (liveDemo = false) ->
       options = $.extend(true, {company: @$scope.company}, @$scope.brand_settings)
-      if (liveDemo?.options?.widget)
+      if (liveDemo? && options?.widget)
           options.widget.live_demo = true
 
       return options
@@ -115,8 +115,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
       , false);
 
       @loadCode().then(() =>
+          code = @$scope.code.replace(/widget": {/, "widget\": {\n\"live_demo\": true,")
           demoDocument = @getLiveDemoDocument();
-          demoDocument.write('<body>' + @$scope.code + '</body>');
+          demoDocument.write('<body>' + code + '</body>');
           demoDocument.close();
 
           @getFrameNode().contentWindow.addEventListener('message', (event) =>

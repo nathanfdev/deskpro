@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Blob;
@@ -106,9 +105,12 @@ class PortalController extends AbstractController
      */
     public function homeAction(Request $request)
     {
+        $allowedFeedbackTypes = $this->getPermissionBagForCurrentUser()->getAllowedFeedbackCategoryIds();
+
         return $this->renderThemeView('Theme:Portal:home.html.twig',
             array(
-                'page_title' => $this->createPageTitle()->homepage(),
+                'page_title'    => $this->createPageTitle()->homepage(),
+                'feedbackTypes' => $allowedFeedbackTypes,
             )
         );
     }
@@ -200,6 +202,21 @@ class PortalController extends AbstractController
         }
 
         return new RedirectResponse($this->get('security.logout_url_generator')->getLogoutUrl('portal'));
+    }
+
+    /**
+     * Display logout button.
+     *
+     * This action is used to render logout confirmation button in case of LogoutException because of invalid CSRF.
+     *
+     * @Route("/logout-confirmation", name="portal_logout_confirm")
+     */
+    public function confirmLogoutAction()
+    {
+        return $this->renderThemeView(
+            'PortalBundle:Logout:confirmation.html.twig',
+            ['url' => $this->get('security.logout_url_generator')->getLogoutUrl('portal')]
+        );
     }
 
     /**

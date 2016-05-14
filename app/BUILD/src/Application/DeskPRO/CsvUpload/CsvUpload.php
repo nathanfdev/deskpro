@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\CsvUpload;
 
 use Application\DeskPRO\App;
@@ -139,6 +138,13 @@ class CsvUpload
      */
     public function returnStatusOfImport()
     {
+        if (defined('DPC_IS_CLOUD') && DPC_DEMO_EXPIRE) {
+            return array(
+                'status'  => 'disabled_on_demo',
+                'message' => '',
+            );
+        }
+
         $tasks = $this->em->getRepository('DeskPRO:TaskQueue')->getTasksInGroup('data_import', true);
 
         if (!count($tasks)) {

@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -88,6 +87,16 @@ class CustomDataFeedback extends CustomDataAbstract
         $this->setModelField('root_field', $field);
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return Feedback
+     */
+    public function getOwner()
+    {
+        return $this->feedback;
     }
 
     ############################################################################

@@ -29,9 +29,9 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -64,7 +64,7 @@ class TicketReplyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('ticket_message', 'ticket_message', [
+            ->add('ticket_message', TicketMessageType::class, [
                 'ticket'              => $options['ticket'],
                 'person'              => $options['person'],
                 'ticket_message'      => $options['ticket_message'],

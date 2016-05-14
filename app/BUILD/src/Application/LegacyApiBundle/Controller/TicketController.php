@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -414,7 +413,9 @@ class TicketController extends AbstractController implements ProtectedController
         } else {
             $message->setMessageText($message_text);
         }
-
+        if ($this->in->getBool('is_note')) {
+            $message->is_agent_note = true;
+        }
         $this->em->persist($message);
         $ticket->addMessage($message);
 

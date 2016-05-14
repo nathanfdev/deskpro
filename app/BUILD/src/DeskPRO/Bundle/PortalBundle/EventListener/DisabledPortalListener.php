@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
@@ -100,11 +99,11 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
         }
 
         $brand                = $this->brand_stack->getActive();
-        $brand_portal_enabled = (bool) $brand->getSetting('user.portal_enabled', true);
+        $brand_portal_enabled = (bool) $brand->getSetting('core.iface_portal', true);
 
         if (!$brand_portal_enabled) {
             // we can always use brand settings here, because they inherit global in case brand specific is not set
-            $event->setResponse($this->portal_tpl->renderResponse('Theme:Portal:disabled.html.twig'));
+            $event->setResponse($this->portal_tpl->renderResponse('Theme:Portal:portal-disabled.html.twig'));
         }
     }
 

@@ -3,8 +3,10 @@ import { connect } from 'react-redux';
 import { initialLoad } from '../../Actions/feedbackNavActions';
 import { applyParams } from '../../Actions/FeedbackListActions';
 import { Nav } from './Nav';
-import { categoryCountersSelector, commentsToReviewCountSelector, isLoadedSelector, feedbackToReviewCountSelector,
-  typeCountersSelector, statusCountersSelector, feedbackLabelsSelector }
+import {
+  categoryCountersSelector, commentsToReviewCountSelector, isLoadedSelector, feedbackToReviewCountSelector,
+  typeCountersSelector, statusCountersSelector, feedbackLabelsSelector
+}
   from '../../Selectors/nav';
 
 @connect(state => ({
@@ -33,8 +35,7 @@ export class NavContainer extends Component {
 
   render() {
     return (
-      <Nav {...this.props}
-        onLabelClick={this.onLabelClick} />
+      <Nav {...this.props} onLabelClick={this.onLabelClick} />
     );
   }
 }

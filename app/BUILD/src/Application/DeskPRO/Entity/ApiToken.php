@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -111,6 +111,46 @@ class ApiToken extends DomainObject
     public function getKeyString()
     {
         return $this->id.':'.$this->token;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return $this
+     */
+    public function setPerson($person)
+    {
+        $this->setModelField('person', $person);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getScope()
+    {
+        return $this->scope;
+    }
+
+    /**
+     * @param string $scope
+     *
+     * @return $this
+     */
+    public function setScope($scope)
+    {
+        $this->setModelField('scope', $scope);
+
+        return $this;
     }
 
     ############################################################################

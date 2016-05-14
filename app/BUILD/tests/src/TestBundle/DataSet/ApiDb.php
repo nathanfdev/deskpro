@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -37,6 +36,7 @@ use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\LabelDef;
 use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\Usersource;
@@ -46,6 +46,7 @@ use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
+use DpTestSrc\TestBundle\Mock\Usersource\CallbackAdapterMock;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 
 /**
@@ -143,18 +144,20 @@ SQL
         foreach (['custom_def_people', 'custom_def_organizations', 'custom_def_ticket'] as $custom_def_table) {
             $this->getDb()->exec(
                 <<<SQL
-                INSERT INTO `$custom_def_table` (`id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('1', '', '0', '0', 'Desired Sizes', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Choice', '?', '1', '1', '12', '0');
-                INSERT INTO `$custom_def_table` (`id`, `parent_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('2', '1', '', '0', '0', 'Small', '', '?', '1', '1', '13', '0');
-                INSERT INTO `$custom_def_table` (`id`, `parent_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('3', '1', '', '0', '0', 'Medium', '', '?', '1', '1', '14', '0');
-                INSERT INTO `$custom_def_table` (`id`, `parent_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('4', '1', '', '0', '0', 'Large', '', '?', '1', '1', '15', '0');
-                INSERT INTO `$custom_def_table` (`id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('5', '', '0', '0', 'Delivery Time', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\DateTime', '?', '1', '1', '38', '0');
-                INSERT INTO `$custom_def_table` (`id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('6', '', '0', '0', 'Widget Type', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Text', 'a:5:{s:20:"custom_css_classname";s:0:"";s:21:"agent_validation_type";s:8:"required";s:14:"agent_required";b:1;s:16:"agent_min_length";s:2:"10";s:16:"agent_max_length";s:0:"";}', '1', '1', '10', '0');
-                INSERT INTO `$custom_def_table` (`id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('7', '', '0', '0', 'Widget Description', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Textarea', '?', '1', '1', '11', '0');
-                INSERT INTO `$custom_def_table` (`id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('8', '', '0', '0', 'Multiple choice', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Choice', 'a:2:{s:8:"multiple";b:1;s:8:"expanded";b:1;}', '1', '1', '12', '0');
-                INSERT INTO `$custom_def_table` (`id`, `parent_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('9', '8', '', '0', '0', 'Choice 1', '', '?', '1', '1', '13', '0');
-                INSERT INTO `$custom_def_table` (`id`, `parent_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('10', '8', '', '0', '0', 'Choice 2', '', '?', '1', '1', '14', '0');
-                INSERT INTO `$custom_def_table` (`id`, `parent_id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('11', '8', '', '0', '0', 'Choice 3', '', '?', '1', '1', '15', '0');
-                INSERT INTO `$custom_def_table` (`id`, `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`) VALUES ('12', '', '0', '0', 'Delivery Date', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Date', '?', '1', '1', '38', '0');
+                INSERT INTO `$custom_def_table` (`id`, `parent_id`,  `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`, `default_value`)
+                VALUES
+                   ('1', null, '', '0', '0', 'Desired Sizes', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Choice', '?', '1', '1', '12', '0', '2'),
+                   ('2', '1', '', '0', '0', 'Small', '', null, '?', '1', '1', '13', '0', ''),
+                   ('3', '1', '', '0', '0', 'Medium', '', null, '?', '1', '1', '14', '0', ''),
+                   ('4', '1', '', '0', '0', 'Large', '', null, '?', '1', '1', '15', '0', ''),
+                   ('5', null, '', '0', '0', 'Delivery Time', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\DateTime', '?', '1', '1', '38', '0', ''),
+                   ('6', null, '', '0', '0', 'Widget Type', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Text', 'a:5:{s:20:"custom_css_classname";s:0:"";s:21:"agent_validation_type";s:8:"required";s:14:"agent_required";b:1;s:16:"agent_min_length";s:2:"10";s:16:"agent_max_length";s:0:"";}', '1', '1', '10', '0', ''),
+                   ('7', null, '', '0', '0', 'Widget Description', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Textarea', 'a:2:{s:24:"agent_validation_resolve";s:1:"1";s:16:"agent_max_length";s:2:"10";}', '1', '1', '11', '0', 'default value'),
+                   ('8', null, '', '0', '0', 'Multiple choice', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Choice', 'a:2:{s:8:"multiple";b:1;s:8:"expanded";b:1;}', '1', '1', '12', '0', '9,10'),
+                   ('9', '8', '', '0', '0', 'Choice 1', '', null, '?', '1', '1', '13', '0', ''),
+                   ('10', '8', '', '0', '0', 'Choice 2', '', null, '?', '1', '1', '14', '0', ''),
+                   ('11', '8', '', '0', '0', 'Choice 3', '', null, '?', '1', '1', '15', '0', ''),
+                   ('12', null, '', '0', '0', 'Delivery Date', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Date', '?', '1', '1', '38', '0', '');
 SQL
             );
         }
@@ -182,7 +185,6 @@ SQL
             ->add(new LayoutField(FormFields::PRIORITY))
             ->add(new LayoutField(FormFields::CATEGORY))
             ->add(new LayoutField(FormFields::WORKFLOW))
-            ->add(new LayoutField(FormFields::LABELS))
             ->add(new LayoutField('ticket_field', 1))// Select box
             ->add(new LayoutField('ticket_field', 5))// Datetime
             ->add(new LayoutField('ticket_field', 6))// Text
@@ -259,7 +261,32 @@ SQL
             $deskProUsers->title         = 'DeskPRO';
             $deskProUsers->options       = [];
             $this->getEm()->persist($deskProUsers);
+
+            $googlePlusUs                = new Usersource();
+            $googlePlusUs->type          = $type;
+            $googlePlusUs->source_type   = CallbackAdapterMock::class;
+            $googlePlusUs->is_enabled    = true;
+            $googlePlusUs->display_order = 0; // ensure #1 order (initially!)
+            $googlePlusUs->title         = 'GooglePlus';
+            $googlePlusUs->options       = [];
+            $this->getEm()->persist($googlePlusUs);
+
+            $assoc = new PersonUsersourceAssoc();
+            $assoc->setPerson($admin);
+            $assoc->setUsersource($googlePlusUs);
+            $assoc->setIdentity(1);
+            $assoc->setIdentityFriendly('');
+            $this->getEm()->persist($assoc);
         }
+
+        $fbUserUs                = new Usersource();
+        $fbUserUs->type          = 'user';
+        $fbUserUs->source_type   = CallbackAdapterMock::class;
+        $fbUserUs->is_enabled    = false;
+        $fbUserUs->display_order = 10; // ensure #1 order (initially!)
+        $fbUserUs->title         = 'Facebook';
+        $fbUserUs->options       = [];
+        $this->getEm()->persist($fbUserUs);
 
         $this->getEm()->flush();
 
@@ -620,6 +647,7 @@ SQL
         $organizationType = LabelDef::TYPE_ORGS;
         $peopleType       = LabelDef::TYPE_PEOPLE;
         $ticketType       = LabelDef::TYPE_TICKETS;
+        $taskType         = LabelDef::TYPE_TASKS;
         $this->getDb()->exec(
             "
             INSERT INTO `label_defs`
@@ -636,7 +664,10 @@ SQL
                 ('$peopleType', 'CCC-person', 'yellow', 3),
                 ('$ticketType', 'AAA-ticket', 'white', 1),
                 ('$ticketType', 'BBB-ticket', 'red', 3),
-                ('$ticketType', 'CCC-ticket', 'green', 13)
+                ('$ticketType', 'CCC-ticket', 'green', 13),
+                ('$taskType', 'AAA-task', 'red', 0),
+                ('$taskType', 'BBB-task', 'white', 0),
+                ('$taskType', 'CCC-task', 'red', 0)
             ;
         "
         );
@@ -680,6 +711,30 @@ SQL
 
                 (1, 7),
                 (1, 8)
+            ;
+
+            INSERT INTO `feedback_category2usergroup`
+                (`category_id`, `usergroup_id`)
+            VALUES
+                (1, 1),
+                (2, 1),
+                (3, 1),
+                (1, 2),
+                (2, 2),
+                (3, 2),
+                (1, 3),
+                (1, 4),
+                (2, 4),
+                (1, 5),
+                (2, 5),
+                (3, 5),
+
+                (1, 7),
+                (1, 8),
+                (2, 7),
+                (2, 8),
+                (3, 7),
+                (3, 8)
             ;
         "
         );
@@ -873,6 +928,22 @@ SQL
                 (11, 7, 1, 1, NULL, 'Test Category #11', '11', 1, 1)
             ;
 
+            INSERT INTO `article_category2usergroup`
+                (`category_id`, `usergroup_id`)
+            VALUES
+                (1, 7),
+                (2, 7),
+                (3, 7),
+                (4, 7),
+                (5, 7),
+                (6, 7),
+                (7, 7),
+                (8, 7),
+                (9, 7),
+                (10, 7),
+                (11, 7)
+            ;
+
             INSERT INTO `article_to_categories`
                 (`article_id`, `category_id`)
             VALUES
@@ -904,6 +975,23 @@ SQL
                 (11, 7, 'Test Category #11', '11', 2, 1)
             ;
 
+
+            INSERT INTO `news_category2usergroup`
+                (`category_id`, `usergroup_id`)
+            VALUES
+                (1, 7),
+                (2, 7),
+                (3, 7),
+                (4, 7),
+                (5, 7),
+                (6, 7),
+                (7, 7),
+                (8, 7),
+                (9, 7),
+                (10, 7),
+                (11, 7)
+            ;
+
             INSERT INTO `news`
                 (`id`, `category_id`, `person_id`, `slug`, `title`, `content`, `view_count`, `total_rating`, `num_comments`,
                  `num_ratings`, `status`, `hidden_status`, `date_created`, `date_published`, `date_updated`)
@@ -932,6 +1020,22 @@ SQL
                 (9, 7, 'Test Category #9', '9', 2, 1),
                 (10, 7, 'Test Category #10', '10', 2, 1),
                 (11, 7, 'Test Category #11', '11', 2, 1)
+            ;
+
+            INSERT INTO `download_category2usergroup`
+                (`category_id`, `usergroup_id`)
+            VALUES
+                (1, 7),
+                (2, 7),
+                (3, 7),
+                (4, 7),
+                (5, 7),
+                (6, 7),
+                (7, 7),
+                (8, 7),
+                (9, 7),
+                (10, 7),
+                (11, 7)
             ;
 
             INSERT INTO `downloads`
@@ -1022,7 +1126,17 @@ SQL
               (1, 'feedback_display_fields', '{\"isStored\":null,\"isChanged\":\"1\",\"card\":{\"id\":{\"isShown\":\"1\"},\"hidden_status\":{\"isShown\":\"1\"},\"status_category\":{\"isShown\":\"1\"},\"custom_category\":{\"isShown\":\"1\"},\"type\":{\"isShown\":\"1\"},\"date_created\":{\"isShown\":null},\"total_rating\":{\"isShown\":\"1\"},\"num_ratings\":{\"isShown\":\"1\"},\"num_comments\":{\"isShown\":\"1\"}},\"table\":{\"id\":{\"isShown\":\"1\"},\"num_ratings\":{\"isShown\":\"1\"},\"title\":{\"isShown\":\"1\"},\"content\":{\"isShown\":\"1\"},\"hidden_status\":{\"isShown\":\"1\"},\"status_category\":{\"isShown\":\"1\"},\"type\":{\"isShown\":\"1\"},\"custom_category\":{\"isShown\":\"1\"},\"labels\":{\"isShown\":\"1\"},\"author_name\":{\"isShown\":\"1\"},\"num_comments\":{\"isShown\":\"1\"},\"date_created\":{\"isShown\":\"1\"},\"total_rating\":{\"isShown\":\"1\"},\"validating\":{\"isShown\":\"1\"}}}');
         "
         );
-        // end of ArticlePendingCreate
+
+        // PersonPref test data ------------------------------------------------------------------------------
+        $this->getDb()->exec(
+            "
+            INSERT INTO `people_prefs` (`person_id`, `name`, `value_str`)
+            VALUES
+              (1, 'agent.ui.flag.green', 'First custom'),
+              (1, 'agent.ui.flag.pink', 'Second custom'),
+              (1, 'agent.ui.flag.red', 'Third custom');
+        "
+        );
 
         // AgentAlerts test data ------------------------------------------------------------------------------
         $this->getDb()->exec(
@@ -1063,7 +1177,9 @@ SQL
                 (7, 1, 4, 'chat_snippet2', 1),
                 (8, 1, 5, 'chat_snippet3', 0),
                 (9, 2, 4, 'chat_snippet4', 0),
-                (10, 1, 6, 'chat_snippet5', 1)
+                (10, 1, 6, 'chat_snippet5', 1),
+
+                (11, 1, 2, 'ticket_snippet_wo_content', 1)
             ;
 
             INSERT INTO `object_lang`

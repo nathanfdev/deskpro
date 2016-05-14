@@ -1612,6 +1612,16 @@ define(function() {
     controller: 'Admin_Portal_Ctrl_PortalEditor'
   });
 
+  //###
+  //# Portal Editor Disabled
+  //###
+  routes.push({
+    id: 'portal.portal_editor_disabled',
+    url: '/portal_editor_disabled',
+    templateName: 'Portal/portal-editor-disabled.html',
+    controller: 'Admin_Main_Ctrl_Bare'
+  });
+
 	//###
 	//# Portal Widget Editor
 	//###
@@ -1620,6 +1630,16 @@ define(function() {
 		url: '/widget_editor',
 		templateName: 'Portal/widget-editor.html',
 		controller: 'Admin_Portal_Ctrl_WidgetEditor'
+	});
+
+	//###
+	//# Ticket Form Widget
+	//###
+	routes.push({
+		id: 'portal.ticket_form_widget',
+		url: '/ticket_form_widget',
+		templateName: 'Portal/ticket-form-widget.html',
+		controller: 'Admin_Portal_Ctrl_TicketFormWidget'
 	});
 
   //###

@@ -64,26 +64,27 @@ export class WidgetButton extends React.Component {
   render() {
     const onlineAgents = this.state.onlineAgents;
 
-    return (
-      <a href="#" onClick={this.onOpenWidget} className={classNames({'disabled': !onlineAgents.size})}>
-        <i className="fa fa-comments-o"/>
-        <h1>{portalPhrases.get('portal.general.start-chat')}</h1>
-        <p>
-          <span className="online-disc" />
-          {onlineAgents.size
-            ? <span>
-                {onlineAgents.size} {portalPhrases.get('portal.general.agents-available')}
-                {onlineAgents.map((agent, index) =>
-                  <AvatarResolver key={index} avatar={agent.get('avatar')} size={10}>
-                    <AgentAvatar />
-                  </AvatarResolver>
-                )}
-              </span>
-            : <span>{portalPhrases.get('portal.general.no-agents-available')}</span>
-          }
-        </p>
-      </a>
-    );
+    if (onlineAgents.size) {
+      return (
+        <a href="#" onClick={this.onOpenWidget} className={classNames({ disabled: !onlineAgents.size })}>
+          <i className="fa fa-comments-o" />
+          <h1>{portalPhrases.get('portal.general.start-chat')}</h1>
+          <p>
+            <span className="online-disc" />
+            <span>
+              {onlineAgents.size} {portalPhrases.get('portal.general.agents-available')}
+              {onlineAgents.map((agent, index) =>
+                <AvatarResolver key={index} avatar={agent.get('avatar')} size={10}>
+                  <AgentAvatar />
+                </AvatarResolver>
+              )}
+            </span>
+          </p>
+        </a>
+      );
+    }
+
+    return null;
   }
 }
 

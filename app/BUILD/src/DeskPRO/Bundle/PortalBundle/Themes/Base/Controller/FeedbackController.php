@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
 use Application\DeskPRO\Entity\Feedback;
@@ -75,7 +74,7 @@ class FeedbackController extends AbstractController
      */
     public function listAction(TagRequest $tag_request, array $options)
     {
-       $person = $this->getUser() ?: new PersonGuest();
+        $person = $this->getUser() ?: new PersonGuest();
 
         $filter = new FeedbackFilter(array(
             'status'            => $options['status'],
@@ -91,10 +90,13 @@ class FeedbackController extends AbstractController
             $filter,
             $person
         );
-        
+
         foreach ($pager as $item) {
             $item->can_rate = $this->isGranted(ContentRatingsVoter::RATE_FEEDBACK, $item);
         }
+
+        $types   = $filter->getTypes();
+        $allowed = $this->get('permissions_manager')->getPortalPermissionsBag($this->getUser())->getAllowedFeedbackCategoryIds();
 
         return $this->renderThemeView(
             sprintf('Theme:Feedback:FeedbackList/%s.html.twig', $options['style']),
@@ -102,6 +104,7 @@ class FeedbackController extends AbstractController
                 'pager'              => $pager,
                 'show_category_link' => $options['show_category_link'],
                 'show_pager'         => $options['show_pager'],
+                'filtered'           => count($allowed) - count(($types)) > 0,
             )
         );
     }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -153,6 +153,20 @@ class RestContext extends BaseContext
         $actual  = $this->getSession()->getPage()->getContent();
         $message = 'The response of the current page is not empty';
         $this->assertTrue(null === $actual || '' === $actual, $message);
+    }
+
+    /**
+     * Checks, whether the response content contains the text.
+     *
+     * @Then the JSON response should contain :text
+     *
+     * @param string $text
+     */
+    public function theResponseShouldContain($text)
+    {
+        $actual = $this->getSession()->getPage()->getContent();
+
+        $this->assertContains($text, (string) $actual);
     }
 
     /**

@@ -4,13 +4,17 @@ define [], () ->
       restrict: 'E',
       templateUrl: DP_BASE_ADMIN_URL + '/load-view/Portal/Editor/code-editor.html',
       scope: {
-        code: '=',
+        info: '=',
         syntax: '@',
         visible: '=',
-        close: '&'
+        cancel: '&',
+        save: '&',
+        revert: '&'
       },
       link: (scope, element, attrs) ->
-        scope.close = scope.close();
+        scope.save   = scope.save();
+        scope.cancel = scope.cancel();
+        scope.revert = if scope.revert then scope.revert() else null
     }
   ]
 

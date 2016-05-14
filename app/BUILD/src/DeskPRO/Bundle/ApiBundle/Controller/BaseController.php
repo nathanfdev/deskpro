@@ -29,13 +29,12 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use DeskPRO\Bundle\ApiBundle\View\Representation\StandardRepresentation;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Component\Util\TypeUtils;
+use DpSys\LowError\SystemErrorHandler;
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -70,18 +69,6 @@ class BaseController extends FOSRestController
     protected function wrap($data)
     {
         return new ApiWrapper($data);
-    }
-
-    /**
-     * @param mixed $input any array or object
-     *
-     * @return StandardRepresentation
-     *
-     * @deprecated
-     */
-    protected function createRepresentation($input)
-    {
-        return $this->get('api_view_representation_factory')->createRepresentation($input);
     }
 
     /**
@@ -255,6 +242,6 @@ class BaseController extends FOSRestController
      */
     protected function logException(\Exception $exception)
     {
-        $this->get('dp_sys.alerts.event_logger')->log($exception);
+        SystemErrorHandler::logException($exception);
     }
 }

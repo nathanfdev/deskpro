@@ -1,24 +1,78 @@
 {% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
 {% block fullpane_content %}
 <div class="content-wrapper portal-editor-wrap">
-    <section class="content editor" style="font-family: Lato, helvetica, verdana, sans-serif;">
+    <section class="content editor">
 
-        <div class="editor-panel">
+        <div class="editor-panel" dp-match-min-height watch="sidebar">
 
-            <div class="panel-wrapper">
+            <div class="panel-wrapper" dp-match-min-height watched-as="sidebar">
                 <div class="current-theme-actions">
                     <a href ng-click="Portal.save()" class="save-changes">Preview Changes</a>
                     <a href ng-click="Portal.discard()" class="discard-changes">Discard Changes</a>
                     <a href ng-click="Portal.commit()" class="save-changes">Save Changes</a>
                 </div>
 
-                <a href="#" class="current-theme">
-                    <span class="preview-icon"></span>
-                    <span class="theme-tag">Theme:</span> <span class="theme-title">An Excellent Theme</span>
-                    <span class="dropdown-icon"><i class="fa fa-sort"></i></span>
-                </a>
+                <!-- Theme -->
 
-                <!-- Variables settings -->
+                <div class="panel-title">
+                    <a ng-click="Portal.togglePanel('theme')">
+                        Theme
+                        <i class="fa fa-caret-right" ng-show="!Portal.isOpen('theme')"></i>
+                        <i class="fa fa-caret-down" ng-show="Portal.isOpen('theme')"></i>
+                    </a>
+                </div>
+
+                <div class="site-text" ng-show="Portal.isOpen('theme')">
+                    <select ng-model="Portal.selected_theme"
+                            ng-change="Portal.editTheme()"
+                            ng-options="item.id as item.title for item in Portal.available_themes">
+                    </select>
+                </div>
+
+                <!-- Welcome -->
+
+                <div class="panel-title">
+                    <a ng-click="Portal.togglePanel('site_copy')">
+                        Welcome Message
+                        <i class="fa fa-caret-right" ng-show="!Portal.isOpen('site_copy')"></i>
+                        <i class="fa fa-caret-down" ng-show="Portal.isOpen('site_copy')"></i>
+                    </a>
+                </div>
+
+                <div class="site-text" ng-show="Portal.isOpen('site_copy')">
+                    <form>
+                        <input type="text" placeholder="Welcome Box title" ng-model="Portal.welcome_box.title">
+                        <textarea placeholder="Content (HTML)" style="height: 200px;" ng-model="Portal.welcome_box.message"></textarea>
+                        <div class="footer">
+                            <button ng-click="Portal.editWelcomeBox()">Set &amp; Preview</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Logo -->
+                <div class="panel-title">
+                    <a ng-click="Portal.togglePanel('logo')">
+                        Logo
+                        <i class="fa fa-caret-right" ng-show="!Portal.isOpen('logo')"></i>
+                        <i class="fa fa-caret-down" ng-show="Portal.isOpen('logo')"></i>
+                    </a>
+                </div>
+
+                <div class="logo-options" ng-show="Portal.isOpen('logo')">
+                    <div class="logo-box logo-size-desktop">
+                        <input type="file" ng-file-select="Portal.uploadLogo($files)" />
+
+                        <div class="bucket" ng-if="Portal.custom_logo">
+                            <div class="logo-container">
+                                <img ng-src="{{ '{{ Portal.custom_logo }}' }}">
+                            </div>
+
+                            <a href ng-click="Portal.deleteLogo()">Delete logo</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vars -->
 
                 <div ng-repeat="(group, variables) in Portal.groups">
                     <div class="panel-title">
@@ -42,46 +96,6 @@
 
                 <!-- End of variables settings -->
 
-                <div class="panel-title">
-                    <a ng-click="Portal.togglePanel('logo')">
-                        Logo
-                        <i class="fa fa-caret-right" ng-show="!Portal.isOpen('logo')"></i>
-                        <i class="fa fa-caret-down" ng-show="Portal.isOpen('logo')"></i>
-                    </a>
-                </div>
-
-                <div class="logo-options" ng-show="Portal.isOpen('logo')">
-                    <div class="logo-box logo-size-desktop">
-                        <input type="file" ng-file-select="Portal.uploadLogo($files)" />
-
-                        <div class="bucket" ng-if="Portal.custom_logo">
-                            <div class="logo-container">
-                                <img ng-src="{{ '{{ Portal.custom_logo }}' }}">
-                            </div>
-
-                            <a href ng-click="Portal.deleteLogo()">Delete logo</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="panel-title">
-                    <a ng-click="Portal.togglePanel('site_copy')">
-                        Site Copy
-                        <i class="fa fa-caret-right" ng-show="!Portal.isOpen('site_copy')"></i>
-                        <i class="fa fa-caret-down" ng-show="Portal.isOpen('site_copy')"></i>
-                    </a>
-                </div>
-
-                <div class="site-text" ng-show="Portal.isOpen('site_copy')">
-                    <form>
-                        <input type="text" placeholder="Sample input text">
-                        <textarea placeholder="Add a welcome message"></textarea>
-                        <div class="footer">
-                            <input type="submit" value="Preview Welcome Message">
-                        </div>
-                    </form>
-                </div>
-
                 <!-- Advanced edit ------------------------------------------------------------------------------------>
 
                 <div class="panel-title">
@@ -104,10 +118,7 @@
                                 <a href ng-click="Portal.openAdvancedTab('footer')">Footer</a>
                             </li>
                             <li ng-class="{active: Portal.isAdvancedTab('scss')}">
-                                <a href ng-click="Portal.openAdvancedTab('scss')">(S)CSS</a>
-                            </li>
-                            <li ng-class="{active: Portal.isAdvancedTab('javascript')}">
-                                <a href ng-click="Portal.openAdvancedTab('javascript')">Javascript</a>
+                                <a href ng-click="Portal.openAdvancedTab('scss')">CSS</a>
                             </li>
                             <li ng-class="{active: Portal.isAdvancedTab('assets')}">
                                 <a href ng-click="Portal.openAdvancedTab('assets')">Assets</a>
@@ -116,68 +127,37 @@
                     </nav>
 
                     <!-- Header -->
-                    <dp-code-editor
-                        code="Portal.advanced.header"
-                        syntax="twig"
-                        visible="Portal.isAdvancedTab('header') && Portal.isAdvancedExpanded()"
-                        close="Portal.collapseAdvanced">
-                    </dp-code-editor>
-                    <div class="the-code"
-                         ng-click="Portal.expandAdvanced()"
-                         ng-show="Portal.isAdvancedTab('header')"
-                         style="height: 100px;"
-                         ui-ace="{theme: 'monokai', mode: 'twig'}"
-                         ng-model="Portal.advanced.header"
-                         readonly
-                    ></div>
+                    <div class="the-code" ng-show="Portal.isAdvancedTab('header')">
+                        <p>
+                            The header template is prepended to the very top of the page.
+                        </p>
+                        <div style="text-align: center; padding-top: 8px;"><button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-header.html.twig')">Edit Header Template</button></div>
+                    </div>
 
                     <!-- Footer -->
-                    <dp-code-editor
-                        code="Portal.advanced.footer"
-                        syntax="twig"
-                        visible="Portal.isAdvancedTab('footer') && Portal.isAdvancedExpanded()"
-                        close="Portal.collapseAdvanced">
-                    </dp-code-editor>
-                    <div class="the-code"
-                         ng-click="Portal.expandAdvanced()"
-                         ng-show="Portal.isAdvancedTab('footer')"
-                         style="height: 100px;"
-                         ui-ace="{theme: 'monokai', mode: 'html'}"
-                         ng-model="Portal.advanced.footer"
-                         readonly
-                    ></div>
+                    <div class="the-code" ng-show="Portal.isAdvancedTab('footer')">
+                        <p>
+                            The footer template is appended to the very bottom of th epage.
+                        </p>
+                        <div style="text-align: center; padding-top: 8px;"><button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-footer.html.twig')">Edit Footer Template</button></div>
+                    </div>
 
                     <!-- CSS -->
                     <dp-code-editor
-                        code="Portal.advanced.scss"
-                        syntax="scss"
-                        visible="Portal.isAdvancedTab('scss') && Portal.isAdvancedExpanded()"
-                        close="Portal.collapseAdvanced">
+                        info="Portal.css_template_info"
+                        syntax="css"
+                        visible="Portal.css_template_selected && Portal.css_template_info.loaded"
+                        save="Portal.saveCustomCss"
+                        cancel="Portal.cancelCustomCss"
+                    >
                     </dp-code-editor>
-                    <div class="the-code"
-                         ng-click="Portal.expandAdvanced()"
-                         ng-show="Portal.isAdvancedTab('scss')"
-                         style="height: 100px;"
-                         ui-ace="{theme: 'monokai', mode: 'scss'}"
-                         ng-model="Portal.advanced.scss"
-                         readonly
-                    ></div>
-
-                    <!-- Javascript -->
-                    <dp-code-editor
-                        code="Portal.advanced.javascript"
-                        syntax="javascript"
-                        visible="Portal.isAdvancedTab('javascript') && Portal.isAdvancedExpanded()"
-                        close="Portal.collapseAdvanced">
-                    </dp-code-editor>
-                    <div class="the-code"
-                         ng-click="Portal.expandAdvanced()"
-                         ng-show="Portal.isAdvancedTab('javascript')"
-                         style="height: 100px;"
-                         ui-ace="{theme: 'monokai', mode: 'javascript'}"
-                         ng-model="Portal.advanced.javascript"
-                         readonly
-                    ></div>
+                    <div class="the-code" ng-show="Portal.isAdvancedTab('scss')">
+                        <p>
+                            Your custom CSS is appended to the main CSS stylesheet. Use this to override default styles
+                            or add custom styles.
+                        </p>
+                        <div style="text-align: center; padding-top: 8px;"><button class="btn btn-default" ng-click="Portal.openCustomCssEditor()">Edit Custom CSS</button></div>
+                    </div>
 
                     <!-- Assets -->
                     <div class="the-assets" ng-show="Portal.isAdvancedTab('assets')">
@@ -226,12 +206,16 @@
                 <div ng-show="Portal.selected_template">Loading template...</div>
 
                 <dp-code-editor
-                    code="Portal.selected_template_code"
+                    info="Portal.selected_template_info"
                     syntax="twig"
-                    visible="Portal.selected_template && Portal.selected_template_code_loaded"
-                    close="Portal.closeTemplateEditor">
+                    visible="Portal.selected_template && Portal.selected_template_info_loaded"
+                    save="Portal.saveTemplateEditor"
+                    cancel="Portal.cancelTemplateEditor"
+                    revert="Portal.revertTemplateEditor"
+                >
                 </dp-code-editor>
 
+                <br/><br/>
             </div><!-- End panel wrapper -->
 
         </div><!-- End editor panel -->

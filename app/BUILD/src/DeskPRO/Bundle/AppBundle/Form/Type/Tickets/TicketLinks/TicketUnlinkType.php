@@ -53,7 +53,7 @@ class TicketUnlinkType extends AbstractType
         $builder->add('link_type', ChoiceType::class, [
             'mapped'            => false,
             'choices_as_values' => true,
-            'values'            => [
+            'choices'           => [
                 self::LINK_TYPE_PARENT,
                 self::LINK_TYPE_CHILD,
                 self::LINK_TYPE_SIBLING,
@@ -63,6 +63,7 @@ class TicketUnlinkType extends AbstractType
             ],
         ]);
 
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onRemoveLinkTicketForParent']);
         $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onUnsetLink']);
     }
 
@@ -77,28 +78,54 @@ class TicketUnlinkType extends AbstractType
     /**
      * @param FormEvent $event
      */
+    public function onRemoveLinkTicketForParent(FormEvent $event)
+    {
+        $data = $event->getData();
+
+        if (isset($data['link_type']) && $data['link_type'] === self::LINK_TYPE_PARENT) {
+            $event->getForm()->remove('link_ticket');
+        }
+    }
+
+    /**
+     * @param FormEvent $event
+     */
     public function onUnsetLink(FormEvent $event)
     {
         $form = $event->getForm();
 
         /** @var Ticket $ticket */
-        $ticket     = $form->getData();
-        $linkTicket = $form->get('link_ticket')->getData();
+        $ticket = $form->getData();
+        $ticket->disableAutoTicketProcess();
 
         switch ($form->get('link_type')->getData()) {
             case self::LINK_TYPE_PARENT:
                 $ticket->setParentTicket(null);
                 break;
             case self::LINK_TYPE_CHILD:
-                $ticket->removeChildrenTicket($linkTicket);
+                $ticket->removeChildrenTicket($this->getLinkTicket($event));
                 break;
             case self::LINK_TYPE_SIBLING:
                 $parent = $ticket->getParentTicket();
                 if ($parent) {
-                    $parent->removeChildrenTicket($linkTicket);
+                    $parent->removeChildrenTicket($this->getLinkTicket($event));
                 }
 
                 break;
         }
+    }
+
+    /**
+     * @param FormEvent $event
+     *
+     * @return Ticket
+     */
+    protected function getLinkTicket(FormEvent $event)
+    {
+        /* @var Ticket $ticket */
+        $ticket = $event->getForm()->get('link_ticket')->getData();
+        $ticket->disableAutoTicketProcess();
+
+        return $ticket;
     }
 }

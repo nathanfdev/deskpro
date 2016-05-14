@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,7 +33,6 @@ namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Orb\Util\Strings;
-use Zend\Loader\Exception\InvalidArgumentException;
 
 class TicketFieldManager extends FieldManager
 {
@@ -209,8 +208,6 @@ class TicketFieldManager extends FieldManager
     /**
      * @param string $id
      * @param bool   $enabled
-     *
-     * @throws \Zend\Loader\Exception\InvalidArgumentException
      */
     public function setFieldEnabledById($id, $enabled = true)
     {
@@ -226,7 +223,7 @@ class TicketFieldManager extends FieldManager
                 case 'priority': $this->setIsPriorityEnabled($enabled); break;
                 case 'category': $this->setIsCategoryEnabled($enabled); break;
                 default:
-                    throw new InvalidArgumentException('Invalid $id');
+                    throw new \Exception('Invalid $id');
             }
         }
     }

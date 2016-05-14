@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,26 +39,28 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
  */
 class UseSectionVoter extends AbstractVoter
 {
-    const USE_ARTICLES  = 'USE_ARTICLES';
-    const USE_FEEDBACK  = 'USE_FEEDBACK';
-    const USE_CHAT      = 'USE_CHAT';
-    const USE_DOWNLOADS = 'USE_DOWNLOADS';
-    const USE_NEWS      = 'USE_NEWS';
-    const USE_TICKETS   = 'USE_TICKETS';
+    const USE_ARTICLES      = 'USE_ARTICLES';
+    const USE_FEEDBACK      = 'USE_FEEDBACK';
+    const USE_CHAT          = 'USE_CHAT';
+    const USE_DOWNLOADS     = 'USE_DOWNLOADS';
+    const USE_NEWS          = 'USE_NEWS';
+    const USE_TICKETS       = 'USE_TICKETS';
+    const VIEW_TICKETS_LINK = 'VIEW_TICKETS_LINK';
 
     /**
      * {@inheritdoc}
      */
     protected function supports($attribute, $subject)
     {
-        return in_array($attribute, array(
+        return in_array($attribute, [
             self::USE_ARTICLES,
             self::USE_FEEDBACK,
             self::USE_CHAT,
             self::USE_DOWNLOADS,
             self::USE_NEWS,
             self::USE_TICKETS,
-        ));
+            self::VIEW_TICKETS_LINK,
+        ]);
     }
 
     /**
@@ -86,11 +88,10 @@ class UseSectionVoter extends AbstractVoter
             case static::USE_NEWS:
                 return $this->getActiveBrandSetting('core.apps_news') && $permissionBag->get('news.use');
             case static::USE_TICKETS:
-                return
-
-                        $permissionBag->get('tickets.use')
-                        || $this->isLoggedOutAndRegisteredUsergroupAllows($user, 'tickets.use')
-                    ;
+                return $permissionBag->get('tickets.use');
+            case static::VIEW_TICKETS_LINK:
+                return $permissionBag->get('tickets.use')
+                    || $this->isLoggedOutAndRegisteredUsergroupAllows($user, 'tickets.use');
         }
 
         return false;

@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -91,6 +90,16 @@ class CustomDataArticle extends CustomDataAbstract
         $this->setModelField('root_field', $field);
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return Article
+     */
+    public function getOwner()
+    {
+        return $this->article;
     }
 
     ############################################################################

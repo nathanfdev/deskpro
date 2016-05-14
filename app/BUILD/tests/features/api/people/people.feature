@@ -33,7 +33,7 @@ Feature: /people endpoint
   "organization_position": "Chief Sample Person",
   "user_groups": [3, 5],
   "agent_groups": [7, 8],
-  "labels": ["label1", "label1", "label2"],
+  "labels": ["label1", "label2"],
   "fields": {
     "6": "some text"
   },

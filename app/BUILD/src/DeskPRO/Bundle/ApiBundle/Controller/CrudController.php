@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -38,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
+use DeskPRO\Component\Pagerfanta\LimitedPager;
 use DeskPRO\Component\Util\ControllerUtils;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -75,6 +75,14 @@ abstract class CrudController extends BaseController
     public static $listPaginate   = true;
     public static $listPerPage    = 10;
     public static $listMaxResults = 200;
+    public static $listLimit      = 0;
+
+    /**
+     * Enable the option to force partial updates for POST requests (i.e. for new entities).
+     *
+     * @var bool
+     */
+    public static $forcePartialUpdate = false;
 
     /**
      * Get resource with provided id.
@@ -174,6 +182,7 @@ abstract class CrudController extends BaseController
      *      filters={
      *          {"name"="page", "pattern"="\d", "description"="Which page to display", "dataType"="integer"},
      *          {"name"="count", "pattern"="\d", "description"="Resource per page count", "dataType"="integer"},
+     *          {"name"="limit", "pattern"="\d", "description"="Max number of resources to return", "dataType"="integer"},
      *          {"name"="ids", "pattern"="[\d,]+", "description"="Comma separated list of IDs", "dataType"="string"},
      *      },
      *      statusCodes={
@@ -214,20 +223,43 @@ abstract class CrudController extends BaseController
             $qb->setParameters(compact('ids'));
         }
 
+        $limit = (int) $request->query->get('limit', static::$listLimit);
+        if ($limit && $limit < 0) {
+            throw $this->createBadRequestException('You must select a limit of at least 1');
+        }
+
         // return QueryBuilder result or Pagerfanta depending on if pagination is enabled for the controller
         if (static::$listPaginate) {
-            $page  = $request->query->get('page', 1);
-            $count = $request->query->get('count', static::$listPerPage);
+            $page  = (int) $request->query->get('page', 1);
+            $count = (int) $request->query->get('count', static::$listPerPage);
+
             if ($count > static::$listMaxResults) {
                 throw $this->createBadRequestException('You can select maximum '.static::$listMaxResults.' entities');
+            } elseif ($count <= 0) {
+                throw $this->createBadRequestException('You must select at least 1 entity');
             }
 
-            $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
+            if ($limit) {
+                // adding limit to the initial qb will
+                // make the initial COUNT have a limit, which
+                // might speed it up a bit
+                $qb->setMaxResults($limit);
+
+                $pagerAdapter = new DoctrineORMAdapter($qb);
+                $pager        = new LimitedPager($pagerAdapter, $limit);
+            } else {
+                $pagerAdapter = new DoctrineORMAdapter($qb);
+                $pager        = new Pagerfanta($pagerAdapter);
+            }
+
             $pager->setMaxPerPage($count);
             $pager->setCurrentPage($page);
 
             $result = $pager;
         } else {
+            if ($limit) {
+                $qb->setMaxResults($limit);
+            }
             $result = $qb->getQuery()->getResult();
         }
 
@@ -259,14 +291,7 @@ abstract class CrudController extends BaseController
         $this->checkExposed(__METHOD__);
         $this->denyAccessUnlessGranted(PermissionGroupVoter::CREATE, $this->getPermissionGroupContext($request));
 
-        $entity = $this->instantiateEntity($request);
-        $view   = $this->handleForm($entity, $request);
-
-        if ($this->isExposed('get')) {
-            $view->setLocation($this->getLocationUrl($entity, $request));
-        }
-
-        return $view;
+        return $this->handleForm($this->instantiateEntity($request), $request);
     }
 
     /**
@@ -475,8 +500,20 @@ abstract class CrudController extends BaseController
      */
     protected function handleForm($model, Request $request, array $options = [])
     {
-        $partialUpdate = $model && $model->getId();
-        $status        = $partialUpdate ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
+        $isModify = $model && $model->getId();
+        $status   = $isModify ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
+
+        // the trigger for POST/PATCH requests
+        // if 'partial update' is disabled (for new entities by default) then **ALL** form fields will be submitted
+        // (event they are not in the request) and the form will show all validation errors,
+        // else the form will apply just fields from the request and skip failed validation of unsubmitted ones
+
+        // you can force enable `partial updates` for new entities using `$forcePartialUpdate` option
+
+        $partialUpdate = $isModify;
+        if (static::$forcePartialUpdate) {
+            $partialUpdate = true;
+        }
 
         $form    = $this->createForm(static::$type, $model, $options);
         $decoded = $this->getRequestContent($request);
@@ -495,7 +532,12 @@ abstract class CrudController extends BaseController
             throw new InvalidFormException($form);
         }
 
-        return View::create($this->wrap($this->persistModel($model)), $status);
+        $view = View::create($this->wrap($this->persistModel($model)), $status);
+        if ($this->isExposed('get')) {
+            $view->setLocation($this->getLocationUrl($model, $request));
+        }
+
+        return $view;
     }
 
     /**

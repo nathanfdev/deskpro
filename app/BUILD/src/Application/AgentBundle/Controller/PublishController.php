@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -72,13 +71,13 @@ class PublishController extends AbstractController
         $this->publish_helper->setPersonContext($this->person);
 
         if ($this->in->getString('specific_type')) {
-            $this->publish_helper->setEnabledTypes(array($this->in->getString('specific_type')));
+            $this->publish_helper->setEnabledTypes([$this->in->getString('specific_type')]);
         }
     }
 
     public function getSectionDataAction()
     {
-        $data = array();
+        $data = [];
 
         #------------------------------
         # KB
@@ -88,7 +87,7 @@ class PublishController extends AbstractController
         $kb_repo        = $this->em->getRepository('DeskPRO:ArticleCategory');
         $kb_cats_counts = $this->publish_helper->getCategoryCounts(PublishHelper::ARTICLES);
 
-        $kb_translate_queue = array(0 => 0);
+        $kb_translate_queue = [0 => 0];
 
         $langs = $this->container->getLanguageData()->getAll();
         foreach ($langs as $lang) {
@@ -99,7 +98,7 @@ class PublishController extends AbstractController
                     articles.status = 'published'
                     AND (articles.language_id IS NULL OR articles.language_id != ?)
                     AND object_lang.id IS NULL
-            ", array($lang->getId(), $lang->getId()));
+            ", [$lang->getId(), $lang->getId()]);
 
             $kb_translate_queue[$lang->getId()] = $c;
             $kb_translate_queue[0] += $c;
@@ -132,7 +131,7 @@ class PublishController extends AbstractController
         # Comments and counts
         #------------------------------
 
-        $counts                        = array();
+        $counts                        = [];
         $counts['validating_comments'] = $this->publish_helper->getValidatingCommentsCount();
         $counts['validating_content']  = $this->publish_helper->getValidatingContentCount();
         $counts['drafts']              = $this->publish_helper->getDraftsCount();
@@ -143,7 +142,7 @@ class PublishController extends AbstractController
 
         $counts['comments'] = $this->publish_helper->getCommentsCountInfo();
 
-        $data['section_html'] = $this->renderView('AgentBundle:Publish:window-section.html.twig', array(
+        $data['section_html'] = $this->renderView('AgentBundle:Publish:window-section.html.twig', [
             'usergroups' => $usergroups,
             'counts'     => $counts,
 
@@ -162,7 +161,7 @@ class PublishController extends AbstractController
 
             'glossary_words' => $glossary_words,
             'glossary_count' => $glossary_count,
-        ));
+        ]);
 
         return $this->createJsonResponse($data);
     }
@@ -180,10 +179,10 @@ class PublishController extends AbstractController
             $curpage = 1;
         }
 
-        $limit = array(
+        $limit = [
             'max'    => $per_page,
             'offset' => ($curpage - 1) * $per_page,
-        );
+        ];
 
         $pageinfo = null;
         $total    = null;
@@ -199,12 +198,12 @@ class PublishController extends AbstractController
             $tpl = 'AgentBundle:Publish:validating-comments-page.html.twig';
         }
 
-        return $this->render($tpl, array(
+        return $this->render($tpl, [
             'single_type'         => $this->publish_helper->getSingleSpecificType(),
             'validating_comments' => $validating_comments,
             'total'               => $total,
             'pageinfo'            => $pageinfo,
-        ));
+        ]);
     }
 
     public function approveCommentAction($typename, $comment_id)
@@ -230,10 +229,10 @@ class PublishController extends AbstractController
 
         $this->_sendCommentApprovedNotification($comment);
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'comment_id' => $comment['id'],
             'typename'   => $typename,
-        ));
+        ]);
     }
 
     public function deleteCommentAction($typename, $comment_id)
@@ -257,10 +256,10 @@ class PublishController extends AbstractController
 
         $this->_sendCommentDeletedNotification($comment);
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'comment_id' => $comment['id'],
             'typename'   => $typename,
-        ));
+        ]);
     }
 
     public function validatingCommentsMassActionsAction($action)
@@ -279,26 +278,33 @@ class PublishController extends AbstractController
                 continue;
             }
 
-            $results = $this->em->getRepository($entity)->getByIds($ids);
-            foreach ($results as $r) {
+            /** @var CommentAbstract[] $comments */
+            $comments = $this->em->getRepository($entity)->getByIds($ids);
+            foreach ($comments as $comment) {
                 if ($action == 'approve') {
-                    $r->status = 'visible';
-                    $this->_sendCommentApprovedNotification($r);
-                } else {
-                    $r->status = 'deleted';
-                    $this->_sendCommentDeletedNotification($r);
-                }
+                    $comment->setStatus(CommentAbstract::STATUS_VISIBLE);
 
-                $this->em->persist($r);
+                    /** @var ContentAbstract $object */
+                    $object = $comment->getObject();
+                    //TODO should be using object getter but it doesn't work for obscure reasons
+                    $object->setNumComments($object->num_comments + 1);
+
+                    $this->em->persist($comment);
+                    $this->em->persist($object);
+                    $this->_sendCommentApprovedNotification($comment);
+                } else {
+                    $this->em->remove($comment);
+                    $this->_sendCommentDeletedNotification($comment);
+                }
             }
         }
 
         $this->em->flush();
         $this->em->commit();
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success' => true,
-        ));
+        ]);
     }
 
     public function commentInfoAction($typename, $comment_id)
@@ -311,11 +317,11 @@ class PublishController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'comment_id'   => $comment['id'],
             'content_type' => $typename,
             'comment_text' => $comment->content,
-        ));
+        ]);
     }
 
     public function saveCommentAction($typename, $comment_id)
@@ -332,11 +338,11 @@ class PublishController extends AbstractController
         $this->em->persist($comment);
         $this->em->flush();
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'comment_id'   => $comment['id'],
             'content_type' => $typename,
             'comment_html' => $comment->getContentHtml(),
-        ));
+        ]);
     }
 
     public function getNewTicketCommentInfoAction($typename, $comment_id)
@@ -360,7 +366,7 @@ class PublishController extends AbstractController
                 break;
         }
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'message'      => $comment->getContentPlain(),
             'status'       => $comment->status,
             'content_type' => $typename,
@@ -370,7 +376,7 @@ class PublishController extends AbstractController
             'email'        => $comment->getUserEmail(),
             'object_title' => $comment->getObject()->getTitle(),
             'object_url'   => $objectUrl,
-        ));
+        ]);
     }
 
     protected function _getCommentEntityName($typename)
@@ -396,9 +402,9 @@ class PublishController extends AbstractController
             } else {
                 $message->setTo($comment->getUserEmail());
             }
-            $message->setTemplate('DeskPRO:emails_user:comment-approved.html.twig', array(
+            $message->setTemplate('DeskPRO:emails_user:comment-approved.html.twig', [
                 'comment' => $comment,
-            ));
+            ]);
             $this->container->getMailer()->send($message);
         }
     }
@@ -412,9 +418,9 @@ class PublishController extends AbstractController
             } else {
                 $message->setTo($comment->getUserEmail());
             }
-            $message->setTemplate('DeskPRO:emails_user:comment-deleted.html.twig', array(
+            $message->setTemplate('DeskPRO:emails_user:comment-deleted.html.twig', [
                 'comment' => $comment,
-            ));
+            ]);
             $this->container->getMailer()->send($message);
         }
     }
@@ -432,7 +438,7 @@ class PublishController extends AbstractController
                 throw $this->createNotFoundException();
             }
 
-            $this->publish_helper->setEnabledTypes(array($type));
+            $this->publish_helper->setEnabledTypes([$type]);
         }
 
         $per_page = 25;
@@ -442,10 +448,10 @@ class PublishController extends AbstractController
             $curpage = 1;
         }
 
-        $limit = array(
+        $limit = [
             'max'    => $per_page,
             'offset' => ($curpage - 1) * $per_page,
-        );
+        ];
 
         $pageinfo = null;
         $total    = null;
@@ -463,12 +469,12 @@ class PublishController extends AbstractController
             $tpl = 'AgentBundle:Publish:list-comments-page.html.twig';
         }
 
-        return $this->render($tpl, array(
+        return $this->render($tpl, [
             'type'     => $type,
             'comments' => $comments,
             'total'    => $total,
             'pageinfo' => $pageinfo,
-        ));
+        ]);
     }
 
     ############################################################################
@@ -484,10 +490,10 @@ class PublishController extends AbstractController
             $curpage = 1;
         }
 
-        $limit = array(
+        $limit = [
             'max'    => $per_page,
             'offset' => ($curpage - 1) * $per_page,
-        );
+        ];
 
         $pageinfo = null;
         $total    = null;
@@ -503,24 +509,24 @@ class PublishController extends AbstractController
             $tpl = 'AgentBundle:Publish:validating-content-page.html.twig';
         }
 
-        return $this->render($tpl, array(
+        return $this->render($tpl, [
             'single_type'        => $this->publish_helper->getSingleSpecificType(),
             'content_validating' => $content_validating,
             'total'              => $total,
             'pageinfo'           => $pageinfo,
-        ));
+        ]);
     }
 
     public function listValidatingFeedbackCommentsAction()
     {
-        $this->publish_helper->setEnabledTypes(array('feedback'));
+        $this->publish_helper->setEnabledTypes(['feedback']);
 
         return $this->listValidatingCommentsAction();
     }
 
     public function listValidatingFeedbackContentAction()
     {
-        $this->publish_helper->setEnabledTypes(array('feedback'));
+        $this->publish_helper->setEnabledTypes(['feedback']);
 
         return $this->listValidatingContentAction();
     }
@@ -552,13 +558,13 @@ class PublishController extends AbstractController
 
         $next_url = null;
         if ($next) {
-            $next_url = $this->get('router')->getGenerator()->generateObjectUrl($next, array(), 'agent');
+            $next_url = $this->get('router')->getGenerator()->generateObjectUrl($next, [], 'agent');
         }
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success'  => true,
             'next_url' => $next_url,
-        ));
+        ]);
     }
 
     public function approveFeedback(\Application\DeskPRO\Entity\Feedback $feedback)
@@ -600,8 +606,8 @@ class PublishController extends AbstractController
                 $reason           = $this->in->getString('reason');
                 if (0 && $reason) {
                     $agent_chat = new \Application\DeskPRO\Chat\AgentChat($this->person, $this->session->getEntity());
-                    $reason .= ' (<a data-route="'.$this->get('router')->getGenerator()->generateObjectUrl($obj, array(), 'agent').'">'.htmlentities($obj->title).'</a>)';
-                    $agent_chat->sendAgentMessage($reason, array($obj->person['id']));
+                    $reason .= ' (<a data-route="'.$this->get('router')->getGenerator()->generateObjectUrl($obj, [], 'agent').'">'.htmlentities($obj->title).'</a>)';
+                    $agent_chat->sendAgentMessage($reason, [$obj->person['id']]);
                 }
 
                 $this->em->beginTransaction();
@@ -615,13 +621,13 @@ class PublishController extends AbstractController
 
         $next_url = null;
         if ($next) {
-            $next_url = $this->get('router')->getGenerator()->generateObjectUrl($next, array(), 'agent');
+            $next_url = $this->get('router')->getGenerator()->generateObjectUrl($next, [], 'agent');
         }
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success'  => true,
             'next_url' => $next_url,
-        ));
+        ]);
     }
 
     public function nextValidatingContentAction($type, $content_id)
@@ -632,13 +638,13 @@ class PublishController extends AbstractController
 
         $next_url = null;
         if ($next) {
-            $next_url = $this->get('router')->getGenerator()->generateObjectUrl($next, array(), 'agent');
+            $next_url = $this->get('router')->getGenerator()->generateObjectUrl($next, [], 'agent');
         }
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success'  => true,
             'next_url' => $next_url,
-        ));
+        ]);
     }
 
     protected function _findNextValidating($content_validating, $type, $content_id)
@@ -704,8 +710,8 @@ class PublishController extends AbstractController
                     }
                 } else {
                     if ($reason) {
-                        $this_reason = $reason.' (<a data-route="'.$this->get('router')->getGenerator()->generateObjectUrl($r, array(), 'agent').'">'.htmlentities($r->title).'</a>)';
-                        $agent_chat->sendAgentMessage($this_reason, array($r->person['id']));
+                        $this_reason = $reason.' (<a data-route="'.$this->get('router')->getGenerator()->generateObjectUrl($r, [], 'agent').'">'.htmlentities($r->title).'</a>)';
+                        $agent_chat->sendAgentMessage($this_reason, [$r->person['id']]);
                     }
                     $r->status_code = 'hidden.draft';
                 }
@@ -717,9 +723,9 @@ class PublishController extends AbstractController
         $this->em->flush();
         $this->em->commit();
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success' => true,
-        ));
+        ]);
     }
 
     ############################################################################
@@ -758,12 +764,12 @@ class PublishController extends AbstractController
             $tpl = 'AgentBundle:Publish:drafts-page.html.twig';
         }
 
-        return $this->render($tpl, array(
+        return $this->render($tpl, [
             'drafts'   => $drafts,
             'total'    => $total,
             'pageinfo' => $pageinfo,
             'all'      => $get_all,
-        ));
+        ]);
     }
 
     public function draftsMassActionsAction($action)
@@ -772,7 +778,7 @@ class PublishController extends AbstractController
 
         $this->em->beginTransaction();
 
-        $affected_content = array();
+        $affected_content = [];
 
         foreach ($data as $type => $ids) {
             $entity = $this->publish_helper->getEntityNameFor($type);
@@ -787,10 +793,10 @@ class PublishController extends AbstractController
                 }
                 if ($action == 'delete') {
                     $this->em->remove($r);
-                    $affected_content[] = array('typename' => $type, 'contentId' => $r->id);
+                    $affected_content[] = ['typename' => $type, 'contentId' => $r->id];
                 } elseif ($action == 'publish') {
                     $r->setStatusCode('published');
-                    $affected_content[] = array('typename' => $type, 'contentId' => $r->id);
+                    $affected_content[] = ['typename' => $type, 'contentId' => $r->id];
                 }
 
                 if ($r instanceof Article && !count($r->categories)) {
@@ -809,10 +815,10 @@ class PublishController extends AbstractController
         $this->em->flush();
         $this->em->commit();
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success'  => true,
             'affected' => $affected_content,
-        ));
+        ]);
     }
 
     ############################################################################
@@ -823,12 +829,24 @@ class PublishController extends AbstractController
     {
         $entity_name = null;
         switch ($type) {
-            case 'articles':   $entity_name = 'DeskPRO:Article';   break;
-            case 'article':    $entity_name = 'DeskPRO:Article';   break;
-            case 'downloads':  $entity_name = 'DeskPRO:Download';  break;
-            case 'download':   $entity_name = 'DeskPRO:Download';  break;
-            case 'news':       $entity_name = 'DeskPRO:News';      break;
-            case 'feedback':   $entity_name = 'DeskPRO:Feedback';  break;
+            case 'articles':
+                $entity_name = 'DeskPRO:Article';
+                break;
+            case 'article':
+                $entity_name = 'DeskPRO:Article';
+                break;
+            case 'downloads':
+                $entity_name = 'DeskPRO:Download';
+                break;
+            case 'download':
+                $entity_name = 'DeskPRO:Download';
+                break;
+            case 'news':
+                $entity_name = 'DeskPRO:News';
+                break;
+            case 'feedback':
+                $entity_name = 'DeskPRO:Feedback';
+                break;
         }
 
         $this->db->beginTransaction();
@@ -837,7 +855,7 @@ class PublishController extends AbstractController
         $this->db->executeUpdate('
             DELETE FROM search_sticky_result
             WHERE object_type = ? AND object_id = ?
-        ', array($entity_name, $content_id));
+        ', [$entity_name, $content_id]);
 
         foreach ($this->in->getCleanValueArray('words', 'string', 'discard') as $word) {
             $word = Strings::utf8_strtolower($word);
@@ -847,18 +865,18 @@ class PublishController extends AbstractController
                 continue;
             }
 
-            $this->db->replace('search_sticky_result', array(
+            $this->db->replace('search_sticky_result', [
                 'word'        => $word,
                 'object_type' => $entity_name,
                 'object_id'   => $content_id,
-            ));
+            ]);
         }
 
         $this->db->commit();
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success' => 1,
-        ));
+        ]);
     }
 
     ############################################################################
@@ -873,12 +891,12 @@ class PublishController extends AbstractController
             LEFT JOIN r.person p
             WHERE r.object_type = ?1 AND r.object_id = ?2
             ORDER BY r.id DESC
-        ')->execute(array(1 => $object_type, 2 => $object_id));
+        ')->execute([1 => $object_type, 2 => $object_id]);
 
-        return $this->render('AgentBundle:Publish:rating-who-voted.html.twig', array(
+        return $this->render('AgentBundle:Publish:rating-who-voted.html.twig', [
             'ratings'     => $ratings,
             'object_type' => $object_type,
-        ));
+        ]);
     }
 
     ############################################################################
@@ -893,13 +911,19 @@ class PublishController extends AbstractController
 
         $entity_name = null;
         switch ($type) {
-            case 'article':   $entity_name = 'DeskPRO:ArticleCategory';   break;
-            case 'download':  $entity_name = 'DeskPRO:DownloadCategory';  break;
-            case 'news':      $entity_name = 'DeskPRO:NewsCategory';      break;
+            case 'article':
+                $entity_name = 'DeskPRO:ArticleCategory';
+                break;
+            case 'download':
+                $entity_name = 'DeskPRO:DownloadCategory';
+                break;
+            case 'news':
+                $entity_name = 'DeskPRO:NewsCategory';
+                break;
         }
 
         if (!$entity_name) {
-            return $this->createJsonResponse(array('Invalid type'));
+            return $this->createJsonResponse(['Invalid type']);
         }
 
         $repos      = $this->em->getRepository($entity_name);
@@ -910,18 +934,18 @@ class PublishController extends AbstractController
         # Read input
         #------------------------------
 
-        $save_category = array(
+        $save_category = [
             'id'         => $this->in->getUint('category.id'),
             'title'      => $this->in->getString('category.title'),
             'usergroups' => $this->in->getCleanValueArray('category.usergroups', 'uint', 'discard'),
-        );
+        ];
 
         $save_structure = $this->in->getRaw('category_structure');
         if ($save_structure) {
             $save_structure = @json_decode($save_structure, true);
         }
         if (!$save_structure) {
-            $save_structure = array();
+            $save_structure = [];
         }
 
         #------------------------------
@@ -931,14 +955,14 @@ class PublishController extends AbstractController
         if ($save_category['id'] && $cat = $this->em->getRepository($entity_name)->find($save_category['id'])) {
             if ($save_category['title']) {
                 $cat->title = $save_category['title'];
-                $this->db->update($table, array('title' => $cat->title), array('id' => $cat->id));
+                $this->db->update($table, ['title' => $cat->title], ['id' => $cat->id]);
             }
 
-            $this->db->delete($perm_table, array('category_id' => $cat->id));
+            $this->db->delete($perm_table, ['category_id' => $cat->id]);
 
             // Everyone implies all groups
             if (in_array(1, $save_category['usergroups'])) {
-                $this->db->replace($perm_table, array('category_id' => $cat->id, 'usergroup_id' => 1));
+                $this->db->replace($perm_table, ['category_id' => $cat->id, 'usergroup_id' => 1]);
             } else {
                 $usergroups = $this->container->getDataService('Usergroup')->getUserUsergroups();
                 foreach ($save_category['usergroups'] as $ug_id) {
@@ -946,7 +970,7 @@ class PublishController extends AbstractController
                         continue;
                     }
 
-                    $this->db->replace($perm_table, array('category_id' => $cat->id, 'usergroup_id' => $ug_id));
+                    $this->db->replace($perm_table, ['category_id' => $cat->id, 'usergroup_id' => $ug_id]);
                 }
             }
         }
@@ -956,7 +980,7 @@ class PublishController extends AbstractController
         #------------------------------
 
         if ($save_structure) {
-            $parent_map         = array();
+            $parent_map         = [];
             $fn_struct_traverse = function ($cats, $parent = 0) use (&$parent_map, &$fn_struct_traverse) {
                 foreach ($cats as $cat) {
                     $parent_map[$cat['id']] = $parent;
@@ -977,7 +1001,7 @@ class PublishController extends AbstractController
                     $parent_id = null;
                 }
 
-                $this->db->update($table, array('parent_id' => $parent_id, 'display_order' => $order), array('id' => $cat_id));
+                $this->db->update($table, ['parent_id' => $parent_id, 'display_order' => $order], ['id' => $cat_id]);
             }
 
             $repos->repair();
@@ -986,16 +1010,16 @@ class PublishController extends AbstractController
         $this->container->getSystemService('publish_structure_cache')->flush();
         PermissionUtil::cleanPermissions();
 
-        return $this->createJsonResponse(array('success' => true));
+        return $this->createJsonResponse(['success' => true]);
     }
 
     public function updateCategoryTitlesAction($type)
     {
         PublishCategoryEdit::updateTitles($type, $this->in->getCleanValueArray('titles', 'string', 'uint'));
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success' => true,
-        ));
+        ]);
     }
 
     public function updateCategoryAction($type, $category_id)
@@ -1007,18 +1031,18 @@ class PublishController extends AbstractController
             $this->in->getCleanValueArray('usergroup_ids', 'uint', 'discard')
         );
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success' => true,
-        ));
+        ]);
     }
 
     public function updateCategoryOrdersAction($type)
     {
         PublishCategoryEdit::updateOrders($type, $this->in->getCleanValueArray('orders', 'uint', 'discard'));
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success' => true,
-        ));
+        ]);
     }
 
     public function updateCategoryStructureAction($type)
@@ -1032,48 +1056,60 @@ class PublishController extends AbstractController
 
             PublishCategoryEdit::updateOrders($type, $this->in->getCleanValueArray('orders', 'uint', 'discard'));
         } catch (\OutOfBoundsException $e) {
-            return $this->createJsonResponse(array(
+            return $this->createJsonResponse([
                 'error' => true,
-            ));
+            ]);
         }
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success' => true,
-        ));
+        ]);
     }
 
     public function addCategoryFormAction($type)
     {
         $entity_name = null;
         switch ($type) {
-            case 'article':   $entity_name = 'DeskPRO:ArticleCategory';   break;
-            case 'download':  $entity_name = 'DeskPRO:DownloadCategory';  break;
-            case 'news':      $entity_name = 'DeskPRO:NewsCategory';      break;
+            case 'article':
+                $entity_name = 'DeskPRO:ArticleCategory';
+                break;
+            case 'download':
+                $entity_name = 'DeskPRO:DownloadCategory';
+                break;
+            case 'news':
+                $entity_name = 'DeskPRO:NewsCategory';
+                break;
         }
 
         if (!$entity_name) {
-            return $this->createJsonResponse(array('Invalid type'));
+            return $this->createJsonResponse(['Invalid type']);
         }
 
         $all_categories = $this->em->getRepository($entity_name)->getInHierarchy();
 
-        return $this->render('AgentBundle:Publish:new-cat.html.twig', array(
+        return $this->render('AgentBundle:Publish:new-cat.html.twig', [
             'type'           => $type,
             'all_categories' => $all_categories,
-        ));
+        ]);
     }
 
     public function addCategoryFormSaveAction($type)
     {
         $entity_name = null;
         switch ($type) {
-            case 'article':   $entity_name = 'DeskPRO:ArticleCategory';   break;
-            case 'download':  $entity_name = 'DeskPRO:DownloadCategory';  break;
-            case 'news':      $entity_name = 'DeskPRO:NewsCategory';      break;
+            case 'article':
+                $entity_name = 'DeskPRO:ArticleCategory';
+                break;
+            case 'download':
+                $entity_name = 'DeskPRO:DownloadCategory';
+                break;
+            case 'news':
+                $entity_name = 'DeskPRO:NewsCategory';
+                break;
         }
 
         if (!$entity_name) {
-            return $this->createJsonResponse(array('Invalid type'));
+            return $this->createJsonResponse(['Invalid type']);
         }
 
         $class      = App::getEntityClass($entity_name);
@@ -1084,12 +1120,12 @@ class PublishController extends AbstractController
         # Save
         #------------------------------
 
-        $save_category = array(
+        $save_category = [
             'id'         => 0,
             'parent_id'  => $this->in->getUint('category.parent_id'),
             'title'      => $this->in->getString('category.title') ?: 'Untitled',
             'usergroups' => $this->in->getCleanValueArray('category.usergroups', 'uint', 'discard'),
-        );
+        ];
 
         $parent_cat = null;
         if ($save_category['parent_id']) {
@@ -1108,7 +1144,7 @@ class PublishController extends AbstractController
 
         // Everyone implies all groups
         if (in_array(1, $save_category['usergroups'])) {
-            $this->db->replace($perm_table, array('category_id' => $cat->id, 'usergroup_id' => 1));
+            $this->db->replace($perm_table, ['category_id' => $cat->id, 'usergroup_id' => 1]);
         } else {
             $usergroups = $this->container->getDataService('Usergroup')->getUserUsergroups();
             foreach ($save_category['usergroups'] as $ug_id) {
@@ -1116,7 +1152,7 @@ class PublishController extends AbstractController
                     continue;
                 }
 
-                $this->db->replace($perm_table, array('category_id' => $cat->id, 'usergroup_id' => $ug_id));
+                $this->db->replace($perm_table, ['category_id' => $cat->id, 'usergroup_id' => $ug_id]);
             }
         }
 
@@ -1124,9 +1160,9 @@ class PublishController extends AbstractController
         $this->container->getSystemService('publish_structure_cache')->flush();
         PermissionUtil::cleanPermissions();
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'id' => $cat->id,
-        ));
+        ]);
     }
 
     public function addCategoryAction($type)
@@ -1134,17 +1170,25 @@ class PublishController extends AbstractController
         $cat = PublishCategoryEdit::addCategory($type, $this->in->getString('title'));
 
         switch ($type) {
-            case 'articles':   $url = $this->generateUrl('agent_kb_list', array('category_id' => $cat->id)); break;
-            case 'downloads':  $url = $this->generateUrl('agent_downloads_list', array('category_id' => $cat->id)); break;
-            case 'news':       $url = $this->generateUrl('agent_news_list', array('category_id' => $cat->id)); break;
-            case 'feedback':   $url = $this->generateUrl('agent_feedback_category', array('category_id' => $cat->id)); break;
+            case 'articles':
+                $url = $this->generateUrl('agent_kb_list', ['category_id' => $cat->id]);
+                break;
+            case 'downloads':
+                $url = $this->generateUrl('agent_downloads_list', ['category_id' => $cat->id]);
+                break;
+            case 'news':
+                $url = $this->generateUrl('agent_news_list', ['category_id' => $cat->id]);
+                break;
+            case 'feedback':
+                $url = $this->generateUrl('agent_feedback_category', ['category_id' => $cat->id]);
+                break;
         }
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success' => true,
             'id'      => $cat['id'],
             'url'     => $url,
-        ));
+        ]);
     }
 
     public function deleteCategoryAction($type)
@@ -1152,19 +1196,19 @@ class PublishController extends AbstractController
         try {
             PublishCategoryEdit::deleteCategory($type, $this->in->getUint('category_id'));
         } catch (\OutOfBoundsException $e) {
-            return $this->createJsonResponse(array(
+            return $this->createJsonResponse([
                 'error'       => true,
                 'error_code'  => 'not_empty',
                 'category_id' => $this->in->getUint('category_id'),
                 'type'        => $type,
-            ));
+            ]);
         }
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success'     => true,
             'category_id' => $this->in->getUint('category_id'),
             'type'        => $type,
-        ));
+        ]);
     }
 
     ############################################################################
@@ -1224,16 +1268,16 @@ class PublishController extends AbstractController
                 $searcher->addTerm('category', 'is', $cats);
             }
 
-            $searcher->addTerm('query', 'is', array(
+            $searcher->addTerm('query', 'is', [
                 'query' => $query,
                 'type'  => $query_type,
-            ));
+            ]);
 
             $results = $searcher->getMatches();
 
             $result_cache                = new ResultCache();
             $result_cache['person']      = $this->person;
-            $result_cache['criteria']    = array('terms' => $searcher->getTerms(), 'type' => $type, 'cats' => $cats, 'query' => $query, 'query_type' => $query_type);
+            $result_cache['criteria']    = ['terms' => $searcher->getTerms(), 'type' => $type, 'cats' => $cats, 'query' => $query, 'query_type' => $query_type];
             $result_cache['results']     = $results;
             $result_cache['num_results'] = count($results);
 
@@ -1254,7 +1298,7 @@ class PublishController extends AbstractController
 
         $pageinfo = Numbers::getPaginationPages($count, $page, $per_page);
 
-        $vars = array(
+        $vars = [
             'cache'       => $result_cache,
             'cache_id'    => $result_cache['id'],
             'result_ids'  => $result_cache['results'],
@@ -1264,7 +1308,7 @@ class PublishController extends AbstractController
             'type'        => $result_cache['criteria']['type'],
             'page'        => $page,
             'per_page'    => $per_page,
-        );
+        ];
 
         return $this->render('AgentBundle:Publish:search-results-'.$type.'.html.twig', $vars);
     }
@@ -1281,16 +1325,16 @@ class PublishController extends AbstractController
             WHERE object_type = ? AND object_id = ? AND view_action = ? AND person_id IS NOT NULL
             GROUP BY person_id
             ORDER BY id DESC
-        ', array($object_type, $object_id, $view_action), 'person_id');
+        ', [$object_type, $object_id, $view_action], 'person_id');
 
         $people = $this->em->getRepository('DeskPRO:Person')->getByIds(array_keys($id_to_info));
 
-        return $this->render('AgentBundle:Publish:who-viewed.html.twig', array(
+        return $this->render('AgentBundle:Publish:who-viewed.html.twig', [
             'id_to_info'  => $id_to_info,
             'people'      => $people,
             'object_type' => $object_id,
             'object_id'   => $object_id,
             'view_action' => $view_action,
-        ));
+        ]);
     }
 }

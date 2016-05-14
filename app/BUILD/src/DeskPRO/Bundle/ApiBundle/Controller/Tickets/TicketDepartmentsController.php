@@ -97,10 +97,8 @@ class TicketDepartmentsController extends CrudController
             $permissionBag        = $this->get('permissions_manager')->getPortalPermissionsBag($this->getUser());
             $allowedDepartmentIds = $permissionBag->getAllowedTicketDepartmentIds();
 
-            $qb
-                ->andWhere('e.id IN (:allowed_department_ids)')
-                ->setParameter('allowed_department_ids', $allowedDepartmentIds)
-            ;
+            $qb->andWhere('e.id IN (:allowed_department_ids)');
+            $qb->setParameter('allowed_department_ids', $allowedDepartmentIds);
         }
     }
 

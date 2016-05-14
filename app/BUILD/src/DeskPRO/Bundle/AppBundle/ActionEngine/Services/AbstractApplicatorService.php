@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Services;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection\ActionCollection;
@@ -98,7 +97,7 @@ abstract class AbstractApplicatorService implements ApplicatorServiceInterface
      *
      * @return array
      */
-    private function getEntities($class, array $ids)
+    protected function getEntities($class, array $ids)
     {
         $qb = $this->em->createQueryBuilder();
         $qb

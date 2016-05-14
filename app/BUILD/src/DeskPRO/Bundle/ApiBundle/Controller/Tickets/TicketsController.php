@@ -29,13 +29,14 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\EventListener\JsonHeadersResponseListener;
 use DeskPRO\Bundle\ApiBundle\Traits\Labels\LabelsHelper;
-use DeskPRO\Bundle\ApiBundle\Traits\TicketsPagerTrait;
+use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
+use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketsPagerTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
@@ -56,7 +57,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  */
 class TicketsController extends AbstractTicketsController
 {
-    use LabelsHelper, TicketsPagerTrait;
+    use LabelsHelper, TicketsPagerTrait, TicketSaveTrait;
 
     public static $type = TicketType::class;
 
@@ -92,7 +93,7 @@ class TicketsController extends AbstractTicketsController
      *          {"name"="page", "description"="pagination page parameter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="count", "description"="pagination results per page parameter.", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="filter", "description"="TicketFilter ID option", "dataType"="integer", "pattern"="\d+"},
-     *          {"name"="labels", "description"="labels filter option", "dataType"="array", "pattern"="[\d+,]+"},
+     *          {"name"="labels", "description"="labels filter option", "dataType"="array", "pattern"="[\w+,]+"},
      *          {"name"="star", "description"="star filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="status", "description"="status filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="agent", "description"="agent filter", "dataType"="integer", "pattern"="\d+"},
@@ -135,9 +136,11 @@ class TicketsController extends AbstractTicketsController
 
         // otherwise search for IDs using term engine and return Pagerfanta instance
         else {
+            // todo refactor
             $params = $request->query->all();
+            $reset  = ['include', 'count', 'page', 'ids_only', JsonHeadersResponseListener::INCLUDE_HEADERS_PARAM];
 
-            foreach (['include', 'count', 'page', 'ids_only'] as $param) {
+            foreach ($reset as $param) {
                 if (array_key_exists($param, $params)) {
                     unset($params[$param]);
                 }
@@ -193,15 +196,26 @@ class TicketsController extends AbstractTicketsController
     /**
      * {@inheritdoc}
      */
+    protected function handleForm($model, Request $request, array $options = [])
+    {
+        $options = array_merge($options, [
+            'agent_interface' => true,
+        ]);
+
+        return parent::handleForm($model, $request, $options);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param Ticket $entity
+     */
     protected function deleteEntity($entity)
     {
-        /* @var Ticket $entity */
+        $entity->disableAutoTicketProcess();
         $entity->setHiddenStatus(Ticket::HIDDEN_STATUS_DELETED);
 
-        $tm      = $this->getTicketManager();
-        $context = $tm->createAgentExecutorContext($this->getUser(), 'delete', 'api');
-
-        $tm->saveTicket($entity, $context);
+        $this->saveTicket($entity);
         $entity->deleteTicket($this->getUser(), '', false);
     }
 }

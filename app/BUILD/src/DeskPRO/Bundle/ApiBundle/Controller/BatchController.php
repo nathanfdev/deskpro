@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\EventListener\JsonHeadersResponseListener;
@@ -45,11 +41,12 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  * Class BatchController.
  *
  * @ApiModes("all")
+ * @Rest\Route("/batch")
  */
 class BatchController extends BaseController
 {
     /**
-     * @Rest\Post("/batch", name="api_batch_post")
+     * @Rest\Post("")
      *
      * @param Request $request
      *
@@ -73,7 +70,7 @@ class BatchController extends BaseController
     }
 
     /**
-     * @Rest\Get("/batch", name="api_batch_get")
+     * @Rest\Get("")
      *
      * @param Request $request
      *
@@ -121,6 +118,16 @@ class BatchController extends BaseController
             $info = array_merge($info, ['url' => $subRequestInfo]);
         }
 
+        // verify sub request url
+        if (strpos($info['url'], '/api/v2') !== 0) {
+            $info['url'] = '/api/v2/'.ltrim($info['url'], '/');
+        }
+        if (!$this->matchRouteUrl($info['url'])) {
+            if (!$this->matchRouteUrl($info['url'])) {
+                throw $this->createBadRequestException("Route path for '{$info['url']}' not found");
+            }
+        }
+
         $json_serialized = null;
         if ($info['data']) {
             $json            = $info['data'];
@@ -149,5 +156,19 @@ class BatchController extends BaseController
         $response = $this->getKernel()->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
 
         return $this->get('serializer')->deserialize($response->getContent(), 'array', 'json');
+    }
+
+    /**
+     * @param string $url
+     *
+     * @return array|false
+     */
+    protected function matchRouteUrl($url)
+    {
+        try {
+            return $this->get('router')->matchRequest(Request::create($url));
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }

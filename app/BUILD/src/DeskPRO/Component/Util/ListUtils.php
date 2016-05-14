@@ -53,7 +53,7 @@ class ListUtils
      */
     public static function filter($array, $fn, $preserveKeys = false)
     {
-        $new = array();
+        $new = [];
 
         foreach ($array as $k => $v) {
             if ($fn($v, $k)) {
@@ -77,7 +77,7 @@ class ListUtils
      */
     public static function filterOutFalsey($array)
     {
-        $new = array();
+        $new = [];
 
         foreach ($array as $v) {
             if ($v) {
@@ -97,10 +97,10 @@ class ListUtils
      */
     public static function filterOutValues($array, $values, $strict = true)
     {
-        $new = array();
+        $new = [];
 
         if (!is_array($values) && !($array instanceof \Traversable)) {
-            $values = array($values);
+            $values = [$values];
         }
 
         foreach ($array as $v) {

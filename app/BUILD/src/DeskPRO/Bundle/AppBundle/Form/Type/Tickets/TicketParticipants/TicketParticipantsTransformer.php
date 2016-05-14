@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants;
 
 use Application\DeskPRO\Entity\Person;
@@ -120,9 +119,12 @@ class TicketParticipantsTransformer implements DataTransformerInterface
                 $person = $personRepo->findOneByEmail($email);
 
                 if ($person) {
-                    $personEmail = $person->getEmails()->filter(function (PersonEmail $personEmail) use ($email) {
-                        return $personEmail->getEmail() === $email;
-                    })->first();
+                    $personEmail = $person
+                        ->getEmails()
+                        ->filter(function (PersonEmail $personEmail) use ($email) {
+                            return $personEmail->getEmail() === $email;
+                        })
+                        ->first();
 
                     $entity->setPerson($person);
                 } else {
@@ -130,10 +132,8 @@ class TicketParticipantsTransformer implements DataTransformerInterface
                     $personEmail->setEmail($email);
                 }
 
-                $entity
-                    ->setTicket($this->ticket)
-                    ->setPersonEmail($personEmail)
-                ;
+                $entity->setTicket($this->ticket);
+                $entity->setPersonEmail($personEmail);
             }
 
             $result[] = $entity;

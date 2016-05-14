@@ -18,8 +18,8 @@ function dp_build_runcmd($cmd) {
 
 $options = getopt('', [
     'quick',
-    'with-build',
-    'with-build-time',
+    'with-build:',
+    'with-build-time:',
 ]);
 
 $is_quick = (bool) @$options['quick'];
@@ -80,21 +80,21 @@ if (!$is_quick) {
 
 echo "Placing versions\n";
 
-$build_num = @$options['build'] ?: null;
-$build_time = @$options['build-time'] ?: time();
+$build_num = @$options['with-build'] ?: null;
+$build_time = @$options['with-build-time'] ?: time();
 
 file_put_contents($DP_DIR.'/app/BUILD/sys/config/build-time.php', "<?php define('DP_BUILD_TIME', {$build_time});\n");
 file_put_contents($DP_DIR.'/app/BUILD/sys/config/build-time.txt', $build_time);
 
-if ($build_num) {
+if ($build_num && $build_num !== '0.0') {
     if (strpos($build_num, '.')) {
-        list ($build_num_base, $build_rev) = explode($build_num, '.', 2);
+        list ($build_num_base, $build_rev) = explode('.', $build_num, 2);
     } else {
         $build_num_base = $build_num;
         $build_rev = 0;
     }
     file_put_contents($DP_DIR.'/app/BUILD/sys/config/build-num.php',
-        "<?php define('DP_BUILD_NUM', $build_num);\n"
+        "<?php define('DP_BUILD_NUM', '$build_num');\n"
         ."define('DP_BUILD_NUM_BASE', $build_num_base);\n"
         ."define('DP_BUILD_NUM_REV', $build_rev);\n"
     );

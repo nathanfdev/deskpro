@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -81,6 +81,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
                 'sso_url'           => '',
                 'slo_url'           => '',
                 'cert_fingerprint'  => '',
+                'name_id_format'    => '',
                 'login_custom_text' => '',
             )
         );
@@ -100,8 +101,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
                 'singleLogoutService' => array(
                     'url' => $this->getSingleLogoutServiceUrl(),
                 ),
-                // enforce a persistent ID for person association
-                'NameIDFormat' => \OneLogin_Saml2_Constants::NAMEID_PERSISTENT,
+                'NameIDFormat' => $this->options['name_id_format'] ?: \OneLogin_Saml2_Constants::NAMEID_PERSISTENT,
             ),
             'idp' => array(
                 'entityId'            => $this->options['issuer_id'],
@@ -237,6 +237,12 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
                     "SAML Errors: \n".trim(Arrays::implodeTemplate($errors, "{KEY}: {VAL}\n")),
                     Logger::DEBUG
                 );
+                if ($saml->getLastErrorReason()) {
+                    $this->logger->log(
+                        'Last Error Reason: '.$saml->getLastErrorReason(),
+                        Logger::DEBUG
+                    );
+                }
             }
 
             return new Result(Result::FAILURE, null, array('saml_errors' => $errors));

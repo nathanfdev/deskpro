@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
@@ -96,15 +95,10 @@ class ElasticSearchListener implements EventSubscriberInterface
             return;
         }
 
-        // todo debug
-        // todo temporary disabled elastic search
-        // todo elastic search seems is enabled on test build but not populated, and so we get always empty results
-        // todo check the elastic index and remove this
-
         // note: IMHO the better approach is to subscribe both ES and DB to the same event using priority
         // the DB search may be skipped according to event payload
         // ES listener should not be subscribed if ES setting is disabled
-        if (true || !$this->settings_resolver->getGlobalSettings()->get('elastica.enabled')) {
+        if (!$this->settings_resolver->getGlobalSettings()->get('elastica.enabled')) {
             $this->dispatchFallback($event);
 
             return;

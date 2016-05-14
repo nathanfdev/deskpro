@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -248,7 +248,7 @@ class HierarchyGenerator
                 $allowed_departments = new ArrayCollection($allowed_departments); // for convenient methods
                 if ($ticket) {
                     $ticket_department = $ticket->getDepartment();
-                    if (!$allowed_departments->contains($ticket_department)) {
+                    if ($ticket_department && !$allowed_departments->contains($ticket_department)) {
                         // the dep on the ticket is not allowed for this person, so we force it
                         // to be allowed here...
                         $allowed_departments->add($ticket_department);

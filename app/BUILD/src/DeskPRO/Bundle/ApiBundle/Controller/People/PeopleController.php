@@ -29,10 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
@@ -55,6 +55,17 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  * @ApiModes("all")
  * @Rest\Route("/people")
  * @ApiDoc(target="all", section="People", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
+ * @ApiDoc(
+ *     target="listAction,countAction",
+ *     filters={
+ *          {"name"="is_agent", "description"="agents filter", "dataType"="boolean"},
+ *          {"name"="is_deleted", "description"="deleted filter", "dataType"="boolean"},
+ *          {"name"="not_me", "description"="exclude yourself filter", "dataType"="boolean"},
+ *          {"name"="agent_team", "description"="agent teams filter", "dataType"="array|integer|null", "pattern"="[\d+,]+"},
+ *          {"name"="user_group", "description"="usergroups filter", "dataType"="array|integer|null", "pattern"="[\d+,]+"},
+ *          {"name"="labels", "description"="labels filter option", "dataType"="array", "pattern"="[\w+,]+"}
+ *     }
+ * )
  */
 class PeopleController extends CrudController
 {
@@ -83,9 +94,11 @@ class PeopleController extends CrudController
      */
     public static function subRequestSearch(HttpKernelInterface $kernel, Request $masterRequest, array $params)
     {
-        $request = $masterRequest->duplicate(array_merge($params, $masterRequest->query->all()), null, [
-            '_controller' => 'ApiBundle:People\People:list',
-        ]);
+        $request = $masterRequest->duplicate(
+            array_merge($params, $masterRequest->query->all()),
+            null,
+            ['_controller' => 'ApiBundle:People\People:list']
+        );
         $request->query->add($params);
 
         return $kernel->handle($request, HttpKernelInterface::SUB_REQUEST);
@@ -101,12 +114,24 @@ class PeopleController extends CrudController
      * @Rest\Get("/{id}/tickets")
      *
      * @param Request $request
+     * @param int     $id      Person ID
      *
      * @return Response
      */
-    public function getTicketsAction(Request $request)
+    public function getTicketsAction(Request $request, $id)
     {
-        return TicketsController::subRequestSearch($this->getKernel(), $request, ['person' => $request->get('id')]);
+        /** @var Person $person */
+        $person   = $this->findEntity($id, $request);
+        $personId = $person->getId();
+        $options  = ['not-status' => [Ticket::HIDDEN_STATUS_DELETED, Ticket::HIDDEN_STATUS_SPAM]];
+
+        if ($person->isAgent()) {
+            $options['agent'] = $personId;
+        } else {
+            $options['person'] = $personId;
+        }
+
+        return TicketsController::subRequestSearch($this->getKernel(), $request, $options);
     }
 
     // This exists temporarily until we have some real versioned actions ###############################################
@@ -127,6 +152,9 @@ class PeopleController extends CrudController
      *     }
      * )
      * @Rest\Put("/{id}/permissions")
+     *
+     * @param         $id
+     * @param Request $request
      */
     public function updatePermissionsAction($id, Request $request)
     {
@@ -214,8 +242,7 @@ class PeopleController extends CrudController
                     ->leftJoin("$alias.teams", 'teams')
                     ->addSelect('teams.name as title')
                     ->addSelect('teams.id as group_name')
-                    ->groupBy('group_name')
-                ;
+                    ->groupBy('group_name');
 
                 break;
         }

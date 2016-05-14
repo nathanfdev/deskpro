@@ -26,18 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
 use Application\DeskPRO\Entity\CustomDefPerson;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\ApiBundle\Controller\AbstractCustomFieldsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class PersonCustomFieldsController.
@@ -46,17 +41,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @Rest\Route("/person_custom_fields")
  * @ApiDoc(target="all", section="People")
  */
-class PersonCustomFieldsController extends CrudController
+class PersonCustomFieldsController extends AbstractCustomFieldsController
 {
-    public static $exposeOnly = ['list', 'get'];
-    public static $entity     = CustomDefPerson::class;
-    public static $listOrder  = 'asc';
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
-    {
-        $qb->andWhere('e.parent is null');
-    }
+    public static $entity = CustomDefPerson::class;
 }

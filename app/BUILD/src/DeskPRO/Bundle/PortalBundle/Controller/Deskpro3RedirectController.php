@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Orb\Util\Arrays;
@@ -54,12 +53,12 @@ class Deskpro3RedirectController extends AbstractController
             if ($newId) {
                 $obj = $this->getEm()->find('DeskPRO:DownloadCategory', $newId);
                 if ($obj) {
-                    return $this->redirectToRoute('user_downloads', ['slug' => $obj->getUrlSlug()], 301);
+                    return $this->redirectToRoute('portal_downloads_view', ['slug' => $obj->getUrlSlug()], 301);
                 }
             }
         }
 
-        return $this->redirectToRoute('user_downloads_home', [], 301);
+        return $this->redirectToRoute('portal_downloads', [], 301);
     }
 
     /**
@@ -74,12 +73,12 @@ class Deskpro3RedirectController extends AbstractController
             if ($newId) {
                 $obj = $this->getEm()->find('DeskPRO:Download', $newId);
                 if ($obj) {
-                    return $this->redirectToRoute('user_downloads_file', ['slug' => $obj->getUrlSlug()], 301);
+                    return $this->redirectToRoute('portal_downloads_view', ['slug' => $obj->getUrlSlug()], 301);
                 }
             }
         }
 
-        return $this->redirectToRoute('user_downloads_home', [], 301);
+        return $this->redirectToRoute('portal_downloads', [], 301);
     }
 
     ############################################################################
@@ -105,12 +104,12 @@ class Deskpro3RedirectController extends AbstractController
             if ($newId) {
                 $obj = $this->getEm()->find('DeskPRO:Feedback', $newId);
                 if ($obj) {
-                    return $this->redirectToRoute('user_feedback_view', ['slug' => $obj->getUrlSlug()], 301);
+                    return $this->redirectToRoute('portal_feedback_view', ['slug' => $obj->getUrlSlug()], 301);
                 }
             }
         }
 
-        return $this->redirectToRoute('user_feedback', [], 301);
+        return $this->redirectToRoute('portal_feedback', [], 301);
     }
 
     ############################################################################
@@ -129,12 +128,12 @@ class Deskpro3RedirectController extends AbstractController
             if ($newId) {
                 $obj = $this->getEm()->find('DeskPRO:Article', $newId);
                 if ($obj) {
-                    return $this->redirectToRoute('user_articles_article', ['slug' => $obj->getUrlSlug()], 301);
+                    return $this->redirectToRoute('portal_kb_view', ['slug' => $obj->getUrlSlug()], 301);
                 }
             }
         }
 
-        return $this->redirectToRoute('user_articles_home', [], 301);
+        return $this->redirectToRoute('portal_kb', [], 301);
     }
 
     /**
@@ -149,12 +148,12 @@ class Deskpro3RedirectController extends AbstractController
             if ($newId) {
                 $obj = $this->getEm()->find('DeskPRO:ArticleCategory', $newId);
                 if ($obj) {
-                    return $this->redirectToRoute('user_articles', ['slug' => $obj->getUrlSlug()], 301);
+                    return $this->redirectToRoute('portal_kb_browse', ['slug' => $obj->getUrlSlug()], 301);
                 }
             }
         }
 
-        return $this->redirectToRoute('user_articles_home', [], 301);
+        return $this->redirectToRoute('portal_kb', [], 301);
     }
 
     /**
@@ -162,7 +161,7 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function articlesHomeAction()
     {
-        return $this->redirectToRoute('user_articles_home', [], 301);
+        return $this->redirectToRoute('portal_kb', [], 301);
     }
 
     ############################################################################
@@ -182,12 +181,12 @@ class Deskpro3RedirectController extends AbstractController
             if ($newId) {
                 $obj = $this->getEm()->find('DeskPRO:News', $newId);
                 if ($obj) {
-                    return $this->redirectToRoute('user_news_view', ['slug' => $obj->getUrlSlug()], 301);
+                    return $this->redirectToRoute('portal_news_view', ['slug' => $obj->getUrlSlug()], 301);
                 }
             }
         }
 
-        return $this->redirectToRoute('user_news_home', [], 301);
+        return $this->redirectToRoute('portal_news', [], 301);
     }
 
     /**
@@ -195,7 +194,7 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function newsArchiveAction()
     {
-        return $this->redirectToRoute('user_news_home', [], 301);
+        return $this->redirectToRoute('portal_news', [], 301);
     }
 
     ############################################################################

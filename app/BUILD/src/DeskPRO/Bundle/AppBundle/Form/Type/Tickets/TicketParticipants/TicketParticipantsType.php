@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants;
 
 use Application\DeskPRO\Entity\Person;
@@ -39,6 +35,7 @@ use DeskPRO\Bundle\AppBundle\Form\DataTransformer\ArrayOfStringsTransformer;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\ArrayToStringTransformer;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -111,32 +108,22 @@ class TicketParticipantsType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'ticket_participants';
-    }
-
-    /**
      * @param FormEvent $event
      *
      * @return array
      */
     public function onTransformIdToEmail(FormEvent $event)
     {
-        /** @var \Application\DeskPRO\EntityRepository\Person $personRepo */
-        $personRepo = $this->em->getRepository(Person::class);
-
         $data   = $event->getData();
         $result = [];
+
         if (!is_array($data)) {
             return;
         }
 
         foreach ($data as $item) {
             if (is_numeric($item)) {
-                $person   = $personRepo->find($item);
+                $person   = $this->em->getRepository(Person::class)->find($item);
                 $result[] = $person ? $person->getPrimaryEmailAddress() : '';
             } else {
                 $result[] = $item;
@@ -153,14 +140,12 @@ class TicketParticipantsType extends AbstractType
      */
     public function onPreSetData(FormEvent $event)
     {
-        $is_agent = $this->isAgent($event);
-
-        $all_participants  = $this->getAllParticipants($event);
-        $type_participants = $all_participants->filter(function (TicketParticipant $participant) use ($is_agent) {
-            return $participant->getPerson()->isAgent() === $is_agent;
+        $allParticipants  = $this->getAllParticipants($event);
+        $formParticipants = $allParticipants->filter(function (TicketParticipant $participant) use ($event) {
+            return $participant->getPerson()->isAgent() === $this->isAgent($event);
         });
 
-        $event->setData($type_participants->toArray());
+        $event->setData($formParticipants);
     }
 
     /**
@@ -170,21 +155,21 @@ class TicketParticipantsType extends AbstractType
      */
     public function onMergeData(FormEvent $event)
     {
-        $is_agent = $this->isAgent($event);
+        $allParticipants  = $this->getAllParticipants($event);
+        $formParticipants = $this->getFormParticipants($event);
 
-        $all_participants  = $this->getAllParticipants($event);
-        $type_participants = new ArrayCollection($event->getForm()->getData() ?: []);
+        $ticket = $this->getTicket($event);
 
         /** @var TicketParticipant $participant */
-        foreach ($type_participants as $participant) {
-            if (!$all_participants->contains($participant)) {
-                $all_participants->add($participant);
+        foreach ($formParticipants as $participant) {
+            if (!$allParticipants->contains($participant)) {
+                $ticket->addParticipant($participant);
             }
         }
-        foreach ($all_participants as $participant) {
+        foreach ($allParticipants as $participant) {
             $person = $participant->getPerson();
-            if ($person && $person->isAgent() === $is_agent && !$type_participants->contains($participant)) {
-                $all_participants->removeElement($participant);
+            if ($person && $person->isAgent() === $this->isAgent($event) && !$formParticipants->contains($participant)) {
+                $ticket->removeParticipant($participant);
             }
         }
     }
@@ -194,27 +179,24 @@ class TicketParticipantsType extends AbstractType
      */
     public function onValidateData(FormEvent $event)
     {
-        $form = $event->getForm();
-        $data = $form->getData();
-
-        $is_agent          = $this->isAgent($event);
-        $type_participants = new ArrayCollection($data ?: []);
+        $form    = $event->getForm();
+        $isAgent = $this->isAgent($event);
 
         /** @var TicketParticipant $participant */
-        foreach ($type_participants as $participant) {
-            $error_code = null;
-            $person     = $participant->getPerson();
-
+        foreach ($this->getFormParticipants($event) as $participant) {
+            $person = $participant->getPerson();
             if (!$person) {
-                $error_code = ErrorsCodes::NO_PERSON;
-            } elseif ($is_agent && !$person->isAgent()) {
-                $error_code = ErrorsCodes::NOT_AGENT;
-            } elseif (!$is_agent && $person->isAgent()) {
-                $error_code = ErrorsCodes::NOT_USER;
+                $errorCode = ErrorsCodes::NO_PERSON;
+            } elseif ($isAgent && !$person->isAgent()) {
+                $errorCode = ErrorsCodes::NOT_AGENT;
+            } elseif (!$isAgent && $person->isAgent()) {
+                $errorCode = ErrorsCodes::NOT_USER;
+            } else {
+                $errorCode = null;
             }
 
-            if ($error_code) {
-                $form->addError(new FormError($error_code, null, ['value' => $participant->getEmailAddress()]));
+            if ($errorCode) {
+                $form->addError(new FormError($errorCode, null, ['value' => $participant->getEmailAddress()]));
             }
         }
     }
@@ -229,10 +211,8 @@ class TicketParticipantsType extends AbstractType
         $form   = $event->getForm();
         $config = $form->getConfig();
 
-        $property_path = $config->getOption('property_path') ?: $form->getName();
-        $owner         = $config->getOption('owner');
-
-        $participants = PropertyAccess::createPropertyAccessor()->getValue($owner, $property_path);
+        $propertyPath = $config->getOption('property_path') ?: $form->getName();
+        $participants = PropertyAccess::createPropertyAccessor()->getValue($this->getTicket($event), $propertyPath);
 
         return $participants ?: new ArrayCollection();
     }
@@ -244,9 +224,33 @@ class TicketParticipantsType extends AbstractType
      */
     protected function isAgent(FormEvent $event)
     {
-        $form   = $event->getForm();
-        $config = $form->getConfig();
+        return $event->getForm()->getConfig()->getOption('is_agent');
+    }
 
-        return $config->getOption('is_agent');
+    /**
+     * @param FormEvent $event
+     *
+     * @return Ticket
+     */
+    protected function getTicket(FormEvent $event)
+    {
+        return $event->getForm()->getConfig()->getOption('owner');
+    }
+
+    /**
+     * @param FormEvent $event
+     *
+     * @return ArrayCollection
+     */
+    protected function getFormParticipants(FormEvent $event)
+    {
+        $data = $event->getForm()->getData();
+        if ($data instanceof Collection) {
+            return $data;
+        } elseif (is_array($data)) {
+            return new ArrayCollection($data);
+        }
+
+        return new ArrayCollection();
     }
 }

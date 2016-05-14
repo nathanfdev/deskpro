@@ -9,7 +9,8 @@ export class OnlineAgentsPopup extends React.Component {
     textColor:       PropTypes.string,
     onlineAgents:    PropTypes.object,
     onClick:         PropTypes.func,
-    onClose:         PropTypes.func
+    onClose:         PropTypes.func,
+    liveDemo:        PropTypes.bool
   };
 
   onClick = event => {

@@ -8,25 +8,26 @@ import { Agents } from './TabPanes/Agents';
 export class Nav extends Component {
 
   static propTypes = {
-    isLoaded:      PropTypes.bool.isRequired,
-    users:         PropTypes.object.isRequired,
-    organizations: PropTypes.object.isRequired,
-    agents:        PropTypes.object.isRequired,
-    labels:        PropTypes.object.isRequired
+    isLoaded:           PropTypes.bool.isRequired,
+    users:              PropTypes.object.isRequired,
+    organizations:      PropTypes.object.isRequired,
+    agents:             PropTypes.object.isRequired,
+    organizationLabels: PropTypes.object.isRequired,
+    personLabels:       PropTypes.object.isRequired
   };
 
   render() {
-    const { labels, users, organizations, agents, isLoaded } = this.props;
+    const { organizationLabels, personLabels, users, organizations, agents, isLoaded } = this.props;
 
     return (
       <NavFrame>
         <NavFrameHeaderContainer icon="icon-dp-streamline-connection-2">CRM</NavFrameHeaderContainer>
         <NavFrameBody isLoaded={isLoaded}>
           <SectionHeader>People</SectionHeader>
-          <People users={users} labels={labels} />
+          <People users={users} labels={personLabels} />
 
           <SectionHeader>Organizations</SectionHeader>
-          <Organizations organizations={organizations} labels={labels} />
+          <Organizations organizations={organizations} labels={organizationLabels} />
 
           <SectionHeader>Agents</SectionHeader>
           <Agents agents={agents} />

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -242,7 +242,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
             } catch (\Exception $e) {
                 $this->sync_manager->getSyncHelper()->log(Logger::ERR, 'SYNC ERROR, marking sync as error ('.get_class($e).' '.$e->getMessage().')');
                 // log the errors but continue on to the next usersource
-                SystemErrorHandler::handleException($e, false);
+                SystemErrorHandler::logException($e, false);
                 $log->markErrorStatus();
             }
 
@@ -320,7 +320,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
                     $this->sync_manager->getSyncHelper()->log(Logger::ERR, 'an exception was thrown when refresh "'.$identity.'" from remote usersource, usersource='.$usersource->getId());
                         // log the error, but continue processing
                         ++$this_usersource_errors;
-                    SystemErrorHandler::handleException($e, false);
+                    SystemErrorHandler::logException($e, false);
                     if ($this_usersource_errors > 10) {
                         $log->markErrorStatus();
                         $this->sync_manager->saveLog($log);

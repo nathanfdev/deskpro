@@ -2,10 +2,10 @@
 	<div class="col-lg-4">
 		<h3>API Token</h3>
 	</div>
-	<div class="col-lg-8">
+	<div class="col-lg-8" ng-class="{'has-error': errors.api_token}">
 		<input type="text" class="form-control" ng-model="setting_values.api_token" />
 		<span class="help-block">
-			This is the API token for HipChat account. This can be created at https://www.hipchat.com/admin/api
+			This is the API token for HipChat account. This can be created at <a href="https://www.hipchat.com/admin/api" target="_blank">https://www.hipchat.com/admin/api</a>
 		</span>
 	</div>
 </div>

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,7 +31,6 @@
  *
  * @category Apps
  */
-
 namespace deskpro_us_saml;
 
 use Application\DeskPRO\App\Native\InstallerHandler\AbstractUsersourceInstallerHandler;
@@ -65,6 +64,7 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
             'slo_url'                     => $app->getSetting('slo_url'),
             'issuer_id'                   => $app->getSetting('issuer_id'),
             'cert_fingerprint'            => $app->getSetting('cert_fingerprint'),
+            'name_id_format'              => $app->getSetting('name_id_format'),
             'cert'                        => $app->getSetting('cert'),
             'login_custom_text'           => $app->getSetting('login_custom_text'),
             'raw_info_filter'             => $app->getSetting('raw_info_filter') ?: null,

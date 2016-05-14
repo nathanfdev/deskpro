@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,6 +34,7 @@ namespace Application\DeskPRO\WorkerProcess\Job;
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\ChatMessage;
 use Orb\Log\Logger;
 
 class ChatTranscripts extends AbstractJob
@@ -42,13 +43,17 @@ class ChatTranscripts extends AbstractJob
 
     public function run()
     {
-        $chat_ids = App::getDb()->fetchAllCol("
+        $chatIds = App::getDb()->fetchAllCol("
             SELECT id
             FROM chat_conversations
-            WHERE should_send_transcript = 1 AND status = 'ended' AND ended_by != 'timeout' AND date_ended < ? AND date_ended > ?
-        ", array(date('Y-m-d H:i:s', time() - 300), date('Y-m-d H:i:s', time() - 18000)));
+            WHERE should_send_transcript = 1
+              AND status = 'ended'
+              AND ended_by != 'timeout'
+              AND date_ended < ?
+              AND date_ended > ?
+        ", [date('Y-m-d H:i:s', time() - 300), date('Y-m-d H:i:s', time() - 18000)]);
 
-        if (!$chat_ids) {
+        if (!$chatIds) {
             return;
         }
 
@@ -56,18 +61,18 @@ class ChatTranscripts extends AbstractJob
             UPDATE chat_conversations
             SET should_send_transcript = 0, date_transcript_sent = ?
             WHERE id IN (?)
-        ', array(date('Y-m-d H:i:s'), $chat_ids), array(\PDO::PARAM_STR, Connection::PARAM_INT_ARRAY));
+        ', [date('Y-m-d H:i:s'), $chatIds], [\PDO::PARAM_STR, Connection::PARAM_INT_ARRAY]);
 
-        foreach ($chat_ids as $chat_id) {
+        foreach ($chatIds as $chatId) {
             /** @var ChatConversation $chat */
-            $chat = App::getOrm()->find('DeskPRO:ChatConversation', $chat_id);
+            $chat = App::getOrm()->find('DeskPRO:ChatConversation', $chatId);
 
             $email = '';
             $name  = '';
-            if ($person = $chat->person) {
+            if ($person = $chat->getPerson()) {
                 $email = $person->getPrimaryEmailAddress();
                 $name  = $person->name;
-                App::getTranslator()->setPersonContext($chat->person);
+                App::getTranslator()->setPersonContext($chat->getPerson());
             }
             if (!$email && $chat->person_email) {
                 $email = $chat->person_email;
@@ -77,33 +82,45 @@ class ChatTranscripts extends AbstractJob
             }
 
             if ($email) {
-                $convo_messages = App::getOrm()->createQuery('
+                $convoMessages = App::getOrm()->createQuery('
                     SELECT m
                     FROM DeskPRO:ChatMessage m
                     WHERE m.conversation = ?1 AND m.is_user_hidden = false
                     ORDER BY m.id DESC
                 ')->setParameter(1, $chat)->execute();
 
-                $vars = array(
-                    'convo'          => $chat,
-                    'convo_messages' => $convo_messages,
-                );
+                $onlySys = true;
 
-                $message = App::getMailer()->createMessage();
-                $message->setTo($email, $name);
-                $message->setTemplate('DeskPRO:emails_user:chat-transcript.html.twig', $vars);
-                $message->setSuppressAutoreplies(true);
-                App::getMailer()->send($message);
+                /** @var ChatMessage $message */
+                foreach ($convoMessages as $message) {
+                    if (!$message->getIsSys()) {
+                        $onlySys = false;
+                        break;
+                    }
+                }
 
-                // Add a chat log line for it
-                App::getDb()->insert('chat_messages', array(
-                    'conversation_id' => $chat->getId(),
-                    'is_sys'          => 1,
-                    'is_user_hidden'  => 0,
-                    'is_html'         => 0,
-                    'metadata'        => serialize(array('phrase_id' => 'transcript_sent', 'email' => $email)),
-                    'date_created'    => date('Y-m-d H:i:s'),
-                ));
+                if (!$onlySys) {
+                    $vars = [
+                        'convo'          => $chat,
+                        'convo_messages' => $convoMessages,
+                    ];
+
+                    $message = App::getMailer()->createMessage();
+                    $message->setTo($email, $name);
+                    $message->setTemplate('DeskPRO:emails_user:chat-transcript.html.twig', $vars);
+                    $message->setSuppressAutoreplies(true);
+                    App::getMailer()->send($message);
+
+                    // Add a chat log line for it
+                    App::getDb()->insert('chat_messages', [
+                        'conversation_id' => $chat->getId(),
+                        'is_sys'          => 1,
+                        'is_user_hidden'  => 0,
+                        'is_html'         => 0,
+                        'metadata'        => serialize(['phrase_id' => 'transcript_sent', 'email' => $email]),
+                        'date_created'    => date('Y-m-d H:i:s'),
+                    ]);
+                }
             }
 
             App::getOrm()->detach($chat);
@@ -111,6 +128,6 @@ class ChatTranscripts extends AbstractJob
             App::getTranslator()->setPersonContext();
         }
 
-        $this->logger->log('Sent '.count($chat_ids).' chat transcripts', Logger::INFO);
+        $this->logger->log('Sent '.count($chatIds).' chat transcripts', Logger::INFO);
     }
 }

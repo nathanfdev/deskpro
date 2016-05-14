@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { pureRender } from 'Ampliflux';
 import * as actions from '../../Actions/chatNavActions';
@@ -7,8 +7,8 @@ import { Nav } from './Nav';
 
 @connect(state => ({
   isLoaded: isLoadedSelector(state),
-  my: myChatsSelector(state),
-  all: allChatsSelector(state)
+  my:       myChatsSelector(state),
+  all:      allChatsSelector(state)
 }))
 @pureRender
 export class NavContainer extends Component {
@@ -25,32 +25,31 @@ export class NavContainer extends Component {
     this.props.dispatch(actions.unmount());
   }
 
-  toggleGroupingVisibility(listName) {
-    return (e) => {
-      e.preventDefault();
-      this.props.dispatch(actions.toggleListGroupingVisibility(listName));
-    };
-  }
+  toggleGroupingVisibility = listName => e => {
+    e.preventDefault();
+    console.log('toggleGroupingVisibility');
+    this.props.dispatch(actions.toggleListGroupingVisibility(listName));
+  };
 
-  changeGrouping(listName) {
-    return (e) => {
-      const options = e.target.options;
-      for (let i = 0; i < options.length; i++) {
-        if (options[i].selected) {
-          this.props.dispatch(actions.changeListGrouping(listName, options[i].value));
-        }
+  changeGrouping = listName => e => {
+    console.log('changeGrouping');
+    const options = e.target.options;
+    for (let i = 0; i < options.length; i++) {
+      if (options[i].selected) {
+        this.props.dispatch(actions.changeListGrouping(listName, options[i].value));
       }
-    };
-  }
+    }
+  };
 
   render() {
-    const changeGrouping = (listName) => this.changeGrouping(listName).bind(this);
-    const toggleGroupingVisibility = (listName) => this.toggleGroupingVisibility(listName).bind(this);
+    const changeGrouping           = (listName) => this.changeGrouping(listName);
+    const toggleGroupingVisibility = (listName) => this.toggleGroupingVisibility(listName);
 
     return (
       <Nav {...this.props}
-           changeGrouping={changeGrouping}
-           toggleGroupingVisibility={toggleGroupingVisibility}/>
+        changeGrouping={changeGrouping}
+        toggleGroupingVisibility={toggleGroupingVisibility}
+      />
     );
   }
 }

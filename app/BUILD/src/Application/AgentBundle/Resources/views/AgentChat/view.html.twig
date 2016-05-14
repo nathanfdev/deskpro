@@ -44,8 +44,8 @@ pageMeta.conversation_id = {{convo.id}};
 						{% else %}
 							<div class="avatar"><span class="tipped" title="{{ message.author.display_name }}" style="background-image: url({{ message.author.getPictureUrl(25) }})"></span></div>
 							<div class="message-content">
-								<div class="chatRecieve">
-									<div class="chatMsgRecieve">
+								<div class="chatReceive">
+									<div class="chatMsgReceive">
 										{{message.content_html|raw}}
 										<span class="bubbleRight"></span>
 									</div>
@@ -58,8 +58,8 @@ pageMeta.conversation_id = {{convo.id}};
 				{% endfor %}
 				<div class="row user-typing" style="display: none" id="{{baseId}}_user_typing">
 					<div class="message-content">
-						<div class="chatRecieve">
-							<div class="chatMsgRecieve">
+						<div class="chatReceive">
+							<div class="chatMsgReceive">
 								<label>{{ phrase('agent.chat.user_typing') }}: </label>
 								<div class="prop-msg"></div>
 								<span class="bubbleRight"></span>

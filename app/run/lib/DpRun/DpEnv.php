@@ -298,13 +298,17 @@ class DpEnv
         # Current build
         #------------------------------
 
-        $build_finder = new \DpRun\BuildFinder(
-            $this->config_reader,
-            $baseapp_dir
-        );
-        $this->active_build = $build_finder->getActiveBuildDir(
-            $this->user_cache_dir.'/active_build.txt'
-        );
+        if ($buildId = $this->config_reader->getConfig('paths.active_build_dir_name')) {
+            $this->active_build = $buildId;
+        } else {
+            $build_finder = new \DpRun\BuildFinder(
+                $this->config_reader,
+                $baseapp_dir
+            );
+            $this->active_build = $build_finder->getActiveBuildDir(
+                $this->user_cache_dir . '/active_build.txt'
+            );
+        }
 
         $this->env_id = $this->config_reader->getConfig('env.environment', 'prod') ?: 'prod';
 

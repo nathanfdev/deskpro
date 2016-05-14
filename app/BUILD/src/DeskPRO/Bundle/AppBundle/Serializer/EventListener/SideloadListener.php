@@ -91,15 +91,17 @@ class SideloadListener implements EventSubscriberInterface
 
         /** @var GenericSerializationVisitor $visitor */
         $visitor = $event->getVisitor();
+        $context = $event->getContext();
+        if (!$context instanceof SideloadSerializationContext) {
+            return;
+        }
 
-        /** @var SideloadSerializationContext $context */
-        $context   = $event->getContext();
         $sideloads = $context->getSideloadStore();
         $includes  = $context->getIncludes();
 
         $sideloads->setInterests($includes);
-
         $context->setExclusionEnabled(false);
+
         while ($includes && $sideloads->hasSideloads()) {
             foreach ($includes as $include) {
                 $fqcn = $sideloads->getFqcn($include);

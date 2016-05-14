@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 /**
@@ -174,6 +173,8 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
      * Set the value or input (use the individual methods if you don't want auto detection).
      *
      * @param mixed $data
+     *
+     * @return $this
      */
     public function setData($data)
     {
@@ -182,6 +183,8 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
         } else {
             $this->setModelField('input', (string) $data);
         }
+
+        return $this;
     }
 
     /**
@@ -223,4 +226,9 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
             $this->getData()
         );
     }
+
+    /**
+     * @return mixed
+     */
+    abstract public function getOwner();
 }

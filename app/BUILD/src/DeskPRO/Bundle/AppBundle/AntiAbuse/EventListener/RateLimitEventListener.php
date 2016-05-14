@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -137,6 +137,10 @@ class RateLimitEventListener implements EventSubscriberInterface
             throw new \Exception('Invalid rate limit action');
         }
 
+        if (empty($params['enabled'])) {
+            return false;
+        }
+
         /** @var RateLimitLog $rep */
         $rep = $this->em->getRepository('DeskPRO:RateLimitLog');
         $res = $rep->count($action, $params['time'], $person, $ip);
@@ -159,7 +163,7 @@ class RateLimitEventListener implements EventSubscriberInterface
     protected function getParams($action, Person $person, $ip = null)
     {
         $params = [];
-        foreach (['limit', 'time', 'response'] as $key) {
+        foreach (['limit', 'time', 'response', 'enabled'] as $key) {
             // try guest first
             if ($person instanceof PersonGuest) {
                 if (null !== $value = $this->getSetting(RateLimit::KEY.'.'.$action.'.guest.'.$key)) {

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Feedback;
@@ -198,9 +197,7 @@ class FeedbackController extends AbstractController
         // SUBSCRIPTION
         //
         $isSubscribed = false;
-        if (
-        $this->getBrandSetting('user.feedback_subscriptions', false) && $this->getUser()
-        ) {
+        if ($this->getUser() && $this->getBrandSetting('user.feedback_subscriptions', false)) {
             // waiting info regarding article category subscriptions
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('feedback', $this->getUser());
         }
@@ -344,9 +341,7 @@ class FeedbackController extends AbstractController
         // SUBSCRIPTION
         //
         $isSubscribed = false;
-        if (
-        $this->getBrandSetting('user.feedback_subscriptions', false)
-        ) {
+        if ($this->getUser() && $this->getBrandSetting('user.feedback_subscriptions', false)) {
             // waiting info regarding article category subscriptions
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('feedback', $this->getUser());
         }

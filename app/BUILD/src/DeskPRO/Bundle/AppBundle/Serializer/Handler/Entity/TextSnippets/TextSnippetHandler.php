@@ -102,7 +102,7 @@ class TextSnippetHandler extends AbstractEntityHandler
      * @param TextSnippetEntity            $entity
      * @param SideloadSerializationContext $context
      *
-     * @return array
+     * @return array|null
      */
     public function getSnippetContent(TextSnippetEntity $entity, SideloadSerializationContext $context)
     {
@@ -130,6 +130,6 @@ class TextSnippetHandler extends AbstractEntityHandler
             }
         }
 
-        return $context->accept($contents);
+        return $context->accept($contents ?: null);
     }
 }

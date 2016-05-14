@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -421,6 +421,7 @@ return array(
     'agent.tickets.your_tickets'                        => 'Your tickets',
     'agent.tickets.create_linked_ticket'                => 'Create Linked Ticket',
     'agent.tickets.link_existing_ticket'                => 'Link Existing Ticket',
+    'agent.tickets.link_existing_ticket_make_below'     => 'Make the ticket selected below the parent ticket',
     'agent.tickets.linked_tickets'                      => 'Linked Tickets',
     'agent.tickets.linking_with_ticket'                 => 'Linking with ticket:',
 );

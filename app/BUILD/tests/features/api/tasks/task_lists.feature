@@ -54,8 +54,8 @@ Feature: /task_lists endpoint
   "project": 2
 }
     """
-    Then the response should be in JSON
-    And the response status code should be 204
+    Then the response status code should be 204
+    And the response should be empty
 
     When I send a GET request to "/api/v2/task_lists/1"
     Then the response should be in JSON

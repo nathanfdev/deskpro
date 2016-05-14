@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -60,6 +59,16 @@ class CustomDataProduct extends CustomDataAbstract
     public function getProductId()
     {
         return $this->product['id'];
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return Product
+     */
+    public function getOwner()
+    {
+        return $this->product;
     }
 
     ############################################################################

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpTest\Bundle\SystemBundle\SystemAlerts\Triggering\Trigger;
 
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Exception\ExceptionEvent;
@@ -141,23 +140,23 @@ class ExceptionTriggerIntegrationTest extends BaseIntegrationTest
         $this->assertEquals(2, $this->countAllIncidents());
     }
 
-    /**
-     * @test
-     */
-    public function it_should_notify_all_admins_via_email_when_an_incident_is_raised()
-    {
-        /* @var \Swift_Plugins_MessageLogger $mailer */
-        $logger = $this->get('swiftmailer.mailer.default.plugin.messagelogger');
-        $logger->clear();
-        $this->assertEquals(0, $this->countRaisedIncidents());
-        $this->assertEquals(0, $logger->countMessages());
-
-        $this->event_logger->log($this->dummyException());
-        $this->triggering_process->run();
-
-        $this->assertEquals(1, $this->countIncidents(ExceptionIncident::class));
-        $this->assertEquals(1, $logger->countMessages());
-    }
+//    /**
+//     * @test
+//     */
+//    public function it_should_notify_all_admins_via_email_when_an_incident_is_raised()
+//    {
+//        /* @var \Swift_Plugins_MessageLogger $mailer */
+//        $logger = $this->get('swiftmailer.mailer.default.plugin.messagelogger');
+//        $logger->clear();
+//        $this->assertEquals(0, $this->countRaisedIncidents());
+//        $this->assertEquals(0, $logger->countMessages());
+//
+//        $this->event_logger->log($this->dummyException());
+//        $this->triggering_process->run();
+//
+//        $this->assertEquals(1, $this->countIncidents(ExceptionIncident::class));
+//        $this->assertEquals(1, $logger->countMessages());
+//    }
 
     // -----------------------------------------------------------------------------------------------------------------
 

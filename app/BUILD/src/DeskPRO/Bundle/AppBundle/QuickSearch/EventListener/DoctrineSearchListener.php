@@ -29,9 +29,9 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchContext;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvent;
@@ -178,7 +178,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
         $qb = $this->em->createQueryBuilder();
         $qb
             ->select('p')
-            ->from('DeskPRO:Person', 'p')
+            ->from(Person::class, 'p')
             ->join('p.emails', 'pe')
             ->setMaxResults(15)
             ->orderBy('p.id', 'desc')

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\QuickSearch;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -69,6 +68,11 @@ class QuickSearchContext
     private $entities;
 
     /**
+     * @var ArrayCollection
+     */
+    private $related;
+
+    /**
      * Constructor.
      *
      * @param string              $type
@@ -79,6 +83,7 @@ class QuickSearchContext
         $this->type     = $type;
         $this->ids      = new ArrayCollection();
         $this->entities = new ArrayCollection();
+        $this->related  = new ArrayCollection();
         $this->response = $response;
     }
 
@@ -181,6 +186,31 @@ class QuickSearchContext
      *
      * @return $this
      */
+    public function addRelatedEntity($entity)
+    {
+        if (!$this->entities->contains($entity)) {
+            $this->related->add($entity);
+            $this->addEntity($entity);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param mixed $entity
+     *
+     * @return bool
+     */
+    public function isRelatedEntity($entity)
+    {
+        return $this->related->contains($entity);
+    }
+
+    /**
+     * @param mixed $entity
+     *
+     * @return $this
+     */
     public function addEntity($entity)
     {
         if (!$this->entities->contains($entity)) {
@@ -200,7 +230,7 @@ class QuickSearchContext
     {
         if ($this->entities->contains($entity)) {
             $this->entities->removeElement($entity);
-            $this->entities = new ArrayCollection($this->entities->getValues());
+            $this->related->removeElement($entity);
         }
 
         return $this;

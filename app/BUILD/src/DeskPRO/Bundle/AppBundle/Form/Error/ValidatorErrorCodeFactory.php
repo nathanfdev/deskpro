@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Error;
 
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -46,11 +45,26 @@ class ValidatorErrorCodeFactory
     /**
      * @var array
      */
-    public static $staticReplacements = [
+    private static $staticReplacements = [
         'This form should not contain extra fields.' => ErrorsCodes::EXTRA_FIELDS,
     ];
 
     /**
+     * Mapping of TransformationFailedException messages to own error codes.
+     *
+     * @var array
+     */
+    private static $transformationFailedMapping = [
+        '/Number parsing failed/'                           => ErrorsCodes::NUMERIC,
+        '/The choice ".*" does not exist or is not unique/' => ErrorsCodes::BAD_CHOICE,
+    ];
+
+    /**
+     * Mapping of build-in validators to own error codes.
+     *
+     * Sf validator error codes are hashes like '60d2f30b-8cfa-4372-b155-9656634de120'
+     * so we map them to human readable values.
+     *
      * @var array
      */
     private static $errorCodeMapping = [
@@ -77,14 +91,19 @@ class ValidatorErrorCodeFactory
         if ($violation->getMessage() === 'This form should not contain extra fields.') {
             return ErrorsCodes::EXTRA_FIELDS;
         }
+
+        // handle TransformationFailedExceptions
         if ($violation->getCause() instanceof TransformationFailedException) {
-            if (preg_match('/The choice ".*" does not exist or is not unique/', $violation->getCause()->getMessage())) {
-                return ErrorsCodes::BAD_CHOICE;
+            foreach (self::$transformationFailedMapping as $pattern => $errorCode) {
+                if (preg_match($pattern, $violation->getCause()->getMessage())) {
+                    return $errorCode;
+                }
             }
 
             return ErrorsCodes::INVALID_DATA_TYPE;
         }
 
+        // handle constraints
         $constraint = $violation->getConstraint();
         if ($constraint) {
             switch (get_class($constraint)) {
@@ -97,6 +116,7 @@ class ValidatorErrorCodeFactory
             }
         }
 
+        // use violation message as fallback
         $code = $violation->getCode() ?: $violation->getMessage();
         if ($code) {
             return $this->filterCode($code);

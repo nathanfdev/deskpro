@@ -33,7 +33,9 @@
                                 {{ phrase('portal.tickets.view_you_created', { ago: date_ago(ticket.date_created, null, false) }) }}
                             </span>
                         {% endif %}
-                        {{ phrase('portal.tickets.view_will_notify_you') }}
+                        {% if not ticket.date_last_agent_reply %}
+                            {{ phrase('portal.tickets.view_will_notify_you') }}
+                        {% endif %}
                     </div>
                 {% endif %}
 
@@ -161,7 +163,7 @@
                                 {% endif %}
                                 <h1>{{ phrase('portal.tickets.view_more_info') }}</h1>
                                 <ul>
-                                    {# see the TicketViewService in AppBundle's data services #}
+                                    {# see the TicketViewDataService in AppBundle's data services #}
                                     {% for property in ticket_view.properties %}
                                         {% if property.isVisible %}
                                             <li>

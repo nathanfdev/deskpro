@@ -26,15 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketParticipant;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDisableAutoProcessListener;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -58,7 +55,8 @@ class TicketParticipantType extends AbstractType
             ],
         ]);
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetTicket']);
+        $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations']);
     }
 
     /**
@@ -84,13 +82,13 @@ class TicketParticipantType extends AbstractType
     /**
      * @param FormEvent $event
      */
-    public function onSetTicket(FormEvent $event)
+    public function onSetRelations(FormEvent $event)
     {
         $form = $event->getForm();
         $data = $event->getData();
 
-        /** @var Ticket $owner */
-        $owner = $form->getConfig()->getOption('owner');
-        $owner->addParticipant($data);
+        if (!$data->getId() && $data instanceof TicketParticipant) {
+            $form->getConfig()->getOption('owner')->addParticipant($data);
+        }
     }
 }

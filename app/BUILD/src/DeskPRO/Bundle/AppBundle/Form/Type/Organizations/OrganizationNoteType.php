@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,15 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Organizations;
 
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\OrganizationNote;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -50,8 +48,8 @@ class OrganizationNoteType extends ApiType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('note', 'text');
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetRelations']);
+        $builder->add('note', TextType::class);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations'], 100);
     }
 
     /**
@@ -60,34 +58,30 @@ class OrganizationNoteType extends ApiType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver
-            ->setRequired(['person', 'organization'])
             ->setDefaults([
                 'data_class' => OrganizationNote::class,
             ])
+            ->setRequired(['agent', 'organization'])
             ->setAllowedTypes([
-                'person'       => Person::class,
+                'agent'        => Person::class,
                 'organization' => Organization::class,
             ])
         ;
     }
 
     /**
+     * @internal
+     *
      * @param FormEvent $event
      */
     public function onSetRelations(FormEvent $event)
     {
-        $form   = $event->getForm();
-        $config = $form->getConfig();
+        $data   = $event->getData();
+        $config = $event->getForm()->getConfig();
 
-        /** @var OrganizationNote $data */
-        $data = $form->getData();
-
-        $person       = $config->getOption('person');
-        $organization = $config->getOption('organization');
-
-        $data
-            ->setOrganization($organization)
-            ->setAgent($person)
-        ;
+        if ($data instanceof OrganizationNote && !$data->getId()) {
+            $data->setOrganization($config->getOption('organization'));
+            $data->setAgent($config->getOption('agent'));
+        }
     }
 }

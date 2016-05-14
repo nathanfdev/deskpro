@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -168,7 +167,7 @@ class KbSubscriptions extends AbstractJob
 
         foreach ($catSubs as $personId => $cids) {
             foreach ($published as $article) {
-                foreach ($article->categories as $cat) {
+                foreach ($article->getCategories() as $cat) {
                     $path   = $helper->getPathIds($cat);
                     $path[] = $cat->getId();
 

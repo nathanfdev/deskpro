@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -86,7 +86,7 @@ class TicketManager
     /**
      * @var array
      */
-    private $auto_vars = array();
+    private $auto_vars = [];
 
     /**
      * @param DeskproContainer $container
@@ -98,8 +98,8 @@ class TicketManager
         $this->db           = $container->getDb();
         $this->blob_storage = $container->getBlobStorage();
 
-        $this->save_actions      = array();
-        $this->post_save_actions = array();
+        $this->save_actions      = [];
+        $this->post_save_actions = [];
 
         $this->save_actions[] = new TicketSaveActions\VerifyCreationSystem();
         $this->save_actions[] = new TicketSaveActions\VerifyRef($container->getRefGenerator());
@@ -131,7 +131,7 @@ class TicketManager
      */
     public function clearAutoContextVars()
     {
-        $this->auto_vars = array();
+        $this->auto_vars = [];
     }
 
     /**
@@ -354,12 +354,12 @@ class TicketManager
         }
 
         if (!$is_noop) {
-            $logs = $context->getVars()->get('ticket_logs', array());
+            $logs = $context->getVars()->get('ticket_logs', []);
 
-            $agent_alert_action = new SendAgentAlert(array(
-                'agent_ids'   => array('notify_list'),
+            $agent_alert_action = new SendAgentAlert([
+                'agent_ids'   => ['notify_list'],
                 'ticket_logs' => $logs,
-            ));
+            ]);
             $agent_alert_action->setContainer($this->container);
             $agent_alert_action->applyAction($ticket, $context);
         }
@@ -376,27 +376,27 @@ class TicketManager
                 new TicketUpdatedEvent($ticket->getId(), $data)
             );
 
-            $this->db->insert('client_messages', array(
+            $this->db->insert('client_messages', [
                 'channel'      => 'agent.ticket-updated',
                 'auth'         => DpStrings::random(15, Strings::CHARS_KEY),
                 'date_created' => date('Y-m-d H:i:s'),
                 'data'         => serialize($data),
-            ));
+            ]);
         }
 
         if ($ticket->getStateChangeRecorder()->hasChangedField('locked_by_agent')) {
-            $this->db->insert('client_messages', array(
+            $this->db->insert('client_messages', [
                 'channel'      => 'agent-notification.tickets.locked-status',
                 'auth'         => DpStrings::random(15, Strings::CHARS_KEY),
                 'date_created' => date('Y-m-d H:i:s'),
-                'data'         => serialize(array(
+                'data'         => serialize([
                     'ticket_id'      => $ticket->getId(),
                     'is_locked'      => (bool) $ticket->locked_by_agent,
                     'locked_by'      => $ticket->locked_by_agent ? $ticket->locked_by_agent->id : null,
                     'locked_by_name' => $ticket->locked_by_agent ? $ticket->locked_by_agent->getDisplayName() : null,
                     'via_person'     => $context->getPersonContext() ? $context->getPersonContext()->getId() : null,
-                )),
-            ));
+                ]),
+            ]);
         }
 
         if (!$is_noop) {
@@ -428,7 +428,7 @@ class TicketManager
                         $log_text,
                         'ticket-manager.'.date('Y-m-d.H-i-s').'.'.Strings::random(4, Strings::CHARS_ALPHA_IU).'.log',
                         'plain/text',
-                        array('tag' => 'logs.ticket_proc_log')
+                        ['tag' => 'logs.ticket_proc_log']
                     );
                 } catch (\Exception $e) {
                     $blob = null;
@@ -437,11 +437,11 @@ class TicketManager
 
                 if ($blob) {
                     try {
-                        $this->db->insert('ticket_proc_log', array(
+                        $this->db->insert('ticket_proc_log', [
                             'ticket_id'    => $ticket->id,
                             'blob_id'      => $blob->id,
                             'date_created' => date('Y-m-d H:i:s'),
-                        ));
+                        ]);
                     } catch (\Exception $e) {
                         SystemErrorHandler::logException($e);
                     }
@@ -455,13 +455,13 @@ class TicketManager
 
     /**
      * @param Person $agent
-     * @param $event_type
-     * @param $event_method
-     * @param array $event_method_options
+     * @param        $event_type
+     * @param        $event_method
+     * @param array  $event_method_options
      *
      * @return ExecutorContextInterface
      */
-    public function createAgentExecutorContext(Person $agent = null, $event_type, $event_method, array $event_method_options = array())
+    public function createAgentExecutorContext(Person $agent = null, $event_type, $event_method, array $event_method_options = [])
     {
         $context = new ExecutorContext($this->createNewLogger());
         $context->getVars()->setArray($this->auto_vars);
@@ -496,13 +496,13 @@ class TicketManager
 
     /**
      * @param Person $user
-     * @param $event_type
-     * @param $event_method
-     * @param array $event_method_options
+     * @param        $event_type
+     * @param        $event_method
+     * @param array  $event_method_options
      *
      * @return ExecutorContextInterface
      */
-    public function createUserExecutorContext(Person $user = null, $event_type, $event_method, array $event_method_options = array())
+    public function createUserExecutorContext(Person $user = null, $event_type, $event_method, array $event_method_options = [])
     {
         $context = new ExecutorContext($this->createNewLogger());
         $context->getVars()->setArray($this->auto_vars);
@@ -535,7 +535,7 @@ class TicketManager
      *
      * @return ExecutorContextInterface
      */
-    public function createSystemExecutorContext($event_type = 'system', $event_method = 'system', array $event_method_options = array())
+    public function createSystemExecutorContext($event_type = 'system', $event_method = 'system', array $event_method_options = [])
     {
         $context = new ExecutorContext($this->createNewLogger());
         $context->getVars()->setArray($this->auto_vars);
@@ -552,7 +552,7 @@ class TicketManager
      *
      * @return ExecutorContext
      */
-    public function createAppExecutorContext(AppInstance $app, $event_method = 'general', array $event_method_options = array())
+    public function createAppExecutorContext(AppInstance $app, $event_method = 'general', array $event_method_options = [])
     {
         $context = new ExecutorContext($this->createNewLogger());
         $context->getVars()->setArray($this->auto_vars);

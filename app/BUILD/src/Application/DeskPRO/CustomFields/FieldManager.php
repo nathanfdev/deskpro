@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\CustomFields\Handler\Choice;
@@ -86,7 +85,7 @@ class FieldManager
     /**
      * @var array
      */
-    protected $field_to_children = array();
+    protected $field_to_children = [];
 
     /**
      * Array of all fields for the current interface.
@@ -119,16 +118,16 @@ class FieldManager
         $this->db = $em->getConnection();
 
         $this->options = new \Orb\Util\CheckedOptionsArray($options);
-        $this->options->ensureRequired(array(
+        $this->options->ensureRequired([
             'entity_class',
             'entity_name',
             'data_entity_name',
             'data_entity_class',
-        ));
+        ]);
 
-        $this->options->setArrayDefault(array(
+        $this->options->setArrayDefault([
             'custom_data_property' => 'custom_data',
-        ));
+        ]);
 
         $this->init();
     }
@@ -189,10 +188,10 @@ class FieldManager
     public function getFields()
     {
         if ($this->fields === null) {
-            $this->fields          = array();
-            $this->all_fields      = array();
-            $this->real_fields     = array();
-            $this->real_all_fields = array();
+            $this->fields          = [];
+            $this->all_fields      = [];
+            $this->real_fields     = [];
+            $this->real_all_fields = [];
 
             if ($this->options->get('disabled')) {
                 return $this->fields;
@@ -223,7 +222,7 @@ class FieldManager
 
                 if ($p = $f->getParentId()) {
                     if (!isset($this->field_to_children[$p])) {
-                        $this->field_to_children[$p] = array();
+                        $this->field_to_children[$p] = [];
                     }
                     $this->field_to_children[$p][$f->getId()] = $f;
                 }
@@ -272,7 +271,7 @@ class FieldManager
     {
         $this->getFields();
         if (!isset($this->field_to_children[$field_def->getId()])) {
-            return array();
+            return [];
         }
 
         return $this->field_to_children[$field_def->getId()];
@@ -300,9 +299,9 @@ class FieldManager
      *
      * @return array
      */
-    public function getDisplayArray($field_data = array(), $field_group = null, $use_default = false)
+    public function getDisplayArray($field_data = [], $field_group = null, $use_default = false)
     {
-        $custom_fields = array();
+        $custom_fields = [];
         foreach ($this->getFields() as $f_def) {
             $display                     = new FieldDisplayArray($this, $f_def, $field_data, $field_group, $use_default);
             $custom_fields[$f_def['id']] = $display;
@@ -323,7 +322,7 @@ class FieldManager
     {
         $field_data = $this->getFieldDataForObject($object);
 
-        $form_data = array();
+        $form_data = [];
 
         foreach ($field_data as $field_id => $data) {
             $f = $this->getFieldFromId($field_id);
@@ -331,7 +330,7 @@ class FieldManager
             switch ($f->getTypeName()) {
                 case 'choice':
                     if (!empty($data['children'])) {
-                        $form_data['field_'.$field_id] = array();
+                        $form_data['field_'.$field_id] = [];
                         foreach ($data['children'] as $k => $child) {
                             $form_data['field_'.$field_id][] = $k;
                         }
@@ -356,15 +355,15 @@ class FieldManager
      *
      * @return array
      */
-    public function getRenderedToText($field_data = array())
+    public function getRenderedToText($field_data = [])
     {
-        $custom_fields = array();
+        $custom_fields = [];
         foreach ($this->getFields() as $f_def) {
             $value = !empty($field_data[$f_def['id']]) && $field_data[$f_def['id']] !== 0 && $field_data[$f_def['id']] !== '0' ? $field_data[$f_def['id']] : null;
 
             $rendered = $value !== null ? $f_def->getHandler()->renderText($value) : null;
 
-            $custom_fields[$f_def['id']] = array(
+            $custom_fields[$f_def['id']] = [
                 'rendered'      => trim($rendered),
                 'elId'          => \Orb\Util\Util::requestUniqueIdString(),
                 'hasValue'      => ($value !== null),
@@ -375,7 +374,7 @@ class FieldManager
                 'title'         => $f_def['title'],
                 'value'         => $value,
                 'field_handler' => strtolower(\Orb\Util\Util::getBaseClassname($f_def->getHandler())),
-            );
+            ];
         }
 
         return $custom_fields;
@@ -392,18 +391,18 @@ class FieldManager
     {
         $field = $data->root_field ?: $data->field;
         $value = !$data->root_field || $data->root_field === $data->field
-            ? array('value' => $data->getData())
-            : array('value' => null, 'children' => array(
-                $data->field['id'] => array('value' => $data->getData(), 'children' => null),
-            ));
+            ? ['value' => $data->getData()]
+            : ['value' => null, 'children' => [
+                $data->field['id'] => ['value' => $data->getData(), 'children' => null],
+            ]];
 
         $val = trim($field->getHandler()->renderText($value));
 
-        return array(
+        return [
             'id'    => $field['id'],
             'title' => $field['title'],
             'value' => $val,
-        );
+        ];
     }
 
     /**
@@ -423,7 +422,7 @@ class FieldManager
     /**
      * Create a field display array from an object.
      *
-     * @param $object
+     * @param      $object
      * @param null $field_group
      *
      * @return array
@@ -506,7 +505,7 @@ class FieldManager
     public function createFieldDataFromArray($field_datas)
     {
         // Create a map of keys
-        $data_keys = array();
+        $data_keys = [];
         foreach ($field_datas as $k => $v) {
             $data_keys[$v->field->getId()] = $k;
         }
@@ -518,10 +517,10 @@ class FieldManager
 
     protected function _createDataHierarchy($data_keys, $field_datas, $field_defs)
     {
-        $structure = array();
+        $structure = [];
 
         foreach ($field_defs as $def) {
-            $item = array('value' => null, 'children' => null);
+            $item = ['value' => null, 'children' => null];
 
             if (isset($data_keys[$def['id']])) {
                 $item['value'] = $field_datas[$data_keys[$def['id']]]->getData();
@@ -544,7 +543,7 @@ class FieldManager
      * Save a posted form of custom field data to an object.
      *
      * @param array $form_data
-     * @param $object
+     * @param       $object
      */
     public function saveFormToObject(array $form, $object, $only_set = false)
     {
@@ -554,7 +553,9 @@ class FieldManager
         // fields because we might be in user interface but specifically want to set some field in code
         if ($only_set) {
             $fields = $this->getDefinedFields();
-            $fields = array_filter($fields, function ($f) { return $f->is_enabled; });
+            $fields = array_filter($fields, function ($f) {
+                return $f->is_enabled;
+            });
         }
 
         $this->_orig_display = $this->getDisplayArrayForObject($object);
@@ -572,7 +573,9 @@ class FieldManager
             }
 
             // for multiple values only
-            $fieldsIds = array_flip(array_map(function ($a) {return $a[0];}, $data));
+            $fieldsIds = array_flip(array_map(function ($a) {
+                return $a[0];
+            }, $data));
             foreach ($field_def->children as $child) {
                 if (!$customDataForField = $object->getCustomDataForField($child)) {
                     continue;
@@ -601,7 +604,7 @@ class FieldManager
      */
     public function getStrucutredDataFromForm(array $form, $data_class)
     {
-        $structured_data = array();
+        $structured_data = [];
 
         foreach ($this->getFields() as $field_def) {
             foreach ($field_def->getHandler()->getDataFromForm($form) as $in_data) {
@@ -640,7 +643,7 @@ class FieldManager
     }
 
     /**
-     * @param $object
+     * @param                                               $object
      * @param \Application\DeskPRO\Entity\CustomDefAbstract $field_def
      * @param array                                         $in_data
      *
@@ -680,22 +683,20 @@ class FieldManager
 
         $old_custom_data = $object->getCustomDataForField($set_field);
 
-        $custom_data              = $this->createDataClass();
+        $custom_data              = $old_custom_data ?: $this->createDataClass();
         $custom_data->field       = $set_field;
         $custom_data->root_field  = $field_def;
         $custom_data[$value_type] = $value;
 
-        $object->addCustomData($custom_data);
-
-        if ($old_custom_data) {
-            $object->custom_data->removeElement($old_custom_data);
+        if (!$old_custom_data) {
+            $object->addCustomData($custom_data);
         }
 
         return $custom_data;
     }
 
     /**
-     * @param $object
+     * @param                                               $object
      * @param \Application\DeskPRO\Entity\CustomDefAbstract $field_def
      */
     public function removeCustomDataOnObject($object, CustomDefAbstract $field_def)
