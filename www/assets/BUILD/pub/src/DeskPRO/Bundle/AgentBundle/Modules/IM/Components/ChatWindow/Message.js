@@ -58,7 +58,7 @@ export class Message extends React.Component {
           {this.props.message.status > 1 && <i className="fa fa-check" />}
         </div>
         <span className="time">
-          <TimeAgo date={moment(this.props.message.date_created).unix()} />
+          <TimeAgo date={this.props.message.date_created} />
           <i className="fa fa-clock-o" />
         </span>
         <div className="message-content" dangerouslySetInnerHTML={this.getMessage()}></div>

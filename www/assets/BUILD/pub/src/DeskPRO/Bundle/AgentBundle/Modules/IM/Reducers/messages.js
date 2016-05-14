@@ -28,12 +28,18 @@ export default createReducer(initialState, {
 
         if (!chat || (payload.searchQuery && chat.searchQuery !== payload.searchQuery)) {
           const messages = {};
-          payload.messages.map((message) => {messages[message.uuid] = message;});
+          payload.messages.map((message) => {
+            messages[message.uuid] = message;
+            return messages;
+          });
           payload.messages = Immutable.Map(messages);
           return newState.setIn(path, payload);
         }
 
-        payload.messages.map((message) => chat.messages = chat.messages.set(message.uuid, message));
+        payload.messages.map((message) => {
+          chat.messages = chat.messages.set(message.uuid, message);
+          return chat.messages;
+        });
         chat.page = Math.max(chat.page, payload.page);
 
         return newState.setIn(path, {...chat});

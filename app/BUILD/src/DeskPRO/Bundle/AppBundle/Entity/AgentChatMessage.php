@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
@@ -227,6 +226,15 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
     public function getDateCreated()
     {
         return $this->date_created;
+    }
+
+    /**
+     * @JMS\VirtualProperty()
+     * @JMS\Type("integer")
+     */
+    public function getTimestamp()
+    {
+        return $this->date_created->getTimestamp();
     }
 
     /**

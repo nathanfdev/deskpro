@@ -22,10 +22,10 @@ export class MessagesHelper {
   }
 
   addMessageOptimistic(state, payload) {
-    const chat = this.getChat(state, payload.data.agent_chat_id);
+    const chat = this.getChat(state, payload.data.chat);
     if (chat) {
       chat.messages = chat.messages.set(payload.data.uuid, payload.data);
-      return state.setIn(this.getPath(state, payload.data.agent_chat_id), {...chat});
+      return state.setIn(this.getPath(state, payload.data.chat), {...chat});
     }
     return state;
   }
@@ -62,10 +62,10 @@ export class MessagesHelper {
   }
 
   handleNewMessage(state, payload) {
-    const chat = this.getChat(state, payload.data.agent_chat_id);
+    const chat = this.getChat(state, payload.data.chat);
     if (chat) {
       chat.messages = chat.messages.set(payload.data.uuid, payload.data);
-      return state.setIn(this.getPath(state, payload.data.agent_chat_id), {...chat});
+      return state.setIn(this.getPath(state, payload.data.chat), {...chat});
     }
 
     return state;

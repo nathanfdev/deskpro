@@ -8,23 +8,23 @@ import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortc
 import Loader from 'react-loader';
 
 @connect(state => ({
-  me: meSelector(state),
-  agents: agentsSelector(state),
-  messages: state.IM.messages,
-  loadingMessages: state.IM.messages.get('loadingMessages'),
+  me:               meSelector(state),
+  agents:           agentsSelector(state),
+  messages:         state.IM.messages,
+  loadingMessages:  state.IM.messages.get('loadingMessages'),
   updatingMessages: state.IM.messages.get('updatingMessages')
 }))
 export class MessageList extends React.Component {
 
   static propTypes = {
-    me: PropTypes.object.isRequired,
-    agents: PropTypes.object.isRequired,
-    current: PropTypes.object.isRequired,
-    messages: PropTypes.object.isRequired,
-    loadingMessages: PropTypes.bool.isRequired,
+    me:               PropTypes.object.isRequired,
+    agents:           PropTypes.object.isRequired,
+    current:          PropTypes.object.isRequired,
+    messages:         PropTypes.object.isRequired,
+    loadingMessages:  PropTypes.bool.isRequired,
     updatingMessages: PropTypes.bool.isRequired,
-    dispatch: PropTypes.func.isRequired,
-    searchQuery: PropTypes.string.isRequired
+    dispatch:         PropTypes.func.isRequired,
+    searchQuery:      PropTypes.string.isRequired
   };
 
 
@@ -76,7 +76,6 @@ export class MessageList extends React.Component {
 
   markNewMessages() {
     if (!this.props.updatingMessages) {
-      console.log(this.props.current);
       const ids = [];
       const uuids = [];
       const { messages, dispatch } = this.props;
@@ -89,7 +88,6 @@ export class MessageList extends React.Component {
         }
       });
       if (ids.length > 0) {
-        console.log(this.props.current.id , 'messageList:92');
         dispatch(markMessages(ids, uuids, this.props.current.id));
       }
     }
@@ -130,7 +128,7 @@ export class MessageList extends React.Component {
                 key={index}
                 message={message}
                 size={msg.size}
-                current={parseInt(index)}
+                current={parseInt(index, 10)}
                 previousMessage={previous}
                 agents={this.props.agents}
                 me={this.props.me}

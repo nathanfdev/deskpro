@@ -55,6 +55,9 @@ class ViewHandler extends \FOS\RestBundle\View\ViewHandler
                 : $this->container->get('request');
         }
         $this->annotation = $request->attributes->get('_view');
+        if ($this->annotation instanceof SerializerView) {
+            $this->serializeNull = $this->annotation->isSerializeNull();
+        }
 
         return parent::handle($view, $request);
     }
