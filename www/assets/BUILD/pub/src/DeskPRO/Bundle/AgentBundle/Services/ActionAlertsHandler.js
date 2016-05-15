@@ -14,6 +14,12 @@ export class ActionAlertsHandler
     const { data, linked } = payload.data;
     switch (payload.type) {
       case 'notification.agent_chat.new_message':
+        if (linked.agent_chat[data.chat].chat_type === 'department') {
+          this.options.dispatch(addToCollection('Department', 'my', linked.department));
+        }
+        if (linked.agent_chat[data.chat].chat_type === 'team') {
+          this.options.dispatch(addToCollection('AgentTeam', 'my', linked.agent_team));
+        }
         this.options.dispatch(addToCollection('AgentChat', 'recent', [linked.agent_chat[data.chat]]));
         this.options.dispatch(markMessages([data.id], [data.uuid], data.chat, 1));
         this.options.dispatch(startChat(null, null, data.chat, true));

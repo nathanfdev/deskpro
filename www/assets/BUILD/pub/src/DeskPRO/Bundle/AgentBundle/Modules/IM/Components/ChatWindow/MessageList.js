@@ -82,7 +82,7 @@ export class MessageList extends React.Component {
 
       const msg = messages.hasIn(this.getPath()) ? messages.getIn(this.getPath()).messages : [];
       msg.map((message) => {
-        if (message.id && message.status === 1 && message.person !== this.props.me.get('id')) {
+        if (message.id && message.status < 2 && message.person !== this.props.me.get('id')) {
           ids.push(message.id);
           uuids.push(message.uuid);
         }

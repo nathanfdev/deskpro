@@ -93,7 +93,7 @@ class NewAgentChatMessageGenerator extends AbstractAgentChatMessageGenerator
     {
         return $this->serializer->toArray(
             new ApiWrapper($this->getChatMessage($event)),
-            new SideloadSerializationContext(['agent_chat'])
+            new SideloadSerializationContext(['agent_chat', 'participants', 'department', 'agent_team'])
         );
     }
 }
