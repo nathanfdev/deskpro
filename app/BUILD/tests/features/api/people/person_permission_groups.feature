@@ -11,10 +11,10 @@ Feature: /people endpoint
   @reinstall
   Scenario: I have no access to use people
     When I send a GET request to "/api/v2/people"
-    Then the response status code should be 403
+    Then the response status code should be 200
 
     When I send a GET request to "/api/v2/people/1"
-    Then the response status code should be 403
+    Then the response status code should be 200
 
     When I send a POST request to "/api/v2/people"
     Then the response status code should be 403
