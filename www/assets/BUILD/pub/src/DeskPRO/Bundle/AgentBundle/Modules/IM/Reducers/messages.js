@@ -9,6 +9,7 @@ const messagesHelper = new MessagesHelper();
 
 
 const initialState = {
+  me:               {},
   chatMessages:     {},
   searchMessages:   {},
   counts:           { nested: {} },
@@ -19,6 +20,8 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
+  [actions.setImMe]: (state, payload) => state.set('me', payload),
+
   [actions.loadMessages]: async(
     {
       start:   (state) => state.set('loadingMessages', true),

@@ -1,6 +1,13 @@
 import { createAction } from 'Ampliflux';
 import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 
+export const setImMe = createAction(
+  'SET_IM_ME',
+  (me) => {
+    return me;
+  }
+);
+
 export const loadMessages = createAction(
   'IM_LOAD_MESSAGES',
   (chatId, searchQuery = '', page = 1) =>

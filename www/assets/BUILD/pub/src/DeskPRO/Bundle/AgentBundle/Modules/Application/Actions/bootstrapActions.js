@@ -5,6 +5,7 @@ import { setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { setAgentSettings } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
 import { setupActionAlerts }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/notificationActions';
+import { setImMe } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/messagesActions';
 
 export const donePreloading = createAction('APP_BOOTSTRAP_DONE_PRELOADING');
 export const preloadData = createAction(
@@ -40,6 +41,7 @@ export const preloadData = createAction(
           dispatch(setAgentSettings(data[9]));
           dispatch(setupActionAlerts(data[10]));
           dispatch(setCollection('Person', 'me', [data[11].person]));
+          dispatch(setImMe(data[11].person));
 
           dispatch(donePreloading());
         })

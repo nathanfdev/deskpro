@@ -22,8 +22,9 @@ export class MessagesHelper {
   reduceCounts(state, payload) {
     const counts = state.get('counts');
     const nested = counts.nested;
-    if (nested[payload.chatId] && payload.status === 2) {
+    if (nested[payload.chatId] && payload.status === 2 && payload.person !== state.get('me').id) {
       nested[payload.chatId].count--;
+      if (nested[payload.chatId].count < 0) nested[payload.chatId].count = 0;
       counts.nested = nested;
       return state.set('counts', { ...counts });
     }
@@ -36,7 +37,7 @@ export class MessagesHelper {
     if (!nested[payload.chatId]) {
       nested[payload.chatId] = { count: 0 };
     }
-    if (payload.status !== 2) {
+    if (payload.status !== 2 && payload.person !== state.get('me').id) {
       nested[payload.chatId].count++;
       counts.nested = nested;
       return state.set('counts', { ...counts });
@@ -76,9 +77,6 @@ export class MessagesHelper {
       case 'notification.agent_chat.new_message':
         handler = this.handleNewMessage.bind(this);
         break;
-      case 'refresh_counts':
-        handler = this.handleRefreshCounts;
-        break;
       case 'notification.agent_chat.mark_message':
         handler = this.handleMarkMessage.bind(this);
         break;
@@ -91,13 +89,15 @@ export class MessagesHelper {
 
   handleNewMessage(state, payload) {
     let newState = state;
-    const chat = this.getChat(state, payload.data.data.chat);
+    const { data } = payload.data;
+    const chat = this.getChat(state, data.chat);
     if (chat) {
-      chat.messages = chat.messages.set(payload.data.data.uuid, payload.data.data);
+      chat.messages = chat.messages.set(data.uuid, data);
       newState = this.increaseCounts(state, {
-        chatId: payload.data.data.chat,
-        uuids:  [payload.data.data.uuid],
-        status: payload.data.data.status
+        chatId: data.chat,
+        uuids:  [data.uuid],
+        status: data.status,
+        person: data.person
       });
       return newState.setIn(this.getPath(state, payload.data.data.chat), { ...chat });
     }
@@ -111,10 +111,6 @@ export class MessagesHelper {
       uuids:  [payload.data.message_uuid],
       status: payload.data.status
     });
-  }
-
-  handleRefreshCounts(state, payload) {
-    return state.set('counts', payload.data);
   }
 
   idle(state) {
