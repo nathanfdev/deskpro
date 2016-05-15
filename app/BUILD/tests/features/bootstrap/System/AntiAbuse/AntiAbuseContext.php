@@ -30,24 +30,33 @@
  * DeskPRO.
  */
 
-namespace DpTestSrc\TestBundle\DataSet;
+namespace DpBehat\System\AntiAbuse;
+
+use Application\DeskPRO\Entity\Setting;
+use Behat\Symfony2Extension\Context\KernelAwareContext;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
+use DpBehat\KernelAwareTrait;
+use Sanpi\Behatch\Context\BaseContext;
 
 /**
- * Interface DataSetInterface.
+ * Class EventsContext.
  */
-interface DataSetInterface
+class AntiAbuseContext extends BaseContext implements KernelAwareContext
 {
-    /**
-     * The ID you call in code to install this dataset.
-     *
-     * @return string
-     */
-    public function getId();
+    use KernelAwareTrait;
 
     /**
-     * Deletes current database and installs this set.
-     *
-     * @param bool $recreateStructure
+     * @Given I disable anti-abuse rate limiting
      */
-    public function install($recreateStructure = false);
+    public function iDisableAntiAbuseRateLimiting()
+    {
+        $repository          = $this->getRepository(Setting::class);
+        $setting             = $repository->findOneBy(['name' => AntiAbuse::SETTING_RATE_LIMIT_IS_DISABLED]);
+        $setting or $setting = new Setting();
+        $setting->name       = AntiAbuse::SETTING_RATE_LIMIT_IS_DISABLED;
+        $setting->value      = true;
+        $em                  = $this->get('doctrine.orm.entity_manager');
+        $em->persist($setting);
+        $em->flush();
+    }
 }

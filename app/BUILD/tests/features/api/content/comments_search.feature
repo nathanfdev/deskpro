@@ -1,6 +1,6 @@
 Feature: Comment counts endpoints (/article_comments, /news_comments, /download_comments)
   To retrieve DeskPRO comments
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:

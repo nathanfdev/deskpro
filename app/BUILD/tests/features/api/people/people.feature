@@ -1,14 +1,12 @@
-@basic @chat-nav @tasks-nav @people
 Feature: /people endpoint
   To retrieve DeskPRO people
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I get paginated list of people
     When I send a GET request to "/api/v2/people"
     Then the response should be in JSON
@@ -22,6 +20,18 @@ Feature: /people endpoint
     And the response status code should be 200
     And the JSON node "data.id" should be equal to "1"
     And the JSON node "data.name" should be equal to "Link Admin"
+
+  Scenario: I try to create a person providing empty data
+    When I send a POST request to "/api/v2/people"
+    Then the response should be in JSON
+    And the response status code should be 400
+    And the JSON node "errors.errors" should not exist
+    And the JSON node "errors.fields.name.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.name.errors[0].message" should be equal to "This value should not be blank."
+    And the JSON node "errors.fields.primary_email.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.primary_email.errors[0].message" should be equal to "This value should not be blank."
+    And the JSON node "errors.fields.emails.errors[0].code" should be equal to "too_few_elements"
+    And the JSON node "errors.fields.emails.errors[0].message" should be equal to "This collection should contain 1 elements or more."
 
   Scenario: I create a person
     When I send a POST request to "/api/v2/people" with body:
@@ -55,7 +65,6 @@ Feature: /people endpoint
 }
     """
     Then the response status code should be 201
-    And the JSON node "data.id" should be equal to 5
     And the JSON node "data.name" should be equal to "Sample Person"
     And the JSON node "data.organization" should be equal to 1
     And the JSON node "data.organization_position" should be equal to "Chief Sample Person"
@@ -74,28 +83,13 @@ Feature: /people endpoint
     And the JSON node "data.agent_groups[0]" should be equal to 7
     And the JSON node "data.agent_groups[1]" should be equal to 8
     And the JSON node "data.contact_data[0].contact_type" should be equal to "website"
-    And the JSON node "data.contact_data[0].id" should be equal to 1
-    And the JSON node "data.contact_data[1].id" should be equal to 2
     And the JSON node "data.contact_data[1].contact_type" should be equal to "twitter"
     And the JSON node "data.contact_data[1].username" should be equal to "twitter_username"
     And the JSON node "data.contact_data[1].comment" should be equal to "some text"
     And the JSON node "data.contact_data[2].contact_type" should be equal to "facebook"
-    And the JSON node "data.contact_data[2].id" should be equal to 3
-
-  Scenario: I try to create a person providing empty data
-    When I send a POST request to "/api/v2/people"
-    Then the response should be in JSON
-    And the response status code should be 400
-    And the JSON node "errors.errors" should not exist
-    And the JSON node "errors.fields.name.errors[0].code" should be equal to "required"
-    And the JSON node "errors.fields.name.errors[0].message" should be equal to "This value should not be blank."
-    And the JSON node "errors.fields.primary_email.errors[0].code" should be equal to "required"
-    And the JSON node "errors.fields.primary_email.errors[0].message" should be equal to "This value should not be blank."
-    And the JSON node "errors.fields.emails.errors[0].code" should be equal to "too_few_elements"
-    And the JSON node "errors.fields.emails.errors[0].message" should be equal to "This collection should contain 1 elements or more."
 
   Scenario: I modify and retrieve a person
-    When I send a PUT request to "/api/v2/people/5" with body:
+    When I send a PUT request to "/api/v2/people/{lastCreatedId}" with body:
     """
 {
   "name": "Modified Name",
@@ -105,7 +99,7 @@ Feature: /people endpoint
     """
     And the response status code should be 204
 
-    When I send a GET request to "/api/v2/people/5"
+    When I send a GET request to "/api/v2/people/{lastCreatedId}"
     Then the response status code should be 200
     And the JSON node "data.name" should be equal to "Modified Name"
     And the JSON node "data.user_groups" should have 1 element
@@ -114,7 +108,7 @@ Feature: /people endpoint
     And the JSON node "data.agent_groups[0]" should be equal to 7
 
   Scenario: I modify user_groups
-    When I send a PUT request to "/api/v2/people/5" with body:
+    When I send a PUT request to "/api/v2/people/{lastCreatedId}" with body:
     """
 {
   "user_groups": [3],
@@ -123,7 +117,7 @@ Feature: /people endpoint
     """
     And the response status code should be 204
 
-    When I send a GET request to "/api/v2/people/5"
+    When I send a GET request to "/api/v2/people/{lastCreatedId}"
     Then the response status code should be 200
     And the JSON node "data.name" should be equal to "Modified Name"
     And the JSON node "data.user_groups" should have 1 element
@@ -140,7 +134,7 @@ Feature: /people endpoint
     And the JSON node "data[0].user_groups[0]" should be equal to 3
 
   Scenario: I reset user_groups
-    When I send a PUT request to "/api/v2/people/5" with body:
+    When I send a PUT request to "/api/v2/people/{lastCreatedId}" with body:
     """
 {
   "user_groups": [],
@@ -149,7 +143,7 @@ Feature: /people endpoint
     """
     And the response status code should be 204
 
-    When I send a GET request to "/api/v2/people/5"
+    When I send a GET request to "/api/v2/people/{lastCreatedId}"
     Then the response status code should be 200
     And the JSON node "data.name" should be equal to "Modified Name"
     And the JSON node "data.user_groups" should have 0 elements

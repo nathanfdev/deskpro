@@ -4,7 +4,6 @@ Feature: JSON API fetch ids only
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I search with ids only
     When I send a GET request to "/api/v2/search?q=1&ids_only=1"
     Then the JSON node "data.grouped_results[0].type" should be equal to "article"

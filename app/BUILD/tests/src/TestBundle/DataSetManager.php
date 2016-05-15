@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTestSrc\TestBundle;
 
 /**
@@ -40,23 +41,23 @@ class DataSetManager
     /**
      * @var DataSet\DataSetInterface[]
      */
-    private $data_sets;
+    private $dataSets;
 
-    public function __construct(array $data_Sets)
+    public function __construct(array $dataSets)
     {
-        $this->data_sets = $data_Sets;
+        $this->dataSets = $dataSets;
     }
 
-    public function install($db_set_id)
+    public function install($dbSetId, $recreateStructure = false)
     {
-        foreach ($this->data_sets as $dbset) {
-            if ($db_set_id === $dbset->getId()) {
-                $dbset->install();
+        foreach ($this->dataSets as $dbSet) {
+            if ($dbSetId === $dbSet->getId()) {
+                $dbSet->install($recreateStructure);
 
                 return;
             }
         }
 
-        throw new \InvalidArgumentException('data set "'.$db_set_id.'" not found');
+        throw new \InvalidArgumentException('data set "'.$dbSetId.'" not found');
     }
 }

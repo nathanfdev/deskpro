@@ -1,4 +1,3 @@
-@basic
 Feature: /api_tokens endpoint
 
   Background:

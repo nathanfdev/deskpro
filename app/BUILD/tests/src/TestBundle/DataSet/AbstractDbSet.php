@@ -276,11 +276,11 @@ abstract class AbstractDbSet implements DataSetInterface
     private static $isStructureCreated = false;
 
     /**
-     * Installs this db set.
+     * {@inheritdoc}
      */
-    public function install()
+    public function install($recreateStructure = false)
     {
-        if (!self::$isStructureCreated) {
+        if (!self::$isStructureCreated || $recreateStructure) {
             $this->getDb()->exec("DROP DATABASE IF EXISTS {$this->getDatabaseName()}");
             $this->getDb()->exec("CREATE DATABASE {$this->getDatabaseName()}");
             $this->getDb()->exec("USE {$this->getDatabaseName()}");
@@ -288,11 +288,9 @@ abstract class AbstractDbSet implements DataSetInterface
             $this->installDatabase('system');
 
             self::$isStructureCreated = true;
+        } else {
+            $this->clearDb();
         }
-
-        $purger = new ORMPurger();
-        $purger->setEntityManager($this->getEm());
-        $purger->purge();
 
         if ($this->isCached()) {
             $this->installFromCache();
@@ -311,6 +309,19 @@ abstract class AbstractDbSet implements DataSetInterface
         }
 
         $this->getEm()->clear();
+    }
+
+    /**
+     * Clear DB tables.
+     */
+    private function clearDb()
+    {
+        $this->getDb()->exec('SET FOREIGN_KEY_CHECKS = 0;');
+        $purger = new ORMPurger();
+        $purger->setPurgeMode(ORMPurger::PURGE_MODE_TRUNCATE);
+        $purger->setEntityManager($this->getEm());
+        $purger->purge();
+        $this->getDb()->exec('SET FOREIGN_KEY_CHECKS = 1;');
     }
 
     /**

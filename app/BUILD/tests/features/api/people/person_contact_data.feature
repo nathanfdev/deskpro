@@ -1,7 +1,6 @@
-@people
 Feature: /person_contact_data endpoint
   To retrieve DeskPRO person contact data
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:

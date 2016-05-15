@@ -31,6 +31,9 @@ namespace DpBehat\Api;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Exception\ExpectationException;
+use DpBehat\Portal\Api\AuthContext;
+use DpBehat\Portal\Api\ChatContext;
+use Orb\Util\Util;
 use Sanpi\Behatch\Context\BaseContext;
 
 class RestContext extends BaseContext
@@ -57,6 +60,15 @@ class RestContext extends BaseContext
     }
 
     /**
+     * @Then I add Authorization header of my Api Key
+     */
+    public function iAddAuthorizationHeader()
+    {
+        $key = \DpBehat\Api\AuthContext::$apiKey;
+        $this->iAddHeaderEqualTo('Authorization', "key {$key->getId()}:{$key->code}");
+    }
+
+    /**
      * Add a cookie.
      *
      * @Then I add cookie named :name equal to :value
@@ -73,7 +85,7 @@ class RestContext extends BaseContext
      */
     public function iSendARequestTo($method, $url)
     {
-        $url = $this->replaceLastCreatedId($url);
+        $url = self::replacePlaceholders($url);
 
         $client = $this->getSession()->getDriver()->getClient();
         // intercept redirection
@@ -97,6 +109,8 @@ class RestContext extends BaseContext
      */
     public function iSendARequestToWithParameters($method, $url, TableNode $datas)
     {
+        $url = self::replacePlaceholders($url);
+
         $client = $this->getSession()->getDriver()->getClient();
 
         // intercept redirection
@@ -135,13 +149,15 @@ class RestContext extends BaseContext
      */
     public function iSendARequestToWithBody($method, $url, PyStringNode $body)
     {
+        $url = self::replacePlaceholders($url);
+
         $client = $this->getSession()->getDriver()->getClient();
 
         // intercept redirection
         $client->followRedirects(false);
 
-        $client->request($method, $this->locatePath($url),
-            array(), array(), $this->server_params, $body->getRaw());
+        $content = self::replacePlaceholders($body->getRaw());
+        $client->request($method, $this->locatePath($url), [], [], $this->server_params, $content);
         $client->followRedirects(true);
 
         $page = $this->getSession()->getPage();
@@ -198,7 +214,7 @@ class RestContext extends BaseContext
      */
     public function theHeaderShouldBeEqualTo($name, $value)
     {
-        $value  = $this->replaceLastCreatedId($value);
+        $value  = self::replacePlaceholders($value);
         $actual = $this->getHttpHeader($name);
         $this->assertEquals(strtolower($value), strtolower($actual),
             sprintf('The header "%s" is equal to "%s"', $name, $actual)
@@ -354,28 +370,66 @@ class RestContext extends BaseContext
     }
 
     /**
+     * @param string $text
+     *
      * @throws \Exception
      *
-     * @return mixed
+     * @return string
      */
-    private function replaceLastCreatedId($string)
+    public static function replacePlaceholders($text)
     {
-        if (strpos($string, '{lastCreatedId}')) {
-            if (!$lastPostResponseData = json_decode(self::$lastPostResponse, true)) {
-                throw new \Exception('Last POST response is not a valid JSON');
+        $initial = $text;
+
+        $syntaxes = [['{', '}'], ['~', '~']];
+        foreach ($syntaxes as list($l, $r)) {
+            if (strpos($text, "{$l}lastCreatedId{$r}") !== false) {
+                if (!$lastPostResponseData = json_decode(self::$lastPostResponse, true)) {
+                    throw new \Exception('Last POST response is not a valid JSON');
+                }
+                if (!array_key_exists('data', $lastPostResponseData)) {
+                    throw new \Exception('Last POST response JSON does not contain "data"');
+                }
+                if (!array_key_exists('id', $lastPostResponseData['data'])) {
+                    throw new \Exception('Last POST response JSON data does not contain "id"');
+                }
+                if (strpos($text, "{$l}lastCreatedId{$r}") !== false) {
+                    $text = str_replace("{$l}lastCreatedId{$r}", $lastPostResponseData['data']['id'], $text);
+                }
             }
-            if (!array_key_exists('data', $lastPostResponseData)) {
-                throw new \Exception('Last POST response JSON does not contain "data"');
+            if (strpos($text, "{$l}taskId{$r}") !== false) {
+                $text = str_replace("{$l}taskId{$r}", TasksContext::$taskId, $text);
             }
-            if (!array_key_exists('id', $lastPostResponseData['data'])) {
-                throw new \Exception('Last POST response JSON data does not contain "id"');
+            if (strpos($text, "{$l}ticketId{$r}") !== false) {
+                $text = str_replace("{$l}ticketId{$r}", TicketsContext::$ticketId, $text);
             }
-            if (strpos($string, '{lastCreatedId}') !== false) {
-                $string = str_replace('{lastCreatedId}', $lastPostResponseData['data']['id'], $string);
-                echo $string;
+            if (strpos($text, "{$l}chatId{$r}") !== false) {
+                $text = str_replace("{$l}chatId{$r}", ChatContext::$chatId, $text);
             }
+
+            $text = preg_replace_callback('/\\'.$l.'sid\:(.+)\\'.$r.'/', [self::class, 'replaceSidRef'], $text);
         }
 
-        return $string;
+        if ($initial !== $text) {
+            echo $text;
+        }
+
+        return $text;
+    }
+
+    /**
+     * @param array $matches
+     *
+     * @throws \Exception
+     *
+     * @return string
+     */
+    private static function replaceSidRef(array $matches)
+    {
+        $code = $matches[1];
+        if (!array_key_exists($code, AuthContext::$sessions)) {
+            throw new \Exception("Session with code $code wasn't created");
+        }
+
+        return Util::baseEncode(AuthContext::$sessions[$code]->getId(), Util::BASE36_ALPHABET).'-'.$code;
     }
 }

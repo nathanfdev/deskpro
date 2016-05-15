@@ -1,7 +1,6 @@
-@organization
 Feature: /organization_notes endpoint
   To CRUD DeskPRO organization notes
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:

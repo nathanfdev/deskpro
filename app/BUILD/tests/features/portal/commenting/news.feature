@@ -9,17 +9,13 @@ Feature: News commenting
     And the following languages are enabled:
       | default |
     And the default brand is using the standard theme
+    And I disable anti-abuse rate limiting
 
-
-  #
-  # NEWS
-  #
   Scenario: I submit an invalid news comment as a guest
     And I am on "/news/posts/example-news-post"
     And I press "Save Comment"
     Then I should see a form error with "This value is required"
 
-  @reinstall
   Scenario: I comment on a news article as a guest
     Given I am on "/news/posts/example-news-post"
     When I fill in "What is your comment?" with "This is a guest comment on a news post!"
@@ -51,7 +47,6 @@ Feature: News commenting
     And I press "Save Comment"
     Then I should see a form error with "This value is required"
 
-  @reinstall
   Scenario: I comment on a news post as a user
     Given I login with user credentials
     And I am on "/news/posts/example-news-post"

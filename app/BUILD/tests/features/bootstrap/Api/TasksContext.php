@@ -30,24 +30,30 @@
  * DeskPRO.
  */
 
-namespace DpTestSrc\TestBundle\DataSet;
+namespace DpBehat\Api;
+
+use DeskPRO\Bundle\AppBundle\Entity\Task;
+use DpBehat\BaseContext;
 
 /**
- * Interface DataSetInterface.
+ * Class TasksContext.
  */
-interface DataSetInterface
+class TasksContext extends BaseContext
 {
     /**
-     * The ID you call in code to install this dataset.
-     *
-     * @return string
+     * @var int|null
      */
-    public function getId();
+    public static $taskId = null;
 
     /**
-     * Deletes current database and installs this set.
-     *
-     * @param bool $recreateStructure
+     * @Given I create a task and reference its' ID as taskId
      */
-    public function install($recreateStructure = false);
+    public function iCreateATaskAndReferenceItsId()
+    {
+        $task = new Task();
+        $task->setTitle(uniqid('Task '));
+        $this->persistAndFlush($task);
+
+        self::$taskId = $task->getId();
+    }
 }

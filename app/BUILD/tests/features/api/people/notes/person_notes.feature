@@ -1,14 +1,12 @@
-@people
 Feature: /people/{id}/notes endpoint
   To CRUD DeskPRO person notes
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I try to get notes of not existed person
     When I send a GET request to "/api/v2/people/404/notes"
     Then the response status code should be 404

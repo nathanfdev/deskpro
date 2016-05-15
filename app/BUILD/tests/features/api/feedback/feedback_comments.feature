@@ -1,14 +1,12 @@
-@counts @feedback-nav @feedback
 Feature: /feedback_comments/counts endpoint
   To retrieve count of feedback comments to validate
-  As a developer
+  As an API user
   I want an endpoint for feedback comments counts
 
   Background:
     Given I install the "api" data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I GET feedback comments list with hidden_status set to validating and side-loaded author info
     When I send a GET request to "/api/v2/feedback_comments?include=person&awaiting_validation=1&order_by=date_created"
     Then the response should be in JSON

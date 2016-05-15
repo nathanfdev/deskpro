@@ -1,14 +1,12 @@
-@chats @counts @user-chats
 Feature: /user_chats/counts endpoint
   To retrieve DeskPRO agents
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I count chats without grouping
     When I send a GET request to "/api/v2/user_chats/counts"
     Then the response should be in JSON

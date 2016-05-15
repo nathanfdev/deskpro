@@ -81,6 +81,16 @@ class AuthContext extends BasePortalContext implements RebootableContextInterfac
     }
 
     /**
+     * @When I am not logged in
+     */
+    public function iAmNotLoggedIn()
+    {
+        $this->visitPath('/en/logout-confirmation');
+        $page = $this->getSession()->getPage();
+        $page->clickLink('');
+    }
+
+    /**
      * @When I login with :who credentials from the login page
      */
     public function iLoginWithCredentialsFromTheLoginPage($who)

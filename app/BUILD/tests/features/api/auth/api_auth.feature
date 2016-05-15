@@ -1,4 +1,3 @@
-@basic
 Feature: API Authentication
   In order to interact with the API
   As anyone
@@ -79,8 +78,8 @@ Feature: API Authentication
     And the JSON node "message" should be equal to "Invalid session ID."
 
   Scenario: I have a valid api key (user "user" id=3 in the "api" data set)
-    Given a valid api key exists with the code "XYZ" and id 1 for user
-    When I add Authorization header equal to "key 1:XYZ"
+    Given a valid api key exists with the code "XYZ" for user
+    When I add Authorization header of my Api Key
     And I send a GET request to "/api/v2/me"
     Then the response status code should be 200
     And the JSON node "data.auth_method" should be equal to "api_key"

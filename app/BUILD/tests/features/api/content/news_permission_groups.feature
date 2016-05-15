@@ -1,4 +1,3 @@
-@downloads
 Feature: /news endpoint
   I want to check permission groups
 
@@ -8,7 +7,6 @@ Feature: /news endpoint
     And I remove "admin" usergroup relation "agent_all_perms"
     And I remove "admin" usergroup relation "agent_all_safe_perms"
 
-  @reinstall
   Scenario: I have no news permissions
     When I send a GET request to "/api/v2/news"
     Then the response status code should be 403

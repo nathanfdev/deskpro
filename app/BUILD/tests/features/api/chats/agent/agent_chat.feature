@@ -1,4 +1,3 @@
-@chats @agent-chats
 Feature: /agent_chats endpoint
   To check chat with agent
 
@@ -6,7 +5,6 @@ Feature: /agent_chats endpoint
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I create chat with agent
     When I send a POST request to "/api/v2/agent_chats" with body:
     """

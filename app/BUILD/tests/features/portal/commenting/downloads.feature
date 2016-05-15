@@ -8,33 +8,8 @@ Feature: Downloads commenting
     And the following languages are enabled:
       | default |
     And the default brand is using the standard theme
+    And I disable anti-abuse rate limiting
 
-  #
-  # DOWNLOADS
-  #
-
-  @reinstall
-  Scenario: I submit an invalid download comment as a user
-    Given I login with user credentials
-    And the "download" category "General" exists with content titled "Example Download"
-    And I am on "/downloads/files/example-download"
-    And I press "Save Comment"
-    Then I should see a form error with "This value is required"
-
-  Scenario: I comment on a download as a user
-    Given I login with user credentials
-    And I am on "/downloads/files/example-download"
-    When I fill in "What is your comment?" with "This is my comment! I just posted it on a download!"
-    And I press "Save Comment"
-    Then I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
-    And I should see "This is my comment! I just posted it on a download!"
-
-  Scenario: I submit an invalid download comment as a guest
-    And I am on "/downloads/files/example-download"
-    And I press "Save Comment"
-    Then I should see a form error with "This value is required"
-
-  @reinstall
   Scenario: I comment on a download as a guest
     Given the "download" category "General" exists with content titled "Example Download"
     And I am on "/downloads/files/example-download"
@@ -60,3 +35,23 @@ Feature: Downloads commenting
     And I press "Login"
     Then I should be on "/downloads/files/example-download"
     And I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
+
+  Scenario: I submit an invalid download comment as a user
+    Given I login with user credentials
+    And the "download" category "General" exists with content titled "Example Download"
+    And I am on "/downloads/files/example-download"
+    And I press "Save Comment"
+    Then I should see a form error with "This value is required"
+
+  Scenario: I comment on a download as a user
+    Given I login with user credentials
+    And I am on "/downloads/files/example-download"
+    When I fill in "What is your comment?" with "This is my comment! I just posted it on a download!"
+    And I press "Save Comment"
+    Then I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
+    And I should see "This is my comment! I just posted it on a download!"
+
+  Scenario: I submit an invalid download comment as a guest
+    And I am on "/downloads/files/example-download"
+    And I press "Save Comment"
+    Then I should see a form error with "This value is required"

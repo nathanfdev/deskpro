@@ -10,7 +10,6 @@ Feature: Ticket View
     And the organization "walmart" exists
     And "user" is an organization manager of "walmart"
 
-  @reinstall
   Scenario: Trying to view a ticket when not logged in should make me log in
     Given the following tickets exist:
       | who   | subject                          | status         | organization |

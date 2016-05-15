@@ -1,14 +1,12 @@
-@counts @crm-nav @people
 Feature: /people/counts endpoint
   To retrieve counts of DeskPRO people
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I count agents filtering out soft-deleted ones, grouped by teams
     When I send a GET request to "/api/v2/people/counts?is_agent=1&is_deleted=0&group_by=agent_team"
     Then the response should be in JSON

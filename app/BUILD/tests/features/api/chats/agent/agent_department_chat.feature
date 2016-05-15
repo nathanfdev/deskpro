@@ -1,4 +1,3 @@
-@chats @agent-chats
 Feature: /agent_chats endpoint
   To check chat with department
 

@@ -39,11 +39,16 @@ use DpTestSrc\TestBundle\DataSetManager;
 class DataSetContext extends BaseContext
 {
     /**
+     * @var DataSetContext
+     */
+    private static $instance;
+
+    /**
      * @var DataSetManager
      */
     private $dataset_manager;
 
-    private static $last_installed_data_set = null;
+    private static $lastInstalledDataSet = null;
 
     private static $reinstall = false;
 
@@ -69,43 +74,37 @@ class DataSetContext extends BaseContext
     public function __construct(DataSetManager $dataset_manager)
     {
         $this->dataset_manager = $dataset_manager;
+        self::$instance        = $this;
     }
 
     /**
-     * @BeforeScenario
+     * @BeforeFeature
      */
-    public function maybeDontReinstall(BeforeScenarioScope $scope)
+    public static function reinstall()
     {
-        if ($scope->getScenario()->hasTag('reinstall')) {
-            self::$reinstall = true;
-        } else {
-            self::$reinstall = false;
-        }
+        self::$reinstall = true;
     }
 
     /**
      * @When I install the :set data set
      */
-    public function iInstallTheFreshDataSet($set)
+    public function iInstallDataSet($set)
     {
-        if (self::$last_installed_data_set === $set) {
-            // the same data set is already loaded
-            if (!self::$reinstall) {
-                echo 'data set already loaded';
+        if ((self::$lastInstalledDataSet === $set) && !self::$reinstall) {
+            echo 'data set already loaded';
 
-                foreach ($this->reset_contexts as $ctx) {
-                    if ($ctx instanceof RebootableContextInterface) {
-                        $ctx->rebootContext();
-                    }
+            foreach ($this->reset_contexts as $ctx) {
+                if ($ctx instanceof RebootableContextInterface) {
+                    $ctx->rebootContext();
                 }
-
-                return; // this scenario was not tagged as @reinstall, exiting
             }
+
+            return; // this scenario was not tagged as @reinstall, exiting
         }
         $install_start = time();
         $this->dataset_manager->install($set);
-        self::$last_installed_data_set = $set;
-        $this->ran_install             = true;
+        self::$lastInstalledDataSet = $set;
+        $this->ran_install          = true;
 
         $this->resetAllContext();
         foreach ($this->reset_contexts as $ctx) {
@@ -119,6 +118,8 @@ class DataSetContext extends BaseContext
         } else {
             echo 'successfully installed data set (took '.(time() - $install_start).' seconds)';
         }
+
+        self::$reinstall = false;
     }
 
     /**
@@ -134,7 +135,7 @@ class DataSetContext extends BaseContext
      */
     public function iHaveAlreadyInstalledTheFreshDataSet($set)
     {
-        expect(self::$last_installed_data_set)->toBe($set);
+        expect(self::$lastInstalledDataSet)->toBe($set);
     }
 
     /**
@@ -150,7 +151,7 @@ class DataSetContext extends BaseContext
      */
     public function iAttemptToReinstallTheFreshDataSet($set)
     {
-        $this->iInstallTheFreshDataSet($set);
+        $this->iInstallDataSet($set);
     }
 
     /**

@@ -1,13 +1,12 @@
 Feature: /mass_actions endpoint
   To complete mass actions on item's lists
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:
     Given I install the api data set
     And my request is authenticated
 
-  @basic
   Scenario: I send POST request for non-existent type of content
     When I send a POST request to "/api/v2/mass_actions/something" with body:
     """

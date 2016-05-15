@@ -1,4 +1,3 @@
-@people
 Feature: Person primary email CRUD
 
   Background:
@@ -6,7 +5,6 @@ Feature: Person primary email CRUD
     And there are no registered users
     And my request is authenticated
 
-  @reinstall
   Scenario: I create a person with primary email
     When I send a POST request to "/api/v2/people" with body:
     """

@@ -1,14 +1,12 @@
-@people
 Feature: /people endpoint
   To check contact data validation
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I check contact data validation
     When I send a POST request to "/api/v2/people" with body:
     """

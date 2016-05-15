@@ -1,7 +1,6 @@
-@basic
 Feature: /slas endpoint
   To retrieve DeskPRO SLAs
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:

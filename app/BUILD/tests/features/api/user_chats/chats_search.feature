@@ -1,13 +1,12 @@
 Feature: /user_chats endpoint search (GET)
   To retrieve various sets of DeskPRO chats
-  As a developer
+  As an API user
   I want an API endpoint with search capabilities
 
   Background:
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I search for chats with empty search criteria
     When I send a GET request to "/api/v2/user_chats"
     Then the response should be in JSON

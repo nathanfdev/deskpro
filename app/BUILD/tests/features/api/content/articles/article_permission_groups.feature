@@ -1,4 +1,3 @@
-@articles
 Feature: /articles endpoint
   I want to check permission groups
 
@@ -8,7 +7,6 @@ Feature: /articles endpoint
     And I remove "admin" usergroup relation "agent_all_perms"
     And I remove "admin" usergroup relation "agent_all_safe_perms"
 
-  @reinstall
   Scenario: I have no article permissions
     When I send a GET request to "/api/v2/articles"
     Then the response status code should be 403

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest;
 
 use Application\DeskPRO\Entity\Template;
@@ -52,9 +53,9 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
     /**
      * @var bool
      */
-    protected static $reboot_kernel = false;
+    protected static $rebootKernel = false;
 
-    protected static $last_installed_data_set;
+    protected static $lastInstalledDataSet;
 
     /**
      * @return \Symfony\Component\DependencyInjection\ContainerInterface
@@ -93,9 +94,9 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
      */
     protected function getApiKernel($force_reboot = false)
     {
-        if (self::$reboot_kernel) {
-            $force_reboot        = true;
-            self::$reboot_kernel = false;
+        if (self::$rebootKernel) {
+            $force_reboot       = true;
+            self::$rebootKernel = false;
         }
 
         if (self::$api_kernel && !$force_reboot) {
@@ -124,9 +125,9 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
      */
     protected function getPortalKernel($force_reboot = false)
     {
-        if (self::$reboot_kernel) {
-            $force_reboot        = true;
-            self::$reboot_kernel = false;
+        if (self::$rebootKernel) {
+            $force_reboot       = true;
+            self::$rebootKernel = false;
         }
 
         if (self::$portal_kernel && !$force_reboot) {
@@ -154,12 +155,13 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
      * By default, if the data set you want is already installed before,
      * then nothing happens.
      *
-     * @param string $data_set_id
+     * @param string $dataSetId
      * @param bool   $reinstall
+     * @param bool   $recreateStructure
      */
-    public function installDataSet($data_set_id, $reinstall = false)
+    public function installDataSet($dataSetId, $reinstall = false, $recreateStructure = false)
     {
-        if (self::$last_installed_data_set === $data_set_id) {
+        if (self::$lastInstalledDataSet === $dataSetId) {
             // the same data set is already loaded
             if (!$reinstall) {
                 // no indication to reinstall, exit
@@ -167,12 +169,12 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
             }
         }
 
-        $this->get('dataset_manager')->install($data_set_id);
+        $this->get('dataset_manager')->install($dataSetId, $recreateStructure);
 
         // remember that we installed this
-        self::$last_installed_data_set = $data_set_id;
+        self::$lastInstalledDataSet = $dataSetId;
 
-        self::$reboot_kernel = true;
+        self::$rebootKernel = true;
     }
 
     /**

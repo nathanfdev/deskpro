@@ -1,7 +1,6 @@
-@tasks
 Feature: /task_projects/{id}/members/(agents|departments|teams) endpoint
   To CRUD DeskPRO person project_members
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:

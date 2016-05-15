@@ -8,7 +8,6 @@ Feature: News
     And the default brand is using the standard theme
     And I have "Example News Post" news
 
-  @reinstall
   Scenario: I visit the News from the homepage
     Given I am on "/"
     When I follow "News"

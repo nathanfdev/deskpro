@@ -1,4 +1,3 @@
-@organization
 Feature: /organization_notes endpoint
 
   Background:

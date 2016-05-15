@@ -30,24 +30,41 @@
  * DeskPRO.
  */
 
-namespace DpTestSrc\TestBundle\DataSet;
+namespace DpBehat\Portal;
+
+use DpBehat\BaseContext;
 
 /**
- * Interface DataSetInterface.
+ * Class RefsContext.
  */
-interface DataSetInterface
+class RefsContext extends BaseContext
 {
     /**
-     * The ID you call in code to install this dataset.
+     * @When I visit ":url"
+     */
+    public function iVisit($url)
+    {
+        $this->visitPath($this->replaceRefs($url));
+    }
+
+    /**
+     * @param string $url
      *
      * @return string
      */
-    public function getId();
+    private function replaceRefs($url)
+    {
+        $callback = function ($matches) {
+            if (array_key_exists($matches[1], TicketContext::$tickets)) {
+                return TicketContext::$tickets[$matches[1]]->getId();
+            } else {
+                throw new \Exception("Ref {$matches[1]} isn't defined");
+            }
+        };
+        $url = preg_replace_callback('/\{(.+)\}/', $callback, $url);
 
-    /**
-     * Deletes current database and installs this set.
-     *
-     * @param bool $recreateStructure
-     */
-    public function install($recreateStructure = false);
+        echo $url;
+
+        return $url;
+    }
 }

@@ -1,7 +1,6 @@
-@tickets
 Feature: /ticket_problems endpoint
   To CRUD DeskPRO ticket problems
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:

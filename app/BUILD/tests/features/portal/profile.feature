@@ -1,4 +1,3 @@
-@basic
 Feature: User Profile
   To manage my account
   As a user

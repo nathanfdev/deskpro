@@ -6,6 +6,7 @@ Feature: Server Info
 
   Scenario: I request check_requirements
     Given I am on "/index.php?__serverinfo=check_requirements&auth=TEST_AUTH"
+    # Below line is left intentionally, it puts server info to logs
     And print last response
     Then I should see "All checks passed successfully. Your system is ready to run DeskPRO."
 

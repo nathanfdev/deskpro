@@ -1,14 +1,12 @@
-@tasks
 Feature: /task_lists endpoint
   To CRUD DeskPRO tasks
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I try to create a new task list with empty request
     When I send a POST request to "/api/v2/task_lists"
     Then the response status code should be 400
@@ -38,15 +36,14 @@ Feature: /task_lists endpoint
     And the JSON node "data[0].project" should be equal to 1
 
   Scenario: I get single task list
-    When I send a GET request to "/api/v2/task_lists/1"
+    When I send a GET request to "/api/v2/task_lists/{lastCreatedId}"
     Then the response should be in JSON
     And the response status code should be 200
-    And the JSON node "data.id" should be equal to 1
     And the JSON node "data.title" should be equal to "Task list 1"
     And the JSON node "data.project" should be equal to 1
 
   Scenario: I modify task list
-    When I send a PUT request to "/api/v2/task_lists/1" with body:
+    When I send a PUT request to "/api/v2/task_lists/{lastCreatedId}" with body:
     """
 {
   "title": "Task list 1 (edited)",
@@ -56,7 +53,7 @@ Feature: /task_lists endpoint
     Then the response status code should be 204
     And the response should be empty
 
-    When I send a GET request to "/api/v2/task_lists/1"
+    When I send a GET request to "/api/v2/task_lists/{lastCreatedId}"
     Then the response should be in JSON
     And the response status code should be 200
 
@@ -64,8 +61,8 @@ Feature: /task_lists endpoint
     And the JSON node "data.project" should be equal to 2
 
   Scenario: I delete task list
-    When I send a DELETE request to "/api/v2/task_lists/1"
+    When I send a DELETE request to "/api/v2/task_lists/{lastCreatedId}"
     Then the response status code should be 200
 
-    When I send a GET request to "/api/v2/task_lists/1"
+    When I send a GET request to "/api/v2/task_lists/{lastCreatedId}"
     Then the response status code should be 404

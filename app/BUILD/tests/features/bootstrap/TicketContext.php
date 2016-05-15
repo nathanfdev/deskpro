@@ -30,6 +30,7 @@ namespace DpBehat;
 
 use Application\DeskPRO\Entity\TicketLog;
 use Behat\Gherkin\Node\TableNode;
+use DpBehat\Api\RestContext;
 
 /**
  * Class TicketContext.
@@ -37,13 +38,14 @@ use Behat\Gherkin\Node\TableNode;
 class TicketContext extends BaseContext
 {
     /**
-     * @Given I reset ticket with id=:ticketId logs
+     * @Given I reset ticket with id=":ticketId" logs
      *
      * @param int $ticketId
      */
     public function iResetTicketLogs($ticketId)
     {
-        $qb = $this->em()->createQueryBuilder();
+        $ticketId = RestContext::replacePlaceholders($ticketId);
+        $qb       = $this->em()->createQueryBuilder();
         $qb
             ->delete()
             ->from(TicketLog::class, 'e')
@@ -55,13 +57,14 @@ class TicketContext extends BaseContext
     }
 
     /**
-     * @Then print ticket with id=:ticketId logs
+     * @Then print ticket with id=":ticketId" logs
      *
      * @param $ticketId
      */
     public function printTicketLogActions($ticketId)
     {
-        $result = $this->getTicketLogActions($ticketId);
+        $ticketId = RestContext::replacePlaceholders($ticketId);
+        $result   = $this->getTicketLogActions($ticketId);
 
         $existTypes = [];
         foreach ($result as $log) {
@@ -76,7 +79,7 @@ class TicketContext extends BaseContext
     }
 
     /**
-     * @Then ticket with id=:ticketId has :actionType log
+     * @Then ticket with id=":ticketId" has :actionType log
      *
      * @param int    $ticketId
      * @param string $actionType
@@ -85,14 +88,15 @@ class TicketContext extends BaseContext
      */
     public function ticketLogsHaveAction($ticketId, $actionType)
     {
-        $result = $this->getTicketLogActions($ticketId, [$actionType]);
+        $ticketId = RestContext::replacePlaceholders($ticketId);
+        $result   = $this->getTicketLogActions($ticketId, [$actionType]);
         if (empty($result)) {
             throw new \Exception('No ticket log found');
         }
     }
 
     /**
-     * @Then ticket with id=:ticketId has logs:
+     * @Then ticket with id=":ticketId" has logs:
      *
      * @param int       $ticketId
      * @param TableNode $actions
@@ -101,8 +105,9 @@ class TicketContext extends BaseContext
      */
     public function ticketLogsHaveActions($ticketId, TableNode $actions)
     {
-        $types  = $this->getActionTypes($actions);
-        $result = $this->getTicketLogActions($ticketId, $types);
+        $ticketId = RestContext::replacePlaceholders($ticketId);
+        $types    = $this->getActionTypes($actions);
+        $result   = $this->getTicketLogActions($ticketId, $types);
 
         $existTypes = [];
         foreach ($result as $log) {
@@ -116,7 +121,7 @@ class TicketContext extends BaseContext
     }
 
     /**
-     * @Then ticket with id=:ticketId has no logs:
+     * @Then ticket with id=":ticketId" has no logs:
      *
      * @param int       $ticketId
      * @param TableNode $actions
@@ -125,8 +130,9 @@ class TicketContext extends BaseContext
      */
     public function ticketLogsHaveNoActions($ticketId, TableNode $actions)
     {
-        $types  = $this->getActionTypes($actions);
-        $result = $this->getTicketLogActions($ticketId, $types);
+        $ticketId = RestContext::replacePlaceholders($ticketId);
+        $types    = $this->getActionTypes($actions);
+        $result   = $this->getTicketLogActions($ticketId, $types);
 
         if (!empty($result)) {
             throw new \Exception('Found unexpected ticket logs');

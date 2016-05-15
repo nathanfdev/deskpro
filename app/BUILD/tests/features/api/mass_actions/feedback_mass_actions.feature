@@ -1,6 +1,6 @@
 Feature: /mass_actions/feedback endpoint
   To complete mass actions on feedback list
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:

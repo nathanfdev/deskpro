@@ -1,6 +1,6 @@
 Feature: /articles, /news, /downloads endpoints
   To retrieve various sets of DeskPRO Articles/News/Downloads
-  As a developer
+  As an API user
   I want API endpoints with search capabilities
 
   Background:
@@ -10,7 +10,6 @@ Feature: /articles, /news, /downloads endpoints
     And I set permission "downloads.use" = 1 for "registered" usergroup
     And I set permission "news.use" = 1 for "registered" usergroup
 
-  @reinstall
   Scenario: Reinstall hack scenario to not put it on the next Scenario Outline
     Given I send a GET request to "/api/v2/languages"
 

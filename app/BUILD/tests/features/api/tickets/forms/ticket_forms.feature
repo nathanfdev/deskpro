@@ -1,7 +1,6 @@
-@tickets @basic
 Feature: /ticket_forms endpoint
   To ticket with layouts form
-  As a developer
+  As an API user
   I want to check creating/updating tickets via form with layouts
 
   Background:
@@ -27,14 +26,13 @@ Feature: /ticket_forms endpoint
 }
     """
     Then the response status code should be 201
-    And the JSON node "data.id" should be equal to 5
     And the JSON node "data.subject" should be equal to "Sample Ticket"
     And the JSON node "data.department" should be equal to 1
     And the JSON node "data.product" should be equal to 0
     And the JSON node "data.priority" should be equal to 0
     And the JSON node "data.cc" should have 0 elements
     And the JSON node "data.followers" should have 0 elements
-    And ticket with id=5 has logs:
+    And ticket with id="{lastCreatedId}" has logs:
       | type               |
       | action_starter     |
       | ticket_created     |
@@ -43,10 +41,9 @@ Feature: /ticket_forms endpoint
       | changed_department |
       | changed_person     |
 
-    When I send a GET request to "/api/v2/tickets/5/messages"
+    When I send a GET request to "/api/v2/tickets/{lastCreatedId}/messages"
     Then the response status code should be 200
     And the JSON node "data" should have 1 element
-    And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[0].message" should contain "<p>my html message"
     And the JSON node "data[0].attachments" should have 0 elements
 
@@ -56,8 +53,8 @@ Feature: /ticket_forms endpoint
     And the JSON node "data.primary_email" should be equal to "admin@deskpro.dev"
 
   Scenario: I modify and retrieve a ticket
-    Given I reset ticket with id=5 logs
-    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
+    Given I reset ticket with id="{lastCreatedId}" logs
+    When I send a PUT request to "/api/v2/ticket_forms/agent/{lastCreatedId}" with body:
     """
 {
   "person": {
@@ -108,7 +105,7 @@ Feature: /ticket_forms endpoint
 }
     """
     Then the response status code should be 204
-    And ticket with id=5 has logs:
+    And ticket with id="{lastCreatedId}" has logs:
       | type                       |
       | changed_department         |
       | changed_subject            |
@@ -122,9 +119,8 @@ Feature: /ticket_forms endpoint
       | changed_agent_participants |
       | changed_custom_field       |
 
-    When I send a GET request to "/api/v2/tickets/5"
+    When I send a GET request to "/api/v2/tickets/{lastCreatedId}"
     Then the response status code should be 200
-    And the JSON node "data.id" should be equal to 5
     And the JSON node "data.subject" should be equal to "Modified subject"
     And the JSON node "data.department" should be equal to 2
     And the JSON node "data.person" should be equal to 1
@@ -151,10 +147,9 @@ Feature: /ticket_forms endpoint
     And the JSON node "data.fields.8.detail.10.title" should be equal to "Choice 2"
     And the JSON node "data.fields.8.detail.11.title" should be equal to "Choice 3"
 
-    When I send a GET request to "/api/v2/tickets/5/messages"
+    When I send a GET request to "/api/v2/tickets/{lastCreatedId}/messages"
     Then the response status code should be 200
     And the JSON node "data" should have 1 element
-    And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[0].message" should be equal to "my text message"
     And the JSON node "data[0].attachments" should have 2 elements
     And the JSON node "data[0].attachments[0]" should be equal to 1
@@ -181,7 +176,7 @@ Feature: /ticket_forms endpoint
     And the JSON node "data.fields.7.value" should be equal to "textarea text"
 
   Scenario: I modify participants
-    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
+    When I send a PUT request to "/api/v2/ticket_forms/agent/{lastCreatedId}" with body:
     """
 {
   "followers": ["deleted-agent@deskpro.dev", "admin@deskpro.dev"],
@@ -190,7 +185,7 @@ Feature: /ticket_forms endpoint
     """
     Then the response status code should be 204
 
-    When I send a GET request to "/api/v2/tickets/5"
+    When I send a GET request to "/api/v2/tickets/{lastCreatedId}"
     Then the response status code should be 200
 
     And the JSON node "data.cc" should have 0 elements
@@ -199,7 +194,7 @@ Feature: /ticket_forms endpoint
     And the JSON node "data.followers[1]" should be equal to 1
 
   Scenario: I modify custom checkbox group
-    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
+    When I send a PUT request to "/api/v2/ticket_forms/agent/{lastCreatedId}" with body:
     """
 {
   "fields": {
@@ -209,7 +204,7 @@ Feature: /ticket_forms endpoint
     """
     Then the response status code should be 204
 
-    When I send a GET request to "/api/v2/tickets/5"
+    When I send a GET request to "/api/v2/tickets/{lastCreatedId}"
     Then the response status code should be 200
 
     And the JSON node "data.fields.8.value" should have 2 element
@@ -226,7 +221,7 @@ Feature: /ticket_forms endpoint
     And the JSON node "data.fields.7.value" should be equal to "textarea text"
 
   Scenario: I modify custom text field in data serializer format
-    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
+    When I send a PUT request to "/api/v2/ticket_forms/agent/{lastCreatedId}" with body:
     """
 {
   "fields": {
@@ -241,13 +236,13 @@ Feature: /ticket_forms endpoint
     """
     Then the response status code should be 204
 
-    When I send a GET request to "/api/v2/tickets/5"
+    When I send a GET request to "/api/v2/tickets/{lastCreatedId}"
     Then the response status code should be 200
     And the JSON node "data.fields.6.value" should be equal to "edited inline text"
     And the JSON node "data.fields.7.value" should be equal to "textarea text"
 
   Scenario: I modify ticket person by id
-    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
+    When I send a PUT request to "/api/v2/ticket_forms/agent/{lastCreatedId}" with body:
     """
 {
   "person": 2,
@@ -258,7 +253,7 @@ Feature: /ticket_forms endpoint
     """
     Then the response status code should be 204
 
-    When I send a GET request to "/api/v2/tickets/5"
+    When I send a GET request to "/api/v2/tickets/{lastCreatedId}"
     Then the response status code should be 200
     And the JSON node "data.person" should be equal to 2
 
@@ -283,7 +278,7 @@ Feature: /ticket_forms endpoint
     And the JSON node "data.fields.7.value" should not exist
 
   Scenario: I modify ticket person by email
-    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
+    When I send a PUT request to "/api/v2/ticket_forms/agent/{lastCreatedId}" with body:
     """
 {
   "person": "user@deskpro.dev"
@@ -291,18 +286,17 @@ Feature: /ticket_forms endpoint
     """
     Then the response status code should be 204
 
-    When I send a GET request to "/api/v2/tickets/5"
+    When I send a GET request to "/api/v2/tickets/{lastCreatedId}"
     Then the response status code should be 200
     And the JSON node "data.person" should be equal to 3
 
-    When I send a GET request to "/api/v2/tickets/5/messages"
+    When I send a GET request to "/api/v2/tickets/{lastCreatedId}/messages"
     Then the response status code should be 200
     And the JSON node "data" should have 1 element
-    And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[0].person" should be equal to 3
 
   Scenario: I modify ticket person by creating a new person using name and email fields
-    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
+    When I send a PUT request to "/api/v2/ticket_forms/agent/{lastCreatedId}" with body:
     """
 {
   "person": {
@@ -313,7 +307,7 @@ Feature: /ticket_forms endpoint
     """
     Then the response status code should be 204
 
-    When I send a GET request to "/api/v2/tickets/5"
+    When I send a GET request to "/api/v2/tickets/{lastCreatedId}"
     Then the response status code should be 200
     And the JSON node "data.person" should be equal to 5
 
@@ -324,7 +318,7 @@ Feature: /ticket_forms endpoint
     And the JSON node "data.emails[0]" should be equal to "new-user@deskpro.dev"
 
   Scenario: I change department and unset previous department fields
-    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
+    When I send a PUT request to "/api/v2/ticket_forms/agent/{lastCreatedId}" with body:
     """
 {
   "subject": "Sample Ticket",
@@ -337,22 +331,20 @@ Feature: /ticket_forms endpoint
     """
     Then the response status code should be 204
 
-    When I send a GET request to "/api/v2/tickets/5"
+    When I send a GET request to "/api/v2/tickets/{lastCreatedId}"
     Then the response status code should be 200
 
-    And the JSON node "data.id" should be equal to 5
     And the JSON node "data.subject" should be equal to "Sample Ticket"
     And the JSON node "data.department" should be equal to 1
     And the JSON node "data.fields" should have 0 elements
 
-    When I send a GET request to "/api/v2/tickets/5/messages"
+    When I send a GET request to "/api/v2/tickets/{lastCreatedId}/messages"
     Then the response status code should be 200
     And the JSON node "data" should have 1 element
-    And the JSON node "data[0].id" should be equal to 1
     And the JSON node "data[0].message" should contain "<p>my html message"
 
   Scenario: I delete attachment
-    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
+    When I send a PUT request to "/api/v2/ticket_forms/agent/{lastCreatedId}" with body:
     """
 {
   "department": 2,
@@ -361,16 +353,13 @@ Feature: /ticket_forms endpoint
     """
     Then the response status code should be 204
 
-    When I send a GET request to "/api/v2/tickets/5/messages"
+    When I send a GET request to "/api/v2/tickets/{lastCreatedId}/messages"
     Then the response status code should be 200
     And the JSON node "data" should have 1 element
     And the JSON node "data[0].attachments" should have 1 element
 
-    # todo should be with id = 1
-    And the JSON node "data[0].attachments[0]" should be equal to 3
-
   Scenario: I set empty attachments
-    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
+    When I send a PUT request to "/api/v2/ticket_forms/agent/{lastCreatedId}" with body:
     """
 {
   "department": 2,
@@ -379,13 +368,13 @@ Feature: /ticket_forms endpoint
     """
     Then the response status code should be 204
 
-    When I send a GET request to "/api/v2/tickets/5/messages"
+    When I send a GET request to "/api/v2/tickets/{lastCreatedId}/messages"
     Then the response status code should be 200
     And the JSON node "data" should have 1 element
     And the JSON node "data[0].attachments" should have 0 elements
 
   Scenario: I change labels
-    When I send a PUT request to "/api/v2/ticket_forms/agent/5" with body:
+    When I send a PUT request to "/api/v2/ticket_forms/agent/{lastCreatedId}" with body:
     """
 {
   "department": 2,
@@ -394,7 +383,7 @@ Feature: /ticket_forms endpoint
     """
     Then the response status code should be 204
 
-    When I send a GET request to "/api/v2/tickets/5"
+    When I send a GET request to "/api/v2/tickets/{lastCreatedId}"
     Then the response status code should be 200
     And the JSON node "data.labels" should have 2 elements
     And the JSON node "data.labels[0]" should be equal to "ticket label 1"

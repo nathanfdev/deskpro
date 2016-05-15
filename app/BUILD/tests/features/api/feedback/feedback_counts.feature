@@ -1,7 +1,6 @@
-@counts @feedback-nav @feedback
 Feature: /feedback/counts endpoint
   To obtain counters for different types of feedback
-  As a developer
+  As an API user
   I want an endpoint for feedback counts
 
   Background:

@@ -6,6 +6,7 @@ Feature: submitting new feedback
     And the following languages are enabled:
       | default |
     And the default brand is using the standard theme
+    And I disable anti-abuse rate limiting
 
   Scenario: A logged in user submits valid feedback
     Given I login with user credentials
@@ -35,7 +36,6 @@ Feature: submitting new feedback
     Then I should be on "/feedback"
     Then I should see a form error with "This value is required"
 
-  @reinstall
   Scenario: A guest submits valid feedback and needs email verification
     Given I am on "/feedback"
     When I select "Suggestion" from "new_feedback_category"

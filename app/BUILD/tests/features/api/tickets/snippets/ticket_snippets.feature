@@ -1,7 +1,6 @@
-@text-snippets
 Feature: /ticket_snippets endpoint
   To CRUD DeskPRO ticket snippets
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:

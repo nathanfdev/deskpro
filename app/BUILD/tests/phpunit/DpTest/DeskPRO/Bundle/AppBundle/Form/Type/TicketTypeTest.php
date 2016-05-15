@@ -48,12 +48,7 @@ class TicketTypeTest extends PortalTestCase
 {
     public function setUp()
     {
-        $this->installDataSet('fresh', true); // always force a reload to ensure the layout doesn't change
-    }
-
-    public function tearDown()
-    {
-        //$this->installDataSet('fresh', true); // clear out the changes we made to the db
+        $this->installDataSet('fresh', true, true); // always force a reload to ensure the layout doesn't change
     }
 
     /**

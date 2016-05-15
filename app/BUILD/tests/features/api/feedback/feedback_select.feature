@@ -1,7 +1,6 @@
-@feedback-nav @feedback
 Feature: /feedback endpoint
   To obtain filtered list of feedback
-  As a developer
+  As an API user
   I want an endpoint for feedback select
 
   Background:
@@ -9,7 +8,6 @@ Feature: /feedback endpoint
     And my request is authenticated
     And I set permission "feedback.use" = 1 for "registered" usergroup
 
-  @reinstall
   Scenario: I GET list of feedback with hidden_status set to validating
     When I send a GET request to "/api/v2/feedback?awaiting_validation=1"
     Then the response should be in JSON
@@ -19,7 +17,6 @@ Feature: /feedback endpoint
     And the JSON node "meta.pagination" should exist
     And the JSON node "meta.pagination.total" should be equal to 18
 
-  @basic
   Scenario: I GET list of feedback with hidden_status set to validating and side-loaded author info
     When I send a GET request to "/api/v2/feedback?include=person&awaiting_validation=1"
     Then the response should be in JSON

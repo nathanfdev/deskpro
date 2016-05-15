@@ -1,7 +1,6 @@
-@feedback-nav @feedback
 Feature: /feedback_types endpoint
   To retrieve info about feedback types
-  As a developer
+  As an API user
   I want an endpoint for feedback types
 
   Background:
