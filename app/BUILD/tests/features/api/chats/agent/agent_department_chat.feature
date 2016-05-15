@@ -23,6 +23,8 @@ Feature: /agent_chats endpoint
     And the JSON node "data.departments[0]" should be equal to 3
 
   Scenario: I try to create chat with ticket department
+    Given I remove "admin" usergroup relation "agent_all_perms"
+    And I remove "admin" usergroup relation "agent_all_safe_perms"
     When I send a POST request to "api/v2/agent_chats" with body:
     """
 {
@@ -35,7 +37,11 @@ Feature: /agent_chats endpoint
     And the JSON node "errors.fields.participant.errors[0].code" should be equal to "bad_choice"
     And the JSON node "errors.fields.participant.errors[0].message" should be equal to "One or more of the given values is invalid."
 
+  # This given is done to avoid data reinstalling, and we can't place this test before previous, because we should check
+  # that department was not added
   Scenario: I get an agent chat (department)
+    Given I add "admin" usergroup relation "agent_all_perms"
+    And I add "admin" usergroup relation "agent_all_safe_perms"
     When I send a GET request to "/api/v2/agent_chats/1"
     Then the response should be in JSON
     And the response status code should be 200

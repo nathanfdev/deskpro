@@ -480,9 +480,14 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
                     $ids[] = $usergroup['usergroup_id'];
                 }
             }
-            $usergroups = implode(',', $ids);
-            $sql        = "SELECT DISTINCT(person_id) FROM person2usergroups WHERE usergroup_id IN ({$usergroups})";
-            $personIds  = $db->fetchColumn($sql);
+
+            if ($ids) {
+                $usergroups = implode(',', $ids);
+                $sql        = "SELECT DISTINCT(person_id) FROM person2usergroups WHERE usergroup_id IN ({$usergroups})";
+                $personIds  = $db->fetchColumn($sql);
+            } else {
+                $personIds = [];
+            }
 
             foreach ($permissions['agents'] as $agent) {
                 if ($agent['perm_name'] === 'full') {

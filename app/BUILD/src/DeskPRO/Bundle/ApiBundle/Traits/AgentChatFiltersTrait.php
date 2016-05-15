@@ -48,7 +48,7 @@ trait AgentChatFiltersTrait
     public function applyParticipantFilters(QueryBuilder $qb, $alias)
     {
         $person      = $this->getUser();
-        $departments = $this->container->get('data.departments')->getChatDepartmentsForPerson($person);
+        $departments = $this->container->get('data.departments')->getDepartmentsForPerson($person);
 
         $qb
             ->leftJoin("$alias.participants", 'participants')

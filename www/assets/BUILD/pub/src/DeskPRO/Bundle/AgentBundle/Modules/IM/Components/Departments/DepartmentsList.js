@@ -1,10 +1,10 @@
 import React, {Component, PropTypes} from 'react';
 import { DepartmentsListItem } from './DepartmentsListItem';
 import { connect } from 'react-redux';
-import { myChatsDepartmentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { myDepartmentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 @connect(state => ({
-  departments: myChatsDepartmentsSelector(state)
+  departments: myDepartmentsSelector(state)
 }))
 export class DepartmentsList extends Component {
   static propTypes = {

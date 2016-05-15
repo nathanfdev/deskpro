@@ -12,9 +12,10 @@ export const preloadData = createAction(
   () => dispatch => new Promise(
     (resolve) => {
       const batch = 'DP_API/batch?get='
-          + 'DP_API/ticket_departments'
-          + ',DP_API/ticket_departments%3Fmy%3Dtrue'
-          + ',DP_API/chat_departments%3Fmy%3Dtrue'
+          + 'DP_API/departments%3Ftype%3Dtickets'
+          + ',DP_API/departments%3Ftype%3Dchat'
+          + ',DP_API/departments%3Ftype%3Dtickets%26my%3Dtrue'
+          + ',DP_API/departments%3Fmy%3Dtrue'
           + ',DP_API/agents'
           + ',DP_API/agent_teams'
           + ',DP_API/agent_teams%3Fmy%3Dtrue'
@@ -27,17 +28,18 @@ export const preloadData = createAction(
       api.sendGet(batch)
         .success(({ responses }) => {
           const data = flattenBatchResponses(responses);
-          dispatch(setCollection('Department', 'all', data[0]));
-          dispatch(setCollection('Department', 'my', data[1]));
-          dispatch(setCollection('ChatDepartment', 'my', data[2]));
-          dispatch(setCollection('Person', 'agents', data[3]));
-          dispatch(setCollection('AgentTeam', 'all', data[4]));
-          dispatch(setCollection('AgentTeam', 'my', data[5]));
-          dispatch(setCollection('Language', 'all', data[6]));
-          dispatch(setCollection('UserGroup', 'all', data[7]));
-          dispatch(setAgentSettings(data[8]));
-          dispatch(setupActionAlerts(data[9]));
-          dispatch(setCollection('Person', 'me', [data[10].person]));
+          dispatch(setCollection('Department', 'all_tickets', data[0]));
+          dispatch(setCollection('Department', 'all_chat', data[1]));
+          dispatch(setCollection('Department', 'my_tickets', data[2]));
+          dispatch(setCollection('Department', 'my', data[3]));
+          dispatch(setCollection('Person', 'agents', data[4]));
+          dispatch(setCollection('AgentTeam', 'all', data[5]));
+          dispatch(setCollection('AgentTeam', 'my', data[6]));
+          dispatch(setCollection('Language', 'all', data[7]));
+          dispatch(setCollection('UserGroup', 'all', data[8]));
+          dispatch(setAgentSettings(data[9]));
+          dispatch(setupActionAlerts(data[10]));
+          dispatch(setCollection('Person', 'me', [data[11].person]));
 
           dispatch(donePreloading());
         })

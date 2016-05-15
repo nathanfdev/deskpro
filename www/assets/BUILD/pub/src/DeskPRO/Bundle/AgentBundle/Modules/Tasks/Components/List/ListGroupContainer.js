@@ -16,7 +16,7 @@ import { pureRender } from 'Ampliflux';
   projects:    allSelectorFactory('Project')(state),
   agents:      agentsSelector(state),
   agentTeams:  allSelectorFactory('AgentTeam')(state),
-  departments: allSelectorFactory('Department')(state)
+  departments: collectionSelectorFactory('Department', 'all_tickets')(state)
 }))
 
 @pureRender

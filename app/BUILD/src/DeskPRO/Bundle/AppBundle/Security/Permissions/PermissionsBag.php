@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -64,6 +64,11 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
     protected $department_chat_ids;
 
     /**
+     * @var array just a list of all allowed
+     */
+    protected $department_ids;
+
+    /**
      * @var array allowed feedback categories
      */
     protected $feedback_categories;
@@ -106,6 +111,7 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
         $this->setArray($permissions);
         $this->setAllowedTicketDepartmentIds($department_ticket_ids);
         $this->setAllowedChatDepartmentIds($department_chat_ids);
+        $this->setAllowedDepartmentsIds(array_replace_recursive($department_chat_ids, $department_ticket_ids));
         $this->setAllowedFeedbackCategoryIds($feedback_category_ids);
         $this->setAllowedNewsCategories($news_category_ids);
         $this->setAllowedArticleCategories($article_category_ids);
@@ -217,6 +223,19 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
     }
 
     /**
+     * A list of department IDs that are allowed.
+     *
+     * @return array
+     */
+    public function getAllowedDepartmentIds()
+    {
+        // the keys are the ids, and the value is an array of permissions like "full" => 1.
+        // this is just for an array of the ids, but for "deeper" questions we will make another
+        // method
+        return array_keys($this->department_ids);
+    }
+
+    /**
      * @param array $department_ticket_ids
      */
     public function setAllowedTicketDepartmentIds(array $department_ticket_ids)
@@ -230,6 +249,14 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
     public function setAllowedChatDepartmentIds(array $chat_department_ids)
     {
         $this->department_chat_ids = $chat_department_ids;
+    }
+
+    /**
+     * @param array $department_ids
+     */
+    public function setAllowedDepartmentsIds(array $department_ids)
+    {
+        $this->department_ids = $department_ids;
     }
 
     /**
@@ -392,6 +419,7 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
             'download'          => $this->download_categories,
             'department_chat'   => $this->department_chat_ids,
             'department_ticket' => $this->department_ticket_ids,
+            'departments'       => $this->department_ids,
         ]);
     }
 
@@ -409,6 +437,7 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
         $this->download_categories   = $unserialized['download'];
         $this->department_chat_ids   = $unserialized['department_chat'];
         $this->department_ticket_ids = $unserialized['department_ticket'];
+        $this->department_ids        = $unserialized['departments'];
     }
 
     /**

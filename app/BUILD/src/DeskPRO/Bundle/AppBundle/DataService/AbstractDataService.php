@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
@@ -77,14 +76,15 @@ class AbstractDataService
      *
      * Stores the result of $callable in an array in case this is fetched frequently in this request.
      *
-     * @param mixed $params   the "ArbitraryHasher" input to create cache key for this callable
-     * @param mixed $callable doesn't need to be a callable, can be any default value, but usually is a callable
+     * @param mixed $params         the "ArbitraryHasher" input to create cache key for this callable
+     * @param mixed $callable       doesn't need to be a callable, can be any default value, but usually is a callable
+     * @param mixed $callableParams list of arguments for callable
      *
      * @return mixed|null
      */
-    protected function generateAndCache($params, $callable)
+    protected function generateAndCache($params, $callable, array $callableParams = [])
     {
-        return $this->getCache()->get($this->generateHash($params), $callable);
+        return $this->getCache()->get($this->generateHash($params), $callable, $callableParams);
     }
 
     /**
