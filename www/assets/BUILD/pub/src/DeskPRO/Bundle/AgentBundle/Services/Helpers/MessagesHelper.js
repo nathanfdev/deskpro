@@ -3,17 +3,45 @@ export class MessagesHelper {
   markMessages(state, payload) {
     const chat = this.getChat(state, payload.chatId);
     let changed = false;
+    let newState = state;
     if (chat) {
       payload.uuids.map(uuid => {
         if (chat.messages.has(uuid) && chat.messages.get(uuid).status < payload.status) {
           changed = true;
           chat.messages.get(uuid).status = payload.status;
+          newState = this.reduceCounts(newState, payload);
         }
       });
       if (changed) {
-        return state.setIn(this.getPath(state, payload.chatId), {...chat});
+        return newState.setIn(this.getPath(state, payload.chatId), {...chat});
       }
     }
+    return newState;
+  }
+
+  reduceCounts(state, payload) {
+    const counts = state.get('counts');
+    const nested = counts.nested;
+    if (nested[payload.chatId] && payload.status === 2) {
+      nested[payload.chatId].count--;
+      counts.nested = nested;
+      return state.set('counts', { ...counts });
+    }
+    return state;
+  }
+
+  increaseCounts(state, payload) {
+    const counts = state.get('counts');
+    const nested = counts.nested;
+    if (!nested[payload.chatId]) {
+      nested[payload.chatId] = { count: 0 };
+    }
+    if (payload.status !== 2) {
+      nested[payload.chatId].count++;
+      counts.nested = nested;
+      return state.set('counts', { ...counts });
+    }
+
     return state;
   }
 
@@ -25,7 +53,7 @@ export class MessagesHelper {
     const chat = this.getChat(state, payload.data.chat);
     if (chat) {
       chat.messages = chat.messages.set(payload.data.uuid, payload.data);
-      return state.setIn(this.getPath(state, payload.data.chat), {...chat});
+      return state.setIn(this.getPath(state, payload.data.chat), { ...chat });
     }
     return state;
   }
@@ -62,19 +90,25 @@ export class MessagesHelper {
   }
 
   handleNewMessage(state, payload) {
-    const chat = this.getChat(state, payload.data.chat);
+    let newState = state;
+    const chat = this.getChat(state, payload.data.data.chat);
     if (chat) {
-      chat.messages = chat.messages.set(payload.data.uuid, payload.data);
-      return state.setIn(this.getPath(state, payload.data.chat), {...chat});
+      chat.messages = chat.messages.set(payload.data.data.uuid, payload.data.data);
+      newState = this.increaseCounts(state, {
+        chatId: payload.data.data.chat,
+        uuids:  [payload.data.data.uuid],
+        status: payload.data.data.status
+      });
+      return newState.setIn(this.getPath(state, payload.data.data.chat), { ...chat });
     }
 
-    return state;
+    return newState;
   }
 
   handleMarkMessage(state, payload) {
     return this.markMessages(state, {
-      chatId: payload.data.chat_id,
-      uuids: [payload.data.message_uuid],
+      chatId: payload.data.chat,
+      uuids:  [payload.data.message_uuid],
       status: payload.data.status
     });
   }

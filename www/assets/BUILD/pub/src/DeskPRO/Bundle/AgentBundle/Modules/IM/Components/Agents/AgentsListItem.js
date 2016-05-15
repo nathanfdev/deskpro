@@ -12,7 +12,7 @@ export class AgentsListItem extends React.Component {
     highlight: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired
   };
 
-  startChat = (id) => {
+  startChat = () => {
     this.props.dispatch(actions.startChat(this.props.agent.get('id'), 'agent'));
   };
 
@@ -34,8 +34,12 @@ export class AgentsListItem extends React.Component {
           onClick={this.startChat}
         >
           <PersonAvatar person={this.props.agent} size={22} />
-          <span className="agent"><span dangerouslySetInnerHTML={{__html: name}}/><span
-            className="datestamp">{this.props.agent.get('last_seen') ? <TimeAgo date={this.props.agent.get('last_seen')} /> : 'never'}</span></span>
+          <span className="agent">
+            <span dangerouslySetInnerHTML={{ __html: name }} />
+            <span className="datestamp">
+              {this.props.agent.get('last_seen') ? <TimeAgo date={this.props.agent.get('last_seen')} /> : 'never'}
+            </span>
+          </span>
         </a>
       </li>
     );

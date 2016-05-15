@@ -3,22 +3,23 @@ import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 
 export const loadMessages = createAction(
   'IM_LOAD_MESSAGES',
-  (chatId, searchQuery = '', page = 1) => {
-    return repository('AgentChat').loadMessages(chatId, searchQuery, page).then(response => {
-      const messages = response.data.data;
-      const meta = response.data.meta.pagination;
+  (chatId, searchQuery = '', page = 1) =>
+    repository('AgentChat')
+      .loadMessages(chatId, searchQuery, page)
+      .then(response => {
+        const messages = response.data.data;
+        const meta = response.data.meta.pagination;
 
-      return new Promise((resolve) => {
-        resolve({
-          messages,
-          searchQuery,
-          chat_id: chatId,
-          page:    meta.current_page,
-          pages:   meta.total_pages
+        return new Promise((resolve) => {
+          resolve({
+            messages,
+            searchQuery,
+            chat:  chatId,
+            page:  meta.current_page,
+            pages: meta.total_pages
+          });
         });
-      });
-    });
-  }
+      })
 );
 
 export const addMessageOptimistic = createAction(
@@ -26,16 +27,16 @@ export const addMessageOptimistic = createAction(
   (chatId, message, uuid, me) => {
     return {
       data: {
-        agent_chat_id: chatId,
-        date_created:  new Date(),
-        id:            null,
-        uuid:          uuid,
-        message:       message,
-        status:        0,
-        metadata:      null,
-        person:        me.get('id'),
-        person_name:   me.get('name'),
-        old:           false
+        chat:         chatId,
+        date_created: new Date(),
+        id:           null,
+        ['uuid']:     uuid,
+        ['message']:  message,
+        status:       0,
+        metadata:     null,
+        person:       me.get('id'),
+        person_name:  me.get('name'),
+        old:          false
       }
     };
   }
@@ -56,8 +57,7 @@ export const addMessage = createAction(
 
 export const refreshCounts = createAction(
   'IM_COUNT_MESSAGES',
-  () => {
-    return new Promise(
+  () => new Promise(
       (resolve, reject) => {
         return repository('AgentChat').loadMessagesCount()
           .success((response) => {
@@ -65,13 +65,14 @@ export const refreshCounts = createAction(
           })
           .error(response => reject(response));
       }
-    );
-  }
+    )
 );
 
 export const markMessagesOptimistic = createAction(
   'IM_MARK_MESSAGES_OPTIMISTIC',
-  (uuids, chatId, status) => { return {uuids: uuids, chatId: chatId, status: status}; }
+  (uuids, chatId, status) => {
+    return { uuids, chatId, status };
+  }
 );
 
 export const markMessages = createAction(
@@ -82,7 +83,7 @@ export const markMessages = createAction(
       (resolve, reject) => {
         return repository('AgentChat').markMessages(chatId, ids, status)
           .success(() => {
-            return resolve({chatId: chatId, uuids: uuids, status: status});
+            return resolve({ chatId, uuids, status });
           })
           .error(response => reject(response));
       }

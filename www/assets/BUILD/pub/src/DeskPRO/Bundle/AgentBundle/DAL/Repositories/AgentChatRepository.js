@@ -27,7 +27,7 @@ export class AgentChatRepository extends ApiRepository {
    * @returns {Promise} promise
    */
   loadMessages(chatId, search = '', page = 1, order = 'date_created') {
-    return this.api.sendGet(`DP_API/${this.url}/${chatId}/messages?` + this.compileParams({ search, page, order }));
+    return this.api.sendGet(`DP_API/${this.url}/${chatId}/messages?${this.compileParams({ search, page, order })}`);
   }
 
   /**
@@ -44,7 +44,7 @@ export class AgentChatRepository extends ApiRepository {
    * @returns {Promise} promise
    */
   loadMessagesCount() {
-    return this.api.sendGet(`DP_API/${this.url}/messages/counts`);
+    return this.api.sendGet(`DP_API/${this.url}/messages/counts?group_by=chat&status[]=0&status[]=1&index_group_by=1&not_my=1`);
   }
 
   /**

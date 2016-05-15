@@ -162,9 +162,10 @@ abstract class CrudController extends BaseController
             }
 
             $result = $qb->getQuery()->getArrayResult();
-            $count  = Count::fromGroupedBy($groupBy);
 
-            $this->addGroupByNestedCounts($count, $result);
+            $count = Count::fromGroupedBy($groupBy);
+
+            $this->addGroupByNestedCounts($count, $result, $request->query->getBoolean('index_group_by', false));
             $count->setCount($totalCount);
         }
 
@@ -430,15 +431,23 @@ abstract class CrudController extends BaseController
     /**
      * @param Count $count
      * @param array $result
+     * @param bool  $indexByGroupName
      */
-    protected function addGroupByNestedCounts(Count $count, array $result)
+    protected function addGroupByNestedCounts(Count $count, array $result, $indexByGroupName = false)
     {
         foreach ($result as $group) {
             if (isset($group['date_title'])) {
                 $group['title'] = DateHelper::$datePeriodLabels[$group['date_title']];
             }
 
-            $count->addNested($group['value'], $group['group_name'], $count->getGroupedBy(), $group['title'], true);
+            $count->addNested(
+                $group['value'],
+                $group['group_name'],
+                $count->getGroupedBy(),
+                $group['title'],
+                true,
+                $indexByGroupName
+            );
         }
     }
 

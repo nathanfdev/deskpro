@@ -7,24 +7,26 @@ import { MessagesHelper } from '../../../Services/Helpers/MessagesHelper';
 
 const messagesHelper = new MessagesHelper();
 
+
 const initialState = {
-  chatMessages: {},
-  searchMessages: {},
-  counts: {},
-  loadingMessages: true,
-  loadingCounts: true,
+  chatMessages:     {},
+  searchMessages:   {},
+  counts:           { nested: {} },
+  loadingMessages:  true,
+  loadingCounts:    true,
   updatingMessages: false,
-  searching: false
+  searching:        false
 };
 
 export default createReducer(initialState, {
   [actions.loadMessages]: async(
     {
-      start: (state) => state.set('loadingMessages', true),
-      success: (state, payload) => {
+      start:   (state) => state.set('loadingMessages', true),
+      success: (state, payloadArgument) => {
+        const payload  = payloadArgument;
         const newState = state.set('searching', Boolean(payload.searchQuery));
-        const chat = messagesHelper.getChat(newState, payload.chat_id);
-        const path = messagesHelper.getPath(newState, payload.chat_id);
+        const chat     = messagesHelper.getChat(newState, payload.chat);
+        const path     = messagesHelper.getPath(newState, payload.chat);
 
         if (!chat || (payload.searchQuery && chat.searchQuery !== payload.searchQuery)) {
           const messages = {};
@@ -42,24 +44,26 @@ export default createReducer(initialState, {
         });
         chat.page = Math.max(chat.page, payload.page);
 
-        return newState.setIn(path, {...chat});
+        return newState.setIn(path, { ...chat });
       },
       done: (state) => state.set('loadingMessages', false)
     }
   ),
-  [actions.addMessageOptimistic]: messagesHelper.addMessageOptimistic.bind(messagesHelper),
+
+  [actions.addMessageOptimistic]:   messagesHelper.addMessageOptimistic.bind(messagesHelper),
   [actions.markMessagesOptimistic]: messagesHelper.markMessagesOptimistic.bind(messagesHelper),
+
   [actions.markMessages]: async({
     success: messagesHelper.markMessages.bind(messagesHelper),
-    done: state => state.set('updatingMessages', false)
+    done:    state => state.set('updatingMessages', false)
   }),
+
   [actions.refreshCounts]: async(
     {
-      success: (state, payload) => {
-        return state.set('counts', payload);
-      },
-      done: (state) => state.set('loadingCounts', false)
+      success: (state, payload) => state.set('counts', payload),
+      done:    (state) => state.set('loadingCounts', false)
     }
   ),
+
   [newActionAlerts]: messagesHelper.handleActionAlerts.bind(messagesHelper)
 });

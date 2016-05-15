@@ -32,6 +32,7 @@ use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\NewMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
+use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\Serializer;
@@ -90,6 +91,9 @@ class NewAgentChatMessageGenerator extends AbstractAgentChatMessageGenerator
      */
     protected function getData(NewMessageEvent $event)
     {
-        return $this->serializer->toArray($this->getChatMessage($event), new SideloadSerializationContext());
+        return $this->serializer->toArray(
+            new ApiWrapper($this->getChatMessage($event)),
+            new SideloadSerializationContext(['agent_chat'])
+        );
     }
 }
