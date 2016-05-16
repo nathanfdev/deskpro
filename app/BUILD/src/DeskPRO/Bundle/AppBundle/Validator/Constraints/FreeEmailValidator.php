@@ -29,7 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\EntityRepository;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
@@ -40,18 +40,18 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 class FreeEmailValidator extends ConstraintValidator
 {
     /**
-     * @var EntityRepository\Person
+     * @var EntityManager
      */
-    private $person_repository;
+    private $em;
 
     /**
      * Constructor.
      *
-     * @param EntityRepository\Person $person_repository
+     * @param EntityManager $em
      */
-    public function __construct(EntityRepository\Person $person_repository)
+    public function __construct(EntityManager $em)
     {
-        $this->person_repository = $person_repository;
+        $this->em = $em;
     }
 
     /**
@@ -63,28 +63,64 @@ class FreeEmailValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, FreeEmail::class);
         }
 
-        if (!$value instanceof Entity\Person) {
-            throw new UnexpectedTypeException($value, Entity\Person::class);
+        if ($value instanceof Entity\Person) {
+            $this->validatePerson($value, $constraint);
+        } elseif ($value instanceof Entity\PersonEmail) {
+            $this->validatePersonEmail($value, $constraint);
+        } else {
+            throw new UnexpectedTypeException($value, Entity\Person::class.' or '.Entity\PersonEmail::class);
         }
+    }
 
-        $exist_persons = $this->person_repository->findByEmails($value->getEmailAddresses());
-        $exist_emails  = [];
-        foreach ($exist_persons as $exist_person) {
-            if ($exist_person->getId() === $value->getId()) {
+    /**
+     * @param Entity\Person $value
+     * @param FreeEmail     $constraint
+     */
+    protected function validatePerson(Entity\Person $value, FreeEmail $constraint)
+    {
+        /** @var \Application\DeskPRO\EntityRepository\Person $repository */
+        $repository  = $this->em->getRepository(Entity\Person::class);
+        $emailsInUse = [];
+
+        foreach ($repository->findByEmails($value->getEmailAddresses()) as $existPerson) {
+            if ($existPerson->getId() === $value->getId()) {
                 continue;
             }
 
-            $exist_emails = array_merge($exist_emails, $exist_person->getEmailAddresses());
+            $emailsInUse = array_merge($emailsInUse, $existPerson->getEmailAddresses());
         }
 
         /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
         $context = $this->context;
 
-        $exist_emails = array_unique($exist_emails);
-        foreach ($exist_emails as $email) {
+        $emailsInUse = array_unique($emailsInUse);
+        foreach ($emailsInUse as $email) {
             $context
                 ->buildViolation($constraint->message)
                 ->setParameter('email', $email)
+                ->setCode(FreeEmail::DUPE_EMAIL)
+                ->atPath($constraint->property)
+                ->addViolation()
+            ;
+        }
+    }
+
+    /**
+     * @param Entity\PersonEmail $value
+     * @param FreeEmail          $constraint
+     */
+    protected function validatePersonEmail(Entity\PersonEmail $value, FreeEmail $constraint)
+    {
+        $existEmail = $this->em->getRepository(Entity\PersonEmail::class)->findOneBy([
+            'email' => $value->getEmail(),
+        ]);
+
+        if ($existEmail && $existEmail->getId() !== $value->getId()) {
+            /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
+            $context = $this->context;
+            $context
+                ->buildViolation($constraint->message)
+                ->setParameter('email', $value->getEmail())
                 ->setCode(FreeEmail::DUPE_EMAIL)
                 ->atPath($constraint->property)
                 ->addViolation()
