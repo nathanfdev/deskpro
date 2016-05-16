@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -45,12 +44,12 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 /**
  * A usergroup is any way to group related users together. Not necessarily just for permissions.
  *
- * @property int $id
- * @property string $title
- * @property string $note
- * @property bool $is_agent_group
- * @property string $sys_name
- * @property bool $is_enabled
+ * @property int          $id
+ * @property string       $title
+ * @property string       $note
+ * @property bool         $is_agent_group
+ * @property string       $sys_name
+ * @property bool         $is_enabled
  * @property Permission[] $permissions
  * @JMS\ExclusionPolicy("all")
  */
@@ -184,6 +183,34 @@ class Usergroup extends DomainObject
     }
 
     /**
+     * Set note.
+     *
+     * @param string $note
+     *
+     * @return $this
+     */
+    public function setNote($note)
+    {
+        $this->setModelField('note', $note);
+
+        return $this;
+    }
+
+    /**
+     * Set system name.
+     *
+     * @param string $sysName
+     *
+     * @return $this
+     */
+    public function setSysName($sysName)
+    {
+        $this->setModelField('sys_name', $sysName);
+
+        return $this;
+    }
+
+    /**
      * Generate a key for a set of usergroups. These same usergroups
      * will always generate the same key.
      *
@@ -236,72 +263,72 @@ class Usergroup extends DomainObject
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             array(
-                 'fieldName'  => 'id',
-                 'type'       => 'integer',
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'id',
-                 'id'         => true,
+                'fieldName'  => 'id',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'id',
+                'id'         => true,
             )
         );
         $metadata->mapField(
             array(
-                 'fieldName'  => 'title',
-                 'type'       => 'string',
-                 'length'     => 255,
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'title',
+                'fieldName'  => 'title',
+                'type'       => 'string',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'title',
             )
         );
         $metadata->mapField(
             array(
-                 'fieldName'  => 'note',
-                 'type'       => 'text',
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'note',
+                'fieldName'  => 'note',
+                'type'       => 'text',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'note',
             )
         );
         $metadata->mapField(
             array(
-                 'fieldName'  => 'is_agent_group',
-                 'type'       => 'boolean',
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'is_agent_group',
+                'fieldName'  => 'is_agent_group',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_agent_group',
             )
         );
         $metadata->mapField(
             array(
-                 'fieldName'  => 'sys_name',
-                 'type'       => 'string',
-                 'length'     => 50,
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => true,
-                 'columnName' => 'sys_name',
+                'fieldName'  => 'sys_name',
+                'type'       => 'string',
+                'length'     => 50,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'sys_name',
             )
         );
         $metadata->mapField(
             array(
-                 'fieldName'  => 'is_enabled',
-                 'type'       => 'boolean',
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'is_enabled',
+                'fieldName'  => 'is_enabled',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_enabled',
             )
         );
         $metadata->mapOneToMany(
             array(
-                 'fieldName'    => 'permissions',
-                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Permission',
-                 'mappedBy'     => 'usergroup',
+                'fieldName'    => 'permissions',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Permission',
+                'mappedBy'     => 'usergroup',
             )
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);

@@ -34,8 +34,10 @@ namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 use Application\DeskPRO\Entity\LabelDef;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Usergroup;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use DeskPRO\Bundle\AppBundle\DataFixtures\Tools\RandomFileFromDir;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Orb\Data\ContentTypes;
@@ -79,6 +81,9 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
      */
     private $ava_people_files;
 
+    /** @var  Usergroup[] */
+    private $userGroups;
+
     /**
      * {@inheritdoc}
      */
@@ -99,6 +104,7 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
         $this->ava_people_files = new RandomFileFromDir(
             DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/avatars_people'
         );
+        $this->userGroups = $this->getExtraUserGroups();
 
         $this->loadLabels();
         $this->loadOrgs();
@@ -110,6 +116,7 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
         $this->loadPeople($this->num_people, false);
         $this->people_ids = $this->fetchIds(self::TABLE_PEOPLE);
 
+        $this->addExtraGroups();
         $this->loadPeopleProps();
 
         $this->createOrgExample();
@@ -219,22 +226,47 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
         );
     }
 
+    private function addExtraGroups()
+    {
+        $people = $this->manager->getRepository(Person::class)->findAll();
+
+        /** @var Person $person */
+        foreach ($people as $person) {
+            if ($this->faker->boolean(33)) {
+                foreach ($this->userGroups as $userGroup) {
+                    if ($this->faker->boolean(50)) {
+                        $person->addUsergroup($userGroup);
+                    }
+                }
+                $this->manager->persist($person);
+            }
+        }
+        $this->manager->flush();
+    }
+
     private function loadOrgs()
     {
-        $batch = [];
-
         for ($i = 0; $i < $this->num_orgs; ++$i) {
-            $batch[] = [
-                'name'         => $this->faker->company,
-                'summary'      => $this->faker->realText($this->faker->numberBetween(10, 500)),
-                'importance'   => 1,
-                'date_created' => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-            ];
+            $org = new Organization();
+            $org
+                ->setName($this->faker->company)
+                ->setSummary($this->faker->realText($this->faker->numberBetween(10, 500)))
+                ->setImportance(1)
+                ->setDateCreated($this->faker->dateTimeThisYear);
+
+            if ($this->faker->boolean(33)) {
+                foreach ($this->userGroups as $userGroup) {
+                    if ($this->faker->boolean(50)) {
+                        $org->addUserGroup($userGroup);
+                    }
+                }
+            }
+
+            $this->manager->persist($org);
         }
 
-        $this->db->batchInsert('organizations', $batch);
-
-        $this->org_ids = $this->db->fetchAllCol('SELECT id FROM organizations');
+        $this->manager->flush();
+        $this->org_ids = $this->fetchIds(self::TABLE_ORGANIZATIONS);
     }
 
     private function loadOrgProps()
@@ -335,5 +367,17 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
 
         $this->manager->persist($person);
         $this->manager->flush();
+    }
+
+    /**
+     * @return mixed
+     */
+    private function getExtraUserGroups()
+    {
+        $criteria = new Criteria();
+        $criteria->where($criteria->expr()->gt('id', 4));
+        $userGroups = $this->manager->getRepository(Usergroup::class)->matching($criteria);
+
+        return $userGroups;
     }
 }
