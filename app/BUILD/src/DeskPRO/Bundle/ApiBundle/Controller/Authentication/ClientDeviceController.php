@@ -35,6 +35,7 @@ use DeskPRO\Bundle\AppBundle\Entity\ClientDevice;
 use DeskPRO\Bundle\AppBundle\Form\Type\ClientDeviceType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
+use DeskPRO\Component\Util\TypeUtils;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
@@ -62,7 +63,7 @@ class ClientDeviceController extends CrudController
 
         if ($model && $model->getDeviceId()) {
             $options['device_id'] = $model->getDeviceId();
-        } elseif ($request->attributes->get('id') && !ctype_digit($request->attributes->get('id'))) {
+        } elseif ($request->attributes->get('id') && !TypeUtils::isIntLike($request->attributes->get('id'))) {
             $options['device_id'] = $request->attributes->get('id');
         }
 
@@ -220,20 +221,24 @@ class ClientDeviceController extends CrudController
     {
         $appType = $request->attributes->get('app_type');
         $repos   = $this->getManager()->getRepository(self::$entity);
+        $entity  = null;
 
-        /** @var ClientDevice $entity */
-        $entity = $repos->find($id);
-
-        if ($entity && $appType && $entity->getAppType() !== $appType) {
-            throw $this->createNotFoundException('Not Found');
-        }
-
-        if (!$entity) {
+        if (!TypeUtils::isIntLike($id)) {
             $criteria = [
                 'device_id' => $id,
                 'app_type'  => $appType,
             ];
+
+            /** @var ClientDevice $entity */
             $entity = $repos->findOneBy($criteria);
+        }
+
+        if (!$entity && TypeUtils::isIntLike($id)) {
+            $entity = $repos->find($id);
+
+            if ($entity && $appType && $entity->getAppType() !== $appType) {
+                throw $this->createNotFoundException('Not Found');
+            }
         }
 
         if (!$entity) {

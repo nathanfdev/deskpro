@@ -32,11 +32,6 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
-  api_serializer.handler.client_device:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\ClientDeviceHandler
-    tags:
-      - { name: "jms_serializer.subscribing_handler" }
-
   api_serializer.handler.person:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\PersonHandler
     arguments:

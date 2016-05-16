@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Component\Util\MapUtils;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Util\NullValue;
 use Symfony\Component\Validator\Constraints as Assert;
 use Zend\Db\TableGateway\Exception\RuntimeException;
@@ -41,6 +42,7 @@ use Zend\Db\TableGateway\Exception\RuntimeException;
  * @ORM\Table(name="client_devices", uniqueConstraints={@ORM\UniqueConstraint(name="device",columns={"device_id", "person_id", "app_type"})})
  * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
  * @ORM\InheritanceType("NONE")
+ * @JMS\ExclusionPolicy("all")
  */
 class ClientDevice implements EntityInterface, NotifyPropertyChanged
 {
@@ -69,6 +71,9 @@ class ClientDevice implements EntityInterface, NotifyPropertyChanged
      *
      * @Assert\NotNull()
      *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
      * @var Person
      */
     protected $person;
@@ -84,6 +89,9 @@ class ClientDevice implements EntityInterface, NotifyPropertyChanged
      * @var string
      * @ORM\Column(type="string", length=255)
      *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @Assert\NotNull()
      */
     protected $device_id;
@@ -93,6 +101,9 @@ class ClientDevice implements EntityInterface, NotifyPropertyChanged
      *
      * @var string
      * @ORM\Column(type="string", length=80)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      *
      * @Assert\NotNull()
      */
@@ -106,6 +117,9 @@ class ClientDevice implements EntityInterface, NotifyPropertyChanged
      * @var string
      * @ORM\Column(type="string", length=80)
      *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @Assert\NotNull()
      */
     protected $device_agent = '';
@@ -115,6 +129,9 @@ class ClientDevice implements EntityInterface, NotifyPropertyChanged
      *
      * @var string
      * @ORM\Column(type="string", length=255)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      *
      * @Assert\NotNull()
      */
@@ -126,6 +143,9 @@ class ClientDevice implements EntityInterface, NotifyPropertyChanged
      * @var string
      * @ORM\Column(type="string", length=80)
      *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @Assert\NotNull()
      */
     protected $app_type = self::APP_TYPE_MOBILE;
@@ -135,6 +155,9 @@ class ClientDevice implements EntityInterface, NotifyPropertyChanged
      *
      * @var bool
      * @ORM\Column(type="boolean", nullable=false)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
      *
      * @Assert\NotNull()
      */
@@ -156,6 +179,9 @@ class ClientDevice implements EntityInterface, NotifyPropertyChanged
      *
      * @var \DateTime
      * @ORM\Column(type="datetime", nullable=false)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
      *
      * @Assert\NotNull()
      */
@@ -336,6 +362,20 @@ class ClientDevice implements EntityInterface, NotifyPropertyChanged
         }
 
         return $this->getData(self::DAT_NOTIFY_TOKEN);
+    }
+
+    /**
+     * @internal
+     *
+     * @JMS\VirtualProperty()
+     * @JMS\SerializedName("notify_token")
+     * @JMS\Type("string")
+     *
+     * @return string|null
+     */
+    public function getNotifyTokenForApi()
+    {
+        return $this->canNotify() ? $this->getNotifyToken() : null;
     }
 
     /**
