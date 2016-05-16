@@ -67,6 +67,7 @@ abstract class DeskProAbstractFixture extends AbstractFixture implements Contain
     const TABLE_NEWS                       = 'news';
     const TABLE_NEWS_CATEGORIES            = 'news_categories';
     const TABLE_NEWS_COMMENTS              = 'news_comments';
+    const TABLE_ORGANIZATIONS              = 'organizations';
     const TABLE_PEOPLE                     = 'people';
     const TABLE_PROBLEMS                   = 'problems';
     const TABLE_PRODUCTS                   = 'products';
