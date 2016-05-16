@@ -110,7 +110,6 @@ return array(
     'portal.chat.reply_to'                   => 'Reply to {{firstName}}',
     'portal.chat.support_powered_by'         => 'Support powered by {{DeskPRO}}',
     'portal.chat.start'                      => 'Start a new chat',
-    'portal.chat.starting'                   => 'Your chat is starting...',
     'portal.chat.label-details'              => 'Your Details',
     'portal.chat.details-placeholder'        => 'First name, Last name',
     'portal.chat.screen_share'               => 'Screen Share',
