@@ -4,7 +4,7 @@ import {
 }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { ListItemContainer } from '../ListItemContainer';
-import { NavGroupingPopupContainer } from '../NavGroupingPopupContainer';
+import { NavGroupingPopup } from '../NavGroupingPopup';
 
 export class MyChats extends Component {
   static propTypes = {
@@ -60,7 +60,7 @@ export class MyChats extends Component {
         <ul>
           {my.get('nested').map((item, index) => this.renderItem(item, index))}
         </ul>
-        <NavGroupingPopupContainer
+        <NavGroupingPopup
           attachTo={this.refs.mySection}
           content="my"
           visible={this.state.expanded}

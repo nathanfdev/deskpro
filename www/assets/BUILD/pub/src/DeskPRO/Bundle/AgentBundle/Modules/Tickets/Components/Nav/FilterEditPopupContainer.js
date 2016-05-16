@@ -1,9 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { editedFilterSelector } from '../../Selectors/nav';
-import { ListGroupingControl } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
-import { applyFilterEditing, closeFilterEditing } from '../../Actions/navActions';
+import { ListGroupingControlContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { filterSetGroupingsSettingsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Selectors/settings';
+import { editedFilterSelector } from '../../Selectors/nav';
+import { applyFilterEditing, closeFilterEditing } from '../../Actions/navActions';
 import Immutable from 'immutable';
 
 @connect(state => ({
@@ -34,30 +34,23 @@ export class FilterEditPopupContainer extends Component {
     { value: 'open_time', label: 'Open Time' }
   ];
 
-  applyFilterEditing = (e) => {
-    const options = e.target.options;
-    for (let i = 0; i < options.length; i++) {
-      if (options[i].selected) {
-        this.props.dispatch(applyFilterEditing(options[i].value));
-        break;
-      }
-    }
-  };
-
   closeFilterEditing = () => this.props.dispatch(closeFilterEditing());
 
   render() {
     const { filter = Immutable.fromJS({}), grouping, attachTo, filterId } = this.props;
     const groupBy = grouping.get(String(filterId), '');
+    const content = filter.get('title') || 'none';
 
     return (
-      <ListGroupingControl visible={filter.get('id') === filterId}
-                           title={filter.get('title')}
-                           options={FilterEditPopupContainer.groupingOptions}
-                           onChange={this.applyFilterEditing}
-                           close={this.closeFilterEditing}
-                           selected={groupBy}
-                           attachTo={attachTo} />
+      <ListGroupingControlContainer
+        visible={filter.get('id') === filterId}
+        content={content}
+        options={FilterEditPopupContainer.groupingOptions}
+        changeListGrouping={applyFilterEditing}
+        closeGroupingVisibility={this.closeFilterEditing}
+        selected={groupBy}
+        attachTo={attachTo}
+      />
     );
   }
 }

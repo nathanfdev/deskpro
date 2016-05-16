@@ -28,7 +28,7 @@ export const initialLoad = createAction(
 
 export const loadCounts = createAction(
   'CHAT_NAV_LOAD_CONVERSATIONS_COUNTS',
-  (list, groupBy) =>
+  (groupBy, list) =>
     (dispatch) => repository('UserChat').loadCounts(groupBy, (list === 'my' ? 'me' : null)).then(promise => {
       const res = promise.getData();
       if (groupBy === 'department') {
