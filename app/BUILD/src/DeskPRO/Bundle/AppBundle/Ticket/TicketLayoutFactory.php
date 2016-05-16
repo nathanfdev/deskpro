@@ -133,6 +133,10 @@ class TicketLayoutFactory
      */
     public function getLayoutForTicketForm($department = null, $forApi = false)
     {
+        if (!$department instanceof Department) {
+            $department = (int) $department ?: null;
+        }
+
         // TODO: add a quick caching layer here so that we only ever calc this once per department in a request
         // TODO: do what we do in the DataService's with the in memory hash map.
         $layout = $this->getLayout($department);

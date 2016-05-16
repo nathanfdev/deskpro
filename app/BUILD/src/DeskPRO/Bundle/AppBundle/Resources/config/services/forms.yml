@@ -1,5 +1,6 @@
 services:
 
+  # extensions
   form.form_extension:
     class: DeskPRO\Bundle\AppBundle\Form\Extension\DeskproFormExtension
     tags:
@@ -15,6 +16,7 @@ services:
     tags:
       - { name: form.type_extension, alias: choice }
 
+  # helpers
   form_hierarchy_generator:
     class: DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator
     arguments: ["@doctrine.orm.default_entity_manager", "@data.departments", "@data.feedback", "@language_manager"]
@@ -39,6 +41,35 @@ services:
     class: DeskPRO\Bundle\AppBundle\Ticket\TicketFieldSettings
     arguments: ["@doctrine.orm.default_entity_manager", "@brand_aware_settings_resolver"]
 
+  ticket_with_layouts_api_field_resolver:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldResolver\ApiFieldResolver
+    arguments:
+      - "@form_hierarchy_generator"
+      - "@language_manager"
+      - "@custom_field_manager"
+      - "@tickets.custom_per_field_manager"
+      - "@ticket_field_settings"
+      - "@brand_aware_settings_resolver"
+
+  ticket_with_layouts_web_field_resolver:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldResolver\WebFieldResolver
+    arguments:
+      - "@form_hierarchy_generator"
+      - "@language_manager"
+      - "@custom_field_manager"
+      - "@tickets.custom_per_field_manager"
+      - "@ticket_field_settings"
+      - "@brand_aware_settings_resolver"
+
+  ticket_with_layouts_api_field_renderer:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldRenderer\ApiFieldRenderer
+
+  ticket_with_layouts_web_field_renderer:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldRenderer\WebFieldRenderer
+    arguments:
+      - "@language_manager"
+
+  # forms
   form.html_textarea:
     class: DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType
     arguments: ["@deskpro.core.input_cleaner"]
@@ -202,15 +233,44 @@ services:
   form.ticket_with_layouts:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsType
     arguments:
-      - "@custom_field_manager"
-      - "@ticket_layout_factory"
-      - "@form_hierarchy_generator"
       - "@doctrine.orm.default_entity_manager"
-      - "@language_manager"
-      - "@tickets.custom_per_field_manager"
+    tags:
+      - { name: form.type }
+
+  form.ticket_with_layouts_manipulator:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsManipulatorType
+    arguments:
+      - "@form_hierarchy_generator"
       - "@ticket_with_layouts_helper"
-      - "@ticket_field_settings"
-      - "@brand_aware_settings_resolver"
+    tags:
+      - { name: form.type }
+
+  form.web_ticket_with_layouts:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebType
+    arguments:
+      - "@ticket_with_layouts_web_field_resolver"
+      - "@ticket_with_layouts_web_field_renderer"
+      - "@ticket_layout_factory"
+      - "@ticket_with_layouts_helper"
+    tags:
+      - { name: form.type }
+
+  form.web_full_ticket_with_layouts:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebFullType
+    arguments:
+      - "@ticket_layout_factory"
+      - "@ticket_with_layouts_helper"
+      - "@ticket_with_layouts_web_field_resolver"
+      - "@ticket_with_layouts_web_field_renderer"
+    tags:
+      - { name: form.type }
+
+  form.api_ticket_with_layouts:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiType
+    arguments:
+      - "@ticket_with_layouts_api_field_resolver"
+      - "@ticket_with_layouts_api_field_renderer"
+      - "@ticket_layout_factory"
     tags:
       - { name: form.type }
 

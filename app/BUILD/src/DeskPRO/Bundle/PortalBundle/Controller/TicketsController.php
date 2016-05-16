@@ -39,7 +39,8 @@ use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\People\PersonGuest;
 use Carbon\Carbon;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebFullType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebType;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter;
 use DeskPRO\Bundle\AppBundle\Ticket\Timeline\TicketTimelinePagerfantaAdapter;
@@ -236,9 +237,10 @@ class TicketsController extends AbstractController
 
         $person = $this->getUser();
 
-        $form = $this->createForm(TicketWithLayoutsType::class, $ticket, [
+        $form = $this->createForm(TicketWithLayoutsWebType::class, $ticket, [
             'person'            => $person,
             'ticket_visibility' => 'edit',
+            'department_id'     => $request->query->getInt('department_id'),
         ]);
 
         $form->handleRequest($request);
@@ -262,9 +264,8 @@ class TicketsController extends AbstractController
 
         list($last_user_reply_in_seconds, $created_in_seconds) = $this->getRecentTimes($ticket);
 
-        $form_full = $this->createForm(TicketWithLayoutsType::class, $ticket, [
+        $form_full = $this->createForm(TicketWithLayoutsWebFullType::class, $ticket, [
             'person'            => $person,
-            'full_version'      => true,
             'ticket_visibility' => 'edit',
             'action'            => $this->generateUrl('portal_tickets_edit', ['ticket_ref' => $ticket->getPublicId()]),
         ]);

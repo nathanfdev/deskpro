@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 
 use Application\DeskPRO\Entity\Person;
@@ -37,6 +34,10 @@ use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
+use DeskPRO\Bundle\AppBundle\Form\FormFields;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldRenderer\FieldRendererInterface;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldResolver\AbstractFieldResolver;
+use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormInterface;
 
 /**
@@ -83,6 +84,44 @@ class TicketWithLayoutsContext
     private $form;
 
     /**
+     * @param FormEvent $event
+     *
+     * @return $this
+     */
+    public static function createOnPreSetData(FormEvent $event)
+    {
+        $form    = $event->getForm();
+        $data    = $event->getData();
+        $options = $form->getConfig()->getOptions();
+
+        $context = new self($form, $data, new TicketLayout());
+        $context->setNewLayout($options['layout_factory']($data->getDepartment()));
+
+        return $context;
+    }
+
+    /**
+     * @param FormEvent $event
+     *
+     * @return TicketWithLayoutsContext
+     */
+    public static function createOnPreSubmit(FormEvent $event)
+    {
+        $form      = $event->getForm();
+        $data      = $form->getData();
+        $options   = $form->getConfig()->getOptions();
+        $submitted = $event->getData();
+
+        $context = new self($form, $data, $options['layout_factory']($data->getDepartment()));
+
+        if ($form->has(FormFields::DEPARTMENT) && isset($submitted[FormFields::DEPARTMENT])) {
+            $context->setNewLayout($options['layout_factory']($submitted[FormFields::DEPARTMENT]));
+        }
+
+        return $context;
+    }
+
+    /**
      * Constructor.
      *
      * @param FormInterface $form
@@ -121,6 +160,14 @@ class TicketWithLayoutsContext
     public function getPreviouslyActiveLayout()
     {
         return self::VIEW_AGENT === $this->getViewContext() ? $this->previous_layout->agent_layout : $this->previous_layout->user_layout;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hadLayout()
+    {
+        return count($this->getPreviouslyActiveLayout()->all()) > 0;
     }
 
     /**
@@ -187,14 +234,6 @@ class TicketWithLayoutsContext
     public function getPerson()
     {
         return $this->getOption('person');
-    }
-
-    /**
-     * @return bool
-     */
-    public function forApi()
-    {
-        return $this->getOption('for_api', false);
     }
 
     /**
@@ -274,5 +313,21 @@ class TicketWithLayoutsContext
     public function getOption($name, $default = null)
     {
         return $this->form->getConfig()->getOption($name, $default);
+    }
+
+    /**
+     * @return AbstractFieldResolver
+     */
+    public function getFieldResolver()
+    {
+        return $this->getOption('field_resolver');
+    }
+
+    /**
+     * @return FieldRendererInterface
+     */
+    public function getFieldRenderer()
+    {
+        return $this->getOption('field_renderer');
     }
 }

@@ -34,7 +34,8 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebFullType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebType;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Person\EmailValidationRequiredException;
 use DeskPRO\Bundle\PortalBundle\Person\LoginRequiredException;
@@ -65,7 +66,7 @@ class NewTicketController extends AbstractController
         $ticket_message = $ticket->messages[0];
 
         // do a one through with the GET request to update our model before starting the "real" form
-        $form = $this->createForm(TicketWithLayoutsType::class, $ticket, [
+        $form = $this->createForm(TicketWithLayoutsWebType::class, $ticket, [
             'person'            => $person,
             'method'            => 'GET',
             'validation_groups' => false,
@@ -80,11 +81,11 @@ class NewTicketController extends AbstractController
             }
         }
 
-        $form = $this->createForm(TicketWithLayoutsType::class, $ticket, [
+        $form = $this->createForm(TicketWithLayoutsWebType::class, $ticket, [
             'person'                => $person,
             'action'                => $this->generateUrl('portal_new_ticket'),
-            'saved_form_subrequest' => $this->isSavedFormSubRequest($request),
             'department_id'         => $request->query->getInt('department_id'),
+            'saved_form_subrequest' => $this->isSavedFormSubRequest($request),
             // next to allow extra fields if its saved form because name/email etc will be on origin form,
             // but not this one now that the user is logged-in
             'allow_extra_fields' => true,
@@ -164,9 +165,8 @@ class NewTicketController extends AbstractController
             $this->getNewTicketService()->submitNewTicketAbuseCheck($person, $request->getClientIp());
         }
 
-        $form_full = $this->createForm(TicketWithLayoutsType::class, $ticket, [
+        $form_full = $this->createForm(TicketWithLayoutsWebFullType::class, $ticket, [
             'person'        => $person,
-            'full_version'  => true,
             'action'        => $this->generateUrl('portal_new_ticket'),
             'department_id' => $request->query->getInt('department_id'),
         ]);
