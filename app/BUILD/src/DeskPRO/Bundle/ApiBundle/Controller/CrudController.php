@@ -516,7 +516,6 @@ abstract class CrudController extends BaseController
             $partialUpdate = true;
         }
 
-        $options = $this->getFormOptions($model, $request, $options);
         $form    = $this->createForm(static::$type, $model, $options);
         $decoded = $this->getRequestContent($request);
 
@@ -540,20 +539,6 @@ abstract class CrudController extends BaseController
         }
 
         return $view;
-    }
-
-    /**
-     * Useful to let you add options to the form.
-     *
-     * @param object  $model
-     * @param Request $request
-     * @param array   $options
-     *
-     * @return array
-     */
-    protected function getFormOptions($model, Request $request, array $options)
-    {
-        return $options;
     }
 
     /**

@@ -55,7 +55,7 @@ class ClientDeviceController extends CrudController
     /**
      * {@inheritdoc}
      */
-    protected function getFormOptions($model, Request $request, array $options)
+    protected function handleForm($model, Request $request, array $options = [])
     {
         $options['app_type'] = $request->attributes->get('app_type');
         $options['person']   = $this->get('security.token_storage')->getToken()->getUser();
@@ -66,7 +66,7 @@ class ClientDeviceController extends CrudController
             $options['device_id'] = $request->attributes->get('id');
         }
 
-        return $options;
+        return parent::handleForm($model, $request, $options);
     }
 
     /**
