@@ -34,16 +34,6 @@ export class FilterEditPopupContainer extends Component {
     { value: 'open_time', label: 'Open Time' }
   ];
 
-  applyFilterEditing = (e) => {
-    const options = e.target.options;
-    for (let i = 0; i < options.length; i++) {
-      if (options[i].selected) {
-        this.props.dispatch(applyFilterEditing(options[i].value));
-        break;
-      }
-    }
-  };
-
   closeFilterEditing = () => this.props.dispatch(closeFilterEditing());
 
   render() {
@@ -57,7 +47,7 @@ export class FilterEditPopupContainer extends Component {
         content={content}
         options={FilterEditPopupContainer.groupingOptions}
         changeListGrouping={applyFilterEditing}
-        close={this.closeFilterEditing}
+        closeGroupingVisibility={this.closeFilterEditing}
         selected={groupBy}
         attachTo={attachTo}
       />

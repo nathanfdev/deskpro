@@ -27,7 +27,7 @@ export class ListGroupingControlContainer extends Component {
     const { dispatch, content, closeGroupingVisibility, changeListGrouping } = this.props;
     for (let i = 0; i < options.length; i++) {
       if (options[i].selected) {
-        dispatch(changeListGrouping(content, options[i].value));
+        dispatch(changeListGrouping(options[i].value, content));
         break;
       }
     }
@@ -35,7 +35,7 @@ export class ListGroupingControlContainer extends Component {
   };
 
   render() {
-    const { content, close, options, visible, selected, attachTo } = this.props;
+    const { content, options, visible, selected, attachTo, closeGroupingVisibility } = this.props;
 
     return (
       <Detached
@@ -44,7 +44,7 @@ export class ListGroupingControlContainer extends Component {
         positionTarget={attachTo}
         style={{ marginTop: '-7px', marginLeft: '7px' }}
       >
-        <ClickOut onClickOut={close}>
+        <ClickOut onClickOut={closeGroupingVisibility}>
           <section className="sidebar-hover show">
             <div className="sidebar-hover-content">
               <div className="sidebar-hover-header">

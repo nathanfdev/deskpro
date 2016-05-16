@@ -86,7 +86,7 @@ export const loadCategories = createAction(
 
 export const changeListGrouping = createAction(
   'PUBLISH_NAV_CHANGE_LIST_GROUPING',
-  (list, groupBy) => (dispatch) => {
+  (groupBy, list) => (dispatch) => {
     dispatch(loadCounts(list, groupBy));
     return { content: list, grouped_by: groupBy };
   }
