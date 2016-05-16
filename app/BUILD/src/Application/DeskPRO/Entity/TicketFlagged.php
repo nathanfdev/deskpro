@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -50,7 +51,7 @@ class TicketFlagged extends DomainObject
     const STAR_RED    = 6;
     const STAR_YELLOW = 7;
 
-    protected static $id_color_map = [
+    public static $colorMap = [
         self::STAR_BLUE   => 'blue',
         self::STAR_GREEN  => 'green',
         self::STAR_ORANGE => 'orange',
@@ -60,43 +61,15 @@ class TicketFlagged extends DomainObject
         self::STAR_YELLOW => 'yellow',
     ];
 
-    protected static $color_map = [
-        'blue'   => self::STAR_BLUE,
-        'green'  => self::STAR_GREEN,
-        'orange' => self::STAR_ORANGE,
-        'pink'   => self::STAR_PINK,
-        'purple' => self::STAR_PURPLE,
-        'red'    => self::STAR_RED,
-        'yellow' => self::STAR_YELLOW,
+    public static $hexMap = [
+        self::STAR_BLUE   => '#0000FF',
+        self::STAR_GREEN  => '#008000',
+        self::STAR_ORANGE => '#FFA500',
+        self::STAR_PINK   => '#FFC0CB',
+        self::STAR_PURPLE => '#800080',
+        self::STAR_RED    => '#FF0000',
+        self::STAR_YELLOW => '#FFFF00',
     ];
-
-    /**
-     * @param string $color
-     *
-     * @return int
-     */
-    public static function colorToId($color)
-    {
-        if (!isset(self::$color_map[$color])) {
-            throw new \InvalidArgumentException();
-        }
-
-        return self::$color_map[$color];
-    }
-
-    /**
-     * @param int $id
-     *
-     * @return string
-     */
-    public static function idToColorName($id)
-    {
-        if (!isset(self::$id_color_map[$id])) {
-            throw new \InvalidArgumentException();
-        }
-
-        return self::$id_color_map[$id];
-    }
 
     /**
      * @var int

@@ -17,7 +17,12 @@ export class LabelsDictionary extends React.Component {
     count = labels.count() ? labels.count() : labels.size;
     for (let index = 0, label, letter; index < count; index++) {
       label = Immutable.Iterable.isIterable(labels) ? labels.get(index) : labels[index];
-      letter = label.get('label')[0].toUpperCase();
+      letter = label.get('label')[0];
+      if (!letter) {
+        continue;
+      }
+
+      letter = letter.toUpperCase();
       if (!dictionary.hasOwnProperty(letter)) {
         dictionary[letter] = [];
       }

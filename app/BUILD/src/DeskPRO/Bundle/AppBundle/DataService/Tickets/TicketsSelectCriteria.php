@@ -29,10 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataService\Tickets;
 
+use Application\DeskPRO\Entity\TicketFlagged;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
-use DeskPRO\Bundle\AppBundle\Entity\TicketStar;
 use DeskPRO\Bundle\AppBundle\Model\TicketGrouping;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\AgentTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
@@ -109,7 +110,7 @@ class TicketsSelectCriteria
                     $composite->addTerm(new TicketLabelTerm(['label' => $value[0], TermInterface::OP_IS]));
                     break;
                 case 'star':
-                    $composite->addTerm(new TicketFlaggedTerm(['flag' => TicketStar::idToColorName($value)]));
+                    $composite->addTerm(new TicketFlaggedTerm(['flag' => TicketFlagged::$colorMap[$value]]));
                     break;
                 case 'status':
                     $composite->addTerm(new TicketStatusTerm(['status' => $value]));
