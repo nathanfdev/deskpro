@@ -51,7 +51,8 @@ export default createReducer(initialState, {
     setFullPayload('chat.id'),
     setValue('chat.loaded', false),
     setValue('chat.info', {}),
-    setValue('messages', [])
+    setValue('messages', []),
+    setValue('feedbackStage', 'dialog')
   ),
   [actions.unsetChatId]: setValue('chat', {
     id:        null,
