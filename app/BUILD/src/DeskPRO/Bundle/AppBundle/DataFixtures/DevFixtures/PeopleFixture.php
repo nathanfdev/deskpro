@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\LabelDef;
+use Application\DeskPRO\Entity\LabelOrganization;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\OrganizationNote;
 use Application\DeskPRO\Entity\Person;
@@ -242,7 +243,7 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
         $this->manager->flush();
     }
 
-    private function loadOrgs()
+    private function loadOrgs(ObjectManager $manager)
     {
         for ($i = 0; $i < $this->num_orgs; ++$i) {
             $org = new Organization();
@@ -250,7 +251,8 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
                 ->setName($this->faker->company)
                 ->setSummary($this->faker->realText($this->faker->numberBetween(10, 500)))
                 ->setImportance(1)
-                ->setDateCreated($this->faker->dateTimeThisYear);
+                ->setDateCreated($this->faker->dateTimeThisYear)
+            ;
 
             if ($this->faker->boolean(33)) {
                 foreach ($this->userGroups as $userGroup) {
@@ -260,10 +262,10 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
                 }
             }
 
-            $this->manager->persist($org);
+            $manager->persist($org);
         }
 
-        $this->manager->flush();
+        $manager->flush();
         $this->org_ids = $this->fetchIds(self::TABLE_ORGANIZATIONS);
     }
 
@@ -273,6 +275,16 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
         $agents        = $manager->getRepository(Person::class)->findBy(['is_agent' => true]);
 
         foreach ($organizations as $organization) {
+            foreach ($this->faker->randomElements($this->labels, $this->faker->numberBetween(1, 5)) as $label) {
+                $labelEntity = new LabelOrganization();
+                $labelEntity
+                    ->setLabel($label)
+                    ->setOrganization($organization)
+                ;
+
+                $manager->persist($labelEntity);
+            }
+
             for ($i = 0; $i < $this->faker->numberBetween(1, $this->max_notes); ++$i) {
                 $orgNote = new OrganizationNote();
                 $orgNote
