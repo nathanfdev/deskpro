@@ -26,13 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\LabelDef;
 use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\OrganizationNote;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usergroup;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
@@ -107,8 +105,7 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
         $this->userGroups = $this->getExtraUserGroups();
 
         $this->loadLabels();
-        $this->loadOrgs();
-        $this->loadOrgProps();
+        $this->loadOrgs($manager);
 
         $this->loadPeople($this->num_agents, true);
         $this->agent_ids = $this->fetchIds(self::TABLE_PEOPLE);
@@ -116,6 +113,7 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
         $this->loadPeople($this->num_people, false);
         $this->people_ids = $this->fetchIds(self::TABLE_PEOPLE);
 
+        $this->loadOrgProps($manager);
         $this->addExtraGroups();
         $this->loadPeopleProps();
 
@@ -269,25 +267,26 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
         $this->org_ids = $this->fetchIds(self::TABLE_ORGANIZATIONS);
     }
 
-    private function loadOrgProps()
+    private function loadOrgProps(ObjectManager $manager)
     {
-        $notes_batch = [];
+        $organizations = $manager->getRepository(Organization::class)->findAll();
+        $agents        = $manager->getRepository(Person::class)->findBy(['is_agent' => true]);
 
-        foreach ($this->org_ids as $org_id) {
-            $num = $this->faker->numberBetween(1, $this->max_notes);
-            for ($i = 0; $i < $num; ++$i) {
-                $notes_batch[] = [
-                    'organization_id' => $org_id,
-                    'agent_id'        => $this->faker->randomElement($this->agent_ids),
-                    'date_created'    => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                    'note'            => $this->faker->realText($this->faker->numberBetween(10, 500)),
-                ];
+        foreach ($organizations as $organization) {
+            for ($i = 0; $i < $this->faker->numberBetween(1, $this->max_notes); ++$i) {
+                $orgNote = new OrganizationNote();
+                $orgNote
+                    ->setAgent($this->faker->randomElement($agents))
+                    ->setOrganization($organization)
+                    ->setDateCreated($this->faker->dateTimeThisYear)
+                    ->setNote($this->faker->realText($this->faker->numberBetween(10, 500)))
+                ;
+
+                $manager->persist($orgNote);
             }
         }
 
-        if ($notes_batch) {
-            $this->db->batchInsert('organization_notes', $notes_batch);
-        }
+        $manager->flush();
     }
 
     private function loadPeopleProps()
