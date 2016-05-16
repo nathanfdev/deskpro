@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Log\Helper;
 
+use DeskPRO\Bundle\ApiBundle\Log\LogSaveException;
 use DeskPRO\Bundle\ApiBundle\Log\Writer\WriterInterface;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken;
 use DeskPRO\Bundle\ApiBundle\Util\ApiUtil;
@@ -242,7 +243,11 @@ class LogComposer
      */
     public function saveLog()
     {
-        $this->writer->write($this->log);
+        try {
+            $this->writer->write($this->log);
+        } catch (\Exception $e) {
+            throw new LogSaveException();
+        }
     }
 
     /**

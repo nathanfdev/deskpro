@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -83,7 +83,7 @@ class ApiLogContext extends BaseContext
     /**
      * Add an header element in a request.
      *
-     * @Given I set duplcicate mode as :dup_mode, failure mode as :fail_mode, eager as :eager in request
+     * @Given I set duplicate mode as :dup_mode, failure mode as :fail_mode, eager as :eager in request
      */
     public function iAddRequestHeaderEqualTo($dup_mode, $fail_mode, $eager)
     {

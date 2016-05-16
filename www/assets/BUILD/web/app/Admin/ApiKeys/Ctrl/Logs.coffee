@@ -58,4 +58,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
         )
       , true)
 
+    refreshList: ->
+      @startSpinner 'loading'
+      @service.refreshList().then( () => @stopSpinner 'loading')
+
   Admin_ApiKeys_Ctrl_Logs.EXPORT_CTRL()

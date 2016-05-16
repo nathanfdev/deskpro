@@ -123,11 +123,23 @@ class Tag
         return $this;
     }
 
+    public function removeNode(Tag $node)
+    {
+        foreach ($this->nodes as $key => $n) {
+            if ($node->getId() === $n->getId()) {
+                unset($this->nodes[$key]);
+            }
+        }
+    }
+
     /**
      * @param Tag[] $nodes
      */
     public function replaceNodes($nodes)
     {
+        foreach ($nodes as $node) {
+            $node->setParent($this);
+        }
         $this->nodes = $nodes;
     }
 
@@ -207,7 +219,7 @@ class Tag
         $parent = $this;
         do {
             $parts[] = $parent->getTitle();
-        } while ($parent = $parent->getParent());
+        } while (($parent = $parent->getParent()) && $parent->getTitle() !== '*');
 
         $path = implode('.', array_reverse($parts));
 

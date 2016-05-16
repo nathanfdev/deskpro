@@ -74,11 +74,17 @@ class TagsCollector
         $this->hierarchyCreator = new HierarchyCreator();
     }
 
+    /**
+     * @return HierarchyCreator
+     */
     public function getHierarchyCreator()
     {
         return $this->hierarchyCreator;
     }
 
+    /**
+     *
+     */
     public function resetHierarchy()
     {
         $this->hierarchyCreator = new HierarchyCreator();
@@ -101,6 +107,8 @@ class TagsCollector
             $tags            = explode('.', $tagPathReplaced);
             $this->hierarchyCreator->processTags($tags, $tagPathReplaced);
         }
+
+        return $this->hierarchyCreator->getHierarchy();
     }
 
     /**
@@ -129,6 +137,9 @@ class TagsCollector
         }
     }
 
+    /**
+     * @return array
+     */
     public function getTags()
     {
         return $this->tags;
@@ -146,6 +157,11 @@ class TagsCollector
         return $this->hierarchyCreator->getHierarchy();
     }
 
+    /**
+     * @param $gatheredTags
+     *
+     * @return array
+     */
     public function getTagsHierarchyForApi($gatheredTags)
     {
         $root = new Tag(0, '*');
@@ -165,7 +181,6 @@ class TagsCollector
     {
         foreach ($tags as $tagPath) {
             $current = $hierarchy;
-
             $allowed = strpos($tagPath, '-') === false;
             $tagPath = str_replace('-', '', $tagPath);
             $parts   = explode('.', $tagPath);
@@ -180,6 +195,9 @@ class TagsCollector
                     if (!$parts) {
                         $current->setValue($allowed && $current->getValue() >= 0 ? 1 : -1);
                     }
+                } else {
+                    // no such tag
+                    continue 2;
                 }
                 ++$i;
             }
