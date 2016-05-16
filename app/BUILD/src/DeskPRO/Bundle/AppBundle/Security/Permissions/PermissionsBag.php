@@ -56,66 +56,66 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
     /**
      * @var array just a list of allowed department ids for tickets
      */
-    protected $department_ticket_ids;
+    protected $departmentTicketIds;
 
     /**
      * @var array just a list of allowed department ids for chat
      */
-    protected $department_chat_ids;
+    protected $departmentChatIds;
 
     /**
      * @var array just a list of all allowed
      */
-    protected $department_ids;
+    protected $departmentIds;
 
     /**
      * @var array allowed feedback categories
      */
-    protected $feedback_categories;
+    protected $feedbackCategories;
 
     /**
      * @var array allowed news categories
      */
-    protected $news_categories;
+    protected $newsCategories;
 
     /**
      * @var array allowed article categories
      */
-    protected $article_categories;
+    protected $articleCategories;
 
     /**
      * @var array allowed download categories
      */
-    protected $download_categories;
+    protected $downloadCategories;
 
     /**
      * Constructor.
      *
      * @param array $permissions
-     * @param array $department_ticket_ids
-     * @param array $department_chat_ids
-     * @param array $feedback_category_ids
-     * @param array $news_category_ids
-     * @param array $article_category_ids
-     * @param array $download_category_ids
+     * @param array $departmentTicketIds
+     * @param array $departmentChatIds
+     * @param array $feedbackCategoryIds
+     * @param array $newsCategoryIds
+     * @param array $articleCategoryIds
+     * @param array $downloadCategoryIds
      */
     public function __construct(
         array $permissions = [],
-        array $department_ticket_ids = [],
-        array $department_chat_ids = [],
-        array $feedback_category_ids = [],
-        array $news_category_ids = [],
-        array $article_category_ids = [],
-        array $download_category_ids = []
+        array $departmentTicketIds = [],
+        array $departmentChatIds = [],
+        array $feedbackCategoryIds = [],
+        array $newsCategoryIds = [],
+        array $articleCategoryIds = [],
+        array $downloadCategoryIds = []
     ) {
         $this->setArray($permissions);
-        $this->setAllowedTicketDepartmentIds($department_ticket_ids);
-        $this->setAllowedChatDepartmentIds($department_chat_ids);
-        $this->setAllowedDepartmentsIds(array_replace_recursive($department_chat_ids, $department_ticket_ids));
-        $this->setAllowedFeedbackCategoryIds($feedback_category_ids);
-        $this->setAllowedNewsCategories($news_category_ids);
-        $this->setAllowedArticleCategories($article_category_ids);
-        $this->setAllowedDownloadCategories($download_category_ids);
+        $this->setAllowedTicketDepartmentIds($departmentTicketIds);
+        $this->setAllowedChatDepartmentIds($departmentChatIds);
+        $this->setAllowedDepartmentsIds(array_replace_recursive($departmentChatIds, $departmentTicketIds));
+        $this->setAllowedFeedbackCategoryIds($feedbackCategoryIds);
+        $this->setAllowedNewsCategories($newsCategoryIds);
+        $this->setAllowedArticleCategories($articleCategoryIds);
+        $this->setAllowedDownloadCategories($downloadCategoryIds);
     }
 
     /**
@@ -139,58 +139,58 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
      * if the bag allows access to that category or content (via reading the category of that
      * content).
      *
-     * @param object $content_or_category a Content or ContentCategory entity
+     * @param object $contentOrCategory a Content or ContentCategory entity
      *
      * @return bool
      */
-    public function hasContentCategoryAccess($content_or_category)
+    public function hasContentCategoryAccess($contentOrCategory)
     {
         // ARTICLES
-        if ($content_or_category instanceof Article) {
-            $category_ids = $content_or_category->getCategoryIds();
-            foreach ($category_ids as $category_id) {
-                $allowed_ids = $this->getAllowedArticleCategories();
-                if (in_array($category_id, $allowed_ids)) {
+        if ($contentOrCategory instanceof Article) {
+            $categoryIds = $contentOrCategory->getCategoryIds();
+            foreach ($categoryIds as $categoryId) {
+                $allowedIds = $this->getAllowedArticleCategories();
+                if (in_array($categoryId, $allowedIds)) {
                     return true; // one of the article categories IS allowed
                 }
             }
 
             return false;
-        } elseif ($content_or_category instanceof ArticleCategory) {
-            return in_array($content_or_category->getId(), $this->getAllowedArticleCategories());
+        } elseif ($contentOrCategory instanceof ArticleCategory) {
+            return in_array($contentOrCategory->getId(), $this->getAllowedArticleCategories());
 
-        // FEEDBACK
-        } elseif ($content_or_category instanceof Feedback) {
-            $category_id = $content_or_category->getCategoryId();
-            if ($category_id) {
-                return in_array($category_id, $this->getAllowedFeedbackCategoryIds());
+            // FEEDBACK
+        } elseif ($contentOrCategory instanceof Feedback) {
+            $categoryId = $contentOrCategory->getCategoryId();
+            if ($categoryId) {
+                return in_array($categoryId, $this->getAllowedFeedbackCategoryIds());
             }
 
             return false;
-        } elseif ($content_or_category instanceof FeedbackCategory) {
-            return in_array($content_or_category->getId(), $this->getAllowedFeedbackCategoryIds());
+        } elseif ($contentOrCategory instanceof FeedbackCategory) {
+            return in_array($contentOrCategory->getId(), $this->getAllowedFeedbackCategoryIds());
 
-        // DOWNLOAD
-        } elseif ($content_or_category instanceof Download) {
-            $category_id = $content_or_category->getCategoryId();
-            if ($category_id) {
-                return in_array($category_id, $this->getAllowedDownloadCategories());
+            // DOWNLOAD
+        } elseif ($contentOrCategory instanceof Download) {
+            $categoryId = $contentOrCategory->getCategoryId();
+            if ($categoryId) {
+                return in_array($categoryId, $this->getAllowedDownloadCategories());
             }
 
             return false;
-        } elseif ($content_or_category instanceof DownloadCategory) {
-            return in_array($content_or_category->getId(), $this->getAllowedDownloadCategories());
+        } elseif ($contentOrCategory instanceof DownloadCategory) {
+            return in_array($contentOrCategory->getId(), $this->getAllowedDownloadCategories());
 
-        // NEWS
-        } elseif ($content_or_category instanceof News) {
-            $category_id = $content_or_category->getCategoryId();
-            if ($category_id) {
-                return in_array($category_id, $this->getAllowedNewsCategories());
+            // NEWS
+        } elseif ($contentOrCategory instanceof News) {
+            $categoryId = $contentOrCategory->getCategoryId();
+            if ($categoryId) {
+                return in_array($categoryId, $this->getAllowedNewsCategories());
             }
 
             return false;
-        } elseif ($content_or_category instanceof NewsCategory) {
-            return in_array($content_or_category->getId(), $this->getAllowedNewsCategories());
+        } elseif ($contentOrCategory instanceof NewsCategory) {
+            return in_array($contentOrCategory->getId(), $this->getAllowedNewsCategories());
         }
 
         return false;
@@ -206,7 +206,7 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
         // the keys are the ids, and the value is an array of permissions like "full" => 1.
         // this is just for an array of the ids, but for "deeper" questions we will make another
         // method
-        return array_keys($this->department_ticket_ids);
+        return array_keys($this->departmentTicketIds);
     }
 
     /**
@@ -219,7 +219,7 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
         // the keys are the ids, and the value is an array of permissions like "full" => 1.
         // this is just for an array of the ids, but for "deeper" questions we will make another
         // method
-        return array_keys($this->department_chat_ids);
+        return array_keys($this->departmentChatIds);
     }
 
     /**
@@ -232,31 +232,43 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
         // the keys are the ids, and the value is an array of permissions like "full" => 1.
         // this is just for an array of the ids, but for "deeper" questions we will make another
         // method
-        return array_keys($this->department_ids);
+        return array_keys($this->departmentIds);
     }
 
     /**
-     * @param array $department_ticket_ids
+     * @param array $departmentTicketIds
+     *
+     * @return $this
      */
-    public function setAllowedTicketDepartmentIds(array $department_ticket_ids)
+    public function setAllowedTicketDepartmentIds(array $departmentTicketIds)
     {
-        $this->department_ticket_ids = $department_ticket_ids;
+        $this->departmentTicketIds = $departmentTicketIds;
+
+        return $this;
     }
 
     /**
-     * @param array $chat_department_ids
+     * @param array $chatDepartmentIds
+     *
+     * @return $this
      */
-    public function setAllowedChatDepartmentIds(array $chat_department_ids)
+    public function setAllowedChatDepartmentIds(array $chatDepartmentIds)
     {
-        $this->department_chat_ids = $chat_department_ids;
+        $this->departmentChatIds = $chatDepartmentIds;
+
+        return $this;
     }
 
     /**
-     * @param array $department_ids
+     * @param array $departmentIds
+     *
+     * @return $this
      */
-    public function setAllowedDepartmentsIds(array $department_ids)
+    public function setAllowedDepartmentsIds(array $departmentIds)
     {
-        $this->department_ids = $department_ids;
+        $this->departmentIds = $departmentIds;
+
+        return $this;
     }
 
     /**
@@ -264,15 +276,19 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
      */
     public function getAllowedFeedbackCategoryIds()
     {
-        return $this->feedback_categories;
+        return $this->feedbackCategories;
     }
 
     /**
-     * @param array $feedback_categories
+     * @param array $feedbackcategories
+     *
+     * @return $this
      */
-    public function setAllowedFeedbackCategoryIds(array $feedback_categories)
+    public function setAllowedFeedbackCategoryIds(array $feedbackcategories)
     {
-        $this->feedback_categories = $feedback_categories;
+        $this->feedbackCategories = $feedbackcategories;
+
+        return $this;
     }
 
     /**
@@ -280,15 +296,19 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
      */
     public function getAllowedDownloadCategories()
     {
-        return $this->download_categories;
+        return $this->downloadCategories;
     }
 
     /**
-     * @param array $allowed_download_categories
+     * @param array $allowedDownloadCategories
+     *
+     * @return $this
      */
-    public function setAllowedDownloadCategories($allowed_download_categories)
+    public function setAllowedDownloadCategories($allowedDownloadCategories)
     {
-        $this->download_categories = $allowed_download_categories;
+        $this->downloadCategories = $allowedDownloadCategories;
+
+        return $this;
     }
 
     /**
@@ -296,15 +316,19 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
      */
     public function getAllowedNewsCategories()
     {
-        return $this->news_categories;
+        return $this->newsCategories;
     }
 
     /**
-     * @param array $allowed_news_categories
+     * @param array $allowedNewsCategories
+     *
+     * @return $this
      */
-    public function setAllowedNewsCategories($allowed_news_categories)
+    public function setAllowedNewsCategories($allowedNewsCategories)
     {
-        $this->news_categories = $allowed_news_categories;
+        $this->newsCategories = $allowedNewsCategories;
+
+        return $this;
     }
 
     /**
@@ -312,15 +336,19 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
      */
     public function getAllowedArticleCategories()
     {
-        return $this->article_categories;
+        return $this->articleCategories;
     }
 
     /**
-     * @param array $allowed_article_categories
+     * @param array $allowedArticleCategories
+     *
+     * @return $this
      */
-    public function setAllowedArticleCategories($allowed_article_categories)
+    public function setAllowedArticleCategories($allowedArticleCategories)
     {
-        $this->article_categories = $allowed_article_categories;
+        $this->articleCategories = $allowedArticleCategories;
+
+        return $this;
     }
 
     /**
@@ -328,7 +356,7 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
      *
      * You should probably use hasPermissions() above instead for a yes/no answer.
      *
-     * @param $key
+     * @param      $key
      * @param bool $default
      *
      * @return bool
@@ -348,10 +376,14 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
 
     /**
      * @param array $permissions
+     *
+     * @return $this
      */
     public function setArray(array $permissions)
     {
         $this->permissions = $permissions;
+
+        return $this;
     }
 
     /**
@@ -393,7 +425,9 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
      */
     public function offsetSet($offset, $value)
     {
-        throw new \LogicException('cannot set a permission in this way. instead, change the underlying entities in the permission system. this is just a dumb bag of data.');
+        throw new \LogicException(
+            'cannot set a permission in this way. instead, change the underlying entities in the permission system. this is just a dumb bag of data.'
+        );
     }
 
     /**
@@ -411,16 +445,18 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
      */
     public function serialize()
     {
-        return serialize([
-            'permissions'       => $this->permissions,
-            'feedback'          => $this->feedback_categories,
-            'news'              => $this->news_categories,
-            'article'           => $this->article_categories,
-            'download'          => $this->download_categories,
-            'department_chat'   => $this->department_chat_ids,
-            'department_ticket' => $this->department_ticket_ids,
-            'departments'       => $this->department_ids,
-        ]);
+        return serialize(
+            [
+                'permissions'       => $this->permissions,
+                'feedback'          => $this->feedbackCategories,
+                'news'              => $this->newsCategories,
+                'article'           => $this->articleCategories,
+                'download'          => $this->downloadCategories,
+                'department_chat'   => $this->departmentChatIds,
+                'department_ticket' => $this->departmentTicketIds,
+                'departments'       => $this->departmentIds,
+            ]
+        );
     }
 
     /**
@@ -430,14 +466,14 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
     {
         $unserialized = unserialize($serialized);
 
-        $this->permissions           = $unserialized['permissions'];
-        $this->feedback_categories   = $unserialized['feedback'];
-        $this->news_categories       = $unserialized['news'];
-        $this->article_categories    = $unserialized['article'];
-        $this->download_categories   = $unserialized['download'];
-        $this->department_chat_ids   = $unserialized['department_chat'];
-        $this->department_ticket_ids = $unserialized['department_ticket'];
-        $this->department_ids        = $unserialized['departments'];
+        $this->permissions         = $unserialized['permissions'];
+        $this->feedbackCategories  = $unserialized['feedback'];
+        $this->newsCategories      = $unserialized['news'];
+        $this->articleCategories   = $unserialized['article'];
+        $this->downloadCategories  = $unserialized['download'];
+        $this->departmentChatIds   = $unserialized['department_chat'];
+        $this->departmentTicketIds = $unserialized['department_ticket'];
+        $this->departmentIds       = $unserialized['departments'];
     }
 
     /**

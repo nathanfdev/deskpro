@@ -103,12 +103,13 @@ export class Item extends React.Component {
   renderCount(chat) {
     // we gonna render count balloon counts are loaded, we have information about unread messages in current rendering
     // chat (chat entity), and current (entity current) chat is not opened (chating bool)
-    if (!this.props.loadingCounts) {
-      const current = this.props.counts.nested[chat.get('id')];
+    const { loadingCounts, current, counts, chating } = this.props;
+    if (!loadingCounts) {
+      const currentCount = counts.nested[chat.get('id')];
       if (
-        current
-        && current.count > 0
-        && !(this.props.current.id === chat.get('id') && this.props.chating)
+        currentCount
+        && currentCount.count > 0
+        && !(current.id === chat.get('id') && chating)
       ) {
         return (
         <span className="chat-bubble">

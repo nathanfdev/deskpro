@@ -29,10 +29,7 @@ export class AgentsListItem extends React.Component {
 
     return (
       <li>
-        <a
-          href="#"
-          onClick={this.startChat}
-        >
+        <a href="#" onClick={this.startChat}>
           <PersonAvatar person={this.props.agent} size={22} />
           <span className="agent">
             <span dangerouslySetInnerHTML={{ __html: name }} />
