@@ -594,7 +594,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			this.getEl('user_typing').hide();
 		}
 
-		this.addMessageRow(data.author_name, data.content, data.author_type, data.is_html, data.message_id, data.metadata, data);
+		this.addMessageRow(data.author_name, data.content, data.author_type, data.is_html, data.id, data.metadata, data);
 	},
 
 	chatReassignedTo: function(agent_id) {
