@@ -311,7 +311,7 @@ abstract class CrudController extends BaseController
      *          }
      *      },
      *      statusCodes={
-     *          204="Returned in case of successful resource creation",
+     *          204="Returned in case of successful resource modify",
      *          400="We will return this in case your request was malformed",
      *      }
      * )
