@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 
 use Application\DeskPRO\Entity\Person;
@@ -57,7 +58,7 @@ class ContentAccessVoter extends AbstractVoter
      */
     protected function supports($attribute, $subject)
     {
-        $supported = array(
+        $supported = [
             self::DOWNLOAD_DOWNLOAD,
             self::VIEW_DOWNLOAD,
             self::VIEW_DOWNLOAD_CATEGORY,
@@ -66,7 +67,7 @@ class ContentAccessVoter extends AbstractVoter
             self::VIEW_NEWS,
             self::VIEW_NEWS_CATEGORY,
             self::VIEW_FEEDBACK,
-        );
+        ];
 
         return in_array($attribute, $supported);
     }
@@ -92,7 +93,8 @@ class ContentAccessVoter extends AbstractVoter
                     return true;
                 }
                 // agents can still see unpublished stuff
-                if ($user && $user instanceof Person && $user->is_agent && $object->getStatusCode() === 'hidden.unpublished') {
+                if ($user && $user instanceof Person && $user->is_agent
+                    && ($object->getStatusCode() === 'hidden.unpublished' || $object->getStatusCode() === 'hidden.draft')) {
                     return true;
                 }
 
