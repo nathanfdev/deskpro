@@ -16,7 +16,6 @@ import {
   helpButtonSizeSelector,
   helpButtonNameSelector,
   helpButtonBackgroundColorSelector,
-  helpButtonBorderColorSelector,
   helpButtonTextColorSelector,
   helpPopupTitleSelector,
   helpPopupMessageSelector,
@@ -38,7 +37,6 @@ import { widgetBrandSettingsChatEnabledSelector } from '../../../Selectors/boots
   name:                helpButtonNameSelector(state),
   backgroundColor:     helpButtonBackgroundColorSelector(state),
   textColor:           helpButtonTextColorSelector(state),
-  borderColor:         helpButtonBorderColorSelector(state),
   helpPopupTitle:      helpPopupTitleSelector(state),
   helpPopupMessage:    helpPopupMessageSelector(state),
   helpPopupReplyType:  helpPopupReplyTypeSelector(state),
@@ -60,7 +58,6 @@ export class HelpButtonContainer extends React.Component {
     helpPopupReplyType:  PropTypes.string,
     backgroundColor:     PropTypes.string,
     textColor:           PropTypes.string,
-    borderColor:         PropTypes.string,
     agentsCount:         PropTypes.number,
     agentPollingTimeout: PropTypes.oneOfType([
       PropTypes.string,

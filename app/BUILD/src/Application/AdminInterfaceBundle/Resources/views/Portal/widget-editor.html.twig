@@ -39,7 +39,8 @@
                                     options="{
                                         showPalette: true,
                                         palette: ['#62ad8c'],
-                                        showSelectionPalette: false
+                                        showSelectionPalette: false,
+                                        showInput: true
                                     }"
                                     ></spectrum-colorpicker>
 
@@ -53,25 +54,12 @@
                                     options="{
                                         showPalette: true,
                                         palette: ['#ffffff'],
-                                        showSelectionPalette: false
+                                        showSelectionPalette: false,
+                                        showInput: true
                                     }"
                                     ></spectrum-colorpicker>
 
                                 <label>{{ phrase('admin.widget.text_color') }}</label>
-                            </li>
-                            <li>
-                                <spectrum-colorpicker
-                                    ng-model="brand_settings.button.colors.border"
-                                    format="'hex'"
-                                    class="color-picker"
-                                    options="{
-                                        showPalette: true,
-                                        palette: ['#4e9576'],
-                                        showSelectionPalette: false
-                                    }"
-                                    ></spectrum-colorpicker>
-
-                                <label>{{ phrase('admin.widget.border_color') }}</label>
                             </li>
                         </ul>
                     </li>

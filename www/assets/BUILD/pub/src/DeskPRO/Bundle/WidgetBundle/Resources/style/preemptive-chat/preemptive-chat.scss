@@ -33,6 +33,11 @@ $secondary-preemptive-background-color: #f8f8f8;
     font-size: 12px;
     min-width: 82px;
     float: right;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 3px solid #fff;
 
     &.disabled {
       cursor: default !important;
@@ -52,16 +57,18 @@ $secondary-preemptive-background-color: #f8f8f8;
     &.button-s {// Make it small
       padding: 2px;
       min-width: 66px;
+      border: 2px solid #fff;
 
       .state-button-text { margin: 4px 30px 4px 10px; }
       .state-button-icon {
-        top: 2px;
-        right: 2px;
+        top: 5px;
+        right: 5px;
       }
     }
 
     &.button-l {// Make it large
       min-width: 100px;
+      border: 5px solid #fff;
 
       .state-button-text {
         margin: 8px 40px 8px 15px;
@@ -69,12 +76,11 @@ $secondary-preemptive-background-color: #f8f8f8;
         font-weight: 400;
       }
       .state-button-icon {
-        top: 6px;
-        right: 6px;
+        top: 11px;
+        right: 11px;
         width: 22px;
         height: 22px;
         font-size: 15px;
-        border: 5px solid $main-preemptive-color-hover;
         span { top: 5px; }
       }
     }
@@ -93,12 +99,11 @@ $secondary-preemptive-background-color: #f8f8f8;
       width: 16px;
       height: 16px;
       text-align: center;
-      border: 3px solid $main-preemptive-color-hover;
       border-radius: 199px;
       vertical-align: middle;
       position: absolute;
-      top: 7px;
-      right: 7px;
+      top: 10px;
+      right: 10px;
 
       color: $main-preemptive-color;
       font-weight: bold;
