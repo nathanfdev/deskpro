@@ -1,15 +1,17 @@
-import React, {Component, PropTypes} from 'react';
-import { SectionsPane, Section, SectionGroupedHeader }
+import React, { Component, PropTypes } from 'react';
+import {
+  SectionsPane, Section, SectionGroupedHeader
+}
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { NestedList } from '../NestedList';
-import { NavGroupingPopupContainer } from '../NavGroupingPopupContainer';
+import { NavGroupingPopup } from '../NavGroupingPopup';
 
 export class DownloadsTab extends Component {
 
   static propTypes = {
-    downloads: PropTypes.object.isRequired,
+    downloads:                PropTypes.object.isRequired,
     toggleGroupingVisibility: PropTypes.func.isRequired,
-    closeGroupingVisibility: PropTypes.func.isRequired
+    closeGroupingVisibility:  PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -19,20 +21,29 @@ export class DownloadsTab extends Component {
 
   render() {
     const { downloads, toggleGroupingVisibility, closeGroupingVisibility } = this.props;
+    const toggle = toggleGroupingVisibility.bind(this);
+    const close  = closeGroupingVisibility.bind(this);
+
     return (
       <SectionsPane>
         <Section>
-          <SectionGroupedHeader label="Downloads"
-                                ref="downloads"
-                                count={downloads.get('count')}
-                                callback={toggleGroupingVisibility.bind(this)}/>
-          <NestedList content="downloads"
-                      items={downloads.get('nested').toJS()}/>
-          <NavGroupingPopupContainer attachTo={this.refs.downloads}
-                                     content="downloads"
-                                     visible={this.state.expanded}
-                                     closeGroupingVisibility={closeGroupingVisibility.bind(this)}
-                                     groupedBy={downloads.get('grouped_by')}/>
+          <SectionGroupedHeader
+            label="Downloads"
+            ref="downloads"
+            count={downloads.get('count')}
+            callback={toggle}
+          />
+          <NestedList
+            content="downloads"
+            items={downloads.get('nested').toJS()}
+          />
+          <NavGroupingPopup
+            attachTo={this.refs.downloads}
+            content="downloads"
+            visible={this.state.expanded}
+            closeGroupingVisibility={close}
+            groupedBy={downloads.get('grouped_by')}
+          />
         </Section>
       </SectionsPane>
     );
