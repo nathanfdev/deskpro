@@ -2,25 +2,23 @@
 <?php
 
 
-list($tag, $numThreads) = array_values(getopt('', ['tag:', 'num:']));
+list($tag, $numThreads, $path) = array_values(getopt('', ['tag:', 'num:', 'path:']));
 
-$dirs = [
-    realpath(__DIR__ . '/../features/portal'),
-    realpath(__DIR__ . '/../features/api'),
-];
+$path = __DIR__ . '/' . $path;
+if (!$p = realpath($path)) {
+    echo "\nERROR: $path does not exist!\n\n";
+    exit(1);
+} else {
+    $path = $p;
+}
+echo "\nTagging $path .feature files with @{$tag}-N to run in {$numThreads} threads:\n\n";
 
-echo "\nTagging the following suites:\n\n";
-echo join("\n", $dirs);
-echo "\n\nwith @{$tag}-N to run in {$numThreads} threads\n\n";
-
-foreach ($dirs as $dir) {
-    $i = 1;
-    $iterator = new RecursiveDirectoryIterator($dir);
-    foreach (new RecursiveIteratorIterator($iterator) as $filename => $file) {
-        /** @var \SplFileInfo $file */
-        if ($file->getExtension() === 'feature') {
-            file_put_contents($filename, "\n@$tag-{$i}\n" , FILE_APPEND);
-            $i = $i % $numThreads + 1;
-        }
+$i = 1;
+$iterator = new RecursiveDirectoryIterator($path);
+foreach (new RecursiveIteratorIterator($iterator) as $filename => $file) {
+    /** @var \SplFileInfo $file */
+    if ($file->getExtension() === 'feature') {
+        file_put_contents($filename, "\n@$tag-{$i}\n" , FILE_APPEND);
+        $i = $i % $numThreads + 1;
     }
 }

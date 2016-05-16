@@ -5,7 +5,9 @@ ROOT_DIR=$SCRIPT_DIR/../../../../
 cd $ROOT_DIR
 
 DATABASE_NAME=$DATABASE_PREFIX
-THREADS_NUM=${2:-6}
+API_THREADS_NUM=${2:-6}
+PORTAL_THREADS_NUM=${3:-6}
+THREADS_NUM=$(( API_THREADS_NUM > PORTAL_THREADS_NUM ? API_THREADS_NUM : PORTAL_THREADS_NUM ))
 
 SECONDS=0
 echo "Init project deps"
@@ -37,7 +39,7 @@ echo "--> Done in $SECONDS seconds"
 
 cd $ROOT_DIR
 
-echo "Creating test databases (THREADS_NUM DBs for parallel tests execution and one for production mode instance)"
+echo "Creating test databases ($THREADS_NUM DBs for parallel tests execution and one for production mode instance)"
 mysql -e "DROP DATABASE IF EXISTS ${DATABASE_NAME};"
 mysql -e "CREATE DATABASE ${DATABASE_NAME};"
 mysql -e "GRANT ALL PRIVILEGES ON ${DATABASE_NAME}.* TO 'deskpro'@'localhost' identified by 'deskpro' WITH GRANT OPTION;"
@@ -69,5 +71,5 @@ chmod -R 0777 var
 echo "--> Done"
 
 echo "Running full tests suite"
-app/BUILD/tests/jenkins/run-tests $THREADS_NUM
+app/BUILD/tests/jenkins/run-tests $API_THREADS_NUM $PORTAL_THREADS_NUM
 exit $?
