@@ -119,12 +119,12 @@ export class CardLineItem extends Component {
     icon:        PropTypes.string
   };
 
-  handleClick() {
+  handleClick = () => {
     const { clickParams, onClick } = this.props;
     if (clickParams && onClick) {
       onClick(clickParams);
     }
-  }
+  };
 
   render() {
     const { icon } = this.props;
@@ -135,18 +135,17 @@ export class CardLineItem extends Component {
     }
 
     return (
-      <span className="dpwd--card-line-item" onClick={this.handleClick.bind(this)}>
-         {icon ? <i className={classes}/> : ''} {this.props.children}
+      <span className="dpwd--card-line-item" onClick={this.handleClick}>
+         {icon ? <i className={classes} /> : ''} {this.props.children}
       </span>
     );
   }
 }
 
-
 export class CardCheckbox extends Component {
 
   static propTypes = {
-    onClick: PropTypes.func,
+    onClick:  PropTypes.func,
     selected: PropTypes.bool
   };
 
@@ -197,7 +196,7 @@ export class CardStatusBar extends Component {
   render() {
     const { align, level } = this.props;
     const classes = classNames('dpw--card-status-bar', `level-${level}`,
-      { 'dpw--status-bar-left': align === 'left', 'dpw--status-bar-right': align === 'right' }
+                               { 'dpw--status-bar-left': align === 'left', 'dpw--status-bar-right': align === 'right' }
     );
 
     return <div className={classes}></div>;
@@ -211,7 +210,7 @@ export class CardTitle extends Component {
   };
 
   render() {
-    const {content} = this.props;
+    const { content } = this.props;
     let substr = content.substr(0, 40);
     if (content.length > 40) {
       substr += '...';
@@ -228,16 +227,16 @@ export class CardTitle extends Component {
 export class CardDate extends Component {
 
   static propTypes = {
-    intl: intlShape.isRequired,
-    date: PropTypes.string.isRequired,
+    intl:  intlShape.isRequired,
+    date:  PropTypes.string.isRequired,
     label: PropTypes.string
   };
 
   render() {
-    const {label, date} = this.props;
+    const { label, date } = this.props;
     return (
       <span>
-        {label ? `${label}: ` : ''} <FormattedRelative value={date}/>
+        {label ? `${label}: ` : ''} <FormattedRelative value={date} />
       </span>
     );
   }
@@ -247,17 +246,17 @@ export class CardUser extends Component {
 
   static propTypes = {
     email: PropTypes.string,
-    user: PropTypes.object
+    user:  PropTypes.object
   };
 
   render() {
     const user = this.props.user || Immutable.fromJS({});
-    const {email} = this.props;
+    const { email } = this.props;
 
     return (
       <div className="dpwd--card-line-item">
         <i className="fa fa-user" /> {user.get('first_name')} {user.get('last_name')}
-        {email ? <CardDisc/> : ''}
+        {email ? <CardDisc /> : ''}
         {email ? <span>{email}</span> : ''}
       </div>
     );
@@ -302,7 +301,7 @@ export class CardGroupDivider extends Component {
   render() {
     return (
       <div className="divider">
-        <hr/>
+        <hr />
         <h1>
           <span>{this.props.title}</span>
         </h1>

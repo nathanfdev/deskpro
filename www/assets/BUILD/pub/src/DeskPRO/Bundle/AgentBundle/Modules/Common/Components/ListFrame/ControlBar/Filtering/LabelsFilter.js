@@ -19,31 +19,38 @@ export class LabelsFilter extends Component {
     unsetParam(filter.param);
   };
 
+  selectLabel = (selectedLabel, event) => {
+    event.preventDefault();
+    const { setParam, currentParams } = this.props;
+    const { param } = this.props.filter;
+    const selected = currentParams[param] || [];
+    if (selected.indexOf(selectedLabel) === -1) {
+      selected.push(selectedLabel);
+      setParam({ param: [param], value: selected });
+    }
+  };
+
+  deselectLabel = (deselectedLabel, event) => {
+    event.preventDefault();
+    const { setParam, unsetParam, currentParams } = this.props;
+    const { param } = this.props.filter;
+    const selected = currentParams[param] || [];
+    if (selected.indexOf(deselectedLabel) > -1) {
+      selected.splice(selected.indexOf(deselectedLabel), 1);
+    }
+    if (selected.length > 0) {
+      setParam({ param: [param], value: selected });
+    } else {
+      unsetParam(param);
+    }
+  };
+
   render() {
-    const { setParam, currentParams, filter, unsetParam, activeItem, setActiveItem, matchMode } = this.props;
+    const { setParam, currentParams, filter, activeItem, setActiveItem, matchMode } = this.props;
     const { label, icon, labels, param, modeParam } = filter;
     const selected = currentParams[param] || [];
     const mode     = currentParams[modeParam];
     const isActive = Boolean(selected.length);
-
-    const selectLabel   = (selectedLabel, event) => {
-      event.preventDefault();
-      if (selected.indexOf(selectedLabel) === -1) {
-        selected.push(selectedLabel);
-        setParam({ param: [param], value: selected });
-      }
-    };
-    const deselectLabel = (deselectedLabel, event) => {
-      event.preventDefault();
-      if (selected.indexOf(deselectedLabel) > -1) {
-        selected.splice(selected.indexOf(deselectedLabel), 1);
-      }
-      if (selected.length > 0) {
-        setParam({ param: [param], value: selected });
-      } else {
-        unsetParam(param);
-      }
-    };
 
     return (
       <FilterItem
@@ -63,8 +70,8 @@ export class LabelsFilter extends Component {
             changeMode={newMode => setParam({ param: [modeParam], value: newMode })}
             allLabels={labels}
             selectedLabels={selected}
-            selectLabel={selectLabel}
-            deselectLabel={deselectLabel}
+            selectLabel={this.selectLabel}
+            deselectLabel={this.deselectLabel}
           />
         </Menu>
       </FilterItem>

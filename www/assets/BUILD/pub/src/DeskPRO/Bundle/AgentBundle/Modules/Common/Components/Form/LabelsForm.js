@@ -66,11 +66,15 @@ export class AllLabelsMatchingMode extends Component {
     mode:       PropTypes.string
   };
 
-  render() {
+  handleClick = () => {
     const { changeMode } = this.props;
+    changeMode('all');
+  };
+
+  render() {
     const classes = classNames('dpwd-radio-button', { active: this.props.mode === 'all' });
     return (
-      <span className={classes} onClick={changeMode.bind(this, 'all')}>
+      <span className={classes} onClick={this.handleClick}>
         <span className="dpwd-radio-button-disc" />
         <span className="radio-button-title">Match all selected labels</span>
       </span>
@@ -85,11 +89,15 @@ export class AnyLabelMatchingMode extends Component {
     mode:       PropTypes.string
   };
 
-  render() {
+  handleClick = () => {
     const { changeMode } = this.props;
+    changeMode('all');
+  };
+
+  render() {
     const classes = classNames('dpwd-radio-button', { active: this.props.mode === 'any' });
     return (
-      <span className={classes} onClick={changeMode.bind(this, 'any')}>
+      <span className={classes} onClick={this.handleClick}>
         <span className="dpwd-radio-button-disc" />
         <span className="radio-button-title">Match any selected label</span>
       </span>
@@ -104,19 +112,26 @@ export class SelectedLabels extends Component {
     deselectLabel:  PropTypes.func.isRequired
   };
 
+  renderLabel = (label, index) => {
+    const { deselectLabel } = this.props;
+    return (
+      <li key={index} onClick={deselectLabel.bind(this, label)}>
+        <a href="#" className="dpw-item-label">
+          <i className="fa fa-times" /> {label}
+        </a>
+      </li>
+    );
+  };
+
   render() {
-    const { selectedLabels, deselectLabel } = this.props;
+    const { selectedLabels } = this.props;
     if (selectedLabels) {
       return (
         <div className="dpw-navigation-dropdown-panel-content-full">
           <div className="dpw-label-pile">
             <ul className="dpw-label-list">
-              {selectedLabels.map((item, index) =>
-                                    <li key={index} onClick={deselectLabel.bind(this, item)}>
-                                      <a href="#" className="dpw-item-label">
-                                        <i className="fa fa-times" /> {item}
-                                      </a>
-                                    </li>
+              {selectedLabels.map(
+                (item, index) => this.renderLabel(item, index)
               )}
             </ul>
           </div>
@@ -138,20 +153,23 @@ export class LabelsCollection extends Component {
     allLabels:   PropTypes.oneOfType([PropTypes.array, PropTypes.object])
   };
 
+  renderLabel = (item, index) => {
+    const { selectLabel } = this.props;
+    return (<li key={index} onClick={selectLabel.bind(this, item.get('label'))}>
+      <a href="#" className="dpw-item-label">
+        {item.get('label')}
+      </a>
+    </li>);
+  };
+
   render() {
-    const { allLabels, selectLabel } = this.props;
+    const { allLabels } = this.props;
 
     return (
       <div className="dpw-label-list-content">
         <ul className="dpw-label-list">
           {allLabels.map(
-            (item, index) =>
-              <li key={index} onClick={selectLabel.bind(this, item.get('label'))}>
-                <a href="#" className="dpw-item-label">
-                  {item.get('label')}
-                </a>
-              </li>
-          )}
+            (item, index) => this.renderLabel(item, index))}
         </ul>
       </div>
     );
