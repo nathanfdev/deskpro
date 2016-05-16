@@ -137,7 +137,7 @@ class ClientDeviceType extends AbstractType
                 'device_id'   => '',
                 'constraints' => [
                     new UniqueEntity([
-                        'fields' => 'device_id',
+                        'fields' => ['device_id', 'person', 'app_type'],
                     ]),
                 ],
             ])
