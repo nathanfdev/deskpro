@@ -35,7 +35,7 @@ $SETTINGS['disable_outgoing_email'] = false;
 ######################################################
 # Basic settings for notification system             #
 ######################################################
-# Provide an strategies and pusher settings here     #
+# Provide strategies and pusher settings here        #
 ######################################################
 $SETTINGS['notification.settings.pusher_client.appKey'] = '';
 $SETTINGS['notification.settings.pusher_client.secret'] = '';

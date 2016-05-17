@@ -58,19 +58,19 @@ class FollowLocationListener implements EventSubscriberInterface
         $request  = $event->getRequest();
         $response = $event->getResponse();
 
-        if ($request->getMethod() !== Request::METHOD_PUT
-            || $response->getStatusCode() !== Response::HTTP_NO_CONTENT
-            || !$request->query->get('follow_location')
-            || !$response->headers->get('Location')) {
-            return;
+        if ($this->needToFollowLocation($request, $response)) {
+            $location = $response->headers->get('Location');
+            $request  = Request::create($location);
+            $response = $event->getKernel()->handle($request, HttpKernelInterface::SUB_REQUEST);
+            $event->setResponse($response);
         }
+    }
 
-        $response = $event->getResponse();
-        $location = $response->headers->get('Location');
-
-        $request  = Request::create($location);
-        $response = $event->getKernel()->handle($request, HttpKernelInterface::SUB_REQUEST);
-
-        $event->setResponse($response);
+    private function needToFollowLocation(Request $request, Response $response)
+    {
+        return in_array($request->getMethod(), [Request::METHOD_PUT, Request::METHOD_POST], true)
+                && in_array($response->getStatusCode(), [Response::HTTP_NO_CONTENT, Response::HTTP_FOUND], true)
+                && $request->query->get('follow_location')
+                && $response->headers->get('Location');
     }
 }

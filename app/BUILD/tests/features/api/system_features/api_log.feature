@@ -10,7 +10,7 @@ Feature: Api should log any request
   Scenario: I send some request to API
     When I send a PUT request to "/api/v2/notify/heartbeat"
     And the response status code should be 202
-    And the response should be empty
+    And the response should be in JSON
     And the header "X-DeskPRO-Request-ID" should match "#\d+-[a-zA-Z0-9]{30}#"
     And api log should appear in table
 
@@ -18,7 +18,7 @@ Feature: Api should log any request
     Given I add "X-DeskPRO-Client-Request-ID" header equal to "de_dupe_header"
     When I send a PUT request to "/api/v2/notify/heartbeat"
     Then the response status code should be 202
-    And the response should be empty
+    And the response should be in JSON
     And the header "X-DeskPRO-Request-ID" should be equal to "de_dupe_header-c"
     And api log with "de_dupe_header-c" id should appear in table
 

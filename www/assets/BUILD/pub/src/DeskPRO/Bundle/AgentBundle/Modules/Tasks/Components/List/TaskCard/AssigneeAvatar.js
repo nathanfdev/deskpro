@@ -2,13 +2,13 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { PersonAvatar, DepartmentAvatar, AgentTeamAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
-import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { collectionSelectorFactory, allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import Immutable from 'immutable';
 
 @connect(state => ({
   agents: agentsSelector(state),
   agentTeams: allSelectorFactory('AgentTeam')(state),
-  departments: allSelectorFactory('Department')(state)
+  departments: collectionSelectorFactory('Department', 'all_tickets')(state)
 }))
 export class AssigneeAvatar extends React.Component {
   static propTypes = {

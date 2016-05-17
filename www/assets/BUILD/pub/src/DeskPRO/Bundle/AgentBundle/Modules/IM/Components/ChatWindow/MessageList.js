@@ -8,23 +8,23 @@ import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortc
 import Loader from 'react-loader';
 
 @connect(state => ({
-  me: meSelector(state),
-  agents: agentsSelector(state),
-  messages: state.IM.messages,
-  loadingMessages: state.IM.messages.get('loadingMessages'),
+  me:               meSelector(state),
+  agents:           agentsSelector(state),
+  messages:         state.IM.messages,
+  loadingMessages:  state.IM.messages.get('loadingMessages'),
   updatingMessages: state.IM.messages.get('updatingMessages')
 }))
 export class MessageList extends React.Component {
 
   static propTypes = {
-    me: PropTypes.object.isRequired,
-    agents: PropTypes.object.isRequired,
-    current: PropTypes.object.isRequired,
-    messages: PropTypes.object.isRequired,
-    loadingMessages: PropTypes.bool.isRequired,
+    me:               PropTypes.object.isRequired,
+    agents:           PropTypes.object.isRequired,
+    current:          PropTypes.object.isRequired,
+    messages:         PropTypes.object.isRequired,
+    loadingMessages:  PropTypes.bool.isRequired,
     updatingMessages: PropTypes.bool.isRequired,
-    dispatch: PropTypes.func.isRequired,
-    searchQuery: PropTypes.string.isRequired
+    dispatch:         PropTypes.func.isRequired,
+    searchQuery:      PropTypes.string.isRequired
   };
 
 
@@ -82,7 +82,7 @@ export class MessageList extends React.Component {
 
       const msg = messages.hasIn(this.getPath()) ? messages.getIn(this.getPath()).messages : [];
       msg.map((message) => {
-        if (message.id && message.status === 1 && message.person_id !== this.props.me.get('id')) {
+        if (message.id && message.status < 2 && message.person !== this.props.me.get('id')) {
           ids.push(message.id);
           uuids.push(message.uuid);
         }
@@ -125,13 +125,15 @@ export class MessageList extends React.Component {
           msg.map((message, index) => {
             const result = (
               <Message
-              key={index}
-              message={message}
-              size={msg.size}
-              current={index}
-              previousMessage={previous}
-              agents={this.props.agents}
-              me={this.props.me}/>);
+                key={index}
+                message={message}
+                size={msg.size}
+                current={parseInt(index, 10)}
+                previousMessage={previous}
+                agents={this.props.agents}
+                me={this.props.me}
+              />
+            );
             previous = message;
             return result;
           })

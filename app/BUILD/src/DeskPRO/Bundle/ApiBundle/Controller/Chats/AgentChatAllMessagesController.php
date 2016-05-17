@@ -69,6 +69,11 @@ class AgentChatAllMessagesController extends CrudController
             $qb->setParameter('search', "%$search%");
         }
 
+        if ($request->get('not_my')) {
+            $qb->andWhere("$alias.person != :me");
+            $qb->setParameter('me', $this->getUser());
+        }
+
         ListHelper::applyInListFilter(new RequestQueryContext($qb, $alias, $request), 'status');
     }
 

@@ -99,7 +99,7 @@ abstract class AbstractContentController extends CrudController
     /**
      * {@inheritdoc}
      */
-    protected function addGroupByNestedCounts(Count $count, array $result)
+    protected function addGroupByNestedCounts(Count $count, array $result, $indexByGroupName = false)
     {
         if ($count->getGroupedBy() === 'category') {
             $map = [];
@@ -126,7 +126,7 @@ abstract class AbstractContentController extends CrudController
                 $addNested($count, $category);
             }
         } else {
-            parent::addGroupByNestedCounts($count, $result);
+            parent::addGroupByNestedCounts($count, $result, $indexByGroupName);
         }
     }
 }

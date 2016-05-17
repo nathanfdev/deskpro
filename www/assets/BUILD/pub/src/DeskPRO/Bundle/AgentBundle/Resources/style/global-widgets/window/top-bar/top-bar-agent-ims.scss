@@ -33,12 +33,10 @@
   .chat-avatar, .chat-avatar-loading {
     // We can't use a border here (antialias & overflows makes it look weird)
     position: relative;
-    width: $inner-top-bar-height - 2px;
-    height: $inner-top-bar-height - 2px;
-    margin-left: 3px;
-    box-shadow: none;
     width: 20px;
     height: 20px;
+    margin-left: 3px;
+    box-shadow: none;
 
   }
 

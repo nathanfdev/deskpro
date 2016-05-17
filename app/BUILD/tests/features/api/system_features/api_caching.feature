@@ -12,7 +12,7 @@ Feature: Api Caching
 
   Scenario: I'm getting response without cache feature
     Given the setting "response.cache.enabled" is set to 0
-    When I send a GET request to "/api/v2/ticket_departments"
+    When I send a GET request to "/api/v2/departments"
     Then the response status code should be 200
 #    And the header "X-DeskPRO-Cache" should not exist
 #    And the header "X-DeskPRO-Cache-Store" should not exist

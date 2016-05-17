@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
   chats:       collectionSelectorFactory('UserChat', 'chats')(state),
   selected:    selectedSelector(state),
   people:      collectionSelectorFactory('Person', 'chats')(state),
-  departments: collectionSelectorFactory('Department', 'chats')(state)
+  departments: collectionSelectorFactory('Department', 'all_chat')(state)
 }))
 export class ChatsCardsContainer extends Component {
   static propTypes = {

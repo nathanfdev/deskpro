@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\Entity\Department;
@@ -75,31 +74,13 @@ class DepartmentDataService extends AbstractDataService
      */
     public function getTicketDepartmentsForPerson(Person $person)
     {
-        $permissions_manager = $this->permissions_manager;
-        $em                  = $this->em;
-
         return $this->generateAndCache(
             [
                 'getAuthorizedDepartmentsForPersonInPortal',
                 $person,
             ],
-            function () use ($person, $permissions_manager, $em) {
-                $permission_bag = $permissions_manager->getPortalPermissionsBag($person);
-                $allowed_department_ids = $permission_bag->getAllowedTicketDepartmentIds();
-
-                $departments = $em
-                    ->getRepository('DeskPRO:Department')
-                    ->createQueryBuilder('d')
-                    ->select('d')
-                    ->where('d.id IN (:allowed_department_ids) AND d.is_tickets_enabled = true')
-                    ->orderBy('d.display_order', 'ASC')
-                    ->setParameter('allowed_department_ids', $allowed_department_ids)
-                    ->getQuery()
-                    ->getResult()
-                ;
-
-                return $departments;
-            }
+            [$this, 'fetchDepartments'],
+            [$person, 'ticket']
         );
     }
 
@@ -117,31 +98,68 @@ class DepartmentDataService extends AbstractDataService
      */
     public function getChatDepartmentsForPerson(Person $person)
     {
-        $permissions_manager = $this->permissions_manager;
-        $em                  = $this->em;
-
         return $this->generateAndCache(
             [
                 'getChatDepartmentsForPerson',
                 $person,
             ],
-            function () use ($person, $permissions_manager, $em) {
-                $permission_bag = $permissions_manager->getPortalPermissionsBag($person);
-                $allowed_department_ids = $permission_bag->getAllowedChatDepartmentIds();
-
-                $departments = $em
-                    ->getRepository('DeskPRO:Department')
-                    ->createQueryBuilder('d')
-                    ->select('d')
-                    ->where('d.id IN (:allowed_department_ids) AND d.is_chat_enabled = true')
-                    ->orderBy('d.display_order', 'ASC')
-                    ->setParameter('allowed_department_ids', $allowed_department_ids)
-                    ->getQuery()
-                    ->getResult()
-                ;
-
-                return $departments;
-            }
+            [$this, 'fetchDepartments'],
+            [$person, 'chat']
         );
+    }
+
+    /**
+     * An array of departments that are allowed for this person.
+     *
+     * If a department that is returned has a parent, the calling code is expected to
+     * deal with parent hierarchies (the parent's are not returned here).
+     *
+     * See the HierarchyGenerator which makes hierarchy's for you.
+     *
+     * @param Person $person
+     *
+     * @return Department[]
+     */
+    public function getDepartmentsForPerson(Person $person)
+    {
+        return $this->generateAndCache(
+            [
+                'getDepartmentsForPerson',
+                $person,
+            ],
+            [$this, 'fetchDepartments'],
+            [$person]
+        );
+    }
+
+    public function fetchDepartments(Person $person, $type = '')
+    {
+        $method                 = sprintf('getAllowed%sDepartmentIds', ucfirst($type));
+        $permission_bag         = $this->permissions_manager->getPortalPermissionsBag($person);
+        $allowed_department_ids = $permission_bag->$method();
+
+        $qb = $this->em
+            ->getRepository(Department::class)
+            ->createQueryBuilder('d')
+            ->select('d')
+            ->where('d.id IN (:allowed_department_ids)')
+            ->orderBy('d.display_order', 'ASC')
+            ->setParameter('allowed_department_ids', $allowed_department_ids)
+        ;
+
+        switch ($type) {
+            case 'chat':
+                $qb->andWhere('d.is_chat_enabled = 1');
+                break;
+            case 'ticket':
+                $qb->andWhere('d.is_tickets_enabled = 1');
+                break;
+            default:
+                break;
+        }
+
+        $departments = $qb->getQuery()->getResult();
+
+        return $departments;
     }
 }

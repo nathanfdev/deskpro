@@ -3,17 +3,46 @@ export class MessagesHelper {
   markMessages(state, payload) {
     const chat = this.getChat(state, payload.chatId);
     let changed = false;
+    let newState = state;
     if (chat) {
       payload.uuids.map(uuid => {
         if (chat.messages.has(uuid) && chat.messages.get(uuid).status < payload.status) {
           changed = true;
           chat.messages.get(uuid).status = payload.status;
+          newState = this.reduceCounts(newState, payload);
         }
       });
       if (changed) {
-        return state.setIn(this.getPath(state, payload.chatId), {...chat});
+        return newState.setIn(this.getPath(state, payload.chatId), {...chat});
       }
     }
+    return newState;
+  }
+
+  reduceCounts(state, payload) {
+    const counts = state.get('counts');
+    const nested = counts.nested;
+    if (nested[payload.chatId] && payload.status === 2 && payload.person !== state.get('me').id) {
+      nested[payload.chatId].count--;
+      if (nested[payload.chatId].count < 0) nested[payload.chatId].count = 0;
+      counts.nested = nested;
+      return state.set('counts', { ...counts });
+    }
+    return state;
+  }
+
+  increaseCounts(state, payload) {
+    const counts = state.get('counts');
+    const nested = counts.nested;
+    if (!nested[payload.chatId]) {
+      nested[payload.chatId] = { count: 0 };
+    }
+    if (payload.status !== 2 && payload.person !== state.get('me').id) {
+      nested[payload.chatId].count++;
+      counts.nested = nested;
+      return state.set('counts', { ...counts });
+    }
+
     return state;
   }
 
@@ -22,10 +51,10 @@ export class MessagesHelper {
   }
 
   addMessageOptimistic(state, payload) {
-    const chat = this.getChat(state, payload.data.agent_chat_id);
+    const chat = this.getChat(state, payload.data.chat);
     if (chat) {
       chat.messages = chat.messages.set(payload.data.uuid, payload.data);
-      return state.setIn(this.getPath(state, payload.data.agent_chat_id), {...chat});
+      return state.setIn(this.getPath(state, payload.data.chat), { ...chat });
     }
     return state;
   }
@@ -48,9 +77,6 @@ export class MessagesHelper {
       case 'notification.agent_chat.new_message':
         handler = this.handleNewMessage.bind(this);
         break;
-      case 'refresh_counts':
-        handler = this.handleRefreshCounts;
-        break;
       case 'notification.agent_chat.mark_message':
         handler = this.handleMarkMessage.bind(this);
         break;
@@ -62,25 +88,29 @@ export class MessagesHelper {
   }
 
   handleNewMessage(state, payload) {
-    const chat = this.getChat(state, payload.data.agent_chat_id);
+    let newState = state;
+    const { data } = payload.data;
+    const chat = this.getChat(state, data.chat);
     if (chat) {
-      chat.messages = chat.messages.set(payload.data.uuid, payload.data);
-      return state.setIn(this.getPath(state, payload.data.agent_chat_id), {...chat});
+      chat.messages = chat.messages.set(data.uuid, data);
+      newState = this.increaseCounts(state, {
+        chatId: data.chat,
+        uuids:  [data.uuid],
+        status: data.status,
+        person: data.person
+      });
+      return newState.setIn(this.getPath(state, payload.data.data.chat), { ...chat });
     }
 
-    return state;
+    return newState;
   }
 
   handleMarkMessage(state, payload) {
     return this.markMessages(state, {
-      chatId: payload.data.chat_id,
-      uuids: [payload.data.message_uuid],
+      chatId: payload.data.chat,
+      uuids:  [payload.data.message_uuid],
       status: payload.data.status
     });
-  }
-
-  handleRefreshCounts(state, payload) {
-    return state.set('counts', payload.data);
   }
 
   idle(state) {

@@ -9,7 +9,7 @@ import { isLoadedCollectionSelectorFactory, setCollection, releaseCollection }
 
 @connect(state => ({
   isLoaded:   isLoadedCollectionSelectorFactory('UserChat', 'chats')(state)
-              && isLoadedCollectionSelectorFactory('Department', 'chats')(state),
+              && isLoadedCollectionSelectorFactory('Department', 'all_chat')(state),
   pagination: paginationSelector(state),
   viewMode:   viewModeSelector(state)
 }))
@@ -20,12 +20,12 @@ export class ListContainer extends Component {
 
   componentDidMount() {
     this.props.dispatch(setCollection('UserChat', 'chats', []));
-    this.props.dispatch(setCollection('Department', 'chats', []));
+    this.props.dispatch(setCollection('Department', 'all_chat', []));
   }
 
   componentWillUnmount() {
     this.props.dispatch(releaseCollection('UserChat', 'chats'));
-    this.props.dispatch(releaseCollection('Department', 'chats'));
+    this.props.dispatch(releaseCollection('Department', 'all_chat'));
   }
 
   render() {

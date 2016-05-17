@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -38,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
+use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use DeskPRO\Component\Pagerfanta\LimitedPager;
 use DeskPRO\Component\Util\ControllerUtils;
 use Doctrine\ORM\QueryBuilder;
@@ -162,9 +162,10 @@ abstract class CrudController extends BaseController
             }
 
             $result = $qb->getQuery()->getArrayResult();
-            $count  = Count::fromGroupedBy($groupBy);
 
-            $this->addGroupByNestedCounts($count, $result);
+            $count = Count::fromGroupedBy($groupBy);
+
+            $this->addGroupByNestedCounts($count, $result, $request->query->getBoolean('index_group_by', false));
             $count->setCount($totalCount);
         }
 
@@ -319,6 +320,7 @@ abstract class CrudController extends BaseController
      *
      * @param int     $id
      * @param Request $request
+     * @SerializerView(serializeNull=true)
      *
      * @return View
      */
@@ -429,15 +431,23 @@ abstract class CrudController extends BaseController
     /**
      * @param Count $count
      * @param array $result
+     * @param bool  $indexByGroupName
      */
-    protected function addGroupByNestedCounts(Count $count, array $result)
+    protected function addGroupByNestedCounts(Count $count, array $result, $indexByGroupName = false)
     {
         foreach ($result as $group) {
             if (isset($group['date_title'])) {
                 $group['title'] = DateHelper::$datePeriodLabels[$group['date_title']];
             }
 
-            $count->addNested($group['value'], $group['group_name'], $count->getGroupedBy(), $group['title'], true);
+            $count->addNested(
+                $group['value'],
+                $group['group_name'],
+                $count->getGroupedBy(),
+                $group['title'],
+                true,
+                $indexByGroupName
+            );
         }
     }
 
@@ -532,8 +542,11 @@ abstract class CrudController extends BaseController
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }
-
-        $view = View::create($this->wrap($this->persistModel($model)), $status);
+        $this->persistModel($model);
+        $view = View::create(
+            !$isModify ? $this->wrap($model) : null,
+            $status
+        );
         if ($this->isExposed('get')) {
             $view->setLocation($this->getLocationUrl($model, $request));
         }
