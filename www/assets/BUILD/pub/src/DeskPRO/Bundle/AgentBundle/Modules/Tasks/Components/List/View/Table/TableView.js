@@ -4,11 +4,12 @@ import { TaskCardPreviewContainer } from '../../TaskCard/TaskCardPreviewContaine
 import { TaskCardPreview } from '../Card/TaskCard/TaskCardPreview';
 import { ListGroup } from './ListGroup';
 import { Table, CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
+import Immutable from 'immutable';
 
 export class TableView extends React.Component {
 
   static propTypes = {
-    taskGroups: PropTypes.object,
+    taskGroups:    PropTypes.object,
     onChangeGroup: PropTypes.func
   };
 
@@ -31,13 +32,13 @@ export class TableView extends React.Component {
     return !Immutable.is(this.state.groups, state.groups);
   }
 
-  onUpdate(index, elements) {
+  onUpdate = (index, elements) => {
     let group = this.state.groups.get(index);
     group = group.set('elements', elements);
     this.setState({
       groups: this.state.groups.set(index, group)
     });
-  }
+  };
 
   render() {
     const { onChangeGroup } = this.props;
@@ -45,14 +46,15 @@ export class TableView extends React.Component {
 
     return (
       <div>
-        <Table>
+        <Table tableClassName="fixed-layout">
           <HeaderContainer />
 
           {groups.map((taskGroup, index) =>
             <ListGroup key={index}
-                       group={taskGroup}
-                       onChangeGroup={onChangeGroup}
-                       onUpdate={this.onUpdate.bind(this, index)} />
+              group={taskGroup}
+              onChangeGroup={onChangeGroup}
+              onUpdate={els => this.onUpdate(index, els)}
+            />
           )}
         </Table>
 

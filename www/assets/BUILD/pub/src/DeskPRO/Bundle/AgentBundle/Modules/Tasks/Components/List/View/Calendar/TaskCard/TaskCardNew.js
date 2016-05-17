@@ -15,8 +15,7 @@ import {
   DateDue,
   LinkedItemContainer,
   CardProjectContainer,
-  AssignButton,
-  AssigneeAvatar
+  AssignButton
 } from '../../../TaskCard';
 import { SaveTaskButton } from './SaveTaskButton';
 
@@ -25,10 +24,10 @@ import { SaveTaskButton } from './SaveTaskButton';
 export class TaskCardNew extends React.Component {
 
   static propTypes = {
-    onClose: PropTypes.func,
-    dispatch: PropTypes.func.isRequired,
-    isChanged: PropTypes.func,
-    task: PropTypes.object.isRequired,
+    onClose:      PropTypes.func,
+    dispatch:     PropTypes.func.isRequired,
+    isChanged:    PropTypes.func,
+    task:         PropTypes.object.isRequired,
     onSetEditing: PropTypes.func
   };
 
@@ -38,45 +37,73 @@ export class TaskCardNew extends React.Component {
       submit: false
     };
     this.state = {
-      title: null,
-      due: props.task.get('date_due'),
+      title:    null,
+      due:      props.task.get('date_due'),
       assignee: Immutable.fromJS({
-        agents: [],
-        teams: [],
+        agents:      [],
+        teams:       [],
         departments: []
       }),
-      links: Immutable.fromJS({
-        linked_tickets: [],
-        linked_chats: [],
+      links:    Immutable.fromJS({
+        linked_tickets:  [],
+        linked_chats:    [],
         linked_articles: []
       }),
-      project: null
+      project:  null
     };
     this.defaultDate = this.state.due;
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      title: null,
-      due: nextProps.task.get('date_due'),
+      title:    null,
+      due:      nextProps.task.get('date_due'),
       assignee: Immutable.fromJS({
-        agents: [],
-        teams: [],
+        agents:      [],
+        teams:       [],
         departments: []
       }),
-      links: Immutable.fromJS({
-        linked_tickets: [],
-        linked_chats: [],
+      links:    Immutable.fromJS({
+        linked_tickets:  [],
+        linked_chats:    [],
         linked_articles: []
       }),
-      project: null
+      project:  null
     });
     this.defaultDate = this.state.due;
   }
 
-  onChange(prop, value) {
-    this.setState({[prop]: value});
-  }
+  onChange = (prop, value) => {
+    this.setState({ [prop]: value });
+  };
+
+  onSave = () => {
+    if (!this.state.title) return;
+    const { dispatch, onClose } = this.props;
+
+    const submitData = {
+      title:       this.state.title,
+      task_type:   'task',
+      visibility:  'public',
+      urgency:     1,
+      date_due:    this.state.due,
+      project:     this.state.project,
+      agents:      this.state.assignee.get('agents').toArray(),
+      departments: this.state.assignee.get('departments').toArray(),
+      teams:       this.state.assignee.get('teams').toArray()
+    };
+
+    dispatch(addTask(submitData));
+    if (onClose) {
+      onClose();
+    }
+  };
+
+  onSetEditing = (isEditing) => {
+    if (!this.isChanged() && this.props.onSetEditing) {
+      this.props.onSetEditing(isEditing);
+    }
+  };
 
   isChanged() {
     const { title, due, assignee, project } = this.state;
@@ -84,60 +111,43 @@ export class TaskCardNew extends React.Component {
       assignee.get('agents').size || assignee.get('teams').size || assignee.get('departments').size;
   }
 
-  onSave = () => {
-    if (!this.state.title) return;
-    const { dispatch, onClose } = this.props;
-
-    const submitData = {
-      title: this.state.title,
-      task_type: 'task',
-      visibility: 'public',
-      urgency: 1,
-      date_due: this.state.due,
-      project: this.state.project,
-      agents: this.state.assignee.get('agents').toArray(),
-      departments: this.state.assignee.get('departments').toArray(),
-      teams: this.state.assignee.get('teams').toArray()
-    };
-
-    dispatch(addTask(submitData));
-    onClose && onClose();
-  };
-
-  onSetEditing = (isEditing) => {
-    !this.isChanged() && this.props.onSetEditing && this.props.onSetEditing(isEditing);
-  };
-
   render() {
     const { title, due, project, assignee, links, submit } = this.state;
 
     return (
-      <Card statusBars={false}
-            type="task"
-            additionalClasses="calendar-task-card">
+      <Card statusBars={false} type="task" additionalClasses="calendar-task-card">
         <SaveTaskButton onClick={this.onSave} />
         <CardLine>
           <CardLineLeft>
-            <TitleForm value={title} onChange={this.onChange.bind(this, 'title')} />
+            <TitleForm value={title} onChange={val => this.onChange('title', val)} />
           </CardLineLeft>
           <CardLineRight>
             <AssignButton value={assignee}
-                          onChange={this.onChange.bind(this, 'assignee')}
-                          onSetEditing={this.onSetEditing} />
+              onChange={val => this.onChange('assignee', val)}
+              onSetEditing={this.onSetEditing}
+            />
           </CardLineRight>
         </CardLine>
 
         <CardLine>
           <CardLineLeft>
-            <DateDue value={due}
-                     onChange={this.onChange.bind(this, 'due')}
-                     onSetEditing={this.onSetEditing}
-                     openBySingleClick />
-            <CardProjectContainer value={project}
-                                  onChange={this.onChange.bind(this, 'project')}
-                                  onSetEditing={this.onSetEditing}
-                                  openBySingleClick />
-            <LinkedItemContainer value={links} />
+            <div className="dpwd--card-line-item-container">
+              <DateDue value={due}
+                onChange={val => this.onChange('due', val)}
+                onSetEditing={this.onSetEditing}
+                openBySingleClick
+              />
+            </div>
+            <div className="dpwd--card-line-item-container">
+              <CardProjectContainer value={project}
+                onChange={val => this.onChange('project', val)}
+                onSetEditing={this.onSetEditing}
+                openBySingleClick
+              />
+            </div>
+            <div className="dpwd--card-line-item-container">
+              <LinkedItemContainer value={links} />
+            </div>
           </CardLineLeft>
         </CardLine>
       </Card>

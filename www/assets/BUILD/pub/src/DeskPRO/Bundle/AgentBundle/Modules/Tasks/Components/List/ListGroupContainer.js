@@ -3,9 +3,10 @@ import { connect } from 'react-redux';
 import Immutable from 'immutable';
 import { groupCollection } from 'Util/ListGroup';
 import { currentOrderBySelector, elementsSelector } from '../../Selectors/list';
-import { collectionSelectorFactory, allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { allSelectorFactory, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import { editTask } from '../../Actions/listActions';
+import { addToCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { pureRender } from 'Ampliflux';
 
 @connect(state => ({
@@ -36,9 +37,22 @@ export class ListGroupContainer extends React.Component {
   };
 
   onChangeGroup = (taskId, updateData) => {
-    if (updateData) {
-      this.props.dispatch(editTask(taskId, updateData));
+    if (!updateData) {
+      return;
     }
+
+    let task = this.props.tasks.get(taskId);
+    if (!task) {
+      return;
+    }
+
+    for (const [key, val] of Object.entries(updateData)) {
+      task = task.set(key, val);
+    }
+
+    // todo this is a duplicate of TaskCardEditContainer.onChange()
+    this.props.dispatch(addToCollection('Task', 'all', Immutable.List([task])));
+    this.props.dispatch(editTask(taskId, updateData));
   };
 
   render() {

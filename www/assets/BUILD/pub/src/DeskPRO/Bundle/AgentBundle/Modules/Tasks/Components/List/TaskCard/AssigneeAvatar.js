@@ -12,9 +12,9 @@ import Immutable from 'immutable';
 }))
 export class AssigneeAvatar extends React.Component {
   static propTypes = {
-    task: PropTypes.object.isRequired,
-    agents: PropTypes.object.isRequired,
-    agentTeams: PropTypes.object.isRequired,
+    task:        PropTypes.object.isRequired,
+    agents:      PropTypes.object.isRequired,
+    agentTeams:  PropTypes.object.isRequired,
     departments: PropTypes.object.isRequired
   };
 
@@ -37,15 +37,25 @@ export class AssigneeAvatar extends React.Component {
 
   render() {
     const { task, agents, agentTeams, departments } = this.props;
+    let title;
+    let el;
 
     if (agents && task.get('agents').size) {
-      return <PersonAvatar person={agents.get(task.get('agents').first())} size={16}/>;
+      const agent = agents.get(task.get('agents').first());
+      title = `Agent: ${agent.get('name')}`;
+      el = <PersonAvatar person={agent} size={16} />;
     } else if (agentTeams && task.get('teams').size) {
-      return <AgentTeamAvatar agentTeam={agentTeams.get(task.get('teams').first())} size={16}/>;
+      const team = agentTeams.get(task.get('teams').first());
+      title = `Team: ${team.get('title')}`;
+      el = <AgentTeamAvatar agentTeam={team} size={16} />;
     } else if (departments && task.get('departments').size) {
-      return <DepartmentAvatar department={departments.get(task.get('departments').first())} size={16}/>;
+      const dep = departments.get(task.get('departments').first());
+      title = `Department: ${dep.get('title')}`;
+      el = <DepartmentAvatar department={dep} size={16} />;
     }
 
-    return null;
+    return el
+      ? <div title={title}>{el}</div>
+      : null;
   }
 }

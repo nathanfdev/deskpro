@@ -5,13 +5,14 @@ import classNames from 'classnames';
 export class Table extends Component {
 
   static propTypes = {
-    children: PropTypes.any.isRequired
+    children: PropTypes.any.isRequired,
+    tableClassName: PropTypes.string
   };
 
   render() {
     return (
       <div className="dpmw--items-table-list">
-        <table className="condensed-task-list">
+        <table className={this.props.tableClassName}>
           {this.props.children}
         </table>
       </div>
@@ -22,15 +23,20 @@ export class Table extends Component {
 export class TableGroupDivider extends Component {
 
   static propTypes = {
-    title: PropTypes.any
+    title:   PropTypes.any,
+    columns: PropTypes.number
+  };
+
+  static defaultProps = {
+    columns: 1000
   };
 
   render() {
-    const { title } = this.props;
+    const { title, columns } = this.props;
 
     return (
       <tr className="divider">
-        <td colSpan="1000">
+        <td colSpan={columns}>
           <hr />
           {title}
         </td>
@@ -42,12 +48,13 @@ export class TableGroupDivider extends Component {
 export class Th extends Component {
 
   static propTypes = {
-    title:    PropTypes.string,
-    sort:     PropTypes.string,
-    orderBy:  PropTypes.string,
-    orderDir: PropTypes.string,
-    onChange: PropTypes.func,
-    visible:  PropTypes.bool
+    title:     PropTypes.string,
+    sort:      PropTypes.string,
+    orderBy:   PropTypes.string,
+    orderDir:  PropTypes.string,
+    onChange:  PropTypes.func,
+    visible:   PropTypes.bool,
+    className: PropTypes.string
   };
 
   onChange = () => {
@@ -64,24 +71,20 @@ export class Th extends Component {
   };
 
   render() {
-    const { sort, orderBy, orderDir, title, visible = true, onChange } = this.props;
+    const { sort, orderBy, orderDir, title, visible = true, onChange, className } = this.props;
+    const classes = {
+      'fa-caret-down': orderDir === constants.ORDER_DESC,
+      'fa-caret-up':   orderDir === constants.ORDER_ASC
+    };
 
     return (
-      <th onClick={this.onChange}
-          className={classNames(
-            { hidden: !visible },
-            { sortable: !!onChange }
-          )}>
-
+      <th onClick={this.onChange} className={classNames(className, { hidden: !visible }, { sortable: !!onChange })}>
         {title}
         {sort && orderBy === sort &&
         <span>
-            <i className={classNames('fa', {
-              'fa-caret-down': orderDir === constants.ORDER_DESC,
-              'fa-caret-up': orderDir === constants.ORDER_ASC
-            })} />
-          </span>
-        }
+          <i className={classNames('fa', classes)} />
+        </span>
+        || null}
       </th>
     );
   }
@@ -92,14 +95,15 @@ export class Td extends Component {
   static propTypes = {
     visible:   PropTypes.bool,
     className: PropTypes.string,
-    children:  PropTypes.any
+    children:  PropTypes.any,
+    style:     PropTypes.object
   };
 
   render() {
-    const { visible = true, children, className } = this.props;
+    const { visible = true, children, className, style } = this.props;
 
     return (
-      <td className={classNames({ hidden: !visible }, className)}>
+      <td className={classNames({ hidden: !visible }, className)} style={style}>
         {children}
       </td>
     );
@@ -124,7 +128,7 @@ export class TdId extends Component {
 export class TdTitle extends Component {
 
   render() {
-    return <Td className="item-title" {...this.props} />;
+    return <Td className="subject-col sortable" {...this.props} />;
   }
 }
 
@@ -156,10 +160,10 @@ export class TableCheckbox extends Component {
   render() {
     const divClasses      = classNames('dpwd-navigation-top-row-mass-action-checkbox', { active: this.props.selected });
     const checkboxClasses = classNames('fa', { 'fa-check': this.props.selected });
+    const style = { position: 'relative', border: 'none', margin: 0, width: 'auto', height: 'auto' };
 
     return (
-      <div className="dpwd-navigation-top-row-mass-action-checkbox-container"
-           style={{ position: 'relative', border: 'none', margin: 0, width: 'auto', height: 'auto' }}>
+      <div className="dpwd-navigation-top-row-mass-action-checkbox-container" style={style}>
         <div className={divClasses} onClick={this.props.onClick} style={{ margin: 0, padding: 0 }}>
           <i className={checkboxClasses}></i>
         </div>

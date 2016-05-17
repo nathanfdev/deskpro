@@ -69,11 +69,9 @@ export default createReducer(storeInitialState, {
   [removeFromCollection]: (state, { recordName, collectionName, ids }) => {
     let collection = state.getIn([recordName, 'collections', collectionName]);
 
-    collection = collection.withMutations(list => {
+    collection = collection.withMutations(set => {
       for (const i of ids) {
-        const index = list.indexOf(i);
-        if (index === -1) continue;
-        list.delete(index);
+        set.delete(i);
       }
     });
 

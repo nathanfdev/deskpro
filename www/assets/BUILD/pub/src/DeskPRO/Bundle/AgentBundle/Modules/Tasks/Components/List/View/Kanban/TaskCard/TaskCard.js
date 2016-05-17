@@ -14,23 +14,17 @@ export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
     className: PropTypes.string,
-    moving: PropTypes.bool,
-    dragging: PropTypes.bool
+    moving:    PropTypes.bool,
+    dragging:  PropTypes.bool
   };
 
   render() {
     const { task, selected, moving, dragging } = this.props;
-    const { onToggleSelected, onChange } = this.props;
+    const { onToggleSelected } = this.props;
+    const onChange = this.onChange;
 
     return (
-      <div className={classNames(
-        'card',
-        'task-card',
-        {
-          'moving': moving,
-          'dragging-item': dragging
-        }
-      )}>
+      <div className={classNames('card', 'task-card', { moving, 'dragging-item': dragging })}>
 
         <div className="card-status-bar status-bar-left" />
         <div className="card-status-bar status-bar-right" />
@@ -38,9 +32,7 @@ export class TaskCard extends BaseTaskCard {
         <KanbanCheckbox selected={selected} onClick={onToggleSelected} />
 
         <div className="content">
-          <Title value={task.get('title')}
-                 isDone={task.get('is_done')}
-                 onSubmit={onChange.bind(null, 'title')} />
+          <Title value={task.get('title')} isDone={task.get('is_done')} onSubmit={val => onChange('title', val)} />
 
           <div className="card-line task-details">
             <div className="top-right-box">
@@ -49,17 +41,15 @@ export class TaskCard extends BaseTaskCard {
                 </span>
             </div>
             <div>
-              <DateDue value={task.get('date_due')}
-                       onChange={onChange.bind(null, 'date_due')} />
+              <DateDue value={task.get('date_due')} onChange={val => onChange('date_due', val)} />
             </div>
           </div>
-          <hr/>
+          <hr />
           <div className="card-line task-properties">
             <Comments count={this.state.comments} />
             {task.get('subtasks_total') > 0 &&
-              <SubTasks current={task.get('subtasks_done')}
-                        total={task.get('subtasks_total')} />
-            }
+            <SubTasks current={task.get('subtasks_done')} total={task.get('subtasks_total')} />
+            || null}
           </div>
         </div>
       </div>

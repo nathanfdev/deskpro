@@ -5,14 +5,13 @@ import { listParamsNavSelector, listParamsFiltersSelector, currentOrderBySelecto
   from '../Selectors/list';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
-import { addToCollection, setCollection, releaseCollection, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { addToCollection, setCollection, collectionSelectorFactory, removeFromCollection, releaseCollection }
+  from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import invariant from 'invariant';
-
-/**
- * Used to identify requests within record stores
- * @type {string}
- */
-const recordStoresId = 'all';
+import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
+import { myAgentTeamsSelector, myDepartmentsSelector }
+  from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/common';
+import { loadCounts } from './navActions';
 
 const prepareLinkedData = (linked) => {
   const result = [];
@@ -79,8 +78,8 @@ export const loadList = createAction(
         dispatch(addToCollection('Article', 'all', prepareLinkedData(res.linked.article)));
         dispatch(addToCollection('UserChat', 'all', prepareLinkedData(res.linked.chat_conversation)));
 
-        dispatch(releaseCollection('Task', recordStoresId));
-        dispatch(setCollection('Task', recordStoresId, res.data));
+        dispatch(releaseCollection('Task', 'all'));
+        dispatch(setCollection('Task', 'all', res.data));
         const { pagination } = res.meta;
         return { ids, pagination };
       }
@@ -116,16 +115,88 @@ export const addTask = createAction(
   'TASKS_LIST_ADD_TASK',
   (data) => dispatch => api.sendPost('DP_API/tasks', data).success(response => {
     const task = Immutable.fromJS(response.data);
-    dispatch(addToCollection('Task', recordStoresId, Immutable.List([task])));
+    dispatch(addToCollection('Task', 'all', Immutable.List([task])));
   })
 );
 
+const isTaskMatch = function (task, state) {
+  let me;
+  for (const [k, v] of listParamsNavSelector(state)) {
+    switch (k) {
+      // project
+      case 'project':
+        if (v.toSet().has(task.get('project'))) {
+          return true;
+        }
+        break;
+
+      // me or other agent
+      case 'assigned_agent':
+        const set = v.toSet();
+        me = meSelector(state);
+        if (set.has('me') && task.get('agents').toSet().has(me.get('id'))) {
+          return true;
+        }
+        for (const i of task.get('agents')) {
+          if (set.has(i)) {
+            return true;
+          }
+        }
+        break;
+
+      // only other agent
+      case 'not_assigned_agent':
+        me = meSelector(state);
+        if (!v.toSet().has('me')) {
+          return true;
+        }
+        break;
+
+      case 'no_assignments':
+        if (task.get('agents').size === 0 && task.get('teams').size === 0 && task.get('departments').size === 0) {
+          return true;
+        }
+        break;
+
+      // my teams
+      case 'assigned_team':
+        const teams = myAgentTeamsSelector(state);
+        for (const i of task.get('teams')) {
+          if (teams.has(i)) {
+            return true;
+          }
+        }
+        break;
+
+      // my departments
+      case 'assigned_department':
+        const deps = myDepartmentsSelector(state);
+        for (const i of task.get('departments')) {
+          if (deps.has(i)) {
+            return true;
+          }
+        }
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  return false;
+};
+
 export const getTask = createAction(
   'TASKS_LIST_GET_TASK',
-  (id) => dispatch => api.sendGet(`DP_API/tasks/${id}`).success(response => {
+  (id) => (dispatch, getState) => api.sendGet(`DP_API/tasks/${id}`).success(response => {
     if (!response.data) return;
     const task = Immutable.fromJS(response.data);
-    dispatch(addToCollection('Task', recordStoresId, Immutable.List([task])));
+
+    if (isTaskMatch(task, getState())) {
+      dispatch(addToCollection('Task', 'all', Immutable.List([task])));
+    } else {
+      dispatch(removeFromCollection('Task', 'all', [task.get('id')]));
+    }
   })
 );
 
@@ -136,7 +207,7 @@ export const editTask = createAction(
   (id, data) => (dispatch, getState) => {
     invariant(!!data, 'Where are the data?');
 
-    const tasks = collectionSelectorFactory('Task', recordStoresId)(getState());
+    const tasks = collectionSelectorFactory('Task', 'all')(getState());
     const oldTask = tasks.get(id);
 
     const promise = api.sendPut(`DP_API/tasks/${id}`, data);
@@ -146,11 +217,12 @@ export const editTask = createAction(
     promise.success(() => {
       if (updates[id] !== promise) return;
       delete updates[id];
+      dispatch(loadCounts());
       dispatch(getTask(id));
     }).error(() => {
       if (updates[id] !== promise) return;
       delete updates[id];
-      dispatch(addToCollection('Task', recordStoresId, Immutable.List([oldTask])));
+      dispatch(addToCollection('Task', 'all', Immutable.List([oldTask])));
     });
   }
 );

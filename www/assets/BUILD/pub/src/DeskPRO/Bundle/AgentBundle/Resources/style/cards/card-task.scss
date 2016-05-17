@@ -46,6 +46,12 @@
     font-weight: bold;
     color: darken(#dcdcdc, 10%);
   }
+
+  span.done {
+    font-size: 10px;
+    line-height: 25px;
+    margin-top: 0;
+  }
 }
 
 .dpw--single-card-mark-done.dpw--single-card-mark-done-selected {
