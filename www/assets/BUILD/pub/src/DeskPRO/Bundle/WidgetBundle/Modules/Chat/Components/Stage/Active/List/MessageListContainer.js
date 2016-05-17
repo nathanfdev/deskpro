@@ -38,7 +38,7 @@ export class MessageListContainer extends React.Component {
     const { widgetHeight, isBubble } = this.props;
     const node = ReactDOM.findDOMNode(this);
 
-    let height = widgetHeight - 230; // header height
+    let height = widgetHeight - (isBubble ? 242 : 230); // header height
     $(node).parent().children().each((i, child) => {
       if (child !== node) {
         height = height - $(child).outerHeight();
@@ -46,9 +46,6 @@ export class MessageListContainer extends React.Component {
     });
     if (height < 100) {
       height = 100;
-    }
-    if (isBubble) {
-      height = 300;
     }
 
     $(node).css('height', height);
