@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use DeskPRO\Component\Util\MapUtils;
@@ -128,7 +129,6 @@ class LanguageController extends AbstractApiController
             'portal.chat.reply_to',
             'portal.chat.screen_share',
             'portal.chat.start',
-            'portal.chat.starting',
             'portal.chat.support_powered_by',
             'portal.chat.transcript_desc',
             'portal.chat.transcript_title',

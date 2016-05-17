@@ -55,10 +55,10 @@ export class ChatWaitingContainer extends React.Component {
       <div>
         <WaitingPreview />
         {this.state.buttonShown &&
-          <span>
+          <div className="dpdesignportal-chat-message-long">
             <p>{portalPhrases.get('portal.chat.message_wait-long')}</p>
             <p><a href="#" onClick={this.onOpenTicketForm}>{portalPhrases.get('portal.chat.message_wait-ticket')}</a></p>
-          </span>
+          </div>
         }
       </div>
     );

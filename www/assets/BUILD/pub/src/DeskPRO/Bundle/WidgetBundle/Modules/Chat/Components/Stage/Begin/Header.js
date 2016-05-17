@@ -7,7 +7,7 @@ export class Header extends React.Component {
     return (
       <div className="dpdesignportal-collect-user-info-header">
         <span className="img" />
-        <span className="text">{portalPhrases.get('portal.chat.starting')}</span>
+        <span className="text">{portalPhrases.get('portal.chat.message_wait-pending')}</span>
       </div>
     );
   }
