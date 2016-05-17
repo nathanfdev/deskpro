@@ -51,7 +51,6 @@ Feature: submitting new feedback
     Then I should see a "success" flash message with the phrase "portal.flashes.new_feedback_posted"
     And I should be on the set password page
 
-#  @reinstall
 #  Scenario: A guest submits valid feedback and needs email verification
 #    Given I am on "/feedback"
 #    When I select "Suggestion" from "new_feedback_category"

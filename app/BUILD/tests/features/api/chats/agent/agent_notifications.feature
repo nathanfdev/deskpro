@@ -1,4 +1,3 @@
-@chats @agent-chats @notifications
 Feature: Notifications Api feature
   To work with notifications and action alerts
 
@@ -6,7 +5,6 @@ Feature: Notifications Api feature
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I get basic settings for action-alerts
     When I send a GET request to "/api/v2/notify/setup/action-alerts"
     Then the response should be in JSON
@@ -14,6 +12,8 @@ Feature: Notifications Api feature
     And the JSON node data should exist
     And the JSON node "data.clients" should exist
 
+  @skip-ci
+  # Contains hard coded IDs
   Scenario: I send some text to everyone-chat
     When I send a POST request to "api/v2/agent_chats" with body:
     """
