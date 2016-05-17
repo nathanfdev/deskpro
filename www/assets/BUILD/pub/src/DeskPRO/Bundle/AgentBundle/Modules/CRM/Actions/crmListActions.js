@@ -86,3 +86,6 @@ export const setOrderDir = createAction(
   'CRM_LIST_SET_ORDER_DIR',
     orderDir => dispatch => dispatch(applyParams({ order_dir: orderDir }))
 );
+
+export const toggleTableFieldVisibility = createAction('CRM_LIST_TOGGLE_TABLE_FIELD_VISIBILITY');
+export const toggleCardFieldVisibility = createAction('CRM_LIST_TOGGLE_CARD_FIELD_VISIBILITY');
