@@ -27,13 +27,13 @@ export default createReducer(initialState, {
     // @todo Test this to work correctly when hash state is more extensively used (check re-renderings w/ and w/o this)
     // @todo Think about optimization, ideally comparing hash strings, not state objects
     //
-    if (!shallowEqual(state.get('hash').toJS(), newHashState.toJS())) {
+    if (!Immutable.is(state.get('hash'), newHashState)) {
       next = next.merge({ hash: payload ? newHashState : {} });
     }
 
     return next;
   },
-  [actions.updateRoutingState]: (state, {component, option, value}) => {
+  [actions.updateRoutingState]: (state, { component, option, value }) => {
     let next = state;
 
     if (!next.hasIn(['hash', component])) {
