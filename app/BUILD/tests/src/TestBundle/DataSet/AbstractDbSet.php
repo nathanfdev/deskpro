@@ -285,6 +285,7 @@ abstract class AbstractDbSet implements DataSetInterface
             $this->getDb()->exec("USE {$this->getDatabaseName()}");
             $this->installDatabase('default', true);
             $this->installDatabase('system');
+            $this->installDatabase('audit');
 
             self::$isStructureCreated = true;
         } else {
