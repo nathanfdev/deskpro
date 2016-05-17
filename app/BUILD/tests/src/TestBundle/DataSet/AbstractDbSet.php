@@ -34,7 +34,6 @@ namespace DpTestSrc\TestBundle\DataSet;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\DBAL\Connection;
-use Doctrine\ORM\EntityManager;
 use Orb\Util\Util;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -55,11 +54,6 @@ abstract class AbstractDbSet implements DataSetInterface
     private $db;
 
     /**
-     * @var EntityManager
-     */
-    private $em;
-
-    /**
      * @var string
      */
     private $cache_dir;
@@ -78,16 +72,14 @@ abstract class AbstractDbSet implements DataSetInterface
      * Constructor.
      *
      * @param ContainerInterface $container
-     * @param EntityManager      $em
      * @param Connection         $db
      * @param string             $cache_dir
      * @param string             $mysql_bin_path
      * @param string             $mysqldump_bin_path
      */
-    public function __construct(ContainerInterface $container, EntityManager $em, Connection $db, $cache_dir, $mysql_bin_path = 'mysql', $mysqldump_bin_path = 'mysqldump')
+    public function __construct(ContainerInterface $container, Connection $db, $cache_dir, $mysql_bin_path = 'mysql', $mysqldump_bin_path = 'mysqldump')
     {
         $this->container          = $container;
-        $this->em                 = $em;
         $this->db                 = $db;
         $this->cache_dir          = $cache_dir;
         $this->mysql_bin_path     = $mysql_bin_path;
@@ -95,19 +87,39 @@ abstract class AbstractDbSet implements DataSetInterface
     }
 
     /**
+     * @param string $type
+     *
      * @return \Application\DeskPRO\DBAL\Connection
      */
-    public function getDb()
+    public function getDb($type = 'default')
     {
-        return $this->db;
+        return $this->container->get(sprintf('doctrine.dbal.%s_connection', $type));
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return \Doctrine\ORM\EntityManager
+     */
+    public function getEm($type = 'default')
+    {
+        return $this->container->get(sprintf('doctrine.orm.%s_entity_manager', $type));
     }
 
     /**
      * @return \Doctrine\ORM\EntityManager
      */
-    public function getEm()
+    public function getSystemEm()
     {
-        return $this->em;
+        return $this->getEm('system');
+    }
+
+    /**
+     * @return \Doctrine\ORM\EntityManager
+     */
+    public function getAuditEm()
+    {
+        return $this->getEm('audit');
     }
 
     /**
@@ -316,12 +328,15 @@ abstract class AbstractDbSet implements DataSetInterface
      */
     private function clearDb()
     {
-        $this->getDb()->exec('SET FOREIGN_KEY_CHECKS = 0;');
         $purger = new ORMPurger();
         $purger->setPurgeMode(ORMPurger::PURGE_MODE_TRUNCATE);
-        $purger->setEntityManager($this->getEm());
-        $purger->purge();
-        $this->getDb()->exec('SET FOREIGN_KEY_CHECKS = 1;');
+
+        foreach (['default', 'system', 'audit'] as $dbType) {
+            $this->getDb($dbType)->exec('SET FOREIGN_KEY_CHECKS = 0;');
+            $purger->setEntityManager($this->getEm($dbType));
+            $purger->purge();
+            $this->getDb($dbType)->exec('SET FOREIGN_KEY_CHECKS = 1;');
+        }
     }
 
     /**
