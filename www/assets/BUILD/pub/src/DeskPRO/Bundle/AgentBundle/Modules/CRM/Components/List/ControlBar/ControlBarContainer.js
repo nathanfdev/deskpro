@@ -73,11 +73,14 @@ export class ControlBarContainer extends Component {
             icon:  'table',
 
             configurableFields: {
-              id:           'ID',
-              title:        'Title',
-              person:       'Person',
-              content:      'Content',
-              date_created: 'Date created'
+              id:              'ID',
+              timezone:        'TZ',
+              organization:    'Organization',
+              first_name:      'First name',
+              last_name:       'Last name',
+              primary_email:   'Email',
+              date_created:    'Date created',
+              date_last_login: 'Last login'
             },
 
             visibleFields:         peopleVisibleFields.get(constants.VIEW_MODE_TABLE),
@@ -125,10 +128,10 @@ export class ControlBarContainer extends Component {
 
             configurableFields: {
               id:           'ID',
-              title:        'Title',
-              person:       'Person',
-              content:      'Content',
-              date_created: 'Date created'
+              date_created: 'Date created',
+              importance:   'Importance',
+              name:         'Name',
+              summary:      'Summary'
             },
 
             visibleFields:         organizationVisibleFields.get(constants.VIEW_MODE_TABLE),

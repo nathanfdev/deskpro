@@ -15,12 +15,12 @@ export const crmListInitialState = {
   },
   visibleFields: {
     people: {
-      card:  [],
-      table: []
+      card:  ['id', 'date_created'],
+      table: ['id', 'timezone', 'first_name', 'last_name', 'primary_email', 'date_created', 'date_last_login']
     },
     organizations: {
-      card:  [],
-      table: []
+      card:  ['id', 'date_created'],
+      table: ['id', 'date_created', 'importance', 'name', 'summary']
     }
   }
 };

@@ -11,13 +11,13 @@ export class PeopleTable extends Component {
     organizations:   PropTypes.object,
     sortTable:       PropTypes.func.isRequired,
     currentOrderBy:  PropTypes.string.isRequired,
-    currentOrderDir: PropTypes.string.isRequired
+    currentOrderDir: PropTypes.string.isRequired,
+    visibleFields:   PropTypes.object
   };
 
-  renderOrganization = (organizations, id) =>
-    <Td visible>
-      {organizations.get(id) ? organizations.get(id).get('name') : ''}
-    </Td>;
+  isVisible(field) {
+    return this.props.visibleFields.includes(field);
+  }
 
   render() {
     const { people, currentOrderBy, currentOrderDir, sortTable, organizations } = this.props;
@@ -32,6 +32,7 @@ export class PeopleTable extends Component {
             orderDir={currentOrderDir}
             orderBy={currentOrderBy}
             onChange={sortTable}
+            visible={this.isVisible('id')}
           />
           <Th
             sort="timezone"
@@ -40,6 +41,7 @@ export class PeopleTable extends Component {
             orderDir={currentOrderDir}
             orderBy={currentOrderBy}
             onChange={sortTable}
+            visible={this.isVisible('timezone')}
           />
           <Th
             sort="organization"
@@ -48,6 +50,7 @@ export class PeopleTable extends Component {
             orderDir={currentOrderDir}
             orderBy={currentOrderBy}
             onChange={sortTable}
+            visible={this.isVisible('organization')}
           />
           <Th
             sort="first_name"
@@ -56,6 +59,7 @@ export class PeopleTable extends Component {
             orderDir={currentOrderDir}
             orderBy={currentOrderBy}
             onChange={sortTable}
+            visible={this.isVisible('first_name')}
           />
           <Th
             sort="last_name"
@@ -64,6 +68,7 @@ export class PeopleTable extends Component {
             orderDir={currentOrderDir}
             orderBy={currentOrderBy}
             onChange={sortTable}
+            visible={this.isVisible('last_name')}
           />
           <Th
             sort="primary_email"
@@ -72,6 +77,7 @@ export class PeopleTable extends Component {
             orderDir={currentOrderDir}
             orderBy={currentOrderBy}
             onChange={sortTable}
+            visible={this.isVisible('primary_email')}
           />
           <Th
             sort="date_created"
@@ -80,6 +86,7 @@ export class PeopleTable extends Component {
             orderDir={currentOrderDir}
             orderBy={currentOrderBy}
             onChange={sortTable}
+            visible={this.isVisible('date_created')}
           />
           <Th
             sort="date_last_login"
@@ -88,32 +95,36 @@ export class PeopleTable extends Component {
             orderDir={currentOrderDir}
             orderBy={currentOrderBy}
             onChange={sortTable}
+            visible={this.isVisible('date_last_login')}
           />
         </tr>
         </thead>
         <tbody>
         {people && people.map((element, index) =>
             <tr key={index}>
-              <TdId visible>
+              <TdId visible={this.isVisible('id')}>
                 {element.get('id')}
               </TdId>
-              <Td visible>
+              <Td visible={this.isVisible('timezone')}>
                 {element.get('timezone')}
               </Td>
-              {this.renderOrganization(organizations, element.get('organization'))}
-              <Td visible>
+              <Td visible={this.isVisible('organization')}>
+                {organizations.get(element.get('organization'))
+                  && organizations.get(element.get('organization')).get('name')}
+              </Td>
+              <Td visible={this.isVisible('first_name')}>
                 {element.get('first_name')}
               </Td>
-              <Td visible>
+              <Td visible={this.isVisible('last_name')}>
                 {element.get('last_name')}
               </Td>
-              <Td visible>
+              <Td visible={this.isVisible('primary_email')}>
                 {element.get('primary_email')}
               </Td>
-              <Td visible>
+              <Td visible={this.isVisible('date_created')}>
                 <div className="dpw--timer"><FormattedRelative value={element.get('date_created')} /></div>
               </Td>
-              <Td visible>
+              <Td visible={this.isVisible('date_last_login')}>
                 <div className="dpw--timer"><FormattedRelative value={element.get('date_last_login')} /></div>
               </Td>
             </tr>
