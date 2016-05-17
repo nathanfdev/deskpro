@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -221,14 +222,6 @@ class Usergroup extends DomainObject
         $this->setModelField('sys_name', $sysName);
 
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSysName()
-    {
-        return $this->sys_name;
     }
 
     /**
