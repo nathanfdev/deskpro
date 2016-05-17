@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Dpql\Func;
 
 use Application\DeskPRO\App;
@@ -96,9 +97,9 @@ class ObjLang extends AbstractFunc
                 $text = $db->fetchColumn('
                     SELECT value
                     FROM object_lang
-                    WHERE ref = ? AND prop_name = ?
+                    WHERE ref = ? AND prop_name = ? AND language_id != ? AND value != ""
                     LIMIT 1
-                ', array($ref_type.".$value", $ref_prop));
+                ', array($ref_type.".$value", $ref_prop, $lang_id));
             }
 
             if (!$text) {
