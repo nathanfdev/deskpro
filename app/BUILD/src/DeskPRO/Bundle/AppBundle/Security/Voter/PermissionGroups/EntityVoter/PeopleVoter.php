@@ -50,11 +50,6 @@ class PeopleVoter implements PermissionGroupEntityVoterInterface
      */
     public function voteOnAttributeForAgent($attribute, PermissionGroupContext $context, Person $user)
     {
-        if ($attribute === PermissionGroupVoter::VIEW_LIST || $attribute === PermissionGroupVoter::VIEW) {
-            // agent always can see people list, this is required by new-agent logic
-            return true;
-        }
-
         if (!$user->hasPerm('agent_people.use')) {
             return false;
         }

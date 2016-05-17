@@ -16,8 +16,25 @@ Feature: /agents endpoint
     And the response status code should be 200
     And the JSON node "data[0].name" should be equal to "Alfred Zero"
 
+  Scenario: I can fetch agents list even if I have no 'people.use' permission
+    Given I remove "admin" usergroup relation "agent_all_perms"
+    And I remove "admin" usergroup relation "agent_all_safe_perms"
+    When I send a GET request to "/api/v2/agents"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data[0].name" should be equal to "Alfred Zero"
+
+  Scenario: I soft-delete an agent and check agents list without having appropriate permissions
+    Given I've just created a new agent with name "Alfred Deleteme"
+    And I send a DELETE request to the just created agent resource
+    And the response should be in JSON
+    And the response status code should be 403
+
   Scenario: I soft-delete an agent and check agents list
-    Given I've just created a new agent with name "Alfred One"
+    Given I add "admin" usergroup relation "agent_all_perms"
+    And  I add "admin" usergroup relation "agent_all_safe_perms"
+    And I've just created a new agent with name "Alfred One"
+
     And I send a DELETE request to the just created agent resource
     When I send a GET request to "/api/v2/agents"
     And the response should not contain "Alfred One"
