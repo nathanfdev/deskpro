@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import Immutable from 'immutable';
 import { groupCollection } from 'Util/ListGroup';
 import { currentOrderBySelector, elementsSelector } from '../../Selectors/list';
-import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { allSelectorFactory, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import { editTask } from '../../Actions/listActions';
 import { addToCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
