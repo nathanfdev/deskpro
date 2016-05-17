@@ -78,7 +78,7 @@ class FeedbackController extends AbstractController
      */
     public function getSectionDataAction()
     {
-        /**
+        /*
          * @var FeedbackRepository
          * @var FeedbackCategoryRepository       $feedbackCategoryRepository
          * @var FeedbackStatusCategoryRepository $feedbackStatusCategoryRepository
@@ -195,7 +195,7 @@ class FeedbackController extends AbstractController
     {
         $feedback = $this->getFeedback($feedback_id);
 
-        /**
+        /*
          * @var PublishChecker
          * @var SearchLogRepository              $searchLogRepository
          * @var PersonPrefRepository             $personPrefRepository
@@ -928,7 +928,7 @@ class FeedbackController extends AbstractController
             $template = str_replace('.html.twig', '-part.html.twig', $template);
         }
 
-        /**
+        /*
          * @var FeedbackCategoryRepository
          * @var FeedbackStatusCategoryRepository $feedbackStatusCategoryRepository
          */
@@ -1127,7 +1127,7 @@ class FeedbackController extends AbstractController
      */
     public function newFeedbackAction()
     {
-        /**
+        /*
          * @var PersonPrefRepository
          * @var FeedbackCategoryRepository       $feedbackCategoryRepository
          * @var FeedbackStatusCategoryRepository $feedbackStatusCategoryRepository
