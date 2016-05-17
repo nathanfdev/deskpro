@@ -30,7 +30,8 @@ $mobile: new-breakpoint(max-width 640px 6);
 @import "global-widgets/notification";
 @import "animation";
 @import "calendar";
-@import "tickets-table-view";
+@import "list-view/table";
+@import "list-view/kanban";
 //@import "raw/styles";
 
 @import "chrome/positioning";

@@ -14,23 +14,26 @@ import jQuery from 'jquery';
 export class ViewMenuContainer extends Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    options: PropTypes.object.isRequired,
-    viewMode: PropTypes.string.isRequired,
+    dispatch:       PropTypes.func.isRequired,
+    options:        PropTypes.object.isRequired,
+    viewMode:       PropTypes.string.isRequired,
     viewModeAction: PropTypes.func.isRequired
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      expanded: false,
+      expanded:        false,
       optionsExpanded: false
     };
   }
 
-  expandMenu = () => this.setState({ expanded: true });
-  expandOptions = () => this.setState({ optionsExpanded: true });
-  collapse = () => this.setState({ expanded: false, optionsExpanded: false });
+  expandMenu = () => this.setState({expanded: true});
+  expandOptions = () => this.setState({optionsExpanded: true});
+  collapse = () => this.setState({
+    expanded:        false,
+    optionsExpanded: false
+  });
 
   render() {
     const { viewMode = '' } = this.props;
@@ -38,22 +41,25 @@ export class ViewMenuContainer extends Component {
     return (
       <li>
         <Button isActive={this.state.expanded}
-                onClick={this.expandMenu}
-                ref="button"
-                title="View:"
-                icon={null}
-                label={viewMode.charAt(0).toUpperCase() + viewMode.slice(1)}/>
+          onClick={this.expandMenu}
+          ref="button"
+          title="View:"
+          icon={null}
+          label={viewMode.charAt(0).toUpperCase() + viewMode.slice(1)}
+        />
 
         <Detached isOpen={this.state.expanded}
-                  positionAt="left bottom"
-                  positionTarget={this.refs.button}>
+          positionAt="left bottom"
+          positionTarget={this.refs.button}
+        >
 
           <ClickOut onClickOut={this.collapse}
-                    additionalNodes={[this.refs.viewModeMenu]}>
+            additionalNodes={[this.refs.viewModeMenu]}
+          >
 
             {this.state.optionsExpanded
               ? <ViewOptionsContainer {...this.props} />
-              : <div ref="viewModeMenu"><ViewModeMenu {...this.props} expandOptions={this.expandOptions}/></div>
+              : <div ref="viewModeMenu"><ViewModeMenu {...this.props} expandOptions={this.expandOptions} /></div>
             }
           </ClickOut>
         </Detached>
@@ -62,13 +68,14 @@ export class ViewMenuContainer extends Component {
   }
 }
 
-@connect() class ViewOptionsContainer extends Component {
+@connect()
+class ViewOptionsContainer extends Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
+    dispatch:                PropTypes.func.isRequired,
     onViewFieldsMenuUnmount: PropTypes.func,
-    viewMode: PropTypes.string.isRequired,
-    options: PropTypes.object.isRequired
+    viewMode:                PropTypes.string.isRequired,
+    options:                 PropTypes.object.isRequired
   };
 
   componentWillUnmount() {
@@ -98,17 +105,20 @@ export class ViewMenuContainer extends Component {
           return (
             <div key={type}>
               <Item discMarked
-                    label={option.label}
-                    widgetClass="dpw-navigation-dropdown-column-list-item"
-                    isActive={viewMode === type}/>
+                label={option.label}
+                widgetClass="dpw-navigation-dropdown-column-list-item"
+                isActive={viewMode === type}
+              />
+
               <ViewOptionsListContainer visibleFields={option.visibleFields}>
                 {jQuery.map(option.configurableFields, (label, name) =>
-                    <ViewField
-                      key={type + '_' + name}
-                      value={name}
-                      label={label}
-                      isShown={(option.visibleFields || []).indexOf(name) > -1}
-                      changeState={onClick}/>
+                  <ViewField
+                    key={`${type}_${name}`}
+                    value={name}
+                    label={label}
+                    isShown={(option.visibleFields || []).indexOf(name) > -1}
+                    changeState={onClick}
+                  />
                 )}
               </ViewOptionsListContainer>
             </div>
@@ -122,11 +132,11 @@ export class ViewMenuContainer extends Component {
 class ViewModeMenu extends Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    expandOptions: PropTypes.func.isRequired,
+    dispatch:       PropTypes.func.isRequired,
+    expandOptions:  PropTypes.func.isRequired,
     viewModeAction: PropTypes.func.isRequired,
-    viewMode: PropTypes.string.isRequired,
-    options: PropTypes.object.isRequired
+    viewMode:       PropTypes.string.isRequired,
+    options:        PropTypes.object.isRequired
   };
 
   render() {
@@ -135,18 +145,17 @@ class ViewModeMenu extends Component {
     return (
       <Menu>
         {jQuery.map(options, (option, type) =>
-            <Item key={type}
-                  label={option.label}
-                  isActive={viewMode === type}
-                  checked={viewMode === type}
-                  onClick={() => dispatch(viewModeAction(type))}
-                  icon={option.icon}/>
+          <Item key={type}
+            label={option.label}
+            isActive={viewMode === type}
+            checked={viewMode === type}
+            onClick={() => dispatch(viewModeAction(type))}
+            icon={option.icon}
+          />
         )}
         <MenuFooter>
           <div className="dpw-navigation-dropdown-options-link">
-            <a href="#"
-               ref="optionsButton"
-               onClick={expandOptions}>
+            <a href="#" ref="optionsButton" onClick={expandOptions}>
               View Options <i className="fa fa-cog"></i>
             </a>
           </div>

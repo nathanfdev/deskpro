@@ -123,7 +123,7 @@ export class ControlBar extends Component {
           onMenuUnmount={this.reloadList}
         />}
 
-        {view && <ViewMenuContainer {...view} onViewFieldsMenuUnmount={view.onViewFieldsMenuUnmount}/>}
+        {view ? <ViewMenuContainer {...view} onViewFieldsMenuUnmount={view.onViewFieldsMenuUnmount} /> : null}
       </ul>
     );
   }

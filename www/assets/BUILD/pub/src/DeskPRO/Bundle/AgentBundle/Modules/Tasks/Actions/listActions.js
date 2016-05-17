@@ -5,7 +5,7 @@ import { listParamsNavSelector, listParamsFiltersSelector, currentOrderBySelecto
   from '../Selectors/list';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
-import { addToCollection, setCollection, collectionSelectorFactory, removeFromCollection }
+import { addToCollection, setCollection, collectionSelectorFactory, removeFromCollection, releaseCollection }
   from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import invariant from 'invariant';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
@@ -78,7 +78,7 @@ export const loadList = createAction(
         dispatch(addToCollection('Article', 'all', prepareLinkedData(res.linked.article)));
         dispatch(addToCollection('UserChat', 'all', prepareLinkedData(res.linked.chat_conversation)));
 
-        //dispatch(releaseCollection('Task', 'all'));
+        dispatch(releaseCollection('Task', 'all'));
         dispatch(setCollection('Task', 'all', res.data));
         const { pagination } = res.meta;
         return { ids, pagination };
