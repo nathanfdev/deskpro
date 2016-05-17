@@ -1,6 +1,6 @@
 Feature: JSON API Headers
   In order to inspect response headers
-  As a developer
+  As an API user
   I need an option to include response headers in the json response body
 
   Background:

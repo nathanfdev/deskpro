@@ -1,7 +1,6 @@
-@text-snippets
 Feature: /ticket_snippet_categories endpoint
   To CRUD DeskPRO ticket snippet categories
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:

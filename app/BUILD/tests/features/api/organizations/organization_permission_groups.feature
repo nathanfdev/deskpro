@@ -1,4 +1,3 @@
-@organization
 Feature: /organizations endpoint
   I want to check ticket permission groups
 

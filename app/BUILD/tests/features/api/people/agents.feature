@@ -1,14 +1,12 @@
-@chat-nav @people
 Feature: /agents endpoint
   To retrieve DeskPRO agents
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:
     Given I install the api data set
     And my request is authenticated
 
-  @basic @reinstall
   Scenario: I get list of all agents
     Given I've just created a new agent with name "Alfred Zero"
     When I send a GET request to "/api/v2/agents"

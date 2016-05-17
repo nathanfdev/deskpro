@@ -1,6 +1,6 @@
 Feature: /mass_actions/tickets endpoint for mass reply
   To complete mass reply on tickets list
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:

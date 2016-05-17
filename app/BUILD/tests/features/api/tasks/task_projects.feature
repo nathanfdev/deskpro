@@ -1,7 +1,6 @@
-@tasks-nav @tasks
 Feature: /projects endpoint
   To CRUD DeskPRO projects
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:

@@ -1,14 +1,12 @@
-@ticket-filters
 Feature: /ticket_filters/{filter}/count endpoint
   To ticket filters grouping count
-  As a developer
+  As an API user
   I want to check endpoint
 
   Background:
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I retrieve list of ticket filter count
     Given I re-fill ticket search table
     When I send a GET request to "/api/v2/ticket_filters/5/count"

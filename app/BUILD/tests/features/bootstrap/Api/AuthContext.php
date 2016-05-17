@@ -30,6 +30,7 @@ namespace DpBehat\Api;
 
 use Application\DeskPRO\Entity\ApiKey;
 use Application\DeskPRO\Entity\ApiToken;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\Entity\TmpData;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
@@ -50,6 +51,16 @@ class AuthContext extends BaseContext
     private $rest_context;
 
     /**
+     * @var ApiKey|null
+     */
+    public static $apiKey = null;
+
+    /**
+     * @var Person|null
+     */
+    public static $user = null;
+
+    /**
      * @Given a valid api token exists with the code :token and id :id for :who
      */
     public function aValidApiTokenExistsWithTheCodeAndIdForAgent($token, $id, $who)
@@ -67,33 +78,34 @@ class AuthContext extends BaseContext
     }
 
     /**
-     * @Given a valid api key exists with the code :code and id :id for :who
+     * @Given a valid api key exists with the code :code for :who
      */
-    public function aValidApiKeyExistsWithTheCodeAndIdForUser($code, $id, $who)
+    public function aValidApiKeyExistsWithTheCodeForUser($code, $who)
     {
-        $key         = new ApiKey();
-        $key->code   = $code;
-        $key->person = $this->getUserDetails()->getWho($who);
+        $person = $this->getUserDetails()->getWho($who);
+        if (!self::$apiKey || self::$apiKey->person !== $person) {
+            $key         = new ApiKey();
+            $key->code   = $code;
+            $key->person = $person;
 
-        $key_action = new ApiKeyAction();
-        $key_action->setAction('*');
-        $key->addApiKeyAction($key_action);
+            $key_action = new ApiKeyAction();
+            $key_action->setAction('*');
+            $key->addApiKeyAction($key_action);
 
-        $key_limit = new ApiKeyLimit();
-        $key_limit
-            ->setType(AbstractLimit::TYPE_KEY)
-            ->setStartTime(new \DateTime())
-            ->setInterval(AbstractLimit::INTERVAL_HOUR)
-            ->setApiKey($key)
-            ->setLimit(5000)
-            ->setCurrent(5000);
+            $key_limit = new ApiKeyLimit();
+            $key_limit
+                ->setType(AbstractLimit::TYPE_KEY)
+                ->setStartTime(new \DateTime())
+                ->setInterval(AbstractLimit::INTERVAL_HOUR)
+                ->setApiKey($key)
+                ->setLimit(5000)
+                ->setCurrent(5000);
 
-        $this->persistAndFlush($key);
-        $this->persistAndFlush($key_limit);
-        $this->persistAndFlush($key_action);
+            $this->persistAndFlush($key);
+            $this->persistAndFlush($key_limit);
+            $this->persistAndFlush($key_action);
 
-        if ($key->id != $id) {
-            throw new \Exception('expected api key id ('.$id.') does not match ('.$key->id.'). please check database.');
+            self::$apiKey = $key;
         }
     }
 
@@ -161,18 +173,20 @@ class AuthContext extends BaseContext
      */
     public function myRequestIsAuthenticatedTo($who)
     {
+        self::$user = $person = $this->getUserDetails()->getWho($who);
+
         $repository = $this->em()->getRepository(ApiKey::class);
 
-        $key = $repository->find(1);
-        if ($key) {
-            $person = $this->getUserDetails()->getWho($who);
+        $keys = $repository->findAll();
+        if (count($keys)) {
+            $key = $keys[0];
             if ($key->person !== $person) {
                 $key->person = $person;
                 $this->persistAndFlush($key);
             }
         } else {
-            $this->aValidApiKeyExistsWithTheCodeAndIdForUser('MyCode', 1, $who);
-            $key = $repository->find(1);
+            $this->aValidApiKeyExistsWithTheCodeForUser('MyCode', $who);
+            $key = $repository->findAll()[0];
         }
 
         $this->rest_context->iAddHeaderEqualTo('Authorization', 'key '.$key->getKeyString());

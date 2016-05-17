@@ -1,13 +1,12 @@
 Feature: /mass_actions/tickets endpoint
   To complete mass actions on tickets list
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:
     Given I install the api data set
     And my request is authenticated
 
-  @basic
   Scenario: I get ticket with ID=1 and it's status should be equal 'awaiting_user'
     When I send a GET request to "/api/v2/tickets/1"
     Then the response status code should be 200
@@ -77,9 +76,7 @@ Feature: /mass_actions/tickets endpoint
 }
     """
     Then the response status code should be 400
-    And the JSON node "status" should exist
     And the JSON node "status" should be equal to 400
-    And the JSON node "message" should exist
     And the JSON node "message" should be equal to "Product with ID=2000 doesn't exists"
 
   Scenario: I try to set non-existing agent for ticket with ID=1

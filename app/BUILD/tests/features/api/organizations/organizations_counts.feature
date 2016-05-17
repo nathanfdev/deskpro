@@ -1,14 +1,12 @@
-@organization @counts @crm-nav
 Feature: /organizations/counts endpoint
   To retrieve number of DeskPRO organizations
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I get number of organizations
     When I send a GET request to "/api/v2/organizations/counts"
     Then the response should be in JSON

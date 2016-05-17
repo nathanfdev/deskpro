@@ -1,7 +1,6 @@
-@tasks
 Feature: /tasks/{id}/linked_items/(articles|chats|tickets) endpoints
   To CRUD DeskPRO task linked items
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:

@@ -1,6 +1,6 @@
 Feature: /me/notifications endpoint
   To retrieve DeskPRO agent alerts
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:
@@ -64,7 +64,6 @@ Feature: /me/notifications endpoint
     And the response should be in JSON
     And the JSON node "data" should have 4 elements
 
-  @basic
   Scenario: I try to get notifications with sideloads
     When I send a GET request to "/api/v2/me/notifications?include=person,ticket"
     Then the response status code should be 200

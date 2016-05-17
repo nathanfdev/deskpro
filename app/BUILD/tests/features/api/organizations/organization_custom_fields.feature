@@ -1,6 +1,6 @@
 Feature: /organization_custom_fields endpoint
   To retrieve DeskPRO organization custom fields
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:

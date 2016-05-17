@@ -1,7 +1,6 @@
-@organization
 Feature: /organizations/{id}/members endpoint
   To CRUD DeskPRO organization members
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:

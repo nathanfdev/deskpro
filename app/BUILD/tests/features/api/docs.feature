@@ -1,6 +1,6 @@
 Feature: Documentation
   In order to know the documentation was generated
-  As a developer
+  As an API user
   I need to be able to get pages in browser
 
   Scenario: I GET ApiDoc

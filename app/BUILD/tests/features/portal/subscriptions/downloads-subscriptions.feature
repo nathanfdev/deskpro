@@ -7,7 +7,6 @@ Feature: Subscriptions
       | default |
     And the default brand is using the standard theme
 
-  @reinstall
   Scenario: I subscribe to a download category successfully as a user
     Given the "download" category "General" exists with content titled "Example Download"
     And I login with user credentials

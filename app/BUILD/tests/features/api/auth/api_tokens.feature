@@ -1,10 +1,8 @@
-@basic
 Feature: /api_tokens endpoint
 
   Background:
     Given I install the api data set
 
-  @reinstall
   Scenario: I fail to get a token because I make a bad request
     When I send a POST request to "/api/v2/api_tokens"
     And the response status code should be 400

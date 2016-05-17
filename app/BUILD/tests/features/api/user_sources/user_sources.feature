@@ -1,7 +1,6 @@
-@basic
 Feature: /user_sources endpoint
   To retrieve DeskPRO user sources
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:

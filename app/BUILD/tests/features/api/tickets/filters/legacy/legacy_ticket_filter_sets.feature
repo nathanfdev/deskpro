@@ -1,14 +1,12 @@
-@ticket-filters
 Feature: /ticket_filter_sets endpoint
   To CRUD DeskPRO legacy ticket filter sets
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I retrieve list of ticket filter sets
     When I send a GET request to "/api/v2/ticket_filter_sets"
     And the response status code should be 200

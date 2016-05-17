@@ -1,6 +1,6 @@
 Feature: /glossary endpoint
   To CRUD DeskPRO glossary word definitions
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:

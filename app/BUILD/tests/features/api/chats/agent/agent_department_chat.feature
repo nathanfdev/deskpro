@@ -1,4 +1,3 @@
-@chats @agent-chats
 Feature: /agent_chats endpoint
   To check chat with department
 
@@ -6,7 +5,8 @@ Feature: /agent_chats endpoint
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
+  @skip-ci
+  # Contains hard coded IDs
   Scenario: I create department chat
     When I send a POST request to "api/v2/agent_chats" with body:
     """
@@ -39,6 +39,8 @@ Feature: /agent_chats endpoint
 
   # This given is done to avoid data reinstalling, and we can't place this test before previous, because we should check
   # that department was not added
+  @skip-ci
+  # Contains hard coded IDs
   Scenario: I get an agent chat (department)
     Given I add "admin" usergroup relation "agent_all_perms"
     And I add "admin" usergroup relation "agent_all_safe_perms"

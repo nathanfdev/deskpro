@@ -1,6 +1,6 @@
 Feature: /organizations endpoint
   To check contact data validation
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:

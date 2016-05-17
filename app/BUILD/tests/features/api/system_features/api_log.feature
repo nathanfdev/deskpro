@@ -1,4 +1,3 @@
-@logs
 Feature: Api should log any request
 
   Background:
@@ -6,7 +5,6 @@ Feature: Api should log any request
     And the setting "api_log.enabled" is set to 1
     And my request is authenticated
 
-  @reinstall
   Scenario: I send some request to API
     When I send a PUT request to "/api/v2/notify/heartbeat"
     And the response status code should be 202

@@ -45,7 +45,6 @@ Feature: Widget Setup
     And the response should contain "DP_HELPDESK_URL"
     And the response should contain "request_user_info"
 
-  @basic
   Scenario: I update global widget configuration
     When I send a POST request to "/api/v2/widget/setup" with body:
     """

@@ -4,18 +4,12 @@
             <directory>phpunit</directory>
             <exclude>phpunit/DpTest/DeskPRO/Bundle/AppBundle/TermEngine</exclude>
             <exclude>phpunit/DpTest/DeskPRO/Bundle/PortalBundle</exclude>
-            <exclude>phpunit/DpTest/Performance</exclude>
         </testsuite>
         <testsuite name="DeskPRO-TermEngine">
             <directory>phpunit/DpTest/DeskPRO/Bundle/AppBundle/TermEngine</directory>
-            <exclude>phpunit/DpTest/Performance</exclude>
         </testsuite>
         <testsuite name="DeskPRO-Portal">
             <directory>phpunit/DpTest/DeskPRO/Bundle/PortalBundle</directory>
-            <exclude>phpunit/DpTest/Performance</exclude>
-        </testsuite>
-        <testsuite name="Performance">
-            <directory>phpunit/DpTest/Performance</directory>
         </testsuite>
     </testsuites>
     <filter>

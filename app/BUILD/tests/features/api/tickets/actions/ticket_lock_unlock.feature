@@ -1,14 +1,12 @@
-@tickets
 Feature: /tickets/{id}/actions/(lock|unlock) endpoints
   To CRUD DeskPRO tickets
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I lock ticket
     When I send a PUT request to "/api/v2/tickets/404/actions/lock"
     Then the response status code should be 404

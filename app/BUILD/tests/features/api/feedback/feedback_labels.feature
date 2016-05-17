@@ -1,4 +1,3 @@
-@feedback
 Feature: /feedback_labels endpoint
   I want to get all feedback labels
 

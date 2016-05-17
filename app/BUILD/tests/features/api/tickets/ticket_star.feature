@@ -1,7 +1,6 @@
-@basic @tickets
 Feature: /ticket_stars endpoint
   To CRUD DeskPRO ticket's stars
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:

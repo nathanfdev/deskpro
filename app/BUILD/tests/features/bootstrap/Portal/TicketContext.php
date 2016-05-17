@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -38,6 +38,23 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class TicketContext extends BasePortalContext
 {
+    /**
+     * @var array Map [ref => ticket]
+     */
+    public static $tickets = [];
+
+    /**
+     * @Given I remove all tickets
+     */
+    public function noTickets()
+    {
+        $tickets = $this->getRepository(Ticket::class)->findAll();
+        foreach ($tickets as $ticket) {
+            $this->em()->remove($ticket);
+        }
+        $this->em()->flush();
+    }
+
     /**
      * @Given the following tickets exist:
      */
@@ -73,6 +90,10 @@ class TicketContext extends BasePortalContext
             $this->em()->persist($message);
             $this->em()->persist($ticket);
             $this->em()->flush();
+
+            if (array_key_exists('ref', $ticket_data) && $ticket_data['ref']) {
+                self::$tickets[$ticket_data['ref']] = $ticket;
+            }
         }
     }
 

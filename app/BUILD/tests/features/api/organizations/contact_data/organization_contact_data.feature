@@ -1,6 +1,6 @@
 Feature: /organizations/{id}/contact_data endpoint
   To retrieve DeskPRO organization contact data
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:

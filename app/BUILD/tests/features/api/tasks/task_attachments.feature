@@ -1,7 +1,6 @@
-@tasks
 Feature: /tasks/{id}/attachments endpoint
   To CRUD DeskPRO task attachments
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:
@@ -10,7 +9,8 @@ Feature: /tasks/{id}/attachments endpoint
 
   Scenario: Successfully create an attachment
     Given I create blob with auth code "AAAAAAAAAAAAAAAAAA"
-    When I send a POST request to "/api/v2/tasks/1/attachments" with body:
+    And I create a task and reference its' ID as taskId
+    When I send a POST request to "/api/v2/tasks/{taskId}/attachments" with body:
     """
 {
   "comment": "my text",
@@ -19,30 +19,28 @@ Feature: /tasks/{id}/attachments endpoint
     """
     Then the response should be in JSON
     And the response status code should be 201
-    And the header "Location" should be equal to "/api/v2/tasks/1/attachments/1"
-    And the JSON node "data.blob" should be equal to 1
-    And the JSON node "data.person" should be equal to 1
-    And the JSON node "data.task" should be equal to 1
-    And the JSON node "data.comment" should be equal to 1
+    And the header "Location" should match "/\/api\/v2\/tasks\/\d+\/attachments\/\d+/"
+    And the JSON node "data.person" should exist
+    And the JSON node "data.task" should exist
+    And the JSON node "data.comment" should exist
     And the JSON node "data.date_created" should exist
 
   Scenario: I GET a single attachment
-    When I send a GET request to "/api/v2/tasks/1/attachments/1?include=task_comment"
+    When I send a GET request to "/api/v2/tasks/{taskId}/attachments/{lastCreatedId}?include=task_comment"
     Then the response should be in JSON
     And the response status code should be 200
-    And the JSON node "data.blob" should be equal to 1
-    And the JSON node "data.person" should be equal to 1
-    And the JSON node "data.task" should be equal to 1
-    And the JSON node "data.comment" should be equal to 1
+    And the JSON node "data.blob" should exist
+    And the JSON node "data.person" should exist
+    And the JSON node "data.task" should exist
+    And the JSON node "data.comment" should exist
     And the JSON node "data.date_created" should exist
 
-    And the JSON node "linked.task_comment.1.id" should be equal to 1
-    And the JSON node "linked.task_comment.1.person" should be equal to 1
-    And the JSON node "linked.task_comment.1.task" should be equal to 1
+    And the JSON node "linked.task_comment.1.person" should exist
+    And the JSON node "linked.task_comment.1.task" should exist
     And the JSON node "linked.task_comment.1.comment" should be equal to "my text"
 
   Scenario: I GET attachments
-    When I send a GET request to "/api/v2/tasks/1/attachments"
+    When I send a GET request to "/api/v2/tasks/{taskId}/attachments"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "meta" should exist
@@ -51,15 +49,15 @@ Feature: /tasks/{id}/attachments endpoint
     And the JSON node "meta.pagination.total_pages" should be equal to 1
     And the JSON node "meta.pagination.total" should be equal to 1
     And the JSON node "data" should have 1 element
-    And the JSON node "data[0].blob" should be equal to 1
-    And the JSON node "data[0].person" should be equal to 1
-    And the JSON node "data[0].task" should be equal to 1
-    And the JSON node "data[0].comment" should be equal to 1
+    And the JSON node "data[0].blob" should exist
+    And the JSON node "data[0].person" should exist
+    And the JSON node "data[0].task" should exist
+    And the JSON node "data[0].comment" should exist
     And the JSON node "data[0].date_created" should exist
 
   Scenario: I verify the resource has been updated by the PUT request
     Given I create blob with auth code "BBBBBBBBBBBBBBBBBB"
-    When I send a PUT request to "/api/v2/tasks/1/attachments/1" with body:
+    When I send a PUT request to "/api/v2/tasks/{taskId}/attachments/{lastCreatedId}" with body:
     """
 {
   "comment": "my text (edited)",
@@ -69,31 +67,30 @@ Feature: /tasks/{id}/attachments endpoint
     Then the response status code should be 204
     And the response should be empty
 
-    When I send a GET request to "/api/v2/tasks/1/attachments/1?include=task_comment"
+    When I send a GET request to "/api/v2/tasks/{taskId}/attachments/{lastCreatedId}?include=task_comment"
     Then the response should be in JSON
     And the response status code should be 200
-    And the JSON node "data.blob" should be equal to 2
-    And the JSON node "data.person" should be equal to 1
-    And the JSON node "data.task" should be equal to 1
-    And the JSON node "data.comment" should be equal to 1
+    And the JSON node "data.blob" should exist
+    And the JSON node "data.person" should exist
+    And the JSON node "data.task" should exist
+    And the JSON node "data.comment" should exist
 
-    And the JSON node "linked.task_comment.1.id" should be equal to 1
-    And the JSON node "linked.task_comment.1.person" should be equal to 1
-    And the JSON node "linked.task_comment.1.task" should be equal to 1
+    And the JSON node "linked.task_comment.1.person" should exist
+    And the JSON node "linked.task_comment.1.task" should exist
     And the JSON node "linked.task_comment.1.comment" should be equal to "my text (edited)"
 
   Scenario: I DELETE a single task attachment
-    When I send a DELETE request to "/api/v2/tasks/1/attachments/1"
+    When I send a DELETE request to "/api/v2/tasks/{taskId}/attachments/{lastCreatedId}"
     Then the response should be in JSON
     And the response status code should be 200
 
-    When I send a GET request to "/api/v2/tasks/1/attachments/1"
+    When I send a GET request to "/api/v2/tasks/{taskId}/attachments/{lastCreatedId}"
     Then the response should be in JSON
     And the response status code should be 404
 
   Scenario: I create a new attachment to test cascades
     Given I create blob with auth code "CCCCCCCCCCCCCCCCCC"
-    When I send a POST request to "/api/v2/tasks/1/attachments" with body:
+    When I send a POST request to "/api/v2/tasks/{taskId}/attachments" with body:
     """
 {
   "blob": "CCCCCCCCCCCCCCCCCC"
@@ -101,16 +98,16 @@ Feature: /tasks/{id}/attachments endpoint
     """
     Then the response should be in JSON
     And the response status code should be 201
-    And the JSON node "data.blob" should be equal to 3
-    And the JSON node "data.person" should be equal to 1
-    And the JSON node "data.task" should be equal to 1
+    And the JSON node "data.blob" should exist
+    And the JSON node "data.person" should exist
+    And the JSON node "data.task" should exist
     And the JSON node "data.comment" should be equal to 0
 
   Scenario: I delete the task to test cascades
-    When I send a DELETE request to "/api/v2/tasks/1"
+    When I send a DELETE request to "/api/v2/tasks/{taskId}"
     Then the response should be in JSON
     And the response status code should be 200
 
-    When I send a GET request to "/api/v2/tasks/1/attachments"
+    When I send a GET request to "/api/v2/tasks/{taskId}/attachments"
     Then the response should be in JSON
     And the response status code should be 404

@@ -1,7 +1,6 @@
-@tickets
 Feature: /ticket_layouts endpoint
   To DeskPRO ticket layouts
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:

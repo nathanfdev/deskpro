@@ -1,4 +1,3 @@
-@basic
 Feature: Ticket List
   Viewing a ticket list
 

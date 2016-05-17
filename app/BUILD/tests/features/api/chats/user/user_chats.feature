@@ -1,7 +1,6 @@
-@chats @user-chats
 Feature: /user_chats endpoint
   To retrieve DeskPRO agents
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:

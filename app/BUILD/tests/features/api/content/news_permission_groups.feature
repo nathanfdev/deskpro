@@ -1,4 +1,3 @@
-@downloads
 Feature: /news endpoint
   I want to check permission groups
 

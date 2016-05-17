@@ -1,7 +1,6 @@
-@person-setting
 Feature: /person_setting endpoint
   To store and obtain person settings
-  As a developer
+  As an API user
   I want an endpoint for person settings
 
   Background:

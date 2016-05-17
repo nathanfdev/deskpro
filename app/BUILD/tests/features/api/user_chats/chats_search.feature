@@ -1,6 +1,6 @@
 Feature: /user_chats endpoint search (GET)
   To retrieve various sets of DeskPRO chats
-  As a developer
+  As an API user
   I want an API endpoint with search capabilities
 
   Background:

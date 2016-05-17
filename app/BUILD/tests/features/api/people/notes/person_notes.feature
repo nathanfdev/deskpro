@@ -1,7 +1,6 @@
-@people
 Feature: /people/{id}/notes endpoint
   To CRUD DeskPRO person notes
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:
