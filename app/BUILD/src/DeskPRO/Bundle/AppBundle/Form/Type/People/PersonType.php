@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\People;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -38,7 +34,6 @@ use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
-use DeskPRO\Bundle\AppBundle\Form\Type\ApiType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\ContactData\ContactDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomDataType;
@@ -47,6 +42,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonEmail\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Form\Type\UsergroupsType;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -57,7 +53,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 /**
  * Class PersonType.
  */
-class PersonType extends ApiType
+class PersonType extends AbstractType
 {
     /**
      * @var EntityManager
@@ -84,21 +80,11 @@ class PersonType extends ApiType
     /**
      * {@inheritdoc}
      */
-    public function getName()
-    {
-        return 'api_person';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        /** @var Person $person */
-        $person = $builder->getData();
-
         $builder
             ->add('name', TextType::class)
+            ->add('password', TextType::class)
             ->add('title_prefix', TextType::class)
             ->add('first_name', TextType::class)
             ->add('last_name', TextType::class)
@@ -117,9 +103,9 @@ class PersonType extends ApiType
                 'labels_owner'   => $builder->getData(),
                 'owner_property' => 'person',
             ])
-            ->add('primary_email', new PersonEmailType($person, $this->em))
+            ->add('primary_email', new PersonEmailType($builder->getData(), $this->em))
             ->add('emails', CollectionType::class, [
-                'type'           => new PersonEmailType($person, $this->em),
+                'type'           => new PersonEmailType($builder->getData(), $this->em),
                 'allow_add'      => true,
                 'allow_delete'   => true,
                 'delete_empty'   => true,
@@ -170,6 +156,10 @@ class PersonType extends ApiType
     }
 
     /**
+     * Sync `emails` and `primary email` props.
+     *
+     * @internal
+     *
      * @param FormEvent $event
      */
     public function onSyncEmails(FormEvent $event)
@@ -197,6 +187,10 @@ class PersonType extends ApiType
     }
 
     /**
+     * Sync `name`, `first_name` and `last_name` props.
+     *
+     * @internal
+     *
      * @param FormEvent $event
      */
     public function onSyncName(FormEvent $event)

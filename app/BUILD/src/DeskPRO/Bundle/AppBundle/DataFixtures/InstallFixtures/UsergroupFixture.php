@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
 use Application\DeskPRO\Entity\Usergroup;
@@ -58,35 +55,39 @@ class UsergroupFixture extends AbstractFixture implements ContainerAwareInterfac
         /** @var \Application\DeskPRO\Translate\Translate $tr */
         $tr = $this->container->get('deskpro.core.translate');
 
-        $g           = new Usergroup();
-        $g->title    = $tr->phrase('agent.defaults.usergroup_everyone');
-        $g->note     = $tr->phrase('agent.defaults.usergroup_everyone_note');
-        $g->sys_name = 'everyone';
-        $manager->persist($g);
-        $this->addReference('usergroup.everyone', $g);
+        $ug = new Usergroup();
+        $ug->setTitle($tr->phrase('agent.defaults.usergroup_everyone'));
+        $ug->setNote($tr->phrase('agent.defaults.usergroup_everyone_note'));
+        $ug->setSysName(Usergroup::EVERYONE);
 
-        $g           = new Usergroup();
-        $g->title    = $tr->phrase('agent.defaults.usergroup_registered');
-        $g->note     = $tr->phrase('agent.defaults.usergroup_registered_note');
-        $g->sys_name = 'registered';
-        $manager->persist($g);
-        $this->addReference('usergroup.registered', $g);
+        $manager->persist($ug);
+        $this->addReference('usergroup.everyone', $ug);
 
-        $g                 = new Usergroup();
-        $g->title          = $tr->phrase('agent.defaults.usergroup_agent_all_perms');
-        $g->note           = $tr->phrase('agent.defaults.usergroup_agent_all_perms_note');
-        $g->is_agent_group = true;
-        $g->sys_name       = 'agent_all_perms';
-        $manager->persist($g);
-        $this->addReference('usergroup.agent_all_perms', $g);
+        $ug = new Usergroup();
+        $ug->setTitle($tr->phrase('agent.defaults.usergroup_registered'));
+        $ug->setNote($tr->phrase('agent.defaults.usergroup_registered_note'));
+        $ug->setSysName(Usergroup::REGISTERED);
 
-        $g                 = new Usergroup();
-        $g->title          = $tr->phrase('agent.defaults.usergroup_agent_all_non_destructive');
-        $g->note           = $tr->phrase('agent.defaults.usergroup_agent_all_non_destructive_note');
-        $g->is_agent_group = true;
-        $g->sys_name       = 'agent_all_safe_perms';
-        $manager->persist($g);
-        $this->addReference('usergroup.agent_all_safe_perms', $g);
+        $manager->persist($ug);
+        $this->addReference('usergroup.registered', $ug);
+
+        $ug = new Usergroup();
+        $ug->setTitle($tr->phrase('agent.defaults.usergroup_agent_all_perms'));
+        $ug->setNote($tr->phrase('agent.defaults.usergroup_agent_all_perms_note'));
+        $ug->setIsAgentGroup(true);
+        $ug->setSysName(Usergroup::AGENT_ALL_PERM);
+
+        $manager->persist($ug);
+        $this->addReference('usergroup.agent_all_perms', $ug);
+
+        $ug = new Usergroup();
+        $ug->setTitle($tr->phrase('agent.defaults.usergroup_agent_all_non_destructive'));
+        $ug->setNote($tr->phrase('agent.defaults.usergroup_agent_all_non_destructive_note'));
+        $ug->setIsAgentGroup(true);
+        $ug->setSysName(Usergroup::AGENT_ALL_SAFE_PERM);
+
+        $manager->persist($ug);
+        $this->addReference('usergroup.agent_all_safe_perms', $ug);
 
         if ($this->hasReference('admin')) {
             /** @var \Application\DeskPRO\Entity\Person $admin */
