@@ -79,7 +79,7 @@ class ViewOptionsContainer extends Component {
   };
 
   componentWillUnmount() {
-    const {dispatch, onViewFieldsMenuUnmount} = this.props;
+    const { dispatch, onViewFieldsMenuUnmount } = this.props;
 
     if (onViewFieldsMenuUnmount) {
       dispatch(onViewFieldsMenuUnmount());
@@ -104,7 +104,8 @@ class ViewOptionsContainer extends Component {
 
           return (
             <div key={type}>
-              <Item discMarked
+              <Item
+                discMarked
                 label={option.label}
                 widgetClass="dpw-navigation-dropdown-column-list-item"
                 isActive={viewMode === type}
@@ -139,24 +140,30 @@ class ViewModeMenu extends Component {
     options:        PropTypes.object.isRequired
   };
 
+  onClick = event => {
+    event.preventDefault();
+    this.props.expandOptions();
+  };
+
   render() {
-    const { viewMode, options, dispatch, viewModeAction, expandOptions } = this.props;
+    const { viewMode, options, dispatch, viewModeAction } = this.props;
 
     return (
       <Menu>
         {jQuery.map(options, (option, type) =>
-          <Item key={type}
-            label={option.label}
-            isActive={viewMode === type}
-            checked={viewMode === type}
-            onClick={() => dispatch(viewModeAction(type))}
-            icon={option.icon}
-          />
+            <Item
+              key={type}
+              label={option.label}
+              isActive={viewMode === type}
+              checked={viewMode === type}
+              onClick={() => dispatch(viewModeAction(type))}
+              icon={option.icon}
+            />
         )}
         <MenuFooter>
           <div className="dpw-navigation-dropdown-options-link">
-            <a href="#" ref="optionsButton" onClick={expandOptions}>
-              View Options <i className="fa fa-cog"></i>
+            <a href="#" ref="optionsButton" onClick={this.onClick}>
+              View Options <i className="fa fa-cog" />
             </a>
           </div>
         </MenuFooter>
