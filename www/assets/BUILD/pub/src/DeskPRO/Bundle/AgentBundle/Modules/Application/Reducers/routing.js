@@ -37,9 +37,9 @@ export default createReducer(initialState, {
     let next = state;
 
     if (!next.hasIn(['hash', component])) {
-      next = next.mergeIn(['hash'], Immutable.fromJS({ [component]: {} }));
+      next = next.setIn(['hash', component], Immutable.Map());
     }
-    next = next.setIn(['hash', component], Immutable.fromJS({ [option]: value }));
+    next = next.setIn(['hash', component, option], Immutable.fromJS(value));
 
     window.location.hash = stateToString(next.get('hash'));
 
