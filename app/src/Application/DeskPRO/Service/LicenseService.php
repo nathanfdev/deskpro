@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Service;
 
 use Guzzle\Http\Client as HttpClient;
@@ -120,8 +121,12 @@ class LicenseService
                 return;
             }
 
-            $rss = simplexml_load_string($response->getBody(true));
+            $rss = @simplexml_load_string($response->getBody(true));
             unset($r);
+
+            if (!$rss || empty($rss) || empty($rss->channel->item)) {
+                return;
+            }
 
             $x = 0;
             foreach ($rss->channel->item as $item) {
