@@ -5,7 +5,8 @@ import {
   windowDimensionsSelector,
   widgetOpenedSelector,
   widgetPositionSelector,
-  isBubbleSelector
+  isBubbleSelector,
+  helpButtonSizeSelector
 } from '../../Selectors/dpWindow';
 import { widgetLoadedSelector } from '../../Selectors/bootstrap';
 import { Frame } from 'Ampliflux/common/components/Frame';
@@ -16,7 +17,8 @@ import { store } from '../../../../Services/store';
   widgetOpened:     widgetOpenedSelector(state),
   widgetLoaded:     widgetLoadedSelector(state),
   widgetPosition:   widgetPositionSelector(state),
-  isBubble:         isBubbleSelector(state)
+  isBubble:         isBubbleSelector(state),
+  size:             helpButtonSizeSelector(state)
 }))
 export class WidgetFrameContainer extends React.Component {
 
@@ -43,13 +45,19 @@ export class WidgetFrameContainer extends React.Component {
   }
 
   render() {
-    const { widgetOpened, widgetLoaded, widgetPosition, isBubble, children } = this.props;
+    const { widgetOpened, widgetLoaded, widgetPosition, isBubble, children, size } = this.props;
     const childProps = children.props;
 
     const frameStyles = {};
     const containerStyles = {};
     if (isBubble) {
-      frameStyles.marginBottom = 70;
+      if (size === 'small') {
+        frameStyles.marginBottom = 50;
+      } else if (size === 'medium') {
+        frameStyles.marginBottom = 60;
+      } else {
+        frameStyles.marginBottom = 70;
+      }
 
       if (widgetPosition === 'bottom.right') {
         frameStyles.marginRight = 20;
