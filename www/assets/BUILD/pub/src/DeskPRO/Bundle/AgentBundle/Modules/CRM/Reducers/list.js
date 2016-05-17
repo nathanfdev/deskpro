@@ -14,8 +14,14 @@ export const crmListInitialState = {
     is_deleted: 0
   },
   visibleFields: {
-    card:  [],
-    table: []
+    people: {
+      card:  [],
+      table: []
+    },
+    organizations: {
+      card:  [],
+      table: []
+    }
   }
 };
 
@@ -29,7 +35,10 @@ export default createReducer(crmListInitialState, {
     done:  setValue('async.done', true)
   }),
 
-  [actions.toggleTableFieldVisibility]: togglePayloadInCollection(['visibleFields', 'table']),
-  [actions.toggleCardFieldVisibility]:  togglePayloadInCollection(['visibleFields', 'card'])
+  [actions.togglePeopleTableFieldVisibility]: togglePayloadInCollection(['visibleFields', 'people', 'table']),
+  [actions.togglePeopleCardFieldVisibility]:  togglePayloadInCollection(['visibleFields', 'people', 'card']),
+
+  [actions.toggleOrgTableFieldVisibility]: togglePayloadInCollection(['visibleFields', 'organizations', 'table']),
+  [actions.toggleOrgCardFieldVisibility]:  togglePayloadInCollection(['visibleFields', 'organizations', 'card'])
 
 });
