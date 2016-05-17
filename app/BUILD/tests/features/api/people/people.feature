@@ -28,6 +28,7 @@ Feature: /people endpoint
     """
 {
   "name": "Sample Person",
+  "password": "password",
   "primary_email": "sample.person@deskpro.com",
   "organization": 1,
   "organization_position": "Chief Sample Person",
@@ -134,7 +135,7 @@ Feature: /people endpoint
     When I send a GET request to "/api/v2/people"
     Then the JSON node "data" should have 5 elements
 
-    When I send a GET request to "/api/v2/people?user_group[]=3"
+    When I send a GET request to "/api/v2/people?user_group[]=1&user_group[]=2&user_group[]=3"
     Then the JSON node "data" should have 2 elements
     And the JSON node "data[0].user_groups[0]" should be equal to 3
 

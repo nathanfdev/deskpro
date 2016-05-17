@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -55,6 +56,11 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
  */
 class Usergroup extends DomainObject
 {
+    const EVERYONE            = 'everyone';
+    const REGISTERED          = 'registered';
+    const AGENT_ALL_PERM      = 'agent_all_perms';
+    const AGENT_ALL_SAFE_PERM = 'agent_all_safe_perms';
+
     /**
      * The unique ID, DB-generated.
      *
@@ -206,6 +212,34 @@ class Usergroup extends DomainObject
     public function setSysName($sysName)
     {
         $this->setModelField('sys_name', $sysName);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSysName()
+    {
+        return $this->sys_name;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAgentGroup()
+    {
+        return $this->is_agent_group;
+    }
+
+    /**
+     * @param bool $is_agent_group
+     *
+     * @return $this
+     */
+    public function setIsAgentGroup($is_agent_group)
+    {
+        $this->setModelField('is_agent_group', $is_agent_group);
 
         return $this;
     }
