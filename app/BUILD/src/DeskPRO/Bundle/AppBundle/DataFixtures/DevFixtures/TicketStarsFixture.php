@@ -37,16 +37,6 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 class TicketStarsFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
 {
-    private static $colors = [
-        TicketFlagged::STAR_BLUE,
-        TicketFlagged::STAR_GREEN,
-        TicketFlagged::STAR_ORANGE,
-        TicketFlagged::STAR_PINK,
-        TicketFlagged::STAR_PURPLE,
-        TicketFlagged::STAR_RED,
-        TicketFlagged::STAR_YELLOW,
-    ];
-
     /**
      * @var int[]
      */
@@ -82,8 +72,7 @@ class TicketStarsFixture extends DeskProAbstractFixture implements OrderedFixtur
         $batch = [];
 
         foreach ($this->agentIds as $agentId) {
-            foreach (self::$colors as $color) {
-                $colorName  = TicketFlagged::idToColorName($color);
+            foreach (TicketFlagged::$colorMap as $colorName) {
                 $numTickets = $this->faker->numberBetween(1, 30);
                 for ($x = 0; $x < $numTickets; ++$x) {
                     $batch[] = [
@@ -102,14 +91,15 @@ class TicketStarsFixture extends DeskProAbstractFixture implements OrderedFixtur
 
         /** @var Person $admin */
         $admin = $this->getReference('admin');
-        foreach (self::$colors as $color) {
+        foreach (TicketFlagged::$colorMap as $color => $colorName) {
             if ($color % 2 === 0) {
                 $personPref = new PersonPref();
-                $colorName  = TicketFlagged::idToColorName($color);
                 $personPref
                     ->setPerson($admin)
                     ->setName('agent.ui.flag.'.$colorName)
-                    ->setValueStr(ucfirst($this->faker->word));
+                    ->setValueStr(ucfirst($this->faker->word))
+                ;
+
                 $this->manager->persist($personPref);
             }
         }

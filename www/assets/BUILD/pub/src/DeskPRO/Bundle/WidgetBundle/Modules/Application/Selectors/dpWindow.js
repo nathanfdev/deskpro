@@ -107,11 +107,6 @@ export const helpButtonTextColorSelector = createSelector(
   options => options.get('text')
 );
 
-export const helpButtonBorderColorSelector = createSelector(
-  helpButtonColorsSelector,
-  options => options.get('border')
-);
-
 // Chat options selectors
 export const chatOptionsSelector = createSelector(
   widgetOptionsSelector,

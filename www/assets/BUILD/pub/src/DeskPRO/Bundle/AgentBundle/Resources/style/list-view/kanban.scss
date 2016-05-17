@@ -1,0 +1,78 @@
+.kanban {
+
+  .list {
+    margin: 10px 0;
+    display: inline-block;
+    width: 260px;
+    font-weight: bold;
+    vertical-align: top;
+  }
+
+  h1.kanban-list-header {
+    background-color: #e6e6e6;
+    margin: 0 0 10px 10px;
+    color: #b9b9b9;
+    font-size: 0.8em;
+    font-weight: bold;
+    padding: 12px 15px;
+    text-transform: uppercase;
+  }
+
+  .list.drag-hover h1.kanban-list-header {
+    background-color: #4681b2;
+    color: #fff;
+  }
+
+  .placeholder {
+    display: none;
+    height: 10px;
+    width: 100%;
+    background-color: #ccc;
+
+    &.is-over {
+      display: block;
+    }
+  }
+
+  .card {
+    font-weight: normal;
+    margin: 5px 0 5px 10px;
+
+    .content {
+      padding: 0 5px 0 2px;
+    }
+
+    h1 {
+      font-size: 1.2em;
+      margin: 5px 0 0 0;
+      white-space: normal;
+
+      &.complete {
+        color: #b9b9b9;
+        text-decoration: line-through;
+      }
+    }
+
+    .card-checkbox {
+      margin-top: 3px;
+    }
+
+    .card-line {
+      color: #8c8c8c;
+      font-size: 0.8em;
+
+      div {
+        display: inline;
+      }
+    }
+
+    .task-details {
+      padding: 10px 0;
+      margin: 0;
+    }
+
+    .task-properties {
+      padding: 3px 0;
+    }
+  }
+}

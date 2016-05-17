@@ -1,14 +1,12 @@
-@tasks
 Feature: /tasks endpoint
   To CRUD DeskPRO tasks
-  As a developer
+  As an API user
   I want to check project filters
 
   Background:
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I prepare tasks
     When I send a POST request to "/api/v2/task_lists" with body:
     """
@@ -65,42 +63,26 @@ Feature: /tasks endpoint
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should have 5 elements
-    And the JSON node "data[0].id" should be equal to 5
-    And the JSON node "data[1].id" should be equal to 4
-    And the JSON node "data[2].id" should be equal to 3
-    And the JSON node "data[3].id" should be equal to 2
-    And the JSON node "data[4].id" should be equal to 1
+    And the JSON node "data" should have elements sorted by the "id" property in "desc" order
 
     When I send a GET request to "/api/v2/tasks?order_by=id&order_dir=asc"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should have 5 elements
-    And the JSON node "data[0].id" should be equal to 1
-    And the JSON node "data[1].id" should be equal to 2
-    And the JSON node "data[2].id" should be equal to 3
-    And the JSON node "data[3].id" should be equal to 4
-    And the JSON node "data[4].id" should be equal to 5
+    And the JSON node "data" should have elements sorted by the "id" property in "asc" order
 
   Scenario: I order by title
     When I send a GET request to "/api/v2/tasks?order_by=title&order_dir=desc"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should have 5 elements
-    And the JSON node "data[0].title" should be equal to "List 2 task"
-    And the JSON node "data[1].title" should be equal to "List 1 task"
-    And the JSON node "data[2].title" should be equal to "Another list 2 task"
-    And the JSON node "data[3].title" should be equal to "An unassigned task"
-    And the JSON node "data[4].title" should be equal to "A demo task"
+    And the JSON node "data" should have elements sorted by the "title" property in "desc" order
 
     When I send a GET request to "/api/v2/tasks?order_by=title&order_dir=asc"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should have 5 elements
-    And the JSON node "data[0].title" should be equal to "A demo task"
-    And the JSON node "data[1].title" should be equal to "An unassigned task"
-    And the JSON node "data[2].title" should be equal to "Another list 2 task"
-    And the JSON node "data[3].title" should be equal to "List 1 task"
-    And the JSON node "data[4].title" should be equal to "List 2 task"
+    And the JSON node "data" should have elements sorted by the "title" property in "asc" order
 
   Scenario: I check wrong order dir
     When I send a GET request to "/api/v2/tasks?order_by=list&order_dir=unknown"

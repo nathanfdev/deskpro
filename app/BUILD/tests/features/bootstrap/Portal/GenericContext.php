@@ -193,6 +193,29 @@ class GenericContext extends BasePortalContext
     }
 
     /**
+     * @Given the :type root category ":name" exists
+     */
+    public function categoryExists($type, $title)
+    {
+        $em      = $this->get('doctrine.orm.entity_manager');
+        $classes = [
+            'KB' => ArticleCategory::class,
+        ];
+        if (!array_key_exists($type, $classes)) {
+            throw new \Exception("Unknown category type $type");
+        }
+        $class = $classes[$type];
+
+        if (!$em->getRepository($class)->findOneBy(compact('title'))) {
+            $category = new $class();
+            $category->setTitle($title);
+            $category->root = 1;
+            $em->persist($category);
+            $em->flush();
+        }
+    }
+
+    /**
      * @Given the :type category :cat_name exists with content titled :content_name
      */
     public function theCategoryExistsWithADownloadTitled($type, $cat_name, $content_name)
@@ -211,7 +234,8 @@ class GenericContext extends BasePortalContext
 
         switch ($type) {
             case 'download':
-                $cat = new DownloadCategory();
+                $cat         = $em->getRepository(DownloadCategory::class)->findOneBy(['title' => $cat_name]);
+                $cat or $cat = new DownloadCategory();
                 $cat->setTitle($cat_name);
 
                 $content = new Download();

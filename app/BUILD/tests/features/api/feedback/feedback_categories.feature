@@ -1,7 +1,6 @@
-@feedback-categories @feedback
 Feature: /feedback_categories endpoint
   To retrieve info about feedback categories (custom_category)
-  As a developer
+  As an API user
   I want an endpoint for feedback categories
 
   Background:

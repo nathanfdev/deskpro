@@ -55,6 +55,11 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
  */
 class Usergroup extends DomainObject
 {
+    const EVERYONE            = 'everyone';
+    const REGISTERED          = 'registered';
+    const AGENT_ALL_PERM      = 'agent_all_perms';
+    const AGENT_ALL_SAFE_PERM = 'agent_all_safe_perms';
+
     /**
      * The unique ID, DB-generated.
      *
@@ -171,6 +176,14 @@ class Usergroup extends DomainObject
     }
 
     /**
+     * @return string
+     */
+    public function getSysName()
+    {
+        return $this->sys_name;
+    }
+
+    /**
      * Set title.
      *
      * @param string $title
@@ -180,6 +193,54 @@ class Usergroup extends DomainObject
     public function setTitle($title)
     {
         $this->setModelField('title', $title);
+
+        return $this;
+    }
+
+    /**
+     * Set note.
+     *
+     * @param string $note
+     *
+     * @return $this
+     */
+    public function setNote($note)
+    {
+        $this->setModelField('note', $note);
+
+        return $this;
+    }
+
+    /**
+     * Set system name.
+     *
+     * @param string $sysName
+     *
+     * @return $this
+     */
+    public function setSysName($sysName)
+    {
+        $this->setModelField('sys_name', $sysName);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAgentGroup()
+    {
+        return $this->is_agent_group;
+    }
+
+    /**
+     * @param bool $is_agent_group
+     *
+     * @return $this
+     */
+    public function setIsAgentGroup($is_agent_group)
+    {
+        $this->setModelField('is_agent_group', $is_agent_group);
 
         return $this;
     }
@@ -237,65 +298,65 @@ class Usergroup extends DomainObject
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             array(
-                 'fieldName'  => 'id',
-                 'type'       => 'integer',
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'id',
-                 'id'         => true,
+                'fieldName'  => 'id',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'id',
+                'id'         => true,
             )
         );
         $metadata->mapField(
             array(
-                 'fieldName'  => 'title',
-                 'type'       => 'string',
-                 'length'     => 255,
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'title',
+                'fieldName'  => 'title',
+                'type'       => 'string',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'title',
             )
         );
         $metadata->mapField(
             array(
-                 'fieldName'  => 'note',
-                 'type'       => 'text',
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'note',
+                'fieldName'  => 'note',
+                'type'       => 'text',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'note',
             )
         );
         $metadata->mapField(
             array(
-                 'fieldName'  => 'is_agent_group',
-                 'type'       => 'boolean',
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'is_agent_group',
+                'fieldName'  => 'is_agent_group',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_agent_group',
             )
         );
         $metadata->mapField(
             array(
-                 'fieldName'  => 'sys_name',
-                 'type'       => 'string',
-                 'length'     => 50,
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => true,
-                 'columnName' => 'sys_name',
+                'fieldName'  => 'sys_name',
+                'type'       => 'string',
+                'length'     => 50,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'sys_name',
             )
         );
         $metadata->mapField(
             array(
-                 'fieldName'  => 'is_enabled',
-                 'type'       => 'boolean',
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'is_enabled',
+                'fieldName'  => 'is_enabled',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_enabled',
             )
         );
         $metadata->mapOneToMany(

@@ -72,14 +72,14 @@ abstract class AbstractAgentChatVoter implements PermissionGroupEntityVoterInter
     {
         switch ($agentChat->getType()) {
             case AgentChat::TYPE_DEPARTMENT:
-                $departments = $this->departmentDataService->getChatDepartmentsForPerson($user);
+                $departments = $this->departmentDataService->getDepartmentsForPerson($user);
                 if (!array_intersect($departments, $agentChat->getDepartments())) {
                     return false;
                 }
 
                 break;
             case AgentChat::TYPE_AGENT:
-                if (!in_array($user, $agentChat->getAgents())) {
+                if (!in_array($user, $agentChat->getAgents(), true)) {
                     return false;
                 }
 

@@ -1,4 +1,3 @@
-@basic
 Feature: API Authentication
   In order to interact with the API
   As anyone
@@ -78,10 +77,9 @@ Feature: API Authentication
     Then the JSON node "code" should be equal to "invalid_session_id"
     And the JSON node "message" should be equal to "Invalid session ID."
 
-  @reinstall
   Scenario: I have a valid api key (user "user" id=3 in the "api" data set)
-    Given a valid api key exists with the code "XYZ" and id 1 for user
-    When I add Authorization header equal to "key 1:XYZ"
+    Given a valid api key exists with the code "XYZ" for user
+    When I add Authorization header of my Api Key
     And I send a GET request to "/api/v2/me"
     Then the response status code should be 200
     And the JSON node "data.auth_method" should be equal to "api_key"
@@ -92,7 +90,6 @@ Feature: API Authentication
     And the JSON node "data.client_version" should be equal to 0
     And I should have an authenticated token with the role ROLE_API
 
-  @reinstall
   Scenario: I have a valid api token (user "agent" id=2 in the "api" data set)
     Given a valid api token exists with the code "SECRETCODE" and id 1 for agent
     When I add Authorization header equal to "token 1:SECRETCODE"

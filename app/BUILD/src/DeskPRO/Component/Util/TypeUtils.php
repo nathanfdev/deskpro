@@ -93,6 +93,26 @@ class TypeUtils
     }
 
     /**
+     * Check if $value is an integer or a string that is an integer.
+     *
+     * @param mixed $value
+     *
+     * @return bool
+     */
+    public static function isIntLike($value)
+    {
+        if (!is_scalar($value) or is_array($value)) {
+            return false;
+        }
+
+        if (is_int($value) or ((string) ((int) $value)) == (string) $value) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * @param EntityInterface|DomainObject $entity
      *
      * @return string

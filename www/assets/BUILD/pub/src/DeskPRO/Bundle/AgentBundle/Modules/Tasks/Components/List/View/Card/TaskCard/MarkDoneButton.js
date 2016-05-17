@@ -21,9 +21,7 @@ export class MarkDoneButton extends React.Component {
     if (isDone) {
       return (
         <div className="dpw--single-card-mark-done dpw--single-card-mark-done-minimized" onClick={this.onToggle}>
-
-          <span>Done</span>
-          <i className="fa fa-check" />
+          <span className="done">Done</span>
         </div>
       );
     }

@@ -30,6 +30,8 @@ $mobile: new-breakpoint(max-width 640px 6);
 @import "global-widgets/notification";
 @import "animation";
 @import "calendar";
+@import "list-view/table";
+@import "list-view/kanban";
 //@import "raw/styles";
 
 @import "chrome/positioning";
@@ -125,4 +127,14 @@ $content-width: $app-width + $sidebar-width;
 
 .p-5 {
   padding: 5px;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.overflow-ellipsis {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

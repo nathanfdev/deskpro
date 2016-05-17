@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\ApiBundle\EventListener\Log;
 
 use DeskPRO\Bundle\ApiBundle\Log\Helper\AbstractLogHelper as LogHelper;
+use DeskPRO\Bundle\ApiBundle\Log\LogSaveException;
 use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -37,6 +38,9 @@ use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * Class ApiDupeListener.
+ */
 class ApiDupeListener extends AbstractLogListener
 {
     /**
@@ -53,6 +57,11 @@ class ApiDupeListener extends AbstractLogListener
         );
     }
 
+    /**
+     * @param GetResponseEvent $event
+     *
+     * @return Response|void
+     */
     public function onRequest(GetResponseEvent $event)
     {
         $request = $event->getRequest();
@@ -65,20 +74,50 @@ class ApiDupeListener extends AbstractLogListener
         if ($should_process) {
             $options = $this->composer->getDupeHelper()->getRequestOptions($request->headers);
             $this->composer->createApiLog($request);
-            $this->processRequestDupe($event, $options);
+            try {
+                $this->processRequestDupe($event, $options);
+                $this->processEager($options);
+            } catch (LogSaveException $logException) {
+                // we can't log such error in db cause EntityManager is closed and no need to trick
+                throw new ConflictHttpException('Request with same ID already processed');
+                //just need this to determine for finally if HttpException was thrown
+            } catch (HttpException $e) {
+                $this->saveDupe($options);
+                throw $e;
+            }
+
             if ($event->hasResponse()) {
+                $this->saveDupe($options);
+
                 return $event->getResponse();
             }
-            $this->processEager($options);
         }
 
         return;
     }
 
+    /**
+     * @param array $options
+     */
+    private function saveDupe(array $options)
+    {
+        if ($options['log_dupe'] === LogHelper::LOG_DUPE_SAVE) {
+            $log = $this->composer->getLog();
+            $log
+                ->setRequestId($log->getRequestId().uniqid('-dupe-', true))
+                ->setEndTime(time())
+                ->setIsDupe(true)
+            ;
+            $this->composer->saveLog();
+        }
+    }
+
+    /**
+     * @param GetResponseEvent $event
+     * @param                  $options
+     */
     protected function processRequestDupe(GetResponseEvent $event, $options)
     {
-        $response = new Response();
-
         $log_helper = $this->composer->getLogHelper();
 
         if ($log_helper->isClientRequestedLog()
@@ -94,6 +133,7 @@ class ApiDupeListener extends AbstractLogListener
                     throw new ConflictHttpException('This is duplicate request');
                     break;
                 case LogHelper::DUPLICATE_MODE_RESEND:
+                    $response = new Response();
                     $response->setStatusCode($api_log->getStatus());
                     $response->setContent($api_log->getResponseData()['body']);
                     $headers           = new ResponseHeaderBag($api_log->getResponseData()['headers']);
@@ -103,6 +143,9 @@ class ApiDupeListener extends AbstractLogListener
         }
     }
 
+    /**
+     * @param $options
+     */
     protected function processEager($options)
     {
         if ($options['eager']) {

@@ -42,7 +42,7 @@ class ApiLimitsContext extends BaseContext
      */
     public function myKeyLimitAlmostExhausted()
     {
-        $limit = $this->getApiKeyLimitRepository()->findOneBy(['api_key' => 1]);
+        $limit = $this->getApiKeyLimitRepository()->findOneBy(['api_key' => AuthContext::$apiKey->getId()]);
         $limit->setCurrent(1);
         $this->persistAndFlush($limit);
     }
@@ -52,7 +52,7 @@ class ApiLimitsContext extends BaseContext
      */
     public function myKeyLimitWillBeReplenished()
     {
-        $limit = $this->getApiKeyLimitRepository()->findOneBy(['api_key' => 1]);
+        $limit = $this->getApiKeyLimitRepository()->findOneBy(['api_key' => AuthContext::$apiKey->getId()]);
         $date  = clone $limit->getStartTime();
         $date->modify('-'.($limit->getInterval() + 1).' second');
         $limit->setStartTime($date);

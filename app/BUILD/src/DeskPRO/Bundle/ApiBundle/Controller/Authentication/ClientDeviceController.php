@@ -1,0 +1,252 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+namespace DeskPRO\Bundle\ApiBundle\Controller\Authentication;
+
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Entity\ClientDevice;
+use DeskPRO\Bundle\AppBundle\Form\Type\ClientDeviceType;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
+use DeskPRO\Component\Util\TypeUtils;
+use Doctrine\ORM\QueryBuilder;
+use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
+/**
+ * @ApiModes("all")
+ * @Rest\Route("/client_devices/{app_type}", requirements={"app_type"="mobile"})
+ * @ApiDoc(target="all", section="Client Devices", output="Application\DeskPRO\Entity\ClientDevice")
+ */
+class ClientDeviceController extends CrudController
+{
+    public static $entity       = ClientDevice::class;
+    public static $type         = ClientDeviceType::class;
+    public static $listOrder    = 'desc';
+    public static $listPaginate = false;
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleForm($model, Request $request, array $options = [])
+    {
+        $options['app_type'] = $request->attributes->get('app_type');
+        $options['person']   = $this->get('security.token_storage')->getToken()->getUser();
+
+        if ($model && $model->getDeviceId()) {
+            $options['device_id'] = $model->getDeviceId();
+        } elseif ($request->attributes->get('id') && !TypeUtils::isIntLike($request->attributes->get('id'))) {
+            $options['device_id'] = $request->attributes->get('id');
+        }
+
+        return parent::handleForm($model, $request, $options);
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="Updates a given device or create it if it does not exist yet.",
+     *      tags={"CRUD"="#ffa500"},
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="The id or device_id of the resource",
+     *              "dataType"="integer|string"
+     *          }
+     *      },
+     *      statusCodes={
+     *          201="Returned in case of successful resource creation",
+     *          204="Returned in case of successful resource modyf",
+     *          400="We will return this in case your request was malformed",
+     *      }
+     * )
+     *
+     * NOTE: This is first in this controller because it needs to be evaluated first
+     * because we don't want 'register' to be interpretted as a string device_id itself
+     *
+     * @Rest\Put("/register/{id}", requirements={"id"="\d+|.*?"})
+     * {@inheritdoc}
+     */
+    public function registerAction($id, Request $request)
+    {
+        try {
+            $ent = $this->findEntity($id, $request);
+
+            return $this->putAction($ent->getId(), $request);
+        } catch (NotFoundHttpException $e) {
+            return $this->postAction($request);
+        }
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="Get a resource",
+     *      tags={"CRUD"="#ffa500"},
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+|.*?",
+     *              "description"="The id or device_id of the resource",
+     *              "dataType"="integer|string"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="We will return such status in case we found your entity",
+     *          404="Not Found error will returned in case we can't find entity with specified ID"
+     *      }
+     * )
+     * @Rest\Get("/{id}", requirements={"id"="\d+|.*?"})
+     * {@inheritdoc}
+     */
+    public function getAction(Request $request, $id)
+    {
+        $ent = $this->findEntity($id, $request);
+
+        return parent::getAction($request, $ent->getId());
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="Update an existing resource",
+     *      tags={"CRUD"="#ffa500"},
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="The id or device_id of the resource",
+     *              "dataType"="integer|string"
+     *          }
+     *      },
+     *      statusCodes={
+     *          204="Returned in case of successful resource modify",
+     *          400="We will return this in case your request was malformed",
+     *      }
+     * )
+     * @Rest\Put("/{id}", requirements={"id"="\d+|.*?"})
+     * {@inheritdoc}
+     */
+    public function putAction($id, Request $request)
+    {
+        $ent = $this->findEntity($id, $request);
+
+        return parent::putAction($ent->getId(), $request);
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="Delete a resource",
+     *      tags={"CRUD"="#ffa500"},
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+|.*?",
+     *              "description"="The id or device_id of the resource",
+     *              "dataType"="integer|string"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Returned if everything is ok and there is no such resource anymore",
+     *          404="Well, looks like either resource already deleted either it doesn't exists at all"
+     *      }
+     * )
+     * @Rest\Delete("/{id}", requirements={"id"="\d+|.*?"})
+     * {@inheritdoc}
+     */
+    public function deleteAction($id, Request $request)
+    {
+        $ent = $this->findEntity($id, $request);
+
+        return parent::deleteAction($ent->getId(), $request);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
+    {
+        // Always show only our own
+        $qb
+            ->andWhere($alias.'.person = :forPerson')
+            ->setParameter('forPerson', $this->get('security.token_storage')->getToken()->getUser())
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getLocationUrl($entity, Request $request, array $params = [])
+    {
+        $route = preg_replace('/_post$/', '_get', $request->get('_route'));
+
+        $setParams = [
+            'id'       => $entity->getId(),
+            'app_type' => $request->attributes->get('app_type'),
+        ];
+
+        return $this->generateUrl($route, array_merge($setParams, $params));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function findEntity($id, Request $request)
+    {
+        $appType = $request->attributes->get('app_type');
+        $repos   = $this->getManager()->getRepository(self::$entity);
+        $entity  = null;
+
+        if (!TypeUtils::isIntLike($id)) {
+            $criteria = [
+                'device_id' => $id,
+                'app_type'  => $appType,
+            ];
+
+            /** @var ClientDevice $entity */
+            $entity = $repos->findOneBy($criteria);
+        }
+
+        if (!$entity && TypeUtils::isIntLike($id)) {
+            $entity = $repos->find($id);
+
+            if ($entity && $appType && $entity->getAppType() !== $appType) {
+                throw $this->createNotFoundException('Not Found');
+            }
+        }
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Not Found');
+        }
+
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW, new PermissionGroupContext($entity));
+
+        return $entity;
+    }
+}

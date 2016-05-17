@@ -17,7 +17,6 @@ export class HelpButton extends React.Component {
     name:            PropTypes.string,
     backgroundColor: PropTypes.string,
     textColor:       PropTypes.string,
-    borderColor:     PropTypes.string,
     disabled:        PropTypes.bool,
     triggerResize:   PropTypes.func,
     chatId:          PropTypes.number
@@ -33,7 +32,7 @@ export class HelpButton extends React.Component {
   };
 
   render() {
-    const { widgetPosition, name, size, disabled, backgroundColor, textColor, borderColor, chatId } = this.props;
+    const { widgetPosition, name, size, disabled, backgroundColor, textColor, chatId } = this.props;
 
     let buttonCaption;
     if (chatId) {
@@ -60,7 +59,7 @@ export class HelpButton extends React.Component {
           <span className="state-button-text">{buttonCaption}</span>
           <span className="state-button-icon" style={{
             color: backgroundColor,
-            borderColor
+            background: textColor
           }}>
             <span>?</span>
           </span>

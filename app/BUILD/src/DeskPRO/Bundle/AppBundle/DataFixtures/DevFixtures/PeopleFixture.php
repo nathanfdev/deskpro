@@ -26,16 +26,17 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\LabelDef;
+use Application\DeskPRO\Entity\LabelOrganization;
 use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\OrganizationNote;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Usergroup;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use DeskPRO\Bundle\AppBundle\DataFixtures\Tools\RandomFileFromDir;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Orb\Data\ContentTypes;
@@ -79,6 +80,9 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
      */
     private $ava_people_files;
 
+    /** @var  Usergroup[] */
+    private $userGroups;
+
     /**
      * {@inheritdoc}
      */
@@ -99,10 +103,10 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
         $this->ava_people_files = new RandomFileFromDir(
             DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/avatars_people'
         );
+        $this->userGroups = $this->getExtraUserGroups();
 
         $this->loadLabels();
-        $this->loadOrgs();
-        $this->loadOrgProps();
+        $this->loadOrgs($manager);
 
         $this->loadPeople($this->num_agents, true);
         $this->agent_ids = $this->fetchIds(self::TABLE_PEOPLE);
@@ -110,6 +114,8 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
         $this->loadPeople($this->num_people, false);
         $this->people_ids = $this->fetchIds(self::TABLE_PEOPLE);
 
+        $this->loadOrgProps($manager);
+        $this->addExtraGroups();
         $this->loadPeopleProps();
 
         $this->createOrgExample();
@@ -219,43 +225,80 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
         );
     }
 
-    private function loadOrgs()
+    private function addExtraGroups()
     {
-        $batch = [];
+        $people = $this->manager->getRepository(Person::class)->findAll();
 
-        for ($i = 0; $i < $this->num_orgs; ++$i) {
-            $batch[] = [
-                'name'         => $this->faker->company,
-                'summary'      => $this->faker->realText($this->faker->numberBetween(10, 500)),
-                'importance'   => 1,
-                'date_created' => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-            ];
+        /** @var Person $person */
+        foreach ($people as $person) {
+            if ($this->faker->boolean(33)) {
+                foreach ($this->userGroups as $userGroup) {
+                    if ($this->faker->boolean(50)) {
+                        $person->addUsergroup($userGroup);
+                    }
+                }
+                $this->manager->persist($person);
+            }
         }
-
-        $this->db->batchInsert('organizations', $batch);
-
-        $this->org_ids = $this->db->fetchAllCol('SELECT id FROM organizations');
+        $this->manager->flush();
     }
 
-    private function loadOrgProps()
+    private function loadOrgs(ObjectManager $manager)
     {
-        $notes_batch = [];
+        for ($i = 0; $i < $this->num_orgs; ++$i) {
+            $org = new Organization();
+            $org
+                ->setName($this->faker->company)
+                ->setSummary($this->faker->realText($this->faker->numberBetween(10, 500)))
+                ->setImportance(1)
+                ->setDateCreated($this->faker->dateTimeThisYear)
+            ;
 
-        foreach ($this->org_ids as $org_id) {
-            $num = $this->faker->numberBetween(1, $this->max_notes);
-            for ($i = 0; $i < $num; ++$i) {
-                $notes_batch[] = [
-                    'organization_id' => $org_id,
-                    'agent_id'        => $this->faker->randomElement($this->agent_ids),
-                    'date_created'    => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                    'note'            => $this->faker->realText($this->faker->numberBetween(10, 500)),
-                ];
+            if ($this->faker->boolean(33)) {
+                foreach ($this->userGroups as $userGroup) {
+                    if ($this->faker->boolean(50)) {
+                        $org->addUserGroup($userGroup);
+                    }
+                }
+            }
+
+            $manager->persist($org);
+        }
+
+        $manager->flush();
+        $this->org_ids = $this->fetchIds(self::TABLE_ORGANIZATIONS);
+    }
+
+    private function loadOrgProps(ObjectManager $manager)
+    {
+        $organizations = $manager->getRepository(Organization::class)->findAll();
+        $agents        = $manager->getRepository(Person::class)->findBy(['is_agent' => true]);
+
+        foreach ($organizations as $organization) {
+            foreach ($this->faker->randomElements($this->labels, $this->faker->numberBetween(1, 5)) as $label) {
+                $labelEntity = new LabelOrganization();
+                $labelEntity
+                    ->setLabel($label)
+                    ->setOrganization($organization)
+                ;
+
+                $manager->persist($labelEntity);
+            }
+
+            for ($i = 0; $i < $this->faker->numberBetween(1, $this->max_notes); ++$i) {
+                $orgNote = new OrganizationNote();
+                $orgNote
+                    ->setAgent($this->faker->randomElement($agents))
+                    ->setOrganization($organization)
+                    ->setDateCreated($this->faker->dateTimeThisYear)
+                    ->setNote($this->faker->realText($this->faker->numberBetween(10, 500)))
+                ;
+
+                $manager->persist($orgNote);
             }
         }
 
-        if ($notes_batch) {
-            $this->db->batchInsert('organization_notes', $notes_batch);
-        }
+        $manager->flush();
     }
 
     private function loadPeopleProps()
@@ -335,5 +378,17 @@ class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInte
 
         $this->manager->persist($person);
         $this->manager->flush();
+    }
+
+    /**
+     * @return mixed
+     */
+    private function getExtraUserGroups()
+    {
+        $criteria = new Criteria();
+        $criteria->where($criteria->expr()->gt('id', 4));
+        $userGroups = $this->manager->getRepository(Usergroup::class)->matching($criteria);
+
+        return $userGroups;
     }
 }

@@ -34,7 +34,6 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -81,9 +80,16 @@ class AgentsController extends CrudController
      */
     public function getAgentsOnlineAction()
     {
-        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW_LIST, new PermissionGroupContext(Person::class));
-
         return View::create($this->wrap($this->get('data.agent')->getOnlineAgentIds()));
+    }
+
+    protected function denyAccessUnlessGranted($attributes, $object = null, $message = 'Access Denied.')
+    {
+        if ($attributes === PermissionGroupVoter::VIEW_LIST) {
+            return;
+        }
+
+        parent::denyAccessUnlessGranted($attributes, $object, $message);
     }
 
     /**

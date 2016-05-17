@@ -4,7 +4,6 @@ Feature: Follow location
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I follow location
     When I send a PUT request to "/api/v2/tickets/1"
     Then the response status code should be 204

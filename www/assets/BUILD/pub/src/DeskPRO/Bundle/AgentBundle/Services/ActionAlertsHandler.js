@@ -1,6 +1,7 @@
 import { newActionAlerts } from '../Modules/Application/Actions/notificationActions';
 import { startChat } from '../Modules/IM/Actions/chatsActions';
 import { markMessages } from '../Modules/IM/Actions/messagesActions';
+import { addToCollection } from '../../AppBundle/Modules/RecordsStore/Actions/store';
 
 export class ActionAlertsHandler
 {
@@ -9,15 +10,23 @@ export class ActionAlertsHandler
     Object.assign(this.options, props);
   }
 
-  handle(data) {
-    this.options.dispatch(newActionAlerts(data));
-    switch (data.type) {
+  handle(payload) {
+    const { data, linked } = payload.data;
+    switch (payload.type) {
       case 'notification.agent_chat.new_message':
-        this.options.dispatch(markMessages([data.data.id], [data.data.uuid], data.data.agent_chat_id, 1));
-        this.options.dispatch(startChat(null, null, data.data.agent_chat_id, true));
+        if (linked.agent_chat[data.chat].chat_type === 'department') {
+          this.options.dispatch(addToCollection('Department', 'my', linked.department));
+        }
+        if (linked.agent_chat[data.chat].chat_type === 'team') {
+          this.options.dispatch(addToCollection('AgentTeam', 'my', linked.agent_team));
+        }
+        this.options.dispatch(addToCollection('AgentChat', 'recent', [linked.agent_chat[data.chat]]));
+        this.options.dispatch(markMessages([data.id], [data.uuid], data.chat, 1));
+        this.options.dispatch(startChat(null, null, data.chat, true));
         break;
       default:
         break;
     }
+    this.options.dispatch(newActionAlerts(payload));
   }
 }

@@ -1,7 +1,6 @@
-@articles
 Feature: /article_pending_creates endpoint
   To retrieve DeskPRO ArticlePendingCreate
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:

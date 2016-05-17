@@ -8,7 +8,6 @@ Feature: Person profile
     When I send a GET request to "/api/v2/me/profile"
     Then the response should be in JSON
     And the response status code should be 200
-    And the JSON node "data.id" should be equal to 1
     And the JSON node "data.name" should be equal to "Link Admin"
     And the JSON node "data.display_name" should be equal to 0
     And the JSON node "data.primary_email" should be equal to "admin@deskpro.dev"
@@ -51,7 +50,6 @@ Feature: Person profile
     When I send a GET request to "/api/v2/me/profile"
     Then the response should be in JSON
     And the response status code should be 200
-    And the JSON node "data.id" should be equal to 1
     And the JSON node "data.name" should be equal to "New Name"
     And the JSON node "data.display_name" should be equal to "Display Name"
     And the JSON node "data.primary_email" should be equal to "my_new_email@deskpro.dev"

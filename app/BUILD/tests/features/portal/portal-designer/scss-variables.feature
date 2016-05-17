@@ -8,14 +8,12 @@ Feature: Editing SCSS variables
     When I send a GET request to "/portal/api/style/variable-groups"
     Then the response status code should be 200
     And the JSON node "borders" should exist
-    And the JSON node "welcome_colors" should exist
 
   Scenario: I get edit ThemeSet custom variable values
     Given I am authenticated as admin
     When I send a GET request to "/portal/api/style/edit-theme-set/variable-values"
     Then the response status code should be 200
     And the JSON node "font-default" should exist
-    And the JSON node "text-color" should exist
     And the JSON node "border-radius-main.value" should exist
 
   Scenario: I retrieve modified variable values

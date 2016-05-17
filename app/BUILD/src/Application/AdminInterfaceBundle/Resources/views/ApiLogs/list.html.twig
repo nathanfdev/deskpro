@@ -15,6 +15,9 @@
 			<article>
 				<div dp-tab-body="logs.list" class="dp-tabletabs-contentwrap">
                     <div class="dp-btn-pagination">
+                        <button class="btn btn-primary" ng-click="LogsCtrl.refreshList()">
+                            {{ phrase('adm.api_logs.refresh') }}
+                        </button>
                         <select
                                 ng-model="LogsCtrl.pagination.page"
                                 ui-select2
@@ -27,7 +30,7 @@
                             </option>
                         </select>
                     </div>
-					<table class="table table-hover">
+					<table dp-hide-spinning="loading" class="table table-hover">
 						<thead>
 						<tr>
 							<th> {{ phrase('adm.api_logs.request_id') }}</th>
@@ -58,7 +61,7 @@
                             </th>
                             <th> {{ phrase('adm.api_logs.response_status') }}</th>
                             <th> {{ phrase('adm.api_logs.start_time') }}</th>
-                            <th> {{ phrase('adm.api_logs.end_time') }}</th>
+                            <th> {{ phrase('adm.api_logs.time_taken') }}</th>
                         </tr>
 						</thead>
 						<tbody>
@@ -69,11 +72,14 @@
 							<td>{{ ng_var('log.requested_uri') }}</td>
 							<td>{{ ng_var('log.method') }}</td>
 							<td>{{ ng_var('log.status') }}</td>
-							<td>{{ ng_var('log.start_time') }}</td>
-							<td>{{ ng_var('log.end_time') }}</td>
+							<td nowrap="nowrap">{{ ng_var('log.start_date_time') }}</td>
+							<td>{{ ng_var('log.end_time - log.start_time') }}</td>
 						</tr>
 						</tbody>
 					</table>
+                    <div dp-show-spinning="loading" class="dp-layout-loading">
+                        <i></i>
+                    </div>
                     <div class="dp-btn-pagination">
                         <select
                                 ng-model="LogsCtrl.pagination.page"

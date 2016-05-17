@@ -21,7 +21,7 @@ export class ListGroup extends BaseListGroup {
 
     return connectDropTarget(
       <tbody className={classNames({ 'list-group-hover': isOver })}>
-        {title && <TableGroupDivider title={title} />}
+        {title && <TableGroupDivider title={title} columns={6} />}
         {elements.map((task, key) =>
           <TaskCardEditContainer key={key} task={task} updateData={updateData}>
             <TaskCard />

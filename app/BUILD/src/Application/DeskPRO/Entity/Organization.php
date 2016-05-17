@@ -537,9 +537,20 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      */
     public function getPublicUsergroups()
     {
-        return $this->usergroups->filter(function (Usergroup $group) {
-            return !$group->is_agent_group && $group->sys_name !== 'everyone' && $group->is_enabled;
-        });
+        return $this->usergroups->filter(
+            function (Usergroup $group) {
+                return !$group->is_agent_group && $group->sys_name !== 'everyone' && $group->is_enabled;
+            }
+        );
+    }
+
+    /**
+     * @param Usergroup $userGroup
+     */
+    public function addUserGroup(Usergroup $userGroup)
+    {
+        $this->usergroups->add($userGroup);
+        $this->_onPropertyChanged('usergroups', $this->usergroups, $this->usergroups);
     }
 
     /**

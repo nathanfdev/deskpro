@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\InstallBundle\Upgrade\Build;
 
 class BuildNewAgent_0001_newalters extends AbstractBuild
@@ -42,6 +41,7 @@ class BuildNewAgent_0001_newalters extends AbstractBuild
         $this->execMutateSql('ALTER TABLE api_keys_actions ADD CONSTRAINT FK_DEAC73078BE312B3 FOREIGN KEY (api_key_id) REFERENCES api_keys (id) ON DELETE CASCADE');
         $this->execMutateSql('ALTER TABLE api_key_limits ADD CONSTRAINT FK_9A50A5F68BE312B3 FOREIGN KEY (api_key_id) REFERENCES api_keys (id) ON DELETE CASCADE');
         $this->execMutateSql('ALTER TABLE api_log ADD CONSTRAINT FK_CCBD2EF18BE312B3 FOREIGN KEY (api_key_id) REFERENCES api_keys (id) ON DELETE CASCADE');
+        $this->execMutateSql('ALTER TABLE client_devices ADD CONSTRAINT FK_433A0AE7217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE');
         $this->execMutateSql('ALTER TABLE brands ADD CONSTRAINT FK_7EA24434C0C33964 FOREIGN KEY (theme_set_id) REFERENCES theme_sets (id), ADD CONSTRAINT FK_7EA24434F1B7F8A2 FOREIGN KEY (edit_theme_set_id) REFERENCES theme_sets (id)');
         $this->execMutateSql('ALTER TABLE settings_brand ADD CONSTRAINT FK_A48BBF1144F5D008 FOREIGN KEY (brand_id) REFERENCES brands (id) ON DELETE CASCADE');
         $this->execMutateSql('ALTER TABLE downloads_slug_history ADD CONSTRAINT FK_F670233AC667AEAB FOREIGN KEY (download_id) REFERENCES downloads (id) ON DELETE CASCADE');

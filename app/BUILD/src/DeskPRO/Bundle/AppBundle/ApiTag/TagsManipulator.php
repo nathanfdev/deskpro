@@ -84,49 +84,63 @@ class TagsManipulator
 
     /**
      * @param int    $key
-     * @param string $action
-     * @param int    $value
+     * @param string $tags
      */
-    public function updateTags($key, $action, $value)
+    public function updateTags($key, $tags)
     {
         $key = $this->getKey($key);
 
-        $this->tagsCollector->collectTags();
-        $this->tagsCollector->createTagsHierarchy();
+        $actions = explode(',', $tags);
+        $actions = array_map(
+            function ($item) {
+                return trim($item) ?: false;
+            },
+            $actions
+        );
+        $actions = array_filter($actions, 'boolval');
 
-        $originalAction = $action;
+        $tags      = $this->tagsCollector->getTagsHierarchyForApi($actions);
+        $root      = array_shift($tags);
+        $flattened = [];
+        $this->flatten($root, $flattened);
+        $this->deleteOld($key);
+        foreach (array_keys($flattened) as $action) {
+            $apiAction = new ApiKeyAction();
+            $apiAction->setAction($action)->setKey($key);
+            $this->em->persist($apiAction);
+        }
+        $this->em->flush();
+    }
 
-        $parts = explode('.', $originalAction);
+    /**
+     * @param \DeskPRO\Bundle\AppBundle\ApiTag\Model\Tag $hierarchy
+     * @param array                                      $flattened
+     */
+    private function flatten($hierarchy, array &$flattened)
+    {
+        if (!$hierarchy->getParent() && $hierarchy->getValue()) {
+            //this is root
+            $path             = ($hierarchy->getValue() < 0 ? '-' : '').$hierarchy->getPath();
+            $flattened[$path] = true;
+        }
 
-        $i   = 0;
-        $tag = null;
-        while ($part = array_shift($parts)) {
-            if ($part !== '*') {
-                $tag = $this->hierarchyCreator->findTag($part, $originalAction, $i++);
+        if ($hierarchy->hasNodes()) {
+            foreach ($hierarchy->getNodes() as $node) {
+                if ($node->getValue() === $node->getParent()->getValue() && !$node->hasNodes()) {
+                    continue;
+                } elseif ($node->getValue() !== $node->getParent()->getValue()) {
+                    $path = ($node->getValue() < 0 ? '-' : '').$node->getPath();
+                    if ($node->hasNodes()) {
+                        $path .= '.*';
+                    }
+                    $flattened[$path] = true; // (sic!)
+                }
+                $this->flatten($node, $flattened);
             }
+        } elseif ($hierarchy->getValue() !== $hierarchy->getParent()->getValue()) {
+            $path             = ($hierarchy->getValue() < 0 ? '-' : '').$hierarchy->getPath();
+            $flattened[$path] = true; // (sic!)
         }
-
-        if ($tag && $tag->hasNodes()) {
-            $deletePattern = "$originalAction%";
-            $action .= $action !== '*' ? '.*' : '';
-        } else {
-            $deletePattern = $originalAction;
-        }
-
-        $this->deleteOld($key, $deletePattern);
-
-        $prefix = '';
-        if ($value === 0) {
-            return;
-        } elseif ($value < 0) {
-            $prefix = '-';
-        }
-
-        $apiAction = new ApiKeyAction();
-        $apiAction->setAction($prefix.$action)->setKey($key);
-
-        $this->em->persist($apiAction);
-        $this->em->flush($apiAction);
     }
 
     /**
@@ -146,14 +160,11 @@ class TagsManipulator
 
     /**
      * @param ApiKey $key
-     * @param string $pattern
      */
-    private function deleteOld(ApiKey $key, $pattern)
+    private function deleteOld(ApiKey $key)
     {
         $qb = $this->em->getRepository(ApiKeyAction::class)->createQueryBuilder('aka');
         $qb->delete()
-           ->where($qb->expr()->like('aka.action', $qb->expr()->literal($pattern)))
-           ->orWhere($qb->expr()->like('aka.action', $qb->expr()->literal('-'.$pattern)))
            ->andWhere('aka.key = :key')
            ->setParameters(['key' => $key]);
         $qb->getQuery()->execute();

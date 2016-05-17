@@ -7,24 +7,13 @@ Feature: KB
       | default |
     And the default brand is using the standard theme
     And there are no articles in the Knowledge Base
+    And the KB root category "General" exists
     And I add "Example Article" article
 
-  Scenario: I visit the KB from the homepage
+  Scenario: I navigate to a KB article from homepage
     Given I am on "/"
-    When I follow "Knowledgebase"
-    Then I should be on "/kb"
-    And the response status code should be 200
-
-  @reinstall
-  Scenario: I visit a category from the KB page
-    Given I am on "/kb"
-    When I follow "General"
-    Then I should be on "/kb/general"
-    And the response status code should be 200
-
-  @reinstall
-  Scenario: I visit an article from the browse page
-    Given I am on "/kb/general"
+    And I follow "Knowledgebase"
+    And I follow "General"
     When I follow "Example Article"
     Then I should be on "/kb/articles/example-article"
     And the response status code should be 200

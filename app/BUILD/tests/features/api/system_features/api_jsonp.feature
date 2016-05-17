@@ -1,6 +1,6 @@
 Feature: JSONP
   In order to use the API responses in my javascript
-  As a developer
+  As an API user
   I need to be able to receive a JSONP callback
 
   Background:

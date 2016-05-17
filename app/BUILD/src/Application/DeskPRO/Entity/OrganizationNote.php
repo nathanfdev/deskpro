@@ -160,6 +160,46 @@ class OrganizationNote extends \Application\DeskPRO\Domain\DomainObject
         return $this;
     }
 
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
+    /**
+     * @param \DateTime $date_created
+     *
+     * @return $this
+     */
+    public function setDateCreated($date_created)
+    {
+        $this->setModelField('date_created', $date_created);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNote()
+    {
+        return $this->note;
+    }
+
+    /**
+     * @param string $note
+     *
+     * @return $this
+     */
+    public function setNote($note)
+    {
+        $this->setModelField('note', $note);
+
+        return $this;
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################

@@ -10,7 +10,7 @@ services:
   validator.free_email:
     class: DeskPRO\Bundle\AppBundle\Validator\Constraints\FreeEmailValidator
     arguments:
-      - "@=service('doctrine.orm.default_entity_manager').getRepository('DeskPRO:Person')"
+      - "@doctrine.orm.default_entity_manager"
     tags:
       - { name: validator.constraint_validator, alias: 'free_email_validator' }
 

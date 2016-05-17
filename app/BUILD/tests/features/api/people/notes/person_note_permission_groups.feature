@@ -1,4 +1,3 @@
-@people
 Feature: /people/{id}/notes endpoint endpoint
   I want to check permission groups
 
@@ -8,7 +7,6 @@ Feature: /people/{id}/notes endpoint endpoint
     And I remove "admin" usergroup relation "agent_all_perms"
     And I remove "admin" usergroup relation "agent_all_safe_perms"
 
-  @reinstall
   Scenario: I have no person note permissions
     When I send a GET request to "/api/v2/people/1/notes"
     Then the response status code should be 200

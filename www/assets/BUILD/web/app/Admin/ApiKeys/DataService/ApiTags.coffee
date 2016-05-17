@@ -8,12 +8,17 @@ define [
 
     getTags: (id) ->
       deferred = @$q.defer()
-      @Api2.sendGet('/api_tags/'+id)
+      @Api2.sendGet('/api_tags/'+id+'/flatten')
       .success((data) =>
         deferred.resolve data.data
       )
       .error( (data, status, headers, config) => deferred.reject() )
 
       deferred.promise
-    updateTags: (title, value, id) ->
-      @Api2.sendPutJson('/api_tags/'+id, {action: title, value: value})
+    updateTags: (tags, id) ->
+      deferred = @$q.defer()
+      @Api2.sendPutJson('/api_tags/'+id, {"tags": tags})
+      .success((data) =>
+        deferred.resolve data.data
+      )
+      .error( (data, status, headers, config) => deferred.reject() )

@@ -1,14 +1,12 @@
-@counts @publish-nav @basic
 Feature: Comment counts endpoints (/article_comments/counts, /news_comments/counts, /download_comments/counts)
   To retrieve counts of DeskPRO comments
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I select comment counts
     When I send a GET request to "/api/v2/article_comments/counts"
     Then the response should be in JSON

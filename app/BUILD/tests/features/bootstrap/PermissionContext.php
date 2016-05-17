@@ -29,8 +29,9 @@
 /**
  * DeskPRO.
  */
-
 namespace DpBehat;
+
+use Application\DeskPRO\Entity\Usergroup;
 
 /**
  * Class PermissionContext.
@@ -38,21 +39,21 @@ namespace DpBehat;
 class PermissionContext extends BaseContext
 {
     /**
-     * @Given I remove :person usergroup relation :sys_name
+     * @Given I remove :person usergroup relation :sysName
      *
      * @param string $who
-     * @param string $sys_name
+     * @param string $sysName
      */
-    public function iRemoveUserGroup($who, $sys_name)
+    public function iRemoveUserGroup($who, $sysName)
     {
         $person = $this->getContainer()->get('user_details')->getWho($who);
         if (!$person) {
             throw new \RuntimeException('Unable to get person '.$who);
         }
 
-        foreach ($person->usergroups as $usergroup) {
-            if ($usergroup->sys_name === $sys_name) {
-                $person->usergroups->removeElement($usergroup);
+        foreach ($person->getUsergroups() as $usergroup) {
+            if ($usergroup->getSysName() === $sysName) {
+                $person->getUsergroups()->removeElement($usergroup);
             }
         }
 
@@ -61,25 +62,48 @@ class PermissionContext extends BaseContext
     }
 
     /**
-     * @Given I set permission :permission_name = :value for :sys_name usergroup
+     * @Given I add :person usergroup relation :sysName
      *
-     * @param string $permission_name
-     * @param string $value
-     * @param string $sys_name
+     * @param string $who
+     * @param string $sysName
      */
-    public function iSetUserGroupPermission($permission_name, $value, $sys_name)
+    public function iAddUserGroup($who, $sysName)
+    {
+        $person = $this->getContainer()->get('user_details')->getWho($who);
+        if (!$person) {
+            throw new \RuntimeException('Unable to get person '.$who);
+        }
+
+        $usergroup = $this->em()->getRepository(Usergroup::class)->findOneBy(['sys_name' => $sysName]);
+        if (!$person) {
+            throw new \RuntimeException('Unable to get usergroup '.$sysName);
+        }
+        $person->getUsergroups()->add($usergroup);
+
+        $this->em()->persist($person);
+        $this->em()->flush();
+    }
+
+    /**
+     * @Given I set permission :permissionName = :value for :sysName usergroup
+     *
+     * @param string $permissionName
+     * @param string $value
+     * @param string $sysName
+     */
+    public function iSetUserGroupPermission($permissionName, $value, $sysName)
     {
         $connection = $this->em()->getConnection();
-        $group_ids  = $connection->fetchAllCol('SELECT id FROM usergroups WHERE sys_name = ?', [$sys_name]);
+        $group_ids  = $connection->fetchAllCol('SELECT id FROM usergroups WHERE sys_name = ?', [$sysName]);
 
         foreach ($group_ids as $gid) {
             $connection->executeUpdate(
                 'DELETE FROM permissions WHERE usergroup_id = ? AND name = ?',
-                [$gid, $permission_name]
+                [$gid, $permissionName]
             );
             $connection->executeUpdate(
                 'INSERT INTO permissions SET usergroup_id = ?, name = ?, value = ?',
-                [$gid, $permission_name, $value]
+                [$gid, $permissionName, $value]
             );
         }
 

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpBehat\Portal;
 
 use Application\DeskPRO\Entity\Organization;
@@ -78,6 +77,16 @@ class AuthContext extends BasePortalContext implements RebootableContextInterfac
         $session->save();
         $cookie = new Cookie($session->getName(), $session->getId());
         $client->getCookieJar()->set($cookie);
+    }
+
+    /**
+     * @When I am not logged in
+     */
+    public function iAmNotLoggedIn()
+    {
+        $this->visitPath('/en/logout-confirmation');
+        $page = $this->getSession()->getPage();
+        $page->clickLink('');
     }
 
     /**

@@ -17,11 +17,9 @@ export class Agents extends React.Component {
         <SectionHeader>Agents</SectionHeader>
         <ul>
           {agents.map((agent, index) =>
-            <ListItemContainer
-              key={index}
-              urlHash={`agent-${agent.get('id')}-${agent.get('name')}`}
+            <ListItemContainer key={index} urlHash={`agent-${agent.get('id')}-${agent.get('name')}`}
               listOptions={{ assigned_agent: [agent.get('id')] }}
-              >
+            >
               <ListItem count={agentsCountMap[agent.get('id')] || 0}>
                 <div part="label">
                   <PersonAvatar person={agent} size={16} /> {agent.get('name')}

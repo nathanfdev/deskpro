@@ -1,14 +1,12 @@
-@tickets
 Feature: /ticket_statuses endpoint
   To CRUD DeskPRO ticket's statuses
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I retrieve a list of ticket statuses
     When I send a GET request to "/api/v2/ticket_statuses"
     Then the response status code should be 200

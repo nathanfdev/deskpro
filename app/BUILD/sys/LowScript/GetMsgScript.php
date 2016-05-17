@@ -92,7 +92,7 @@ class GetMsgScript extends LowScriptAbstract
             # Dismissed client messages
             #------------------------------
             if (isset($_REQUEST['dismissed'])) {
-                $notifications = array();
+                $notifications = [];
 
                 $dismissed_notifications = $this->getDismissedNotifications();
 
@@ -104,7 +104,7 @@ class GetMsgScript extends LowScriptAbstract
                     }
                 }
 
-                echo json_encode(array('rendered_list' => implode("\n", $notifications)));
+                echo json_encode(['rendered_list' => implode("\n", $notifications)]);
 
                 return true;
             }
@@ -136,7 +136,7 @@ class GetMsgScript extends LowScriptAbstract
             # Poll requests
             #------------------------------
 
-            $dos = (isset($_REQUEST['do']) ? (array) $_REQUEST['do'] : array());
+            $dos = (isset($_REQUEST['do']) ? (array) $_REQUEST['do'] : []);
 
             // Every second poll, update online agents list
             $count = isset($_REQUEST['count']) ? intval($_REQUEST['count']) : 0;
@@ -152,7 +152,9 @@ class GetMsgScript extends LowScriptAbstract
 
             // We don't do custom filters data based on request, but instead based on the poll count
             // We do it every 125 polls, which is roughly 10 minutes
-            $dos = array_filter($dos, function ($v) { return $v !== 'get-custom-filters-data'; });
+            $dos = array_filter($dos, function ($v) {
+                return $v !== 'get-custom-filters-data';
+            });
             if ($count && $count % 125 === 0) {
                 $dos[] = 'get-custom-filters-data';
             }
@@ -183,7 +185,7 @@ class GetMsgScript extends LowScriptAbstract
                     VALUES
                         (?, ?, ?, NULL, NULL);
                 ');
-                $q->execute(array($agent_session['person_id'], 'agent.ui.last_message_id', $new_since));
+                $q->execute([$agent_session['person_id'], 'agent.ui.last_message_id', $new_since]);
             }
 
             // See if we should update last activity time
@@ -200,7 +202,7 @@ class GetMsgScript extends LowScriptAbstract
                     VALUES
                         (?,?)
                 ');
-                $q->execute(array($agent_session['person_id'], $date_active->format('Y-m-d H:i:s')));
+                $q->execute([$agent_session['person_id'], $date_active->format('Y-m-d H:i:s')]);
             }
 
             $secret = $this->_getSetting('core.app_secret');
@@ -216,7 +218,7 @@ class GetMsgScript extends LowScriptAbstract
                 SET date_last = ?
                 WHERE id = ?
             ');
-            $q->execute(array(date('Y-m-d H:i:s', time()), $agent_session['id']));
+            $q->execute([date('Y-m-d H:i:s', time()), $agent_session['id']]);
 
             if (!empty($_REQUEST['recent_tabs'])) {
                 $post_recent_tabs = $_REQUEST['recent_tabs'];
@@ -225,7 +227,7 @@ class GetMsgScript extends LowScriptAbstract
                 }
 
                 if (!$post_recent_tabs) {
-                    $post_recent_tabs = array();
+                    $post_recent_tabs = [];
                 }
 
                 $q = $this->getPdoRead()->prepare("
@@ -233,7 +235,7 @@ class GetMsgScript extends LowScriptAbstract
                     FROM people_prefs
                     WHERE person_id = ? AND name = 'agent.ui.recent_tabs_collection'
                 ");
-                $q->execute(array($this->_person_id));
+                $q->execute([$this->_person_id]);
 
                 $recent_tabs = $q->fetchColumn();
                 if ($recent_tabs) {
@@ -241,7 +243,7 @@ class GetMsgScript extends LowScriptAbstract
                 }
 
                 if (!$recent_tabs) {
-                    $recent_tabs = array();
+                    $recent_tabs = [];
                 }
 
                 foreach ($post_recent_tabs as $item) {
@@ -278,10 +280,10 @@ class GetMsgScript extends LowScriptAbstract
                         value_str = NULL,
                         value_array = ?,
                         date_expire = NULL
-                ")->execute(array(
+                ")->execute([
                     $this->_person_id,
                     $recent_tabs,
-                ));
+                ]);
             }
 
             #------------------------------
@@ -332,15 +334,15 @@ class GetMsgScript extends LowScriptAbstract
                     ++$count;
 
                     $r['data']          = unserialize($r['data']);
-                    $data['messages'][] = array(
+                    $data['messages'][] = [
                         null,
                         'agent-notify.'.$r['typename'],
-                        array(
+                        [
                             'type'     => $r['typename'],
                             'alert_id' => (int) $r['id'],
                             'row'      => $r['data']['browser_rendered'],
-                        ),
-                    );
+                        ],
+                    ];
                 }
 
                 if ($count == 100 && $last_alert_id) {
@@ -385,7 +387,7 @@ class GetMsgScript extends LowScriptAbstract
 
         $url = null;
 
-        return $this->_getContainer()->getTemplating()->render('AgentBundle:UserChat:chat-alert.html.twig', array(
+        return $this->_getContainer()->getTemplating()->render('AgentBundle:UserChat:chat-alert.html.twig', [
             'convo'        => $convo,
             'person'       => $convo->person,
             'tickets'      => $tickets,
@@ -393,12 +395,12 @@ class GetMsgScript extends LowScriptAbstract
             'visitor_id'   => $convo->visitor_id,
             'waiting_secs' => $waiting_secs,
             'url'          => $url,
-        ));
+        ]);
     }
 
     public function getMessageData($person_id, $session_id, $since = 0, $with_last_since = null, $is_initial = false)
     {
-        $data         = array('messages' => array(), 'last_id' => -1);
+        $data         = ['messages' => [], 'last_id' => -1];
         $all_messages = false;
 
         if (!$since) {
@@ -421,16 +423,16 @@ class GetMsgScript extends LowScriptAbstract
                 $msg_data                = unserialize($message['data']);
                 $msg_data['from_client'] = $message['created_by_client'];
 
-                $info = array(
+                $info = [
                     (int) $message['id'],
                     $message['channel'],
                     $msg_data,
-                );
+                ];
 
                 if ($message['id'] < $since && $with_last_since) {
-                    $info[] = array(
+                    $info[] = [
                         'offline_messsage' => true,
-                    );
+                    ];
                 }
 
                 $data['messages'][] = $info;
@@ -445,7 +447,7 @@ class GetMsgScript extends LowScriptAbstract
         if ($is_initial) {
             $convos = $this->_getContainer()->getEm()->getRepository('DeskPRO:ChatConversation')->getOpenForAgentAndDepartment(0, -1);
             foreach ($convos as $c) {
-                $chat_data = array(
+                $chat_data = [
                     'conversation_id' => $c->getId(),
                     'author_id'       => $c->person ? $c->person->getId() : 0,
                     'author_name'     => $c->person ? $c->person->getDisplayName() : 0,
@@ -456,13 +458,13 @@ class GetMsgScript extends LowScriptAbstract
                     'department_id'   => $c->department ? $c->department->getId() : 0,
                     'department_name' => $c->department ? $c->department->getTitle() : '',
                     'date_created'    => $c->date_created->getTimestamp(),
-                );
+                ];
 
-                $data['messages'][] = array(
+                $data['messages'][] = [
                     null,
                     'chat.new',
                     $chat_data,
-                );
+                ];
             }
         }
 
@@ -475,7 +477,7 @@ class GetMsgScript extends LowScriptAbstract
 
     public function getMessagesForClient($client_id, $person_id, $since_id)
     {
-        $channels   = array();
+        $channels   = [];
         $channels[] = 'chat.new';
         $channels[] = 'chat.reassigned';
         $channels[] = 'chat.unassigned';
@@ -528,7 +530,7 @@ class GetMsgScript extends LowScriptAbstract
             WHERE (c.agent_id = ? OR c2p.person_id = ?)
                 AND c.date_ended IS NULL
         ');
-        $q->execute(array($person_id, $person_id));
+        $q->execute([$person_id, $person_id]);
         while ($row = $q->fetch(\PDO::FETCH_ASSOC)) {
             $channels[] = 'chat_convo.'.$row['id'];
         }
@@ -540,15 +542,15 @@ class GetMsgScript extends LowScriptAbstract
 
     public function getMessagesForClientInChannels($client_id, $person_id, array $channels, $since_id)
     {
-        $names      = array();
-        $names_like = array();
+        $names      = [];
+        $names_like = [];
         foreach ($channels as $ch) {
             $names[]      = "'{$ch}'";
             $names_like[] = "channel LIKE '{$ch}.%'";
         }
 
         if (!$names) {
-            return array();
+            return [];
         }
 
         $names      = implode(',', $names);
@@ -564,7 +566,7 @@ class GetMsgScript extends LowScriptAbstract
             ORDER BY id
             LIMIT 100
         ");
-        $q->execute(array($client_id, $client_id, $person_id, $since_id));
+        $q->execute([$client_id, $client_id, $person_id, $since_id]);
 
         return $q->fetchAll(\PDO::FETCH_ASSOC);
     }
@@ -578,7 +580,7 @@ class GetMsgScript extends LowScriptAbstract
                 AND id > ?
             ORDER BY id
         ');
-        $q->execute(array($person_id, $since_id));
+        $q->execute([$person_id, $since_id]);
 
         return $q->fetchAll(\PDO::FETCH_ASSOC);
     }
@@ -593,8 +595,8 @@ class GetMsgScript extends LowScriptAbstract
         $filters_api = new \Application\DeskPRO\Tickets\Filters();
 
         $filter_info = $filters_api->getGroupedFiltersForPerson($this->_getPerson());
-        $filters     = array();
-        foreach (array('sys_filters', 'sys_filters_hold', 'archive_filters') as $k) {
+        $filters     = [];
+        foreach (['sys_filters', 'sys_filters_hold', 'archive_filters'] as $k) {
             foreach ($filter_info[$k] as $f) {
                 $filters[$f->id] = $f;
             }
@@ -608,17 +610,17 @@ class GetMsgScript extends LowScriptAbstract
             }
         }
         if (!$client_counts) {
-            $client_counts = array();
+            $client_counts = [];
         }
         $filter_id_matches = App::getApi('tickets.filters')->getAllIdsForFiltersCollection($filters, $this->_getPerson());
         $filter_id_matches = Arrays::castToTypeDeep($filter_id_matches, 'int', 'int');
 
-        $filter_counts = array();
+        $filter_counts = [];
         $prefs         = App::getDb()->fetchAllKeyValue("
             SELECT name, value_str
             FROM people_prefs
             WHERE name LIKE 'ticket_counts.' AND person_id = ?
-        ", array($this->_getPerson()->getId()));
+        ", [$this->_getPerson()->getId()]);
         foreach ($filters as $f) {
             if (isset($filter_id_matches[$f->id])) {
                 $filter_counts[$f->id] = count($filter_id_matches[$f->id]);
@@ -644,14 +646,14 @@ class GetMsgScript extends LowScriptAbstract
 
         $filter_counts = Arrays::castToTypeDeep($filter_counts, 'int', 'int');
 
-        $filter_data = array(
+        $filter_data = [
             'ids'    => $filter_id_matches,
             'counts' => $filter_counts,
-        );
+        ];
 
-        return array(
-            array(null, 'filters.filter_data', $filter_data),
-        );
+        return [
+            [null, 'filters.filter_data', $filter_data],
+        ];
     }
 
     public function getCustomFiltersDataMessage()
@@ -664,12 +666,12 @@ class GetMsgScript extends LowScriptAbstract
         $filter_id_matches = App::getApi('tickets.filters')->getAllIdsForFiltersCollection($filter_info['custom_filters'], $this->_getPerson());
         $filter_id_matches = Arrays::castToTypeDeep($filter_id_matches, 'int', 'int');
 
-        $filter_data = array(
+        $filter_data = [
             'ids'    => $filter_id_matches,
-            'counts' => array(),
-        );
+            'counts' => [],
+        ];
 
-        return array(array(null, 'filters.filter_data', $filter_data));
+        return [[null, 'filters.filter_data', $filter_data]];
     }
 
     ############################################################################
@@ -682,7 +684,7 @@ class GetMsgScript extends LowScriptAbstract
         $filters    = new \Application\DeskPRO\Tickets\Filters();
         $all_counts = $filters->getAllCountsForPersonFlagged($this->_getPerson());
 
-        return array(array(null, 'filter-flagged.counts', array($all_counts)));
+        return [[null, 'filter-flagged.counts', [$all_counts]]];
     }
 
     ############################################################################
@@ -691,15 +693,15 @@ class GetMsgScript extends LowScriptAbstract
 
     public function checkTicketsMessage()
     {
-        $ticket_ids = isset($_REQUEST['check-ticket-ids']) ? (array) $_REQUEST['check-ticket-ids'] : array();
+        $ticket_ids = isset($_REQUEST['check-ticket-ids']) ? (array) $_REQUEST['check-ticket-ids'] : [];
         $ticket_ids = array_map('intval', $ticket_ids);
 
         $tickets = $this->_getContainer()->getEm()->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
 
-        $messages = array();
+        $messages = [];
         foreach ($tickets as $ticket) {
             $msg_id   = 'tickets.check.'.$ticket['id'];
-            $msg_data = array();
+            $msg_data = [];
 
             $msg_data['is_locked'] = $ticket->isLocked();
 
@@ -715,9 +717,9 @@ class GetMsgScript extends LowScriptAbstract
 
     public function getOnlineVisitorsMessage()
     {
-        return array(
-            array(null, 'agent.online-users-count', array('online_count' => 0)),
-        );
+        return [
+            [null, 'agent.online-users-count', ['online_count' => 0]],
+        ];
     }
 
     ############################################################################
@@ -736,9 +738,9 @@ class GetMsgScript extends LowScriptAbstract
             WHERE (p.is_agent = 1 AND p.is_deleted = 0 AND s.date_last > ? AND interface = 'agent')
                 OR s.person_id = ?
         ");
-        $q->execute(array($cutoff, $this->_person_id));
+        $q->execute([$cutoff, $this->_person_id]);
 
-        $online_agents = array();
+        $online_agents = [];
         while ($row = $q->fetch(\PDO::FETCH_ASSOC)) {
             $online_agents[] = $row['person_id'];
         }
@@ -748,17 +750,17 @@ class GetMsgScript extends LowScriptAbstract
             FROM sessions
             WHERE date_last >= ? AND active_status = 'available' AND is_person = 1 AND is_chat_available = 1 AND interface = 'agent'
         ");
-        $q->execute(array($cutoff));
+        $q->execute([$cutoff]);
 
-        $online_agents_userchat = array();
+        $online_agents_userchat = [];
         while ($row = $q->fetch(\PDO::FETCH_ASSOC)) {
             $online_agents_userchat[] = $row['person_id'];
         }
 
-        return array(
-            array(null, 'agent.online-agents', array('online_agents' => $online_agents)),
-            array(null, 'agent.online-agents-userchat', array('online_agents' => $online_agents_userchat)),
-        );
+        return [
+            [null, 'agent.online-agents', ['online_agents' => $online_agents]],
+            [null, 'agent.online-agents-userchat', ['online_agents' => $online_agents_userchat]],
+        ];
     }
 
     protected $_settings;
@@ -766,7 +768,7 @@ class GetMsgScript extends LowScriptAbstract
     protected function _getSetting($name, $default = null)
     {
         if (!$this->_settings) {
-            $this->_settings = array();
+            $this->_settings = [];
             $q               = $this->getPdoRead()->prepare('
                 SELECT name, value
                 FROM settings
@@ -815,7 +817,7 @@ class GetMsgScript extends LowScriptAbstract
     {
         $person = $this->_getPerson();
         if (!$person) {
-            return array();
+            return [];
         }
 
         $q = $this->getPdoRead()->query("

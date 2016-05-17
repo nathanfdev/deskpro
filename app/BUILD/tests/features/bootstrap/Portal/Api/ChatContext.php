@@ -41,6 +41,11 @@ use DpBehat\BaseContext;
 class ChatContext extends BaseContext
 {
     /**
+     * @var int|null
+     */
+    public static $chatId;
+
+    /**
      * @var AuthContext
      */
     protected $auth_context;
@@ -54,6 +59,19 @@ class ChatContext extends BaseContext
     {
         $environment        = $scope->getEnvironment();
         $this->auth_context = $environment->getContext('DpBehat\Portal\Api\AuthContext');
+    }
+
+    /**
+     * @Given I create a chat and reference its' ID as chatId
+     */
+    public function iCreateAChatAndReferenceItsId()
+    {
+        $chat = new ChatConversation();
+
+        $this->em()->persist($chat);
+        $this->em()->flush();
+
+        self::$chatId = $chat->getId();
     }
 
     /**

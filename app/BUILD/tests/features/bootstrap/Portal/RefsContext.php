@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,40 +29,41 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace DpBehat\Portal;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use DpBehat\BaseContext;
 
-class TaskStarType extends AbstractType
+/**
+ * Class RefsContext.
+ */
+class RefsContext extends BaseContext
 {
     /**
+     * @When I visit ":url"
+     */
+    public function iVisit($url)
+    {
+        $this->visitPath($this->replaceRefs($url));
+    }
+
+    /**
+     * @param string $url
+     *
      * @return string
      */
-    public function getName()
+    private function replaceRefs($url)
     {
-        return 'task_star';
-    }
+        $callback = function ($matches) {
+            if (array_key_exists($matches[1], TicketContext::$tickets)) {
+                return TicketContext::$tickets[$matches[1]]->getId();
+            } else {
+                throw new \Exception("Ref {$matches[1]} isn't defined");
+            }
+        };
+        $url = preg_replace_callback('/\{(.+)\}/', $callback, $url);
 
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array                $options
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        // TaskStarType only accepts 'name' and saves it as PersonSetting,
-        // so binding the name to PersonSetting.value property
-        $builder->add('name', 'text', ['property_path' => 'value', 'required' => false]);
-    }
+        echo $url;
 
-    /**
-     * @param OptionsResolverInterface $resolver
-     */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $resolver->setDefaults(array(
-            'data_class' => 'DeskPRO\Bundle\AppBundle\Entity\PersonSetting',
-        ));
+        return $url;
     }
 }

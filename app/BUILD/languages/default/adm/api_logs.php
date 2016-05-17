@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,7 +39,10 @@ return [
     'adm.api_logs.request_method'  => 'Request method',
     'adm.api_logs.response_status' => 'Response status',
     'adm.api_logs.response_data'   => 'Response data',
-    'adm.api_logs.start_time'      => 'Start time',
-    'adm.api_logs.end_time'        => 'End time',
+    'adm.api_logs.start_date_time' => 'Start time',
+    'adm.api_logs.start_time'      => 'Start time (timestamp)',
+    'adm.api_logs.end_time'        => 'End time (timestamp)',
+    'adm.api_logs.time_taken'      => 'Time taken (sec)',
     'adm.api_logs.replay_it'       => 'Replay it!',
+    'adm.api_logs.refresh'         => 'Refresh',
 ];

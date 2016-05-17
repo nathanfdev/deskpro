@@ -32,6 +32,9 @@ use Symfony\Component\Validator\Constraint;
 
 /**
  * Class FreeEmail.
+ *
+ * @Annotation
+ * @Target({"CLASS", "PROPERTY", "METHOD", "ANNOTATION"})
  */
 class FreeEmail extends Constraint
 {
@@ -53,5 +56,13 @@ class FreeEmail extends Constraint
     public function validatedBy()
     {
         return 'free_email_validator';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTargets()
+    {
+        return [self::CLASS_CONSTRAINT, self::PROPERTY_CONSTRAINT];
     }
 }

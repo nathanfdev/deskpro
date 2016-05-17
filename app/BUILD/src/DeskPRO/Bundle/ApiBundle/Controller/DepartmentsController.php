@@ -29,26 +29,26 @@
 /**
  * DeskPRO.
  */
-namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
+namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\DepartmentType;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
- * Class TicketDepartmentsController.
+ * Class DepartmentsController.
  *
  * @ApiModes("all")
- * @Rest\Route("/ticket_departments")
+ * @Rest\Route("/departments")
  * @ApiDoc(target="all", section="Departments", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Department")
  */
-class TicketDepartmentsController extends CrudController
+class DepartmentsController extends CrudController
 {
     public static $entity    = Department::class;
     public static $type      = DepartmentType::class;
@@ -91,12 +91,26 @@ class TicketDepartmentsController extends CrudController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        $qb->andWhere('e.is_tickets_enabled = true');
+        $departmentType = $request->get('type');
+
+        if ($departmentType && !in_array($departmentType, ['tickets', 'chat'])) {
+            throw new BadRequestHttpException('Department type should be "tickets", "chat" or just omit it to fetch all');
+        }
+
+        if ($departmentType === 'tickets') {
+            $qb->andWhere('e.is_tickets_enabled = true');
+            $method = 'getAllowedTicketDepartmentIds';
+        } elseif ($departmentType === 'chat') {
+            $qb->andWhere('e.is_chat_enabled = true');
+            $method = 'getAllowedChatDepartmentIds';
+        } else {
+            $method = 'getAllowedDepartmentIds';
+        }
 
         if ($request->query->getBoolean('my', false)) {
-            $permissionBag        = $this->get('permissions_manager')->getPortalPermissionsBag($this->getUser());
-            $allowedDepartmentIds = $permissionBag->getAllowedTicketDepartmentIds();
+            $permissionBag = $this->get('permissions_manager')->getPortalPermissionsBag($this->getUser());
 
+            $allowedDepartmentIds = $permissionBag->$method();
             $qb->andWhere('e.id IN (:allowed_department_ids)');
             $qb->setParameter('allowed_department_ids', $allowedDepartmentIds);
         }
@@ -108,7 +122,7 @@ class TicketDepartmentsController extends CrudController
     protected function handleForm($model, Request $request, array $options = [])
     {
         $options = array_merge($options, [
-            'type' => 'tickets',
+            'type' => $request->get('type', 'tickets'),
         ]);
 
         return parent::handleForm($model, $request, $options);
@@ -120,8 +134,13 @@ class TicketDepartmentsController extends CrudController
     protected function findEntity($id, Request $request)
     {
         /** @var Department $entity */
-        $entity = parent::findEntity($id, $request);
-        if (!$entity->is_tickets_enabled) {
+        $entity         = parent::findEntity($id, $request);
+        $departmentType = $request->get('type', 'tickets');
+        if (!in_array($departmentType, ['tickets', 'chat'])) {
+            throw new BadRequestHttpException('Department type should be either "tickets" or "chat"');
+        }
+        $property = sprintf('is_%s_enabled', $departmentType);
+        if (!$entity->$property) {
             throw $this->createNotFoundException();
         }
 

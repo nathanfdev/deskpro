@@ -1,4 +1,3 @@
-@tickets
 Feature: /ticket_forms endpoint
   I want to check permission groups
 

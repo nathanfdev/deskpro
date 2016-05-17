@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -47,6 +47,8 @@ abstract class AbstractLogHelper
 
     const FAILURE_MODE_SAVE = 'save';
     const FAILURE_MODE_SKIP = 'skip';
+
+    const LOG_DUPE_SAVE = 'save';
 
     const EAGER_ON  = 1;
     const EAGER_OFF = 0;

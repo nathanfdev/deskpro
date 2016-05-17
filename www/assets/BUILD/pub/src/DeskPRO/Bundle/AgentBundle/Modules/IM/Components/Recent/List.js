@@ -10,16 +10,16 @@ import { myDepartmentsSelector, myAgentTeamsSelector, addToCollection, loadFromA
   collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 @connect(state => ({
-  me: meSelector(state),
-  agents: agentsSelector(state),
-  teams: myAgentTeamsSelector(state),
-  departments: myDepartmentsSelector(state),
-  recentChats: collectionSelectorFactory('AgentChat', 'recent')(state),
-  current: state.IM.chats.get('current'),
-  chating: state.IM.chats.get('chating'),
-  counts: state.IM.messages.get('counts'),
+  me:            meSelector(state),
+  agents:        agentsSelector(state),
+  teams:         myAgentTeamsSelector(state),
+  departments:   myDepartmentsSelector(state),
+  recentChats:   collectionSelectorFactory('AgentChat', 'recent')(state),
+  current:       state.IM.chats.get('current'),
+  chating:       state.IM.chats.get('chating'),
+  counts:        state.IM.messages.get('counts'),
   loadingCounts: state.IM.messages.get('loadingCounts'),
-  loaded: isLoadedCollectionSelectorFactory('AgentChat', 'recent')(state)
+  loaded:        isLoadedCollectionSelectorFactory('AgentChat', 'recent')(state)
 }))
 export class List extends React.Component {
 
@@ -51,22 +51,6 @@ export class List extends React.Component {
     ));
 
     this.refreshCounts();
-  }
-
-  componentWillReceiveProps(props) {
-    const oldProps = this.props;
-    if (!props.loadingCounts && props.counts && props.counts !== oldProps.counts) {
-      const { dispatch } = this.props;
-      const records = {};
-      const ids = [];
-      Object.keys(props.counts).map((key) => {
-        const item = props.counts[key];
-        ids.push(parseInt(item.chat_id, 10));
-        records[item.chat_id] = item.chat;
-      });
-      dispatch(addToCollection('AgentChat', 'recent', records));
-    }
-    this.props = props;
   }
 
   refreshCounts() {

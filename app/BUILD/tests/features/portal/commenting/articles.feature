@@ -9,11 +9,34 @@ Feature: Articles commenting
     And the following languages are enabled:
       | default |
     And the default brand is using the standard theme
+    And I disable anti-abuse rate limiting
 
+  Scenario: I comment on an article as a guest and I click the email verification link
+    Given I am not logged in
+    And I am on "/kb/articles/example-article"
+    When I fill in "What is your comment?" with "This is a guest comment!"
+    When I fill in "Your Name" with "Chris Name"
+    When I fill in "Email" with "chris@deskpro.com"
+    And I press "Save Comment"
+    Then I should see a "success" flash message with the phrase "portal.flashes.guest_content_must_verify"
+    And I should receive an email with the subject phrase "portal.email_subjects.validate-email"
+    When I click the email verification link
+    Then I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
+    And I should be on the set password page
 
-  #
-  # ARTICLES
-  #
+  Scenario: I use a registered email to comment as a guest
+    Given I am not logged in
+    And I am on "/kb/articles/example-article"
+    When I fill in "What is your comment?" with "This is a guest comment!"
+    When I fill in "Your Name" with "Chris Name"
+    When I fill in "Email" with "user@deskpro.dev"
+    And I press "Save Comment"
+    Then I should be on "/login"
+    When I fill in "Your email" with "user@deskpro.dev"
+    And I fill in "Your password" with "12345"
+    And I press "Login"
+    Then I should be on "/kb/articles/example-article"
+    And I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
 
   Scenario: I submit an invalid article comment as a user
     Given I login with user credentials
@@ -33,30 +56,3 @@ Feature: Articles commenting
     And I press "Save Comment"
     Then I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
     And I should see "This is my comment! I just posted it!"
-
-  @reinstall
-  Scenario: I comment on an article as a guest and I click the email verification link
-    Given I am on "/kb/articles/example-article"
-    When I fill in "What is your comment?" with "This is a guest comment!"
-    When I fill in "Your Name" with "Chris Name"
-    When I fill in "Email" with "chris@deskpro.com"
-    And I press "Save Comment"
-    Then I should see a "success" flash message with the phrase "portal.flashes.guest_content_must_verify"
-    And I should receive an email with the subject phrase "portal.email_subjects.validate-email"
-    When I click the email verification link
-    Then I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
-    And I should be on the set password page
-
-  Scenario: I use a registered email to comment as a guest
-    Given I am on "/kb/articles/example-article"
-    When I fill in "What is your comment?" with "This is a guest comment!"
-    When I fill in "Your Name" with "Chris Name"
-    When I fill in "Email" with "user@deskpro.dev"
-    And I press "Save Comment"
-    Then I should be on "/login"
-    When I fill in "Your email" with "user@deskpro.dev"
-    And I fill in "Your password" with "12345"
-    And I press "Login"
-    Then I should be on "/kb/articles/example-article"
-    And I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
-

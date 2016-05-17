@@ -156,7 +156,7 @@ class AgentChatType extends AbstractType
                 $form->add('participant', EntityType::class, [
                     'mapped'      => false,
                     'class'       => Department::class,
-                    'choices'     => $this->departmentDataService->getChatDepartmentsForPerson($person),
+                    'choices'     => $this->departmentDataService->getDepartmentsForPerson($person),
                     'constraints' => [
                         new Assert\NotNull(),
                     ],
@@ -212,7 +212,7 @@ class AgentChatType extends AbstractType
                 $agentChat->addParticipant($participant);
             }
         }
-        if ($this->getFormType($event) === AgentChat::TYPE_AGENT) {
+        if ($this->getFormType($event) === AgentChat::TYPE_AGENT && !$agentChat->getId()) {
             $agentChat->addParticipant($this->getPerson($event));
         }
     }

@@ -1,4 +1,3 @@
-@tasks
 Feature: /task_labels endpoint
   I want to get all task labels
 

@@ -5,7 +5,6 @@ Feature: Quick Search
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I search by id
     Given I set permission "agent_people.use" = 1 for "registered" usergroup
     And I set permission "articles.use" = 1 for "registered" usergroup

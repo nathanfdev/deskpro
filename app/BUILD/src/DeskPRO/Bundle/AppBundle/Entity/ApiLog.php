@@ -196,10 +196,24 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
      *
      * @JMS\Expose()
      * @JMS\Type("string")
+     * @JMS\Groups({"list"})
      *
      * @var string
      */
     protected $request_id;
+
+    /**
+     * Flag indicates that request is dupe.
+     * 
+     * @ORM\Column(type="boolean", nullable=false, name="is_dupe")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     * @JMS\Groups({"list"})
+     *
+     * @var bool
+     */
+    private $isDupe = false;
 
     /**
      * @return int
@@ -459,6 +473,26 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
     public function setResponseData(array $response_data)
     {
         $this->response_data = $response_data;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDupe()
+    {
+        return $this->isDupe;
+    }
+
+    /**
+     * @param bool $isDupe
+     *
+     * @return $this
+     */
+    public function setIsDupe($isDupe)
+    {
+        $this->isDupe = $isDupe;
 
         return $this;
     }

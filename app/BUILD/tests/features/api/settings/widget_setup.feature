@@ -26,7 +26,6 @@ Feature: Widget Setup
     And the JSON node "data.settings.brand.button.name" should be equal to "Help"
     And the JSON node "data.settings.brand.button.colors.background" should be equal to "#62ad8c"
     And the JSON node "data.settings.brand.button.colors.text" should be equal to "#ffffff"
-    And the JSON node "data.settings.brand.button.colors.border" should be equal to "#4e9576"
     And the JSON node "data.settings.brand.chat.enabled" should be equal to 1
     And the JSON node "data.settings.brand.chat.request_user_info" should be equal to 1
     And the JSON node "data.settings.brand.chat.proactive" should be equal to 1
@@ -46,7 +45,6 @@ Feature: Widget Setup
     And the response should contain "DP_HELPDESK_URL"
     And the response should contain "request_user_info"
 
-  @basic
   Scenario: I update global widget configuration
     When I send a POST request to "/api/v2/widget/setup" with body:
     """

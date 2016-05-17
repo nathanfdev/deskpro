@@ -1,7 +1,9 @@
 define [
-  'Admin/Main/DataService/BaseListEdit'
+  'Admin/Main/DataService/BaseListEdit',
+  'moment'
 ], (
-  BaseListEdit
+  BaseListEdit,
+  moment
 )  ->
   class Admin_ApiKeys_DataService_ApiLogs extends BaseListEdit
     @$inject = ['Api2', '$q']
@@ -63,7 +65,9 @@ define [
 
     mutateData: (data) ->
       models = []
-      models.push model for model in data.data
+      for model in data.data
+        model.start_date_time = moment.unix(model.start_time).format('YYYY-MM-DD[\u00A0]H:mm:ss')
+        models.push model
       models.pagination = {
         total: data.meta.pagination.total
         num_pages: data.meta.pagination.total_pages
@@ -76,6 +80,8 @@ define [
       deferred = @$q.defer()
 
       @Api2.sendGet('/api_logs/' + id + '?include=data').success((data) =>
+        model = data.data
+        model.start_date_time = moment.unix(model.start_time).format('YYYY-MM-DD[\u00A0]H:mm:ss')
         deferred.resolve(data.data)
       , (data, status, headers, config) ->
         deferred.reject()

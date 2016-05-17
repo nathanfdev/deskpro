@@ -1,7 +1,6 @@
-@crm-nav
 Feature: /user_groups endpoint
   To retrieve DeskPRO user groups
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:

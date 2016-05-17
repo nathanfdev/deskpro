@@ -1,14 +1,16 @@
-import React, {Component, PropTypes} from 'react';
-import { SectionsPane, Section, SectionGroupedHeader }
+import React, { Component, PropTypes } from 'react';
+import {
+  SectionsPane, Section, SectionGroupedHeader
+}
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { NestedList } from '../NestedList';
-import { NavGroupingPopupContainer } from '../NavGroupingPopupContainer';
+import { NavGroupingPopup } from '../NavGroupingPopup';
 
 export class NewsTab extends Component {
   static propTypes = {
-    news: PropTypes.object.isRequired,
+    news:                     PropTypes.object.isRequired,
     toggleGroupingVisibility: PropTypes.func.isRequired,
-    closeGroupingVisibility: PropTypes.func.isRequired
+    closeGroupingVisibility:  PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -17,21 +19,30 @@ export class NewsTab extends Component {
   }
 
   render() {
-    const { news, toggleGroupingVisibility, closeGroupingVisibility} = this.props;
+    const { news, toggleGroupingVisibility, closeGroupingVisibility } = this.props;
+    const toggle = toggleGroupingVisibility.bind(this);
+    const close  = closeGroupingVisibility.bind(this);
+
     return (
       <SectionsPane>
         <Section>
-          <SectionGroupedHeader label="News"
-                                count={news.get('count')}
-                                ref="news"
-                                callback={toggleGroupingVisibility.bind(this)}/>
-          <NestedList content="news"
-                      items={news.get('nested').toJS()}/>
-          <NavGroupingPopupContainer attachTo={this.refs.news}
-                                     content="news"
-                                     visible={this.state.expanded}
-                                     closeGroupingVisibility={closeGroupingVisibility.bind(this)}
-                                     groupedBy={news.get('grouped_by')}/>
+          <SectionGroupedHeader
+            label="News"
+            count={news.get('count')}
+            ref="news"
+            callback={toggle}
+          />
+          <NestedList
+            content="news"
+            items={news.get('nested').toJS()}
+          />
+          <NavGroupingPopup
+            attachTo={this.refs.news}
+            content="news"
+            visible={this.state.expanded}
+            closeGroupingVisibility={close}
+            groupedBy={news.get('grouped_by')}
+          />
         </Section>
       </SectionsPane>
     );

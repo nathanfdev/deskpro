@@ -24,7 +24,6 @@ Feature: tests
     When I attempt to reinstall the fresh data set
     Then the database will not be installed
 
-  @reinstall
   Scenario: Data sets are reinstalled (wiped db with a clean install) if its tagged
     Given I have already installed the fresh data set
     And I have tagged this scenario with "reinstall"

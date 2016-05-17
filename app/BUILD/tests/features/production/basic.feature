@@ -1,4 +1,3 @@
-@basic
 Feature: Production mode
 
   Background:

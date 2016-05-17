@@ -34,7 +34,6 @@ return [
     'admin.widget.colors'                           => 'Colors',
     'admin.widget.background_color'                 => 'Background color',
     'admin.widget.text_color'                       => 'Text color',
-    'admin.widget.border_color'                     => 'Border color',
     'admin.widget.position'                         => 'Position',
     'admin.widget.widget_size'                      => 'Widget size',
     'admin.widget.column'                           => 'Column',

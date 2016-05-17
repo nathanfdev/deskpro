@@ -18,8 +18,11 @@ api:
                     dataset_manager: @dataset_manager
                 - Behat\MinkExtension\Context\MinkContext
                 - behatch:json
-                - DpBehat\DoctrineContext
+                - DpBehat\HooksContext
                 - DpBehat\Api\RestContext
+                - DpBehat\Api\JsonContext
+                - DpBehat\Api\TasksContext
+                - DpBehat\Api\TicketsContext
                 - DpBehat\Api\AuthContext
                 - DpBehat\TermEngine\TermEngineBehatContext
                 - DpBehat\Api\PeopleContext
@@ -57,7 +60,6 @@ system-api:
                     dataset_manager: @dataset_manager
                 - Behat\MinkExtension\Context\MinkContext
                 - behatch:json
-                - DpBehat\DoctrineContext
                 - DpBehat\Api\RestContext
                 - DpBehat\Api\AuthContext
                 - DpBehat\System\Alerts\IncidentsContext
@@ -106,10 +108,11 @@ portal:
                 - %paths.base%/features/portal
             contexts:
                 - Behat\MinkExtension\Context\MinkContext
-                - DpBehat\DoctrineContext
+                - DpBehat\HooksContext
                 - DpBehat\Portal\TestsContext
+                - DpBehat\Portal\RefsContext
                 - behatch:json
-                - behatch:rest
+                - DpBehat\Api\RestContext
                 - DpBehat\LanguageContext
                 - DpBehat\Portal\PortalModeContext
                 - DpBehat\Portal\PortalBrandThemeContext
@@ -125,6 +128,7 @@ portal:
                 - DpBehat\Portal\Api\AuthContext
                 - DpBehat\Portal\Api\ChatContext
                 - DpBehat\Portal\PortalDesigner\AssetsContext
+                - DpBehat\System\AntiAbuse\AntiAbuseContext
     extensions:
         Sanpi\Behatch\Extension: ~
         Behat\MinkExtension:

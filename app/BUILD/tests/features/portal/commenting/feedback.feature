@@ -8,31 +8,8 @@ Feature: Feedback commenting
     And the following languages are enabled:
       | default |
     And the default brand is using the standard theme
+    And I disable anti-abuse rate limiting
 
-  Scenario: I submit an invalid feedback comment as a user
-    Given I login with user credentials
-    And the "feedback" category "Suggestion" exists with content titled "Example Feedback"
-    And I am on "/feedback/view/example-feedback"
-    And I press "Save Comment"
-    Then I should see a form error with "This value is required"
-
-  Scenario: I submit an invalid feedback comment as a guest
-    Given the "feedback" category "Suggestion" exists with content titled "Example Feedback"
-    And I am on "/feedback/view/example-feedback"
-    And I press "Save Comment"
-    Then I should see a form error with "This value is required"
-
-  @reinstall
-  Scenario: I comment on a feedback item as a user
-    Given I login with user credentials
-    And the "feedback" category "Suggestion" exists with content titled "Example Feedback"
-    And I am on "/feedback/view/example-feedback"
-    When I fill in "What is your comment?" with "This is my comment! I just posted it on a feedback item!"
-    And I press "Save Comment"
-    Then I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
-    And I should see "This is my comment! I just posted it on a feedback item!"
-
-  @reinstall
   Scenario: I comment on a feedback item as a guest
     Given the "feedback" category "Suggestion" exists with content titled "Example Feedback"
     And I am on "/feedback/view/example-feedback"
@@ -59,3 +36,25 @@ Feature: Feedback commenting
     And I press "Login"
     Then I should be on "/feedback/view/example-feedback"
     And I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
+
+  Scenario: I submit an invalid feedback comment as a user
+    Given I login with user credentials
+    And the "feedback" category "Suggestion" exists with content titled "Example Feedback"
+    And I am on "/feedback/view/example-feedback"
+    And I press "Save Comment"
+    Then I should see a form error with "This value is required"
+
+  Scenario: I submit an invalid feedback comment as a guest
+    Given the "feedback" category "Suggestion" exists with content titled "Example Feedback"
+    And I am on "/feedback/view/example-feedback"
+    And I press "Save Comment"
+    Then I should see a form error with "This value is required"
+
+  Scenario: I comment on a feedback item as a user
+    Given I login with user credentials
+    And the "feedback" category "Suggestion" exists with content titled "Example Feedback"
+    And I am on "/feedback/view/example-feedback"
+    When I fill in "What is your comment?" with "This is my comment! I just posted it on a feedback item!"
+    And I press "Save Comment"
+    Then I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
+    And I should see "This is my comment! I just posted it on a feedback item!"

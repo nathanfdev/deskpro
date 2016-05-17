@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\CountBadge;
 
 use JMS\Serializer\Annotation as JMS;
@@ -257,18 +256,23 @@ class Count
      * @param string $id
      * @param string $type
      * @param string $title
-     * @param bool   $sum_to_value If need to increase $this->value by nested count value
+     * @param bool   $sum_to_value     If need to increase $this->value by nested count value
+     * @param bool   $indexByGroupName If need to index an nested ID as array key
      *
      * @return $this
      */
-    public function addNested($value, $id, $type, $title = '', $sum_to_value = false)
+    public function addNested($value, $id, $type, $title = '', $sum_to_value = false, $indexByGroupName = false)
     {
         $count = new self();
         $count->setCount($value);
         $count->setId($id);
         $count->setType($type);
         $count->setTitle($title);
-        $this->nested[] = $count;
+        if ($indexByGroupName) {
+            $this->nested[$id] = $count;
+        } else {
+            $this->nested[] = $count;
+        }
 
         if ($sum_to_value) {
             $this->add($value);

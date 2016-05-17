@@ -1,13 +1,12 @@
 Feature: /mass_actions/tickets endpoint
   To complete mass actions on tickets list
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:
     Given I install the api data set
     And my request is authenticated
 
-  @basic
   Scenario: I apply set of actions on task with ID=1
     When I send a POST request to "/api/v2/mass_actions/tasks" with body:
 """

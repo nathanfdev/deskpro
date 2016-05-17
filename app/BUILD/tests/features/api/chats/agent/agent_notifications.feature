@@ -1,4 +1,3 @@
-@chats @agent-chats @notifications
 Feature: Notifications Api feature
   To work with notifications and action alerts
 
@@ -6,7 +5,6 @@ Feature: Notifications Api feature
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I get basic settings for action-alerts
     When I send a GET request to "/api/v2/notify/setup/action-alerts"
     Then the response should be in JSON
@@ -14,6 +12,8 @@ Feature: Notifications Api feature
     And the JSON node data should exist
     And the JSON node "data.clients" should exist
 
+  @skip-ci
+  # Contains hard coded IDs
   Scenario: I send some text to everyone-chat
     When I send a POST request to "api/v2/agent_chats" with body:
     """
@@ -40,7 +40,12 @@ Feature: Notifications Api feature
     When I send a GET request to "/api/v2/notify/action-alerts/0"
     Then the response status code should be 200
     And the JSON node "data" should have 1 element
-    And the JSON node "data[0].data.id" should be equal to 1
-    And the JSON node "data[0].data.chat" should be equal to 1
-    And the JSON node "data[0].data.person" should be equal to 1
-    And the JSON node "data[0].data.message" should be equal to "This is a TEST message"
+    And print last JSON response
+    And the JSON node "data[0].data" should have 3 elements
+    And the JSON node "data[0].data.data.id" should be equal to 1
+    And the JSON node "data[0].data.data.chat" should be equal to 1
+    And the JSON node "data[0].data.data.person" should be equal to 1
+    And the JSON node "data[0].data.data.message" should be equal to "This is a TEST message"
+
+    And the JSON node "data[0].data.linked.agent_chat.1.id" should be equal to 1
+

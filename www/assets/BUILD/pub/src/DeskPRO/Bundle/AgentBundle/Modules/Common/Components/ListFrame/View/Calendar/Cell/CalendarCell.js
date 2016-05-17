@@ -5,18 +5,20 @@ import classNames from 'classnames';
 export class CalendarCell extends React.Component {
 
   static propTypes = {
-    dayDate: PropTypes.object.isRequired,
-    date: PropTypes.object.isRequired,
-    dateField: PropTypes.string.isRequired,
-    children: PropTypes.node,
-    draggable: PropTypes.shape({
-      target: PropTypes.node.isRequired
-    }),
-    onDoubleClick: PropTypes.func
+    dayDate:       PropTypes.object.isRequired,
+    date:          PropTypes.object.isRequired,
+    dateField:     PropTypes.string.isRequired,
+    children:      PropTypes.node,
+    onDoubleClick: PropTypes.func,
+    draggable:     PropTypes.shape({
+      target:      PropTypes.node.isRequired
+    })
   };
 
   onDoubleClick = (event) => {
-    this.props.onDoubleClick && this.props.onDoubleClick(this.props.dayDate, event);
+    if (this.props.onDoubleClick) {
+      this.props.onDoubleClick(this.props.dayDate, event);
+    }
   };
 
   render() {
@@ -38,17 +40,16 @@ export class CalendarCell extends React.Component {
 
     return (
       <td className={classNames(
-        {'dpwd-calendar-past-month': dayDate.isBefore(firstDayOfMonth) || dayDate.isAfter(lastDayOfMonth)},
-        {'dpwd-calendar-past-day': dayDate.isBefore(today, 'day')},
-        {'weekend': [6, 7].indexOf(dayDate.isoWeekday()) !== -1}
-      )}
-          onDoubleClick={this.onDoubleClick}
+        { 'dpwd-calendar-past-month': dayDate.isBefore(firstDayOfMonth) || dayDate.isAfter(lastDayOfMonth) },
+        { 'dpwd-calendar-past-day': dayDate.isBefore(today, 'day') },
+        { weekend: [6, 7].indexOf(dayDate.isoWeekday()) !== -1 }
+      )} onDoubleClick={this.onDoubleClick}
       >
         {React.cloneElement(draggable.target, {
           ...targetProps,
 
-          updateData: {[dateField]: dayDate.format()},
-          children: draggableChildren
+          updateData: { [dateField]: dayDate.utc().format().replace(/^(.+):(\d{2})$/, '$1$2') },
+          children:   draggableChildren
         })}
       </td>
     );

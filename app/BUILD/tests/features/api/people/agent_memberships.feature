@@ -1,4 +1,3 @@
-@people
 Feature: /people endpoint
   I want to check setting agent teams
 
@@ -6,7 +5,6 @@ Feature: /people endpoint
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I try to set agent teams to user
     When I send a PUT request to "/api/v2/people/3" with body:
     """

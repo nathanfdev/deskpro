@@ -43,6 +43,28 @@ class SerializerView extends View
      */
     protected $mapping = [];
 
+    protected $serializeNull = false;
+
+    /**
+     * @return bool
+     */
+    public function isSerializeNull()
+    {
+        return $this->serializeNull;
+    }
+
+    /**
+     * @param bool $serializeNull
+     *
+     * @return $this
+     */
+    public function setSerializeNull($serializeNull)
+    {
+        $this->serializeNull = $serializeNull;
+
+        return $this;
+    }
+
     /**
      * @return array
      */

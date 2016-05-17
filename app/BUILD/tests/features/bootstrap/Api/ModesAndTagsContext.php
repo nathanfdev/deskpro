@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,7 +39,7 @@ class ModesAndTagsContext extends BaseContext implements RebootableContextInterf
 {
     public function rebootContext()
     {
-        /** \DpRun\DpEnv $DP_ENV */
+        /* \DpRun\DpEnv $DP_ENV */
         global $DP_ENV;
         $cache_dir = $DP_ENV->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.'api_permissions';
         file_exists($cache_dir) ? rmdir($cache_dir) : null;
@@ -70,7 +70,7 @@ class ModesAndTagsContext extends BaseContext implements RebootableContextInterf
     {
         $em               = $this->getKernel()->getContainer()->get('doctrine.orm.default_entity_manager');
         $key_actions_repo = $em->getRepository('DeskPRO\Bundle\AppBundle\Entity\ApiKeyAction');
-        $key_action       = $key_actions_repo->findOneBy(['key' => 1]);
+        $key_action       = $key_actions_repo->findOneBy(['key' => AuthContext::$apiKey->getId()]);
         $key_action->setAction($tag);
         $this->persistAndFlush($key_action);
     }

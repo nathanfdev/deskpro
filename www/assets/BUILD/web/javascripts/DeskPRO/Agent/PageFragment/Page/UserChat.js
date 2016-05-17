@@ -594,25 +594,26 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			this.getEl('user_typing').hide();
 		}
 
-		this.addMessageRow(data.author_name, data.content, data.author_type, data.is_html, data.message_id, data.metadata, data);
+		this.addMessageRow(data.author_name, data.content, data.author_type, data.is_html, data.id, data.metadata, data);
 	},
 
 	chatReassignedTo: function(agent_id) {
 
 		var btnEl = this.getEl('assign_btn');
+		var pic, agentInfo;
 
 		if (agent_id == "0") {
-			var pic = '';
-			var agentInfo = {
+			pic = '';
+			agentInfo = {
 				name: 'Unassigned'
 			};
 		} else {
-			var agentInfo = DeskPRO_Window.getAgentInfo(agent_id);
+			agentInfo = DeskPRO_Window.getAgentInfo(agent_id);
 			if (!agentInfo) {
 				return;
 			}
 
-			var pic = agentInfo.pictureUrlSizable.replace('{SIZE}', 20);
+			pic = agentInfo.pictureUrlSizable.replace('_SIZE_', 20);
 		}
 
 		$('li', this.getEl('agent_parts')).show();
@@ -626,7 +627,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		}
 
 		this.getEl('agent_assign_ob').data('assigned', agent_id);
-		btnEl.css('background-image', pic);
+		btnEl.css('background-image', 'url(' + pic + ')');
 		btnEl.text(agentInfo.name);
 		btnEl.data('agent-id', agent_id);
 	},

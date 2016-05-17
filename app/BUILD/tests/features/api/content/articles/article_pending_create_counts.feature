@@ -1,7 +1,6 @@
-@counts @publish-nav @articles
 Feature: /article_pending_create/counts endpoint
   To retrieve counts of DeskPRO ArticlePendingCreate
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:

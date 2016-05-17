@@ -26,16 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\Model;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonPref;
 use Application\DeskPRO\Entity\TicketFlagged;
 use DeskPRO\Bundle\AppBundle\Entity\PersonSetting;
-use DeskPRO\Bundle\AppBundle\Exception\UnknownTicketFlagException;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketStar;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -46,150 +43,80 @@ class TicketStars
 {
     const CUSTOM_STAR_NAME_SETTING_PREFIX = 'agent.ui.flag.';
 
-    public static $stars = [
-        'blue',
-        'green',
-        'orange',
-        'pink',
-        'purple',
-        'red',
-        'yellow',
-    ];
-
     /**
      * @var \Doctrine\ORM\EntityManager
      */
     private $em;
 
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
     }
 
-    protected function getEm()
-    {
-        return $this->em;
-    }
-
     /**
-     * Get the list of available stars.
-     *
-     * @return array[string] the list of all ticket star names
-     */
-    public function getStars()
-    {
-        return self::$stars;
-    }
-
-    /**
-     * Checks if a star name is a valid ticket star.
-     *
-     * @param string $starName is the ticket star's name to be tested.
-     *
-     * @return bool
-     */
-    public function starIsValid($starName)
-    {
-        return in_array($starName, self::$stars);
-    }
-
-    /**
-     * Gets all the tickets matching a star.
-     *
-     * @param int $personId is the ID of the person whos has the star.
-     * @param int $starId   the star ID.
-     *
-     * @throws UnknownTicketFlagException
-     *
-     * @return TicketFlagged[]
-     */
-    public function getAllRecordsForStar($personId, $starId)
-    {
-        if (!$star = $this->getStar($starId)) {
-            throw new UnknownTicketFlagException();
-        }
-
-        return $this->getEm()->getRepository(TicketFlagged::class)
-            ->findBy(['color' => $star, 'person_id' => $personId]);
-    }
-
-    /**
-     * Get custom names for stars, given by current user.
+     * Returns ticket stars specific for current user.
      *
      * @param Person $person
      *
-     * @return array
+     * @return TicketStar[]
      */
-    public function getCustomNames(Person $person)
+    public function getTicketStars(Person $person)
     {
-        // Retrieve custom stars name PersonalSetting instances
-        $customNameSettings = $this->em->getRepository(PersonPref::class)
-            ->createQueryBuilder('pref')
+        $qb = $this->em->createQueryBuilder();
+        $qb
+            ->select('pref')
+            ->from(PersonPref::class, 'pref')
             ->where('pref.name LIKE :name')
             ->andWhere('pref.person = :person')
             ->setParameter('name', self::CUSTOM_STAR_NAME_SETTING_PREFIX.'%')
             ->setParameter('person', $person)
-            ->getQuery()
-            ->getResult();
-        $customNames = [];
+        ;
 
-        /** @var PersonPref $customNameSetting */
-        foreach ($customNameSettings as $customNameSetting) {
-            $starId = str_replace(self::CUSTOM_STAR_NAME_SETTING_PREFIX, '', $customNameSetting->getName());
+        /** @var PersonPref[] $settings */
+        $settings = $qb->getQuery()->getResult();
+        $names    = [];
 
-            $customNames[$starId] = $customNameSetting->getValueStr();
+        foreach ($settings as $setting) {
+            $starId         = str_replace(self::CUSTOM_STAR_NAME_SETTING_PREFIX, '', $setting->getName());
+            $names[$starId] = $setting->getValueStr();
         }
 
-        return $customNames;
+        $stars = [];
+        foreach (TicketFlagged::$colorMap as $starId => $color) {
+            $starName = !empty($names[$color]) ? $names[$color] : $color;
+            $stars[]  = new TicketStar($starId, $starName);
+        }
+
+        return $stars;
     }
 
     /**
      * @param Person $person
-     * @param int    $starId
+     * @param int    $color
      *
      * @return PersonSetting
      */
-    public function findOrCreateStarNamePersonPref(Person $person, $starId)
+    public function findOrCreateStarNamePersonPref(Person $person, $color)
     {
-        $settingName = self::CUSTOM_STAR_NAME_SETTING_PREFIX.$starId;
+        $name    = self::CUSTOM_STAR_NAME_SETTING_PREFIX.$color;
+        $setting = $this->em->find(PersonPref::class, [
+            'person' => $person,
+            'name'   => $name,
+        ]);
 
-        $personPref = $this->em->find(PersonPref::class, ['person' => $person, 'name' => $settingName]);
-        if (!$personPref) {
-            $personPref = new PersonPref();
-            $personPref->setName($settingName)->setPerson($person);
+        if (!$setting) {
+            $setting = new PersonPref();
+            $setting
+                ->setName($name)
+                ->setPerson($person)
+            ;
         }
 
-        return $personPref;
-    }
-
-    /**
-     * @param Person $person
-     * @param        $starId
-     *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     * @throws \Doctrine\ORM\TransactionRequiredException
-     */
-    public function removeStarNamePersonPref(Person $person, $starId)
-    {
-        $settingName = self::CUSTOM_STAR_NAME_SETTING_PREFIX.$starId;
-
-        $personPref = $this->em->find(PersonPref::class, ['person' => $person, 'name' => $settingName]);
-        if ($personPref) {
-            $this->em->remove($personPref);
-            $this->em->flush();
-        }
-    }
-
-    /**
-     * @param int $id Star id
-     *
-     * @return TicketFlagged|null
-     */
-    private function getStar($id)
-    {
-        $id = (int) $id - 1;
-
-        return isset(self::$stars[$id]) ? self::$stars[$id] : null;
+        return $setting;
     }
 }

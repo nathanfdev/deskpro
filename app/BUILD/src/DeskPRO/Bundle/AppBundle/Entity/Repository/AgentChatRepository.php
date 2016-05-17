@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -67,7 +66,7 @@ class AgentChatRepository extends EntityRepository
         $qb = $this->createQueryBuilder('ac');
         $qb
             ->innerJoin('App:AgentChatParticipant', 'acp', 'WITH', 'ac.id = acp.chat')
-            ->innerJoin('App:AgentChatParticipant', 'acp2', 'WITH', 'ac.id = acp.chat')
+            ->innerJoin('App:AgentChatParticipant', 'acp2', 'WITH', 'ac.id = acp2.chat')
             ->andWhere('acp.person = :agent')
             ->andWhere('acp2.person = :me')
             ->andWhere('ac.type = :type')

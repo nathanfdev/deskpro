@@ -77,6 +77,7 @@ class FeedbackAllCommentsController extends AbstractFeedbackController
     public static $listOrder   = 'asc';
     public static $sortOptions = [
         'date_created' => 'date_created',
+        'total_rating' => 'feedback.total_rating',
     ];
 
     /**

@@ -9,7 +9,7 @@ import { NewTaskButton } from './NewTaskButton';
 export class CardView extends React.Component {
 
   static propTypes = {
-    taskGroups: PropTypes.object,
+    taskGroups:    PropTypes.object,
     onChangeGroup: PropTypes.func
   };
 
@@ -47,10 +47,12 @@ export class CardView extends React.Component {
     return (
       <div>
         {groups.map((taskGroup, index) =>
-          <ListGroup key={index}
-                     group={taskGroup}
-                     onChangeGroup={onChangeGroup}
-                     onUpdate={this.onUpdate.bind(this, index)} />
+          <ListGroup
+            key={index}
+            group={taskGroup}
+            onChangeGroup={onChangeGroup}
+            onUpdate={elements => this.onUpdate(index, elements)}
+          />
         )}
 
         <NewTaskButton />

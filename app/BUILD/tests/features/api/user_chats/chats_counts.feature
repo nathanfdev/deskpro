@@ -1,14 +1,12 @@
-@counts @chat-nav
 Feature: /user_chats/counts endpoint
   To retrieve counts of various sets of DeskPRO chats
-  As a developer
+  As an API user
   I want an API endpoint
 
   Background:
     Given I install the api data set
     And my request is authenticated
 
-  @reinstall
   Scenario: I count for chats grouping them by agents
     When I send a GET request to "/api/v2/user_chats/counts?group_by=agent"
     Then the response should be in JSON

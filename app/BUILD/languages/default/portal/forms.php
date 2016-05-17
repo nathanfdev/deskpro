@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
     'portal.forms.label_save'             => 'Save',
     'portal.forms.label_submit'           => 'Submit',
     'portal.forms.label_reset'            => 'Reset',
@@ -87,6 +87,7 @@ return array(
     'portal.forms.error_accept_not_allowed_exts'    => 'You cannot upload a file with any of the following file extensions: {{ detail }}',
     'portal.forms.error_server_rejected_size'       => 'There was a problem uploading files due to the maximum size limit. Please try uploading smaller files.',
     'portal.forms.error_unique_entity'              => 'This value already exists in the system.',
+    'portal.forms.error_dupe_email'                 => 'Email "{{ email }}" is already in use by other user.',
 
     'portal.forms.error_password_min_length'            => 'Minimum of {{count}} character|Minimum of {{count}} characters',
     'portal.forms.error_password_require_num_uppercase' => 'At least {{count}} uppercase character|At least {{count}} uppercase characters',
@@ -97,4 +98,4 @@ return array(
     'portal.forms.error_password_current'               => 'This must be your current password',
     'portal.forms.extra_fields'                         => 'There was an error processing your request. Please try again.',
     'portal.forms.confirm_reset'                        => 'Are you sure you want to reset this form?',
-);
+];

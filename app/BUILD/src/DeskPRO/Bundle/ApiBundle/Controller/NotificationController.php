@@ -31,12 +31,12 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\Limits\Annotation\ApiDisableLimits;
+use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Pusher;
@@ -134,6 +134,7 @@ class NotificationController extends BaseController
      *
      * @ApiDisableLimits()
      * @Rest\Put("/notify/heartbeat", name="online_heartbeat")
+     * @SerializerView(serializeNull=true)
      *
      * @return View
      */

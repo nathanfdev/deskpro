@@ -28,54 +28,34 @@
 
 /**
  * DeskPRO.
- *
- * @category Entities
  */
-namespace DeskPRO\Bundle\AppBundle\Entity;
+namespace DpBehat\System\AntiAbuse;
 
-use Application\DeskPRO\Entity\TicketFlagged;
+use Application\DeskPRO\Entity\Setting;
+use Behat\Symfony2Extension\Context\KernelAwareContext;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
+use DpBehat\KernelAwareTrait;
+use Sanpi\Behatch\Context\BaseContext;
 
-class TicketStar extends TicketFlagged
+/**
+ * Class EventsContext.
+ */
+class AntiAbuseContext extends BaseContext implements KernelAwareContext
 {
-    private static $id_color_hex_map = [
-        self::STAR_BLUE   => '#0000FF',
-        self::STAR_GREEN  => '#008000',
-        self::STAR_ORANGE => '#FFA500',
-        self::STAR_PINK   => '#FFC0CB',
-        self::STAR_PURPLE => '#800080',
-        self::STAR_RED    => '#FF0000',
-        self::STAR_YELLOW => '#FFFF00',
-    ];
+    use KernelAwareTrait;
 
     /**
-     * @param int $id
-     *
-     * @return string
+     * @Given I disable anti-abuse rate limiting
      */
-    public static function idToColorLabel($id)
+    public function iDisableAntiAbuseRateLimiting()
     {
-        return ucfirst(self::idToColorName($id));
-    }
-
-    /**
-     * @param int $id
-     *
-     * @return string
-     */
-    public static function idToColorHex($id)
-    {
-        if (!isset(self::$id_color_hex_map[$id])) {
-            throw new \InvalidArgumentException();
-        }
-
-        return self::$id_color_hex_map[$id];
-    }
-
-    /**
-     * @return array
-     */
-    public static function getAll()
-    {
-        return self::$id_color_map;
+        $repository          = $this->getRepository(Setting::class);
+        $setting             = $repository->findOneBy(['name' => AntiAbuse::SETTING_RATE_LIMIT_IS_DISABLED]);
+        $setting or $setting = new Setting();
+        $setting->name       = AntiAbuse::SETTING_RATE_LIMIT_IS_DISABLED;
+        $setting->value      = true;
+        $em                  = $this->get('doctrine.orm.entity_manager');
+        $em->persist($setting);
+        $em->flush();
     }
 }

@@ -42,11 +42,14 @@
 
 $CONFIG = [];
 
+$process            = getenv('DP_PARALLEL_TESTING_PROCESS_NUM');
+$dbPostfix          = $process ? "_{$process}" : '';
+$dbName             = getenv('DATABASE_PREFIX') ?: 'deskpro_test';
 $CONFIG['database'] = [
     'host'     => '127.0.0.1',
     'user'     => 'deskpro',
     'password' => 'deskpro',
-    'dbname'   => getenv('DATABASE_PREFIX') ? getenv('DATABASE_PREFIX').'_test' : 'deskpro_test',
+    'dbname'   => $dbName.$dbPostfix,
 ];
 
 $CONFIG['paths'] = [

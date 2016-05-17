@@ -4,10 +4,14 @@ import { urlSanitize } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Serv
 import { ListItemStatefulContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { currentNavSelector } from '../../Selectors/list';
 import { setListParamsNav, loadList } from '../../Actions/listActions';
+import { pureRender } from 'Ampliflux';
 
 @connect(state => ({
   activeItemId: currentNavSelector(state)
 }))
+
+@pureRender
+
 export class ListItemContainer extends React.Component {
 
   static propTypes = {
@@ -17,14 +21,9 @@ export class ListItemContainer extends React.Component {
     listOptions:  PropTypes.object.isRequired
   };
 
-  constructor(props) {
-    super(props);
-    this.itemId = urlSanitize(props.urlHash);
-  }
-
   componentDidMount() {
     const { activeItemId } = this.props;
-    if (activeItemId === this.itemId) {
+    if (activeItemId === urlSanitize(this.props.urlHash)) {
       this.loadList();
     }
   }
@@ -42,7 +41,7 @@ export class ListItemContainer extends React.Component {
       ...props,
       groupId: 'nav',
       onClick: this.loadList,
-      itemId:  this.itemId
+      itemId:  urlSanitize(props.urlHash)
     };
 
     return (

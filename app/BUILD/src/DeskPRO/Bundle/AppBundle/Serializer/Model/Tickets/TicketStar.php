@@ -28,12 +28,11 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets;
 
+use Application\DeskPRO\Entity\TicketFlagged;
 use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class TicketStar.
- *
- * @JMS\ExclusionPolicy("none")
  */
 class TicketStar
 {
@@ -45,6 +44,7 @@ class TicketStar
      * @var int
      */
     private $id;
+
     /**
      * Star name.
      *
@@ -53,8 +53,9 @@ class TicketStar
      * @var string
      */
     private $name;
+
     /**
-     * Hex color representation.
+     * Star color.
      *
      * @JMS\Type("string")
      *
@@ -63,16 +64,57 @@ class TicketStar
     private $color;
 
     /**
-     * TicketStar constructor.
+     * Hex color representation.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $hex;
+
+    /**
+     * Constructor.
      *
      * @param int    $id
      * @param string $name
-     * @param string $color
      */
-    public function __construct($id, $name, $color)
+    public function __construct($id, $name)
     {
         $this->id    = $id;
-        $this->name  = $name;
-        $this->color = $color;
+        $this->name  = ucfirst($name);
+        $this->color = TicketFlagged::$colorMap[$id];
+        $this->hex   = TicketFlagged::$hexMap[$id];
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getColor()
+    {
+        return $this->color;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHex()
+    {
+        return $this->hex;
     }
 }

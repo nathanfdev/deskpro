@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpTest\DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket;
 
 use Application\DeskPRO\Entity\CustomDataTicket;
@@ -54,7 +53,7 @@ class TicketLayoutValidatorTest extends PortalTestCase
      */
     public function setUp()
     {
-        $this->installDataSet('empty', true);
+        $this->installDataSet('empty', true, true);
     }
 
     public function testValidateDateFields()

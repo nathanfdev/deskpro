@@ -1,4 +1,3 @@
-@tasks @counts
 Feature: task counts endpoints
   I want to check task counts
 
