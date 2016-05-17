@@ -25,54 +25,70 @@ export class PeopleTable extends Component {
       <Table>
         <thead>
         <tr>
-          <Th sort="id"
-              title="ID"
-              visible
-              orderDir={currentOrderDir}
-              orderBy={currentOrderBy}
-              onChange={sortTable} />
-          <Th sort="timezone"
-              title="TZ"
-              visible
-              orderDir={currentOrderDir}
-              orderBy={currentOrderBy}
-              onChange={sortTable} />
-          <Th sort="organization"
-              title="Organization"
-              visible
-              orderDir={currentOrderDir}
-              orderBy={currentOrderBy}
-              onChange={sortTable} />
-          <Th sort="first_name"
-              title="First name"
-              visible
-              orderDir={currentOrderDir}
-              orderBy={currentOrderBy}
-              onChange={sortTable} />
-          <Th sort="last_name"
-              title="Last name"
-              visible
-              orderDir={currentOrderDir}
-              orderBy={currentOrderBy}
-              onChange={sortTable} />
-          <Th sort="primary_email"
-              title="Email"
-              visible
-              orderDir={currentOrderDir}
-              orderBy={currentOrderBy}
-              onChange={sortTable} />
-          <Th sort="date_created"
-              title="Created"
-              visible
-              orderDir={currentOrderDir}
-              orderBy={currentOrderBy}
-              onChange={sortTable} />
-          <Th sort="date_last_login"
-              title="Last login"
-              visible
-              orderDir={currentOrderDir}
-              orderBy={currentOrderBy}
-              onChange={sortTable} />
+          <Th
+            sort="id"
+            title="ID"
+            visible
+            orderDir={currentOrderDir}
+            orderBy={currentOrderBy}
+            onChange={sortTable}
+          />
+          <Th
+            sort="timezone"
+            title="TZ"
+            visible
+            orderDir={currentOrderDir}
+            orderBy={currentOrderBy}
+            onChange={sortTable}
+          />
+          <Th
+            sort="organization"
+            title="Organization"
+            visible
+            orderDir={currentOrderDir}
+            orderBy={currentOrderBy}
+            onChange={sortTable}
+          />
+          <Th
+            sort="first_name"
+            title="First name"
+            visible
+            orderDir={currentOrderDir}
+            orderBy={currentOrderBy}
+            onChange={sortTable}
+          />
+          <Th
+            sort="last_name"
+            title="Last name"
+            visible
+            orderDir={currentOrderDir}
+            orderBy={currentOrderBy}
+            onChange={sortTable}
+          />
+          <Th
+            sort="primary_email"
+            title="Email"
+            visible
+            orderDir={currentOrderDir}
+            orderBy={currentOrderBy}
+            onChange={sortTable}
+          />
+          <Th
+            sort="date_created"
+            title="Created"
+            visible
+            orderDir={currentOrderDir}
+            orderBy={currentOrderBy}
+            onChange={sortTable}
+          />
+          <Th
+            sort="date_last_login"
+            title="Last login"
+            visible
+            orderDir={currentOrderDir}
+            orderBy={currentOrderBy}
+            onChange={sortTable}
+          />
         </tr>
         </thead>
         <tbody>

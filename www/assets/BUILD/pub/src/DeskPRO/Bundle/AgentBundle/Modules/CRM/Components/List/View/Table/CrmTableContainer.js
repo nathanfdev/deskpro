@@ -36,19 +36,23 @@ export class CrmTableContainer extends Component {
 
     if (content === 'organizations') {
       return (
-        <OrganizationsTable organizations={organizations}
-                            currentOrderBy={orderBy}
-                            currentOrderDir={orderDir}
-                            sortTable={this.sortTable} />
+        <OrganizationsTable
+          organizations={organizations}
+          currentOrderBy={orderBy}
+          currentOrderDir={orderDir}
+          sortTable={this.sortTable}
+        />
       );
     }
 
     return (
-      <PeopleTable people={people}
-                   organizations={organizations}
-                   currentOrderBy={orderBy}
-                   currentOrderDir={orderDir}
-                   sortTable={this.sortTable} />
+      <PeopleTable
+        people={people}
+        organizations={organizations}
+        currentOrderBy={orderBy}
+        currentOrderDir={orderDir}
+        sortTable={this.sortTable}
+      />
     );
   }
 }

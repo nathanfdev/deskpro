@@ -20,36 +20,46 @@ export class OrganizationsTable extends Component {
       <Table>
         <thead>
         <tr>
-          <Th sort="id"
-              title="ID"
-              visible
-              orderDir={currentOrderDir}
-              orderBy={currentOrderBy}
-              onChange={sortTable} />
-          <Th sort="date_created"
-              title="Created"
-              visible
-              orderDir={currentOrderDir}
-              orderBy={currentOrderBy}
-              onChange={sortTable} />
-          <Th sort="importance"
-              title="Importance"
-              visible
-              orderDir={currentOrderDir}
-              orderBy={currentOrderBy}
-              onChange={sortTable} />
-          <Th sort="name"
-              title="Name"
-              visible
-              orderDir={currentOrderDir}
-              orderBy={currentOrderBy}
-              onChange={sortTable} />
-          <Th sort="summary"
-              title="Summary"
-              visible
-              orderDir={currentOrderDir}
-              orderBy={currentOrderBy}
-              onChange={sortTable} />
+          <Th
+            sort="id"
+            title="ID"
+            visible
+            orderDir={currentOrderDir}
+            orderBy={currentOrderBy}
+            onChange={sortTable}
+          />
+          <Th
+            sort="date_created"
+            title="Created"
+            visible
+            orderDir={currentOrderDir}
+            orderBy={currentOrderBy}
+            onChange={sortTable}
+          />
+          <Th
+            sort="importance"
+            title="Importance"
+            visible
+            orderDir={currentOrderDir}
+            orderBy={currentOrderBy}
+            onChange={sortTable}
+          />
+          <Th
+            sort="name"
+            title="Name"
+            visible
+            orderDir={currentOrderDir}
+            orderBy={currentOrderBy}
+            onChange={sortTable}
+          />
+          <Th
+            sort="summary"
+            title="Summary"
+            visible
+            orderDir={currentOrderDir}
+            orderBy={currentOrderBy}
+            onChange={sortTable}
+          />
         </tr>
         </thead>
         <tbody>
