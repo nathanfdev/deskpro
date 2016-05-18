@@ -31,7 +31,6 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\NewFilters;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterPreference;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketFilterPreferenceType;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -51,21 +50,61 @@ class TicketFilterPrefsController extends CrudSubController
     public static $parentProperty = 'filter';
 
     /**
-     * {@inheritdoc}
+     * @ApiDoc(
+     *      description="Set current user preferences for filter",
+     *      requirements={
+     *          {
+     *              "name"="parentId",
+     *              "requirement"="\d+",
+     *              "description"="the id of the filter",
+     *              "dataType"="integer"
+     *          },
+     *     },
+     *      statusCodes={
+     *          200="Success",
+     *          404="Returned if set was not found"
+     *      }
+     * )
+     * @Rest\Post("")
+     *
+     * @param Request $request
+     *
+     * @return \FOS\RestBundle\View\View
      */
-    protected function findEntity($id, Request $request)
+    public function setPrefAction(Request $request)
     {
-        /** @var TicketFilter $parent */
-        $parent = $this->findParentOr404();
-        $agent  = $this->getUser();
-        /** @var TicketFilterPreference $entity */
-        $entity = $this->getManager()->getRepository(TicketFilterPreference::class)
-            ->findOneBy(['filter' => $parent, 'agent' => $agent]);
-        if (null === $entity) {
-            $entity = new TicketFilterPreference();
-            $entity->setAgent($agent)->setFilter($parent);
+        $filter = $this->findParentOr404();
+        $pref   = $this->getManager()->getRepository(TicketFilterPreference::class)
+            ->findOneBy(['filter' => $filter, 'agent' => $this->getUser()]);
+        if ($pref) {
+            return $this->putAction($pref->getId(), $request);
         }
 
-        return $entity;
+        return $this->postAction($request);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleForm($model, Request $request, array $options = [])
+    {
+        $options = array_merge(
+            $options,
+            ['filter' => $this->findParentOr404(), 'agent' => $this->getUser()]
+        );
+
+        return parent::handleForm($model, $request, $options);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function instantiateEntity(Request $request)
+    {
+        /** @var TicketFilterPreference $pref */
+        $pref = parent::instantiateEntity($request);
+        $pref->setAgent($this->getUser());
+
+        return $pref;
     }
 }

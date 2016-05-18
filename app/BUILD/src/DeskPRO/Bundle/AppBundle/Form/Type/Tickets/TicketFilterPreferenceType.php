@@ -31,7 +31,6 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterPreference;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -49,26 +48,9 @@ class TicketFilterPreferenceType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add(
-                'main_grouping',
-                TextType::class,
-                ['required' => false]
-            )
-            ->add(
-                'filter',
-                EntityType::class,
-                ['property_path' => 'filter', 'class' => TicketFilter::class, 'required' => false]
-            )
-            ->add(
-                'agent',
-                EntityType::class,
-                ['property_path' => 'agent', 'class' => Person::class, 'required' => false]
-            )
-            ->add(
-                'display_order',
-                IntegerType::class,
-                ['required' => false]
-            );
+            ->add('main_grouping', TextType::class, ['required' => false])
+            ->add('result_grouping', TextType::class, ['required' => false])
+            ->add('display_order', IntegerType::class, ['required' => false]);
     }
 
     /**
@@ -76,6 +58,25 @@ class TicketFilterPreferenceType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(['data_class' => TicketFilterPreference::class]);
+        $resolver
+            ->setDefaults(
+                [
+                    'data_class' => TicketFilterPreference::class,
+                    'filter'     => null,
+                    'agent'      => null,
+                ]
+            )
+            ->setRequired(
+                [
+                    'filter',
+                    'agent',
+                ]
+            )
+            ->setAllowedTypes(
+                [
+                    'filter' => TicketFilter::class,
+                    'agent'  => Person::class,
+                ]
+            );
     }
 }
