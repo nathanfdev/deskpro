@@ -35,6 +35,7 @@ use Application\DeskPRO\Entity\TicketFlagged;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Model\TicketGrouping;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\AgentTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeam\AgentTeamTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CompositeTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\CustomData\CustomDataTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\Department\DepartmentTerm;
@@ -100,17 +101,47 @@ class TicketsSelectCriteria
             }
 
             switch ($param) {
+                case 'agent':
+                    $composite->addTerm(new AgentTerm(['agent_ids' => [$value]]));
+                    break;
+                case 'agent_team':
+                    $composite->addTerm(new AgentTeamTerm(['agent_team_ids' => [$value]]));
+                    break;
+                case 'department':
+                    $composite->addTerm(new DepartmentTerm(['department_ids' => [$value]]));
+                    break;
+                case 'email':
+                    $composite->addTerm(new PersonEmailTerm(['email' => [$value]]));
+                    break;
                 case 'filter':
                     /** @var TicketFilter $filter */
                     if ($filter = $this->filterRepository->find($value)) {
                         $composite->addTerm($filter->getTerm());
                     }
                     break;
+                case 'from':
+                    $composite
+                        ->addTerm(
+                            new TicketDateCreatedTerm(
+                                ['date' => new \DateTime(str_replace(' ', '+', $value))],
+                                TermInterface::OP_GTE
+                            )
+                        );
+                    break;
                 case 'labels':
                     $composite->addTerm(new TicketLabelTerm(['label' => $value[0], TermInterface::OP_IS]));
                     break;
                 case 'language':
                     $composite->addTerm(new TicketLanguageTerm(['language' => $value[0], TermInterface::OP_IS]));
+                    break;
+                case 'organization':
+                    $composite->addTerm(new OrganizationTerm(['organization' => $value]));
+                    break;
+                case 'person':
+                    $composite->addTerm(new PersonTerm(['person_ids' => [$value]]));
+                    break;
+                case 'problem':
+                    $composite->addTerm(new ProblemTerm(['problem' => $value]));
                     break;
                 case 'star':
                     $composite->addTerm(new TicketFlaggedTerm(['flag' => TicketFlagged::$colorMap[$value]]));
@@ -121,35 +152,8 @@ class TicketsSelectCriteria
                 case 'not-status':
                     $composite->addTerm(new TicketStatusTerm(['status' => $value], TermInterface::OP_NOT));
                     break;
-                case 'agent':
-                    $composite->addTerm(new AgentTerm(['agent_ids' => [$value]]));
-                    break;
-                case 'person':
-                    $composite->addTerm(new PersonTerm(['person_ids' => [$value]]));
-                    break;
-                case 'email':
-                    $composite->addTerm(new PersonEmailTerm(['email' => [$value]]));
-                    break;
-                case 'organization':
-                    $composite->addTerm(new OrganizationTerm(['organization' => $value]));
-                    break;
-                case 'problem':
-                    $composite->addTerm(new ProblemTerm(['problem' => $value]));
-                    break;
-                case 'department':
-                    $composite->addTerm(new DepartmentTerm(['department_ids' => [$value]]));
-                    break;
                 case 'urgency':
                     $composite->addTerm(new TicketUrgencyTerm(['num' => [$value]]));
-                    break;
-                case 'from':
-                    $composite
-                        ->addTerm(
-                            new TicketDateCreatedTerm(
-                                ['date' => new \DateTime(str_replace(' ', '+', $value))],
-                                TermInterface::OP_GTE
-                            )
-                        );
                     break;
                 default:
                     throw new \Exception("Unknown ticket filtering option '$param'");
