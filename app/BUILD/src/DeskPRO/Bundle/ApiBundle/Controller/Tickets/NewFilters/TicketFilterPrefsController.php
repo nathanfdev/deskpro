@@ -61,6 +61,10 @@ class TicketFilterPrefsController extends CrudSubController
         /** @var TicketFilterPreference $entity */
         $entity = $this->getManager()->getRepository(TicketFilterPreference::class)
             ->findOneBy(['filter' => $parent, 'agent' => $agent]);
+        if (null === $entity) {
+            $entity = new TicketFilterPreference();
+            $entity->setAgent($agent)->setFilter($parent);
+        }
 
         return $entity;
     }
