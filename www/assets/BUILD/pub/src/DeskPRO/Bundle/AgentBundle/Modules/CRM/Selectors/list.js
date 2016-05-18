@@ -42,6 +42,21 @@ export const currentContentSelector = createSelector(
   params => params.get('content')
 );
 
+export const visibleFieldsSelector = createSelector(
+  stateSelector,
+  state => state.get('visibleFields')
+);
+
+export const peopleVisibleFieldsSelector = createSelector(
+  visibleFieldsSelector,
+  visibleFields => visibleFields.get('people')
+);
+
+export const organizationVisibleFieldsSelector = createSelector(
+  visibleFieldsSelector,
+  visibleFields => visibleFields.get('organizations')
+);
+
 export const listFiltersSelector = createSelector(
   [currentContentSelector, allSelectorFactory('UserGroup'), collectionSelectorFactory('Organization', 'crm')],
   (currentContent, userGroups, organizations) => {

@@ -114,48 +114,56 @@ export class FeedbackTableContainer extends Component {
       <Table>
         <thead>
         <tr>
-          <Th sort="id"
-              title="ID"
-              visible={this.isVisible('id')}
-              orderDir={orderDir}
-              orderBy={orderBy}
-              onChange={this.sortTable} />
-          <Th sort="title"
-              title="Title"
-              visible={this.isVisible('title')}
-              orderDir={orderDir}
-              orderBy={orderBy}
-              onChange={this.sortTable} />
-          <Th sort="content"
-              title="Content"
-              visible={this.isVisible('content')} />
-          <Th sort="status_category" title="Status"
-              visible={this.isVisible('status_category')} />
-          <Th sort="hidden_status" title="Hidden"
-              visible={this.isVisible('hidden_status')} />
-          <Th sort="person"
-              title="Author"
-              visible={this.isVisible('person')}
-              orderDir={orderDir}
-              orderBy={orderBy}
-              onChange={this.sortTable} />
-          <Th sort="type" title="Type"
-              visible={this.isVisible('type')} />
-          <Th sort="custom_category" title="Category"
-              visible={this.isVisible('category')} />
-          <Th sort="num_ratings"
-              title="Votes"
-              orderDir={orderDir}
-              orderBy={orderBy}
-              onChange={this.sortTable}
-              visible={this.isVisible('num_ratings')} />
-          <Th sort="num_comments" title="Comments"
-              visible={this.isVisible('num_comments')} />
-          <Th sort="date_created" title="Created"
-              orderDir={orderDir}
-              orderBy={orderBy}
-              onChange={this.sortTable}
-              visible={this.isVisible('date_created')} />
+          <Th
+            sort="id"
+            title="ID"
+            visible={this.isVisible('id')}
+            orderDir={orderDir}
+            orderBy={orderBy}
+            onChange={this.sortTable}
+          />
+          <Th
+            sort="title"
+            title="Title"
+            visible={this.isVisible('title')}
+            orderDir={orderDir}
+            orderBy={orderBy}
+            onChange={this.sortTable}
+          />
+          <Th sort="content" title="Content" visible={this.isVisible('content')} />
+          <Th sort="status_category" title="Status" visible={this.isVisible('status_category')} />
+          <Th sort="hidden_status" title="Hidden" visible={this.isVisible('hidden_status')} />
+          <Th
+            sort="person"
+            title="Author"
+            visible={this.isVisible('person')}
+            orderDir={orderDir}
+            orderBy={orderBy}
+            onChange={this.sortTable}
+          />
+          <Th sort="type" title="Type" visible={this.isVisible('type')} />
+          <Th
+            sort="custom_category"
+            title="Category"
+            visible={this.isVisible('category')}
+          />
+          <Th
+            sort="num_ratings"
+            title="Votes"
+            orderDir={orderDir}
+            orderBy={orderBy}
+            onChange={this.sortTable}
+            visible={this.isVisible('num_ratings')}
+          />
+          <Th sort="num_comments" title="Comments" visible={this.isVisible('num_comments')} />
+          <Th
+            sort="date_created"
+            title="Created"
+            orderDir={orderDir}
+            orderBy={orderBy}
+            onChange={this.sortTable}
+            visible={this.isVisible('date_created')}
+          />
         </tr>
         </thead>
         <tbody>

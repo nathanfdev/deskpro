@@ -30,7 +30,17 @@ export function fakeState(content) {
     CRM: {
       list: toImmutable({
         elements:          [1, 2, 3],
-        currentListParams: { content }
+        currentListParams: { content },
+        visibleFields:     {
+          people: {
+            card:  ['id', 'date_created'],
+            table: ['id', 'date_created']
+          },
+          organizations: {
+            card:  ['id', 'date_created'],
+            table: ['id', 'date_created']
+          }
+        }
       })
     }
   };

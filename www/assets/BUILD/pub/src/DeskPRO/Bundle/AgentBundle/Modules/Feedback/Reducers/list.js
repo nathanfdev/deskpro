@@ -46,8 +46,7 @@ export default createReducer(feedbackListInitialState, {
   [actions.setDisplayFields]: mergeFullPayload(),
 
   [actions.toggleTableFieldVisibility]: togglePayloadInCollection(['visibleFields', 'table']),
-
-  [actions.toggleCardFieldVisibility]: togglePayloadInCollection(['visibleFields', 'card']),
+  [actions.toggleCardFieldVisibility]:  togglePayloadInCollection(['visibleFields', 'card']),
 
   [actions.setViewFieldsSettingStoredFlag]: (state, payload) => state.setIn(['visibleFields', 'fromDb'], payload),
 

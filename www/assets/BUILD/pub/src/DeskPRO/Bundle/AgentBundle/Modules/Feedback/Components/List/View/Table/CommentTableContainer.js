@@ -73,20 +73,23 @@ export class CommentTableContainer extends Component {
         <Td visible={this.isVisible('comment_author')}>
           <PersonInTable person={people.get(element.get('person'))} />
         </Td>
-        <Td visible={this.isVisible('comment_content')}
-            className="item-title">
-          <a href="#"><SlicedString string={element.get('content')} /></a>
+        <Td visible={this.isVisible('comment_content')} className="item-title">
+          <a href="#">
+            <SlicedString string={element.get('content')} />
+          </a>
         </Td>
         <TdId visible={this.isVisible('id')}>
           {parent.get('id')}
         </TdId>
-        <Td className="item-title"
-            visible={this.isVisible('title')}>
-          <a href="#"><SlicedString string={parent.get('title')} /></a>
+        <Td className="item-title" visible={this.isVisible('title')}>
+          <a href="#">
+            <SlicedString string={parent.get('title')} />
+          </a>
         </Td>
-        <Td className="item-title"
-            visible={this.isVisible('content')}>
-          <a href="#"><SlicedString string={parent.get('content')} /></a>
+        <Td className="item-title" visible={this.isVisible('content')}>
+          <a href="#">
+            <SlicedString string={parent.get('content')} />
+          </a>
         </Td>
         <Td visible={this.isVisible('status_category')}>
           {this.renderStatus(parent.get('id'))}
@@ -123,53 +126,34 @@ export class CommentTableContainer extends Component {
       <Table>
         <thead>
         <tr>
-          <Th sort="id"
-              visible={this.isVisible('comment_id')}
-              title="ID"
-              orderDir={orderDir}
-              orderBy={orderBy}
-              onChange={this.sortTable} />
-          <Th sort="author"
-              title="Author"
-              visible={this.isVisible('comment_author')} />
-          <Th sort="content"
-              title="Content"
-              visible={this.isVisible('comment_content')} />
-          <Th sort="id"
-              title="Feedback ID"
-              visible={this.isVisible('id')} />
-          <Th sort="title"
-              title="Feedback title"
-              visible={this.isVisible('title')} />
-          <Th visible={this.isVisible('content')}
-              title="Feedback content" />
-          <Th sort="status_category"
-              visible={this.isVisible('status_category')}
-              title="Status" />
-          <Th sort="hidden_status"
-              visible={this.isVisible('hidden_status')}
-              title="Hidden" />
-          <Th sort="author_name"
-              visible={this.isVisible('author_name')}
-              title="Author" />
-          <Th sort="type"
-              visible={this.isVisible('type')}
-              title="Type" />
-          <Th sort="custom_category"
-              visible={this.isVisible('custom_category')}
-              title="Category" />
-          <Th sort="num_ratings"
-              visible={this.isVisible('num_ratings')}
-              title="Votes" />
-          <Th sort="num_comments"
-              visible={this.isVisible('num_comments')}
-              title="Comments" />
-          <Th sort="date_created"
-              visible={this.isVisible('date_created')}
-              title="Created"
-              orderDir={orderDir}
-              orderBy={orderBy}
-              onChange={this.sortTable} />
+          <Th
+            sort="id"
+            visible={this.isVisible('comment_id')}
+            title="ID"
+            orderDir={orderDir}
+            orderBy={orderBy}
+            onChange={this.sortTable}
+          />
+          <Th sort="author" title="Author" visible={this.isVisible('comment_author')} />
+          <Th sort="content" title="Content" visible={this.isVisible('comment_content')} />
+          <Th sort="id" title="Feedback ID" visible={this.isVisible('id')} />
+          <Th sort="title" title="Feedback title" visible={this.isVisible('title')} />
+          <Th visible={this.isVisible('content')} title="Feedback content" />
+          <Th sort="status_category" visible={this.isVisible('status_category')} title="Status" />
+          <Th sort="hidden_status" visible={this.isVisible('hidden_status')} title="Hidden" />
+          <Th sort="author_name" visible={this.isVisible('author_name')} title="Author" />
+          <Th sort="type" visible={this.isVisible('type')} title="Type" />
+          <Th sort="custom_category" visible={this.isVisible('custom_category')} title="Category" />
+          <Th sort="num_ratings" visible={this.isVisible('num_ratings')} title="Votes" />
+          <Th sort="num_comments" visible={this.isVisible('num_comments')} title="Comments" />
+          <Th
+            sort="date_created"
+            visible={this.isVisible('date_created')}
+            title="Created"
+            orderDir={orderDir}
+            orderBy={orderBy}
+            onChange={this.sortTable}
+          />
         </tr>
         </thead>
         <tbody>

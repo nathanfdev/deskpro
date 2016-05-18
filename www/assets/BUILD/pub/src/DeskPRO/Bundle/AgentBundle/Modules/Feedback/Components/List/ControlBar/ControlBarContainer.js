@@ -26,7 +26,6 @@ import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components
   viewMode:      currentViewModeSelector(state),
   visibleFields: visibleFieldsSelector(state)
 }))
-
 export class ControlBarContainer extends Component {
   static propTypes = {
     currentParams: PropTypes.object.isRequired,
