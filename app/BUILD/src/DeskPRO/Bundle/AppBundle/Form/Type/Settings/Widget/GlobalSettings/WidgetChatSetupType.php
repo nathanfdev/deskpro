@@ -55,6 +55,7 @@ class WidgetChatSetupType extends AbstractType
             ->add('require_login', ApiBooleanType::class, [
                 'property_path' => 'requireLogin',
             ])
+            ->add('enabled', ApiBooleanType::class)
         ;
     }
 

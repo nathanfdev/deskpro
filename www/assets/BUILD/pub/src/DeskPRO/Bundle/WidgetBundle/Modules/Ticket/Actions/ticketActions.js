@@ -32,3 +32,15 @@ export const saveNewTicketForm = createAction(
     return promise;
   }
 );
+
+export const bootstrapTicketApp = createAction(
+  'WIDGET_LOAD_TICKET_APP',
+  () => dispatch => new Promise(resolve => {
+    Promise.all([
+      dispatch(loadNewTicketForm()),
+      dispatch(loadTicketDisplayFields())
+    ]).then(response => {
+      resolve(response);
+    });
+  })
+);

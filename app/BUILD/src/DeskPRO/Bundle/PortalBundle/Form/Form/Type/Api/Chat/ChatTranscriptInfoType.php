@@ -75,14 +75,6 @@ class ChatTranscriptInfoType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getName()
-    {
-        return 'api_chat_transcription_info';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -132,9 +124,9 @@ class ChatTranscriptInfoType extends AbstractType
         }
 
         if ($data !== $form->getData()) {
-            if ($this->user_chat_settings->isPortalRequireLogin()) {
+            if ($this->user_chat_settings->isChatRequireLogin()) {
                 $form->addError(new FormError('Unable to change email, chat require email is enabled.'));
-            } elseif ($this->user_chat_settings->isPortalEmailValidation()) {
+            } elseif ($this->user_chat_settings->isChatEmailValidation()) {
                 $form->addError(new FormError('Unable to change email, chat email validation is enabled.'));
             }
         }

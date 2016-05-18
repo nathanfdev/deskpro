@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,26 +26,23 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\AppBundle\Helper\IsProxyRequestHelper;
 use DeskPRO\Bundle\AppBundle\Request\RequestUtils;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
- * Class WidgetLoginListener.
+ * Class DpsidLoginListener.
  */
-class WidgetLoginListener implements EventSubscriberInterface
+class DpsidLoginListener implements EventSubscriberInterface
 {
     /**
      * @var EntityManager
@@ -112,7 +109,7 @@ class WidgetLoginListener implements EventSubscriberInterface
         $request = $event->getRequest();
 
         // Trying to get external auth code from the request
-        $session_code = $request->query->get('__sid');
+        $session_code = $request->query->get('dpsid');
         if ($session_code) {
             // Save auth code in the current session
             $request->getSession()->set('widget_sid', $session_code);
@@ -137,7 +134,7 @@ class WidgetLoginListener implements EventSubscriberInterface
 
             // Modify external session entity and set the current session's person
             /** @var \Application\DeskPRO\EntityRepository\Session $repository */
-            $repository = $this->em->getRepository('DeskPRO:Session');
+            $repository = $this->em->getRepository(Session::class);
             $session    = $repository->getSessionFromCode($session_code);
 
             if (!$session || $session->getPerson()) {

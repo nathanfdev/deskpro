@@ -32,6 +32,7 @@
     "jquery.ui.widget": "1.10.3",
     "linkifyjs": "^2.0.0",
     "lodash": "3.10.1",
+    "lscache": "^1.0.5",
     "medium-editor": "5.13.0",
     "mime-types": "2.1.9",
     "moment": "2.10.6",

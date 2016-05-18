@@ -21,9 +21,6 @@ import {
   canReopenSelector,
 } from '../Selectors/chat';
 
-// Phrase translations
-export const setPhraseTranslations = createAction('WIDGET_CHAT_SET_PHRASE_TRANSLATIONS');
-
 // Chat setup actions
 export const setChatId = createAction(
   'WIDGET_CHAT_SET_ID',
@@ -93,15 +90,6 @@ export const resetAttachments = createAction('WIDGET_CHAT_RESET_ATTACHMENTS');
 export const showNotHelpfulForm = createAction('WIDGET_CHAT_SHOW_NOT_HELPFUL_FORM');
 
 // Api actions
-export const loadChatPhraseTranslations = createAction(
-  'WIDGET_CHAT_LOAD_PHRASE_TRANSLATIONS',
-  () => dispatch => widgetApi
-    .sendGet('DP_API/lang/widget-chat-phrases.json', { ...ajaxOptions })
-    .success(response => {
-      dispatch(setPhraseTranslations(response));
-    })
-);
-
 export const createChat = createAction(
   'WIDGET_CHAT_CREATE_NEW',
   params => (dispatch, getState) => {

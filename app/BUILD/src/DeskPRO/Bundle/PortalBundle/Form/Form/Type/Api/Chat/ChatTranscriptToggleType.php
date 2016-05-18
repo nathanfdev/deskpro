@@ -49,14 +49,6 @@ class ChatTranscriptToggleType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getName()
-    {
-        return 'api_chat_transcription_toggle';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('should_send_transcript', ApiBooleanType::class);

@@ -8,14 +8,14 @@ import { MessageAttachment } from './Message/Attachment/MessageAttachment';
 import { MessageContent } from './Message/MessageContent';
 import { MessageFooter } from './Message/MessageFooter';
 import { AvatarResolver } from 'DeskPRO/Component/Avatar';
-import { phraseTranslationsSelector, authorNameSelector } from '../../../../Selectors/chat';
+import { authorNameSelector } from '../../../../Selectors/chat';
 import { peopleSelector } from '../../../../../Application/Selectors/peopleSelectors';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import Immutable from 'immutable';
 
 @connect(state => ({
-  chatAuthorName:     authorNameSelector(state),
-  people:             peopleSelector(state),
-  phraseTranslations: phraseTranslationsSelector(state)
+  chatAuthorName: authorNameSelector(state),
+  people:         peopleSelector(state)
 }))
 export class MessageFactoryContainer extends React.Component {
 
@@ -52,11 +52,11 @@ export class MessageFactoryContainer extends React.Component {
   }
 
   renderEvent() {
-    const { message, phraseTranslations } = this.props;
+    const { message } = this.props;
 
     const content = JSON.parse(message.get('content'));
     const phraseId = content.phrase_id;
-    const translatedText = String(phraseTranslations.get(`user.chat.${phraseId}`));
+    const translatedText = String(portalPhrases.get(`user.chat.${phraseId}`));
 
     // Should display disconnected block
     if (phraseId === 'message_agent-timeout') {

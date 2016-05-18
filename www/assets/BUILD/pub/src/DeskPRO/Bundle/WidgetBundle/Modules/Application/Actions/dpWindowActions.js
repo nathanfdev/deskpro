@@ -2,7 +2,7 @@ import { createAction } from 'Ampliflux';
 import {
   requireChatLoginSelector,
   widgetSessionIsLoginSelector,
-  widgetBrandSettingsChatEnabledSelector
+  widgetHasChatSelector
 } from '../Selectors/bootstrap';
 import { onlineAgentsCountSelector } from '../Selectors/peopleSelectors';
 import {
@@ -88,7 +88,7 @@ export const openWidget = createAction(
   () => (dispatch, getState) => {
     const state = getState();
 
-    const widgetHasChat = widgetBrandSettingsChatEnabledSelector(state);
+    const widgetHasChat = widgetHasChatSelector(state);
     const requireChatLogin = requireChatLoginSelector(state);
     const agentsCounts = onlineAgentsCountSelector(state);
     const liveDemo = liveDemoSelector(state);

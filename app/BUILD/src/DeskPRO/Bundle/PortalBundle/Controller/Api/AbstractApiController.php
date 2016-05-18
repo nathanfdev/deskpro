@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -41,9 +37,9 @@ use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Form\Form;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 /**
  * Class AbstractApiController.
@@ -83,25 +79,16 @@ abstract class AbstractApiController extends FOSRestController
     }
 
     /**
-     * @param Request $request
-     *
      * @return Session|null
      */
-    protected function getApiSession(Request $request)
+    protected function getApiSession()
     {
-        /** @var \Application\DeskPRO\EntityRepository\Session $session_repository */
-        $session_repository = $this->getDoctrine()->getRepository(Session::class);
-        $session_code       = $request->query->get('__sid');
-
-        $session = null;
-        if ($session_code) {
-            $session = $session_repository->getSessionFromCode($session_code);
-        }
-        if (!$session) {
-            throw new BadRequestHttpException('User session not found');
+        $token = $this->get('security.token_storage')->getToken();
+        if (!$token instanceof UsernamePasswordToken || $token->getProviderKey() !== 'portal_api') {
+            throw new AccessDeniedHttpException('Invalid token');
         }
 
-        return $session;
+        return $this->getDoctrine()->getRepository(Session::class)->find($token->getCredentials());
     }
 
     /**

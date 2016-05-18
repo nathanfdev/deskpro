@@ -51,7 +51,6 @@ class WidgetChatSetupType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('enabled', ApiBooleanType::class)
             ->add('request_user_info', ApiBooleanType::class, [
                 'property_path' => 'requestUserInfo',
             ])

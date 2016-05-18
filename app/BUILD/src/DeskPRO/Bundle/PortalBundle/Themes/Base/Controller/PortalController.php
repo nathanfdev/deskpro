@@ -107,7 +107,7 @@ class PortalController extends AbstractController
         if (isset($options['include_contact_us']) && $options['include_contact_us'] == true) {
             $chatEnabled = $this->container->get('widget_settings_resolver')
                 ->getWidgetOptions()
-                ->getBrand()
+                ->getGlobal()
                 ->getChat()
                 ->isEnabled();
             $extendedOptions = [

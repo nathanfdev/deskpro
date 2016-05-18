@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { TicketFormContent } from './TicketFormContent';
 import { TicketFormSpinner } from './TicketFormSpinner';
-import { loadNewTicketForm, saveNewTicketForm } from '../../Actions/ticketActions';
+import { bootstrapTicketApp, saveNewTicketForm } from '../../Actions/ticketActions';
 import { contentSelector, contentLoadingSelector, contentSavingSelector } from '../../Selectors/ticket';
 import { history } from '../../../../Services/history';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
@@ -23,7 +23,7 @@ export class TicketFormContentContainer extends React.Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    dispatch(loadNewTicketForm());
+    dispatch(bootstrapTicketApp());
   }
 
   onSubmit = data => {
@@ -43,9 +43,11 @@ export class TicketFormContentContainer extends React.Component {
             <p>{portalPhrases.get('portal.tickets.new-intro')}</p>
           </div>
           <div className="dpdesignportal-form">
-            <TicketFormContent content={content}
-                               saving={saving}
-                               onSubmit={this.onSubmit} />
+            <TicketFormContent
+              content={content}
+              saving={saving}
+              onSubmit={this.onSubmit}
+            />
           </div>
         </div>;
   }

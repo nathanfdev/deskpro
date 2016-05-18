@@ -25,10 +25,10 @@ import {
   liveDemoSelector
 } from '../../../Selectors/dpWindow';
 
-import { widgetBrandSettingsChatEnabledSelector } from '../../../Selectors/bootstrap';
+import { widgetHasChatSelector } from '../../../Selectors/bootstrap';
 
 @connect(state => ({
-  hasChat:             widgetBrandSettingsChatEnabledSelector(state),
+  hasChat:             widgetHasChatSelector(state),
   proactiveChat:       widgetProactiveChatSelector(state),
   triggerPopupOpened:  triggerPopupOpenedSelector(state),
   widgetOpened:        widgetOpenedSelector(state),

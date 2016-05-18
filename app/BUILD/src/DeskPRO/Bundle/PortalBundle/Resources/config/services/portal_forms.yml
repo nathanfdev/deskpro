@@ -180,29 +180,29 @@ services:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\CreateChatType
     arguments: ["@form.api.chat.set_person_listener", "@widget_settings_resolver"]
     tags:
-      - { name: form.type, alias: api_chat_create }
+      - { name: form.type }
 
 
   form.api.api_chat_validate_email:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatValidateEmailType
     tags:
-      - { name: form.type, alias: api_chat_validate_email }
+      - { name: form.type }
 
 
   form.api.chat_transcription_info:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatTranscriptInfoType
     arguments: ["@form.api.chat.set_person_listener", "@widget_settings_resolver"]
     tags:
-      - { name: form.type, alias: api_chat_transcription_info }
+      - { name: form.type }
 
 
   form.api.chat_transcription_toggle:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatTranscriptToggleType
     tags:
-      - { name: form.type, alias: api_chat_transcription_toggle }
+      - { name: form.type }
 
 
   form.api.chat_feedback:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatFeedbackType
     tags:
-      - { name: form.type, alias: api_chat_feedback }
+      - { name: form.type }

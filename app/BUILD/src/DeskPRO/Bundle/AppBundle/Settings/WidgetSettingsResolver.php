@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Settings;
 
 use Application\DeskPRO\Entity\DataStore;
@@ -50,9 +51,10 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
 {
-    const REQUIRE_LOGIN     = 'portal.chat.require_login';
-    const EMAIL_VALIDATION  = 'portal.chat.email_validation';
-    const ENABLED_ON_PORTAL = 'portal.widget.enabled';
+    const CHAT_REQUIRE_LOGIN    = 'portal.chat.require_login';
+    const CHAT_EMAIL_VALIDATION = 'portal.chat.email_validation';
+    const CHAT_ENABLED          = 'portal.chat.enabled';
+    const ENABLED_ON_PORTAL     = 'portal.widget.enabled';
 
     /**
      * @var EntityManager
@@ -113,17 +115,25 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     /**
      * @return bool
      */
-    public function isPortalEmailValidation()
+    public function isChatEnabled()
     {
-        return (bool) $this->getSetting(self::EMAIL_VALIDATION);
+        return (bool) $this->getSetting(self::CHAT_ENABLED);
     }
 
     /**
      * @return bool
      */
-    public function isPortalRequireLogin()
+    public function isChatEmailValidation()
     {
-        return (bool) $this->getSetting(self::REQUIRE_LOGIN);
+        return (bool) $this->getSetting(self::CHAT_EMAIL_VALIDATION);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isChatRequireLogin()
+    {
+        return (bool) $this->getSetting(self::CHAT_REQUIRE_LOGIN);
     }
 
     /**
@@ -198,8 +208,9 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
 
         $chat = $model->getChat();
         $chat
-            ->setEmailValidation($this->isPortalEmailValidation())
-            ->setRequireLogin($this->isPortalRequireLogin())
+            ->setEnabled($this->isChatEnabled())
+            ->setEmailValidation($this->isChatEmailValidation())
+            ->setRequireLogin($this->isChatRequireLogin())
         ;
 
         $company = $model->getCompany();

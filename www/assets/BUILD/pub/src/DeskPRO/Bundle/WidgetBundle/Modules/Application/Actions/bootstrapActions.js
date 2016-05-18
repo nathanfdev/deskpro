@@ -2,13 +2,12 @@ import { createAction } from 'Ampliflux';
 import { loadBatch } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { loadOnlineAgents } from './peopleActions';
 import { loadOptions, openWidget } from './dpWindowActions';
-import { loadChatPhraseTranslations, loadChatInfo, setChatId, unsetChatId, updateChatInfo } from '../../Chat/Actions/chatActions';
-import { loadTicketDisplayFields } from '../../Ticket/Actions/ticketActions';
+import { loadChatInfo, setChatId, unsetChatId, updateChatInfo } from '../../Chat/Actions/chatActions';
 import {
   widgetSessionCodeSelector,
   requireChatLoginSelector,
   requireChatEmailValidationSelector,
-  widgetBrandSettingsChatEnabledSelector
+  widgetHasChatSelector
 } from '../Selectors/bootstrap';
 
 import { liveDemoSelector } from '../Selectors/dpWindow';
@@ -17,19 +16,23 @@ import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import * as windowApiActions from '../../../Services/WindowApi';
 import $ from 'jquery';
+import lscache from 'lscache';
 
 export const ajaxOptions = { crossDomain: true, dataType: 'json' };
-export const addSessionCode = (state, params = {}) => ({ ...params, __sid: widgetSessionCodeSelector(state) });
+export const addSessionCode = (state, params = {}) => ({ ...params, dpsid: widgetSessionCodeSelector(state) });
+export const setSettings = createAction('WIDGET_SET_SETTINGS', settings => $.extend(true, {}, settings));
 
 // Api actions
 export const getSession = createAction(
   'WIDGET_GET_SESSION',
   () => dispatch => new Promise(resolve =>
     widgetApi
-      .sendPost('DP_API/auth/get_session', { session_code: localStorage.getItem('dpWidget.sessionCode') }, { ...ajaxOptions })
+      .sendPost('DP_API/auth/session', { dpsid: localStorage.getItem('dpWidget.sessionCode') }, { ...ajaxOptions })
       .success(response => {
         const data = response.data;
         localStorage.setItem('dpWidget.sessionCode', data.session_code);
+        dispatch(setSettings(data.global_settings));
+
         if (data.person) {
           dispatch(loadBatch('Person', [data.person], 'all'));
         }
@@ -38,8 +41,6 @@ export const getSession = createAction(
       })
   )
 );
-
-export const setSettings = createAction('WIDGET_SET_SETTINGS', settings => $.extend(true, {}, settings));
 
 export const reloadSettings = createAction(
   'WIDGET_RELOAD_SETTINGS',
@@ -61,23 +62,27 @@ export const reloadSettings = createAction(
       }
     }
 );
-export const loadSettings = createAction(
-  'WIDGET_LOAD_SETTINGS',
-  () => dispatch =>
-    widgetApi
-      .sendGet('DP_API/widget/settings', { ...ajaxOptions })
-      .success(response => {
-        dispatch(setSettings(response.data));
-      })
-);
 
 export const loadPortalPhraseTranslations = createAction(
   'WIDGET_LOAD_PHRASE_TRANSLATIONS',
-  () => widgetApi
-    .sendGet('DP_API/lang/widget-phrases.json', { ...ajaxOptions })
-    .success(response => {
-      portalPhrases.setPhrases(response);
-    })
+  () => new Promise(resolve => {
+    const setPhrases = (data) => {
+      portalPhrases.setPhrases(data);
+      resolve();
+    };
+
+    const cachedData = lscache.get('dpWidget.phrases');
+    if (cachedData) {
+      setPhrases(cachedData);
+    } else {
+      widgetApi
+        .sendGet('DP_API/lang/widget-phrases.json', { ...ajaxOptions })
+        .success(response => {
+          setPhrases(response);
+          lscache.set('dpWidget.phrases', response, 60);
+        });
+    }
+  })
 );
 
 export const chatResume = createAction(
@@ -85,7 +90,7 @@ export const chatResume = createAction(
   () => (dispatch, getState) => {
     const state = getState();
     const storedChatId = Number(localStorage.getItem('dpWidget.chat.chatId'));
-    const widgetHasChat = widgetBrandSettingsChatEnabledSelector(state);
+    const widgetHasChat = widgetHasChatSelector(state);
     const agentsCounts = onlineAgentsCountSelector(state);
     const liveDemo = liveDemoSelector(state);
 
@@ -116,11 +121,8 @@ export const bootstrapWidget = createAction(
     Promise.all([
       dispatch(loadOnlineAgents()),
       dispatch(getSession()),
-      dispatch(loadSettings()),
       dispatch(loadOptions(window.DP_OPTIONS)),
-      dispatch(loadPortalPhraseTranslations()),
-      dispatch(loadChatPhraseTranslations()),
-      dispatch(loadTicketDisplayFields())
+      dispatch(loadPortalPhraseTranslations())
     ])
     .then(response => {
       const onFinish = () => {

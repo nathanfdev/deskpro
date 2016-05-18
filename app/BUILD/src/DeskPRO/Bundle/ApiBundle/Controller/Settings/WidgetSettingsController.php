@@ -215,8 +215,9 @@ class WidgetSettingsController extends BaseController
         $chatSettings = $model->getGlobal()->getChat();
 
         $settingRepo = $this->getSettingsRepository();
-        $settingRepo->updateSetting(WidgetSettingsResolver::EMAIL_VALIDATION, $chatSettings->isEmailValidation());
-        $settingRepo->updateSetting(WidgetSettingsResolver::REQUIRE_LOGIN, $chatSettings->isRequireLogin());
+        $settingRepo->updateSetting(WidgetSettingsResolver::CHAT_EMAIL_VALIDATION, $chatSettings->isEmailValidation());
+        $settingRepo->updateSetting(WidgetSettingsResolver::CHAT_REQUIRE_LOGIN, $chatSettings->isRequireLogin());
+        $settingRepo->updateSetting(WidgetSettingsResolver::CHAT_ENABLED, $chatSettings->isEnabled());
 
         // Save brand settings
         $dataStore = $this->getOrCreateWidgetBrandSettings();
