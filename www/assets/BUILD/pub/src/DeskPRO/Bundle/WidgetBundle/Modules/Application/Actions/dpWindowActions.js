@@ -62,7 +62,7 @@ export const widgetResize = createAction(
 
     return {
       width: $window.width(),
-      height: widgetFrameWindow.innerHeight > $window.height() ? widgetFrameWindow.innerHeight : $window.height()
+      height: widgetFrameWindow.innerHeight < $window.height() ? widgetFrameWindow.innerHeight : $window.height()
     };
   }
 );
