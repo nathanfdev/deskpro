@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 class BuildNewAgent_0000_newtables extends AbstractBuild
@@ -90,7 +91,7 @@ class BuildNewAgent_0000_newtables extends AbstractBuild
         $this->execDbQuery('system', 'CREATE TABLE system_alerts_incidents (id INT AUTO_INCREMENT NOT NULL, date_created DATETIME NOT NULL, resolved TINYINT(1) NOT NULL, dismissed TINYINT(1) NOT NULL, type VARCHAR(30) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci');
         $this->execDbQuery('system', 'CREATE TABLE system_alerts_incident_events (incident_id INT NOT NULL, event_id INT NOT NULL, INDEX IDX_AA906E6D59E53FB9 (incident_id), UNIQUE INDEX UNIQ_AA906E6D71F7E88B (event_id), PRIMARY KEY(incident_id, event_id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci');
 
-        $this->execDbQuery('audit', 'CREATE TABLE audit_logs (id INT AUTO_INCREMENT NOT NULL, action VARCHAR(255) NOT NULL, date_created DATETIME NOT NULL, performer_name VARCHAR(255) NOT NULL, performer_id INT DEFAULT NULL, object_name VARCHAR(255) DEFAULT NULL, object_type VARCHAR(255) DEFAULT NULL, object_id INT DEFAULT NULL, description VARCHAR(255) NOT NULL, api_key INT DEFAULT NULL, data LONGTEXT NOT NULL COMMENT \'(DC2Type:dp_json_obj)\', INDEX performer_idx (performer_id, date_created), INDEX date_created_idx (date_created), INDEX apikey_idx (api_key, date_created), INDEX object_idx (object_type, object_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci');
+        $this->execDbQuery('audit', 'CREATE TABLE audit_logs (id BIGINT AUTO_INCREMENT NOT NULL, action VARCHAR(255) NOT NULL, date_created DATETIME NOT NULL, performer_name VARCHAR(255) NOT NULL, performer_id INT DEFAULT NULL, object_name VARCHAR(255) DEFAULT NULL, object_type VARCHAR(255) DEFAULT NULL, object_id INT DEFAULT NULL, description VARCHAR(255) NOT NULL, api_key INT DEFAULT NULL, data LONGTEXT NOT NULL COMMENT \'(DC2Type:dp_json_obj)\', INDEX performer_idx (performer_id, date_created), INDEX date_created_idx (date_created), INDEX apikey_idx (api_key, date_created), INDEX object_idx (object_type, object_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci');
     }
 }
 

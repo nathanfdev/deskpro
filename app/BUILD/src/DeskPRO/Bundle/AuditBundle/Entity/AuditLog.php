@@ -59,7 +59,7 @@ class AuditLog implements LoggableInterface, NotifyPropertyChanged, EntityInterf
 
     /**
      * @ORM\Id()
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint")
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *
      * @JMS\Expose()
