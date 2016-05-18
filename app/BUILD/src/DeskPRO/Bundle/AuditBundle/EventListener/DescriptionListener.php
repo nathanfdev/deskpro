@@ -43,7 +43,7 @@ class DescriptionListener
         $action = $event->getContext()->getAction();
 
         $description = sprintf(
-            'Entity type [ %s ] with id [ %s ] was %s.',
+            '[%s:%s] %s.',
             $event->getLog()->getObjectType(),
             $event->getLog()->getObjectId(),
             $this->getVerb($action)

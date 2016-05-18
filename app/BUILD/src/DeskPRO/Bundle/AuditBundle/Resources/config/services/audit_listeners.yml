@@ -10,6 +10,13 @@ services:
       - { name: doctrine.event_listener, connection: default, event: onFlush }
       - { name: doctrine.event_listener, connection: default, event: postFlush }
 
+  audit_log.disable_listener_listener:
+    class: DeskPRO\Bundle\AuditBundle\EventListener\DisableListenerListener
+    arguments:
+      - "@service_container"
+    tags:
+      - { name: kernel.event_subscriber }
+
   audit_log.decide_listener:
     class: DeskPRO\Bundle\AuditBundle\EventListener\DecideListener
     arguments:
@@ -39,7 +46,6 @@ services:
     class: DeskPRO\Bundle\AuditBundle\EventListener\DescriptionListener
     tags:
       - { name: kernel.event_listener, event: audit_log.start_log, method: setDescription, priority: -2}
-
 
   audit_log.write_listener:
     class: DeskPRO\Bundle\AuditBundle\EventListener\WriteListener

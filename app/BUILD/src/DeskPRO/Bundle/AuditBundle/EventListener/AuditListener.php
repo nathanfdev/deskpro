@@ -46,12 +46,9 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class AuditListener
 {
-    const ALL = 'all'; // this is special key to reduce code duplicate in configuration
-
+    const ALL    = 'all'; // this is special key to reduce code duplicate in configuration
     const INSERT = 'insert';
-
     const UPDATE = 'update';
-
     const REMOVE = 'remove';
 
     /**
@@ -90,6 +87,11 @@ class AuditListener
     private $deletions = [];
 
     /**
+     * @var bool
+     */
+    private $enabled = true;
+
+    /**
      * AuditListener constructor.
      *
      * @param EventDispatcherInterface $dispatcher
@@ -99,6 +101,30 @@ class AuditListener
     {
         $this->dispatcher     = $dispatcher;
         $this->auditLogHelper = $auditLogHelper;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * Disables the listener (it wont log changes).
+     */
+    public function disableListener()
+    {
+        $this->enabled = false;
+    }
+
+    /**
+     * Enables the listener.
+     */
+    public function enableListener()
+    {
+        $this->enabled = true;
     }
 
     public function preFlush(PreFlushEventArgs $eventArgs)
@@ -112,6 +138,10 @@ class AuditListener
      */
     public function onFlush(OnFlushEventArgs $eventArgs)
     {
+        if (!$this->enabled) {
+            return;
+        }
+
         $this->insertions = $this->uow->getScheduledEntityInsertions();
         $this->updates    = $this->uow->getScheduledEntityUpdates();
         $this->deletions  = $this->uow->getScheduledEntityDeletions();
@@ -124,6 +154,10 @@ class AuditListener
      */
     public function postFlush(PostFlushEventArgs $event)
     {
+        if (!$this->enabled) {
+            return;
+        }
+
         $this->processInsertions();
     }
 
@@ -137,9 +171,6 @@ class AuditListener
         }
     }
 
-    /**
-     *
-     */
     private function processDeletions()
     {
         foreach ($this->deletions as $entity) {
@@ -147,9 +178,6 @@ class AuditListener
         }
     }
 
-    /**
-     *
-     */
     private function processUpdates()
     {
         foreach ($this->updates as $entity) {
