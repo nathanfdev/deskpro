@@ -55,7 +55,6 @@ class InstallCommand extends ContainerAwareCommand
             ->addOption('profile', 'p', InputOption::VALUE_REQUIRED, 'Get answers from a profile file')
             ->addOption('skip-wizard', null, InputOption::VALUE_NONE, 'Use the existing config files and skip the install wizard (including checks)')
             ->addOption('dev', null, InputOption::VALUE_NONE, 'Shortcut for --restart, --skip-wizard, --opt_skip_recommendations, --install-source dev')
-            ->addOption('advanced', null, InputOption::VALUE_NONE, 'If you want to set up advanced settings')
             ->addOption('user', null, InputOption::VALUE_REQUIRED, 'Shortcut for specifying all user info at once. It must be a comma-separated value of "name, email, password" or "email, password". Ex: --user "John Doe, foo@bar.com, mypassword"')
             ->addOption('install-source', null, InputOption::VALUE_REQUIRED, 'From where this installer is being called from (internally used)');
 
@@ -72,8 +71,8 @@ class InstallCommand extends ContainerAwareCommand
         /* @var \DpRun\DpEnv $DP_ENV */
         global $DP_ENV;
 
-        $forceRestart = false;
-        $profile      = new InstallProfile();
+        $force_restart = false;
+        $profile       = new InstallProfile();
 
         if ($input->getOption('dev')) {
             $input->setOption('restart', true);
@@ -99,7 +98,7 @@ class InstallCommand extends ContainerAwareCommand
             if (count($opt) === 3) {
                 $input->setOption('opt_user_name', $opt[0]);
                 $input->setOption('opt_user_email', $opt[1]);
-                $input->setOption('opt_user_password', $opt[2]);
+                $input->setOption('opt_user_password', $opt[3]);
             } elseif (count($opt) === 2) {
                 $input->setOption('opt_user_email', $opt[0]);
                 $input->setOption('opt_user_password', $opt[1]);
@@ -120,28 +119,28 @@ class InstallCommand extends ContainerAwareCommand
         }
 
         if ($input->getOption('profile')) {
-            $forceRestart = true;
+            $force_restart = true;
             $profile->readAnswersFile($input->getOption('profile'));
         }
         $profile->readAnswersInput($input);
 
-        $appEnv  = $this->getContainer()->get('deskpro.app_env');
+        $app_env = $this->getContainer()->get('deskpro.app_env');
         $sm      = $this->getContainer()->get('install.session_manager');
-        $session = $sm->getLastInstallSession($input->getOption('restart') || $forceRestart);
+        $session = $sm->getLastInstallSession($input->getOption('restart') || $force_restart);
 
-        $restartStep = $input->getOption('redo-step');
+        $restart_step = $input->getOption('redo-step');
 
-        $listMode = $input->getOption('list-steps');
-        $skipList = array_map(function ($stepId) {
-            $stepId = preg_replace('/Step$/', '', $stepId);
-            $stepId = Strings::camelCaseToUnderscore($stepId);
-            $stepId = strtolower($stepId);
+        $list_mode = $input->getOption('list-steps');
+        $skip_list = array_map(function ($step_id) {
+            $step_id = preg_replace('/Step$/', '', $step_id);
+            $step_id = Strings::camelCaseToUnderscore($step_id);
+            $step_id = strtolower($step_id);
 
-            return $stepId;
+            return $step_id;
         }, $input->getOption('skip'));
 
         #------------------------------
-        # Make sure we can save the session info
+        # Make sure we can save the session ifo
         #------------------------------
 
         try {
@@ -154,15 +153,15 @@ class InstallCommand extends ContainerAwareCommand
 
             $sm->saveInstallSession($session);
         } catch (FileWriteException $e) {
-            $varDir = realpath($appEnv->getUserTmpDir().'/../');
+            $var_dir = realpath($app_env->getUserTmpDir().'/../');
 
             $output->writeln('<error>Please ensure that the DeskPRO var/ directory exists and is writable, and all sub-directories are writable.</error>');
-            $output->writeln(sprintf('<info>Path to var: %s</info>', $varDir));
+            $output->writeln(sprintf('<info>Path to var: %s</info>', $var_dir));
             $output->writeln('');
 
             if (!EnvUtils::isWindows()) {
                 $output->writeln('On Linux, you can recursively chmod the directory with this command:');
-                $output->writeln(sprintf('<comment>chmod -R 0777 %s</comment>', $varDir));
+                $output->writeln(sprintf('<comment>chmod -R 0777 %s</comment>', $var_dir));
                 $output->writeln('');
             }
 
@@ -224,29 +223,29 @@ class InstallCommand extends ContainerAwareCommand
 
         /** @var InstallStep\AbstractStep $step */
         foreach ($steps as $num => $step) {
-            $stepNum = $num + 1;
+            $step_num = $num + 1;
 
-            $stepId = TypeUtils::getBaseTypeName($step);
-            $stepId = preg_replace('/Step$/', '', $stepId);
-            $stepId = Strings::camelCaseToUnderscore($stepId);
-            $stepId = strtolower($stepId);
+            $step_id = TypeUtils::getBaseTypeName($step);
+            $step_id = preg_replace('/Step$/', '', $step_id);
+            $step_id = Strings::camelCaseToUnderscore($step_id);
+            $step_id = strtolower($step_id);
 
-            if ($skipList && in_array($stepId, $skipList)) {
-                if ($listMode) {
-                    $output->writeln(sprintf('Step %02d: %-28s <comment>(skipped)</comment>', $stepNum, $stepId));
+            if ($skip_list && in_array($step_id, $skip_list)) {
+                if ($list_mode) {
+                    $output->writeln(sprintf('Step %02d: %-28s <comment>(skipped)</comment>', $step_num, $step_id));
                 }
                 continue;
             }
 
-            if (!($restartStep && $restartStep === $stepId) && $step->isComplete()) {
-                if ($listMode) {
-                    $output->writeln(sprintf('Step %02d: %-28s <info>(done)</info>', $stepNum, $stepId));
+            if (!($restart_step && $restart_step === $step_id) && $step->isComplete()) {
+                if ($list_mode) {
+                    $output->writeln(sprintf('Step %02d: %-28s <info>(done)</info>', $step_num, $step_id));
                 }
                 continue;
             }
 
-            if ($listMode) {
-                $output->writeln(sprintf('Step %02d: %s', $stepNum, $stepId));
+            if ($list_mode) {
+                $output->writeln(sprintf('Step %02d: %s', $step_num, $step_id));
                 continue;
             }
 
