@@ -31,6 +31,7 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
+use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\LabelDef;
 use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Entity\Ticket;
@@ -157,15 +158,12 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
 
     private function initIds()
     {
-        $this->languageIds   = $this->fetchIds(self::TABLE_LANGUAGES);
-        $this->agentTeamIds  = $this->fetchIds(self::TABLE_AGENT_TEAMS);
-        $this->agentIds      = $this->fetchIds(self::TABLE_PEOPLE, [['field' => 'is_agent', 'value' => 1]]);
-        $this->peopleIds     = $this->fetchIds(self::TABLE_PEOPLE, [['field' => 'is_agent', 'value' => 0]]);
-        $this->problemIds    = $this->fetchIds(self::TABLE_PROBLEMS);
-        $this->departmentIds = $this->fetchIds(
-            self::TABLE_DEPARTMENTS,
-            [['field' => 'is_tickets_enabled', 'value' => 1]]
-        );
+        $this->languageIds     = $this->fetchIds(self::TABLE_LANGUAGES);
+        $this->agentTeamIds    = $this->fetchIds(self::TABLE_AGENT_TEAMS);
+        $this->agentIds        = $this->fetchIds(self::TABLE_PEOPLE, [['field' => 'is_agent', 'value' => 1]]);
+        $this->peopleIds       = $this->fetchIds(self::TABLE_PEOPLE, [['field' => 'is_agent', 'value' => 0]]);
+        $this->problemIds      = $this->fetchIds(self::TABLE_PROBLEMS);
+        $this->departmentIds   = $this->getLeafDepartentIds();
         $this->joeId           = $this->getReference('person.joe')->getId();
         $this->joeManagerId    = $this->getReference('person.joes_manager')->getId();
         $this->joeManagerOrgId = $this->getReference('org.mana')->getId();
@@ -177,6 +175,20 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
             WHERE f.parent IS NULL ORDER BY f.display_order ASC
         '
         )->execute();
+    }
+
+    private function getLeafDepartentIds()
+    {
+        $leafDepartmentIds = [];
+        $allDepartments    = $this->manager->getRepository(Department::class)->findBy(['is_tickets_enabled' => true]);
+        /** @var Department $department */
+        foreach ($allDepartments as $department) {
+            if ($department->getChildren()->count() === 0) {
+                $leafDepartmentIds[] = $department->getId();
+            }
+        }
+
+        return $leafDepartmentIds;
     }
 
     private function loadCategories()
