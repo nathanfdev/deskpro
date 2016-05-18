@@ -45,6 +45,7 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Term\Problem\ProblemTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateCreated\TicketDateCreatedTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketFlagged\TicketFlaggedTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLabel\TicketLabelTerm;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLanguage\TicketLanguageTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatus\TicketStatusTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketUrgency\TicketUrgencyTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
@@ -107,6 +108,9 @@ class TicketsSelectCriteria
                     break;
                 case 'labels':
                     $composite->addTerm(new TicketLabelTerm(['label' => $value[0], TermInterface::OP_IS]));
+                    break;
+                case 'language':
+                    $composite->addTerm(new TicketLanguageTerm(['language' => $value[0], TermInterface::OP_IS]));
                     break;
                 case 'star':
                     $composite->addTerm(new TicketFlaggedTerm(['flag' => TicketFlagged::$colorMap[$value]]));

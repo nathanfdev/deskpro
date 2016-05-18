@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -46,15 +46,12 @@ class PhpTicketLanguageTermCompiler extends AbstractPhpTermCompiler
      */
     protected function doCompile(TermInterface $term)
     {
-        $op        = $term->getOp();
-        $lang_code = $term->getOption('language');
+        $op     = $term->getOp();
+        $langId = $term->getOption('language');
 
         return new PhpCheck(
-            'check_contains(ticket.getLanguage().lang_code, :op, :language)',
-            array(
-                'op'       => $op,
-                'language' => $lang_code,
-            )
+            'check_contains(ticket.getLanguage().id, :op, :language)',
+            ['op' => $op, 'language' => $langId]
         );
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -46,13 +46,13 @@ class DbalTicketLanguageTermCompiler extends AbstractDbalTermCompiler
 
         $query_part->addUniqueJoin(
             'languages',
-            'tickets_languages',
+            'languages',
             '{languages}.id = ticket.language_id'
         );
 
         $query_part->setParameter('language', $term->getOption('language'));
 
-        $query_part->setWhereString(sprintf('{languages}.lang_code %s :language', $isser));
+        $query_part->setWhereString(sprintf('{languages}.id %s :language', $isser));
 
         $this->logQueryPart($query_part);
 
