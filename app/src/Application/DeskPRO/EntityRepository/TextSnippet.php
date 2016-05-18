@@ -31,9 +31,11 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 
 class TextSnippet extends AbstractEntityRepository
@@ -110,6 +112,108 @@ class TextSnippet extends AbstractEntityRepository
         $coll = $q->execute();
 
         return $coll;
+    }
+
+    public function filterSnippetsForAgent($search, $typename, PersonEntity $agent, $page = 1, $per_page = 250, $in_category = null, $language_id = null)
+    {
+        /** @var Connection $conn */
+        $conn = $this->getEntityManager()->getConnection();
+
+        // find proper categories
+        if (!$in_category) {
+            $dql = '
+                SELECT PARTIAL c.{id}
+                FROM DeskPRO:TextSnippetCategory c
+                WHERE c.typename = :typename AND (c.person = :person OR c.person IS NULL)
+            ';
+
+            $q = $this->getEntityManager()->createQuery($dql)->setParameters(array(
+                'typename' => $typename,
+                'person'   => $agent,
+            ));
+
+            $in_category = array();
+            foreach ($q->getArrayResult() as $row) {
+                $in_category[] = $row['id'];
+            };
+        } else {
+            $in_category = (array) $in_category;
+        }
+
+        // find proper translations
+        $sql = sprintf('
+            select l1.ref_id, l1.language_id, l1.value as title, l2.value as snippet
+            from object_lang l1
+            join object_lang l2 on
+                l1.ref_type = "text_snippets"
+                and l2.ref_type = "text_snippets"
+                and l1.language_id = l2.language_id
+                and l1.prop_name = "title"
+                and l2.prop_name = "snippet"
+                and l1.ref_id = l2.ref_id
+            where l1.value like :title
+            limit %d, %d
+        ', --$page * $per_page, $per_page);
+        $params = array('title' => '%'.$search.'%');
+        if ($language_id) {
+            $sql .= ' and language_id = :language_id';
+            $params['language_id'] = $language_id;
+        }
+        $ids = array();
+        $map = array();
+        foreach ($conn->fetchAll($sql, $params) as $row) {
+            $map[$row['ref_id']][$row['language_id']] = array(
+                'title'   => $row['title'],
+                'snippet' => $row['snippet'],
+            );
+            $ids[] = $row['ref_id'];
+        }
+
+        // find snippets
+        $sql = '
+            select * from text_snippets
+            where category_id in (:categories) and id in (:ids)
+        ';
+        $params   = array('categories' => $in_category, 'ids' => $ids);
+        $types    = array('categories' => Connection::PARAM_INT_ARRAY, 'ids' => Connection::PARAM_INT_ARRAY);
+        $snippets = $conn->fetchAll($sql, $params, $types);
+
+        $langs = array();
+        foreach (App::getContainer()->getLanguageData()->getAll() as $lang) {
+            $langs[$lang->getid()] = $lang->getLocale();
+        }
+        $res = array();
+        foreach ($snippets as $snippet) {
+            if (!$translation = @$map[$snippet['id']]) {
+                continue;
+            }
+
+            $data = array(
+                'id'            => $snippet['id'],
+                'shortcut_code' => $snippet['shortcut_code'],
+                'is_draft'      => (bool) $snippet['is_draft'],
+                'category_id'   => $snippet['category_id'],
+                'title'         => array(),
+                'snippet'       => array(),
+            );
+
+            foreach ($translation as $lang_id => $values) {
+                $data['title'][] = array(
+                    'language_id' => $lang_id,
+                    'locale'      => $langs[$lang_id],
+                    'value'       => $values['title'],
+                );
+                $data['snippet'][] = array(
+                    'language_id' => $lang_id,
+                    'locale'      => $langs[$lang_id],
+                    'value'       => $values['snippet'],
+                );
+            }
+
+            $res[] = $data;
+        }
+
+        return $res;
     }
 
     /**
