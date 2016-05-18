@@ -22,6 +22,7 @@ phantomjsdriver.log
 /dev/dev_config
 
 # vendors and build files
+/node_modules
 /app/BUILD/vendor
 /www/assets/BUILD/web/node_modules
 /www/assets/BUILD/web/bower_components
