@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -114,10 +114,13 @@ class Departments extends AbstractLoader implements NoCache, PersonContextInterf
                 );
             }
         } else {
+            // no need to check load inactive permissions, so we gonna find where is_active = 1
             $res = App::getDb()->fetchAll("
                 SELECT department_id, app, name, value
                 FROM department_permissions
-                WHERE usergroup_id IN($in)
+                WHERE usergroup_id IN($in) 
+                AND is_active = 1
+                AND value = 1
             ");
         }
 
