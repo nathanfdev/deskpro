@@ -14,7 +14,8 @@ Feature: /user_sources endpoint
     And the JSON node "data" should have 2 elements
 
     And the JSON node "data[0].source_type" should be equal to "callbackadaptermock"
-    And the JSON node "data[0].display_options" should have 0 elements
+    And the JSON node "data[0].display_options" should have 1 element
+    And the JSON node "data[0].display_options.login_url" should contain "login?format=default"
     And the JSON node "data[0].id" should exist
     And the JSON node "data[0].title" should be equal to "GooglePlus"
     And the JSON node "data[0].type" should be equal to <context>
