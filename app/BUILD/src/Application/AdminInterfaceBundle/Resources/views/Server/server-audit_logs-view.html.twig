@@ -21,51 +21,51 @@
 			<div class="panel panel-fill indent">
 				<div class="panel-body">
 					<div class="form-group">
-						<div class="col-sm-3">
-							<h3>{{ phrase('admin.audit_logs.date_created') }}</h3>
+						<div class="col-sm-2">
+							<strong>{{ phrase('admin.audit_logs.date_created') }}</strong>
 						</div>
-						<div class="col-sm-9">
-							{{ ng_var('ServerAuditLogsView.log.date_created') }}
+						<div class="col-sm-10">
+							{{ ng_var('ServerAuditLogsView.log.date_created | date : "yyyy-MM-d H:mm:ss"') }}
 						</div>
 					</div>
 				</div>
                 <div class="panel-body">
                     <div class="form-group">
-                        <div class="col-sm-3">
-                            <h3>{{ phrase('admin.audit_logs.performer') }}</h3>
+                        <div class="col-sm-2">
+                            <strong>{{ phrase('admin.audit_logs.performer') }}</strong>
                         </div>
-                        <div class="col-sm-9">
-                            {{ ng_var('ServerAuditLogsView.log.performer_name') }}{#
-                            #}<span ng-show="ServerAuditLogsView.log.performer_id">[{{ ng_var('ServerAuditLogsView.log.performer_id') }}]</span>
+                        <div class="col-sm-10">
+                            {{ ng_var('ServerAuditLogsView.log.performer_name') }}
+                            <span ng-show="ServerAuditLogsView.log.performer_id">(ID: {{ ng_var('ServerAuditLogsView.log.performer_id') }})</span>
                         </div>
                     </div>
                 </div>
                 <div class="panel-body">
                     <div class="form-group">
-                        <div class="col-sm-3">
-                            <h3>{{ phrase('admin.audit_logs.action') }}</h3>
+                        <div class="col-sm-2">
+                            <strong>{{ phrase('admin.audit_logs.action') }}</strong>
                         </div>
-                        <div class="col-sm-9">
+                        <div class="col-sm-10">
                             {{ ng_var('ServerAuditLogsView.log.action') }}
                         </div>
                     </div>
                 </div>
                 <div class="panel-body">
                     <div class="form-group">
-                        <div class="col-sm-3">
-                            <h3>{{ phrase('admin.audit_logs.description') }}</h3>
+                        <div class="col-sm-2">
+                            <strong>{{ phrase('admin.audit_logs.description') }}</strong>
                         </div>
-                        <div class="col-sm-9">
+                        <div class="col-sm-10">
                             {{ ng_var('ServerAuditLogsView.log.description') }}
                         </div>
                     </div>
                 </div>
                 <div class="panel-body" ng-show="ServerAuditLogsView.log.object_id">
                     <div class="form-group">
-                        <div class="col-sm-3">
-                            <h3>{{ phrase('admin.audit_logs.object_description') }}</h3>
+                        <div class="col-sm-2">
+                            <strong>{{ phrase('admin.audit_logs.object_description') }}</strong>
                         </div>
-                        <div class="col-sm-9">
+                        <div class="col-sm-10">
                             {{ ng_var('ServerAuditLogsView.log.object_name') }}
                             - {{ ng_var('ServerAuditLogsView.log.object_type') }}{#
                             #}[{{ ng_var('ServerAuditLogsView.log.object_id') }}]
@@ -74,10 +74,10 @@
                 </div>
                 <div class="panel-body">
                     <div class="form-group">
-                        <div class="col-sm-3">
-                            <h3>{{ phrase('admin.audit_logs.changeset') }}</h3>
+                        <div class="col-sm-2">
+                            <strong>{{ phrase('admin.audit_logs.changeset') }}</strong>
                         </div>
-                        <div class="col-sm-9">
+                        <div class="col-sm-10">
                             <pre>{#
                                 #}{{ ng_var('ServerAuditLogsView.getChangeSet()') }}
                             </pre>

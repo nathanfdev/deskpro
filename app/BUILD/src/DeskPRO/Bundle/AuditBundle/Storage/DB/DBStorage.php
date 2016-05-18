@@ -56,7 +56,7 @@ class DBStorage extends AbstractStorage
         /** @var EntityManager $manager */
         $manager = $this->manager;
         $qb      = $manager->createQueryBuilder();
-        $qb->select('e')->from(AuditLogEntity::class, 'e');
+        $qb->select('e')->from(AuditLogEntity::class, 'e')->orderBy('e.id', 'DESC');
 
         return $qb;
     }

@@ -29,7 +29,10 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
     initialLoad: ->
       @makeQuery()
 
+      @$scope.$watch('ServerAuditLogs.pagination.current_page', (newVal, oldVal) => if parseInt(newVal) != parseInt(oldVal) then @updateFilter())
+
     makeQuery: ->
+      @is_loading = true
       params = {}
       for key in Object.keys(@filters)
         if @filters[key] then params[key] = @filters[key]
@@ -50,7 +53,18 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
           for i in [0...@pagination.total_pages]
             page_nums.push(i + 1)
           @pagination.page_nums = page_nums
+          @is_loading = false
       )
+
+    goPrevPage: ->
+      @pagination.current_page = parseInt(@pagination.current_page) - 1
+      if (@pagination.current_page < 0)
+        @pagination.current_page = 0
+
+    goNextPage: ->
+      @pagination.current_page = parseInt(@pagination.current_page) + 1
+      if (@pagination.current_page > @pagination.total_pages)
+        @pagination.current_page = @pagination.total_pages
 
     updateFilter: ->
       @makeQuery()
