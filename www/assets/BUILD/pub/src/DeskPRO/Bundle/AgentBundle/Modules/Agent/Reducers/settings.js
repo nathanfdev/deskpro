@@ -4,6 +4,6 @@ import { setAgentSettings, updateFilterGrouping } from '../Actions/settingsActio
 
 const initialState = {};
 export default createReducer(initialState, {
-  [setAgentSettings]: setFullPayload(),
-  [updateFilterGrouping]: (state, {id, groupBy}) => state.setIn(['tickets', 'filter_groupings', String(id)], groupBy)
+  [setAgentSettings]:     setFullPayload(),
+  [updateFilterGrouping]: (state, { id, groupBy }) => state.setIn(['tickets', 'filter_groupings', String(id)], groupBy)
 });
