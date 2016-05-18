@@ -1,23 +1,14 @@
 import _ from 'lodash';
 import $ from 'jquery';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
-import 'jquery-datetimepicker/build/jquery.datetimepicker.full';
-
 import moment from 'moment';
 import 'DeskPRO/Bundle/AppBundle/moment-locales';
-
-// required to make jquery-datetimepicker use moment
-Date.parseDate = function( input, format ){
-  return moment(input,format).toDate();
-};
-Date.prototype.dateFormat = function( format ){
-  return moment(this).format(format);
-};
+// import 'jquery-datetimepicker/jquery.datetimepicker';
+import 'jquery-datetimepicker/build/jquery.datetimepicker.full';
 
 export class DpxDateWidget extends PageWidget {
 
   renderWidget() {
-
     if (window.DESKPRO_LANG) {
       // datetime picker has locale for month/day names
       $.datetimepicker.setLocale(window.DESKPRO_LANG.toLowerCase().split('_')[0]);
@@ -26,6 +17,16 @@ export class DpxDateWidget extends PageWidget {
       moment.locale(window.DESKPRO_LANG.toLowerCase().replace('_', '-'));
     }
 
+    // Change 'jquery.datetimepicker.full' to 'jquery.datetimepicker' when this will be fixed
+    // https://github.com/xdan/datetimepicker/issues/392
+    // $.datetimepicker.setDateFormatter({
+    //   parseDate: (date, format) => {
+    //     const d = moment(date, format);
+    //     return d.isValid() ? d.toDate() : false;
+    //   },
+    //   formatDate: (date, format) => moment(date).format(format)
+    // });
+
     // this widget can work with a DATE form type or a DATETIME
     // it works by following "id" naming conventions from symfony's form component ("choice" widgets for the date)
     // it hides the original widgets and connects them with events to a new text input that uses jquery-datetimepicker
@@ -33,26 +34,12 @@ export class DpxDateWidget extends PageWidget {
     const idDiv = $el.find('.fallback-input').find('div:first');
     const id = idDiv.attr('id');
 
-    let isTimeIncluded = false;
-    let $sYear = $('#' + `${id}_year`);
-    let $sMonth = $('#' + `${id}_month`);
-    let $sDay = $('#' + `${id}_day`);
-    let $sHour = null;
-    let $sMinute = null;
-
-    const minDate = ($el.data('min-date').length === 0) ? null : moment($el.data('min-date'), 'YYYY MM DD');
-    const maxDate = ($el.data('max-date').length === 0) ? null : moment($el.data('max-date'), 'YYYY MM DD');
-
-    let weekdays = $el.data('weekdays');
-    if (weekdays) {
-      if (typeof weekdays === 'string') {
-        weekdays = weekdays.split(',');
-      } else {
-        weekdays = [weekdays];
-      }
-    } else {
-      weekdays = [0, 1, 2, 3, 4, 5, 6];
-    }
+    let $sYear;
+    let $sMonth;
+    let $sDay;
+    let $sHour;
+    let $sMinute;
+    let isTimeIncluded;
 
     if ($el.hasClass('dpx-date-time')) {
       $sYear = $('#' + `${id}_date_year`);
@@ -60,20 +47,35 @@ export class DpxDateWidget extends PageWidget {
       $sDay = $('#' + `${id}_date_day`);
       $sHour = $('#' + `${id}_time_hour`);
       $sMinute = $('#' + `${id}_time_minute`);
+
       isTimeIncluded = true;
+    } else {
+      $sYear = $('#' + `${id}_year`);
+      $sMonth = $('#' + `${id}_month`);
+      $sDay = $('#' + `${id}_day`);
+
+      isTimeIncluded = false;
     }
 
-    const $textBox = $('<input type="text">');
+    const minDate = ($el.data('min-date').length === 0) ? null : moment($el.data('min-date'), 'YYYY MM DD');
+    const maxDate = ($el.data('max-date').length === 0) ? null : moment($el.data('max-date'), 'YYYY MM DD');
 
+    const $textBox = $('<input type="text">');
     const options = {
-      parentID: $el.parent(),
+      parentID:   $el.parent(),
       timepicker: isTimeIncluded,
-      format: isTimeIncluded ? 'L LT' : 'L',
+
+      // change format when https://github.com/xdan/datetimepicker/issues/392 will be fixed
+      // format:            isTimeIncluded ? 'L LT' : 'L',
+      format: isTimeIncluded ? 'm/d/Y h:ia' : 'm/d/Y',
+
       closeOnDateSelect: true,
-      scrollInput: false,
-      onChangeDateTime: (dp, $input) => {
-        const val = $textBox.datetimepicker('getValue');
-        const m = moment(val);
+      scrollInput:       false,
+      onChangeDateTime:  () => {
+        const m = moment($textBox.datetimepicker('getValue'));
+
+        // reset items to proper set new value
+        [$sMonth, $sDay, $sYear, $sHour, $sMinute].forEach($item => $item && $item.val(''));
 
         $sMonth.val(m.month() + 1).trigger('change');
         $sDay.val(m.date()).trigger('change');
@@ -87,9 +89,20 @@ export class DpxDateWidget extends PageWidget {
     };
 
     // days of week
+    let weekdays = $el.data('weekdays');
+    if (weekdays) {
+      if (typeof weekdays === 'string') {
+        weekdays = weekdays.split(',');
+      } else {
+        weekdays = [weekdays];
+      }
+    } else {
+      weekdays = [0, 1, 2, 3, 4, 5, 6];
+    }
+
     if (weekdays.length > 0) {
       // disable all days of week
-      options.onGenerate = function() {
+      options.onGenerate = function () {
         const that = this;
         const allowedWeekdays = _.map(weekdays, weekDay => {
           // php stores 1 as monday and sunday as 7, but our cal uses 0 for sunday, 1 for monday, and so on.
@@ -99,7 +112,7 @@ export class DpxDateWidget extends PageWidget {
 
         _.forEach([0, 1, 2, 3, 4, 5, 6], weekDay => {
           if (!_.includes(allowedWeekdays, weekDay)) {
-            $(that).find('.xdsoft_day_of_week' + weekDay).addClass('xdsoft_disabled');
+            $(that).find(`.xdsoft_day_of_week${weekDay}`).addClass('xdsoft_disabled');
           }
         });
       };
@@ -114,26 +127,30 @@ export class DpxDateWidget extends PageWidget {
     $textBox.datetimepicker(options);
 
     const onSetDate = () => {
-      const day = $sDay.val();
+      const day   = $sDay.val();
       const month = $sMonth.val();
-      const year = $sYear.val();
+      const year  = $sYear.val();
 
-      let initialValue = false;
-      if (day || month || year) {
+      const onUpdateValue = (newDate, format) => {
+        const oldValue = moment($textBox.datetimepicker('getValue'));
+        const newValue = moment(newDate);
+
+        if (oldValue.format() !== newValue.format()) {
+          $textBox.val(newValue.format(format));
+        }
+      };
+
+      if (day && month && year) {
         if (isTimeIncluded) {
           const minute = $sMinute.val();
-          const hour = $sHour.val();
+          const hour   = $sHour.val();
 
-          if (minute || hour) {
-            initialValue = new Date(year, month - 1, day, hour, minute);
-            $textBox.val(moment(initialValue).format(options.format));
+          if (minute.length && hour.length) {
+            onUpdateValue(new Date(year, month - 1, day, hour, minute), 'MM/DD/YYYY hh:mma');
           }
         } else {
-          initialValue = new Date(year, month - 1, day);
-          $textBox.val(moment(initialValue).format(options.format));
+          onUpdateValue(new Date(year, month - 1, day), 'MM/DD/YYYY');
         }
-
-        $textBox.datetimepicker('setDate', initialValue);
       }
     };
 
@@ -144,12 +161,15 @@ export class DpxDateWidget extends PageWidget {
     $sMonth.on('change', onSetDate);
     $sYear.on('change', onSetDate);
 
-    $textBox.addClass('dpx-date-input');
-    $textBox.on('keyup', () => {
-      $textBox.datetimepicker('hide');
-    }).on('blur', () => {
-      $textBox.datetimepicker('validate');
-    });
+    if (isTimeIncluded) {
+      $sHour.on('change', onSetDate);
+      $sMinute.on('change', onSetDate);
+    }
+
+    $textBox
+      .addClass('dpx-date-input')
+      .on('keyup', () => $textBox.datetimepicker('hide'))
+      .on('blur', () => $textBox.datetimepicker('validate'));
 
     $el.hide();
     $textBox.insertAfter($el);
