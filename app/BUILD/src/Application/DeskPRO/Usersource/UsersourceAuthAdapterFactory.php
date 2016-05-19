@@ -32,7 +32,6 @@
 
 namespace Application\DeskPRO\Usersource;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Usersource\Adapter\EntityManagerAwareInterface;
@@ -99,7 +98,8 @@ class UsersourceAuthAdapterFactory
             $adapter->setEm($this->container->getEm());
         }
 
-        if ((App::getConfig('debug.enable_usersource_log') || $this->container->get('deskpro.app_env')->isDebug())
+        $appEnv = $this->container->get('deskpro.app_env');
+        if (($appEnv->isDebug() || $appEnv->getConfig('logs.enable_usersource_log'))
             && $adapter instanceof \Orb\Log\Loggable) {
             $adapter->setLogger($this->_getAdapterLogger());
         }

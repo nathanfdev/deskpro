@@ -1,0 +1,141 @@
+<html>
+<head>
+    <title></title>
+    <style>
+        html, body, div, span, applet, object, iframe,
+        h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+        a, abbr, acronym, address, big, cite, code,
+        del, dfn, em, img, ins, kbd, q, s, samp,
+        small, strike, strong, sub, sup, tt, var,
+        b, u, i, center,
+        dl, dt, dd, ol, ul, li,
+        fieldset, form, label, legend,
+        table, caption, tbody, tfoot, thead, tr, th, td,
+        article, aside, canvas, details, embed,
+        figure, figcaption, footer, header, hgroup,
+        menu, nav, output, ruby, section, summary,
+        time, mark, audio, video {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            font-size: 100%;
+            font: inherit;
+            vertical-align: baseline;
+        }
+        /* HTML5 display-role reset for older browsers */
+        article, aside, details, figcaption, figure,
+        footer, header, hgroup, menu, nav, section {
+            display: block;
+        }
+        body {
+            line-height: 1;
+        }
+        ol, ul {
+            list-style: none;
+        }
+        blockquote, q {
+            quotes: none;
+        }
+        blockquote:before, blockquote:after,
+        q:before, q:after {
+            content: '';
+            content: none;
+        }
+        table {
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        html, body {
+            background: #3362CA;
+        }
+
+        .usersources-list-container {
+            margin: 50px auto 0 auto;
+            max-width: 400px;
+        }
+
+        ul.usersources-list {
+
+        }
+
+        ul.usersources-list > li {
+            margin: 20px;
+        }
+
+        .usersource-btn {
+            box-shadow: 0px 1px 0px 0px #1C3B77;
+            background-color:#33bdef;
+            border-radius:4px;
+            display:block;
+            cursor:pointer;
+            color:#ffffff;
+            font-family:Arial;
+            font-size:15px;
+            font-weight:bold;
+            padding:20px 76px;
+            text-decoration:none;
+            text-shadow:0px 1px 1px #5b6178;
+            text-align: center;
+        }
+        .usersource-btn:hover {
+            background-color:#019ad2;
+        }
+        .usersource-btn:active {
+            position:relative;
+            top:1px;
+        }
+
+        ul.usersources-list.social-list > li {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .social-list .usersource-btn {
+            padding: 12px 76px;
+            font-size: 12px;
+        }
+
+        .usersource-btn.google { background-color: #C62E22; }
+        .usersource-btn.google:hover { background-color: #D93024; }
+
+        .usersource-btn.facebook { background-color: #2A3C82; }
+        .usersource-btn.facebook:hover { background-color: #3C55B8; }
+
+        .usersources-list + .usersources-list {
+            border-top: 1px solid #234790;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="usersources-list-container">
+    {% if external_usersources|length %}
+        <ul class="usersources-list">
+            {% for u in external_usersources %}
+                <li>
+                    <a class="usersource-btn" href="{{ u.display_options.login_url }}">{{ u.display_options.button_label }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% if social_usersources|length %}
+        <ul class="usersources-list social-list">
+            {% for u in social_usersources %}
+                {% if u.source_type == 'googleplus' %}
+                    <li>
+                        <a class="usersource-btn google" href="{{ u.display_options.login_url }}">Log in with Google</a>
+                    </li>
+                {% endif %}
+                {% if u.source_type == 'facebook' %}
+                    <li>
+                        <a class="usersource-btn facebook" href="{{ u.display_options.login_url }}">Log in with Facebook</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
+
+</body>
+</html>
