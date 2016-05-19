@@ -44,6 +44,8 @@ use DeskPRO\Bundle\AppBundle\Form\Error\Exception\BadCredentialsFormException;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\AuthenticationRequestType;
 use DeskPRO\Bundle\AppBundle\Form\Type\AuthenticationType;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Component\Util\ListUtils;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Orb\Auth\Adapter\CallbackInterface;
@@ -164,13 +166,14 @@ class ApiTokensController extends BaseController
      *      }
      * )
      *
-     * @Rest\Get("/user_sources/{context}", requirements={"context": "(agent|user)"})
+     * @Rest\Get("/user_sources/{context}.{_format}", requirements={"context": "(agent|user)", "_format": "(json|html)"})
      *
      * @param string $context
+     * @param string $_format
      *
-     * @return View
+     * @return View|Response
      */
-    public function usersourcesListAction($context)
+    public function usersourcesListAction($context, $_format = 'json')
     {
         $qb = $this->getManager()->createQueryBuilder();
         $qb
@@ -182,7 +185,25 @@ class ApiTokensController extends BaseController
             ->setParameter('callback_sources', Usersource::$callbackAdapters)
         ;
 
-        return new View($this->wrap($qb->getQuery()->getResult()));
+        $results = $qb->getQuery()->getResult();
+
+        if ($_format === 'html') {
+            $usersources = $this->get('serializer')->toArray($results, SideloadSerializationContext::createContext($this->container));
+            $res         = $this->render('ApiBundle:ApiTokens:mobile-login-methods.html.twig', [
+                'raw_usersources'      => $usersources,
+                'external_usersources' => ListUtils::filter($usersources, function ($v) {
+                    return $v['display_type'] === 'button';
+                }),
+                'social_usersources' => ListUtils::filter($usersources, function ($v) {
+                    return $v['display_type'] === 'social';
+                }),
+            ]);
+            $res->headers->set('Content-Type', 'text/html');
+
+            return $res;
+        }
+
+        return new View($this->wrap($results));
     }
 
     /**
