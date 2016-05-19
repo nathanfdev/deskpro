@@ -483,56 +483,6 @@ class PublishController extends AbstractController
         return $this->listValidatingCommentsAction();
     }
 
-    public function validatingMassActionsAction($action)
-    {
-        if (!$this->person->hasPerm('agent_publish.validate')) {
-            throw $this->createNotFoundException();
-        }
-        $data = $this->in->getCleanValueArray('content', 'array', 'string');
-
-        $this->em->beginTransaction();
-
-        $agent_chat = new \Application\DeskPRO\Chat\AgentChat($this->person, $this->session->getEntity());
-        $reason     = $this->in->getString('decline_reason');
-
-        foreach ($data as $type => $ids) {
-            try {
-                $entity = $this->publish_helper->getEntityNameFor($type);
-            } catch (\InvalidArgumentException $e) {
-                $entity = null;
-            }
-            if (!$entity) {
-                continue;
-            }
-
-            $results = $this->em->getRepository($entity)->getByIds($ids);
-            foreach ($results as $r) {
-                if ($action == 'approve') {
-                    if ($type == 'feedback') {
-                        $r->status = 'new';
-                    } else {
-                        $r->status = 'published';
-                    }
-                } else {
-                    if ($reason) {
-                        $this_reason = $reason.' (<a data-route="'.$this->get('router')->getGenerator()->generateObjectUrl($r, [], 'agent').'">'.htmlentities($r->title).'</a>)';
-                        $agent_chat->sendAgentMessage($this_reason, [$r->person['id']]);
-                    }
-                    $r->status_code = 'hidden.draft';
-                }
-
-                $this->em->persist($r);
-            }
-        }
-
-        $this->em->flush();
-        $this->em->commit();
-
-        return $this->createJsonResponse([
-            'success' => true,
-        ]);
-    }
-
     ############################################################################
     # content validating
     ############################################################################

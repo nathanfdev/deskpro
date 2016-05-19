@@ -995,11 +995,11 @@ class FeedbackController extends AbstractController
         $feedback = $this->getFeedback($feedbackId);
 
         if ($feedback) {
-            $feedback_moderate = new FeedbackModerate($this->container, $this->person);
+            $feedbackModerate = new FeedbackModerate($this->container, $this->person);
             if ($action === 'approve') {
-                $feedback_moderate->approveFeedback($feedback);
+                $feedbackModerate->approveFeedback($feedback);
             } elseif ($action === 'disapprove') {
-                $feedback_moderate->disapproveFeedback($feedback, $this->in->getString('reason'));
+                $feedbackModerate->disapproveFeedback($feedback, $this->in->getString('reason'));
             }
         }
 
@@ -1011,6 +1011,29 @@ class FeedbackController extends AbstractController
                 'next_url' => $next ? $this->get('object_router')->getAgentPath($next) : null,
             ]
         );
+    }
+
+    public function validatingMassActionsAction($action)
+    {
+        if (!$this->person->hasPerm('agent_publish.validate')) {
+            throw $this->createNotFoundException();
+        }
+        $data = $this->in->getCleanValueArray('content', 'array', 'string');
+
+        foreach ($data as $type => $ids) {
+            $reason           = $this->in->getString('reason');
+            $results          = $this->em->getRepository(Feedback::class)->getByIds($ids);
+            $feedbackModerate = new FeedbackModerate($this->container, $this->person);
+            foreach ($results as $feedback) {
+                if ($action === 'approve') {
+                    $feedbackModerate->approveFeedback($feedback);
+                } elseif ($action === 'disapprove') {
+                    $feedbackModerate->disapproveFeedback($feedback, $reason);
+                }
+            }
+        }
+
+        return $this->createJsonResponse(['success' => true]);
     }
 
     /**

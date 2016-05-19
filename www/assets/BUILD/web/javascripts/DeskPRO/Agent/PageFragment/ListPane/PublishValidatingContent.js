@@ -44,7 +44,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingContent = new Orb.Class({
 
 				var sendFn = function() {
 					$.ajax({
-						url: BASE_URL + 'agent/publish/content/validating-mass-actions/' + action,
+						url: BASE_URL + 'agent/feedback/validating-mass-actions/' + action,
 						data: data,
 						type: 'POST',
 						dataType: 'json',
@@ -58,7 +58,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingContent = new Orb.Class({
 							});
 						}
 					});
-				}
+				};
 
 				if (action == 'disapprove') {
 					DeskPRO_Window.showPrompt("Enter a reason or comment to send to the authors", function(reason) {

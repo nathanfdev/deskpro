@@ -1572,9 +1572,9 @@ $collection->create(
     ]
 );
 
-$collection->create('agent_publish_validatingcontent_mass', [
-    'path'       => '/publish/content/validating-mass-actions/{action}',
-    'controller' => 'AgentBundle:Publish:validatingMassActions',
+$collection->create('feedback_validatingcontent_mass', [
+    'path'       => '/feedback/validating-mass-actions/{action}',
+    'controller' => 'AgentBundle:Feedback:validatingMassActions',
 ]);
 
 $collection->create(
