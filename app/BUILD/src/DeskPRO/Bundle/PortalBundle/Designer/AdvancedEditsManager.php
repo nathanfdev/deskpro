@@ -124,8 +124,25 @@ class AdvancedEditsManager
      */
     public function getEditThemeSetScss()
     {
-        return (string) $this->findOrCreateBlobStorage(self::CUSTOM_SCSS_ASSET_NAME, self::CUSTOM_SCSS_ASSET_TAG)
+        $scss = (string) $this->findOrCreateBlobStorage(self::CUSTOM_SCSS_ASSET_NAME, self::CUSTOM_SCSS_ASSET_TAG)
             ->getData();
+
+        if (empty(trim($scss))) {
+            $scss = <<<CODE
+/*
+    Use this template to add custom CSS to your site.
+    
+    The code you enter here will be evaluated as SCSS which is an extension of CSS
+    that adds nesting features, variables, mixins, inheritance and more.
+    
+    Read more about SCSS here: http://sass-lang.com/guide
+*/
+
+
+CODE;
+
+            return $scss;
+        }
     }
 
     /**
