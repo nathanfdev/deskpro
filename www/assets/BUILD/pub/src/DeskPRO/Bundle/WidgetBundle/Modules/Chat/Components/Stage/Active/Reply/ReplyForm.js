@@ -37,9 +37,7 @@ export class ReplyForm extends React.Component {
       message = localStorage.getItem('dpWidget.chat.partial');
     }
 
-    this.state = {
-      message: message
-    };
+    this.state = { message };
   }
 
   onChangeMessage = value => {
@@ -177,7 +175,6 @@ export class ReplyForm extends React.Component {
             getExternalInput={() => this.refs.fileUpload}
             uploadUrl={`${window.DP_HELPDESK_URL}portal/api/blobs/temp`}
           >
-
             <DragOverlayListener context={[parent.document, window.widgetFrame.document]}>
               <DropZoneOverlay />
             </DragOverlayListener>

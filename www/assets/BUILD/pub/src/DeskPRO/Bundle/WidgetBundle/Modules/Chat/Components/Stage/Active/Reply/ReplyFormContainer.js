@@ -63,10 +63,11 @@ export class ReplyFormContainer extends React.Component {
 
     return (
       <ReopenChatContainer>
-        <ReplyForm onUserTyping={this.onUserTyping}
-                   onSendMessage={this.onSendMessage}
-                   onRemoveAttachment={this.onRemoveAttachment} {...this.props} />
-
+        <ReplyForm
+          onUserTyping={this.onUserTyping}
+          onSendMessage={this.onSendMessage}
+          onRemoveAttachment={this.onRemoveAttachment} {...this.props}
+        />
       </ReopenChatContainer>
     );
   }

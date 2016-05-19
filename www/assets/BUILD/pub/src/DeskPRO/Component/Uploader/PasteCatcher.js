@@ -42,7 +42,7 @@ export const getBlobsFromHtml = (html, onPasteImage) => {
 export class PasteCatcher extends React.Component {
 
   static propTypes = {
-    context: PropTypes.object,
+    context:      PropTypes.object,
     onPasteImage: PropTypes.func
   };
 
