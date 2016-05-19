@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,24 +29,50 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Routing\RouterInterface;
 
 class JsonBodyListener implements EventSubscriberInterface
 {
+    /**
+     * @var RouterInterface
+     */
+    private $router;
+
+    /**
+     * Constructor.
+     *
+     * @param RouterInterface $router
+     */
+    public function __construct(RouterInterface $router)
+    {
+        $this->router = $router;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::REQUEST => array('onRequest', 512),
-        );
+        return [
+            KernelEvents::REQUEST => ['onRequest', 512],
+        ];
     }
 
     public function onRequest(GetResponseEvent $event)
     {
         $request = $event->getRequest();
+
+        // can accept different requests
+        if (preg_match('#^/api/v2/api_tokens/user_sources/\d+/callback#', $request->getPathInfo())) {
+            return;
+        }
 
         $request->setFormat('json', 'application/json');
         $request->attributes->set('_format', 'json');
