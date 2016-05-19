@@ -31,7 +31,6 @@
  *
  * @category DependencyInjection
  */
-
 namespace Application\DeskPRO\DependencyInjection;
 
 use Application\DeskPRO\App;

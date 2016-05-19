@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Chat\UserChat;
 
 use Application\DeskPRO\App;

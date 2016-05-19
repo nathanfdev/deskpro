@@ -28,7 +28,6 @@ services:
         class: DpTestSrc\TestBundle\DataSet\EmptyDb
         arguments:
             - "@service_container"
-            - "@doctrine.orm.default_entity_manager"
             - "@doctrine.dbal.default_connection"
             - %kernel.cache_dir%/dbset
 
@@ -36,7 +35,6 @@ services:
         class: DpTestSrc\TestBundle\DataSet\FreshDb
         arguments:
             - "@service_container"
-            - "@doctrine.orm.default_entity_manager"
             - "@doctrine.dbal.default_connection"
             - %kernel.cache_dir%/dbset
 
@@ -44,7 +42,6 @@ services:
         class: DpTestSrc\TestBundle\DataSet\ApiDb
         arguments:
             - "@service_container"
-            - "@doctrine.orm.default_entity_manager"
             - "@doctrine.dbal.default_connection"
             - %kernel.cache_dir%/dbset
 
@@ -52,7 +49,6 @@ services:
         class: DpTestSrc\TestBundle\DataSet\TermEngineDb
         arguments:
             - "@service_container"
-            - "@doctrine.orm.default_entity_manager"
             - "@doctrine.dbal.default_connection"
             - %kernel.cache_dir%/dbset
 

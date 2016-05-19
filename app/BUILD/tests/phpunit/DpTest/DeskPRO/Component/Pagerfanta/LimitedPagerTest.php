@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpTest\DeskPRO\Component\SassCompiler;
 
 use DeskPRO\Component\Pagerfanta\Adapter\LimitedAdapter;

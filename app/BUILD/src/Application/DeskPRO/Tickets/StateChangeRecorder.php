@@ -31,7 +31,6 @@
  *
  * @category Tickets
  */
-
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;

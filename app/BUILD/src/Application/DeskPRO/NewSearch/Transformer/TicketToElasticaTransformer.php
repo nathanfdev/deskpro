@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,12 +28,12 @@
 
 namespace Application\DeskPRO\NewSearch\Transformer;
 
+use Application\DeskPRO\ApacheTika\ClientManager as ApacheTikaManager;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Elastica\Document;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 use Orb\Util\Arrays;
-use Application\DeskPRO\ApacheTika\ClientManager as ApacheTikaManager;
 
 /**
  * Ticket To Elastica Transformer.
@@ -45,7 +45,7 @@ use Application\DeskPRO\ApacheTika\ClientManager as ApacheTikaManager;
 class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
 {
     /**
-     * @var ApacheTikaManager $apache_tika
+     * @var ApacheTikaManager
      */
     private $apache_tika;
 
@@ -65,7 +65,7 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
         $this->apache_tika = $apache_tika;
     }
 
-        /**
+    /**
      * Transform.
      *
      * @param Ticket $object
@@ -105,7 +105,6 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
             $document->set('labels', []);
         }
 
-
         $messages = [];
         foreach ($object->getMessages() as $message) {
             $messages[] = $message->getMessage();
@@ -124,7 +123,7 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
             if ($object->has_attachments) {
                 try {
                     /** @var \Application\DeskPRO\ApacheTika\ClientManager $client */
-                    $client         = $this->getApacheTika()->getClient();
+                    $client = $this->getApacheTika()->getClient();
                     /** @var TicketAttachment $attachment */
                     foreach ($object->getAttachments() as $attachment) {
                         $blob = $attachment->getBlob();

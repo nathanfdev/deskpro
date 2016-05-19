@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpTest\DeskPRO\Application\NewSettings\Loader;
 
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;

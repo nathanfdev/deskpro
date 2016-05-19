@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\InstallBundle\Upgrade\Build;
 
 class BuildNewAgent_0001_newalters extends AbstractBuild

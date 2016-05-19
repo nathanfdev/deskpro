@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\DevBundle;
 
 use Symfony\Component\Console\Application;

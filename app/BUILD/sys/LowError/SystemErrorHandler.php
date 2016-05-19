@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpSys\LowError;
 
 use Psr\Log\LoggerInterface;

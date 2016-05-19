@@ -73,6 +73,8 @@ $SETTINGS['notification.settings.default_strategy'] = [
 
 $SETTINGS['notification.settings.polling_client.polling_interval'] = 500000;
 
+$SETTINGS['audit_log.storage'] = "db";
+
 ######################################################
 # Disable API response caching                       #
 ######################################################

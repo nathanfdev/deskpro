@@ -31,7 +31,6 @@
  *
  * @category People
  */
-
 namespace Application\DeskPRO\People\UserPermissions\Value;
 
 class ArticlePermissions implements PermissionValueInterface

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpBehat\Api;
 
 use DeskPRO\Bundle\AppBundle\Entity\Task;

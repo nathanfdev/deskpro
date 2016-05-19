@@ -223,55 +223,78 @@ $container->setDefinition('dp.entity_lister.problem', $definition);
 
 $container->loadFromExtension(
     'doctrine',
-    array(
-        'orm' => array(
+    [
+        'orm' => [
             'auto_generate_proxy_classes' => 'FILE_NOT_EXISTS',
             'default_entity_manager'      => 'default',
-            'entity_managers'             => array(
-                'default' => array(
-                    'mappings' => array(
-                        'DeskPRO' => array(
+
+            'entity_managers' => [
+
+                'default' => [
+                    'mappings' => [
+
+                        'DeskPRO' => [
                             'type' => 'staticphp',
-                        ),
-                        'EmailBundle' => array(
+                        ],
+
+                        'EmailBundle' => [
                             'type' => 'staticphp',
-                        ),
-                        'AppBundle' => array(
+                        ],
+
+                        'AppBundle' => [
                             'type'      => 'annotation',
                             'alias'     => 'App',
                             'is_bundle' => false,
                             'dir'       => '%kernel.root_dir%/../src/DeskPRO/Bundle/AppBundle/Entity',
                             'prefix'    => 'DeskPRO\Bundle\AppBundle\Entity',
-                        ),
-                    ),
-                ),
-                'system' => array(
+                        ],
+                    ],
+                ],
+
+                'system' => [
                     'connection' => 'system',
-                    'mappings'   => array(
+                    'mappings'   => [
                         'SystemBundle' => null,
-                    ),
-                ),
-            ),
-        ),
-        'dbal' => array(
+                    ],
+                ],
+
+                'audit' => [
+                    'connection' => 'audit',
+                    'mappings'   => [
+                        'AuditBundle' => [
+                            'type'      => 'annotation',
+                            'is_bundle' => false,
+                            'dir'       => '%kernel.root_dir%/../src/DeskPRO/Bundle/AuditBundle/Entity',
+                            'prefix'    => 'DeskPRO\Bundle\AuditBundle\Entity',
+                        ],
+                    ],
+                ],
+
+            ],
+        ],
+
+        'dbal' => [
             'default_connection' => 'default',
-            'connections'        => array(
+
+            'connections' => [
                 'default'      => ['host' => 'see DbalConnectionPass'],
                 'system'       => ['host' => 'see DbalConnectionPass'],
+                'audit'        => ['host' => 'see DbalConnectionPass'],
                 'read'         => ['host' => 'see DbalConnectionPass'],
                 'read_reports' => ['host' => 'see DbalConnectionPass'],
                 'read_search'  => ['host' => 'see DbalConnectionPass'],
-            ),
-            'types' => array(
+            ],
+
+            'types' => [
                 'term_engine_term' => 'DeskPRO\Bundle\AppBundle\Doctrine\Type\TermEngineTermType',
                 'dpblob'           => 'Application\\DeskPRO\\DBAL\\Types\\DpBlobType',
                 'dpblob_file'      => 'Application\\DeskPRO\\DBAL\\Types\\DpBlobFileType',
                 'dp_json_obj'      => 'Application\\DeskPRO\\DBAL\\Types\\DpJsonObject',
                 'array'            => 'Application\\DeskPRO\\DBAL\\Types\\DpArrayType',
                 'object'           => 'Application\\DeskPRO\\DBAL\\Types\\DpObjectType',
-            ),
-        ),
-    )
+            ],
+        ],
+    ]
 );
 
 $container->register(

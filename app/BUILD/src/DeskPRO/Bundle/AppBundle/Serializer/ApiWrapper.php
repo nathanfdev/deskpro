@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer;
 
+use Doctrine\MongoDB\CursorInterface;
 use JMS\Serializer\Annotation as JMS;
 use Pagerfanta\Pagerfanta;
 
@@ -92,6 +93,8 @@ class ApiWrapper
             $results = $data->getCurrentPageResults();
             if ($results instanceof \ArrayIterator) {
                 $results = $results->getArrayCopy();
+            } elseif ($results instanceof CursorInterface) {
+                $results = array_values($results->toArray());
             }
 
             $this->data               = $results;

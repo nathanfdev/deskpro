@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpSys\Kernel;
 
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -57,6 +56,7 @@ class DevKernel extends BaseKernel
             new \Symfony\Bundle\MonologBundle\MonologBundle(),
             new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
             new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
+            new \Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
             new \FOS\ElasticaBundle\FOSElasticaBundle(),
             new \FOS\RestBundle\FOSRestBundle(),
             new \Symfony\Bundle\SecurityBundle\SecurityBundle(),
@@ -73,6 +73,7 @@ class DevKernel extends BaseKernel
             new \DeskPRO\Bundle\ApiBundle\ApiBundle(),
             new \DeskPRO\Bundle\DevBundle\DevBundle(),
             new \DeskPRO\Bundle\SystemBundle\SystemBundle(),
+            new \DeskPRO\Bundle\AuditBundle\AuditBundle(),
         ];
 
         return $bundles;

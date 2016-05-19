@@ -8,6 +8,10 @@ services:
     class: DeskPRO\Bundle\AppBundle\DBAL\DbConfigReader
     arguments: ["@deskpro.app_env"]
 
+  deskpro.mongo_config_reader:
+    class: DeskPRO\Bundle\AppBundle\MongoDB\MongoConfigReader
+    arguments: ["@deskpro.app_env"]
+
   ######################################################################################################################
   # Misc
   ######################################################################################################################
@@ -19,7 +23,7 @@ services:
   # This is a copy of the normal doctrine cache warmer, except we've set a high
   # priority so its done first. See also LazyWamersPass
   doctrine.orm.proxy_cache_warmer:
-    class: %doctrine.orm.proxy_cache_warmer.class%
+    class: "%doctrine.orm.proxy_cache_warmer.class%"
     arguments: ["@doctrine"]
     public: false
     tags:

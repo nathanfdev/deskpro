@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\ApiBundle\View;
 
 use DeskPRO\Bundle\ApiBundle\View\Representation\StandardRepresentation;

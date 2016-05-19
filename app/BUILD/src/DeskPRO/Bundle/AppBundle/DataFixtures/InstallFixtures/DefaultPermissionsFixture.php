@@ -31,7 +31,6 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
-use Application\DeskPRO\People\UserPermissions\GroupsDbLoader;
 use Application\DeskPRO\People\UserPermissions\UserPermissions;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -106,7 +105,7 @@ class DefaultPermissionsFixture extends DeskProAbstractFixture implements Ordere
         $perms = new UserPermissions();
 
         $set_perms = array();
-        foreach (GroupsDbLoader::$prefix_map as $real_name => $coll_name) {
+        foreach (UserPermissions::$prefix_map as $real_name => $coll_name) {
             $obj = $perms->$coll_name;
             foreach ($obj->getNames() as $prop) {
                 $set_perms[] = $real_name.'.'.$prop;

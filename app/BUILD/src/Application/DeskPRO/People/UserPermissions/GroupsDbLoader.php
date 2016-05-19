@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -57,18 +57,6 @@ class GroupsDbLoader
      * @var array
      */
     private $group_perms;
-
-    /**
-     * @var array
-     */
-    public static $prefix_map = array(
-        'tickets'   => 'ticket',
-        'chat'      => 'chat',
-        'feedback'  => 'feedback',
-        'articles'  => 'article',
-        'downloads' => 'download',
-        'news'      => 'news',
-    );
 
     /**
      * @param int[]         $groups Group IDs or Usergroup objects
@@ -157,11 +145,11 @@ class GroupsDbLoader
             } // invalid
 
             list($type, $name) = explode('.', $k, 2);
-            if (!isset(self::$prefix_map[$type])) {
+            if (!isset(UserPermissions::$prefix_map[$type])) {
                 continue;
             } // unknown type
 
-            $obj_name = self::$prefix_map[$type];
+            $obj_name = UserPermissions::$prefix_map[$type];
             $obj      = $user_perms->$obj_name;
             if (!isset($obj->$name)) {
                 continue;

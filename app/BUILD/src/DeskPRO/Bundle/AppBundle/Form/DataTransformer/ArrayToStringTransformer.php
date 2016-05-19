@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Form\DataTransformer;
 
 use Symfony\Component\Form\DataTransformerInterface;

@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use Application\DeskPRO\Command\WorkerJobCommand;

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,6 +35,9 @@ use Symfony\Component\Console\Input\InputInterface;
  */
 class InstallProfile
 {
+    /**
+     * @var array
+     */
     private static $questionIds = [
         'db_host',
         'db_user',
@@ -53,6 +56,15 @@ class InstallProfile
     /**
      * @var array
      */
+    private static $dbs = [
+        'db',
+        'system_db',
+        'audit_db',
+    ];
+
+    /**
+     * @var array
+     */
     private $answers = [];
 
     /**
@@ -61,6 +73,14 @@ class InstallProfile
     public static function getQuestionIds()
     {
         return self::$questionIds;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getDbs()
+    {
+        return self::$dbs;
     }
 
     /**

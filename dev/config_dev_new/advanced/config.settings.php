@@ -26,3 +26,4 @@ $SETTINGS['api_log.writer.file'] = [
 ];
 
 $SETTINGS['api_log.dupe.modes'] = ['key'];
+$SETTINGS['audit_log.storage'] = "db";

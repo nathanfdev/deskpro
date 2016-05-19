@@ -31,7 +31,6 @@
  *
  * @category Install
  */
-
 namespace Application\InstallBundle\Data\DefaultData;
 
 use Application\DeskPRO\WorkerProcess\Job;

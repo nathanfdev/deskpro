@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpBehat\Api;
 
 use Application\DeskPRO\Entity\Ticket;

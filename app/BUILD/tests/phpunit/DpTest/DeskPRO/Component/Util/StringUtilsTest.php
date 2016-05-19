@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -45,6 +45,23 @@ class StringUtilsTest extends DeskProTestCase
     {
         return [
             ['DeskPRO', 'desk_pro'],
+            ['ImACamel', 'im_a_camel'],
+            ['QuickBrownFoxJumpsOverTheLazyDog', 'quick_brown_fox_jumps_over_the_lazy_dog'],
+        ];
+    }
+
+    /**
+     * @dataProvider getTestToCamelCase
+     */
+    public function testToCamelCase($expected, $input)
+    {
+        $this->assertEquals(StringUtils::toCamelCase($input), $expected);
+    }
+
+    public function getTestToCamelCase()
+    {
+        return [
+            ['DeskPro', 'desk_pro'],
             ['ImACamel', 'im_a_camel'],
             ['QuickBrownFoxJumpsOverTheLazyDog', 'quick_brown_fox_jumps_over_the_lazy_dog'],
         ];

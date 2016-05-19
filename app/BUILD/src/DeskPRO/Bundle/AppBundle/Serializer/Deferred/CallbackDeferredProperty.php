@@ -54,7 +54,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Serializer\Deferred;
 
 /**

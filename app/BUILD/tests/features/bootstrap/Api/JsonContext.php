@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpBehat\Api;
 
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;

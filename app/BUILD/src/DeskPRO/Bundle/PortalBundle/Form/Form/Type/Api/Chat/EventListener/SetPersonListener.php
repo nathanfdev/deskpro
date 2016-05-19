@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener;
 
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;

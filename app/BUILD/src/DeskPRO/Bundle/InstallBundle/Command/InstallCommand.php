@@ -98,7 +98,7 @@ class InstallCommand extends ContainerAwareCommand
             if (count($opt) === 3) {
                 $input->setOption('opt_user_name', $opt[0]);
                 $input->setOption('opt_user_email', $opt[1]);
-                $input->setOption('opt_user_password', $opt[3]);
+                $input->setOption('opt_user_password', $opt[2]);
             } elseif (count($opt) === 2) {
                 $input->setOption('opt_user_email', $opt[0]);
                 $input->setOption('opt_user_password', $opt[1]);

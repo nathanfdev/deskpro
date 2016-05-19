@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -42,8 +42,9 @@ use Application\DeskPRO\People\AgentPermissions\Value\ProblemsPermissions;
 use Application\DeskPRO\People\AgentPermissions\Value\PublishPermissions;
 use Application\DeskPRO\People\AgentPermissions\Value\TasksPermissions;
 use Application\DeskPRO\People\AgentPermissions\Value\TicketPermissions;
+use Application\DeskPRO\People\PermissionsSetInterface;
 
-class AgentPermissions
+class AgentPermissions implements PermissionsSetInterface
 {
     /**
      * @var \Application\DeskPRO\People\AgentPermissions\Value\ChatPermissions
@@ -101,13 +102,13 @@ class AgentPermissions
 
     public function __construct()
     {
-        $this->chat    = new ChatPermissions();
-        $this->general = new GeneralPermissions();
-        $this->org     = new OrgPermissions();
-        $this->people  = new PeoplePermissions();
-        $this->publish = new PublishPermissions();
-        $this->ticket  = new TicketPermissions();
-        $this->tasks   = new TasksPermissions();
+        $this->chat     = new ChatPermissions();
+        $this->general  = new GeneralPermissions();
+        $this->org      = new OrgPermissions();
+        $this->people   = new PeoplePermissions();
+        $this->publish  = new PublishPermissions();
+        $this->ticket   = new TicketPermissions();
+        $this->tasks    = new TasksPermissions();
         $this->problems = new ProblemsPermissions();
     }
 

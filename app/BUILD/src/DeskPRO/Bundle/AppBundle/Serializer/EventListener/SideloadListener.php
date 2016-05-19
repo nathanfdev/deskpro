@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Serializer\EventListener;
 
 use Application\DeskPRO\Domain\DomainObject;

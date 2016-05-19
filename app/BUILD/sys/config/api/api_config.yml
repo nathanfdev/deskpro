@@ -5,7 +5,7 @@ imports:
 # Keeping all parameter changes here rather than in various bundles
 parameters:
   portal.session.name: sess_data
-  doctrine.orm.proxy_dir: %kernel.cache_dir%/doctrine-proxies
+  doctrine.orm.proxy_dir: "%kernel.cache_dir%/doctrine-proxies"
   fos_rest.routing.loader.reader.controller.class: DeskPRO\Bundle\ApiBundle\Routing\ApiRestControllerReader
   monolog.logger.class: DeskPRO\Bundle\AppBundle\Logging\NoExceptionsLogger
   file_locator.class: DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator
@@ -157,6 +157,7 @@ doctrine:
                  field: DoctrineExtensions\Query\Mysql\Field
                  group_concat: DoctrineExtensions\Query\Mysql\GroupConcat
                  regexp: DoctrineExtensions\Query\Mysql\Regexp
+
 
 #rms_push_notifications:
 #  ios:

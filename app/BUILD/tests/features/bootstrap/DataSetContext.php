@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpBehat;
 
 use Behat\Behat\Context\Context;

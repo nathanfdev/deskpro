@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;

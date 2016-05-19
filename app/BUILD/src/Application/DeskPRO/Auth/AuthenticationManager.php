@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\Auth;
 
 use Application\DeskPRO\Entity\Usersource;

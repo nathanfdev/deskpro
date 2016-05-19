@@ -119,4 +119,33 @@ class LowUtil
 
         return $pdo;
     }
+
+    public static function getMongoConfigFromArray(array $connInfo)
+    {
+
+        $defaults = [
+            'server' => [
+                'host' => 'localhost',
+                'port' => '27017'
+            ],
+            'options' => []
+        ];
+
+        $config = [
+            'server' => $connInfo,
+            'options' => isset($connInfo['options']) ? $connInfo['options'] : []
+        ];
+
+        $config = array_replace_recursive($defaults, $config);
+
+        if (substr($config['server']['host'], 0, 10) === 'mongodb://') {
+            $config['server'] = $config['host'];
+        } elseif (preg_match('#^(.*?):([0-9]+)$#', $config['server']['host'], $m)) {
+            $config['server'] = "mongodb://{$m[1]}:{$m[1]}";
+        } else {
+            $config['server'] = "mongodb://{$config['server']['host']}:{$config['server']['port']}";
+        }
+
+        return $config;
+    }
 }

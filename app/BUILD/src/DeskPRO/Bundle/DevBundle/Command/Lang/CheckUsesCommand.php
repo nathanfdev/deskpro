@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\DevBundle\Command\Lang;
 
 use DeskPRO\Bundle\DevBundle\Language\PhrasesFinder;

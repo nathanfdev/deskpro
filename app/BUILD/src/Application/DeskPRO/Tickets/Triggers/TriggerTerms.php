@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Tickets\Triggers;
 
 use Application\DeskPRO\Criteria\CriteriaTermInterface;

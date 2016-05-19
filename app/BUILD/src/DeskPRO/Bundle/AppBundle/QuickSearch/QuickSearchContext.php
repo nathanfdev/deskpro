@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\QuickSearch;
 
 use Doctrine\Common\Collections\ArrayCollection;

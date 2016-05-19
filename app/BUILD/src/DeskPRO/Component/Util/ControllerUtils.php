@@ -93,4 +93,24 @@ class ControllerUtils
 
         return false;
     }
+
+    public static function calculateTag($className, $action)
+    {
+        $matches = [];
+        if (preg_match_all('#(.*?\\Controller)#i', $className, $matches)) {
+            $fqcn = ltrim($matches[0][1], '\\');
+        } else {
+            $fqcn = $className;
+        }
+
+        $tag   = explode('\\', $fqcn);
+        $tag[] = substr($action, 0, -6);
+        foreach ($tag as &$t) {
+            $t = str_replace('Controller', '', $t);
+            $t = StringUtils::toSnakeCase($t);
+        }
+        $tag = implode('.', $tag);
+
+        return $tag;
+    }
 }

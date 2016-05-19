@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Error;
 
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;

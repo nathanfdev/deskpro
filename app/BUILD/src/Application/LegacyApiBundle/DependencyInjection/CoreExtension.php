@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,7 +31,6 @@
  *
  * @category DependencyInjection
  */
-
 namespace Application\LegacyApiBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -53,21 +52,6 @@ class CoreExtension extends Extension
             new Reference('request'),
         ));
         $container->setDefinition('deskpro.api.request_auth', $definition);
-
-        $definition = new Definition('Application\\DeskPRO\\AuditLog\\AuditManager');
-        $definition->setFactory('Application\\DeskPRO\\AuditLog\\AuditManagerFactory::getAuditManager');
-        $container->setDefinition('deskpro.auditlog.manager', $definition);
-
-        $definition = new Definition('Application\\DeskPRO\\AuditLog\\AuditDoctrineListener');
-        $definition->setFactory('Application\\DeskPRO\\AuditLog\\AuditManagerFactory::getAuditListener');
-        $definition->setArguments(array(new Reference('deskpro.auditlog.manager')));
-        $definition->addTag('doctrine.event_subscriber');
-        $container->setDefinition('deskpro.auditlog.doctrine_listener', $definition);
-
-        $definition = new Definition('Application\\DeskPRO\\AuditLog\\AuditWriter\\AuditDbWriter');
-        $definition->setFactory('Application\\DeskPRO\\AuditLog\\AuditManagerFactory::getAuditDbWriter');
-        $definition->addTag('deskpro.auditlog.writers');
-        $container->setDefinition('deskpro.auditlog.writer.db', $definition);
 
         $container
             ->register('kernel.listener.controller_post_action', 'Application\\LegacyApiBundle\\Event\\LogApiCallListener')

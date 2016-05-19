@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpBehat\Portal\Api;
 
 use Application\DeskPRO\Entity\Session;

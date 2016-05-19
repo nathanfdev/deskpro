@@ -17,7 +17,7 @@ services:
   api_log.writer.file:
     class: DeskPRO\Bundle\ApiBundle\Log\Writer\FileWriter
     arguments:
-      - %kernel.logs_dir%
+      - "%kernel.logs_dir%"
       - "@settings_resolver"
       - "@api_log.writer.file.serializer"
 

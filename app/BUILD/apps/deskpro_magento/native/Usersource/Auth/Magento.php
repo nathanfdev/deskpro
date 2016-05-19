@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace deskpro_magento\Usersource\Auth;
 
 use Doctrine\DBAL\DriverManager;

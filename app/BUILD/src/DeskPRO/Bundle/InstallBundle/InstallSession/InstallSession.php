@@ -41,17 +41,17 @@ class InstallSession
     /**
      * @var string
      */
-    private $session_id;
+    private $sessionId;
 
     /**
      * @var \DateTime
      */
-    private $start_date;
+    private $startDate;
 
     /**
      * @var \DateTime
      */
-    private $update_date;
+    private $updateDate;
 
     /**
      * @var User
@@ -66,17 +66,22 @@ class InstallSession
     /**
      * @var DbInfo
      */
-    private $dbinfo;
+    private $dbInfo;
 
     /**
      * @var DbInfo
      */
-    private $system_dbinfo;
+    private $systemDbInfo;
+
+    /**
+     * @var DbInfo
+     */
+    private $auditDbInfo;
 
     /**
      * @var string
      */
-    private $web_url;
+    private $webUrl;
 
     /**
      * @var string
@@ -88,11 +93,16 @@ class InstallSession
      */
     private $flags = [];
 
-    public function __construct($session_id)
+    /**
+     * InstallSession constructor.
+     *
+     * @param string $sessionId
+     */
+    public function __construct($sessionId)
     {
-        $this->session_id  = $session_id;
-        $this->start_date  = new \DateTime();
-        $this->update_date = new \DateTime();
+        $this->sessionId  = $sessionId;
+        $this->startDate  = new \DateTime();
+        $this->updateDate = new \DateTime();
     }
 
     /**
@@ -100,7 +110,7 @@ class InstallSession
      */
     public function getSessionId()
     {
-        return $this->session_id;
+        return $this->sessionId;
     }
 
     /**
@@ -140,15 +150,15 @@ class InstallSession
      */
     public function getDbInfo()
     {
-        return $this->dbinfo;
+        return $this->dbInfo;
     }
 
     /**
-     * @param DbInfo $dbinfo
+     * @param DbInfo $dbInfo
      */
-    public function setDbInfo(DbInfo $dbinfo = null)
+    public function setDbInfo(DbInfo $dbInfo = null)
     {
-        $this->dbinfo = $dbinfo;
+        $this->dbInfo = $dbInfo;
     }
 
     /**
@@ -156,15 +166,35 @@ class InstallSession
      */
     public function getSystemDbInfo()
     {
-        return $this->system_dbinfo;
+        return $this->systemDbInfo;
     }
 
     /**
-     * @param DbInfo $system_dbinfo
+     * @param DbInfo $systemDbInfo
      */
-    public function setSystemDbInfo(DbInfo $system_dbinfo)
+    public function setSystemDbInfo(DbInfo $systemDbInfo)
     {
-        $this->system_dbinfo = $system_dbinfo;
+        $this->systemDbInfo = $systemDbInfo;
+    }
+
+    /**
+     * @return DbInfo
+     */
+    public function getAuditDbInfo()
+    {
+        return $this->auditDbInfo;
+    }
+
+    /**
+     * @param DbInfo $auditDbInfo
+     *
+     * @return $this
+     */
+    public function setAuditDbInfo(DbInfo $auditDbInfo)
+    {
+        $this->auditDbInfo = $auditDbInfo;
+
+        return $this;
     }
 
     /**
@@ -172,15 +202,15 @@ class InstallSession
      */
     public function getWebUrl()
     {
-        return $this->web_url;
+        return $this->webUrl;
     }
 
     /**
-     * @param string $web_url
+     * @param string $webUrl
      */
-    public function setWebUrl($web_url)
+    public function setWebUrl($webUrl)
     {
-        $this->web_url = $web_url;
+        $this->webUrl = $webUrl;
     }
 
     /**
@@ -214,7 +244,7 @@ class InstallSession
      */
     public function touch()
     {
-        $this->update_date = new \DateTime();
+        $this->updateDate = new \DateTime();
     }
 
     /**

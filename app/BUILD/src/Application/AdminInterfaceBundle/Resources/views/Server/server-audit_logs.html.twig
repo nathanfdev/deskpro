@@ -1,0 +1,172 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+
+{% block fullpane_content %}
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Audit Logs</h3>
+		</header>
+
+		<article class="padd">
+            <div class="alert alert-info">
+                <div>
+                    <table>
+                        <tr>
+                            <td width="80">{{ phrase('admin.audit_logs.performer_id') }}</td>
+                            <td width="100">
+                                <input class="form-control" type="number" ng-model="ServerAuditLogs.filters.performer_id" />
+                            </td>
+                            <td style="padding-left: 15px" width="115">{{ phrase('admin.audit_logs.performer_name') }}</td>
+                            <td width="150">
+                                <input class="form-control" type="text" ng-model="ServerAuditLogs.filters.performer_name" />
+                            </td>
+                            <td style="padding-left: 15px" width="75">{{ phrase('admin.audit_logs.api_key_id') }}</td>
+                            <td width="100">
+                                <input class="form-control" type="number" ng-model="ServerAuditLogs.filters.api_key" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="100">{{ phrase('admin.audit_logs.object_type_filter') }}</td>
+                            <td width="100">
+                                <input class="form-control" type="text" ng-model="ServerAuditLogs.filters.object_type" />
+                            </td>
+                            <td style="padding-left: 15px" width="95">Object id</td>
+                            <td width="100">
+                                <input class="form-control" type="number" ng-model="ServerAuditLogs.filters.object_id" />
+                            </td>
+                            <td width="95" style="padding-left: 15px" >{{ phrase('admin.audit_logs.object_name_filter') }}</td>
+                            <td width="100">
+                                <input class="form-control" type="text" ng-model="ServerAuditLogs.filters.object_name" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="95"  >Action</td>
+                            <td width="100">
+                                <input class="form-control" type="text" ng-model="ServerAuditLogs.filters.action" />
+                            </td>
+                            <td width="150" style="padding-left: 15px">{{ phrase('admin.audit_logs.date_created_filter') }}</td>
+                            <td colspan="3">
+                                <span>
+                                    <input type="text" class="form-control" style="width: 140px; display: inline-block;"
+                                           ng-model="ServerAuditLogs.filters.date_created_from"
+                                           dp-datetime-popup="DD MMMM YYYY"
+                                    />
+                                </span>
+                                <span>
+                                    <input type="text" class="form-control" style="width: 140px; display: inline-block;"
+                                           ng-model="ServerAuditLogs.filters.date_created_to"
+                                           dp-datetime-popup="DD MMMM YYYY"
+                                    />
+                                </span>
+                            </td>
+
+                        </tr>
+                    </table>
+                    <div class="text-center" style="border-top: 1px solid #aed7e0; padding-top: 8px; margin-top: 8px;">
+                        <button class="btn btn-primary" ng-click="ServerAuditLogs.updateFilter()">{{ phrase('admin.audit_logs.filter') }}</button>
+                        <button class="btn btn-default" ng-click="ServerAuditLogs.clearFilter()">{{ phrase('admin.audit_logs.clear_filter') }}</button>
+                    </div>
+                </div>
+            </div>
+			<div class="dp-btn-pagination" ng-show="ServerAuditLogs.logs.length">
+				<span dp-show-spinning="paginating_server_audit_logs">
+					<i class="spinner-flat"></i>
+				</span>
+				<button class="btn" ng-show="ServerAuditLogs.pagination.current_page != 1" ng-click="ServerAuditLogs.goPrevPage()">
+					&lt; Prev
+				</button>
+				<select
+						ng-model="ServerAuditLogs.pagination.current_page"
+						ui-select2
+						style="width: 130px;"
+				>
+					<option ng-repeat="page in ServerAuditLogs.pagination.page_nums" value="{{ ng_var('page') }}">
+						Page {{ ng_var('page') }}
+					</option>
+				</select>
+				<button class="btn" ng-show="ServerAuditLogs.pagination.current_page < ServerAuditLogs.pagination.total_pages"
+						ng-click="ServerAuditLogs.goNextPage()">
+					Next &gt;
+				</button>
+			</div>
+			<div style="padding: 80px; text-align: center;" ng-show="ServerAuditLogs.is_loading">
+				<i class="spinner-editor"></i>
+			</div>
+			<table class="table table-bordered" ng-if="!ServerAuditLogs.is_loading && ServerAuditLogs.logs.length">
+				<thead>
+					<tr>
+						<th nowrap="nowrap">
+							ID
+						</th>
+						<th nowrap="nowrap">
+							{{ phrase('admin.audit_logs.object_id') }}
+						</th>
+						<th nowrap="nowrap">
+							{{ phrase('admin.audit_logs.object_name') }}
+						</th>
+						<th nowrap="nowrap">
+							{{ phrase('admin.audit_logs.action') }}
+						</th>
+						<th nowrap="nowrap">
+							{{ phrase('admin.audit_logs.performer_name') }}
+						</th>
+						<th nowrap="nowrap" style="width: 155px;">
+							{{ phrase('admin.audit_logs.date_created') }}
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="log in ServerAuditLogs.logs">
+						<td class="alt dp-id-col">
+							<a ng-href="{{ ng_href('server.audit_logs.view', '{id: log.id}') }}">{{ ng_var('log.id') }}</a>
+						</td>
+						<td>
+							<span ng-if="log.object_id" style="color: #888; font-size: 11px; padding-right: 3px;">ID: {{ ng_var('log.object_id') }}</span>
+							{{ ng_var('log.object_type') }}
+						</td>
+						<td>
+							{{ ng_var('log.object_name') }}
+						</td>
+						<td>
+							{{ ng_var('log.action') }}
+						</td>
+						<td>
+							<span ng-if="log.performer_id" style="color: #888; font-size: 11px; padding-right: 3px;">ID: {{ ng_var('log.performer_id') }}</span>
+							{{ ng_var('log.performer_name') }}
+							<div ng-if="log.api_key" style="color: #888; font-size: 11px;">
+								{{ phrase('admin.audit_logs.api_key_id') }}: {{ ng_var('log.api_key') }}
+							</div>
+						</td>
+						<td>
+							{{ ng_var('log.date_created | date : "yyyy-MM-d H:mm:ss"') }}
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="dp-btn-pagination" ng-show="ServerAuditLogs.logs.length">
+				<span dp-show-spinning="paginating_server_audit_logs">
+					<i class="spinner-flat"></i>
+				</span>
+				<button class="btn" ng-show="ServerAuditLogs.pagination.current_page != 1" ng-click="ServerAuditLogs.goPrevPage()">
+					&lt; Prev
+				</button>
+				<select
+						ng-model="ServerAuditLogs.pagination.current_page"
+						ui-select2
+						style="width: 130px;"
+				>
+					<option ng-repeat="page in ServerAuditLogs.pagination.page_nums" value="{{ ng_var('page') }}">
+						Page {{ ng_var('page') }}
+					</option>
+				</select>
+				<button class="btn" ng-show="ServerAuditLogs.pagination.current_page < ServerAuditLogs.pagination.total_pages"
+						ng-click="ServerAuditLogs.goNextPage()">
+					Next &gt;
+				</button>
+			</div>
+		</article>
+
+
+	</section>
+
+{% endblock %}

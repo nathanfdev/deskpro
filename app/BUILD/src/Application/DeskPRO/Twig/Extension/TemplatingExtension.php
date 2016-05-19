@@ -31,7 +31,6 @@
  *
  * @category Templating
  */
-
 namespace Application\DeskPRO\Twig\Extension;
 
 use Application\DeskPRO\App;

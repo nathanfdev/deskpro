@@ -72,7 +72,10 @@
     "pusher/pusher-php-server": "^2.2",
     "richsage/rms-push-notifications-bundle": "^0.1.9",
     "symfony/assetic-bundle": "^2.7",
-    "bugsnag/bugsnag": "2.*"
+    "bugsnag/bugsnag": "2.*",
+    "doctrine/mongodb-odm-bundle": "~3.0",
+    "doctrine/mongodb-odm": "dev-master",
+    "mongofill/mongofill": "dev-master"
   },
   "require-dev": {
     "mockery/mockery": "0.9.3",

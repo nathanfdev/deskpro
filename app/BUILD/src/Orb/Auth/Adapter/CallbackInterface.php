@@ -31,7 +31,6 @@
  *
  * @category Auth
  */
-
 namespace Orb\Auth\Adapter;
 
 /**

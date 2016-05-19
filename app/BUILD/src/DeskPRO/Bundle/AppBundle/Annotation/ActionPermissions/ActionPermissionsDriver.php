@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,7 +32,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiTags;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Metadata\MethodMetadata;
 use DeskPRO\Bundle\AppBundle\Annotation\Driver\AbstractDriver;
-use DeskPRO\Component\Util\StringUtils;
+use DeskPRO\Component\Util\ControllerUtils;
 use Metadata\MergeableClassMetadata;
 
 /**
@@ -116,20 +116,7 @@ class ActionPermissionsDriver extends AbstractDriver
 
     public function getImplicitTags(MethodMetadata $metadata)
     {
-        $matches = [];
-        if (preg_match_all('#(.*?\\Controller)#i', $metadata->class, $matches)) {
-            $fqcn = ltrim($matches[0][1], '\\');
-        } else {
-            $fqcn = $metadata->class;
-        }
-        $tag   = explode('\\', $fqcn);
-        $tag[] = substr($metadata->name, 0, -6);
-        foreach ($tag as &$t) {
-            $t = str_replace('/Controller/', '', $t);
-            $t = StringUtils::toSnakeCase($t);
-        }
-        $tag = implode('.', $tag);
-
+        $tag  = ControllerUtils::calculateTag($metadata->class, $metadata->name);
         $tags = [$tag];
 
         // such a spike

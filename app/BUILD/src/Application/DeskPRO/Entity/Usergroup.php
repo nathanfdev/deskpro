@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -45,13 +44,13 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 /**
  * A usergroup is any way to group related users together. Not necessarily just for permissions.
  *
- * @property int          $id
- * @property string       $title
- * @property string       $note
- * @property bool         $is_agent_group
- * @property string       $sys_name
- * @property bool         $is_enabled
- * @property Permission[] $permissions
+ * @property int $id
+ * @property string $title
+ * @property string $note
+ * @property bool $is_agent_group
+ * @property string $sys_name
+ * @property bool $is_enabled
+ * @property Permission[]|ArrayCollection $permissions
  * @JMS\ExclusionPolicy("all")
  */
 class Usergroup extends DomainObject
@@ -143,11 +142,12 @@ class Usergroup extends DomainObject
     }
 
     /**
-     * @param $permission
+     * @param Permission $permission
      */
-    public function addPermission($permission)
+    public function addPermission(Permission $permission)
     {
         $this->permissions->add($permission);
+        $this->_onPropertyChanged('permissions', $this->permissions, $this->permissions);
     }
 
     /**
@@ -156,6 +156,7 @@ class Usergroup extends DomainObject
     public function removePermission($permission)
     {
         $this->permissions->removeElement($permission);
+        $this->_onPropertyChanged('permissions', $this->permissions, $this->permissions);
     }
 
     /**
@@ -359,11 +360,13 @@ class Usergroup extends DomainObject
             )
         );
         $metadata->mapOneToMany(
-            array(
-                'fieldName'    => 'permissions',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Permission',
-                'mappedBy'     => 'usergroup',
-            )
+            [
+                'fieldName'     => 'permissions',
+                'targetEntity'  => 'Application\\DeskPRO\\Entity\\Permission',
+                'mappedBy'      => 'usergroup',
+                'cascade'       => ['persist', 'remove'],
+                'orphanRemoval' => true,
+            ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }

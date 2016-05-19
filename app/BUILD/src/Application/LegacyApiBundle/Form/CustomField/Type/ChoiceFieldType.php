@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Form\CustomField\Type;
 
 use Symfony\Component\Form\FormBuilderInterface;

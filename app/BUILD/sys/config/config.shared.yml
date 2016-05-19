@@ -24,3 +24,20 @@ monolog:
         - "dp.tickets.filters.tengine.dbal.compiler"
         - "dp.tickets.filters.tengine.php.engine"
         - "dp.tickets.filters.tengine.php.compiler"
+
+doctrine_mongodb:
+    connections:
+      default:
+        server: "see MongoConnectionPass"
+        options: {}
+    default_database: dp_audit
+    default_document_manager: default
+    default_connection: default
+    document_managers:
+      default:
+        mappings:
+          AuditBundle:
+            type: 'annotation'
+            is_bundle: false
+            dir: '%kernel.root_dir%/../src/DeskPRO/Bundle/AuditBundle/Document'
+            prefix: 'DeskPRO\Bundle\AuditBundle\Document'

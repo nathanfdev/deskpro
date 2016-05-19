@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DpBehat\System\AntiAbuse;
 
 use Application\DeskPRO\Entity\Setting;

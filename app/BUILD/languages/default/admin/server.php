@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -76,4 +76,5 @@ return array(
     'admin.server.upload_effect_max_explain'         => 'Based on the three values above, this is the effective maximum filesize your server is currently able to accept.',
     'admin.server.upload_memory_limit_explain'       => 'This is the maximum amount of memory PHP can use. A file must be read into memory for DeskPRO to process and save it. The maximum filesize you can accept through an upload will be about 1/3 of this value.',
     'admin.server.we_detected_php_ini_at'            => 'We have detected the path to your php.ini file at {{path}}',
+
 );

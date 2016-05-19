@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\EmailBundle\Queue;
 
 use Application\DeskPRO\DBAL\Connection;

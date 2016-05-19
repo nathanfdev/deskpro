@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Labels;
 
 use Application\DeskPRO\Entity\Labels\Label;

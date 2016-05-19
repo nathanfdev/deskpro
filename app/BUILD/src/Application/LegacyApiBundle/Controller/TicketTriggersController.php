@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\TicketTrigger;
@@ -130,7 +129,6 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
      *
      * @return \Symfony\Component\HttpFoundation\Response
      *
-     * @todo Porbably I`m not right, but creating trigger for entity, if given has no ones - not crystally clear for user, huh?
      *
      * SWG\Api(
      * 	path="/ticket_triggers/{special_type}/{id}",

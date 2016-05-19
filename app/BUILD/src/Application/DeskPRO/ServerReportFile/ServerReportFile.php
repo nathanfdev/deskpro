@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\ServerReportFile;
 
 use Application\DeskPRO\App;

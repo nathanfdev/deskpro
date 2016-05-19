@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Component\Util;
 
 /**
@@ -44,20 +43,25 @@ class ListUtils
     }
 
     /**
-     * Similar to array_filter except keys are NOT preserved. You get a plain array (list) back.
+     * Similar with array_filter, but you can use array_keys AND by default it not preserves keys.
      *
      * @param \Traversable|array $array
-     * @param callable           $fn    Your function is passed: $fn($value, $index)
+     * @param callable           $fn           Your function is passed: $fn($value, $index)
+     * @param bool               $preserveKeys
      *
      * @return array
      */
-    public static function filter($array, $fn)
+    public static function filter($array, $fn, $preserveKeys = false)
     {
         $new = [];
 
         foreach ($array as $k => $v) {
             if ($fn($v, $k)) {
-                $new[] = $v;
+                if ($preserveKeys) {
+                    $new[] = $v;
+                } else {
+                    $new[$k] = $v;
+                }
             }
         }
 

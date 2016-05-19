@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO;
 
 use Application\DeskPRO\People\PersonGuest;
