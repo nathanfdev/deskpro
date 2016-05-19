@@ -37,6 +37,7 @@ use Application\DeskPRO\Entity\NewsComment;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
+use DeskPRO\Bundle\PortalBundle\Form\Handler\CommentFormHandler;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -193,6 +194,12 @@ class NewsController extends AbstractController
      * @ParamConverter(name="post", converter="deskpro_slug")
      * @Security("is_granted('USE_NEWS') and is_granted('VIEW_NEWS', post)")
      * @PageHttpCache(content="post")
+
+     * @param Request $request
+     * @param News    $post
+     * @param         $visitor_id
+     *
+     * @return Response
      */
     public function viewAction(Request $request, News $post, $visitor_id)
     {
@@ -201,6 +208,7 @@ class NewsController extends AbstractController
         //
         $newCommentForm = null;
         if ($this->isGranted(ContentCommentVoter::COMMENT_NEWS, $post)) {
+            /** @var CommentFormHandler $form_handler */
             $form_handler = $this->get('form_handler.comment');
             $comment      = new NewsComment();
             $comment->setVisitorId($visitor_id);
@@ -263,11 +271,15 @@ class NewsController extends AbstractController
      * Need to force a redirect here to support old permalinks!
      *
      * @Route("/news/view/{slug}", name="portal_news_view_LEGACY")
+     *
+     * @param  string      $slug
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function viewLEGACYAction(Request $request, $slug)
+    public function viewLEGACYAction($slug)
     {
         /** @var News $post */
-        $post = $this->getRepo('DeskPRO:News')->getBySlug($slug);
+        $post = $this->getRepo(News::class)->getBySlug($slug);
 
         if (!$post) {
             throw $this->createNotFoundException('could not find new post for slug "'.$slug.'"');

@@ -75,6 +75,7 @@ services:
 
   pdf_renderer:
     class: DeskPRO\Component\Pdf\mPdfRenderer
+    arguments: ["@settings_resolver"]
 
   widget_loader_code_renderer:
     class: DeskPRO\Bundle\AppBundle\Templating\WidgetLoader

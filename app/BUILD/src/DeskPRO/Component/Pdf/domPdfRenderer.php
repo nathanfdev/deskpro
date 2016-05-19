@@ -28,8 +28,6 @@
 
 namespace DeskPRO\Component\Pdf;
 
-use Application\DeskPRO\NewSettings\SettingsResolver;
-
 class mPdfRenderer implements PdfRendererInterface
 {
     /**
@@ -37,15 +35,8 @@ class mPdfRenderer implements PdfRendererInterface
      */
     private $object;
 
-    /**
-     * @var SettingsResolver
-     */
-    private $resolver;
-
-    public function __construct($resolver)
+    public function __construct()
     {
-        $this->resolver = $resolver;
-
         $this->object = new \mPDF(
             'utf-8', // Language/Character set
             'A4', // Size
@@ -60,7 +51,7 @@ class mPdfRenderer implements PdfRendererInterface
             'P' // Orientation
         );
 
-        $this->object->SetBasePath($this->resolver->getGlobalSettings()->get('core.deskpro_url').'/');
+        $this->object->SetBasePath(realpath(__DIR__.'/../../../../../web/images'));
         $this->object->shrink_tables_to_fit = 0;
     }
 

@@ -28,8 +28,17 @@
 
 namespace DeskPRO\Component\Pdf;
 
+use Application\DeskPRO\NewSettings\SettingsResolver;
+
 interface PdfRendererInterface
 {
+    /**
+     * PdfRendererInterface constructor.
+     *
+     * @param SettingsResolver $resolver
+     */
+    public function __construct($resolver);
+
     /**
      * @param string $contentHtml
      *
