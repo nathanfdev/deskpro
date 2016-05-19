@@ -47,9 +47,11 @@ use DeskPRO\Bundle\AppBundle\Form\Type\AuthenticationType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Orb\Auth\Adapter\CallbackInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class ApiTokensController.
@@ -156,32 +158,67 @@ class ApiTokensController extends BaseController
 
     /**
      * @ApiDoc(
-     *      description="Returns api token for usersource callback",
-     *      output="token",
+     *      description="Login via usersource.",
      *      statusCodes={
-     *          201="Created token",
-     *          404="Auth code not found"
+     *          404="Usersource not found"
      *      }
      * )
      *
-     * @Rest\Get("/callback/{usersource}")
+     * @Rest\Get("/user_source/{usersource}/login")
      *
      * @param Request    $request
      * @param Usersource $usersource
      *
+     * @return RedirectResponse
+     */
+    public function usersourceLoginAction(Request $request, Usersource $usersource)
+    {
+        $adapter = $this->getUsersourceAdapterFactory()->getAuthAdapter($usersource);
+
+        if ($adapter instanceof CallbackInterface) {
+            $adapter->setCallbackUrl($this->generateUrl('deskpro_api_authentication_apitokens_usersourcecallback', [
+                'usersource' => $usersource->getId(),
+                'format'     => $request->get('format', 'default'),
+            ], UrlGeneratorInterface::ABSOLUTE_URL));
+
+            $result = $adapter->authenticate();
+            if ($result->isRedirectRequired()) {
+                return $this->redirect($result->getRedirectUrl());
+            } else {
+                throw $this->createBadRequestException('Unable to redirect');
+            }
+        }
+
+        throw $this->createBadRequestException('Not supported usersource');
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="Returns api token on usersource callback",
+     *      output="token",
+     *      statusCodes={
+     *          200="Created token"
+     *      }
+     * )
+     *
+     * @Rest\Get("/user_source/{usersource}/callback/{format}", requirements={"format": "(ios|default)"})
+     *
+     * @param Request    $request
+     * @param Usersource $usersource
+     * @param string     $format
+     *
      * @return View
      */
-    public function processCallbackAction(Request $request, Usersource $usersource)
+    public function usersourceCallbackAction(Request $request, Usersource $usersource, $format)
     {
-        /** @var UsersourceAuthAdapterFactory $adapterFactory */
-        $adapterFactory = $this->getContainer()->getSystemService('usersource_auth_adapter_factory');
-
-        $adapter = $adapterFactory->getAuthAdapter($usersource);
+        $adapter = $this->getUsersourceAdapterFactory()->getAuthAdapter($usersource);
         if (!$adapter instanceof CallbackInterface) {
             throw $this->createBadRequestException('Not callback usersource.');
         }
 
+        $adapter->setCallbackUrl($request->getUriForPath($request->getPathInfo()));
         $adapter->setCallbackContext($_REQUEST);
+
         $result = $adapter->authenticate();
         if (!$result->isValid()) {
             $this->throwUnauthorized();
@@ -198,11 +235,6 @@ class ApiTokensController extends BaseController
         } catch (UsersourceNoEmailException $e) {
             $person = null;
             $this->throwUnauthorized();
-        }
-
-        $format = $request->get('format', 'default');
-        if (!in_array($format, ['ios', 'default'])) {
-            throw $this->createBadRequestException('Unknown output format');
         }
 
         return $this->render("ApiBundle::ApiTokens/$format.html.twig", [
@@ -233,5 +265,13 @@ class ApiTokensController extends BaseController
     private function throwUnauthorized()
     {
         throw new UnauthorizedHttpException(ApiAuthenticator::HTTP_REALM, ErrorsCodes::BAD_CREDENTIALS);
+    }
+
+    /**
+     * @return UsersourceAuthAdapterFactory
+     */
+    protected function getUsersourceAdapterFactory()
+    {
+        return $this->getContainer()->getSystemService('usersource_auth_adapter_factory');
     }
 }

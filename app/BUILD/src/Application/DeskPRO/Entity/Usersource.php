@@ -35,11 +35,8 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Usersource\Adapter as UsersourceAdapter;
-use deskpro_us_jwt\Usersource\Adapter\Jwt as JwtAdapter;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
@@ -60,8 +57,6 @@ use Orb\Util\Util;
  * @property $user_permission_group
  * @property $app
  * @property $id
- *
- * @JMS\ExclusionPolicy("all")
  */
 class Usersource extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -78,18 +73,12 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
     /**
      * The unique ID.
      *
-     * @JMS\Expose()
-     * @JMS\Type("integer")
-     *
      * @var int
      */
     protected $id = null;
 
     /**
      * The title of this usersource.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("string")
      *
      * @var string
      */
@@ -99,9 +88,6 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
      * "user" or "agent" for now.
      *
      * the interface this usersource applies to
-     *
-     * @JMS\Expose()
-     * @JMS\Type("string")
      *
      * @var string
      */
@@ -129,18 +115,12 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
     /**
      * The order in which to display this source in UserBundle.
      *
-     * @JMS\Expose()
-     * @JMS\Type("integer")
-     *
      * @var int
      */
     protected $display_order = 0;
 
     /**
      * True if this usersource is enabled/usable.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("boolean")
      *
      * @var bool
      */
@@ -411,56 +391,11 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * Source type.
-     *
-     * @JMS\VirtualProperty()
-     * @JMS\SerializedName("source_type")
-     * @JMS\Type("string")
-     *
      * @return string
      */
-    public function getShortSourceType()
+    public function getType()
     {
-        return strtolower(Util::getBaseClassname($this->source_type));
-    }
-
-    /**
-     * Display type.
-     *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("string")
-     */
-    public function getDisplayType()
-    {
-        switch ($this->source_type) {
-            case UsersourceAdapter\GooglePlus::class:
-            case UsersourceAdapter\Google::class:
-            case UsersourceAdapter\Facebook::class:
-            case UsersourceAdapter\Twitter::class:
-                return 'social';
-            case JwtAdapter::class:
-            case UsersourceAdapter\Saml::class:
-                return 'button';
-            default:
-                return 'none';
-        }
-    }
-
-    /**
-     * Display options.
-     *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("array")
-     */
-    public function getDisplayOptions()
-    {
-        $options = [];
-
-        if (isset($this->options['login_custom_text'])) {
-            $options['button_label'] = $this->options['login_custom_text'];
-        }
-
-        return $options;
+        return $this->type;
     }
 
     ############################################################################
