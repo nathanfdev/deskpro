@@ -1896,6 +1896,7 @@ $search-btn-height: $search-height - 24;
       position: absolute;
       @include right(10px);
       bottom: 10px;
+      z-index: 2;
 
       &:hover {
         border: 1px solid #3366ae;
