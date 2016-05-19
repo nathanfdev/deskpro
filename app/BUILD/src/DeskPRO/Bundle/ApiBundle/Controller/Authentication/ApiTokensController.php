@@ -158,13 +158,42 @@ class ApiTokensController extends BaseController
 
     /**
      * @ApiDoc(
+     *      description="Get list of api token usersources.",
+     *      statusCodes={
+     *          404="Usersource not found"
+     *      }
+     * )
+     *
+     * @Rest\Get("/user_sources/{context}", requirements={"context": "(agent|user)"})
+     *
+     * @param string $context
+     *
+     * @return View
+     */
+    public function usersourcesListAction($context)
+    {
+        $qb = $this->getManager()->createQueryBuilder();
+        $qb
+            ->select('e')
+            ->from(Usersource::class, 'e')
+            ->andWhere('e.type = :context')
+            ->andWhere('e.source_type IN (:callback_sources)')
+            ->setParameter('context', $context)
+            ->setParameter('callback_sources', Usersource::$callbackAdapters)
+        ;
+
+        return new View($this->wrap($qb->getQuery()->getResult()));
+    }
+
+    /**
+     * @ApiDoc(
      *      description="Login via usersource.",
      *      statusCodes={
      *          404="Usersource not found"
      *      }
      * )
      *
-     * @Rest\Get("/user_source/{usersource}/login")
+     * @Rest\Get("/user_sources/{usersource}/login")
      *
      * @param Request    $request
      * @param Usersource $usersource
@@ -201,7 +230,7 @@ class ApiTokensController extends BaseController
      *      }
      * )
      *
-     * @Rest\Get("/user_source/{usersource}/callback/{format}", requirements={"format": "(ios|default)"})
+     * @Rest\Get("/user_sources/{usersource}/callback/{format}", requirements={"format": "(ios|default)"})
      *
      * @param Request    $request
      * @param Usersource $usersource
