@@ -29,10 +29,8 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Usersources;
 
 use Application\DeskPRO\Entity\Usersource;
-use Application\DeskPRO\Usersource\Adapter as UsersourceAdapter;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use deskpro_us_jwt\Usersource\Adapter\Jwt as JwtAdapter;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
@@ -58,14 +56,7 @@ class UsersourcesController extends CrudController
 
         if ($request->get('type') === 'callback') {
             $qb->andWhere("$alias.source_type IN (:callback_sources)");
-            $qb->setParameter('callback_sources', [
-                JwtAdapter::class,
-                UsersourceAdapter\Facebook::class,
-                UsersourceAdapter\Google::class,
-                UsersourceAdapter\GooglePlus::class,
-                UsersourceAdapter\Twitter::class,
-                UsersourceAdapter\Saml::class,
-            ]);
+            $qb->setParameter('callback_sources', Usersource::$callbackAdapters);
         }
 
         $isEnabled = $request->get('is_enabled', true);

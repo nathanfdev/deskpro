@@ -35,6 +35,8 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Usersource\Adapter as UsersourceAdapter;
+use deskpro_us_jwt\Usersource\Adapter\Jwt as JwtAdapter;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Strings;
@@ -177,6 +179,18 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
      * @var \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
      */
     protected $_adapter_instance = null;
+
+    /**
+     * @var array
+     */
+    public static $callbackAdapters = [
+        JwtAdapter::class,
+        UsersourceAdapter\Facebook::class,
+        UsersourceAdapter\Google::class,
+        UsersourceAdapter\GooglePlus::class,
+        UsersourceAdapter\Twitter::class,
+        UsersourceAdapter\Saml::class,
+    ];
 
     /**
      * @return int

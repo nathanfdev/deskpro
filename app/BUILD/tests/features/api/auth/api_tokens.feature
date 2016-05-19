@@ -49,21 +49,30 @@ Feature: /api_tokens endpoint
     And the JSON node "data.person_id" should be equal to 2
     And the JSON node "data.token" should exist
 
+  Scenario Outline: I get list of usersources
+    When I send a GET request to "/api/v2/api_tokens/user_sources/<context>"
+    Then the response status code should be 200
+
+    Examples:
+      | context |
+      | user    |
+      | agent   |
+
   Scenario: I handle user source callback with malformed request
-    When I send a GET request to "/api/v2/api_tokens/user_source/5/callback/default"
+    When I send a GET request to "/api/v2/api_tokens/user_sources/5/callback/default"
     Then the response status code should be 401
     And the JSON node "status" should be equal to 401
     And the JSON node "code" should be equal to "bad_credentials"
     And the JSON node "message" should be equal to "Bad credentials."
 
   Scenario: I successfully handle user source callback
-    When I send a GET request to "/api/v2/api_tokens/user_source/4/callback/default"
+    When I send a GET request to "/api/v2/api_tokens/user_sources/4/callback/default"
     Then the response status code should be 200
     And the JSON response should contain "<script>sendPayload("
     And the JSON response should contain "person_id"
     And the JSON response should contain "token"
 
-    When I send a GET request to "/api/v2/api_tokens/user_source/4/callback/ios"
+    When I send a GET request to "/api/v2/api_tokens/user_sources/4/callback/ios"
     Then the response status code should be 200
     And the JSON response should contain "iOSDeskPro"
     And the JSON response should contain "Return to DeskPRO"
