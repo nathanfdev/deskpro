@@ -1008,7 +1008,7 @@ class FeedbackController extends AbstractController
         return $this->createJsonResponse(
             [
                 'success'  => true,
-                'next_url' => $next ? $this->get('object_router')->getAgentUrl($next) : null,
+                'next_url' => $next ? $this->get('object_router')->getAgentPath($next) : null,
             ]
         );
     }
