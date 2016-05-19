@@ -17,6 +17,7 @@ services:
 
   json_body_listener:
     class: DeskPRO\Bundle\ApiBundle\EventListener\JsonBodyListener
+    arguments: ["@router"]
     tags:
       - { name: kernel.event_subscriber }
 
