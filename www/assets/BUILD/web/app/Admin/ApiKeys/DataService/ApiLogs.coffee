@@ -70,7 +70,7 @@ define [
         models.push model
       models.pagination = {
         total: data.meta.pagination.total
-        num_pages: data.meta.pagination.total_pages
+        num_pages: data.meta.pagination.total_pages-1
         page: data.meta.pagination.current_page
       }
 
