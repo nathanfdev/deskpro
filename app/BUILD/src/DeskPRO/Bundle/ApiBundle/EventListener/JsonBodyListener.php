@@ -67,11 +67,10 @@ class JsonBodyListener implements EventSubscriberInterface
 
     public function onRequest(GetResponseEvent $event)
     {
-        $request  = $event->getRequest();
-        $pathInfo = $this->router->match($request->getPathInfo());
+        $request = $event->getRequest();
 
         // can accept different requests
-        if ($pathInfo['_route'] === 'deskpro_api_authentication_apitokens_usersourcecallback') {
+        if (preg_match('#^/api/v2/api_tokens/user_sources/\d+/callback#', $request->getPathInfo())) {
             return;
         }
 
