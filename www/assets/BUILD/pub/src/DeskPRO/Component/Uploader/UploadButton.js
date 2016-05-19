@@ -4,28 +4,23 @@ import { AbstractFileUpload } from './AbstractFileUpload';
 import $ from 'jquery';
 import 'blueimp-file-upload';
 
-export class DropZone extends AbstractFileUpload {
+export class UploadButton extends AbstractFileUpload {
 
   static propTypes = {
-    getExternalInput: PropTypes.func.isRequired,
-    children:         PropTypes.node
+    name:      PropTypes.string,
+    className: PropTypes.string,
+    multiple:  PropTypes.bool
   };
-
-  getInput() {
-    return ReactDOM.findDOMNode(this.props.getExternalInput());
-  }
 
   initializeFileUpload() {
     const { uploadUrl, uploadParams } = this.props;
     const { onSubmit, onSend, onSuccess, onFail } = this.props;
-    const overlayNode = ReactDOM.findDOMNode(this);
 
     const $input = $(this.getInput());
     $input.fileupload({
       fileInput: $input,
       url:       uploadUrl,
       formData:  uploadParams,
-      dropZone:  $(overlayNode),
       submit:    onSubmit,
       send:      onSend,
       done:      onSuccess,
@@ -33,7 +28,22 @@ export class DropZone extends AbstractFileUpload {
     });
   }
 
+  getInput() {
+    return ReactDOM.findDOMNode(this.refs.input);
+  }
+
   render() {
-    return <div>{this.props.children}</div>;
+    const { name, className, multiple } = this.props;
+    const inputName = multiple ? `${name}[]` : name;
+
+    return (
+      <input
+        ref="input"
+        className={className}
+        type="file"
+        name={inputName}
+        multiple={multiple ? 'multiple' : null}
+      />
+    );
   }
 }

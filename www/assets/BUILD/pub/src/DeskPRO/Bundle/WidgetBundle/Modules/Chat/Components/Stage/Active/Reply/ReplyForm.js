@@ -10,6 +10,7 @@ import { AttachedFiles } from './Upload/Attachment/File/AttachedFiles';
 import { AttachedImages } from './Upload/Attachment/Image/AttachedImages';
 import { DropZoneContainer } from './Upload/DropZone/DropZoneContainer';
 import { PasteCatcher } from 'DeskPRO/Component/Uploader/PasteCatcher';
+import { UploadButton } from 'DeskPRO/Component/Uploader/UploadButton';
 import { DropZone } from 'DeskPRO/Component/Uploader/DropZone';
 import { DragOverlayListener } from 'DeskPRO/Component/Uploader/DragOverlayListener';
 import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
@@ -57,7 +58,7 @@ export class ReplyForm extends React.Component {
   };
 
   onPasteImage = file => {
-    this.refs.dropZone.pushFileToQueue(file);
+    this.refs.uploadButton.pushFileToQueue(file);
   };
 
   onScreenShare = event => {
@@ -71,6 +72,10 @@ export class ReplyForm extends React.Component {
     this.props.onSendMessage(this.state.message);
     this.setState({ message: '' });
   };
+
+  getUploadUrl() {
+    return `${window.DP_HELPDESK_URL}portal/api/blobs/temp`;
+  }
 
   renderRte() {
     return (
@@ -146,7 +151,9 @@ export class ReplyForm extends React.Component {
           <div className="dpdesignportal-chat-form-button-row-main">
             <span className="dpdesignportal-chat-form-button">
               <i className="fa fa-upload" /> {portalPhrases.get('portal.chat.upload_file')}
-              <input ref="fileUpload" className="file" type="file" name="files[]" multiple="multiple" />
+              <DropZoneContainer>
+                <UploadButton ref="uploadButton" multiple className="file" name="files" uploadUrl={this.getUploadUrl()} />
+              </DropZoneContainer>
             </span>
 
             {false /* disabled for now */ &&
@@ -169,11 +176,11 @@ export class ReplyForm extends React.Component {
           </EndChatContainer>
         </div>
 
-        <DropZoneContainer>
+        <input ref="fileUpload" className="hidden" type="file" name="files[]" multiple="multiple" />
+        <DropZoneContainer instant>
           <DropZone
-            ref="dropZone"
             getExternalInput={() => this.refs.fileUpload}
-            uploadUrl={`${window.DP_HELPDESK_URL}portal/api/blobs/temp`}
+            uploadUrl={this.getUploadUrl()}
           >
             <DragOverlayListener context={[parent.document, window.widgetFrame.document]}>
               <DropZoneOverlay />

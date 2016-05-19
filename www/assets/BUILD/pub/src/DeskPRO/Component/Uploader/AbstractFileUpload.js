@@ -1,0 +1,32 @@
+import React, { PropTypes } from 'react';
+import $ from 'jquery';
+
+export class AbstractFileUpload extends React.Component {
+
+  static propTypes = {
+    uploadUrl:    PropTypes.string,
+    uploadParams: PropTypes.object,
+    onSubmit:     PropTypes.func,
+    onSend:       PropTypes.func,
+    onSuccess:    PropTypes.func,
+    onFail:       PropTypes.func
+  };
+
+  componentDidMount() {
+    this.initializeFileUpload();
+  }
+
+  componentWillUnmount() {
+    $(this.getInput()).fileupload('destroy');
+  }
+
+  pushFileToQueue(file) {
+    const $input = $(this.getInput());
+    this.initializeFileUpload();
+
+    $input.fileupload('send', {
+      fileInput: $input,
+      files:     [file]
+    });
+  }
+}
