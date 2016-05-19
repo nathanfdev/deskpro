@@ -4,7 +4,13 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     @CTRL_AS   = 'Ctrl'
 
     init: ->
-      @settings = {}
+      @settings = {
+        apps_kb: true,
+        apps_news: true,
+        apps_downloads: true,
+        apps_feedback: true,
+        iface_portal: true
+      }
       @portalSettings = @DataService.get 'PortalGeneralSettings'
 
       @$scope.$watch('Ctrl.portalSettings.version', =>
