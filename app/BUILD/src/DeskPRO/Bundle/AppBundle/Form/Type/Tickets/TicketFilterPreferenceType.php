@@ -61,9 +61,11 @@ class TicketFilterPreferenceType extends AbstractType
         $resolver
             ->setDefaults(
                 [
-                    'data_class' => TicketFilterPreference::class,
-                    'filter'     => null,
-                    'agent'      => null,
+                    'data_class'      => TicketFilterPreference::class,
+                    'filter'          => null,
+                    'agent'           => null,
+                    'main_grouping'   => '',
+                    'result_grouping' => '',
                 ]
             )
             ->setRequired(
