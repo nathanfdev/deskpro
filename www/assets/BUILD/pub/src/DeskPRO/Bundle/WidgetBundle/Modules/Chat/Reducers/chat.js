@@ -12,7 +12,6 @@ import {
 import moment from 'moment';
 
 const initialState = {
-  phrases: {},
   mute:    false,
   polling: {
     locked:  false,
@@ -39,9 +38,6 @@ export default createReducer(initialState, {
   [actions.lockPollingResponse]:   setValue('polling.locked', true),
   [actions.unlockPollingResponse]: setValue('polling', { locked: false, skipped: true }),
   [actions.enablePollingResponse]: setValue('polling', { locked: false, skipped: false }),
-
-  // Phrase translations
-  [actions.setPhraseTranslations]: setFullPayload('phrases'),
 
   // Audio
   [actions.toggleMute]: toggleBool('mute'),

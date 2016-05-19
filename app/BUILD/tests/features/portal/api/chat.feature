@@ -8,14 +8,14 @@ Feature: Widget Chat
   # Create a new chat
   Scenario: I try to create a new chat without session code
     When I send a POST request to "/portal/api/chats/create"
-    Then the response status code should be 400
+    Then the response status code should be 403
     And the response should be in JSON
-    And the JSON node "message" should be equal to "User session not found"
+    And the JSON node "message" should be equal to "No token provided"
 
   Scenario: I create a new chat without person info
     Given the setting "portal.chat.email_validation" is set to 0
     Given the setting "portal.chat.require_login" is set to 0
-    When I send a POST request to "/portal/api/chats/create?__sid={sid:AAAAAAAAAAAAAAA}"
+    When I send a POST request to "/portal/api/chats/create?dpsid={sid:AAAAAAAAAAAAAAA}"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "data.person" should be equal to "0"
@@ -27,7 +27,7 @@ Feature: Widget Chat
   Scenario: I create a new chat with an unknown email
     Given the setting "portal.chat.email_validation" is set to 0
     Given the setting "portal.chat.require_login" is set to 0
-    When I send a POST request to "/portal/api/chats/create?__sid={sid:AAAAAAAAAAAAAAA}" with parameters:
+    When I send a POST request to "/portal/api/chats/create?dpsid={sid:AAAAAAAAAAAAAAA}" with parameters:
       | key   | value             |
       | email | unknown@email.com |
     Then the response status code should be 200
@@ -40,7 +40,7 @@ Feature: Widget Chat
   Scenario: I create a new chat with an existing email and different name
     Given the setting "portal.chat.email_validation" is set to 0
     Given the setting "portal.chat.require_login" is set to 0
-    When I send a POST request to "/portal/api/chats/create?__sid={sid:AAAAAAAAAAAAAAA}" with parameters:
+    When I send a POST request to "/portal/api/chats/create?dpsid={sid:AAAAAAAAAAAAAAA}" with parameters:
       | key   | value            |
       | email | user@deskpro.dev |
       | name  | New Username     |
@@ -55,7 +55,7 @@ Feature: Widget Chat
   Scenario: I create a new chat without person info but email validation is enabled
     Given the setting "portal.chat.email_validation" is set to 1
     Given the setting "portal.chat.require_login" is set to 0
-    When I send a POST request to "/portal/api/chats/create?__sid={sid:AAAAAAAAAAAAAAA}"
+    When I send a POST request to "/portal/api/chats/create?dpsid={sid:AAAAAAAAAAAAAAA}"
     Then the response status code should be 400
     And the response should be in JSON
     And the JSON node "fields.email.errors[0].code" should be equal to "required"
@@ -65,7 +65,7 @@ Feature: Widget Chat
   Scenario: I create a new chat with email and email validation
     Given the setting "portal.chat.email_validation" is set to 1
     Given the setting "portal.chat.require_login" is set to 0
-    When I send a POST request to "/portal/api/chats/create?__sid={sid:AAAAAAAAAAAAAAA}" with parameters:
+    When I send a POST request to "/portal/api/chats/create?dpsid={sid:AAAAAAAAAAAAAAA}" with parameters:
       | key   | value            |
       | email | user@deskpro.dev |
     Then the response status code should be 200
@@ -78,7 +78,7 @@ Feature: Widget Chat
   Scenario: I create a new chat as guest but require login is enabled
     Given the setting "portal.chat.email_validation" is set to 0
     Given the setting "portal.chat.require_login" is set to 1
-    When I send a POST request to "/portal/api/chats/create?__sid={sid:AAAAAAAAAAAAAAA}"
+    When I send a POST request to "/portal/api/chats/create?dpsid={sid:AAAAAAAAAAAAAAA}"
     Then the response status code should be 400
     And the response should be in JSON
     And the JSON node "errors[0].message" should be equal to "Login required"
@@ -88,7 +88,7 @@ Feature: Widget Chat
   Scenario: I create a new chat as guest and all restrictions is enabled
     Given the setting "portal.chat.email_validation" is set to 1
     Given the setting "portal.chat.require_login" is set to 1
-    When I send a POST request to "/portal/api/chats/create?__sid={sid:AAAAAAAAAAAAAAA}"
+    When I send a POST request to "/portal/api/chats/create?dpsid={sid:AAAAAAAAAAAAAAA}"
     Then the response status code should be 400
     And the response should be in JSON
     And the JSON node "errors[0].message" should be equal to "Login required"
@@ -99,7 +99,7 @@ Feature: Widget Chat
   Scenario Outline: I create a new chat after login
     Given the setting "portal.chat.email_validation" is set to <email_validation>
     Given the setting "portal.chat.require_login" is set to <require_login>
-    When I send a POST request to "/portal/api/chats/create?__sid={sid:BBBBBBBBBBBBBBB}"
+    When I send a POST request to "/portal/api/chats/create?dpsid={sid:BBBBBBBBBBBBBBB}"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "data.person" should be equal to "4"
@@ -118,13 +118,13 @@ Feature: Widget Chat
   Scenario: I try to validate email without session code
     Given I create a chat and reference its' ID as chatId
     When I send a POST request to "/portal/api/chats/{chatId}/validate/email"
-    Then the response status code should be 400
+    Then the response status code should be 403
     And the response should be in JSON
-    And the JSON node "message" should be equal to "User session not found"
+    And the JSON node "message" should be equal to "No token provided"
 
   @skip-ci
   Scenario: I try to validate email but chat conversation entity has no email (skip check)
-    When I send a POST request to "/portal/api/chats/{chatId}/validate/email?__sid={sid:AAAAAAAAAAAAAAA}" with parameters:
+    When I send a POST request to "/portal/api/chats/{chatId}/validate/email?dpsid={sid:AAAAAAAAAAAAAAA}" with parameters:
       | key  | value     |
       | code | some code |
     Then the response status code should be 400
@@ -133,14 +133,14 @@ Feature: Widget Chat
 
   @skip-ci
   Scenario: I send empty validation code
-    When I send a POST request to "/portal/api/chats/{chatId}/validate/email?__sid={sid:AAAAAAAAAAAAAAA}"
+    When I send a POST request to "/portal/api/chats/{chatId}/validate/email?dpsid={sid:AAAAAAAAAAAAAAA}"
     Then the response status code should be 400
     And the response should be in JSON
     And the JSON node "fields.code.errors[0].message" should be equal to "This value should not be blank."
 
   @skip-ci
   Scenario: I try to validate email with wrong code
-    When I send a POST request to "/portal/api/chats/{chatId}/validate/email?__sid={sid:AAAAAAAAAAAAAAA}" with parameters:
+    When I send a POST request to "/portal/api/chats/{chatId}/validate/email?dpsid={sid:AAAAAAAAAAAAAAA}" with parameters:
       | key  | value     |
       | code | some code |
     Then the response status code should be 400
@@ -150,10 +150,10 @@ Feature: Widget Chat
   @skip-ci
   Scenario: I regenerate email validation code
     Given I set chat email validation code "correct code" for chat 4
-    When I send a POST request to "/portal/api/chats/4/validate/email/regenerate?__sid={sid:AAAAAAAAAAAAAAA}"
+    When I send a POST request to "/portal/api/chats/4/validate/email/regenerate?dpsid={sid:AAAAAAAAAAAAAAA}"
     Then the response status code should be 204
     And the response should be empty
-    When I send a POST request to "/portal/api/chats/4/validate/email?__sid={sid:AAAAAAAAAAAAAAA}" with parameters:
+    When I send a POST request to "/portal/api/chats/4/validate/email?dpsid={sid:AAAAAAAAAAAAAAA}" with parameters:
       | key  | value        |
       | code | correct code |
     Then the response status code should be 400
@@ -163,12 +163,12 @@ Feature: Widget Chat
   @skip-ci
   Scenario: I validate email successfully
     Given I set chat email validation code "correct code" for chat 4
-    When I send a POST request to "/portal/api/chats/4/validate/email?__sid={sid:AAAAAAAAAAAAAAA}" with parameters:
+    When I send a POST request to "/portal/api/chats/4/validate/email?dpsid={sid:AAAAAAAAAAAAAAA}" with parameters:
       | key  | value        |
       | code | correct code |
     Then the response status code should be 204
     And the response should be empty
-    When I send a POST request to "/portal/api/chats/4/validate/email?__sid={sid:AAAAAAAAAAAAAAA}" with parameters:
+    When I send a POST request to "/portal/api/chats/4/validate/email?dpsid={sid:AAAAAAAAAAAAAAA}" with parameters:
       | key  | value        |
       | code | correct code |
     Then the response status code should be 400
@@ -180,7 +180,7 @@ Feature: Widget Chat
   Scenario Outline: I send transcript empty info as guest
     Given the setting "portal.chat.email_validation" is set to <email_validation>
     Given the setting "portal.chat.require_login" is set to <require_login>
-    When I send a POST request to "/portal/api/chats/{chatId}/transcript/info?__sid={sid:AAAAAAAAAAAAAAA}"
+    When I send a POST request to "/portal/api/chats/{chatId}/transcript/info?dpsid={sid:AAAAAAAAAAAAAAA}"
     Then the response status code should be 400
     And the response should be in JSON
     And the JSON node "fields.email.errors[0].message" should be equal to "This value should not be blank."
@@ -198,7 +198,7 @@ Feature: Widget Chat
   Scenario: I change transcript info as guest (no chat restrictions)
     Given the setting "portal.chat.email_validation" is set to 0
     Given the setting "portal.chat.require_login" is set to 0
-    When I send a POST request to "/portal/api/chats/{chatId}/transcript/info?__sid={sid:AAAAAAAAAAAAAAA}" with parameters:
+    When I send a POST request to "/portal/api/chats/{chatId}/transcript/info?dpsid={sid:AAAAAAAAAAAAAAA}" with parameters:
       | key   | value            |
       | email | user@deskpro.dev |
     Then the response status code should be 204
@@ -208,7 +208,7 @@ Feature: Widget Chat
   Scenario: I try to change transcript info (email validation is enabled)
     Given the setting "portal.chat.email_validation" is set to 1
     Given the setting "portal.chat.require_login" is set to 0
-    When I send a POST request to "/portal/api/chats/{chatId}/transcript/info?__sid={sid:AAAAAAAAAAAAAAA}" with parameters:
+    When I send a POST request to "/portal/api/chats/{chatId}/transcript/info?dpsid={sid:AAAAAAAAAAAAAAA}" with parameters:
       | key   | value                    |
       | email | another-user@deskpro.dev |
     Then the response status code should be 400
@@ -221,7 +221,7 @@ Feature: Widget Chat
   Scenario: I try to change transcript info (require login is enabled)
     Given the setting "portal.chat.email_validation" is set to 1
     Given the setting "portal.chat.require_login" is set to 1
-    When I send a POST request to "/portal/api/chats/{chatId}/transcript/info?__sid={sid:AAAAAAAAAAAAAAA}" with parameters:
+    When I send a POST request to "/portal/api/chats/{chatId}/transcript/info?dpsid={sid:AAAAAAAAAAAAAAA}" with parameters:
       | key   | value                    |
       | email | another-user@deskpro.dev |
     Then the response status code should be 400
@@ -235,7 +235,7 @@ Feature: Widget Chat
     Given I reset chat user info for chat 1
     Given the setting "portal.chat.email_validation" is set to <email_validation>
     Given the setting "portal.chat.require_login" is set to <require_login>
-    When I send a POST request to "/portal/api/chats/{chatId}/transcript/toggle?__sid={sid:AAAAAAAAAAAAAAA}"
+    When I send a POST request to "/portal/api/chats/{chatId}/transcript/toggle?dpsid={sid:AAAAAAAAAAAAAAA}"
     Then the response status code should be 400
     And the response should be in JSON
     And the JSON node "fields.should_send_transcript.errors[0].message" should be equal to "Person email is not defined."
@@ -251,24 +251,24 @@ Feature: Widget Chat
   Scenario Outline: I toggle send transcript
     Given I reset chat should send transcript for chat 1
     Given I set chat user "<email>" for chat 1
-    When I send a GET request to "/portal/api/chats/{chatId}/polling?__sid={sid:AAAAAAAAAAAAAAA}"
+    When I send a GET request to "/portal/api/chats/{chatId}/polling?dpsid={sid:AAAAAAAAAAAAAAA}"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "chat_info.data.should_send_transcript" should be equal to 0
-    When I send a POST request to "/portal/api/chats/{chatId}/transcript/toggle?__sid={sid:AAAAAAAAAAAAAAA}" with parameters:
+    When I send a POST request to "/portal/api/chats/{chatId}/transcript/toggle?dpsid={sid:AAAAAAAAAAAAAAA}" with parameters:
       | key                    | value |
       | should_send_transcript | 1     |
     Then the response status code should be 204
     And the response should be empty
-    When I send a GET request to "/portal/api/chats/{chatId}/polling?__sid={sid:AAAAAAAAAAAAAAA}"
+    When I send a GET request to "/portal/api/chats/{chatId}/polling?dpsid={sid:AAAAAAAAAAAAAAA}"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "chat_info.data.should_send_transcript" should be equal to 1
     And the JSON node "chat_info.data.conversation_id" should be equal to 1
-    When I send a POST request to "/portal/api/chats/{chatId}/transcript/toggle?__sid={sid:AAAAAAAAAAAAAAA}"
+    When I send a POST request to "/portal/api/chats/{chatId}/transcript/toggle?dpsid={sid:AAAAAAAAAAAAAAA}"
     Then the response status code should be 204
     And the response should be empty
-    When I send a GET request to "/portal/api/chats/{chatId}/polling?__sid={sid:AAAAAAAAAAAAAAA}"
+    When I send a GET request to "/portal/api/chats/{chatId}/polling?dpsid={sid:AAAAAAAAAAAAAAA}"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "chat_info.data.should_send_transcript" should be equal to 0
@@ -281,7 +281,7 @@ Feature: Widget Chat
   # Chat polling/send message
   @skip-ci
   Scenario: I'm checking for chat changes
-    When I send a GET request to "/portal/api/chats/{chatId}/polling?__sid={sid:AAAAAAAAAAAAAAA}"
+    When I send a GET request to "/portal/api/chats/{chatId}/polling?dpsid={sid:AAAAAAAAAAAAAAA}"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "chat_info.data.id" should exist
@@ -306,7 +306,7 @@ Feature: Widget Chat
     And the JSON node "new_messages.data[0].is_sys" should be equal to 1
     And the JSON node "new_messages.data[0].is_user" should be equal to 0
     And the JSON node "new_messages.data[1].id" should not exist
-    When I send a GET request to "/portal/api/chats/{chatId}/polling?last_message_id=1&__sid={sid:AAAAAAAAAAAAAAA}"
+    When I send a GET request to "/portal/api/chats/{chatId}/polling?last_message_id=1&dpsid={sid:AAAAAAAAAAAAAAA}"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "chat_info.data.id" should exist
@@ -314,11 +314,11 @@ Feature: Widget Chat
 
   @skip-ci
   Scenario: I send empty message
-    When I send a POST request to "/portal/api/chats/{chatId}/messages?__sid={sid:AAAAAAAAAAAAAAA}"
+    When I send a POST request to "/portal/api/chats/{chatId}/messages?dpsid={sid:AAAAAAAAAAAAAAA}"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "data[0].id" should not exist
-    When I send a GET request to "/portal/api/chats/{chatId}/polling?last_message_id=1&__sid={sid:AAAAAAAAAAAAAAA}"
+    When I send a GET request to "/portal/api/chats/{chatId}/polling?last_message_id=1&dpsid={sid:AAAAAAAAAAAAAAA}"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "chat_info.data.id" should exist
@@ -326,13 +326,13 @@ Feature: Widget Chat
 
   @skip-ci
   Scenario: I send text message
-    When I send a POST request to "/portal/api/chats/{chatId}/messages?__sid={sid:AAAAAAAAAAAAAAA}" with parameters:
+    When I send a POST request to "/portal/api/chats/{chatId}/messages?dpsid={sid:AAAAAAAAAAAAAAA}" with parameters:
       | key     | value           |
       | message | my message text |
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "data[0].content" should contain "my message text"
-    When I send a GET request to "/portal/api/chats/{chatId}/polling?last_message_id=1&__sid={sid:AAAAAAAAAAAAAAA}"
+    When I send a GET request to "/portal/api/chats/{chatId}/polling?last_message_id=1&dpsid={sid:AAAAAAAAAAAAAAA}"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "chat_info.data.id" should exist
@@ -343,18 +343,18 @@ Feature: Widget Chat
   # Chat end/reopen
   @skip-ci
   Scenario: I end and reopen chat
-    When I send a POST request to "/portal/api/chats/{chatId}/end?__sid={sid:AAAAAAAAAAAAAAA}"
+    When I send a POST request to "/portal/api/chats/{chatId}/end?dpsid={sid:AAAAAAAAAAAAAAA}"
     Then the response status code should be 204
     And the response should be empty
-    When I send a GET request to "/portal/api/chats/{chatId}/polling?__sid={sid:AAAAAAAAAAAAAAA}"
+    When I send a GET request to "/portal/api/chats/{chatId}/polling?dpsid={sid:AAAAAAAAAAAAAAA}"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "chat_info.data.ended_by" should be equal to "user"
     And chat property "date_ended" should not be null for chat 1
-    When I send a POST request to "/portal/api/chats/{chatId}/reopen?__sid={sid:AAAAAAAAAAAAAAA}"
+    When I send a POST request to "/portal/api/chats/{chatId}/reopen?dpsid={sid:AAAAAAAAAAAAAAA}"
     Then the response status code should be 204
     And the response should be empty
-    When I send a GET request to "/portal/api/chats/{chatId}/polling?__sid={sid:AAAAAAAAAAAAAAA}"
+    When I send a GET request to "/portal/api/chats/{chatId}/polling?dpsid={sid:AAAAAAAAAAAAAAA}"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "chat_info.data.date_ended" should be equal to 0
@@ -363,23 +363,23 @@ Feature: Widget Chat
   # Chat feedback
   @skip-ci
   Scenario: I try to send feedback but chat is not ended yet
-    When I send a POST request to "/portal/api/chats/{chatId}/feedback?__sid={sid:AAAAAAAAAAAAAAA}"
+    When I send a POST request to "/portal/api/chats/{chatId}/feedback?dpsid={sid:AAAAAAAAAAAAAAA}"
     Then the response status code should be 400
     And the JSON node "fields.helpful.errors[0].message" should be equal to "This value should not be blank."
     And the JSON node "fields.helpful.errors[1].message" should be equal to "Unable to send feedback, chat is not ended yet."
 
   @skip-ci
   Scenario: I try to send feedback with no params
-    When I send a POST request to "/portal/api/chats/{chatId}/end?__sid={sid:AAAAAAAAAAAAAAA}"
+    When I send a POST request to "/portal/api/chats/{chatId}/end?dpsid={sid:AAAAAAAAAAAAAAA}"
     Then the response status code should be 204
     And the response should be empty
-    When I send a POST request to "/portal/api/chats/{chatId}/feedback?__sid={sid:AAAAAAAAAAAAAAA}"
+    When I send a POST request to "/portal/api/chats/{chatId}/feedback?dpsid={sid:AAAAAAAAAAAAAAA}"
     Then the response status code should be 400
     And the JSON node "fields.helpful.errors[1].message" should not exist
 
   @skip-ci
   Scenario: I send positive feedback and reopen chat
-    When I send a POST request to "/portal/api/chats/{chatId}/feedback?__sid={sid:AAAAAAAAAAAAAAA}" with parameters:
+    When I send a POST request to "/portal/api/chats/{chatId}/feedback?dpsid={sid:AAAAAAAAAAAAAAA}" with parameters:
       | key     | value |
       | helpful | 10    |
     Then the response status code should be 204
@@ -389,7 +389,7 @@ Feature: Widget Chat
 
   @skip-ci
   Scenario: I send negative feedback
-    When I send a POST request to "/portal/api/chats/{chatId}/feedback?__sid={sid:AAAAAAAAAAAAAAA}" with parameters:
+    When I send a POST request to "/portal/api/chats/{chatId}/feedback?dpsid={sid:AAAAAAAAAAAAAAA}" with parameters:
       | key     | value     |
       | helpful | 1         |
       | comment | some text |

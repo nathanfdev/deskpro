@@ -50,6 +50,13 @@ class WidgetGlobalChatSettings
     private $emailValidation = false;
 
     /**
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     */
+    private $enabled = true;
+
+    /**
      * @return bool
      */
     public function isRequireLogin()
@@ -85,6 +92,26 @@ class WidgetGlobalChatSettings
     public function setEmailValidation($emailValidation)
     {
         $this->emailValidation = $emailValidation;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * @param bool $enabled
+     *
+     * @return $this
+     */
+    public function setEnabled($enabled)
+    {
+        $this->enabled = $enabled;
 
         return $this;
     }

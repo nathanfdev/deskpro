@@ -89,9 +89,15 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
-  widget_login.listener:
-    class: DeskPRO\Bundle\PortalBundle\EventListener\WidgetLoginListener
+  dpsid_login.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\DpsidLoginListener
     arguments: ["@doctrine.orm.default_entity_manager", "@security.token_storage", "@?portal_mode_storage"]
+    tags:
+      - { name: kernel.event_subscriber }
+
+  dpsid.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\DpsidListener
+    arguments: ["@doctrine.orm.default_entity_manager", "@security.token_storage", "@annotation_reader"]
     tags:
       - { name: kernel.event_subscriber }
 

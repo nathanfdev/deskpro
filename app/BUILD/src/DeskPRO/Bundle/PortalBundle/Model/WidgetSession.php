@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\PortalBundle\Model;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Session;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\WidgetGlobalSettings;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -37,6 +38,15 @@ use JMS\Serializer\Annotation as JMS;
  */
 class WidgetSession
 {
+    /**
+     * Widget global settings.
+     *
+     * @var WidgetGlobalSettings
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\WidgetGlobalSettings")
+     */
+    private $globalSettings;
+
     /**
      * Widget session code.
      *
@@ -56,14 +66,27 @@ class WidgetSession
     private $person;
 
     /**
+     * Is chat granted.
+     *
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     */
+    private $isChatGranted;
+
+    /**
      * Constructor.
      *
-     * @param Session $session
+     * @param Session              $session
+     * @param WidgetGlobalSettings $globalSettings
+     * @param bool                 $isChatGranted
      */
-    public function __construct(Session $session)
+    public function __construct(Session $session, WidgetGlobalSettings $globalSettings, $isChatGranted)
     {
-        $this->sessionCode = $session->getSessionCode();
-        $this->person      = $session->getPerson();
+        $this->sessionCode    = $session->getSessionCode();
+        $this->person         = $session->getPerson();
+        $this->globalSettings = $globalSettings;
+        $this->isChatGranted  = $isChatGranted;
     }
 
     /**

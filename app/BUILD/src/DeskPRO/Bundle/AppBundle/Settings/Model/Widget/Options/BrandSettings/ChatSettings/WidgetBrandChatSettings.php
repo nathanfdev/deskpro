@@ -44,13 +44,6 @@ class WidgetBrandChatSettings
      *
      * @JMS\Type("boolean")
      */
-    private $enabled = true;
-
-    /**
-     * @var bool
-     *
-     * @JMS\Type("boolean")
-     */
     private $requestUserInfo = true;
 
     /**
@@ -91,26 +84,6 @@ class WidgetBrandChatSettings
     public function __construct()
     {
         $this->popup = new WidgetBrandChatPopupSettings();
-    }
-
-    /**
-     * @return bool
-     */
-    public function isEnabled()
-    {
-        return $this->enabled;
-    }
-
-    /**
-     * @param bool $enabled
-     *
-     * @return $this
-     */
-    public function setEnabled($enabled)
-    {
-        $this->enabled = $enabled;
-
-        return $this;
     }
 
     /**

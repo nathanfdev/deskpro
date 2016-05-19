@@ -28,32 +28,16 @@ export const widgetSessionIsLoginSelector = createSelector(
   person => !!person
 );
 
-export const widgetSettingsWrapperSelector = createSelector(
+// Widget settings selectors
+export const widgetSettingsSelector = createSelector(
   stateSelector,
   state => state.get('settings')
 );
 
-// Widget settings selectors
-export const widgetSettingsSelector = createSelector(
-  widgetSettingsWrapperSelector,
-  wrapper => wrapper.get('global')
-);
-
-// Widget settings selectors
-export const widgetBrandSettingsSelector = createSelector(
-  widgetSettingsWrapperSelector,
-  wrapper => wrapper.get('brand')
-);
-
+// Chat options selectors
 export const widgetChatSettingsSelector = createSelector(
   widgetSettingsSelector,
   settings => settings.get('chat')
-);
-
-// Widget settings selectors
-export const widgetBrandSettingsChatSelector = createSelector(
-  widgetBrandSettingsSelector,
-  brandSettings => brandSettings.get('chat')
 );
 
 export const requireChatEmailValidationSelector = createSelector(
@@ -64,6 +48,12 @@ export const requireChatEmailValidationSelector = createSelector(
 export const requireChatLoginSelector = createSelector(
   widgetChatSettingsSelector,
   settings => settings.get('require_login')
+);
+
+export const widgetHasChatSelector = createSelector(
+  widgetChatSettingsSelector,
+  widgetSessionSelector,
+  (chatSettings, sessionSettings) => chatSettings.get('enabled') && sessionSettings.get('is_chat_granted')
 );
 
 // Company options selectors
@@ -80,10 +70,4 @@ export const companyNameSelector = createSelector(
 export const companyLogoSelector = createSelector(
   companyOptionsSelector,
   settings => settings.get('logo')
-);
-
-// Widget settings selectors
-export const widgetBrandSettingsChatEnabledSelector = createSelector(
-  widgetBrandSettingsChatSelector,
-  brandChatSettings => brandChatSettings.get('enabled')
 );

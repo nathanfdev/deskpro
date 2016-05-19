@@ -134,22 +134,6 @@ class LanguageController extends AbstractApiController
             'portal.chat.transcript_title',
             'portal.chat.transcript_action',
             'portal.chat.upload_file',
-        ];
-
-        return $this->getResponse($request, $phrases);
-    }
-
-    /**
-     * @Route("/portal/api/lang/widget-chat-phrases.{_format}", name="portal_api_lang_widget_chat_phrases", requirements={"_format":"json|js"})
-     * @Method({"GET"})
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
-     */
-    public function widgetChatPhrasesAction(Request $request)
-    {
-        $phrases = [
             'user.chat.email',
             'user.chat.ended-no-agent',
             'user.chat.error',

@@ -96,11 +96,11 @@
                 <h2 class="with-divider form-header"><span>{{ phrase('admin.widget.chat_settings') }}</span></h2>
 
                 <div class="switcher">
-                    <button dp-toggle-switch ng-model="brand_settings.chat.enabled"></button>
+                    <button dp-toggle-switch ng-model="global_settings.chat.enabled"></button>
                     <h4><span class="title-text">{{ phrase('admin.widget.chat_switcher') }}</span></h4>
                 </div>
 
-                <div ng-if="brand_settings.chat.enabled">
+                <div ng-if="global_settings.chat.enabled">
                     <div class="switcher">
                         <button dp-toggle-switch ng-model="global_settings.chat.require_login"></button>
                         <h4><span class="title-text">{{ phrase('admin.widget.chat_require_login') }}</span></h4>

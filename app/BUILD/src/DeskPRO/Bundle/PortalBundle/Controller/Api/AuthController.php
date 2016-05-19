@@ -30,6 +30,8 @@ namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\UseSectionVoter;
+use DeskPRO\Bundle\PortalBundle\EventListener\DpsidListener;
 use DeskPRO\Bundle\PortalBundle\Model\WidgetSession;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -52,7 +54,7 @@ class AuthController extends AbstractApiController
      *     output="DeskPRO\Bundle\PortalBundle\Model\WidgetSession"
      *)
      *
-     * @Rest\Post("/get_session")
+     * @Rest\Post("/session")
      *
      * @param Request $request
      *
@@ -62,9 +64,7 @@ class AuthController extends AbstractApiController
     {
         /** @var \Application\DeskPRO\EntityRepository\Session $repository */
         $repository = $this->getDoctrine()->getRepository(Session::class);
-
-        $sessionCode = $request->request->get('session_code');
-        $session     = $repository->getSessionFromCode($sessionCode);
+        $session    = $repository->getSessionFromCode($request->request->get('dpsid'));
 
         $changed = false;
         if (!$session) {
@@ -82,6 +82,9 @@ class AuthController extends AbstractApiController
             $em->flush();
         }
 
-        return new View($this->wrap(new WidgetSession($session)));
+        $this->get('security.token_storage')->setToken(DpsidListener::createTokenFromSession($session));
+        $options = $this->container->get('widget_settings_resolver')->getWidgetGlobalOptions();
+
+        return new View($this->wrap(new WidgetSession($session, $options, $this->isGranted(UseSectionVoter::USE_CHAT))));
     }
 }

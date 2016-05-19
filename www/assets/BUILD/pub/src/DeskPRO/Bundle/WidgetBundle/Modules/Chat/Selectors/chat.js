@@ -20,12 +20,6 @@ export const disabledPollingSelector = createSelector(
   (locked, skipped) => locked || skipped
 );
 
-// Phrase translations
-export const phraseTranslationsSelector = createSelector(
-  stateSelector,
-  state => state.get('phrases')
-);
-
 // Feedback selectors
 export const feedbackStageSelector = createSelector(
   stateSelector,

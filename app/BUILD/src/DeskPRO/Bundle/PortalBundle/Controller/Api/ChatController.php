@@ -33,8 +33,14 @@ use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
+use DeskPRO\Bundle\PortalBundle\Annotation\Dpsid;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatFeedbackType;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatMessageType;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatTranscriptInfoType;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatTranscriptToggleType;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatUserTypingType;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatValidateEmailType;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\CreateChatType;
 use Doctrine\ORM\EntityManager;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -45,6 +51,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  * Class ChatController.
  *
  * @Rest\Route("/portal/api/chats")
+ * @Dpsid()
  */
 class ChatController extends AbstractApiController
 {
@@ -57,14 +64,10 @@ class ChatController extends AbstractApiController
      */
     public function createNewChatAction(Request $request)
     {
-        $session      = $this->getApiSession($request);
+        $session      = $this->getApiSession();
         $conversation = ChatConversation::newForUserSession($session);
-        $form         = $this
-            ->get('form.factory')
-            ->createNamedBuilder(null, 'api_chat_create', $conversation, ['person' => $session->getPerson()])
-            ->getForm()
-        ;
 
+        $form = $this->createForm(CreateChatType::class, $conversation, ['person' => $session->getPerson()]);
         $form->submit($request->request->all());
         if (!$form->isValid()) {
             return $this->generateFormErrorsResponse($form);
@@ -87,14 +90,12 @@ class ChatController extends AbstractApiController
      * @Rest\Post("/{id}/validate/email/regenerate")
      *
      * @param ChatConversation $conversation
-     * @param Request          $request
      *
      * @return View
      */
-    public function regenerateEmailValidationCodeAction(ChatConversation $conversation, Request $request)
+    public function regenerateEmailValidationCodeAction(ChatConversation $conversation)
     {
-        $this->checkValidSession($conversation, $request);
-
+        $this->checkSession($conversation);
         $conversation->regenerateEmailValidationCode();
 
         $this->saveConversation($conversation);
@@ -113,14 +114,9 @@ class ChatController extends AbstractApiController
      */
     public function validateEmailAction(ChatConversation $conversation, Request $request)
     {
-        $this->checkValidSession($conversation, $request);
+        $this->checkSession($conversation);
 
-        $form = $this
-            ->get('form.factory')
-            ->createNamedBuilder(null, 'api_chat_validate_email', $conversation)
-            ->getForm()
-        ;
-
+        $form = $this->createForm(ChatValidateEmailType::class, $conversation);
         $form->submit($request->request->all());
         if (!$form->isValid()) {
             return $this->generateFormErrorsResponse($form);
@@ -142,7 +138,7 @@ class ChatController extends AbstractApiController
      */
     public function pollingChatAction(ChatConversation $conversation, Request $request)
     {
-        $this->checkValidSession($conversation, $request);
+        $this->checkSession($conversation);
 
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -176,7 +172,7 @@ class ChatController extends AbstractApiController
      */
     public function sendMessageAction(ChatConversation $conversation, Request $request)
     {
-        $this->checkValidSession($conversation, $request);
+        $this->checkSession($conversation);
 
         $form = $this->createForm(ChatMessageType::class);
         $form->submit($request->request->all());
@@ -265,7 +261,7 @@ class ChatController extends AbstractApiController
      */
     public function ackMessagesAction(ChatConversation $conversation, Request $request)
     {
-        $this->checkValidSession($conversation, $request);
+        $this->checkSession($conversation);
 
         $message_ids  = $request->request->get('message_ids');
         $current_date = new \DateTime();
@@ -305,7 +301,7 @@ class ChatController extends AbstractApiController
      */
     public function userTypingAction(ChatConversation $conversation, Request $request)
     {
-        $this->checkValidSession($conversation, $request);
+        $this->checkSession($conversation);
 
         $form = $this->createForm(ChatUserTypingType::class);
         $form->submit($request->request->all());
@@ -329,14 +325,9 @@ class ChatController extends AbstractApiController
      */
     public function sendTranscriptInfoAction(ChatConversation $conversation, Request $request)
     {
-        $this->checkValidSession($conversation, $request);
+        $this->checkSession($conversation);
 
-        $form = $this
-            ->get('form.factory')
-            ->createNamedBuilder(null, 'api_chat_transcription_info', $conversation)
-            ->getForm()
-        ;
-
+        $form = $this->createForm(ChatTranscriptInfoType::class, $conversation);
         $form->submit($request->request->all());
         if (!$form->isValid()) {
             return $this->generateFormErrorsResponse($form);
@@ -357,14 +348,9 @@ class ChatController extends AbstractApiController
      */
     public function toggleShouldSendTranscriptAction(ChatConversation $conversation, Request $request)
     {
-        $this->checkValidSession($conversation, $request);
+        $this->checkSession($conversation);
 
-        $form = $this
-            ->get('form.factory')
-            ->createNamedBuilder(null, 'api_chat_transcription_toggle', $conversation)
-            ->getForm()
-        ;
-
+        $form = $this->createForm(ChatTranscriptToggleType::class, $conversation);
         $form->submit($request->request->all());
         if (!$form->isValid()) {
             return $this->generateFormErrorsResponse($form);
@@ -379,13 +365,12 @@ class ChatController extends AbstractApiController
      * @Rest\Post("/{id}/end")
      *
      * @param ChatConversation $conversation
-     * @param Request          $request
      *
      * @return View
      */
-    public function endChatAction(ChatConversation $conversation, Request $request)
+    public function endChatAction(ChatConversation $conversation)
     {
-        $this->checkValidSession($conversation, $request);
+        $this->checkSession($conversation);
 
         $conversation
             ->setStatus(ChatConversation::STATUS_ENDED)
@@ -402,13 +387,12 @@ class ChatController extends AbstractApiController
      * @Rest\Post("/{id}/reopen")
      *
      * @param ChatConversation $conversation
-     * @param Request          $request
      *
      * @return View
      */
-    public function reopenChatAction(ChatConversation $conversation, Request $request)
+    public function reopenChatAction(ChatConversation $conversation)
     {
-        $this->checkValidSession($conversation, $request);
+        $this->checkSession($conversation);
 
         $conversation
             ->setStatus(ChatConversation::STATUS_OPEN)
@@ -434,14 +418,9 @@ class ChatController extends AbstractApiController
      */
     public function feedbackAction(ChatConversation $conversation, Request $request)
     {
-        $this->checkValidSession($conversation, $request);
+        $this->checkSession($conversation);
 
-        $form = $this
-            ->get('form.factory')
-            ->createNamedBuilder(null, 'api_chat_feedback', $conversation)
-            ->getForm()
-        ;
-
+        $form = $this->createForm(ChatFeedbackType::class, $conversation);
         $form->submit($request->request->all());
         if (!$form->isValid()) {
             return $this->generateFormErrorsResponse($form);
@@ -454,13 +433,12 @@ class ChatController extends AbstractApiController
 
     /**
      * @param ChatConversation $conversation
-     * @param Request          $request
      *
      * @throws BadRequestHttpException
      */
-    protected function checkValidSession(ChatConversation $conversation, Request $request)
+    protected function checkSession(ChatConversation $conversation)
     {
-        $request_session      = $this->getApiSession($request);
+        $request_session      = $this->getApiSession();
         $conversation_session = $conversation->getSession();
 
         if (!$conversation_session || $request_session->getId() !== $conversation_session->getId()) {

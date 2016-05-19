@@ -15,6 +15,7 @@ Feature: Widget Setup
 
     And the JSON node "data.settings.global.company.name" should exist
     And the JSON node "data.settings.global.company.logo" should exist
+    And the JSON node "data.settings.global.chat.enabled" should be equal to 0
     And the JSON node "data.settings.global.chat.require_login" should be equal to 0
     And the JSON node "data.settings.global.chat.email_validation" should be equal to 0
 
@@ -26,7 +27,6 @@ Feature: Widget Setup
     And the JSON node "data.settings.brand.button.name" should be equal to "Help"
     And the JSON node "data.settings.brand.button.colors.background" should be equal to "#62ad8c"
     And the JSON node "data.settings.brand.button.colors.text" should be equal to "#ffffff"
-    And the JSON node "data.settings.brand.chat.enabled" should be equal to 1
     And the JSON node "data.settings.brand.chat.request_user_info" should be equal to 1
     And the JSON node "data.settings.brand.chat.proactive" should be equal to 1
     And the JSON node "data.settings.brand.chat.popup.title" should be equal to "Customer Support"
@@ -51,7 +51,8 @@ Feature: Widget Setup
     {
       "global": {
         "chat": {
-          "email_validation": false,
+          "enabled": true,
+          "email_validation": true,
           "require_login": true
         }
       },
@@ -66,7 +67,6 @@ Feature: Widget Setup
           "size": "medium"
         },
         "chat": {
-          "enabled": true,
           "begin_mode": "form",
           "waiting_timeout": 40,
           "popup": {
@@ -85,10 +85,9 @@ Feature: Widget Setup
     When I send a GET request to "/api/v2/widget/setup"
     Then the response should be in JSON
     And the response status code should be 200
+    And the JSON node "data.settings.global.chat.enabled" should be equal to 1
     And the JSON node "data.settings.global.chat.require_login" should be equal to 1
-    # Test disabled according to https://trello.com/c/x3cmtaoD
-    #And the JSON node "data.settings.global.chat.email_validation" should be equal to 1
-    And the JSON node "data.settings.global.chat.email_validation" should be equal to 0
+    And the JSON node "data.settings.global.chat.email_validation" should be equal to 1
     And the JSON node "data.enabled_on_portal" should be equal to 0
 
     And the JSON node "data.settings.brand.widget.type" should be equal to "bubble"
@@ -96,7 +95,6 @@ Feature: Widget Setup
     And the JSON node "data.settings.brand.widget.agent_polling_timeout" should be equal to 400
     And the JSON node "data.settings.brand.button.name" should be equal to "Help"
     And the JSON node "data.settings.brand.button.size" should be equal to "medium"
-    And the JSON node "data.settings.brand.chat.enabled" should be equal to "1"
     And the JSON node "data.settings.brand.chat.begin_mode" should be equal to "form"
     And the JSON node "data.settings.brand.chat.waiting_timeout" should be equal to 40
     And the JSON node "data.settings.brand.chat.popup.reply_type" should be equal to "buttons"
@@ -108,6 +106,7 @@ Feature: Widget Setup
     {
       "global": {
         "chat": {
+          "enabled": false,
           "email_validation": false,
           "require_login": false
         }
@@ -123,7 +122,6 @@ Feature: Widget Setup
           "size": "large"
         },
         "chat": {
-          "enabled": false,
           "begin_mode": "conversation",
           "waiting_timeout": 40,
           "popup": {
@@ -142,6 +140,7 @@ Feature: Widget Setup
     When I send a GET request to "/api/v2/widget/setup"
     Then the response should be in JSON
     And the response status code should be 200
+    And the JSON node "data.settings.global.chat.enabled" should be equal to 0
     And the JSON node "data.settings.global.chat.require_login" should be equal to 0
     And the JSON node "data.settings.global.chat.email_validation" should be equal to 0
     And the JSON node "data.enabled_on_portal" should be equal to 1
@@ -151,7 +150,6 @@ Feature: Widget Setup
     And the JSON node "data.settings.brand.widget.agent_polling_timeout" should be equal to 400
     And the JSON node "data.settings.brand.button.name" should be equal to "Edited Help"
     And the JSON node "data.settings.brand.button.size" should be equal to "large"
-    And the JSON node "data.settings.brand.chat.enabled" should be equal to 0
     And the JSON node "data.settings.brand.chat.begin_mode" should be equal to "conversation"
     And the JSON node "data.settings.brand.chat.waiting_timeout" should be equal to 40
     And the JSON node "data.settings.brand.chat.popup.reply_type" should be equal to "buttons"
