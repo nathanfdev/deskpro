@@ -13,7 +13,7 @@
           {% show kb_subscription_link %}
           {#<a href="#">{{ phrase('portal.general.btn-email') }} <i class="fa fa-envelope"></i></a>#}
           {#<a href="#">{{ phrase('portal.general.btn-print') }} <i class="fa fa-print"></i></a>#}
-          {#<a href="#">{{ phrase('portal.general.btn-download-pdf') }} <i class="fa fa-file-pdf-o"></i></a>#}
+          <a href="{{ path('portal_articles_pdf', {slug: article.slug}) }}">{{ phrase('portal.general.btn-download-pdf') }} <i class="fa fa-file-pdf-o"></i></a>
         </div>
       </div>
 

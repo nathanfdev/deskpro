@@ -68,7 +68,7 @@ class Pdf extends Html
     {
         $html = parent::render();
 
-        $content_html = App::getTemplating()->render('DeskPRO:pdf_agent:report-builder.html.twig', [
+        $contentHtml = App::getTemplating()->render('DeskPRO:pdf_agent:report-builder.html.twig', [
             'html'  => $html,
             'title' => $this->_title,
         ]);
@@ -89,7 +89,7 @@ class Pdf extends Html
 
         $mpdf->SetBasePath(realpath(__DIR__.'/../../../../../web/images'));
 
-        $mpdf->WriteHTML($content_html);
+        $mpdf->WriteHTML($contentHtml);
 
         return $mpdf->Output('', 'S');
     }

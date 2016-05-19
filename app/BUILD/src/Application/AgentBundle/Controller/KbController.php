@@ -57,7 +57,7 @@ class KbController extends AbstractController
 
     public function viewArticleAction($article_id)
     {
-        $is_pdf  = $this->in->getBool('pdf');
+        $isPdf   = $this->in->getBool('pdf');
         $article = $this->em->find('DeskPRO:Article', $article_id);
         if (!$article) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Unknown article $article_id");
@@ -158,16 +158,16 @@ class KbController extends AbstractController
             'word_defs' => $word_defs,
         ];
 
-        if ($is_pdf) {
-            $content_html = $this->renderView('DeskPRO:pdf_agent:view_article.html.twig', $vars);
+        if ($isPdf) {
+            $contentHtml = $this->renderView('DeskPRO:pdf_agent:view_article.html.twig', $vars);
 
             if ($this->in->getBool('html')) {
                 $response = new Response();
-                $response->setContent($content_html);
+                $response->setContent($contentHtml);
             } else {
-                $pdf_renderer = $this->get('pdf_renderer');
+                $pdfRenderer = $this->get('pdf_renderer');
 
-                $pdf_renderer->generateFile($content_html, $article->title.'.pdf');
+                $pdfRenderer->generateFile($contentHtml, $article->title.'.pdf');
                 exit;
             }
         }

@@ -98,7 +98,7 @@ class TicketController extends AbstractController
 
     public function viewAction($ticket_id)
     {
-        $is_pdf   = $this->in->getBool('pdf');
+        $isPdf    = $this->in->getBool('pdf');
         $is_print = $this->in->getBool('view_print');
 
         try {
@@ -166,7 +166,7 @@ class TicketController extends AbstractController
         # Messages
         #------------------------------
 
-        $ticket_messages_blockcache = $this->_getMessageBlockInfo($ticket, 1, $ticket_attachments, $is_pdf, $is_print);
+        $ticket_messages_blockcache = $this->_getMessageBlockInfo($ticket, 1, $ticket_attachments, $isPdf, $is_print);
         $ticket_messages_block      = $ticket_messages_blockcache['ticket_messages_block'];
         $ticket_attachments         = $ticket_messages_blockcache['ticket_attachments'];
         $ticket_message_attachments = isset($ticket_messages_blockcache['ticket_message_attachments']) ? $ticket_messages_blockcache['ticket_message_attachments'] : [];
@@ -438,19 +438,19 @@ class TicketController extends AbstractController
             $vars['billing_fields']     = $billing_fields;
         }
 
-        if ($is_pdf) {
+        if ($isPdf) {
             $vars['layout'] = $view_layout;
-            $content_html   = $this->renderView('DeskPRO:pdf_agent:view_ticket.html.twig', $vars);
+            $contentHtml    = $this->renderView('DeskPRO:pdf_agent:view_ticket.html.twig', $vars);
 
-            /** @var PdfRendererInterface $pdf_renderer */
-            $pdf_renderer = $this->get('pdf_renderer');
+            /** @var PdfRendererInterface $pdfRenderer */
+            $pdfRenderer = $this->get('pdf_renderer');
 
-            $pdf = $pdf_renderer->render($content_html);
+            $pdf = $pdfRenderer->render($contentHtml);
 
             $response = new Response();
 
             if ($this->in->getBool('html')) {
-                $response->setContent($content_html);
+                $response->setContent($contentHtml);
             } else {
                 $response->setContent($pdf);
                 $response->headers->set('Content-Disposition', 'attachment; filename=Ticket_'.$ticket->id.'.pdf');

@@ -11,7 +11,7 @@
           {% show news_subscription_link %}
           {#<a href="#">{{ phrase('portal.general.btn-email') }} <i class="fa fa-envelope"></i></a>#}
           {#<a href="#">{{ phrase('portal.general.btn-print') }} <i class="fa fa-print"></i></a>#}
-          {#<a href="#">{{ phrase('portal.general.btn-download-pdf') }} <i class="fa fa-file-pdf-o"></i></a>#}
+          <a href="{{ path('portal_news_pdf', {slug: post.slug}) }}">{{ phrase('portal.general.btn-download-pdf') }} <i class="fa fa-file-pdf-o"></i></a>
         </div>
         <div class="deskpro-calendar-decoration-flat">
           <div class="dcdf-month">{{ post.date_published | date('M') }}</div>

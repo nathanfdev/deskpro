@@ -39,6 +39,7 @@ use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\Form\Handler\CommentFormHandler;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
+use DeskPRO\Component\Pdf\PdfRendererInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -194,10 +195,10 @@ class NewsController extends AbstractController
      * @ParamConverter(name="post", converter="deskpro_slug")
      * @Security("is_granted('USE_NEWS') and is_granted('VIEW_NEWS', post)")
      * @PageHttpCache(content="post")
-
+     
      * @param Request $request
      * @param News    $post
-     * @param         $visitor_id
+     * @param int     $visitor_id
      *
      * @return Response
      */
@@ -272,7 +273,7 @@ class NewsController extends AbstractController
      *
      * @Route("/news/view/{slug}", name="portal_news_view_LEGACY")
      *
-     * @param  string      $slug
+     * @param string $slug
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
@@ -412,5 +413,53 @@ class NewsController extends AbstractController
         $this->addFlash('success', $this->phrase('portal.flashes.news_unsubscribe_everything'));
 
         return $this->redirectToRoute('portal_home');
+    }
+
+    /**
+     * @Route("/news/posts/pdf/{slug}", name="portal_news_pdf")
+     * @ParamConverter(name="post", converter="deskpro_slug")
+     * @Security("is_granted('USE_NEWS') and is_granted('VIEW_NEWS', post)")
+     * @PageHttpCache(content="post")
+     
+     * @param News $post
+     * @param int  $visitor_id
+     *
+     * @return Response
+     */
+    public function pdfAction(News $post, $visitor_id)
+    {
+        /** @var PdfRendererInterface $pdfRenderer */
+        $pdfRenderer = $this->get('pdf_renderer');
+
+        //
+        // BREADCRUMBS
+        //
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildNewsPost($post);
+
+        //
+        // RATING
+        //
+        $rating = $this->findContentRating($post, $visitor_id);
+
+        //
+        // NUM RATINGS
+        //
+        list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($post);
+
+        $contentHtml = $this->renderThemeView(
+            'Theme:News:pdf.html.twig',
+            [
+                'post'               => $post,
+                'rating'             => $rating,
+                'category'           => $post->getCategory(),
+                'breadcrumbs'        => $breadcrumbs,
+                'content_id'         => $post->getId(),
+                'content_type'       => News::CONTENT_TYPE,
+                'page_title'         => $this->createPageTitle()->news($post),
+                'show_rating_counts' => $showRatingCounts,
+            ]
+        );
+
+        return $pdfRenderer->generateFile($contentHtml->getContent(), $post->getTitle().'.pdf');
     }
 }

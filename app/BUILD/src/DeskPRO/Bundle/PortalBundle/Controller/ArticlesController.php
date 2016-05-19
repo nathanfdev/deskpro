@@ -38,6 +38,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
+use DeskPRO\Component\Pdf\PdfRendererInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -376,5 +377,53 @@ class ArticlesController extends AbstractController
         $this->addFlash('success', $this->phrase('portal.flashes.article_unsubscribe_everything'));
 
         return $this->redirectToRoute('portal_home');
+    }
+
+    /**
+     * @Route("/kb/articles/pdf/{slug}", name="portal_articles_pdf")
+     * @ParamConverter(name="article", converter="deskpro_slug")
+     * @Security("is_granted('USE_ARTICLES') and is_granted('VIEW_ARTICLE', article)")
+     * @PageHttpCache(content="article")
+     *
+     * @param Article $article
+     * @param int     $visitor_id
+     *
+     * @return Response
+     */
+    public function pdfAction(Article $article, $visitor_id)
+    {
+        /** @var PdfRendererInterface $pdfRenderer */
+        $pdfRenderer = $this->get('pdf_renderer');
+
+        //
+        // BREADCRUMBS
+        //
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildKbArticle($article);
+
+        //
+        // RATING
+        //
+        $rating = $this->findContentRating($article, $visitor_id);
+
+        //
+        // NUM RATINGS
+        //
+        list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($article);
+
+        $contentHtml = $this->renderThemeView(
+            'Theme:Articles:pdf.html.twig',
+            [
+                'article'            => $article,
+                'rating'             => $rating,
+                'category'           => $article->getPrimaryCategory(),
+                'breadcrumbs'        => $breadcrumbs,
+                'content_id'         => $article->getId(),
+                'content_type'       => Article::CONTENT_TYPE,
+                'page_title'         => $this->get('portal_view.page_title_generator')->kb($article),
+                'show_rating_counts' => $showRatingCounts,
+            ]
+        );
+
+        return $pdfRenderer->generateFile($contentHtml->getContent(), $article->getTitle().'.pdf');
     }
 }

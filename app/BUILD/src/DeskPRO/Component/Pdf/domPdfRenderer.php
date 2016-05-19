@@ -28,49 +28,64 @@
 
 namespace DeskPRO\Component\Pdf;
 
-class mPdfRenderer implements PdfRendererInterface
+use Application\DeskPRO\NewSettings\SettingsResolver;
+use Dompdf\Dompdf;
+
+class domPdfRenderer implements PdfRendererInterface
 {
     /**
      * @var \mPDF
      */
     private $object;
 
-    public function __construct()
-    {
-        $this->object = new \mPDF(
-            'utf-8', // Language/Character set
-            'A4', // Size
-            '8', // Default Font Size
-            '', // Default Font
-            20, // Margin Left
-            20, // Margin Right
-            40, // Margin Top
-            40, // Margin Bottom
-            10, // Margin Header
-            10, // Margin Footer
-            'P' // Orientation
-        );
+    /**
+     * @var SettingsResolver
+     */
+    private $resolver;
 
-        $this->object->SetBasePath(realpath(__DIR__.'/../../../../../web/images'));
-        $this->object->shrink_tables_to_fit = 0;
+    public function __construct($resolver)
+    {
+        $this->resolver = $resolver;
+
+        $this->object = new Dompdf();
+
+        $options = $this->object->getOptions();
+//        $options->setIsHtml5ParserEnabled(true);
+        $options->setIsRemoteEnabled(true);
+
+        $this->object->setOptions($options);
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
+        $this->object->setProtocol($protocol);
+        $full_path = $this->resolver->getGlobalSettings()->get('core.deskpro_url');
+        if (preg_match('|^https?://([^/]+)/?$|', $full_path, $matches)) {
+            $host = $matches[1];
+            $this->object->setBaseHost($host);
+        }
     }
 
     public function setPageSize($size = 'A4', $orientation = 'P')
     {
-        $this->object->_setPageSize($size, $orientation);
+        if ($orientation == '') {
+            $domOrientation = 'portrait';
+        } else {
+            $domOrientation = 'landscape';
+        }
+        $this->object->setPaper($size, $domOrientation);
     }
 
     public function render($contentHtml)
     {
-        $this->object->WriteHTML($contentHtml);
+        $this->object->loadHtml($contentHtml);
 
-        return $this->object->Output('', 'S');
+        return $this->object->output();
     }
 
     public function generateFile($contentHtml, $fileName)
     {
-        $this->object->WriteHTML($contentHtml);
+        $this->object->loadHtml($contentHtml);
 
-        return $this->object->Output($fileName, 'D');
+        $this->object->render();
+
+        return $this->object->stream($fileName);
     }
 }

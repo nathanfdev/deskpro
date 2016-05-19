@@ -53,7 +53,7 @@ class mPdfRenderer implements PdfRendererInterface
             '', // Default Font
             20, // Margin Left
             20, // Margin Right
-            40, // Margin Top
+            20, // Margin Top
             40, // Margin Bottom
             10, // Margin Header
             10, // Margin Footer
