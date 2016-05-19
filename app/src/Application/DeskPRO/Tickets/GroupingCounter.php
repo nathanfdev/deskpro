@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
@@ -177,6 +178,10 @@ class GroupingCounter
             if ($f->isChoiceType()) {
                 return "COALESCE(custom_data_ticket_$field.field_id, 0) AS $field";
             } else {
+                if ($f->getHandler()->getSearchType() === 'display') {
+                    return "NULL AS $field";
+                }
+
                 return "COALESCE(custom_data_ticket_$field.".$f->getHandler()->getSearchType().", 0) AS $field";
             }
         } else {
