@@ -33,6 +33,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\ApiKey as ApiKeyRepository;
 use Application\DeskPRO\HttpFoundation\Session;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken;
+use Doctrine\Common\Util\ClassUtils;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -54,7 +55,8 @@ class AuditLogHelper
      */
     public function __construct(ContainerInterface $container)
     {
-        $this->container = $container;
+        $this->container         = $container;
+        $this->supportedEntities = [];
     }
 
     /**
@@ -93,7 +95,7 @@ class AuditLogHelper
                 }
             }
         } else {
-            return $performer->setName('System');
+            $performer->setName('System');
         }
 
         return $performer;
@@ -125,6 +127,18 @@ class AuditLogHelper
                 $log->setApiKey($key->getId());
             }
         }
+    }
+
+    public function supportedEntity($entity)
+    {
+        if (!$this->supportedEntities) {
+            $settingsBag             = $this->container->get('settings_resolver')->getGlobalSettings(false);
+            $rawConfig               = $settingsBag->get('audit_log.configuration');
+            $this->supportedEntities = array_keys($rawConfig);
+        }
+        $class = ClassUtils::getRealClass(get_class($entity));
+
+        return in_array($class, $this->supportedEntities);
     }
 
     /**

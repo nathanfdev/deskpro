@@ -167,6 +167,9 @@ class AuditListener
     private function processInsertions()
     {
         foreach ($this->insertions as $entity) {
+            if (!$this->auditLogHelper->supportedEntity($entity)) {
+                return;
+            }
             $this->doProcess(self::INSERT, $entity);
         }
     }
@@ -174,6 +177,9 @@ class AuditListener
     private function processDeletions()
     {
         foreach ($this->deletions as $entity) {
+            if (!$this->auditLogHelper->supportedEntity($entity)) {
+                return;
+            }
             $this->doProcess(self::REMOVE, $entity);
         }
     }
@@ -181,6 +187,9 @@ class AuditListener
     private function processUpdates()
     {
         foreach ($this->updates as $entity) {
+            if (!$this->auditLogHelper->supportedEntity($entity)) {
+                return;
+            }
             $this->doProcess(self::UPDATE, $entity);
         }
     }
