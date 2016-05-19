@@ -17,3 +17,10 @@ Feature: KB
     When I follow "Example Article"
     Then I should be on "/kb/articles/example-article"
     And the response status code should be 200
+
+
+  Scenario: I  download a pdf version of an article
+    Given I am on "/kb/articles/example-article"
+    When I try to download "Download PDF"
+    Then I should see response status code "200"
+    And I should see in the header "content-type":"application/pdf"
