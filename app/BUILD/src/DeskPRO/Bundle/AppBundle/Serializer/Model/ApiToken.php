@@ -39,7 +39,7 @@ class ApiToken
     /**
      * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
      * @JMS\SerializedName("person_id")
-     * @JMS\Groups("token")
+     * @JMS\Groups({"token"})
      *
      * @var int
      */
@@ -47,7 +47,7 @@ class ApiToken
 
     /**
      * @JMS\Type("string")
-     * @JMS\Groups("token")
+     * @JMS\Groups({"token"})
      *
      * @var string
      */
@@ -55,7 +55,7 @@ class ApiToken
 
     /**
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\DiscoverSettings")
-     * @JMS\Groups("discover")
+     * @JMS\Groups({"discover"})
      *
      * @var DiscoverSettings
      */

@@ -39,6 +39,7 @@ class DiscoverSettings
      * @var bool
      *
      * @JMS\Type("boolean")
+     * @JMS\Groups({"discover"})
      */
     private $isDeskpro = true;
 
@@ -46,6 +47,7 @@ class DiscoverSettings
      * @var string
      *
      * @JMS\Type("string")
+     * @JMS\Groups({"discover"})
      */
     private $helpdeskUrl;
 
@@ -53,6 +55,7 @@ class DiscoverSettings
      * @var string
      *
      * @JMS\Type("string")
+     * @JMS\Groups({"discover"})
      */
     private $baseApiUrl;
 
@@ -60,6 +63,7 @@ class DiscoverSettings
      * @var string
      *
      * @JMS\Type("string")
+     * @JMS\Groups({"discover"})
      */
     private $build;
 
