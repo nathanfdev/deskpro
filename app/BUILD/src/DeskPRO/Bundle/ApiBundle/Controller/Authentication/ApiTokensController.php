@@ -231,6 +231,7 @@ class ApiTokensController extends BaseController
      * )
      *
      * @Rest\Get("/user_sources/{usersource}/callback/{format}", requirements={"format": "(ios|default)"})
+     * @Rest\Post("/user_sources/{usersource}/callback/{format}", requirements={"format": "(ios|default)"})
      *
      * @param Request    $request
      * @param Usersource $usersource
