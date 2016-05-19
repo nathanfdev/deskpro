@@ -2,6 +2,11 @@ import { createSelector } from 'reselect';
 
 const stateSelector = state => state.Tickets.list;
 
+export const elementsSelector = createSelector(
+  stateSelector,
+  state => state.get('elements')
+);
+
 export const viewModeSelector = createSelector(
   stateSelector,
    state => state.get('viewMode')
