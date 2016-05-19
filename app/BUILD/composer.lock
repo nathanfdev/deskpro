@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "ccf7673482cf12999adb8dc445335e8f",
-    "content-hash": "0810878d7708e325372d5190fcda788b",
+    "hash": "7b804d83cd214c034db7e2441c83108f",
+    "content-hash": "b85b3ce4b32dd3ecfed944d26740ff58",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -3186,7 +3186,6 @@
                 "php",
                 "url"
             ],
-            "abandoned": "league/uri",
             "time": "2015-07-15 08:24:12"
         },
         {
@@ -3530,6 +3529,57 @@
             "time": "2016-04-12 18:29:35"
         },
         {
+            "name": "mpdf/mpdf",
+            "version": "v6.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mpdf/mpdf.git",
+                "reference": "9116f8b28e86d1eaf858d1a4623d26a910441672"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mpdf/mpdf/zipball/9116f8b28e86d1eaf858d1a4623d26a910441672",
+                "reference": "9116f8b28e86d1eaf858d1a4623d26a910441672",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=5.4.0",
+                "setasign/fpdi": "1.6.*"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.7"
+            },
+            "suggest": {
+                "ext-zlib": "Needed for compression of embedded resources, such as fonts"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "mpdf.php",
+                    "classes"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Ian Back",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A PHP class to generate PDF files from HTML with Unicode/UTF-8 and CJK support",
+            "homepage": "http://mpdf.github.io",
+            "keywords": [
+                "pdf",
+                "php",
+                "utf-8"
+            ],
+            "time": "2016-04-28 18:19:01"
+        },
+        {
             "name": "nelmio/api-doc-bundle",
             "version": "2.12.0",
             "target-dir": "Nelmio/ApiDocBundle",
@@ -3791,7 +3841,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/bb979afc6f6d51420732d03dd5c44fb9b585f12a",
+                "url": "https://api.github.com/repos/onelogin/php-saml/zipball/c09e2c88ca6406e57b490164c036b25e4d459cdb",
                 "reference": "bb979afc6f6d51420732d03dd5c44fb9b585f12a",
                 "shasum": ""
             },
@@ -5529,6 +5579,55 @@
                 "controllers"
             ],
             "time": "2016-03-25 17:08:27"
+        },
+        {
+            "name": "setasign/fpdi",
+            "version": "1.6.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Setasign/FPDI.git",
+                "reference": "5b899b2b41463bf261aa69840fd30b50950a500c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Setasign/FPDI/zipball/5b899b2b41463bf261aa69840fd30b50950a500c",
+                "reference": "5b899b2b41463bf261aa69840fd30b50950a500c",
+                "shasum": ""
+            },
+            "suggest": {
+                "setasign/fpdf": "FPDI will extend this class but as it is also possible to use \"tecnickcom/tcpdf\" as an alternative there's no fixed dependency configured.",
+                "setasign/fpdi-fpdf": "Use this package to automatically evaluate dependencies to FPDF.",
+                "setasign/fpdi-tcpdf": "Use this package to automatically evaluate dependencies to TCPDF."
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "filters/",
+                    "fpdi.php",
+                    "fpdf_tpl.php",
+                    "fpdi_pdf_parser.php",
+                    "pdf_context.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jan Slabon",
+                    "email": "jan.slabon@setasign.com",
+                    "homepage": "https://www.setasign.com"
+                }
+            ],
+            "description": "FPDI is a collection of PHP classes facilitating developers to read pages from existing PDF documents and use them as templates in FPDF. Because it is also possible to use FPDI with TCPDF, there are no fixed dependencies defined. Please see suggestions for packages which evaluates the dependencies automatically.",
+            "homepage": "https://www.setasign.com/fpdi",
+            "keywords": [
+                "fpdf",
+                "fpdi",
+                "pdf"
+            ],
+            "time": "2015-11-30 10:53:14"
         },
         {
             "name": "slushie/recaptcha-secure-token",
@@ -10407,7 +10506,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behatch/contexts/zipball/f9c0093b2c7738ebf42bae6d98d0278dfa8ff9fc",
+                "url": "https://api.github.com/repos/Behatch/contexts/zipball/e4085a93501c6d86e814052a54b7ea90d1507828",
                 "reference": "f9c0093b2c7738ebf42bae6d98d0278dfa8ff9fc",
                 "shasum": ""
             },
