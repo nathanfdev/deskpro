@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -41,8 +42,8 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * Ban an IP addresses and ranges.
  *
  * @property string $banned_ip
- * @property int $ip_start
- * @property int $ip_end
+ * @property int    $ip_start
+ * @property int    $ip_end
  */
 class BanIp extends DomainObject
 {
@@ -92,8 +93,8 @@ class BanIp extends DomainObject
             throw new \InvalidArgumentException('Invalid IP address: `'.$ip.'`');
         }
 
-        $start = array();
-        $end   = array();
+        $start = [];
+        $end   = [];
 
         foreach ($parts as $part) {
             $start[] = $part;
@@ -114,9 +115,9 @@ class BanIp extends DomainObject
             $human = implode('.', $parts);
         }
 
-        $this->banned_ip = $human;
-        $this->ip_start  = sprintf('%u', ip2long(implode('.', $start)));
-        $this->ip_end    = sprintf('%u', ip2long(implode('.', $end)));
+        $this->setModelField('banned_ip', $human);
+        $this->setModelField('ip_start', sprintf('%u', ip2long(implode('.', $start))));
+        $this->setModelField('ip_end', sprintf('%u', ip2long(implode('.', $end))));
     }
 
     ############################################################################
@@ -127,39 +128,39 @@ class BanIp extends DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\BanIp';
-        $metadata->setPrimaryTable(array('name' => 'ban_ips'));
+        $metadata->setPrimaryTable(['name' => 'ban_ips']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
-            array(
-                 'fieldName'  => 'banned_ip',
-                 'type'       => 'string',
-                 'length'     => 100,
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'banned_ip',
-                 'id'         => true,
-            )
+            [
+                'fieldName'  => 'banned_ip',
+                'type'       => 'string',
+                'length'     => 100,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'banned_ip',
+                'id'         => true,
+            ]
         );
         $metadata->mapField(
-            array(
-                 'fieldName'  => 'ip_start',
-                 'type'       => 'bigint',
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'ip_start',
-            )
+            [
+                'fieldName'  => 'ip_start',
+                'type'       => 'bigint',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'ip_start',
+            ]
         );
         $metadata->mapField(
-            array(
-                 'fieldName'  => 'ip_end',
-                 'type'       => 'bigint',
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'ip_end',
-            )
+            [
+                'fieldName'  => 'ip_end',
+                'type'       => 'bigint',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'ip_end',
+            ]
         );
     }
 }

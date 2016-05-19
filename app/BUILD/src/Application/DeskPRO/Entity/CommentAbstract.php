@@ -221,7 +221,6 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setName($name)
     {
-        $this->name = $name;
         $this->setModelField('name', $name);
     }
 

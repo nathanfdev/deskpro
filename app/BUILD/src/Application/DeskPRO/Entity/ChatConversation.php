@@ -741,8 +741,7 @@ class ChatConversation extends DomainObject
             return $this;
         }
 
-        $this->_onPropertyChanged('status', $this->status, $status);
-        $this->status = $status;
+        $this->setModelField('status', $status);
 
         if ($status == self::STATUS_ENDED) {
             if (!$this->date_ended) {

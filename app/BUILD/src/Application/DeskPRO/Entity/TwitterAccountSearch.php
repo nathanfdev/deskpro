@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -103,9 +104,9 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
     public function setAccountId($id)
     {
         if ($id && $account = App::getOrm()->getRepository('DeskPRO:TwitterAccount')->find($id)) {
-            $this->account = $account;
+            $this->setModelField('account', $account);
         } else {
-            $this->account = null;
+            $this->setModelField('account', null);
         }
     }
 
@@ -115,22 +116,22 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 
         try {
             $api     = $this->account->getTwitterApi();
-            $results = $api->get_searchTweets(array(
+            $results = $api->get_searchTweets([
                 'q'                => $this->term,
                 'result_type'      => 'recent',
                 'count'            => self::SEARCH_RESULTS,
                 'since_id'         => $since_id,
                 'include_entities' => true,
-            ));
+            ]);
         } catch (\EpiTwitterException $e) {
-            return array();
+            return [];
         }
 
-        $new_statuses = array();
+        $new_statuses = [];
 
         if (!empty($results->statuses)) {
             $twitter = new \Application\DeskPRO\Service\Twitter();
-            $lookups = array();
+            $lookups = [];
             foreach ($results->statuses as $status) {
                 $lookups[$status->id_str] = $twitter->processStatus($api, $status, $do_write, 1);
                 if ($do_write) {
@@ -200,7 +201,7 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
         $page   = max(1, intval($page));
         $offset = ($page - 1) * $per_page;
 
-        $output  = array();
+        $output  = [];
         $results = App::getOrm()->createQuery('
             SELECT s,
                 a, account, action_agent, agent, agent_team, retweeted,
@@ -224,7 +225,7 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
             WHERE s.search = ?0
                 '.($includeArchived ? '' : 'AND a.is_archived = false').'
             ORDER BY s.date_created DESC
-        ')->setParameters(array($this))->setMaxResults($per_page)->setFirstResult($offset)->execute();
+        ')->setParameters([$this])->setMaxResults($per_page)->setFirstResult($offset)->execute();
         foreach ($results as $result) {
             $output[] = $result->account_status;
         }
@@ -246,27 +247,26 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
             INNER JOIN twitter_accounts_statuses AS a ON (ss.account_status_id = a.id)
             WHERE ss.search_id = ?
                 '.($includeArchived ? '' : 'AND a.is_archived = 0').'
-        ', array($this->id));
+        ', [$this->id]);
     }
 
     ############################################################################
     # Doctrine Metadata
     ############################################################################
 
-
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterAccountSearch';
-        $metadata->setPrimaryTable(array('name' => 'twitter_accounts_searches'));
+        $metadata->setPrimaryTable(['name' => 'twitter_accounts_searches']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'term', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'term'));
-        $metadata->mapField(array('fieldName' => 'date_updated', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_updated'));
-        $metadata->mapField(array('fieldName' => 'max_id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'max_id'));
-        $metadata->mapField(array('fieldName' => 'min_id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'min_id'));
+        $metadata->mapField(['fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true]);
+        $metadata->mapField(['fieldName' => 'term', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'term']);
+        $metadata->mapField(['fieldName' => 'date_updated', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_updated']);
+        $metadata->mapField(['fieldName' => 'max_id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'max_id']);
+        $metadata->mapField(['fieldName' => 'min_id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'min_id']);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array('fieldName' => 'account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => null, 'inversedBy' => 'searches', 'joinColumns' => array(0 => array('name' => 'account_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => null))));
-        $metadata->mapOneToMany(array('fieldName' => 'search_statuses', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountSearchStatus', 'mappedBy' => 'search'));
+        $metadata->mapManyToOne(['fieldName' => 'account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => null, 'inversedBy' => 'searches', 'joinColumns' => [0 => ['name' => 'account_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => null]]]);
+        $metadata->mapOneToMany(['fieldName' => 'search_statuses', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountSearchStatus', 'mappedBy' => 'search']);
     }
 }

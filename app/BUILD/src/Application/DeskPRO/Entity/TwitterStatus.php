@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -88,7 +89,7 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
     protected $recipient;
 
     /**
-     * @var Boolean
+     * @var bool
      */
     protected $is_truncated = false;
 
@@ -175,9 +176,9 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
     public function setUserId($id)
     {
         if ($id && $user = App::getOrm()->getRepository('DeskPRO:TwitterUser')->find($id)) {
-            $this->user = $user;
+            $this->setModelField('user', $user);
         } else {
-            $this->user = null;
+            $this->setModelField('user', null);
         }
     }
 
@@ -200,7 +201,7 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @return Boolean
+     * @return bool
      */
     public function isMessage()
     {
@@ -208,7 +209,7 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @return Boolean
+     * @return bool
      */
     public function isReply()
     {
@@ -233,9 +234,9 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
     public function setInReplyToStatusId($id)
     {
         if ($id && $status = App::getOrm()->getRepository('DeskPRO:TwitterStatus')->find($id)) {
-            $this->in_reply_to_status = $status;
+            $this->setModelField('in_reply_to_status', $status);
         } else {
-            $this->in_reply_to_status = null;
+            $this->setModelField('in_reply_to_status', null);
         }
     }
 
@@ -257,14 +258,14 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
     public function setRetweetId($id)
     {
         if ($id && $status = App::getOrm()->getRepository('DeskPRO:TwitterStatus')->find($id)) {
-            $this->retweet = $status;
+            $this->setModelField('retweet', $status);
         } else {
-            $this->retweet = null;
+            $this->setModelField('retweet', null);
         }
     }
 
     /**
-     * @return Boolean
+     * @return bool
      */
     public function isRetweet()
     {
@@ -289,9 +290,9 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
     public function setInReplyToUserId($id)
     {
         if ($id && $user = App::getOrm()->getRepository('DeskPRO:TwitterUser')->find($id)) {
-            $this->in_reply_to_user = $user;
+            $this->setModelField('in_reply_to_user', $user);
         } else {
-            $this->in_reply_to_user = null;
+            $this->setModelField('in_reply_to_user', null);
         }
     }
 
@@ -313,14 +314,14 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
     public function setRecipientId($id)
     {
         if ($id && $user = App::getOrm()->getRepository('DeskPRO:TwitterUser')->find($id)) {
-            $this->recipient = $user;
+            $this->setModelField('recipient', $user);
         } else {
-            $this->recipient = null;
+            $this->setModelField('recipient', null);
         }
     }
 
     /**
-     * @return Boolean
+     * @return bool
      */
     public function isTruncated()
     {

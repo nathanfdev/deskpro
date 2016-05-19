@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -597,10 +598,10 @@ class TicketMessage extends DomainObject
 
     public function convertEmbeddedImagesToInlineAttach()
     {
-        $message_text  = $this->convertEmbeddedImagesToInlineAttachInText($this->message);
-        $this->message = $message_text;
+        $messageText = $this->convertEmbeddedImagesToInlineAttachInText($this->message);
+        $this->setModelField('message', $messageText);
 
-        return $message_text;
+        return $messageText;
     }
 
     public function convertEmbeddedImagesToInlineAttachInText($message_text)

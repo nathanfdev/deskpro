@@ -107,7 +107,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     protected $depth = 0;
 
     /**
-      */
+     *  */
     protected $root;
 
     /**
@@ -115,7 +115,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
      *
      * @var array()
      */
-    protected $_structure = array();
+    protected $_structure = [];
 
     /**
      * @var \Application\DeskPRO\Publish\Structure
@@ -199,7 +199,6 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 
     public function setTitle($title)
     {
-        $this->title = $title;
         $this->setModelField('title', $title);
 
         $this->updateSlug();
@@ -212,7 +211,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
      */
     public function getTitleParts()
     {
-        $titles = array();
+        $titles = [];
         foreach ($this->getTreeParents() as $p) {
             $titles[] = $p['title'];
         }
@@ -245,7 +244,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
             return $this->_structure['all_parents'];
         }
 
-        $this->_structure['all_parents'] = array();
+        $this->_structure['all_parents'] = [];
         $cat                             = $this;
         while ($cat->getParent()) {
             $this->_structure['all_parents'][$cat->getParent()->id] = $cat->getParent();
@@ -267,7 +266,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     public function getTreeIds($including_this = true)
     {
         if (!isset($this->_structure['all_child_ids'])) {
-            $all_ids = array();
+            $all_ids = [];
             $r       = function (CategoryAbstract $cat) use (&$r, &$all_ids) {
                 if ($children = $cat->getChildren()) {
                     foreach ($cat->getChildren() as $c) {
@@ -387,7 +386,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     {
         $metadata->isMappedSuperclass = true;
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->setPrimaryTable(array('name' => 'CategoryAbstract'));
+        $metadata->setPrimaryTable(['name' => 'CategoryAbstract']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
     }
 

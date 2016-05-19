@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -85,9 +86,9 @@ class TwitterAccountFollower extends \Application\DeskPRO\Domain\DomainObject
     public function setAccountId($id)
     {
         if ($id && $account = App::getOrm()->getRepository('DeskPRO:TwitterAccount')->find($id)) {
-            $this->account = $account;
+            $this->setModelField('account', $account);
         } else {
-            $this->account = null;
+            $this->setModelField('account', null);
         }
     }
 
@@ -109,9 +110,9 @@ class TwitterAccountFollower extends \Application\DeskPRO\Domain\DomainObject
     public function setUserId($id)
     {
         if ($id && $user = App::getOrm()->getRepository('DeskPRO:TwitterUser')->find($id)) {
-            $this->user = $user;
+            $this->setModelField('user', $user);
         } else {
-            $this->user = null;
+            $this->setModelField('user', null);
         }
     }
 
@@ -122,7 +123,7 @@ class TwitterAccountFollower extends \Application\DeskPRO\Domain\DomainObject
                 SELECT MAX(follow_order)
                 FROM twitter_accounts_followers
                 WHERE account_id = ?
-            ', array($this->account->id));
+            ', [$this->account->id]);
             $this->follow_order = intval($max) + 1;
         }
     }
@@ -131,24 +132,23 @@ class TwitterAccountFollower extends \Application\DeskPRO\Domain\DomainObject
     # Doctrine Metadata
     ############################################################################
 
-
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterAccountFollower';
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name'              => 'twitter_accounts_followers',
-            'uniqueConstraints' => array(
-                'account_user_idx' => array('columns' => array('account_id', 'user_id')),
-            ),
-        ));
+            'uniqueConstraints' => [
+                'account_user_idx' => ['columns' => ['account_id', 'user_id']],
+            ],
+        ]);
         $metadata->addLifecycleCallback('_preInsert', 'prePersist');
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'follow_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'follow_order'));
-        $metadata->mapField(array('fieldName' => 'is_archived', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_archived'));
+        $metadata->mapField(['fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true]);
+        $metadata->mapField(['fieldName' => 'follow_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'follow_order']);
+        $metadata->mapField(['fieldName' => 'is_archived', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_archived']);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array('fieldName' => 'account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => null, 'inversedBy' => 'followers', 'joinColumns' => array(0 => array('name' => 'account_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => null))));
-        $metadata->mapManyToOne(array('fieldName' => 'user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => null, 'inversedBy' => 'followers', 'joinColumns' => array(0 => array('name' => 'user_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => null))));
+        $metadata->mapManyToOne(['fieldName' => 'account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => null, 'inversedBy' => 'followers', 'joinColumns' => [0 => ['name' => 'account_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => null]]]);
+        $metadata->mapManyToOne(['fieldName' => 'user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => null, 'inversedBy' => 'followers', 'joinColumns' => [0 => ['name' => 'user_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => null]]]);
     }
 }

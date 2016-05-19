@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -73,7 +74,7 @@ class OrganizationEmailDomain extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setDomain($domain)
     {
-        $this->domain = $domain;
+        $this->setModelField('domain', $domain);
 
         return $this;
     }
@@ -93,7 +94,7 @@ class OrganizationEmailDomain extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setOrganization(Organization $organization = null)
     {
-        $this->organization = $organization;
+        $this->setModelField('organization', $organization);
 
         return $this;
     }
@@ -114,9 +115,9 @@ class OrganizationEmailDomain extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\OrganizationEmailDomain';
-        $metadata->setPrimaryTable(array('name' => 'organization_email_domains'));
+        $metadata->setPrimaryTable(['name' => 'organization_email_domains']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'domain', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'domain', 'id' => true));
-        $metadata->mapManyToOne(array('fieldName' => 'organization', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
+        $metadata->mapField(['fieldName' => 'domain', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'domain', 'id' => true]);
+        $metadata->mapManyToOne(['fieldName' => 'organization', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => [0 => ['name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null]]]);
     }
 }

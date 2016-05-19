@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -41,6 +41,7 @@ use Application\LegacyApiBundle\Controller\TasksController;
 use Orb\Util\Arrays;
 use Orb\Util\Dates;
 use Orb\Util\Numbers;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -63,98 +64,98 @@ class TaskController extends AbstractController
 
     public function getSectionDataAction()
     {
-        /** @var \Application\DeskPRO\EntityRepository\Task $task_repository */
-        $task_repository = $this->em->getRepository('DeskPRO:Task');
-        $person          = $this->person;
+        /** @var \Application\DeskPRO\EntityRepository\Task $taskRepository */
+        $taskRepository = $this->em->getRepository('DeskPRO:Task');
+        $person         = $this->person;
 
-        $all_tasks = array(
-            'total'      => $task_repository->countPendingTasks($person),
-            'overdue'    => $task_repository->countOverdueTasks($person),
-            'due_today'  => $task_repository->countDueTodayTasks($person),
-            'due_future' => $task_repository->countDueFutureTasks($person),
-        );
+        $allTasks = [
+            'total'      => $taskRepository->countPendingTasks($person),
+            'overdue'    => $taskRepository->countOverdueTasks($person),
+            'due_today'  => $taskRepository->countDueTodayTasks($person),
+            'due_future' => $taskRepository->countDueFutureTasks($person),
+        ];
 
-        $person_tasks = array(
-            'total'      => $task_repository->countPendingTasksForPerson($person),
-            'overdue'    => $task_repository->countOverdueTasksForPerson($person),
-            'due_today'  => $task_repository->countDueTodayTasksForPerson($person),
-            'due_future' => $task_repository->countDueFutureTasksForPerson($person),
-        );
+        $personTasks = [
+            'total'      => $taskRepository->countPendingTasksForPerson($person),
+            'overdue'    => $taskRepository->countOverdueTasksForPerson($person),
+            'due_today'  => $taskRepository->countDueTodayTasksForPerson($person),
+            'due_future' => $taskRepository->countDueFutureTasksForPerson($person),
+        ];
 
-        $teams_tasks = array(
-            'total'      => $task_repository->countPendingTaksForPersonTeams($person),
-            'overdue'    => $task_repository->countOverdueTasksForPersonTeams($person),
-            'due_today'  => $task_repository->countDueTodayTasksForPersonTeams($person),
-            'due_future' => $task_repository->countDueFutureTasksForPersonTeams($person),
-        );
+        $teamsTasks = [
+            'total'      => $taskRepository->countPendingTaksForPersonTeams($person),
+            'overdue'    => $taskRepository->countOverdueTasksForPersonTeams($person),
+            'due_today'  => $taskRepository->countDueTodayTasksForPersonTeams($person),
+            'due_future' => $taskRepository->countDueFutureTasksForPersonTeams($person),
+        ];
 
-        $delegated_tasks = array(
-            'total'      => $task_repository->countPendingDelegatedTasksForPerson($person),
-            'overdue'    => $task_repository->countOverdueDelegatedTasksForPerson($person),
-            'due_today'  => $task_repository->countDueTodayDelegatedTasksForPerson($person),
-            'due_future' => $task_repository->countDueFutureDelegatedTasksForPerson($person),
-        );
+        $delegatedTasks = [
+            'total'      => $taskRepository->countPendingDelegatedTasksForPerson($person),
+            'overdue'    => $taskRepository->countOverdueDelegatedTasksForPerson($person),
+            'due_today'  => $taskRepository->countDueTodayDelegatedTasksForPerson($person),
+            'due_future' => $taskRepository->countDueFutureDelegatedTasksForPerson($person),
+        ];
 
-        $section_html = $this->renderView('AgentBundle:Task:window-section.html.twig', array(
-            'counts' => array(
-                'all'       => $all_tasks,
-                'person'    => $person_tasks,
-                'teams'     => $teams_tasks,
-                'delegated' => $delegated_tasks,
-            ),
-        ));
+        $sectionHtml = $this->renderView('AgentBundle:Task:window-section.html.twig', [
+            'counts' => [
+                'all'       => $allTasks,
+                'person'    => $personTasks,
+                'teams'     => $teamsTasks,
+                'delegated' => $delegatedTasks,
+            ],
+        ]);
 
-        return $this->createJsonResponse(array(
-            'section_html' => $section_html,
-        ));
+        return $this->createJsonResponse([
+            'section_html' => $sectionHtml,
+        ]);
     }
 
     /**
      * Render the new task form.
      *
-     * @return html
+     * @return Response html
      */
     public function newAction()
     {
         $agents      = $this->em->getRepository('DeskPRO:Person')->getAgents();
         $agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->findAll();
 
-        return $this->render('AgentBundle:Task:newtask.html.twig', array(
+        return $this->render('AgentBundle:Task:newtask.html.twig', [
             'agents'      => $agents,
             'agent_teams' => $agent_teams,
-        ));
+        ]);
     }
 
     /**
      * Create action for the new task. Which pass the data and the from to the _process method to save it in DB.
      *
-     * @return json formated data
+     * @return Response json formated data
      */
     public function createAction()
     {
-        $all_task_data = $this->in->getCleanValueArray('newtask', 'raw', 'discard');
-        $tasks         = array();
+        $allTaskData = $this->in->getCleanValueArray('newtask', 'raw', 'discard');
+        $tasks       = [];
 
-        foreach ($all_task_data as $task_data) {
-            $task                = new Task();
-            $form                = $this->createForm(new TaskType(), $task);
-            $task_data['person'] = $this->person['id'];
+        foreach ($allTaskData as $taskData) {
+            $task               = new Task();
+            $form               = $this->createForm(new TaskType(), $task);
+            $taskData['person'] = $this->person['id'];
 
-            if (!empty($task_data['ticket_id'])) {
-                $task_data['ticket'] = $task_data['ticket_id'];
+            if (!empty($taskData['ticket_id'])) {
+                $taskData['ticket'] = $taskData['ticket_id'];
             }
 
-            if (!empty($task_data['date_due'])) {
-                if (!empty($task_data['time_due'])) {
-                    $task_data['date_due'] .= ' '.$task_data['time_due'];
+            if (!empty($taskData['date_due'])) {
+                if (!empty($taskData['time_due'])) {
+                    $taskData['date_due'] .= ' '.$taskData['time_due'];
                 } else {
-                    $task_data['date_due'] .= ' 23:59:59';
+                    $taskData['date_due'] .= ' 23:59:59';
                 }
             }
 
             // remove extra
-            $task_data = array_intersect_key($task_data, $form->all());
-            $form->submit($task_data);
+            $taskData = array_intersect_key($taskData, $form->all());
+            $form->submit($taskData);
 
             if ($form->isValid()) {
                 $this->em->persist($task);
@@ -169,7 +170,7 @@ class TaskController extends AbstractController
             $notify->send();
         }
 
-        $task_data = array();
+        $taskData = [];
         foreach ($tasks as $t) {
             $d = false;
             if ($t->date_due) {
@@ -177,18 +178,18 @@ class TaskController extends AbstractController
                 $d->setTimezone($this->person->getDateTimezone());
                 $d = $d->format($this->container->getSetting('core.date_day'));
             }
-            $task_data[] = array(
+            $taskData[] = [
                 'id'       => $t->getId(),
                 'title'    => $t->title,
                 'date_due' => $d,
-                'row_html' => $this->renderView('AgentBundle:Task:task-list-row.html.twig', array('task' => $t, 'noShowLinked' => true)),
-            );
+                'row_html' => $this->renderView('AgentBundle:Task:task-list-row.html.twig', ['task' => $t, 'noShowLinked' => true]),
+            ];
         }
 
-        return $this->createJsonResponse(array(
+        return $this->createJsonResponse([
             'success' => true,
-            'tasks'   => $task_data,
-        ));
+            'tasks'   => $taskData,
+        ]);
     }
 
     /**
@@ -253,7 +254,7 @@ class TaskController extends AbstractController
         $tasks_grouped = null;
         $group_by      = $this->in->getString('group_by');
         if ($group_by == 'assigned') {
-            $tasks_grouped = array();
+            $tasks_grouped = [];
             foreach ($tasks as $t) {
                 if ($t->assigned_agent) {
                     $key   = 'agent:'.$t->assigned_agent->id;
@@ -267,7 +268,7 @@ class TaskController extends AbstractController
                 }
 
                 if (!isset($tasks_grouped[$key])) {
-                    $tasks_grouped[$key] = array('title' => $title, 'tasks' => array());
+                    $tasks_grouped[$key] = ['title' => $title, 'tasks' => []];
                 }
 
                 $tasks_grouped[$key]['tasks'][] = $t;
@@ -281,13 +282,13 @@ class TaskController extends AbstractController
                 Arrays::unshiftAssoc($tasks_grouped, $key, $tmp);
             }
         } elseif ($group_by == 'creator') {
-            $tasks_grouped = array();
+            $tasks_grouped = [];
             foreach ($tasks as $t) {
                 $key   = 'agent:'.$t->person->id;
                 $title = $t->person->getDisplayName();
 
                 if (!isset($tasks_grouped[$key])) {
-                    $tasks_grouped[$key] = array('title' => $title, 'tasks' => array());
+                    $tasks_grouped[$key] = ['title' => $title, 'tasks' => []];
                 }
 
                 $tasks_grouped[$key]['tasks'][] = $t;
@@ -328,32 +329,32 @@ class TaskController extends AbstractController
             $month->setTime(23, 59, 59);
             $month = Dates::convertToUtcDateTime($month);
 
-            $tasks_grouped = array(
-                'overdue' => array(
+            $tasks_grouped = [
+                'overdue' => [
                     'title' => 'Overdue',
-                    'tasks' => array(),
-                ),
-                'overdue_today' => array(
+                    'tasks' => [],
+                ],
+                'overdue_today' => [
                     'title' => 'Today (Overdue)',
-                    'tasks' => array(),
-                ),
-                'today' => array(
+                    'tasks' => [],
+                ],
+                'today' => [
                     'title' => 'Today',
-                    'tasks' => array(),
-                ),
-                'week' => array(
+                    'tasks' => [],
+                ],
+                'week' => [
                     'title' => 'This Week',
-                    'tasks' => array(),
-                ),
-                'month' => array(
+                    'tasks' => [],
+                ],
+                'month' => [
                     'title' => 'This Month',
-                    'tasks' => array(),
-                ),
-                'future' => array(
+                    'tasks' => [],
+                ],
+                'future' => [
                     'title' => 'Future',
-                    'tasks' => array(),
-                ),
-            );
+                    'tasks' => [],
+                ],
+            ];
 
             foreach ($tasks as $t) {
                 if (!$t->date_due) {
@@ -376,14 +377,14 @@ class TaskController extends AbstractController
             }
         }
 
-        $tasks_arr = array();
+        $tasks_arr = [];
 //	    foreach ($tasks as $task) {
 //		    $tasks_arr[] = $task->toApiData();
 //        }
 
         $tpl = 'AgentBundle:Task:task-list.html.twig';
 
-        return $this->render($tpl, array(
+        return $this->render($tpl, [
             'agents'          => $agents,
             'agent_teams'     => $agent_teams,
             'tasks'           => $tasks,
@@ -402,15 +403,15 @@ class TaskController extends AbstractController
             'has_prev_completed' => $has_prev_completed,
 
             'tasks_arr' => $tasks_arr,
-        ));
+        ]);
     }
 
     /**
      * Save labels for tasks.
      *
-     * @param intiger $task_id
+     * @param int $task_id
      *
-     * @return json
+     * @return Response json
      */
     public function ajaxSaveLabelsAction($task_id)
     {
@@ -421,15 +422,15 @@ class TaskController extends AbstractController
         $this->em->persist($task);
         $this->em->flush();
 
-        return $this->createJsonResponse(array('success' => 1));
+        return $this->createJsonResponse(['success' => 1]);
     }
 
     /**
      * Save the comment for tasks.
      *
-     * @param intiger $task_id
+     * @param int $task_id
      *
-     * @return comment list in li format
+     * @return Response comment list in li format
      */
     public function ajaxSaveCommentAction($task_id)
     {
@@ -438,10 +439,10 @@ class TaskController extends AbstractController
         $comment_txt = $this->in->getString('comment');
 
         if (!$comment_txt || !$task) {
-            return $this->createJsonResponse(array(
+            return $this->createJsonResponse([
                 'error'      => true,
                 'error_code' => 'no_message',
-            ));
+            ]);
         }
 
         $comment            = new TaskComment($this->person, $comment_txt);
@@ -452,11 +453,11 @@ class TaskController extends AbstractController
         $this->em->persist($comment);
         $this->em->flush();
 
-        return $this->createJsonResponse(array(
-                'success'         => true,
-                'task_id'         => $task_id,
-                'comment_li_html' => $this->renderView('AgentBundle:Task:comment-li.html.twig', array('comment' => $comment)),
-        ));
+        return $this->createJsonResponse([
+            'success'         => true,
+            'task_id'         => $task_id,
+            'comment_li_html' => $this->renderView('AgentBundle:Task:comment-li.html.twig', ['comment' => $comment]),
+        ]);
     }
 
     public function ajaxSaveAction($task_id)
@@ -495,44 +496,46 @@ class TaskController extends AbstractController
             case 'date_due':
                 if ($this->in->getString('value')) {
                     try {
-                        $date_due = new \DateTime($this->in->getString('value'), $this->person->getDateTimezone());
-                        $date_due->setTime(23, 59, 59);
+                        $dateDue = new \DateTime($this->in->getString('value'), $this->person->getDateTimezone());
+                        $dateDue->setTime(23, 59, 59);
                     } catch (\Exception $e) {
-                        $date_due = null;
+                        $dateDue = null;
                     }
 
-                    if ($date_due) {
-                        $task->date_due = Dates::convertToUtcDateTime($date_due);
+                    if ($dateDue) {
+                        $task->setDateDue(Dates::convertToUtcDateTime($dateDue));
                     } else {
-                        $task->date_due = null;
+                        $task->setDateDue(null);
                     }
                 } else {
-                    $task->date_due = null;
+                    $task->setDateDue(null);
                 }
+                $this->em->flush();
+
                 break;
 
             case 'time_due':
-                if ($task->date_due) {
+                if ($task->getDateDue()) {
                     $time_due = $this->in->getString('value');
                     if (!empty($time_due) && strpos($time_due, ':') !== 0) {
                         list($hour, $min) = explode(':', $time_due);
                         $hour             = (int) $hour;
                         $min              = (int) $min;
                         if (Numbers::inRange($hour, 0, 23) && Numbers::inRange($min, 0, 59)) {
-                            $date = clone $task->date_due;
+                            $date = clone $task->getDateDue();
                             $date->setTimezone($this->person->getDateTimezone());
                             $date->setTime($hour, $min, 59);
 
-                            $task->date_due = Dates::convertToUtcDateTime($date);
+                            $task->setDateDue(Dates::convertToUtcDateTime($date));
                         } else {
-                            $date = clone $task->date_due;
+                            $date = clone $task->getDateDue();
                             $date->setTime(23, 59, 59);
-                            $task->date_due = $date;
+                            $task->setDateDue($date);
                         }
                     } else {
-                        $date = clone $task->date_due;
+                        $date = clone $task->getDateDue();
                         $date->setTime(23, 59, 59);
-                        $task->date_due = $date;
+                        $task->setDateDue($date);
                     }
                 }
                 break;
@@ -553,8 +556,8 @@ class TaskController extends AbstractController
             case 'assigned':
                 $val = $this->in->getString('value');
 
-                $task->agent      = null;
-                $task->agent_team = null;
+                $task->setAssignedAgent(null);
+                $task->setAssignedAgentTeam(null);
 
                 if ($val) {
                     list($type, $id) = explode(':', $val);
@@ -581,15 +584,15 @@ class TaskController extends AbstractController
             throw $e;
         }
 
-        return $this->createJsonResponse(array('success' => true));
+        return $this->createJsonResponse(['success' => true]);
     }
 
     public function printAssociativeTaskAction($assoc = null)
     {
         if (method_exists($assoc, 'getDeal') && $assoc->getDeal()) {
-            return $this->render('AgentBundle:Task:dealAssoc.html.twig', array('assoc' => $assoc));
+            return $this->render('AgentBundle:Task:dealAssoc.html.twig', ['assoc' => $assoc]);
         } elseif (method_exists($assoc, 'getTicket') && $assoc->getTicket() != null) {
-            return $this->render('AgentBundle:Task:ticketAssoc.html.twig', array('assoc' => $assoc));
+            return $this->render('AgentBundle:Task:ticketAssoc.html.twig', ['assoc' => $assoc]);
         }
     }
 
@@ -611,7 +614,7 @@ class TaskController extends AbstractController
             throw $e;
         }
 
-        return $this->createJsonResponse(array('success' => true));
+        return $this->createJsonResponse(['success' => true]);
     }
 
     /**
@@ -642,21 +645,21 @@ class TaskController extends AbstractController
         }
 
         switch ($filter) {
-                case 'all':
-                    $tasks = $this->em->getRepository('DeskPRO:Task')->filterAllPendingTasks($person);
-                    break;
+            case 'all':
+                $tasks = $this->em->getRepository('DeskPRO:Task')->filterAllPendingTasks($person);
+                break;
 
-                case 'assigned':
-                    $tasks = $this->em->getRepository('DeskPRO:Task')->filterTasksForPerson($person);
-                    break;
+            case 'assigned':
+                $tasks = $this->em->getRepository('DeskPRO:Task')->filterTasksForPerson($person);
+                break;
 
-                case 'delegated':
-                    $tasks = $this->em->getRepository('DeskPRO:Task')->filterDelegatedTasksForPerson($person);
-                    break;
+            case 'delegated':
+                $tasks = $this->em->getRepository('DeskPRO:Task')->filterDelegatedTasksForPerson($person);
+                break;
 
-                default:
-                    break;
-            }
+            default:
+                break;
+        }
 
         $vCalendar = new \Eluceo\iCal\Component\Calendar('www.example.com');
 
@@ -664,12 +667,11 @@ class TaskController extends AbstractController
             $vEvent = new \Eluceo\iCal\Component\Event();
 
             $vEvent
-                    ->setDtStart($task->date_due)
-                    ->setDtEnd($task->date_due)
-                    ->setNoTime(true)
-                    //->setTitle($task->title)
-                    ->setSummary($task->title)
-                ;
+                ->setDtStart($task->date_due)
+                ->setDtEnd($task->date_due)
+                ->setNoTime(true)
+                //->setTitle($task->title)
+                ->setSummary($task->title);
 
             $vCalendar->addEvent($vEvent);
         }

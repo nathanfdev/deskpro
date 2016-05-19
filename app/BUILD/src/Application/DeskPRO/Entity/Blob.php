@@ -246,9 +246,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             $filename = '_'.substr($filename, 1);
         }
 
-        $old            = $this->filename;
-        $this->filename = $filename;
-        $this->_onPropertyChanged('filename', $old, $this->filename);
+        $this->setModelField('file_name', $filename);
 
         // Try to guess content typ based off of filename exts
         if (!$this->content_type) {

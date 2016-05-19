@@ -42,12 +42,12 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Templates used in the system.
  *
- * @property int $id
- * @property string $name
- * @property string $template_code
- * @property string $template_compiled
- * @property Brand $brand
- * @property ThemeSet $theme_set
+ * @property int       $id
+ * @property string    $name
+ * @property string    $template_code
+ * @property string    $template_compiled
+ * @property Brand     $brand
+ * @property ThemeSet  $theme_set
  * @property \DateTime $date_created
  * @property \DateTime $date_updated
  */
@@ -127,7 +127,7 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
 
     public function setThemeSet(ThemeSet $themeSet)
     {
-        $this->theme_set = $themeSet;
+        $this->setModelField('theme_set', $themeSet);
 
         return $this;
     }
@@ -169,14 +169,14 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Template';
-        $metadata->setPrimaryTable(array('name' => 'templates'));
+        $metadata->setPrimaryTable(['name' => 'templates']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name'));
-        $metadata->mapField(array('fieldName' => 'template_code', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'template_code'));
-        $metadata->mapField(array('fieldName' => 'template_compiled', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'template_compiled'));
-        $metadata->mapField(array('fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
-        $metadata->mapField(array('fieldName' => 'date_updated', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_updated'));
+        $metadata->mapField(['fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true]);
+        $metadata->mapField(['fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name']);
+        $metadata->mapField(['fieldName' => 'template_code', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'template_code']);
+        $metadata->mapField(['fieldName' => 'template_compiled', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'template_compiled']);
+        $metadata->mapField(['fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created']);
+        $metadata->mapField(['fieldName' => 'date_updated', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_updated']);
 
         $builder = new ClassMetadataBuilder($metadata);
         $builder->createManyToOne('theme_set', 'DeskPRO\Bundle\AppBundle\Entity\ThemeSet')->build();

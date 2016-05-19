@@ -127,7 +127,7 @@ class TicketLayout extends DomainObject
         if ($this->id) {
             throw new \RuntimeException('You cannot change the department once it has been set.');
         } else {
-            $this->department = $dep;
+            $this->setModelField('department', $dep);
         }
     }
 
