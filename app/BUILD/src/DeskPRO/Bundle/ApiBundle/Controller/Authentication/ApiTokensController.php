@@ -288,9 +288,13 @@ class ApiTokensController extends BaseController
             $this->throwUnauthorized();
         }
 
-        return $this->render("ApiBundle::ApiTokens/$format.html.twig", [
+        $res = $this->render("ApiBundle::ApiTokens/$format.html.twig", [
             'token' => $this->createToken($person),
         ]);
+
+        $res->headers->set('Content-Type', 'text/html');
+
+        return $res;
     }
 
     /**
