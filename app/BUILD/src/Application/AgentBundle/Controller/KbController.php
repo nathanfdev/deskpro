@@ -57,7 +57,7 @@ class KbController extends AbstractController
 
     public function viewArticleAction($article_id)
     {
-        $is_pdf  = $this->in->getBool('pdf');
+        $isPdf   = $this->in->getBool('pdf');
         $article = $this->em->find('DeskPRO:Article', $article_id);
         if (!$article) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Unknown article $article_id");
@@ -155,41 +155,19 @@ class KbController extends AbstractController
             'perms'               => $perms,
             'user_view_count'     => $user_view_count,
 
-            'glossary_words' => $glossary_words,
-            'word_defs'      => $word_defs,
+            'word_defs' => $word_defs,
         ];
 
-        if ($is_pdf) {
-            $content_html = $this->renderView('DeskPRO:pdf_agent:view_article.html.twig', $vars);
-
-            if (!defined('_MPDF_TEMP_PATH')) {
-                define('_MPDF_TEMP_PATH', dp_get_tmp_dir().'/pdf');
-                if (!is_dir(_MPDF_TEMP_PATH)) {
-                    @mkdir(_MPDF_TEMP_PATH, 0777, true);
-                }
-            }
-            $mpdf = new \mPDF_mPDF(
-                'utf-8', // Language/Character set
-                'A4', // Size
-                '8', // Default Font Size
-                '', // Default Font
-                20, // Margin Left
-                20, // Margin Right
-                40, // Margin Top
-                40, // Margin Bottom
-                10, // Margin Header
-                10, // Margin Footer
-                'P' // Orientation
-            );
-
-            $mpdf->SetBasePath($this->container->getSetting('core.deskpro_url').'/');
-            $mpdf->WriteHTML($content_html);
+        if ($isPdf) {
+            $contentHtml = $this->renderView('DeskPRO:pdf_agent:view_article.html.twig', $vars);
 
             if ($this->in->getBool('html')) {
                 $response = new Response();
-                $response->setContent($content_html);
+                $response->setContent($contentHtml);
             } else {
-                $mpdf->Output($article->title.'.pdf', 'D');
+                $pdfRenderer = $this->get('pdf_renderer');
+
+                $pdfRenderer->generateFile($contentHtml, $article->title.'.pdf');
                 exit;
             }
         }

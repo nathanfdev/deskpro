@@ -344,6 +344,8 @@ function getWebpackConfig(mode, isProd) {
     config.entry['DeskPRO_PortalBundle_ie9style'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/ie9-overrides.scss'];
 
     config.entry['api_message_style'] = ['./src/DeskPRO/Bundle/AppBundle/Resources/style/api/message.scss'];
+
+    config.entry['DeskPRO_PortalBundle_print_style'] = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/print-style.scss'];
   }
   if (mode === 'all' || mode === 'widget') {
     config.entry['DeskPRO_WidgetBundle'] = ['./src/DeskPRO/Bundle/WidgetBundle/DeskPRO_WidgetBundle'];

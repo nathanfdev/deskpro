@@ -26,54 +26,27 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Component\Pdf;
 
-namespace Application\DeskPRO\Dpql\Renderer;
+use Application\DeskPRO\NewSettings\SettingsResolver;
 
-use Application\DeskPRO\App;
-
-/**
- * Renders DPQL results to Pdf.
- */
-class Pdf extends Html
+class mPdfRenderer implements PdfRendererInterface
 {
     /**
-     * Gets the MIME content type for this type of output.
-     *
-     * @return string
+     * @var \mPDF
      */
-    public function getContentType()
-    {
-        return 'application/pdf';
-    }
+    private $object;
 
     /**
-     * Gets the file extension for this type of output.
-     *
-     * @return string
+     * @var SettingsResolver
      */
-    public function getExtension()
+    private $resolver;
+
+    public function __construct($resolver)
     {
-        return 'pdf';
-    }
+        $this->resolver = $resolver;
 
-    /**
-     * Render to the specified format and type.
-     *
-     * @return string
-     */
-    public function render()
-    {
-        $html = parent::render();
-
-        $contentHtml = App::getTemplating()->render('DeskPRO:pdf_agent:report-builder.html.twig', [
-            'html'  => $html,
-            'title' => $this->_title,
-        ]);
-
-        $mpdf = new \mPDF(
+        $this->object = new \mPDF(
             'utf-8', // Language/Character set
             'A4', // Size
             '8', // Default Font Size
@@ -81,29 +54,32 @@ class Pdf extends Html
             20, // Margin Left
             20, // Margin Right
             20, // Margin Top
-            20, // Margin Bottom
+            40, // Margin Bottom
             10, // Margin Header
             10, // Margin Footer
             'P' // Orientation
         );
 
-        $mpdf->SetBasePath(realpath(__DIR__.'/../../../../../web/images'));
-
-        $mpdf->WriteHTML($contentHtml);
-
-        return $mpdf->Output('', 'S');
+        $this->object->SetBasePath($this->resolver->getGlobalSettings()->get('core.deskpro_url').'/');
+        $this->object->shrink_tables_to_fit = 0;
     }
 
-    /**
-     * Charts not supported in PDF. Returns false.
-     *
-     * @param string $type
-     * @param array  $rows
-     *
-     * @return string|bool
-     */
-    protected function _renderChart($type, array $rows)
+    public function setPageSize($size = 'A4', $orientation = 'P')
     {
-        return false;
+        $this->object->_setPageSize($size, $orientation);
+    }
+
+    public function render($contentHtml)
+    {
+        $this->object->WriteHTML($contentHtml);
+
+        return $this->object->Output('', 'S');
+    }
+
+    public function generateFile($contentHtml, $fileName)
+    {
+        $this->object->WriteHTML($contentHtml);
+
+        return $this->object->Output($fileName, 'D');
     }
 }

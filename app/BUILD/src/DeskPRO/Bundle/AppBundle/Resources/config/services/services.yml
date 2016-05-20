@@ -73,6 +73,10 @@ services:
     class: DeskPRO\Bundle\AppBundle\Twig\TwigTemplateRenderer
     arguments: ["@twig"]
 
+  pdf_renderer:
+    class: DeskPRO\Component\Pdf\mPdfRenderer
+    arguments: ["@settings_resolver"]
+
   widget_loader_code_renderer:
     class: DeskPRO\Bundle\AppBundle\Templating\WidgetLoader
     arguments: ["@deskpro.app_env", "@widget_settings_resolver", "@serializer"]

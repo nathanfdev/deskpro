@@ -75,7 +75,8 @@
     "bugsnag/bugsnag": "2.*",
     "doctrine/mongodb-odm-bundle": "~3.0",
     "doctrine/mongodb-odm": "dev-master",
-    "mongofill/mongofill": "dev-master"
+    "mongofill/mongofill": "dev-master",
+    "mpdf/mpdf": "^6.1"
   },
   "require-dev": {
     "mockery/mockery": "0.9.3",
