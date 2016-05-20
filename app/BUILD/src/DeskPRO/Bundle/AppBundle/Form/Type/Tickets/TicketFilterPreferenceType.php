@@ -35,13 +35,23 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Class TicketFilterPreferenceType.
  */
 class TicketFilterPreferenceType extends AbstractType
 {
+    private $tokenStorage;
+
+    public function __construct(TokenStorageInterface $tokenStorage)
+    {
+        $this->tokenStorage = $tokenStorage;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -51,6 +61,21 @@ class TicketFilterPreferenceType extends AbstractType
             ->add('main_grouping', TextType::class, ['required' => false])
             ->add('result_grouping', TextType::class, ['required' => false])
             ->add('display_order', IntegerType::class, ['required' => false]);
+
+        $user = $this->tokenStorage->getToken()->getUser();
+        if (!$user) {
+            throw new \LogicException(
+                'The TicketFilterPreferenceType cannot be used without an authenticated user!'
+            );
+        }
+        $builder->addEventListener(
+            FormEvents::PRE_SET_DATA,
+            function (FormEvent $event) use ($user) {
+                $pref = $event->getData();
+                $pref->setAgent($user);
+                $event->setData($pref);
+            }
+        );
     }
 
     /**
@@ -60,25 +85,11 @@ class TicketFilterPreferenceType extends AbstractType
     {
         $resolver
             ->setDefaults(
-                [
-                    'data_class'      => TicketFilterPreference::class,
-                    'filter'          => null,
-                    'agent'           => null,
-                    'main_grouping'   => '',
-                    'result_grouping' => '',
-                ]
+                ['data_class'      => TicketFilterPreference::class,
+                 'main_grouping'   => '',
+                 'result_grouping' => '', ]
             )
-            ->setRequired(
-                [
-                    'filter',
-                    'agent',
-                ]
-            )
-            ->setAllowedTypes(
-                [
-                    'filter' => TicketFilter::class,
-                    'agent'  => Person::class,
-                ]
-            );
+            ->setRequired(['filter', 'agent'])
+            ->setAllowedTypes(['filter' => TicketFilter::class, 'agent' => Person::class]);
     }
 }

@@ -95,16 +95,4 @@ class TicketFilterPrefsController extends CrudSubController
 
         return parent::handleForm($model, $request, $options);
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function instantiateEntity(Request $request)
-    {
-        /** @var TicketFilterPreference $pref */
-        $pref = parent::instantiateEntity($request);
-        $pref->setAgent($this->getUser());
-
-        return $pref;
-    }
 }
