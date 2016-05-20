@@ -378,11 +378,6 @@ class TaskController extends AbstractController
             }
         }
 
-        $tasks_arr = [];
-//	    foreach ($tasks as $task) {
-//		    $tasks_arr[] = $task->toApiData();
-//        }
-
         $tpl = 'AgentBundle:Task:task-list.html.twig';
 
         return $this->render($tpl, [
@@ -402,8 +397,6 @@ class TaskController extends AbstractController
             'completed_page'     => $completedPage,
             'has_next_completed' => $hasNextCompleted,
             'has_prev_completed' => $hasPrevCompleted,
-
-            'tasks_arr' => $tasks_arr,
         ]);
     }
 
