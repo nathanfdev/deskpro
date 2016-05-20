@@ -26,19 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\Chat;
 
-use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\Button\WidgetBrandButtonSettingsType;
-use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\Chat\WidgetBrandChatSettingsType;
-use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandSettings;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings\WidgetBrandChatSettings;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class WidgetBrandSettingsType.
+ * Class WidgetBrandChatSettingsType.
  */
-class WidgetBrandSettingsType extends AbstractType
+class WidgetBrandChatSettingsType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -46,10 +47,22 @@ class WidgetBrandSettingsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('widget', WidgetBrandCommonSettingsType::class)
-            ->add('button', WidgetBrandButtonSettingsType::class)
-            ->add('chat', WidgetBrandChatSettingsType::class)
-            ->add('ticket', WidgetBrandTicketSettingsType::class)
+            ->add('request_user_info', ApiBooleanType::class, [
+                'property_path' => 'requestUserInfo',
+            ])
+            ->add('proactive', ApiBooleanType::class)
+            ->add('begin_mode', ChoiceType::class, [
+                'property_path'     => 'beginMode',
+                'choices_as_values' => true,
+                'choices'           => [
+                    WidgetBrandChatSettings::BEGIN_MODE_CONVERSATION,
+                    WidgetBrandChatSettings::BEGIN_MODE_FORM,
+                ],
+            ])
+            ->add('waiting_timeout', IntegerType::class, [
+                'property_path' => 'waitingTimeout',
+            ])
+            ->add('popup', WidgetBrandChatPopupSettingsType::class)
         ;
     }
 
@@ -59,7 +72,7 @@ class WidgetBrandSettingsType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => WidgetBrandSettings::class,
+            'data_class' => WidgetBrandChatSettings::class,
         ]);
     }
 }

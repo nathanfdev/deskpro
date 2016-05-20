@@ -26,46 +26,44 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\DataTransformer;
 
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\DataTransformerInterface;
-use Symfony\Component\Form\Exception\TransformationFailedException;
 
+/**
+ * Class EntityToIdTransformer.
+ */
 class EntityToIdTransformer implements DataTransformerInterface
 {
-    protected $rep;
+    /**
+     * @var \Doctrine\ORM\EntityRepository
+     */
+    private $repo;
 
-    public function __construct(EntityRepository $rep)
+    /**
+     * Constructor.
+     *
+     * @param EntityRepository $repo
+     */
+    public function __construct(EntityRepository $repo)
     {
-        $this->rep = $rep;
+        $this->repo = $repo;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function transform($value)
     {
-        if (!is_object($value)) {
-            return;
-        }
-
-        return $value->getId();
+        return is_object($value) ? $value->getId() : null;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function reverseTransform($value)
     {
-        if (!$value) {
-            return;
-        }
-
-        $object = $this->rep->find($value);
-
-        if (null === $object) {
-            throw new TransformationFailedException(sprintf('An object with ID "%d" does not exist!', $value));
-        }
-
-        return $object;
+        return $value ? $this->repo->find($value) : null;
     }
 }

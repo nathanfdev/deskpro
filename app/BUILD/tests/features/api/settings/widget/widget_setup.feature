@@ -19,22 +19,23 @@ Feature: Widget Setup
     And the JSON node "data.settings.global.chat.require_login" should be equal to 0
     And the JSON node "data.settings.global.chat.email_validation" should be equal to 0
 
-    And the JSON node "data.settings.brand.widget.type" should be equal to "column"
-    And the JSON node "data.settings.brand.widget.position" should be equal to "right"
+    And the JSON node "data.settings.brand.widget.type" should be equal to the string "column"
+    And the JSON node "data.settings.brand.widget.position" should be equal to the string "right"
     And the JSON node "data.settings.brand.widget.agent_polling_timeout" should be equal to 0
-    And the JSON node "data.settings.brand.button.size" should be equal to "medium"
-    And the JSON node "data.settings.brand.button.name" should be equal to "Help"
-    And the JSON node "data.settings.brand.button.name" should be equal to "Help"
-    And the JSON node "data.settings.brand.button.colors.background" should be equal to "#62ad8c"
-    And the JSON node "data.settings.brand.button.colors.text" should be equal to "#ffffff"
+    And the JSON node "data.settings.brand.button.size" should be equal to the string "medium"
+    And the JSON node "data.settings.brand.button.translations[0].language" should be equal to 1
+    And the JSON node "data.settings.brand.button.translations[0].name" should be equal to the string "Help"
+    And the JSON node "data.settings.brand.button.colors.background" should be equal to the string "#62ad8c"
+    And the JSON node "data.settings.brand.button.colors.text" should be equal to the string "#ffffff"
     And the JSON node "data.settings.brand.chat.request_user_info" should be equal to 1
     And the JSON node "data.settings.brand.chat.proactive" should be equal to 1
-    And the JSON node "data.settings.brand.chat.popup.title" should be equal to "Customer Support"
-    And the JSON node "data.settings.brand.chat.popup.message" should be equal to "Need help? Just reply to start a live chat with one of our team."
-    And the JSON node "data.settings.brand.chat.popup.reply_type" should be equal to "buttons"
-    And the JSON node "data.settings.brand.chat.begin_mode" should be equal to "form"
+    And the JSON node "data.settings.brand.chat.popup.translations[0].language" should be equal to 1
+    And the JSON node "data.settings.brand.chat.popup.translations[0].title" should be equal to the string "Customer Support"
+    And the JSON node "data.settings.brand.chat.popup.translations[0].message" should be equal to the string "Need help? Just reply to start a live chat with one of our team."
+    And the JSON node "data.settings.brand.chat.popup.reply_type" should be equal to the string "buttons"
+    And the JSON node "data.settings.brand.chat.begin_mode" should be equal to the string "form"
     And the JSON node "data.settings.brand.chat.waiting_timeout" should be equal to 30
-    And the JSON node "data.settings.brand.ticket.select_department" should be equal to "custom"
+    And the JSON node "data.settings.brand.ticket.select_department" should be equal to the string "custom"
     And the JSON node "data.settings.brand.ticket.default_department" should be equal to 0
 
   Scenario: I get initial widget code
@@ -63,13 +64,34 @@ Feature: Widget Setup
           "agent_polling_timeout": 400
         },
         "button": {
-          "name": "Help",
+          "translations": [
+            {
+              "language": 1,
+              "name": "Help (edited)"
+            },
+            {
+              "language": 2,
+              "name": "Help (fr)"
+            }
+          ],
           "size": "medium"
         },
         "chat": {
           "begin_mode": "form",
           "waiting_timeout": 40,
           "popup": {
+            "translations": [
+              {
+                "language": 1,
+                "title": "Customer Support (edited)",
+                "message": "Need help? Just reply to start a live chat with one of our team. (edited)"
+              },
+              {
+                "language": 2,
+                "title": "Customer Support (fr)",
+                "message": "Need help? Just reply to start a live chat with one of our team. (fr)"
+              }
+            ],
             "reply_type": "buttons"
           }
         },
@@ -90,19 +112,28 @@ Feature: Widget Setup
     And the JSON node "data.settings.global.chat.email_validation" should be equal to 1
     And the JSON node "data.enabled_on_portal" should be equal to 0
 
-    And the JSON node "data.settings.brand.widget.type" should be equal to "bubble"
-    And the JSON node "data.settings.brand.widget.position" should be equal to "left"
+    And the JSON node "data.settings.brand.widget.type" should be equal to the string "bubble"
+    And the JSON node "data.settings.brand.widget.position" should be equal to the string "left"
     And the JSON node "data.settings.brand.widget.agent_polling_timeout" should be equal to 400
-    And the JSON node "data.settings.brand.button.name" should be equal to "Help"
-    And the JSON node "data.settings.brand.button.size" should be equal to "medium"
-    And the JSON node "data.settings.brand.chat.begin_mode" should be equal to "form"
+    And the JSON node "data.settings.brand.button.translations[0].language" should be equal to 1
+    And the JSON node "data.settings.brand.button.translations[0].name" should be equal to the string "Help (edited)"
+    And the JSON node "data.settings.brand.button.translations[1].name" should be equal to the string "Help (fr)"
+    And the JSON node "data.settings.brand.button.translations[1].language" should be equal to 2
+    And the JSON node "data.settings.brand.button.size" should be equal to the string "medium"
+    And the JSON node "data.settings.brand.chat.begin_mode" should be equal to the string "form"
     And the JSON node "data.settings.brand.chat.waiting_timeout" should be equal to 40
-    And the JSON node "data.settings.brand.chat.popup.reply_type" should be equal to "buttons"
-    And the JSON node "data.settings.brand.ticket.select_department" should be equal to "custom"
+    And the JSON node "data.settings.brand.chat.popup.reply_type" should be equal to the string "buttons"
+    And the JSON node "data.settings.brand.chat.popup.translations[0].language" should be equal to 1
+    And the JSON node "data.settings.brand.chat.popup.translations[0].title" should be equal to the string "Customer Support (edited)"
+    And the JSON node "data.settings.brand.chat.popup.translations[0].message" should be equal to the string "Need help? Just reply to start a live chat with one of our team. (edited)"
+    And the JSON node "data.settings.brand.chat.popup.translations[1].language" should be equal to 2
+    And the JSON node "data.settings.brand.chat.popup.translations[1].title" should be equal to the string "Customer Support (fr)"
+    And the JSON node "data.settings.brand.chat.popup.translations[1].message" should be equal to the string "Need help? Just reply to start a live chat with one of our team. (fr)"
+    And the JSON node "data.settings.brand.ticket.select_department" should be equal to the string "custom"
 
   Scenario: I apply chat widget to the portal
     When I send a POST request to "/api/v2/widget/portal/apply" with body:
-        """
+    """
     {
       "global": {
         "chat": {
@@ -118,13 +149,25 @@ Feature: Widget Setup
           "agent_polling_timeout": 400
         },
         "button": {
-          "name": "Edited Help",
+          "translations": [
+            {
+              "language": 1,
+              "name": "Help (edited)"
+            }
+          ],
           "size": "large"
         },
         "chat": {
           "begin_mode": "conversation",
           "waiting_timeout": 40,
           "popup": {
+            "translations": [
+              {
+                "language": 1,
+                "title": "Customer Support (edited)",
+                "message": "Need help? Just reply to start a live chat with one of our team. (edited)"
+              }
+            ],
             "reply_type": "buttons"
           }
         },
@@ -145,15 +188,15 @@ Feature: Widget Setup
     And the JSON node "data.settings.global.chat.email_validation" should be equal to 0
     And the JSON node "data.enabled_on_portal" should be equal to 1
 
-    And the JSON node "data.settings.brand.widget.type" should be equal to "column"
-    And the JSON node "data.settings.brand.widget.position" should be equal to "right"
+    And the JSON node "data.settings.brand.widget.type" should be equal to the string "column"
+    And the JSON node "data.settings.brand.widget.position" should be equal to the string "right"
     And the JSON node "data.settings.brand.widget.agent_polling_timeout" should be equal to 400
-    And the JSON node "data.settings.brand.button.name" should be equal to "Edited Help"
-    And the JSON node "data.settings.brand.button.size" should be equal to "large"
-    And the JSON node "data.settings.brand.chat.begin_mode" should be equal to "conversation"
+    And the JSON node "data.settings.brand.button.translations[0].name" should be equal to the string "Help (edited)"
+    And the JSON node "data.settings.brand.button.size" should be equal to the string "large"
+    And the JSON node "data.settings.brand.chat.begin_mode" should be equal to the string "conversation"
     And the JSON node "data.settings.brand.chat.waiting_timeout" should be equal to 40
-    And the JSON node "data.settings.brand.chat.popup.reply_type" should be equal to "buttons"
-    And the JSON node "data.settings.brand.ticket.select_department" should be equal to "default"
+    And the JSON node "data.settings.brand.chat.popup.reply_type" should be equal to the string "buttons"
+    And the JSON node "data.settings.brand.ticket.select_department" should be equal to the string "default"
     And the JSON node "data.settings.brand.ticket.default_department" should be equal to 2
 
   Scenario: I apply chat widget to the portal

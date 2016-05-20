@@ -15,11 +15,13 @@ Feature: Widget Setup
 
     And the JSON node "errors.fields.brand.fields.button.fields.size.errors[0].code" should be equal to "required"
     And the JSON node "errors.fields.brand.fields.button.fields.size.errors[0].message" should be equal to "This value should not be blank."
-    And the JSON node "errors.fields.brand.fields.button.fields.name.errors[0].code" should be equal to "required"
-    And the JSON node "errors.fields.brand.fields.button.fields.name.errors[0].message" should be equal to "This value should not be blank."
+    And the JSON node "errors.fields.brand.fields.button.fields.translations.errors[0].code" should be equal to "too_few_elements"
+    And the JSON node "errors.fields.brand.fields.button.fields.translations.errors[0].message" should be equal to "This collection should contain 1 elements or more."
 
     And the JSON node "errors.fields.brand.fields.chat.fields.popup.fields.reply_type.errors[0].code" should be equal to "required"
     And the JSON node "errors.fields.brand.fields.chat.fields.popup.fields.reply_type.errors[0].message" should be equal to "This value should not be blank."
+    And the JSON node "errors.fields.brand.fields.chat.fields.popup.fields.translations.errors[0].code" should be equal to "too_few_elements"
+    And the JSON node "errors.fields.brand.fields.chat.fields.popup.fields.translations.errors[0].message" should be equal to "This collection should contain 1 elements or more."
 
     And the JSON node "errors.fields.brand.fields.ticket.fields.select_department.errors[0].code" should be equal to "required"
     And the JSON node "errors.fields.brand.fields.ticket.fields.select_department.errors[0].message" should be equal to "This value should not be blank."
@@ -117,3 +119,46 @@ Feature: Widget Setup
     And the JSON node "errors.fields.brand.fields.widget.fields.agent_polling_timeout.errors[0].message" should be equal to "Please enter a number, with no other characters."
     And the JSON node "errors.fields.brand.fields.chat.fields.waiting_timeout.errors[0].code" should be equal to "numeric"
     And the JSON node "errors.fields.brand.fields.chat.fields.waiting_timeout.errors[0].message" should be equal to "Please enter a number, with no other characters."
+
+  Scenario: I validate duplicate translations
+    When I send a POST request to "/api/v2/widget/setup" with body:
+    """
+    {
+      "brand": {
+        "button": {
+          "translations": [
+            {
+              "name": "Help"
+            },
+            {
+              "name": "Help"
+            }
+          ]
+        },
+        "chat": {
+          "popup": {
+            "translations": [
+              {
+                "language": 2,
+                "title": "Title",
+                "message": "Message"
+              },
+              {
+                "language": 2,
+                "title": "Title",
+                "message": "Message"
+              }
+            ]
+          }
+        }
+      }
+    }
+    """
+    Then the response status code should be 400
+    And print last JSON response
+    And the JSON node "errors.fields.brand.fields.button.fields.translations.errors[0].code" should be equal to "not_unique_collection"
+    And the JSON node "errors.fields.brand.fields.button.fields.translations.errors[0].message" should be equal to "One or more of the given values is not unique."
+    And the JSON node "errors.fields.brand.fields.button.fields.translations.fields.translations_0.fields.language.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.brand.fields.button.fields.translations.fields.translations_0.fields.language.errors[0].message" should be equal to "This value should not be blank."
+    And the JSON node "errors.fields.brand.fields.chat.fields.popup.fields.translations.errors[0].code" should be equal to "not_unique_collection"
+    And the JSON node "errors.fields.brand.fields.chat.fields.popup.fields.translations.errors[0].message" should be equal to "One or more of the given values is not unique."

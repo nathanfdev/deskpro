@@ -26,38 +26,73 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings;
+namespace DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings;
 
-use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings\WidgetBrandButtonColorsSettings;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class WidgetButtonColorsSetupType.
+ * Class WidgetBrandButtonTranslation.
  */
-class WidgetBrandButtonColorsSettingsType extends AbstractType
+class WidgetBrandButtonTranslation
 {
     /**
-     * {@inheritdoc}
+     * Language.
+     *
+     * @var int
+     *
+     * @JMS\Type("integer")
+     * @Assert\NotNull()
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    private $language;
+
+    /**
+     * Button name.
+     *
+     * @var string
+     *
+     * @JMS\Type("string")
+     * @Assert\NotBlank()
+     */
+    private $name = 'Help';
+
+    /**
+     * @return int
+     */
+    public function getLanguage()
     {
-        $builder
-            ->add('background', TextType::class)
-            ->add('text', TextType::class)
-            ->add('border', TextType::class)
-        ;
+        return $this->language;
     }
 
     /**
-     * {@inheritdoc}
+     * @param int $language
+     *
+     * @return $this
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function setLanguage($language)
     {
-        $resolver->setDefaults([
-            'data_class' => WidgetBrandButtonColorsSettings::class,
-        ]);
+        $this->language = $language;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
     }
 }

@@ -28,6 +28,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings;
 
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -41,12 +43,15 @@ class WidgetBrandButtonSettings
     const SIZE_LARGE  = 'large';
 
     /**
-     * @var string
+     * @var ArrayCollection|WidgetBrandButtonTranslation[]
      *
-     * @JMS\Type("string")
-     * @Assert\NotBlank()
+     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings\WidgetBrandButtonTranslation>")
+     *
+     * @Assert\Count(min=1)
+     * @Assert\Valid()
+     * @AppAssert\UniqueCollection(property="language")
      */
-    private $size = self::SIZE_MEDIUM;
+    private $translations;
 
     /**
      * @var string
@@ -54,7 +59,7 @@ class WidgetBrandButtonSettings
      * @JMS\Type("string")
      * @Assert\NotBlank()
      */
-    private $name = 'Help';
+    private $size = self::SIZE_MEDIUM;
 
     /**
      * @var WidgetBrandButtonColorsSettings
@@ -69,7 +74,8 @@ class WidgetBrandButtonSettings
      */
     public function __construct()
     {
-        $this->colors = new WidgetBrandButtonColorsSettings();
+        $this->colors       = new WidgetBrandButtonColorsSettings();
+        $this->translations = new ArrayCollection();
     }
 
     /**
@@ -93,26 +99,6 @@ class WidgetBrandButtonSettings
     }
 
     /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return $this
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
      * @return WidgetBrandButtonColorsSettings
      */
     public function getColors()
@@ -130,5 +116,13 @@ class WidgetBrandButtonSettings
         $this->colors = $colors;
 
         return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getTranslations()
+    {
+        return $this->translations;
     }
 }

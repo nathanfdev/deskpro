@@ -26,19 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\Chat;
 
-use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings\WidgetBrandButtonSettings;
+use DeskPRO\Bundle\AppBundle\Form\Type\Settings\BaseTranslationType;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings\WidgetBrandChatPopupTranslation;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class WidgetBrandButtonSettingsType.
+ * Class WidgetBrandChatPopupTranslationType.
  */
-class WidgetBrandButtonSettingsType extends AbstractType
+class WidgetBrandChatPopupTranslationType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -46,16 +46,8 @@ class WidgetBrandButtonSettingsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('size', ChoiceType::class, [
-                'choices_as_values' => true,
-                'choices'           => [
-                    WidgetBrandButtonSettings::SIZE_SMALL,
-                    WidgetBrandButtonSettings::SIZE_MEDIUM,
-                    WidgetBrandButtonSettings::SIZE_LARGE,
-                ],
-            ])
-            ->add('name', TextType::class)
-            ->add('colors', WidgetBrandButtonColorsSettingsType::class)
+            ->add('title', TextType::class)
+            ->add('message', TextType::class)
         ;
     }
 
@@ -65,7 +57,15 @@ class WidgetBrandButtonSettingsType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => WidgetBrandButtonSettings::class,
+            'data_class' => WidgetBrandChatPopupTranslation::class,
         ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getParent()
+    {
+        return BaseTranslationType::class;
     }
 }

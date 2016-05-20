@@ -29,8 +29,8 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings;
 
 use Application\DeskPRO\Entity\Department;
+use DeskPRO\Bundle\AppBundle\Form\DataTransformer\EntityToIdTransformer;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandTicketSettings;
-use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\EntityToIdTransformer;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;

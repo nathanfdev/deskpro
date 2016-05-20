@@ -26,40 +26,49 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings;
 
-use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\Button\WidgetBrandButtonSettingsType;
-use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\Chat\WidgetBrandChatSettingsType;
-use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandSettings;
+use Application\DeskPRO\Entity\Language;
+use DeskPRO\Bundle\AppBundle\Form\DataTransformer\EntityToIdTransformer;
+use Doctrine\ORM\EntityManager;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\ReversedTransformer;
 
 /**
- * Class WidgetBrandSettingsType.
+ * Class BaseTranslationType.
  */
-class WidgetBrandSettingsType extends AbstractType
+class BaseTranslationType extends AbstractType
 {
     /**
-     * {@inheritdoc}
+     * @var EntityManager
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    private $em;
+
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
     {
-        $builder
-            ->add('widget', WidgetBrandCommonSettingsType::class)
-            ->add('button', WidgetBrandButtonSettingsType::class)
-            ->add('chat', WidgetBrandChatSettingsType::class)
-            ->add('ticket', WidgetBrandTicketSettingsType::class)
-        ;
+        $this->em = $em;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $resolver->setDefaults([
-            'data_class' => WidgetBrandSettings::class,
+        $builder->add('language', EntityType::class, [
+            'class' => Language::class,
         ]);
+
+        $languageRepository = $this->em->getRepository(Language::class);
+        $builder
+            ->get('language')
+            ->addModelTransformer(new ReversedTransformer(new EntityToIdTransformer($languageRepository)))
+        ;
     }
 }

@@ -26,48 +26,43 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\Button;
+
+use DeskPRO\Bundle\AppBundle\Form\Type\Settings\BaseTranslationType;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings\WidgetBrandButtonTranslation;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+
 /**
- * DeskPRO.
+ * Class WidgetBrandButtonTranslationType.
  */
-
-namespace DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer;
-
-use Doctrine\ORM\EntityRepository;
-use Symfony\Component\Form\DataTransformerInterface;
-
-/**
- * Class EntityToIdTransformer.
- */
-class EntityToIdTransformer implements DataTransformerInterface
+class WidgetBrandButtonTranslationType extends AbstractType
 {
     /**
-     * @var \Doctrine\ORM\EntityRepository
+     * {@inheritdoc}
      */
-    private $repo;
-
-    /**
-     * Constructor.
-     *
-     * @param EntityRepository $repo
-     */
-    public function __construct(EntityRepository $repo)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $this->repo = $repo;
+        $builder->add('name', TextType::class);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function transform($value)
+    public function getParent()
     {
-        return is_object($value) ? $value->getId() : null;
+        return BaseTranslationType::class;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function reverseTransform($value)
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        return $value ? $this->repo->find($value) : null;
+        $resolver->setDefaults([
+            'data_class' => WidgetBrandButtonTranslation::class,
+        ]);
     }
 }

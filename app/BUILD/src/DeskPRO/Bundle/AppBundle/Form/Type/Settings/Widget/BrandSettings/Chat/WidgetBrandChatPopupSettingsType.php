@@ -26,12 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\Chat;
 
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings\WidgetBrandChatPopupSettings;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
@@ -46,8 +46,12 @@ class WidgetBrandChatPopupSettingsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class)
-            ->add('message', TextType::class)
+            ->add('translations', CollectionType::class, [
+                'entry_type'     => WidgetBrandChatPopupTranslationType::class,
+                'allow_add'      => true,
+                'allow_delete'   => true,
+                'error_bubbling' => false,
+            ])
             ->add('reply_type', ChoiceType::class, [
                 'property_path'     => 'replyType',
                 'choices_as_values' => true,

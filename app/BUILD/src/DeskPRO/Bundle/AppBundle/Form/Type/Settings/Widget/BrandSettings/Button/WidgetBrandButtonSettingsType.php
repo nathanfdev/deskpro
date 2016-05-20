@@ -26,19 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\Button;
 
-use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\Button\WidgetBrandButtonSettingsType;
-use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\Chat\WidgetBrandChatSettingsType;
-use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandSettings;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings\WidgetBrandButtonSettings;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class WidgetBrandSettingsType.
+ * Class WidgetBrandButtonSettingsType.
  */
-class WidgetBrandSettingsType extends AbstractType
+class WidgetBrandButtonSettingsType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -46,10 +46,21 @@ class WidgetBrandSettingsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('widget', WidgetBrandCommonSettingsType::class)
-            ->add('button', WidgetBrandButtonSettingsType::class)
-            ->add('chat', WidgetBrandChatSettingsType::class)
-            ->add('ticket', WidgetBrandTicketSettingsType::class)
+            ->add('translations', CollectionType::class, [
+                'entry_type'     => WidgetBrandButtonTranslationType::class,
+                'allow_add'      => true,
+                'allow_delete'   => true,
+                'error_bubbling' => false,
+            ])
+            ->add('size', ChoiceType::class, [
+                'choices_as_values' => true,
+                'choices'           => [
+                    WidgetBrandButtonSettings::SIZE_SMALL,
+                    WidgetBrandButtonSettings::SIZE_MEDIUM,
+                    WidgetBrandButtonSettings::SIZE_LARGE,
+                ],
+            ])
+            ->add('colors', WidgetBrandButtonColorsSettingsType::class)
         ;
     }
 
@@ -59,7 +70,7 @@ class WidgetBrandSettingsType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => WidgetBrandSettings::class,
+            'data_class' => WidgetBrandButtonSettings::class,
         ]);
     }
 }
