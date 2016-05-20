@@ -75,4 +75,4 @@ Feature: /api_tokens endpoint
     When I send a GET request to "/api/v2/api_tokens/user_sources/4/callback/ios"
     Then the response status code should be 200
     And the JSON response should contain "iOSDeskPro"
-    And the JSON response should contain "Return to DeskPRO"
+    And the JSON response should contain "Continue"
