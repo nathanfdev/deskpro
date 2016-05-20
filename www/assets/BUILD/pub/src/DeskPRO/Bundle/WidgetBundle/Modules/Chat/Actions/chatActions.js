@@ -349,18 +349,20 @@ export const sendChatMessage = createAction(
       charset: 'alphabetic'
     });
 
-    params.message = linkifyHtml(params.message);
+    if (params.message) {
+      params.message = linkifyHtml(params.message);
 
-    // Add optimistic message
-    if (striptags(params.message)) {
-      dispatch(addNewMessages({
-        tmp_id:       tmpId,
-        content:      params.message,
-        is_html:      true,
-        is_user:      true,
-        author:       authorId,
-        date_created: moment().format()
-      }));
+      // Add optimistic message
+      if (striptags(params.message)) {
+        dispatch(addNewMessages({
+          tmp_id:       tmpId,
+          content:      params.message,
+          is_html:      true,
+          is_user:      true,
+          author:       authorId,
+          date_created: moment().format()
+        }));
+      }
     }
 
     // Add optimistic attachments
@@ -380,10 +382,9 @@ export const sendChatMessage = createAction(
           blob:    attachment
         }
       }));
-    });
 
-    // Reset attachments after send
-    dispatch(resetAttachments());
+      dispatch(removeAttachment(attachment));
+    });
 
     const queryParams = compileParams(addSessionCode(state));
     const promise = widgetApi.sendPost(`DP_API/chats/${chatId}/messages?${queryParams}`, params, { ...ajaxOptions });

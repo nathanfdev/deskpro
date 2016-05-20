@@ -14,9 +14,11 @@ export class AttachedImagesList extends React.Component {
     return (
       <div className="dpdesignportal-chat-form-attached-image-list">
         <ul>
-          {attachedImages.map((attachment, index) => <AttachedImage key={index}
-                                                                    attachment={attachment}
-                                                                    onRemove={onRemoveAttachment} />)}
+          {attachedImages.map((attachment, index) =>
+            <AttachedImage key={index}
+              attachment={attachment}
+              onRemove={onRemoveAttachment}
+            />)}
         </ul>
       </div>
     );

@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { uploadingFilesRepeatSelector } from '../../../../../../Selectors/chat';
+import { chatIdSelector } from '../../../../../../Selectors/chat';
 import {
+  sendChatMessage,
   addAttachment,
   addUploadingFile,
   removeUploadingFile,
@@ -9,11 +10,13 @@ import {
 } from '../../../../../../Actions/chatActions';
 
 @connect(state => ({
-  repeatFiles: uploadingFilesRepeatSelector(state)
+  chatId: chatIdSelector(state)
 }))
 export class DropZoneContainer extends React.Component {
 
   static propTypes = {
+    instant:  PropTypes.bool,
+    chatId:   PropTypes.number,
     dispatch: PropTypes.func,
     children: PropTypes.node
   };
@@ -25,10 +28,17 @@ export class DropZoneContainer extends React.Component {
 
   onUploadSuccess = (event, response) => {
     const attachments = response.result && response.result.data || [];
-    const { dispatch } = this.props;
+    const { dispatch, chatId, instant } = this.props;
 
     response.files.forEach(file => dispatch(removeUploadingFile(file)));
     attachments.forEach(attachment => dispatch(addAttachment(attachment)));
+
+    if (instant) {
+      dispatch(sendChatMessage(chatId, {
+        message:     null,
+        attachments: attachments.map(attachment => attachment.blob_auth_id)
+      }));
+    }
   };
 
   onUploadFail = (event, data) => {

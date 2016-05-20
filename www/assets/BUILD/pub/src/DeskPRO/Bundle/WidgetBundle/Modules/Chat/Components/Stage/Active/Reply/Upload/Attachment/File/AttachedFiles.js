@@ -13,9 +13,11 @@ export class AttachedFiles extends React.Component {
 
     return (
       <div className="dropzone-container">
-        {attachedFiles.map((attachment, index) => <AttachedFile key={index}
-                                                                attachment={attachment}
-                                                                onRemove={onRemoveAttachment} />)}
+        {attachedFiles.map((attachment, index) =>
+          <AttachedFile key={index}
+            attachment={attachment}
+            onRemove={onRemoveAttachment}
+          />)}
       </div>
     );
   }

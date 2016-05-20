@@ -42,18 +42,16 @@ export class AttachedImages extends React.Component {
           count={attachedImagesCount}
           attachment={lastImage}
           onExpand={this.onExpand}
-          onRemove={onRemoveAttachment} />
-
+          onRemove={onRemoveAttachment}
+        />
         <Simple
           isOpen={this.state.expanded}
           positionTarget={this}
           positionAt="left top"
           positionMy="left top"
-          zIndex={1000}>
-
-          <ClickOut onClickOut={this.onCollapse}
-                    context={[window.widgetFrame.document, parent.window.document]}>
-
+          zIndex={1000}
+        >
+          <ClickOut onClickOut={this.onCollapse} context={[window.widgetFrame.document, parent.window.document]}>
             <AttachedImagesList {...this.props} />
           </ClickOut>
         </Simple>

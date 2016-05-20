@@ -164,11 +164,6 @@ export const uploadingFilesFailedSelector = createSelector(
   state => state.getIn(['uploading', 'failed'])
 );
 
-export const uploadingFilesRepeatSelector = createSelector(
-  stateSelector,
-  state => state.getIn(['uploading', 'repeat'])
-);
-
 // Attachments selectors
 export const attachmentsSelector = createSelector(
   stateSelector,
