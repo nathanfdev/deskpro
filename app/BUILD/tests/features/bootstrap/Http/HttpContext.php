@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -67,5 +67,13 @@ class HttpContext extends BaseContext
     private function getPath($filename)
     {
         return realpath(__DIR__.'/../files/'.$filename);
+    }
+
+    /**
+     * @Then /^I should see in the header "([^"]*)":"([^"]*)"$/
+     */
+    public function iShouldSeeInTheHeader($header, $value)
+    {
+        $this->assertSession()->responseHeaderEquals($header, $value);
     }
 }

@@ -120,7 +120,6 @@ portal:
                 - DpBehat\Portal\RouterContext
                 - DpBehat\Portal\TicketsContext
                 - DpBehat\Portal\ContentContext
-                - DpBehat\Portal\FileContext
                 - DpBehat\Portal\GenericContext
                 - DpBehat\Portal\TicketContext
                 - DpBehat\Http\HttpContext
