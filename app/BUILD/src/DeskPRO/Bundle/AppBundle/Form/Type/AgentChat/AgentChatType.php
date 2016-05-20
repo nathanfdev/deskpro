@@ -156,7 +156,7 @@ class AgentChatType extends AbstractType
                 $form->add('participant', EntityType::class, [
                     'mapped'      => false,
                     'class'       => Department::class,
-                    'choices'     => $this->departmentDataService->getDepartmentsForPerson($person),
+                    'choices'     => $this->departmentDataService->getTicketDepartmentsForPerson($person),
                     'constraints' => [
                         new Assert\NotNull(),
                     ],
