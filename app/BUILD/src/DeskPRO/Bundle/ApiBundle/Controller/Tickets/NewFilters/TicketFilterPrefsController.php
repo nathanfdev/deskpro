@@ -40,7 +40,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Class TicketFiltersController.
  *
  * @ApiModes("all")
- * @Rest\Route("/ticket_filters/{parentId}/prefs")
+ * @Rest\Route("/new/ticket_filters/{parentId}/prefs")
  * @ApiDoc(target="all", section="Ticket filter preferences", output="DeskPRO\Bundle\AppBundle\Entity\TicketFilterPreference")
  */
 class TicketFilterPrefsController extends CrudSubController

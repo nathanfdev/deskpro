@@ -46,7 +46,7 @@ export const applyFilterEditing = createAction(
       dispatch(markFilterLoading(id));
     }
 
-    repository('TicketFilterPref').postFilterPref(id, groupBy).success(() => {
+    repository('TicketFilter').postFilterPref(id, groupBy).success(() => {
       dispatch(updateFilterGrouping(id, groupBy));
 
       // reload filter counts if grouping is applied

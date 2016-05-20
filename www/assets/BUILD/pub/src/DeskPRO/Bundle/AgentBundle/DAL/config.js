@@ -12,7 +12,6 @@ import { CommentsRepository } from './Repositories/CommentsRepository';
 export const repositoriesConfig = {
   Ticket:               { type: 'api', url: '/tickets' },
   TicketFilter:         { type: 'api', url: '/new/ticket_filters', repositoryClass: TicketFilterRepository },
-  TicketFilterPref:     { type: 'api', url: '/ticket_filters', repositoryClass: TicketFilterRepository },
   UserChat:             { type: 'api', url: '/user_chats', repositoryClass: UserChatRepository },
   AgentChat:            { type: 'api', url: '/agent_chats', repositoryClass: AgentChatRepository },
   Feedback:             { type: 'api', url: '/feedback', repositoryClass: FeedbackRepository },
