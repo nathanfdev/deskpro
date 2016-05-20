@@ -94,7 +94,17 @@ Feature: /ticket_forms endpoint
     And the JSON node "errors.fields.message.fields.message.errors[0].code" should be equal to "length_too_short"
     And the JSON node "errors.fields.message.fields.message.errors[0].message" should be equal to "This value is too short. It should have 10 characters or more."
 
-  Scenario: I try to create a ticket with empty subject (too short)
+  Scenario: I try to create a ticket with empty subject (and too short)
+    When I send a POST request to "/api/v2/ticket_forms/agent" with body:
+    """
+{
+  "subject": ""
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.subject.errors[0].code" should be equal to "required"
+    And the JSON node "errors.fields.subject.errors[0].message" should be equal to "This value should not be blank."
+
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:
     """
 {
@@ -534,10 +544,16 @@ Feature: /ticket_forms endpoint
     And the JSON node "linked.ticket_user_errors.6.fields.subject.errors[0].code" should be equal to "required"
     And the JSON node "linked.ticket_user_errors.6.fields.subject.errors[0].message" should contain "This value should not be blank."
 
-  @skip-ci
-  # Current response status code is 400, but 204 expected
   Scenario: I test validation on resolved
     Given I create a ticket and reference its' ID as ticketId
+    When I send a PUT request to "/api/v2/tickets/{ticketId}" with body:
+    """
+{
+  "department": 2
+}
+    """
+    Then the response status code should be 204
+
     When I send a PUT request to "/api/v2/tickets/{ticketId}" with body:
     """
 {
