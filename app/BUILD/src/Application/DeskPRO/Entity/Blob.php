@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -246,7 +247,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             $filename = '_'.substr($filename, 1);
         }
 
-        $this->setModelField('file_name', $filename);
+        $this->setModelField('filename', $filename);
 
         // Try to guess content typ based off of filename exts
         if (!$this->content_type) {
