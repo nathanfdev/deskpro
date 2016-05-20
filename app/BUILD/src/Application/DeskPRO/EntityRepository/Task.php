@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,6 +33,7 @@
  *
  * @copyright Copyright (c) 2011 DeskPRO (http://www.deskpro.com/)
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -102,17 +103,17 @@ class Task extends AbstractEntityRepository
         return $this->filterTasksForPerson($person, '#total', null, null, 'incomplete');
     }
 
-        /**
-         * Count overdue tasks assigned to the person.
-         *
-         * @param Person $person The person
-         *
-         * @return int
-         */
-        public function countOverdueTasksForPerson(Entity\Person $person)
-        {
-            return $this->filterTasksForPerson($person, '#overdue', null, null, 'incomplete');
-        }
+    /**
+     * Count overdue tasks assigned to the person.
+     *
+     * @param Person $person The person
+     *
+     * @return int
+     */
+    public function countOverdueTasksForPerson(Entity\Person $person)
+    {
+        return $this->filterTasksForPerson($person, '#overdue', null, null, 'incomplete');
+    }
 
     /**
      * Count due today tasks assigned to the person.
@@ -237,12 +238,15 @@ class Task extends AbstractEntityRepository
     /**
      * All pending tasks assigned to the person.
      *
-     * @param Person $person      The person
-     * @param string $filter_type
+     * @param PersonEntity $person     The person
+     * @param string       $filterType
+     * @param null         $limit
+     * @param null         $offset
+     * @param null         $state
      *
-     * @return task object
+     * @return Task object
      */
-    public function filterTasksForPerson(Entity\Person $person, $filter_type = 'total', $limit = null, $offset = null, $state = null)
+    public function filterTasksForPerson(PersonEntity $person, $filterType = 'total', $limit = null, $offset = null, $state = null)
     {
         $today = $person->getDateTime();
         $today->setTime(0, 0, 0);
@@ -254,68 +258,70 @@ class Task extends AbstractEntityRepository
 
         $now = new \DateTime();
 
-        $params = array();
+        $params = [];
 
-        $is_count = false;
-        if ($filter_type[0] == '#') {
-            $is_count    = true;
-            $filter_type = substr($filter_type, 1);
+        $isCount = false;
+        if ($filterType[0] == '#') {
+            $isCount    = true;
+            $filterType = substr($filterType, 1);
         }
 
-        if ($filter_type == 'today') {
-            $where_part = '((date_due >= ? AND date_due <= ?) OR date_due IS NULL)';
-            $params[]   = $today->format('Y-m-d H:i:s');
-            $params[]   = $tomorrow->format('Y-m-d H:i:s');
-        } elseif ($filter_type == 'future') {
-            $where_part = '(date_due >= ?)';
-            $params[]   = $tomorrow->format('Y-m-d H:i:s');
-        } elseif ($filter_type == 'overdue') {
-            $where_part = '(date_due < ?)';
-            $params[]   = $now->format('Y-m-d H:i:s');
+        if ($filterType == 'today') {
+            $wherePart = '((date_due >= ? AND date_due <= ?) OR date_due IS NULL)';
+            $params[]  = $today->format('Y-m-d H:i:s');
+            $params[]  = $tomorrow->format('Y-m-d H:i:s');
+        } elseif ($filterType == 'future') {
+            $wherePart = '(date_due >= ?)';
+            $params[]  = $tomorrow->format('Y-m-d H:i:s');
+        } elseif ($filterType == 'overdue') {
+            $wherePart = '(date_due < ?)';
+            $params[]  = $now->format('Y-m-d H:i:s');
         } else {
-            $where_part = '1';
+            $wherePart = '1';
         }
 
         $person->loadHelper('Agent');
-        if ($team_ids = $person->Agent->getTeamIds()) {
-            $team_ids = implode(',', $team_ids);
-            $where_part .= ' AND ( (assigned_agent_id = ? OR assigned_agent_team_id IN ('.$team_ids.')) OR (assigned_agent_id IS NULL AND assigned_agent_team_id IS NULL AND person_id = ?) )';
+        if ($teamIds = $person->Agent->getTeamIds()) {
+            $teamIds = implode(',', $teamIds);
+            $wherePart .= ' AND ( (assigned_agent_id = ? OR assigned_agent_team_id IN ('.$teamIds.')) OR (assigned_agent_id IS NULL AND assigned_agent_team_id IS NULL AND person_id = ?) )';
             $params[] = $person->id;
             $params[] = $person->id;
         } else {
-            $where_part .= ' AND ( (assigned_agent_id = ?) OR (assigned_agent_id IS NULL AND assigned_agent_team_id IS NULL AND person_id = ?) )';
+            $wherePart .= ' AND ( (assigned_agent_id = ?) OR (assigned_agent_id IS NULL AND assigned_agent_team_id IS NULL AND person_id = ?) )';
             $params[] = $person->id;
             $params[] = $person->id;
         }
 
         if ($state !== null) {
             if ($state == 'complete') {
-                $where_part .= ' AND is_completed = 1';
+                $wherePart .= ' AND is_completed = 1';
             } elseif ($state == 'incomplete') {
-                $where_part .= ' AND is_completed = 0';
+                $wherePart .= ' AND is_completed = 0';
             }
         }
+
+        $limitPart = '';
 
         if ($limit) {
             if ($offset) {
-                $limit_part = "LIMIT $offset, $limit";
+                $limitPart = "LIMIT $offset, $limit";
             } else {
-                $limit_part = "LIMIT 0, $limit";
+                $limitPart = "LIMIT 0, $limit";
             }
         }
 
-        if (!$is_count) {
-            $result_ids = $this->getEntityManager()->getConnection()->fetchAllCol("
+        if (!$isCount) {
+            $resultIds = $this->getEntityManager()->getConnection()->fetchAllCol("
                 SELECT id, COALESCE(date_due, NOW()) AS sort_date_due
                 FROM tasks
-                WHERE $where_part
+                WHERE $wherePart
                 ORDER BY sort_date_due ASC, id DESC
-                $limit_part
+                $limitPart
             ", $params);
 
-            $results = array();
-            if ($result_ids) {
-                $results = $this->getByIds($result_ids, true);
+            $results = [];
+            if ($resultIds) {
+                $results = $this->getByIds($resultIds, true);
             }
 
             return $results;
@@ -323,7 +329,7 @@ class Task extends AbstractEntityRepository
             return $this->getEntityManager()->getConnection()->fetchColumn("
                 SELECT COUNT(*)
                 FROM tasks
-                WHERE $where_part
+                WHERE $wherePart
             ", $params);
         }
     }
@@ -331,12 +337,12 @@ class Task extends AbstractEntityRepository
     /**
      * All pending tasks assigned to the person's teams.
      *
-     * @param Entity\Person $person      The person
-     * @param string        $filter_type
+     * @param Entity\Person $person     The person
+     * @param string        $filterType
      *
      * @return Task Object
      */
-    public function filterTaksForPersonTeams(Entity\Person $person, $filter_type = 'total', $limit = null, $offset = null, $state = null)
+    public function filterTaksForPersonTeams(Entity\Person $person, $filterType = 'total', $limit = null, $offset = null, $state = null)
     {
         $today = $person->getDateTime();
         $today->setTime(0, 0, 0);
@@ -348,36 +354,36 @@ class Task extends AbstractEntityRepository
 
         $now = new \DateTime();
 
-        $params = array();
+        $params = [];
 
-        $is_count = false;
-        if ($filter_type[0] == '#') {
-            $is_count    = true;
-            $filter_type = substr($filter_type, 1);
+        $isCount = false;
+        if ($filterType[0] == '#') {
+            $isCount    = true;
+            $filterType = substr($filterType, 1);
         }
 
-        if ($filter_type == 'today') {
-            $where_part = '((date_due >= ? AND date_due <= ?) OR date_due IS NULL)';
-            $params[]   = $today->format('Y-m-d H:i:s');
-            $params[]   = $tomorrow->format('Y-m-d H:i:s');
-        } elseif ($filter_type == 'future') {
-            $where_part = '(date_due >= ?)';
-            $params[]   = $tomorrow->format('Y-m-d H:i:s');
-        } elseif ($filter_type == 'overdue') {
-            $where_part = '(date_due < ?)';
-            $params[]   = $now->format('Y-m-d H:i:s');
+        if ($filterType == 'today') {
+            $wherePart = '((date_due >= ? AND date_due <= ?) OR date_due IS NULL)';
+            $params[]  = $today->format('Y-m-d H:i:s');
+            $params[]  = $tomorrow->format('Y-m-d H:i:s');
+        } elseif ($filterType == 'future') {
+            $wherePart = '(date_due >= ?)';
+            $params[]  = $tomorrow->format('Y-m-d H:i:s');
+        } elseif ($filterType == 'overdue') {
+            $wherePart = '(date_due < ?)';
+            $params[]  = $now->format('Y-m-d H:i:s');
         } else {
-            $where_part = '1';
+            $wherePart = '1';
         }
 
         $person->loadHelper('Agent');
-        if ($team_ids = $person->Agent->getTeamIds()) {
-            $team_ids = implode(',', $team_ids);
-            $where_part .= ' AND (assigned_agent_team_id IN ('.$team_ids.'))';
+        if ($teamIds = $person->Agent->getTeamIds()) {
+            $teamIds = implode(',', $teamIds);
+            $wherePart .= ' AND (assigned_agent_team_id IN ('.$teamIds.'))';
         } else {
             // Doesnt belong to any teams, so nothing to show
-            if (!$is_count) {
-                return array();
+            if (!$isCount) {
+                return [];
             } else {
                 return 0;
             }
@@ -385,32 +391,34 @@ class Task extends AbstractEntityRepository
 
         if ($state !== null) {
             if ($state == 'complete') {
-                $where_part .= ' AND is_completed = 1';
+                $wherePart .= ' AND is_completed = 1';
             } elseif ($state == 'incomplete') {
-                $where_part .= ' AND is_completed = 0';
+                $wherePart .= ' AND is_completed = 0';
             }
         }
+
+        $limitPart = '';
 
         if ($limit) {
             if ($offset) {
-                $limit_part = "LIMIT $offset, $limit";
+                $limitPart = "LIMIT $offset, $limit";
             } else {
-                $limit_part = "LIMIT 0, $limit";
+                $limitPart = "LIMIT 0, $limit";
             }
         }
 
-        if (!$is_count) {
-            $result_ids = $this->getEntityManager()->getConnection()->fetchAllCol("
+        if (!$isCount) {
+            $resultIds = $this->getEntityManager()->getConnection()->fetchAllCol("
                 SELECT id, COALESCE(date_due, NOW()) AS sort_date_due
                 FROM tasks
-                WHERE $where_part
+                WHERE $wherePart
                 ORDER BY sort_date_due ASC, id DESC
-                $limit_part
+                $limitPart
             ", $params);
 
-            $results = array();
-            if ($result_ids) {
-                $results = $this->getByIds($result_ids, true);
+            $results = [];
+            if ($resultIds) {
+                $results = $this->getByIds($resultIds, true);
             }
 
             return $results;
@@ -418,7 +426,7 @@ class Task extends AbstractEntityRepository
             return $this->getEntityManager()->getConnection()->fetchColumn("
                 SELECT COUNT(*)
                 FROM tasks
-                WHERE $where_part
+                WHERE $wherePart
             ", $params);
         }
     }
@@ -430,7 +438,7 @@ class Task extends AbstractEntityRepository
      *
      * @return int
      */
-    public function filterDelegatedTasksForPerson(Entity\Person $person, $filter_type = 'total', $limit = null, $offset = null, $state = null)
+    public function filterDelegatedTasksForPerson(Entity\Person $person, $filterType = 'total', $limit = null, $offset = null, $state = null)
     {
         $today = $person->getDateTime();
         $today->setTime(0, 0, 0);
@@ -442,69 +450,71 @@ class Task extends AbstractEntityRepository
 
         $now = new \DateTime();
 
-        $params = array();
+        $params = [];
 
-        $is_count = false;
-        if ($filter_type[0] == '#') {
-            $is_count    = true;
-            $filter_type = substr($filter_type, 1);
+        $isCount = false;
+        if ($filterType[0] == '#') {
+            $isCount    = true;
+            $filterType = substr($filterType, 1);
         }
 
-        if ($filter_type == 'today') {
-            $where_part = '((date_due >= ? AND date_due <= ?) OR date_due IS NULL)';
-            $params[]   = $today->format('Y-m-d H:i:s');
-            $params[]   = $tomorrow->format('Y-m-d H:i:s');
-        } elseif ($filter_type == 'future') {
-            $where_part = '(date_due >= ?)';
-            $params[]   = $tomorrow->format('Y-m-d H:i:s');
-        } elseif ($filter_type == 'overdue') {
-            $where_part = '(date_due < ?)';
-            $params[]   = $now->format('Y-m-d H:i:s');
+        if ($filterType == 'today') {
+            $wherePart = '((date_due >= ? AND date_due <= ?) OR date_due IS NULL)';
+            $params[]  = $today->format('Y-m-d H:i:s');
+            $params[]  = $tomorrow->format('Y-m-d H:i:s');
+        } elseif ($filterType == 'future') {
+            $wherePart = '(date_due >= ?)';
+            $params[]  = $tomorrow->format('Y-m-d H:i:s');
+        } elseif ($filterType == 'overdue') {
+            $wherePart = '(date_due < ?)';
+            $params[]  = $now->format('Y-m-d H:i:s');
         } else {
-            $where_part = '1';
+            $wherePart = '1';
         }
 
-        $where_part .= ' AND person_id = ? ';
+        $wherePart .= ' AND person_id = ? ';
         $params[] = $person->id;
 
         $person->loadHelper('Agent');
-        if ($team_ids = $person->Agent->getTeamIds()) {
-            $team_ids = implode(',', $team_ids);
-            $where_part .= ' AND ( (assigned_agent_id IS NOT NULL AND assigned_agent_id != ?) OR (assigned_agent_team_id IS NOT NULL AND assigned_agent_team_id NOT IN ('.$team_ids.')) )';
+        if ($teamIds = $person->Agent->getTeamIds()) {
+            $teamIds = implode(',', $teamIds);
+            $wherePart .= ' AND ( (assigned_agent_id IS NOT NULL AND assigned_agent_id != ?) OR (assigned_agent_team_id IS NOT NULL AND assigned_agent_team_id NOT IN ('.$teamIds.')) )';
             $params[] = $person->id;
         } else {
-            $where_part .= ' AND ( (assigned_agent_id IS NOT NULL AND assigned_agent_id != ?) OR (assigned_agent_team_id IS NOT NULL) )';
+            $wherePart .= ' AND ( (assigned_agent_id IS NOT NULL AND assigned_agent_id != ?) OR (assigned_agent_team_id IS NOT NULL) )';
             $params[] = $person->id;
         }
 
         if ($state !== null) {
             if ($state == 'complete') {
-                $where_part .= ' AND is_completed = 1';
+                $wherePart .= ' AND is_completed = 1';
             } elseif ($state == 'incomplete') {
-                $where_part .= ' AND is_completed = 0';
+                $wherePart .= ' AND is_completed = 0';
             }
         }
 
-        if (!$is_count) {
+        $limitPart = '';
+
+        if (!$isCount) {
             if ($limit) {
                 if ($offset) {
-                    $limit_part = "LIMIT $offset, $limit";
+                    $limitPart = "LIMIT $offset, $limit";
                 } else {
-                    $limit_part = "LIMIT 0, $limit";
+                    $limitPart = "LIMIT 0, $limit";
                 }
             }
 
-            $result_ids = $this->getEntityManager()->getConnection()->fetchAllCol("
+            $resultIds = $this->getEntityManager()->getConnection()->fetchAllCol("
                 SELECT id, COALESCE(date_due, NOW()) AS sort_date_due
                 FROM tasks
-                WHERE $where_part
+                WHERE $wherePart
                 ORDER BY sort_date_due ASC, id DESC
-                $limit_part
+                $limitPart
             ", $params);
 
-            $results = array();
-            if ($result_ids) {
-                $results = $this->getByIds($result_ids, true);
+            $results = [];
+            if ($resultIds) {
+                $results = $this->getByIds($resultIds, true);
             }
 
             return $results;
@@ -512,7 +522,7 @@ class Task extends AbstractEntityRepository
             return App::getDb()->fetchColumn("
                 SELECT COUNT(*)
                 FROM tasks
-                WHERE $where_part
+                WHERE $wherePart
             ", $params);
         }
     }
@@ -520,11 +530,11 @@ class Task extends AbstractEntityRepository
     /**
      * Filter all pending tasks.
      *
-     * @param string $filter_type
+     * @param string $filterType
      *
      * @return int
      */
-    public function filterAllPendingTasks(Entity\Person $person, $filter_type = 'total', $limit = null, $offset = null, $state = null)
+    public function filterAllPendingTasks(Entity\Person $person, $filterType = 'total', $limit = null, $offset = null, $state = null)
     {
         $today = $person->getDateTime();
         $today->setTime(0, 0, 0);
@@ -536,68 +546,70 @@ class Task extends AbstractEntityRepository
 
         $now = new \DateTime();
 
-        $is_count = false;
-        if ($filter_type[0] == '#') {
-            $is_count    = true;
-            $filter_type = substr($filter_type, 1);
+        $isCount = false;
+        if ($filterType[0] == '#') {
+            $isCount    = true;
+            $filterType = substr($filterType, 1);
         }
 
-        $params = array();
+        $params = [];
 
-        if ($filter_type == 'today') {
-            $where_part = '((date_due >= ? AND date_due <= ?) OR date_due IS NULL)';
-            $params[]   = $today->format('Y-m-d H:i:s');
-            $params[]   = $tomorrow->format('Y-m-d H:i:s');
-        } elseif ($filter_type == 'future') {
-            $where_part = '(date_due >= ?)';
-            $params[]   = $tomorrow->format('Y-m-d H:i:s');
-        } elseif ($filter_type == 'overdue') {
-            $where_part = '(date_due < ?)';
-            $params[]   = $now->format('Y-m-d H:i:s');
+        if ($filterType == 'today') {
+            $wherePart = '((date_due >= ? AND date_due <= ?) OR date_due IS NULL)';
+            $params[]  = $today->format('Y-m-d H:i:s');
+            $params[]  = $tomorrow->format('Y-m-d H:i:s');
+        } elseif ($filterType == 'future') {
+            $wherePart = '(date_due >= ?)';
+            $params[]  = $tomorrow->format('Y-m-d H:i:s');
+        } elseif ($filterType == 'overdue') {
+            $wherePart = '(date_due < ?)';
+            $params[]  = $now->format('Y-m-d H:i:s');
         } else {
-            $where_part = '1';
+            $wherePart = '1';
         }
 
         $person->loadHelper('Agent');
-        if ($team_ids = $person->Agent->getTeamIds()) {
-            $team_ids = implode(',', $team_ids);
-            $where_part .= ' AND ( (person_id = ? OR assigned_agent_id = ? OR assigned_agent_team_id IN ('.$team_ids.')) OR visibility = 1)';
+        if ($teamIds = $person->Agent->getTeamIds()) {
+            $teamIds = implode(',', $teamIds);
+            $wherePart .= ' AND ( (person_id = ? OR assigned_agent_id = ? OR assigned_agent_team_id IN ('.$teamIds.')) OR visibility = 1)';
             $params[] = $person->id;
             $params[] = $person->id;
         } else {
-            $where_part .= ' AND ( (person_id = ? OR assigned_agent_id = ?) OR visibility = 1)';
+            $wherePart .= ' AND ( (person_id = ? OR assigned_agent_id = ?) OR visibility = 1)';
             $params[] = $person->id;
             $params[] = $person->id;
         }
 
         if ($state !== null) {
             if ($state == 'complete') {
-                $where_part .= ' AND is_completed = 1';
+                $wherePart .= ' AND is_completed = 1';
             } elseif ($state == 'incomplete') {
-                $where_part .= ' AND is_completed = 0';
+                $wherePart .= ' AND is_completed = 0';
             }
         }
+
+        $limitPart = '';
 
         if ($limit) {
             if ($offset) {
-                $limit_part = "LIMIT $offset, $limit";
+                $limitPart = "LIMIT $offset, $limit";
             } else {
-                $limit_part = "LIMIT 0, $limit";
+                $limitPart = "LIMIT 0, $limit";
             }
         }
 
-        if (!$is_count) {
-            $result_ids = $this->getEntityManager()->getConnection()->fetchAllCol("
+        if (!$isCount) {
+            $resultIds = $this->getEntityManager()->getConnection()->fetchAllCol("
                 SELECT id, COALESCE(date_due, NOW()) AS sort_date_due
                 FROM tasks
-                WHERE $where_part
+                WHERE $wherePart
                 ORDER BY sort_date_due ASC, id DESC
-                $limit_part
+                $limitPart
             ", $params);
 
-            $results = array();
-            if ($result_ids) {
-                $results = $this->getByIds($result_ids, true);
+            $results = [];
+            if ($resultIds) {
+                $results = $this->getByIds($resultIds, true);
             }
 
             return $results;
@@ -605,20 +617,20 @@ class Task extends AbstractEntityRepository
             return App::getDb()->fetchColumn("
                 SELECT COUNT(*)
                 FROM tasks
-                WHERE $where_part
+                WHERE $wherePart
             ", $params);
         }
     }
 
-    public function findLinkedTicketTasks(TicketEntity $ticket, PersonEntity $person_context, $all = false)
+    public function findLinkedTicketTasks(TicketEntity $ticket, PersonEntity $personContext, $all = false)
     {
-        $person_context->loadHelper('Agent');
-        if (!$team_ids = $person_context->Agent->getTeamIds()) {
-            $team_ids = array(0);
+        $personContext->loadHelper('Agent');
+        if (!$teamIds = $personContext->Agent->getTeamIds()) {
+            $teamIds = [0];
         }
 
         if ($all) {
-            $task_ids = $this->getEntityManager()->getConnection()->fetchAllCol('
+            $taskIds = $this->getEntityManager()->getConnection()->fetchAllCol('
                 SELECT tasks.id
                 FROM tasks
                 LEFT JOIN task_associations ON task_associations.task_id = tasks.id
@@ -626,19 +638,19 @@ class Task extends AbstractEntityRepository
                     ((tasks.person_id = ? OR tasks.assigned_agent_id = ? OR tasks.assigned_agent_team_id IN (?)) OR tasks.visibility = 1)
                     AND task_associations.ticket_id = ?
                     ORDER BY tasks.date_due ASC
-            ', array(
-                $person_context->getId(),
-                $person_context->getId(),
-                $team_ids,
+            ', [
+                $personContext->getId(),
+                $personContext->getId(),
+                $teamIds,
                 $ticket->getId(),
-            ), array(
+            ], [
                 \PDO::PARAM_INT,
                 \PDO::PARAM_INT,
                 Connection::PARAM_INT_ARRAY,
                 \PDO::PARAM_INT,
-            ));
+            ]);
         } else {
-            $task_ids = $this->getEntityManager()->getConnection()->fetchAllCol('
+            $taskIds = $this->getEntityManager()->getConnection()->fetchAllCol('
                 SELECT tasks.id
                 FROM tasks
                 LEFT JOIN task_associations ON task_associations.task_id = tasks.id
@@ -647,23 +659,23 @@ class Task extends AbstractEntityRepository
                     AND ((tasks.person_id = ? OR tasks.assigned_agent_id = ? OR tasks.assigned_agent_team_id IN (?)) OR tasks.visibility = 1)
                     AND task_associations.ticket_id = ?
                     ORDER BY tasks.date_due ASC
-            ', array(
-                $person_context->getId(),
-                $person_context->getId(),
-                $team_ids,
+            ', [
+                $personContext->getId(),
+                $personContext->getId(),
+                $teamIds,
                 $ticket->getId(),
-            ), array(
+            ], [
                 \PDO::PARAM_INT,
                 \PDO::PARAM_INT,
                 Connection::PARAM_INT_ARRAY,
                 \PDO::PARAM_INT,
-            ));
+            ]);
         }
 
-        if (!$task_ids) {
-            return array();
+        if (!$taskIds) {
+            return [];
         }
 
-        return $this->getByIds($task_ids, true);
+        return $this->getByIds($taskIds, true);
     }
 }
