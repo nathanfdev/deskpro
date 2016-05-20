@@ -10,9 +10,6 @@
 			pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.FeedbackContentValidating';
 			pageMeta.singleTyle = 'feedback';
 			pageMeta.url_fragment = '{{ url_fragment('agent_feedback_validatingcontent') }}';
-		{% else %}
-			pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.PublishValidatingContent';
-			pageMeta.url_fragment = '{{ url_fragment('agent_publish_validatingcontent') }}';
 		{% endif %}
 	</script>
 
@@ -23,7 +20,10 @@
 {######################################################################################################################}
 
 {% block pane_header %}
-	<h1><i class="icon-dp-article"></i> {{ phrase('agent.publish.validating_list_title', {count: content_validating|length}) }}</h1>
+	<h1>
+		<i class="icon-dp-article"></i>
+		<span id="validation-list-header-count">{{ phrase('agent.publish.validating_list_title', {count: pageinfo.total_results}) }}</span>
+	</h1>
 {% endblock pane_header %}
 
 {######################################################################################################################}
@@ -40,10 +40,26 @@
 		{% include 'AgentBundle:Publish:validating-content-page.html.twig' %}
 	</section>
 
-	{% if not content_validating|length %}
+	{% if not pageinfo.total_results %}
 		<section class="list-listing no-results">
 			<p>{{ phrase('agent.general.there_are_no_results') }}</p>
 		</section>
 	{% endif %}
+
+	<footer class="results-nav">
+		<div class="pagecontrols results-nav">
+			<div class="cursor">
+				{{ phrase('agent.general.page_x_of_y', {page: pageinfo.cursor, num_pages: pageinfo.last}) }}
+
+			</div>
+			{% set routeName = (single_type == 'feedback') ? 'agent_feedback_validatingcontent' : 'agent_publish_validatingcontent' %}
+			{% if pageinfo.last > 1 %}
+				<ul class="pagenav {% if not pageinfo.prev %}no-prev{% endif  %}{% if not pageinfo.next %}no-next{% endif  %}">
+					<li class="prev" data-route="listpane:{{ path(routeName, {type: type, page: pageinfo.prev}) }}"></li>
+					<li class="next" data-route="listpane:{{ path(routeName, {type: type, page: pageinfo.next}) }}"></li>
+				</ul>
+			{% endif %}
+		</div>
+	</footer>
 
 {% endblock pane_content %}

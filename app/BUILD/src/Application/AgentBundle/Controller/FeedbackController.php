@@ -29,18 +29,40 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\FeedbackResults;
+use Application\AgentBundle\Form\Model\NewFeedback;
+use Application\AgentBundle\Form\Type\NewFeedback as NewFeedbackTypeOld;
+use Application\AgentBundle\Validator\NewFeedbackValidator;
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackComment;
+use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\DeskPRO\Entity\PersonPref;
+use Application\DeskPRO\Entity\SearchLog;
+use Application\DeskPRO\Entity\SearchStickyResult;
+use Application\DeskPRO\EntityRepository\Feedback as FeedbackRepository;
+use Application\DeskPRO\EntityRepository\FeedbackCategory as FeedbackCategoryRepository;
+use Application\DeskPRO\EntityRepository\FeedbackComment as FeedbackCommentRepository;
+use Application\DeskPRO\EntityRepository\FeedbackStatusCategory as FeedbackStatusCategoryRepository;
+use Application\DeskPRO\EntityRepository\PersonPref as PersonPrefRepository;
+use Application\DeskPRO\EntityRepository\SearchLog as SearchLogRepository;
+use Application\DeskPRO\EntityRepository\SearchStickyResult as SearchStickyResultRepository;
+use Application\DeskPRO\Feedback\FeedbackCollection;
 use Application\DeskPRO\Feedback\FeedbackMerge;
+use Application\DeskPRO\Feedback\FeedbackModerate;
+use Application\DeskPRO\Labels\LabelLister;
+use Application\DeskPRO\People\PermissionChecker\PublishChecker;
 use Application\DeskPRO\Publish\Feedback\GroupingCounter;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
+use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
+use Orb\Util\Numbers;
 use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Handles ticket searches.
@@ -51,138 +73,229 @@ class FeedbackController extends AbstractController
     # get-section-data
     ############################################################################
 
+    /**
+     * @return Response
+     */
     public function getSectionDataAction()
     {
-        $data = array();
+        /*
+         * @var FeedbackRepository
+         * @var FeedbackCategoryRepository       $feedbackCategoryRepository
+         * @var FeedbackStatusCategoryRepository $feedbackStatusCategoryRepository
+         * @var FeedbackCommentRepository        $feedbackCommentRepository
+         */
+        $feedbackRepository               = $this->em->getRepository(Feedback::class);
+        $feedbackCategoryRepository       = $this->em->getRepository(FeedbackCategory::class);
+        $feedbackStatusCategoryRepository = $this->em->getRepository(FeedbackStatusCategory::class);
+        $feedbackCommentRepository        = $this->em->getRepository(FeedbackComment::class);
 
-        $counts                                 = array();
-        $counts['feedback_awaiting_validation'] = $this->em->getRepository('DeskPRO:Feedback')->countAwaitingValidation();
-        $counts['comments_awaiting_validation'] = $this->em->getRepository('DeskPRO:FeedbackComment')->countAwaitingValidation();
+        $counts = [
+            'feedback_awaiting_validation' => $feedbackRepository->countAwaitingValidation(),
+            'comments_awaiting_validation' => $feedbackCommentRepository->countAwaitingValidation(),
+        ];
 
-        $status_counts           = array();
-        $status_counts['active'] = $this->em->getRepository('DeskPRO:Feedback')->countActiveGrouped();
-        $status_counts['closed'] = $this->em->getRepository('DeskPRO:Feedback')->countClosedGrouped();
-        $status_counts['hidden'] = $this->em->getRepository('DeskPRO:Feedback')->countHiddenGrouped();
+        $statusCounts = [
+            'active' => $feedbackRepository->countActiveGrouped(),
+            'closed' => $feedbackRepository->countClosedGrouped(),
+            'hidden' => $feedbackRepository->countHiddenGrouped(),
+        ];
 
-        $category_counts = $this->em->getRepository('DeskPRO:Feedback')->countAllCategoriesGrouped();
+        $categoryCounts = $feedbackRepository->countAllCategoriesGrouped();
 
-        $feedback_cats      = $this->em->getRepository('DeskPRO:FeedbackCategory')->getFlatHierarchy();
-        $active_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
-        $closed_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
+        $feedbackCategories     = $feedbackCategoryRepository->getFlatHierarchy();
+        $activeStatusCategories = $feedbackStatusCategoryRepository->getActiveCategories();
+        $closedStatusCategories = $feedbackStatusCategoryRepository->getClosedCategories();
 
-        $label_lister       = new \Application\DeskPRO\Labels\LabelLister('feedback');
-        $feedback_tag_index = $label_lister->getIndexList();
+        $labelLister      = new LabelLister('feedback');
+        $feedbackTagIndex = $labelLister->getIndexList();
 
-        $data['section_html'] = $this->renderView('AgentBundle:Feedback:window-section.html.twig', array(
-            'counts'             => $counts,
-            'status_counts'      => $status_counts,
-            'category_counts'    => $category_counts,
-            'feedback_cats'      => $feedback_cats,
-            'active_status_cats' => $active_status_cats,
-            'closed_status_cats' => $closed_status_cats,
-            'feedback_tag_index' => $feedback_tag_index,
-        ));
+        $data = [
+            'section_html' => $this->renderView(
+                'AgentBundle:Feedback:window-section.html.twig',
+                [
+                    'counts'             => $counts,
+                    'status_counts'      => $statusCounts,
+                    'category_counts'    => $categoryCounts,
+                    'feedback_cats'      => $feedbackCategories,
+                    'active_status_cats' => $activeStatusCategories,
+                    'closed_status_cats' => $closedStatusCategories,
+                    'feedback_tag_index' => $feedbackTagIndex,
+                ]
+            ),
+        ];
 
         return $this->createJsonResponse($data);
+    }
+
+    ############################################################################
+    # validating content actions
+    ############################################################################
+
+    /**
+     * @return Response
+     */
+    public function listValidatingContentAction()
+    {
+        $perPage = 25;
+
+        /** @var \Application\DeskPRO\EntityRepository\Feedback $feedbackRepository */
+        $feedbackRepository = $this->em->getRepository(Feedback::class);
+        $pageinfo           = $total           = null;
+
+        $currentPage = $this->in->getUInt('page') ?: 1;
+        $offset      = (($currentPage - 1 >= 0) ? $currentPage - 1 : 1) * $perPage;
+
+        if (!@$_REQUEST['_partial']) {
+            $total    = $feedbackRepository->countAwaitingValidation();
+            $pageinfo = Numbers::getPaginationPages($total, $currentPage, $perPage);
+        }
+
+        $contentValidating = $feedbackRepository->getAwaitingValidation($perPage, $offset);
+        $info              = [];
+        foreach ($contentValidating as $feedback) {
+            /* @var Feedback $feedback */
+            $lastRevision = $feedback->getRevisions()->current();
+            $info[]       = [
+                'info' => [
+                    'content_type' => 'feedback',
+                    'content_id'   => $feedback->getId(),
+                    'revision_id'  => $lastRevision ? $lastRevision->getId() : null,
+                    'date_created' => $feedback->getDateCreated()->format('Y-m-d H:i:s'),
+                ],
+                'obj' => $feedback,
+            ];
+        }
+
+        $tpl = @$_REQUEST['_partial']
+            ? 'AgentBundle:Publish:validating-content-page.html.twig'
+            : 'AgentBundle:Publish:validating-content.html.twig'
+        ;
+
+        return $this->render(
+            $tpl,
+            [
+                'single_type'        => 'feedback',
+                'content_validating' => $info,
+                'total'              => $total,
+                'pageinfo'           => $pageinfo,
+            ]
+        );
     }
 
     ############################################################################
     # view
     ############################################################################
 
+    /**
+     * @param $feedback_id
+     *
+     * @return Response
+     */
     public function viewAction($feedback_id)
     {
-        $feedback = $this->em->find('DeskPRO:Feedback', $feedback_id);
+        $feedback = $this->getFeedback($feedback_id);
 
-        if (!$feedback) {
-            throw $this->createNotFoundException();
-        }
+        /*
+         * @var PublishChecker
+         * @var SearchLogRepository              $searchLogRepository
+         * @var PersonPrefRepository             $personPrefRepository
+         * @var FeedbackCategoryRepository       $feedbackCategoryRepository
+         * @var SearchStickyResultRepository     $searchStickyResultRepository
+         * @var FeedbackStatusCategoryRepository $feedbackStatusCategoryRepository
+         */
+        $publishChecker                   = $this->person->getPermissionsManager()->get('PublishChecker');
+        $fieldManager                     = $this->container->getSystemService('feedback_fields_manager');
+        $searchLogRepository              = $this->em->getRepository(SearchLog::class);
+        $personPrefRepository             = $this->em->getRepository(PersonPref::class);
+        $feedbackCategoryRepository       = $this->em->getRepository(FeedbackCategory::class);
+        $searchStickyResultRepository     = $this->em->getRepository(SearchStickyResult::class);
+        $feedbackStatusCategoryRepository = $this->em->getRepository(FeedbackStatusCategory::class);
 
-        #------------------------------
-        # Custom fields
-        #------------------------------
+        $customFields        = $fieldManager->getDisplayArrayForObject($feedback);
+        $feedbackComments    = [];
+        $feedbackCommentsRaw = $feedback->getComments();
 
-        $field_manager = $this->container->getSystemService('feedback_fields_manager');
-        $custom_fields = $field_manager->getDisplayArrayForObject($feedback);
-
-        #------------------------------
-        # Article props
-        #------------------------------
-
-        $feedback_comments_raw = $feedback->comments;
-        $feedback_comments     = array();
-        foreach ($feedback_comments_raw as $c) {
+        foreach ($feedbackCommentsRaw as $c) {
             if ($c->status != 'temp') {
-                $feedback_comments[] = $c;
+                $feedbackComments[] = $c;
             }
         }
 
-        $feedback_revisions  = $feedback->getRevisions();
-        $sticky_search_words = $this->em->getRepository('DeskPRO:SearchStickyResult')->getWordsForObject($feedback);
+        $state        = $personPrefRepository->getPrefForPersonId('agent.ui.state.editfeedback', $this->person->id);
+        $category     = $feedback->getCategory();
+        $categoryPath = $category->getTreeParents();
 
-        $related_finder  = new RelatedContentFinder($this->person, $feedback);
-        $related_content = $related_finder->getRelatedEntities(true);
+        $ratedSearches          = $searchLogRepository->getRatedSearchesFor('feedback', $feedback['id'], 'counted');
+        $relatedFinder          = new RelatedContentFinder($this->person, $feedback);
+        $relatedContent         = $relatedFinder->getRelatedEntities(true);
+        $feedbackRevisions      = $feedback->getRevisions();
+        $stickySearchWords      = $searchStickyResultRepository->getWordsForObject($feedback);
+        $feedbackCategories     = $feedbackCategoryRepository->getInHierarchy();
+        $activeStatusCategories = $feedbackStatusCategoryRepository->getActiveCategories();
+        $closedStatusCategories = $feedbackStatusCategoryRepository->getClosedCategories();
 
-        $rated_searches = $this->em->getRepository('DeskPRO:SearchLog')->getRatedSearchesFor('feedback', $feedback['id'], 'counted');
+        $perms = [
+            'can_edit'   => $publishChecker->canEdit($feedback),
+            'can_delete' => $publishChecker->canDelete($feedback),
+        ];
 
-        $state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editfeedback', $this->person->id);
-
-        $feedback_categories = $this->em->getRepository('DeskPRO:FeedbackCategory')->getInHierarchy();
-        $active_status_cats  = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
-        $closed_status_cats  = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
-
-        $category      = $feedback->category;
-        $category_path = $category->getTreeParents();
-
-        $perms = array(
-            'can_edit'   => $this->person->PermissionsManager->PublishChecker->canEdit($feedback),
-            'can_delete' => $this->person->PermissionsManager->PublishChecker->canDelete($feedback),
+        return $this->render(
+            'AgentBundle:Feedback:view.html.twig',
+            [
+                'feedback'            => $feedback,
+                'feedback_comments'   => $feedbackComments,
+                'feedback_revisions'  => $feedbackRevisions,
+                'state'               => $state,
+                'category'            => $category,
+                'category_path'       => $categoryPath,
+                'custom_fields'       => $customFields,
+                'rated_searches'      => $ratedSearches,
+                'related_content'     => $relatedContent,
+                'sticky_search_words' => $stickySearchWords,
+                'feedback_categories' => $feedbackCategories,
+                'active_status_cats'  => $activeStatusCategories,
+                'closed_status_cats'  => $closedStatusCategories,
+                'perms'               => $perms,
+            ]
         );
-
-        return $this->render('AgentBundle:Feedback:view.html.twig', array(
-            'feedback'           => $feedback,
-            'feedback_comments'  => $feedback_comments,
-            'feedback_revisions' => $feedback_revisions,
-            'state'              => $state,
-
-            'category'      => $category,
-            'category_path' => $category_path,
-
-            'custom_fields' => $custom_fields,
-
-            'rated_searches'      => $rated_searches,
-            'related_content'     => $related_content,
-            'sticky_search_words' => $sticky_search_words,
-
-            'feedback_categories' => $feedback_categories,
-            'active_status_cats'  => $active_status_cats,
-            'closed_status_cats'  => $closed_status_cats,
-            'perms'               => $perms,
-        ));
     }
 
+    /**
+     * @param $feedback_id
+     *
+     * @return Response
+     */
     public function whoVotedAction($feedback_id)
     {
-        $feedback = $this->em->find('DeskPRO:Feedback', $feedback_id);
+        $feedback = $this->getFeedback($feedback_id);
 
         $feedback_votes = $feedback->votes->toArray();
 
-        return $this->render('AgentBundle:Feedback:view-who-voted.html.twig', array(
-            'feedback'       => $feedback,
-            'feedback_votes' => $feedback_votes,
-        ));
+        return $this->render(
+            'AgentBundle:Feedback:view-who-voted.html.twig',
+            [
+                'feedback'       => $feedback,
+                'feedback_votes' => $feedback_votes,
+            ]
+        );
     }
 
+    /**
+     * @param $feedback_id
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
     public function ajaxSaveEditablesAction($feedback_id)
     {
-        $feedback = $this->em->find('DeskPRO:Feedback', $feedback_id);
+        $feedback = $this->getFeedback($feedback_id);
 
-        if (!$feedback) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-        }
+        /** @var PublishChecker $publishChecker */
+        $publishChecker = $this->person->getPermissionsManager()->get('PublishChecker');
 
-        if (!$this->person->PermissionsManager->PublishChecker->canEdit($feedback)) {
-            return $this->createJsonResponse(array('success' => false));
+        if (!$publishChecker->canEdit($feedback)) {
+            return $this->createJsonResponse(['success' => false]);
         }
 
         $ret = '';
@@ -191,87 +304,115 @@ class FeedbackController extends AbstractController
             case 'title':
                 $value             = $this->in->getString('title');
                 $feedback['title'] = $value;
-                $ret               = array('html' => htmlspecialchars($feedback['title']));
+                $ret               = ['html' => htmlspecialchars($feedback['title'])];
                 break;
         }
 
-        $this->em->transactional(function ($em) use ($feedback) {
-            $em->persist($feedback);
-            $em->flush();
-        });
+        $this->em->transactional(
+            function ($em) use ($feedback) {
+                /* @var EntityManager $em */
+                $em->persist($feedback);
+                $em->flush();
+            }
+        );
 
-        return $this->createJsonResponse(array(
-            'success'     => true,
-            'feedback_id' => $feedback['id'],
-            'html'        => $ret,
-        ));
+        return $this->createJsonResponse(
+            [
+                'success'     => true,
+                'feedback_id' => $feedback->getId(),
+                'html'        => $ret,
+            ]
+        );
     }
 
+    /**
+     * @param $feedback_id
+     * @param $category_id
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Exception
+     *
+     * @return Response
+     */
     public function ajaxUpdateCategoryAction($feedback_id, $category_id)
     {
-        $feedback = $this->em->find('DeskPRO:Feedback', $feedback_id);
+        $feedback = $this->getFeedback($feedback_id);
+        $cat      = $this->em->find(FeedbackCategory::class, $category_id);
+        $feedback->setCategory($cat);
 
-        if (!$feedback) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-        }
+        $this->em->transactional(
+            function ($em) use ($feedback) {
+                /* @var EntityManager $em */
+                $em->persist($feedback);
+                $em->flush();
+            }
+        );
 
-        $cat = $this->em->find('DeskPRO:FeedbackCategory', $category_id);
-
-        $feedback->category = $cat;
-
-        $this->em->transactional(function ($em) use ($feedback) {
-            $em->persist($feedback);
-            $em->flush();
-        });
-
-        return $this->createJsonResponse(array(
-            'success'     => true,
-            'feedback_id' => $feedback['id'],
-        ));
+        return $this->createJsonResponse(
+            [
+                'success'     => true,
+                'feedback_id' => $feedback['id'],
+            ]
+        );
     }
 
+    /**
+     * @param $feedback_id
+     * @param $status_code
+     *
+     * @throws \Exception
+     *
+     * @return null|Response
+     */
     public function ajaxUpdateStatusAction($feedback_id, $status_code)
     {
-        $feedback = $this->em->find('DeskPRO:Feedback', $feedback_id);
+        $feedback = $this->getFeedback($feedback_id);
 
-        if (!$feedback) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-        }
-        if (!$this->person->PermissionsManager->PublishChecker->canEdit($feedback)) {
-            return $this->createJsonResponse(array('success' => false));
+        if ($response = $this->checkPermissions($feedback)) {
+            return $response;
         }
 
-        $feedback['status_code'] = $status_code;
+        $feedback->setStatusCode($status_code);
+        $this->em->transactional(
+            function ($em) use ($feedback) {
+                /* @var EntityManager $em */
+                $em->persist($feedback);
+                $em->flush();
+            }
+        );
 
-        $this->em->transactional(function ($em) use ($feedback) {
-            $em->persist($feedback);
-            $em->flush();
-        });
-
-        return $this->createJsonResponse(array(
-            'success'     => true,
-            'feedback_id' => $feedback['id'],
-        ));
+        return $this->createJsonResponse(
+            [
+                'success'     => true,
+                'feedback_id' => $feedback->getId(),
+            ]
+        );
     }
 
+    /**
+     * @param $feedback_id
+     *
+     * @throws \Exception
+     *
+     * @return null|Response
+     */
     public function ajaxSaveCustomFieldsAction($feedback_id)
     {
-        $feedback = $this->em->find('DeskPRO:Feedback', $feedback_id);
+        $feedback = $this->getFeedback($feedback_id);
 
-        if (!$feedback) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-        }
-        if (!$this->person->PermissionsManager->PublishChecker->canEdit($feedback)) {
-            return $this->createJsonResponse(array('success' => false));
+        if ($response = $this->checkPermissions($feedback)) {
+            return $response;
         }
 
         $this->em->beginTransaction();
 
         try {
-            $field_manager      = $this->container->getSystemService('feedback_fields_manager');
-            $post_custom_fields = $this->request->request->get('custom_fields', array());
-            if (!empty($post_custom_fields)) {
-                $field_manager->saveFormToObject($post_custom_fields, $feedback);
+            $fieldManager     = $this->container->getSystemService('feedback_fields_manager');
+            $postCustomFields = $this->request->request->get('custom_fields', []);
+            if (!empty($postCustomFields)) {
+                $fieldManager->saveFormToObject($postCustomFields, $feedback);
             }
 
             $this->em->flush();
@@ -281,65 +422,63 @@ class FeedbackController extends AbstractController
             throw $e;
         }
 
-        $custom_fields = $field_manager->getDisplayArrayForObject($feedback);
+        $customFields = $fieldManager->getDisplayArrayForObject($feedback);
 
-        return $this->render('AgentBundle:Feedback:view-customfields-rendered-rows.html.twig', array(
-            'feedback'      => $feedback,
-            'custom_fields' => $custom_fields,
-        ));
+        return $this->render(
+            'AgentBundle:Feedback:view-customfields-rendered-rows.html.twig',
+            [
+                'feedback'      => $feedback,
+                'custom_fields' => $customFields,
+            ]
+        );
     }
 
+    /**
+     * @param $feedback_id
+     *
+     * @return null|Response
+     */
     public function ajaxSaveLabelsAction($feedback_id)
     {
-        $feedback = $this->em->find('DeskPRO:Feedback', $feedback_id);
+        $feedback = $this->getFeedback($feedback_id);
 
-        if (!$feedback) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-        }
-        if (!$this->person->PermissionsManager->PublishChecker->canEdit($feedback)) {
-            return $this->createJsonResponse(array('success' => false));
+        if ($response = $this->checkPermissions($feedback)) {
+            return $response;
         }
 
         $labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
 
         $feedback->getLabelManager()->setLabelsArray($labels);
-
         $this->em->persist($feedback);
         $this->em->flush();
 
-        return $this->createJsonResponse(array('success' => 1));
+        return $this->createJsonResponse(['success' => 1]);
     }
 
+    /**
+     * @param $feedback_id
+     *
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
+     *
+     * @return Response
+     */
     public function ajaxSaveCommentAction($feedback_id)
     {
-        /** @var \Application\DeskPRO\Entity\Feedback $feedback */
-        $feedback = $this->em->find('DeskPRO:Feedback', $feedback_id);
+        $feedback = $this->getFeedback($feedback_id);
 
-        if (!$feedback || !$this->in->getString('content')) {
+        if (!$this->in->getString('content')) {
             throw $this->createNotFoundException();
         }
 
-        $comment              = new FeedbackComment();
-        $comment->is_reviewed = true;
-        $comment['content']   = $this->in->getString('content');
-
-        if ($this->in->getBool('agent_only')) {
-            $comment['status'] = 'agent';
-        } else {
-            $comment['status'] = 'visible';
-        }
+        $comment = new FeedbackComment();
+        $comment
+            ->setIsReviewed(true)
+            ->setContent($this->in->getString('content'))
+            ->setStatus($this->in->getBool('agent_only') ? 'agent' : 'visible');
 
         $feedback->addComment($comment);
-
-        if (!$comment->getPerson()) {
-            $comment->setPerson($this->person);
-        }
-
-        if ($this->person->is_agent) {
-            $comment->is_reviewed = true;
-        }
-
-        $feedback->addComment($comment);
+        $comment->getPerson() || $comment->setPerson($this->person);
 
         $this->em->getConnection()->beginTransaction();
         try {
@@ -347,46 +486,50 @@ class FeedbackController extends AbstractController
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
-            $this->em->getConnection()->rollback();
+            $this->em->getConnection()->rollBack();
             throw $e;
         }
 
-        return $this->render('AgentBundle:Feedback:view-comment.html.twig', array(
-            'comment' => $comment,
-        ));
+        return $this->render(
+            'AgentBundle:Feedback:view-comment.html.twig',
+            [
+                'comment' => $comment,
+            ]
+        );
     }
 
+    /**
+     * @param $feedback_id
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return Response
+     */
     public function ajaxSaveAction($feedback_id)
     {
-        $feedback = $this->em->find('DeskPRO:Feedback', $feedback_id);
+        $feedback = $this->getFeedback($feedback_id);
 
-        if (!$feedback) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-        }
-
-        $rev = null;
-
+        $rev    = null;
         $action = $this->in->getString('action');
 
-        if ($action == 'delete') {
-            if (!$this->person->PermissionsManager->PublishChecker->canDelete($feedback)) {
-                return $this->createJsonResponse(array('success' => false));
-            }
-        } else {
-            if (!$this->person->PermissionsManager->PublishChecker->canEdit($feedback)) {
-                return $this->createJsonResponse(array('success' => false));
-            }
+        /** @var PublishChecker $publishChecker */
+        $publishChecker = $this->person->getPermissionsManager()->get('PublishChecker');
+
+        if ($action == 'delete' && !$publishChecker->canDelete($feedback)) {
+            return $this->createJsonResponse(['success' => false]);
+        } elseif ($response = $this->checkPermissions($feedback)) {
+            return $response;
         }
 
-        $data = array('success' => 1);
+        $data = ['success' => 1];
 
         $this->em->beginTransaction();
 
         switch ($action) {
-
             case 'status':
             case 'delete':
-
                 if ($action == 'delete') {
                     $feedback['status_code'] = 'hidden.deleted';
                 } else {
@@ -426,9 +569,9 @@ class FeedbackController extends AbstractController
                 break;
 
             case 'remove-blob':
-                foreach ($feedback->attachments as $k => $attach) {
-                    if ($attach->blob['id'] == $this->in->getUint('blob_id')) {
-                        $feedback->attachments->remove($k);
+                foreach ($feedback->getAttachments() as $k => $attach) {
+                    if ($attach->blob['id'] == $this->in->getUInt('blob_id')) {
+                        $feedback->getAttachments()->remove($k);
                         $this->em->remove($attach);
                         break;
                     }
@@ -437,49 +580,32 @@ class FeedbackController extends AbstractController
                 break;
 
             case 'content':
+                /** @var PersonPrefRepository $personPrefRepository */
+                $personPrefRepository = $this->em->getRepository('DeskPRO:PersonPref');
+                $personPrefRepository->deletePrefForPersonId('agent.ui.state.editfeedback', $this->person->id);
 
-                $this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.editfeedback', $this->person->id);
+                $feedback->setContent(
+                    $this->person->hasPerm('agent_publish.can_insert_html')
+                    ? $this->in->getCleanValue('content', 'string', null, ['noclean' => true])
+                    : $this->in->getCleanValue('content', 'html')
+                );
 
-                $feedback['content'] = $this->person->hasPerm('agent_publish.can_insert_html')
-                    ? $this->in->getCleanValue('content', 'string', null, array('noclean' => true))
-                    : $this->in->getCleanValue('content', 'html');
+                $data['content_html'] = $this->renderView(
+                    'AgentBundle:Feedback:view-content-tab.html.twig',
+                    ['feedback' => $feedback]
+                );
 
-                $data['content_html'] = $this->renderView('AgentBundle:Feedback:view-content-tab.html.twig', array(
-                    'feedback' => $feedback,
-                ));
-
-                $rev            = ContentRevisionUtil::findOrCreate($feedback, array('content'), $this->person);
+                $rev            = ContentRevisionUtil::findOrCreate($feedback, ['content'], $this->person);
                 $rev['content'] = $feedback['content'];
 
                 break;
 
             case 'category':
-                $cat = $this->em->find('DeskPRO:FeedbackCategory', $this->in->getUint('category_id'));
+                $cat = $this->em->find('DeskPRO:FeedbackCategory', $this->in->getUInt('category_id'));
                 if ($cat) {
                     $feedback['category'] = $cat;
                     $data['category_id']  = $cat['id'];
                 }
-                break;
-
-            case 'vote':
-
-                $content_rating = new \Application\UserBundle\Controller\Helper\ContentRating($feedback, $this->person, null);
-                $content_rating->setRequest($this->request);
-                $content_rating->setRating(1);
-
-                break;
-
-            case 'clear-vote':
-
-                $content_rating = new \Application\UserBundle\Controller\Helper\ContentRating($feedback, $this->person, null);
-                $vote           = $content_rating->getRating();
-
-                if ($vote) {
-                    $feedback->removeRating($vote);
-
-                    $this->em->remove($vote);
-                }
-
                 break;
         }
 
@@ -505,46 +631,65 @@ class FeedbackController extends AbstractController
     # merge
     ############################################################################
 
+    /**
+     * @param     $feedback_id
+     * @param int $other_feedback_id
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return Response
+     */
     public function mergeOverlayAction($feedback_id, $other_feedback_id = 0)
     {
-        $feedback = $this->em->find('DeskPRO:Feedback', $feedback_id);
+        $feedback = $this->em->find(Feedback::class, $feedback_id);
 
         if ($other_feedback_id && $other_feedback_id != $feedback_id) {
-            $other_feedback = $this->em->find('DeskPRO:Feedback', $other_feedback_id);
+            $otherFeedback = $this->em->find(Feedback::class, $other_feedback_id);
         } else {
-            $other_feedback = false;
+            $otherFeedback = false;
         }
 
-        return $this->render('AgentBundle:Feedback:merge-overlay.html.twig', array(
-            'feedback'       => $feedback,
-            'other_feedback' => $other_feedback,
-        ));
+        return $this->render(
+            'AgentBundle:Feedback:merge-overlay.html.twig',
+            [
+                'feedback'       => $feedback,
+                'other_feedback' => $otherFeedback,
+            ]
+        );
     }
 
     /**
      * Merge a ticket interface.
+     *
+     * @param $feedback_id
+     * @param $other_feedback_id
+     *
+     * @throws \Exception
+     *
+     * @return Response
      */
     public function mergeAction($feedback_id, $other_feedback_id)
     {
-        $feedback       = $this->em->find('DeskPRO:Feedback', $feedback_id);
-        $other_feedback = $this->em->find('DeskPRO:Feedback', $other_feedback_id);
+        $feedback      = $this->getFeedback($feedback_id);
+        $otherFeedback = $this->getFeedback($other_feedback_id);
 
-        if (!$feedback || !$other_feedback) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-        }
+        /** @var PublishChecker $publishChecker */
+        $publishChecker = $this->person->getPermissionsManager()->get('PublishChecker');
 
-        if (!$this->person->PermissionsManager->PublishChecker->canEdit($feedback)
-            || !$this->person->PermissionsManager->PublishChecker->canEdit($other_feedback)
-            || !$this->person->PermissionsManager->PublishChecker->canDelete($other_feedback)
+        if (!$publishChecker->canEdit($feedback)
+            || !$publishChecker->canEdit($otherFeedback)
+            || !$publishChecker->canDelete($otherFeedback)
         ) {
-            return $this->createJsonResponse(array('success' => false));
+            return $this->createJsonResponse(['success' => false]);
         }
 
-        $old_feedback_id = $other_feedback['id'];
+        $old_feedback_id = $otherFeedback['id'];
 
         try {
             $this->em->beginTransaction();
-            $merge = new FeedbackMerge($this->person, $feedback, $other_feedback);
+            $merge = new FeedbackMerge($this->person, $feedback, $otherFeedback);
             $merge->merge();
             $this->em->commit();
         } catch (\Exception $e) {
@@ -553,11 +698,13 @@ class FeedbackController extends AbstractController
             throw $e;
         }
 
-        return $this->createJsonResponse(array(
-            'success' => true,
-            'id'      => $feedback['id'],
-            'old_id'  => $old_feedback_id,
-        ));
+        return $this->createJsonResponse(
+            [
+                'success' => true,
+                'id'      => $feedback->getId(),
+                'old_id'  => $old_feedback_id,
+            ]
+        );
     }
 
     ############################################################################
@@ -567,16 +714,16 @@ class FeedbackController extends AbstractController
     /**
      * Any general search. For example, status, category or label.
      *
-     * @return \Symfony\Bundle\FrameworkBundle\Controller\Response
+     * @return Response
      */
     public function filterListAction()
     {
-        $result_helper = FeedbackResults::newFromRequest($this);
+        $resultHelper = FeedbackResults::newFromRequest($this);
 
         return $this->renderList(
-            $result_helper,
+            $resultHelper,
             null,
-            array('list_type' => 'filter')
+            ['list_type' => 'filter']
         );
     }
 
@@ -585,63 +732,69 @@ class FeedbackController extends AbstractController
      *
      * @param  $category_id
      *
-     * @return
+     * @return Response
      */
     public function categoryListAction($category_id)
     {
-        $top_result_helper = FeedbackResults::newFromRequest($this, array(
-            'specific_terms' => array(
-                'category' => array('type' => 'category', 'op' => 'is', 'category' => $category_id),
-                'status'   => array('type' => 'status', 'op' => 'not', 'status' => 'hidden'),
-            ),
-        ));
+        $topResultHelper = FeedbackResults::newFromRequest(
+            $this,
+            [
+                'specific_terms' => [
+                    'category' => ['type' => 'category', 'op' => 'is', 'category' => $category_id],
+                    'status'   => ['type' => 'status', 'op' => 'not', 'status' => 'hidden'],
+                ],
+            ]
+        );
 
         if ($this->in->getString('subgroup')) {
-            $result_helper = FeedbackResults::newFromRequest($this, array(
-                'specific_terms' => array(
-                    'category' => array('type' => 'category', 'op' => 'is', 'category' => $category_id),
-                    'status'   => array('type' => 'status', 'op' => 'is', 'status' => $this->in->getString('subgroup')),
-                ),
-            ));
+            $resultHelper = FeedbackResults::newFromRequest(
+                $this,
+                [
+                    'specific_terms' => [
+                        'category' => ['type' => 'category', 'op' => 'is', 'category' => $category_id],
+                        'status'   => ['type' => 'status', 'op' => 'is', 'status' => $this->in->getString('subgroup')],
+                    ],
+                ]
+            );
         } else {
-            $result_helper = $top_result_helper;
+            $resultHelper = $topResultHelper;
         }
 
         $cat = $this->em->find('DeskPRO:FeedbackCategory', $category_id);
 
         $grouping = new GroupingCounter();
-        $grouping->setGrouping('status');
-        $grouping->setIds($top_result_helper->getFeedbackIds());
-        $grouped = $grouping->getDisplayArray();
+        $grouping->setGrouping('status')->setIds($topResultHelper->getFeedbackIds());
+        $grouped      = $grouping->getDisplayArray();
+        $grouped_info = [];
 
         if (!$cat->parent) {
-            $grouped_key  = $cat->getId();
-            $grouped_info = array();
-            $t            = 0;
+            $grouped_key = $cat->getId();
+
+            $t = 0;
             if (isset($grouped['items'][$grouped_key])) {
-                $grouped_info = Arrays::mergeAssoc($grouped_info, array($grouped_key => $grouped['items'][$grouped_key]));
+                $grouped_info = Arrays::mergeAssoc($grouped_info, [$grouped_key => $grouped['items'][$grouped_key]]);
                 $t            = $grouped['items'][$grouped_key]['total'];
             }
 
-            $grouped_info[-1] = array('id' => -1, 'title' => 'TOTAL', 'total' => $t);
+            $grouped_info[-1] = ['id' => -1, 'title' => 'TOTAL', 'total' => $t];
         } else {
             $grouped_key = $cat->getId();
             $t           = 0;
             foreach ($cat->children as $c) {
                 $k = $c['id'];
                 if (isset($grouped['items'][$k])) {
-                    $grouped_info = Arrays::mergeAssoc($grouped_info, array($k => $grouped['items'][$k]));
+                    $grouped_info = Arrays::mergeAssoc($grouped_info, [$k => $grouped['items'][$k]]);
                     $t += $grouped['items'][$k]['total'];
                 }
             }
 
-            $grouped_info[-1] = array('id' => -1, 'title' => 'TOTAL', 'total' => $t);
+            $grouped_info[-1] = ['id' => -1, 'title' => 'TOTAL', 'total' => $t];
         }
 
         return $this->renderList(
-            $result_helper,
+            $resultHelper,
             null,
-            array(
+            [
                 'list_type'    => 'category',
                 'category_id'  => $category_id,
                 'page_title'   => $cat->getFullTitle(),
@@ -649,43 +802,46 @@ class FeedbackController extends AbstractController
                 'grouped_info' => $grouped_info,
                 'grouped_key'  => $grouped_key,
                 'subgroup'     => $this->in->getString('subgroup'),
-            )
+            ]
         );
     }
 
     /**
      * A shortcut to run a filter on a label.
      *
-     * @param  $category_id
+     * @param string $label
      *
-     * @return
+     * @return Response
      */
     public function labelListAction($label)
     {
-        $result_helper = FeedbackResults::newFromRequest($this, array(
-            'specific_terms' => array(
-                array('type' => 'label', 'op' => 'is', 'label' => $label),
-                array('type' => 'status', 'op' => 'not', 'status' => 'hidden'),
-            ),
-        ));
+        $resultHelper = FeedbackResults::newFromRequest(
+            $this,
+            [
+                'specific_terms' => [
+                    ['type' => 'label', 'op' => 'is', 'label' => $label],
+                    ['type' => 'status', 'op' => 'not', 'status' => 'hidden'],
+                ],
+            ]
+        );
 
         return $this->renderList(
-            $result_helper,
+            $resultHelper,
             null,
-            array(
+            [
                 'list_type'  => 'label',
                 'label'      => $label,
                 'page_title' => $label,
-            )
+            ]
         );
     }
 
     /**
      * A shortcut to run a filter on a status.
      *
-     * @param  $category_id
+     * @param string $status
      *
-     * @return
+     * @return Response
      */
     public function statusListAction($status)
     {
@@ -694,95 +850,104 @@ class FeedbackController extends AbstractController
 
         if (strpos($status, '.') !== false) {
             list($status, $v_status) = explode('.', $status);
-            $top_result_helper       = FeedbackResults::newFromRequest($this, array(
-                'specific_terms' => array(
-                    'status'   => array('type' => 'status', 'op' => 'is', 'status' => $status),
-                    'v_status' => array('type' => 'hidden_status', 'op' => 'is', 'hidden_status' => $v_status),
-                ),
-            ));
+            $topResultHelper         = FeedbackResults::newFromRequest(
+                $this,
+                [
+                    'specific_terms' => [
+                        'status'   => ['type' => 'status', 'op' => 'is', 'status' => $status],
+                        'v_status' => ['type' => 'hidden_status', 'op' => 'is', 'hidden_status' => $v_status],
+                    ],
+                ]
+            );
         } else {
-            $top_result_helper = FeedbackResults::newFromRequest($this, array(
-                'specific_terms' => array(
-                    'status' => array('type' => 'status', 'op' => 'is', 'status' => $status),
-                ),
-            ));
+            $topResultHelper = FeedbackResults::newFromRequest(
+                $this,
+                [
+                    'specific_terms' => [
+                        'status' => ['type' => 'status', 'op' => 'is', 'status' => $status],
+                    ],
+                ]
+            );
         }
 
         if ($this->in->getString('subgroup')) {
-            $result_helper = FeedbackResults::newFromRequest($this, array(
-                'specific_terms' => array(
-                    'status'   => array('type' => 'status', 'op' => 'is', 'status' => $status),
-                    'category' => array('type' => 'category', 'op' => 'is', 'category' => $this->in->getString('subgroup')),
-                ),
-            ));
+            $resultHelper = FeedbackResults::newFromRequest(
+                $this,
+                [
+                    'specific_terms' => [
+                        'status'   => ['type' => 'status', 'op' => 'is', 'status' => $status],
+                        'category' => [
+                            'type'     => 'category',
+                            'op'       => 'is',
+                            'category' => $this->in->getString('subgroup'),
+                        ],
+                    ],
+                ]
+            );
         } else {
-            $result_helper = $top_result_helper;
+            $resultHelper = $topResultHelper;
         }
 
         $grouping = new GroupingCounter();
         $grouping->setGrouping('category_id');
-        $grouping->setIds($top_result_helper->getFeedbackIds());
+        $grouping->setIds($topResultHelper->getFeedbackIds());
         $grouped = $grouping->getDisplayArray();
 
         return $this->renderList(
-            $result_helper,
+            $resultHelper,
             null,
-            array(
+            [
                 'list_type' => 'status',
                 'status'    => $status,
                 'grouped'   => $grouped,
                 'subgroup'  => $this->in->getString('subgroup'),
-            )
+            ]
         );
     }
 
     /**
      * This takes a result helper and just handles rendering it.
      *
-     * @param  $result_helper
-     * @param string $template
-     * @param array  $template_vars
+     * @param FeedbackResults $resultsHelper
+     * @param string          $template
+     * @param array           $templateVars
      *
-     * @return \Symfony\Bundle\FrameworkBundle\Controller\Response
+     * @return Response
      */
-    public function renderList($result_helper, $template = null, array $template_vars = array())
+    public function renderList(FeedbackResults $resultsHelper, $template = null, array $templateVars = [])
     {
         if (!$template) {
             $template = 'AgentBundle:Feedback:filter-list.html.twig';
         }
 
-        $result_cache = $result_helper->getResultCache();
-
-        $page = $this->in->getUint('p');
-        if (!$page) {
-            $page = $this->in->getUint('page');
-        }
-        if (!$page) {
-            $page = 1;
-        }
-
-        $feedback = $result_helper->getFeedbackForPage($page);
+        $result_cache = $resultsHelper->getResultCache();
+        $page         = $this->in->getUInt('p') ?: ($page = $this->in->getUInt('page') ?: 1);
+        $feedback     = $resultsHelper->getFeedbackForPage($page);
 
         if ($this->in->getBool('is_partial')) {
             $template = str_replace('.html.twig', '-part.html.twig', $template);
         }
 
+        /*
+         * @var FeedbackCategoryRepository
+         * @var FeedbackStatusCategoryRepository $feedbackStatusCategoryRepository
+         */
+        $feedbackCategoryRepository       = $this->em->getRepository(FeedbackCategory::class);
+        $feedbackStatusCategoryRepository = $this->em->getRepository(FeedbackStatusCategory::class);
+
         // Options for the filter form
-        $feedback_cats      = $this->em->getRepository('DeskPRO:FeedbackCategory')->getFlatHierarchy();
-        $active_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
-        $closed_status_cats = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
+        $feedbackCategories     = $feedbackCategoryRepository->getFlatHierarchy();
+        $activeStatusCategories = $feedbackStatusCategoryRepository->getActiveCategories();
+        $closedStatusCategories = $feedbackStatusCategoryRepository->getClosedCategories();
 
-        $display_fields = $this->person->getPref('agent.ui.feedback-filter-display-fields.0');
-        if (!$display_fields) {
-            $display_fields = $this->person->getPref('agent.ui.feedback-filter-display-fields.0');
-        }
-        if (!$display_fields) {
-            $display_fields = array('date_created', 'category');
-        }
+        $displayFields = $this->person->getPref('agent.ui.feedback-filter-display-fields.0')
+            ?: [
+                'date_created',
+                'category',
+            ];
+        $userCatField = $this->container->getSystemService('FeedbackFieldsManager')->getUserCategoryField();
 
-        $user_cat_field = $this->container->getSystemService('FeedbackFieldsManager')->getUserCategoryField();
-
-        $feedback_collection = new \Application\DeskPRO\Feedback\FeedbackCollection(
+        $feedback_collection = new FeedbackCollection(
             $feedback,
             $this->container->getEm(),
             $this->container->getSystemService('FeedbackFieldsManager')
@@ -790,42 +955,158 @@ class FeedbackController extends AbstractController
 
         $display = $feedback_collection->getDisplayArray();
 
-        return $this->render($template, array_merge(array(
-            'display'        => $display,
-            'cache'          => $result_cache,
-            'cache_id'       => $result_cache['id'],
-            'result_ids'     => $result_cache['results'],
-            'feedback'       => $feedback,
-            'num_results'    => $result_cache['num_results'],
-            'per_page'       => 50,
-            'criteria'       => $result_cache['criteria'],
-            'user_cat_field' => $user_cat_field,
-            'cur_page'       => $page,
-
-            'feedback_cats'      => $feedback_cats,
-            'active_status_cats' => $active_status_cats,
-            'closed_status_cats' => $closed_status_cats,
-
-            'display_fields' => $display_fields,
-        ), $template_vars));
+        return $this->render(
+            $template,
+            array_merge(
+                [
+                    'display'            => $display,
+                    'cache'              => $result_cache,
+                    'cache_id'           => $result_cache['id'],
+                    'result_ids'         => $result_cache['results'],
+                    'feedback'           => $feedback,
+                    'num_results'        => $result_cache['num_results'],
+                    'per_page'           => 50,
+                    'criteria'           => $result_cache['criteria'],
+                    'user_cat_field'     => $userCatField,
+                    'cur_page'           => $page,
+                    'feedback_cats'      => $feedbackCategories,
+                    'active_status_cats' => $activeStatusCategories,
+                    'closed_status_cats' => $closedStatusCategories,
+                    'display_fields'     => $displayFields,
+                ],
+                $templateVars
+            )
+        );
     }
 
+    /**
+     * @param $action
+     * @param $feedbackId
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
+    public function modifyFeedbackApprovementAction($action, $feedbackId)
+    {
+        if (!$this->person->hasPerm('agent_publish.validate')) {
+            throw $this->createNotFoundException();
+        }
+        $feedback = $this->getFeedback($feedbackId);
+
+        if ($feedback) {
+            $feedbackModerate = new FeedbackModerate($this->container, $this->person);
+            if ($action === 'approve') {
+                $feedbackModerate->approveFeedback($feedback);
+            } elseif ($action === 'disapprove') {
+                $feedbackModerate->disapproveFeedback($feedback, $this->in->getString('reason'));
+            }
+        }
+
+        $next = $this->getNextValidationFeedback($feedback);
+
+        return $this->createJsonResponse(
+            [
+                'success'  => true,
+                'next_url' => $next ? $this->get('object_router')->getAgentPath($next) : null,
+            ]
+        );
+    }
+
+    public function validatingMassActionsAction($action)
+    {
+        if (!$this->person->hasPerm('agent_publish.validate')) {
+            throw $this->createNotFoundException();
+        }
+        $data = $this->in->getCleanValueArray('content', 'array', 'string');
+
+        foreach ($data as $type => $ids) {
+            $reason           = $this->in->getString('reason');
+            $results          = $this->em->getRepository(Feedback::class)->getByIds($ids);
+            $feedbackModerate = new FeedbackModerate($this->container, $this->person);
+            foreach ($results as $feedback) {
+                if ($action === 'approve') {
+                    $feedbackModerate->approveFeedback($feedback);
+                } elseif ($action === 'disapprove') {
+                    $feedbackModerate->disapproveFeedback($feedback, $reason);
+                }
+            }
+        }
+
+        return $this->createJsonResponse(['success' => true]);
+    }
+
+    /**
+     * @param int $feedbackId
+     *
+     * @return Response
+     */
+    public function nextValidatingFeedbackAction($feedbackId)
+    {
+        $feedback = $this->em->find(Feedback::class, $feedbackId);
+        if (!$feedback) {
+            return $this->createJsonpResponse(['success' => false]);
+        }
+
+        $next = $this->getNextValidationFeedback($feedback);
+
+        return $this->createJsonResponse(
+            [
+                'success'  => true,
+                'next_url' => $next ? $this->get('object_router')->getAgentUrl($next) : null,
+            ]
+        );
+    }
+
+    /**
+     * @param Feedback $current
+     *
+     * @return Feedback
+     */
+    private function getNextValidationFeedback(Feedback $current)
+    {
+        /** @var FeedbackRepository $feedbackRepository */
+        $feedbackRepository = $this->em->getRepository(Feedback::class);
+        /** @var Feedback[] $awaitingValidation */
+        $awaitingValidation = $feedbackRepository->getAwaitingValidation(1000);
+        while (current($awaitingValidation)) {
+            if ($current->getId() !== current($awaitingValidation)->getId()) {
+                return current($awaitingValidation);
+            }
+            next($awaitingValidation);
+        }
+
+        return;
+    }
+
+    /**
+     * @param $action
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return Response
+     */
     public function massActionsAction($action)
     {
         $this->em->beginTransaction();
 
-        $feedback = $this->em->getRepository('DeskPRO:Feedback')->getByIds($this->in->getCleanValueArray('ids', 'uint', 'discard'));
+        /** @var FeedbackRepository $feedbackRepository */
+        $feedbackRepository = $this->em->getRepository(Feedback::class);
+        $feedbackCollection = $feedbackRepository->getByIds($this->in->getCleanValueArray('ids', 'uint', 'discard'));
 
-        foreach ($feedback as $feedback) {
+        foreach ($feedbackCollection as $feedback) {
+            /* @var Feedback $feedback */
             switch ($action) {
                 case 'set-status':
                     $feedback->setStatusCode($this->in->getString('status'));
                     break;
 
                 case 'set-category':
-                    $cat = $this->em->find('DeskPRO:FeedbackCategory', $this->in->getUint('category_id'));
+                    $cat = $this->em->find('DeskPRO:FeedbackCategory', $this->in->getUInt('category_id'));
                     if ($cat) {
-                        $feedback->category = $cat;
+                        $feedback->setCategory($cat);
                     }
                     break;
             }
@@ -834,77 +1115,148 @@ class FeedbackController extends AbstractController
         $this->em->flush();
         $this->em->commit();
 
-        return $this->createJsonResponse(array(
-            'success' => 1,
-        ));
+        return $this->createJsonResponse(['success' => 1]);
     }
 
     ############################################################################
     # Compare revisions
     ############################################################################
 
+    /**
+     * @param $rev_old_id
+     * @param $rev_new_id
+     *
+     * @return Response
+     */
     public function compareRevisionsAction($rev_old_id, $rev_new_id)
     {
         $diff_info = ContentRevisionUtil::compareRevisions('DeskPRO:FeedbackRevision', $rev_old_id, $rev_new_id);
 
-        return $this->render('AgentBundle:Feedback:compare-revs.html.twig', array(
-            'rendered_content_diff' => $diff_info['rendered_content_diff'],
-            'rendered_title_diff'   => $diff_info['rendered_title_diff'],
-        ));
+        return $this->render(
+            'AgentBundle:Feedback:compare-revs.html.twig',
+            [
+                'rendered_content_diff' => $diff_info['rendered_content_diff'],
+                'rendered_title_diff'   => $diff_info['rendered_title_diff'],
+            ]
+        );
     }
 
     ############################################################################
     # newfeedback
     ############################################################################
 
+    /**
+     * @return Response
+     */
     public function newFeedbackAction()
     {
-        $feedback_categories = $this->em->getRepository('DeskPRO:FeedbackCategory')->getFlatHierarchy();
-        $active_status_cats  = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
-        $closed_status_cats  = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
+        /*
+         * @var PersonPrefRepository
+         * @var FeedbackCategoryRepository       $feedbackCategoryRepository
+         * @var FeedbackStatusCategoryRepository $feedbackStatusCategoryRepository
+         */
+        $personPrefRepository             = $this->em->getRepository(PersonPref::class);
+        $feedbackCategoryRepository       = $this->em->getRepository(FeedbackCategory::class);
+        $feedbackStatusCategoryRepository = $this->em->getRepository(FeedbackStatusCategory::class);
 
-        $state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newfeedback', $this->person->id);
+        $feedbackCategories     = $feedbackCategoryRepository->getFlatHierarchy();
+        $activeStatusCategories = $feedbackStatusCategoryRepository->getActiveCategories();
+        $closedStatusCategories = $feedbackStatusCategoryRepository->getClosedCategories();
 
-        return $this->render('AgentBundle:Feedback:newfeedback.html.twig', array(
-            'feedback_categories' => $feedback_categories,
-            'active_status_cats'  => $active_status_cats,
-            'closed_status_cats'  => $closed_status_cats,
-            'state'               => $state,
-        ));
+        $state = $personPrefRepository->getPrefForPersonId('agent.ui.state.newfeedback', $this->person->id);
+
+        return $this->render(
+            'AgentBundle:Feedback:newfeedback.html.twig',
+            [
+                'feedback_categories' => $feedbackCategories,
+                'active_status_cats'  => $activeStatusCategories,
+                'closed_status_cats'  => $closedStatusCategories,
+                'state'               => $state,
+            ]
+        );
     }
 
+    /**
+     * @return Response
+     */
     public function newFeedbackSaveAction()
     {
-        $newfeedback = new \Application\AgentBundle\Form\Model\NewFeedback($this->person);
+        $newfeedback = new NewFeedback($this->person);
 
-        $formType = new \Application\AgentBundle\Form\Type\NewFeedback();
+        $formType = new NewFeedbackTypeOld();
         $form     = $this->get('form.factory')->create($formType, $newfeedback);
 
         if ($this->get('request')->getMethod() == 'POST') {
             $form->handleRequest($this->get('request'));
             $form->isValid();
 
-            $validator = new \Application\AgentBundle\Validator\NewFeedbackValidator();
+            $validator = new NewFeedbackValidator();
             if (!$validator->isValid($newfeedback)) {
-                return $this->createJsonResponse(array(
-                    'error'       => true,
-                    'error_codes' => $validator->getErrorGroups(),
-                ));
+                return $this->createJsonResponse(
+                    [
+                        'error'       => true,
+                        'error_codes' => $validator->getErrorGroups(),
+                    ]
+                );
             }
             $newfeedback->save();
 
             $feedback = $newfeedback->getFeedback();
 
-            $this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newfeedback', $this->person->id);
+            /** @var PersonPrefRepository $personPrefRepository */
+            $personPrefRepository = $this->em->getRepository('DeskPRO:PersonPref');
+            $personPrefRepository->deletePrefForPersonId(
+                'agent.ui.state.newfeedback',
+                $this->person->id
+            );
 
-            return $this->createJsonResponse(array(
-                'success'     => true,
-                'feedback_id' => $feedback['id'],
-            ));
+            return $this->createJsonResponse(
+                [
+                    'success'     => true,
+                    'feedback_id' => $feedback['id'],
+                ]
+            );
         } else {
-            return $this->createJsonResponse(array(
-                'success' => false,
-            ));
+            return $this->createJsonResponse(
+                [
+                    'success' => false,
+                ]
+            );
         }
+    }
+
+    /**
+     * @param $feedbackId
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return Feedback
+     */
+    private function getFeedback($feedbackId)
+    {
+        if (!$feedback = $this->em->find(Feedback::class, $feedbackId)) {
+            throw $this->createNotFoundException();
+        }
+
+        return $feedback;
+    }
+
+    /**
+     * @param Feedback $feedback
+     *
+     * @return null|Response
+     */
+    private function checkPermissions(Feedback $feedback)
+    {
+        /** @var PublishChecker $publishChecker */
+        $publishChecker = $this->person->getPermissionsManager()->get('PublishChecker');
+
+        if (!$publishChecker->canEdit($feedback)) {
+            return $this->createJsonResponse(['success' => false]);
+        }
+
+        return;
     }
 }

@@ -9,6 +9,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingContent = new Orb.Class({
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('publish.validating.list-remove', function (info) {
 			var el = $('article.' + info.typename + '-' + info.contentId).slideUp();
+			self.reduceCount();
 			self.listRemove(el);
 		});
 
@@ -43,7 +44,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingContent = new Orb.Class({
 
 				var sendFn = function() {
 					$.ajax({
-						url: BASE_URL + 'agent/publish/content/validating-mass-actions/' + action,
+						url: BASE_URL + 'agent/feedback/validating-mass-actions/' + action,
 						data: data,
 						type: 'POST',
 						dataType: 'json',
@@ -57,7 +58,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingContent = new Orb.Class({
 							});
 						}
 					});
-				}
+				};
 
 				if (action == 'disapprove') {
 					DeskPRO_Window.showPrompt("Enter a reason or comment to send to the authors", function(reason) {
@@ -77,16 +78,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingContent = new Orb.Class({
 		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {
 			onButtonClick: function(ev) {
 				self.actionsMenu.open(ev);
-			}/*,
-			onCountChange: function(count) {
-				var isOpen = self.actionsMenu.isOpen();
-
-				if (count > 0 && !isOpen) {
-					self.actionsMenu.open();
-				} else if (count <= 0 && isOpen) {
-					self.actionsMenu.close();
-				}
-			}*/
+			}
 		});
 		this.ownObject(this.selectionBar);
 
@@ -97,5 +89,13 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingContent = new Orb.Class({
 		DeskPRO_Window.util.modCountEl($('#publish_validating_count'), '-');
 		DeskPRO_Window.sections.publish_section.recountBadge();
 		this.selectionBar.checkNone();
+	},
+
+	reduceCount: function() {
+		var validation = $('#validation-list-header-count');
+		var text = validation.text();
+		var val         = parseInt(text, 10) - 1;
+    val = (val < 0) ? 0 : val;
+		validation.text(text.replace(/(\d+)/, val));
 	}
 });

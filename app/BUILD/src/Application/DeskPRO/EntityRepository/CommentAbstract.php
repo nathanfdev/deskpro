@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -99,7 +98,7 @@ class CommentAbstract extends AbstractEntityRepository
         return App::getDb()->fetchColumn("
             SELECT COUNT(*)
             FROM $table
-            WHERE status = (status = 'hidden' AND is_reviewed = 0)
+            WHERE is_reviewed = 0
         ");
     }
 
@@ -109,10 +108,9 @@ class CommentAbstract extends AbstractEntityRepository
             SELECT c
             FROM '.$this->_entityName.' c
             LEFT JOIN c.person p
-            WHERE c.status = ?1 OR c.is_reviewed = ?2
+            WHERE c.is_reviewed = ?1
             ORDER BY c.id DESC
-        ')->setParameter(1, 'validating')
-          ->setParameter(2, false)
+        ')->setParameter(1, false)
           ->execute();
     }
 

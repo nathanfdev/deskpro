@@ -1553,7 +1553,7 @@ $collection->create('agent_publish_validatingcontent', [
 
 $collection->create('agent_feedback_validatingcontent', [
     'path'       => '/feedback/content/validating',
-    'controller' => 'AgentBundle:Publish:listValidatingFeedbackContent',
+    'controller' => 'AgentBundle:Feedback:listValidatingContent',
     'options'    => ['fragment_type' => 'list', 'fragment_name' => 'fb_content'],
 ]);
 
@@ -1563,26 +1563,29 @@ $collection->create('agent_feedback_validatingcomments', [
     'options'    => ['fragment_type' => 'list', 'fragment_name' => 'fb_comments'],
 ]);
 
-$collection->create('agent_publish_validatingcontent_approve', [
-    'path'       => '/publish/content/approve/{type}/{content_id}.json',
-    'controller' => 'AgentBundle:Publish:approveContent',
+$collection->create(
+    'agent_feedback_modify_feedback_approvement',
+    [
+        'path'         => '/publish/content/{action}/feedback/{feedbackId}.json',
+        'controller'   => 'AgentBundle:Feedback:modifyFeedbackApprovement',
+        'requirements' => ['action' => 'approve|disapprove', 'feedbackId' => '\\d+'],
+    ]
+);
+
+$collection->create('feedback_validatingcontent_mass', [
+    'path'       => '/feedback/validating-mass-actions/{action}',
+    'controller' => 'AgentBundle:Feedback:validatingMassActions',
 ]);
 
-$collection->create('agent_publish_validatingcontent_disapprove', [
-    'path'       => '/publish/content/disapprove/{type}/{content_id}.json',
-    'controller' => 'AgentBundle:Publish:disapproveContent',
-]);
-
-$collection->create('agent_publish_validatingcontent_mass', [
-    'path'       => '/publish/content/validating-mass-actions/{action}',
-    'controller' => 'AgentBundle:Publish:validatingMassActions',
-]);
-
-$collection->create('agent_publish_validatingcontent_next', [
-    'path'       => '/publish/content/get-next-validating/{type}/{content_id}.json',
-    'controller' => 'AgentBundle:Publish:nextValidatingContent',
-    'options'    => ['fragment_name' => 'pending', 'fragment_type' => 'list'],
-]);
+$collection->create(
+    'agent_feedback_validating_next',
+    [
+        'path'         => '/publish/content/get-next-validating/feedback/{feedbackId}.json',
+        'controller'   => 'AgentBundle:Feedback:nextValidatingFeedback',
+        'options'      => ['fragment_name' => 'pending', 'fragment_type' => 'list'],
+        'requirements' => ['feedbackId' => '\\d+'],
+    ]
+);
 
 $collection->create('agent_publish_listcomments', [
     'path'       => '/publish/comments/list/{type}',

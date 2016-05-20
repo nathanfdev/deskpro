@@ -35,6 +35,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Labels\LabelManager;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\AgentLinkRoute;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -49,6 +50,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @PortalLinkRoute("portal_feedback_toggle_subscription", route_param_map={"slug":"slug"}, type="toggle_subscription")
  * @PortalLinkRoute("portal_feedback_vote_up",       route_param_map={"slug":"slug"}, type="vote_up")
  * @PortalLinkRoute("portal_feedback_vote_down", route_param_map={"slug":"slug"}, type="vote_down")
+ * @AgentLinkRoute("agent_feedback_view", route_param_map={"feedback_id": "id"})
  */
 class Feedback extends ContentAbstract implements HighlightableModelInterface
 {
@@ -254,11 +256,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
      */
     public function setCategory(FeedbackCategory $category = null)
     {
-        if ($category) {
-            $this->setModelField('category', $category);
-        } else {
-            $this->setModelField('category', null);
-        }
+        $this->setModelField('category', $category);
 
         return $this;
     }
@@ -494,6 +492,14 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         }
 
         return $this->_label_manager;
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getRevisions()
+    {
+        return $this->revisions;
     }
 
     /**

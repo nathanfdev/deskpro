@@ -31,11 +31,11 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person as PersonEntity;
+use Doctrine\ORM\Query\Expr;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
 
@@ -57,6 +57,19 @@ class Feedback extends AbstractEntityRepository
             FROM feedback
             WHERE is_reviewed = 0
         ');
+    }
+
+    public function getAwaitingValidation($limit, $offset = 0)
+    {
+        $qb = $this->createQueryBuilder('f');
+        $qb
+            ->where($qb->expr()->eq('f.is_reviewed', 0))
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
+            ->orderBy('f.date_created', 'ASC')
+        ;
+
+        return $qb->getQuery()->getResult();
     }
 
     /**
