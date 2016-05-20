@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings;
 
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandCommonSettings;
@@ -40,9 +36,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class WidgetCommonSettingsType.
+ * Class WidgetBrandCommonSettingsType.
  */
-class WidgetCommonSettingsType extends AbstractType
+class WidgetBrandCommonSettingsType extends AbstractType
 {
     /**
      * {@inheritdoc}

@@ -26,22 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings;
 
-use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings\WidgetBrandButtonColorsSettings;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings\WidgetBrandChatPopupSettings;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class WidgetButtonColorsSetupType.
+ * Class WidgetBrandChatPopupSettingsType.
  */
-class WidgetButtonColorsSetupType extends AbstractType
+class WidgetBrandChatPopupSettingsType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -49,9 +46,16 @@ class WidgetButtonColorsSetupType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('background', TextType::class)
-            ->add('text', TextType::class)
-            ->add('border', TextType::class)
+            ->add('title', TextType::class)
+            ->add('message', TextType::class)
+            ->add('reply_type', ChoiceType::class, [
+                'property_path'     => 'replyType',
+                'choices_as_values' => true,
+                'choices'           => [
+                    WidgetBrandChatPopupSettings::REPLY_TYPE_BUTTON,
+                    WidgetBrandChatPopupSettings::REPLY_TYPE_BUTTONS,
+                ],
+            ])
         ;
     }
 
@@ -61,7 +65,7 @@ class WidgetButtonColorsSetupType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => WidgetBrandButtonColorsSettings::class,
+            'data_class' => WidgetBrandChatPopupSettings::class,
         ]);
     }
 }

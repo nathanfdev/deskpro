@@ -26,28 +26,29 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings;
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\GlobalSettings;
-
-use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\WidgetGlobalSettings;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandSettings;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class WidgetGlobalSetupType.
+ * Class WidgetBrandSettingsType.
  */
-class WidgetGlobalSetupType extends AbstractType
+class WidgetBrandSettingsType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('chat', WidgetChatSetupType::class);
+        $builder
+            ->add('widget', WidgetBrandCommonSettingsType::class)
+            ->add('button', WidgetBrandButtonSettingsType::class)
+            ->add('chat', WidgetBrandChatSettingsType::class)
+            ->add('ticket', WidgetBrandTicketSettingsType::class)
+        ;
     }
 
     /**
@@ -56,8 +57,7 @@ class WidgetGlobalSetupType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class'         => WidgetGlobalSettings::class,
-            'allow_extra_fields' => true,
+            'data_class' => WidgetBrandSettings::class,
         ]);
     }
 }

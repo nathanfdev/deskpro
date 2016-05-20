@@ -26,32 +26,63 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings;
 
-use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandSettings;
+use Application\DeskPRO\Entity\Department;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandTicketSettings;
+use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\EntityToIdTransformer;
+use Doctrine\ORM\EntityManager;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\ReversedTransformer;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class WidgetBrandSetupType.
+ * Class WidgetBrandTicketSettingsType.
  */
-class WidgetBrandSetupType extends AbstractType
+class WidgetBrandTicketSettingsType extends AbstractType
 {
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('widget', WidgetCommonSettingsType::class)
-            ->add('button', WidgetButtonSetupType::class)
-            ->add('chat', WidgetChatSetupType::class)
-            ->add('ticket', WidgetTicketSetupType::class)
+            ->add('select_department', ChoiceType::class, [
+                'property_path'     => 'selectDepartment',
+                'choices_as_values' => true,
+                'choices'           => [
+                    WidgetBrandTicketSettings::SELECT_DEFAULT,
+                    WidgetBrandTicketSettings::SELECT_CUSTOM,
+                ],
+            ])
+            ->add('default_department', EntityType::class, [
+                'property_path' => 'defaultDepartment',
+                'class'         => Department::class,
+            ])
+        ;
+
+        $departmentRepo = $this->em->getRepository(Department::class);
+        $builder
+            ->get('default_department')
+            ->addModelTransformer(new ReversedTransformer(new EntityToIdTransformer($departmentRepo)))
         ;
     }
 
@@ -61,7 +92,7 @@ class WidgetBrandSetupType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => WidgetBrandSettings::class,
+            'data_class' => WidgetBrandTicketSettings::class,
         ]);
     }
 }

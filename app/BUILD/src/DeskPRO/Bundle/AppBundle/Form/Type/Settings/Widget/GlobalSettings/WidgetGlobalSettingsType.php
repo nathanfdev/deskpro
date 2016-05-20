@@ -26,48 +26,24 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\GlobalSettings;
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings;
-
-use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
-use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings\WidgetBrandChatSettings;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\WidgetGlobalSettings;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class WidgetChatSetupType.
+ * Class WidgetGlobalSettingsType.
  */
-class WidgetChatSetupType extends AbstractType
+class WidgetGlobalSettingsType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('request_user_info', ApiBooleanType::class, [
-                'property_path' => 'requestUserInfo',
-            ])
-            ->add('proactive', ApiBooleanType::class)
-            ->add('begin_mode', ChoiceType::class, [
-                'property_path'     => 'beginMode',
-                'choices_as_values' => true,
-                'choices'           => [
-                    WidgetBrandChatSettings::BEGIN_MODE_CONVERSATION,
-                    WidgetBrandChatSettings::BEGIN_MODE_FORM,
-                ],
-            ])
-            ->add('waiting_timeout', IntegerType::class, [
-                'property_path' => 'waitingTimeout',
-            ])
-            ->add('popup', WidgetChatPopupSetupType::class)
-        ;
+        $builder->add('chat', WidgetGlobalChatSettingsType::class);
     }
 
     /**
@@ -76,7 +52,8 @@ class WidgetChatSetupType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => WidgetBrandChatSettings::class,
+            'data_class'         => WidgetGlobalSettings::class,
+            'allow_extra_fields' => true,
         ]);
     }
 }

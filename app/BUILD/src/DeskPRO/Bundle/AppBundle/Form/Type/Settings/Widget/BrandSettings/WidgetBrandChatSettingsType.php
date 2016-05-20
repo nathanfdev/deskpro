@@ -26,23 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings;
 
-use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings\WidgetBrandButtonSettings;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings\WidgetBrandChatSettings;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class WidgetButtonSetupType.
+ * Class WidgetBrandChatSettingsType.
  */
-class WidgetButtonSetupType extends AbstractType
+class WidgetBrandChatSettingsType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -50,16 +47,22 @@ class WidgetButtonSetupType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('size', ChoiceType::class, [
+            ->add('request_user_info', ApiBooleanType::class, [
+                'property_path' => 'requestUserInfo',
+            ])
+            ->add('proactive', ApiBooleanType::class)
+            ->add('begin_mode', ChoiceType::class, [
+                'property_path'     => 'beginMode',
                 'choices_as_values' => true,
                 'choices'           => [
-                    WidgetBrandButtonSettings::SIZE_SMALL,
-                    WidgetBrandButtonSettings::SIZE_MEDIUM,
-                    WidgetBrandButtonSettings::SIZE_LARGE,
+                    WidgetBrandChatSettings::BEGIN_MODE_CONVERSATION,
+                    WidgetBrandChatSettings::BEGIN_MODE_FORM,
                 ],
             ])
-            ->add('name', TextType::class)
-            ->add('colors', WidgetButtonColorsSetupType::class)
+            ->add('waiting_timeout', IntegerType::class, [
+                'property_path' => 'waitingTimeout',
+            ])
+            ->add('popup', WidgetBrandChatPopupSettingsType::class)
         ;
     }
 
@@ -69,7 +72,7 @@ class WidgetButtonSetupType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => WidgetBrandButtonSettings::class,
+            'data_class' => WidgetBrandChatSettings::class,
         ]);
     }
 }

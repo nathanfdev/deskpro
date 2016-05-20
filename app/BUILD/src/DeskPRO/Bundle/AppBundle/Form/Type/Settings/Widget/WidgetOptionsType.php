@@ -26,22 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget;
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\GlobalSettings;
-
-use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
-use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\WidgetGlobalChatSettings;
+use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\WidgetBrandSettingsType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\GlobalSettings\WidgetGlobalSettingsType;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\WidgetOptions;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class WidgetChatSetupType.
+ * Class WidgetSetupType.
  */
-class WidgetChatSetupType extends AbstractType
+class WidgetOptionsType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -49,13 +46,8 @@ class WidgetChatSetupType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('email_validation', ApiBooleanType::class, [
-                'property_path' => 'emailValidation',
-            ])
-            ->add('require_login', ApiBooleanType::class, [
-                'property_path' => 'requireLogin',
-            ])
-            ->add('enabled', ApiBooleanType::class)
+            ->add('global', WidgetGlobalSettingsType::class)
+            ->add('brand', WidgetBrandSettingsType::class)
         ;
     }
 
@@ -65,7 +57,7 @@ class WidgetChatSetupType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => WidgetGlobalChatSettings::class,
+            'data_class' => WidgetOptions::class,
         ]);
     }
 }

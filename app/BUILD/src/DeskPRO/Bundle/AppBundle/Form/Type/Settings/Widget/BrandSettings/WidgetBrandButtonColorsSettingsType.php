@@ -26,23 +26,18 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings;
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget;
-
-use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\WidgetBrandSetupType;
-use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\GlobalSettings\WidgetGlobalSetupType;
-use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\WidgetOptions;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings\WidgetBrandButtonColorsSettings;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class WidgetSetupType.
+ * Class WidgetButtonColorsSetupType.
  */
-class WidgetSetupType extends AbstractType
+class WidgetBrandButtonColorsSettingsType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -50,8 +45,9 @@ class WidgetSetupType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('global', WidgetGlobalSetupType::class)
-            ->add('brand', WidgetBrandSetupType::class)
+            ->add('background', TextType::class)
+            ->add('text', TextType::class)
+            ->add('border', TextType::class)
         ;
     }
 
@@ -61,7 +57,7 @@ class WidgetSetupType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => WidgetOptions::class,
+            'data_class' => WidgetBrandButtonColorsSettings::class,
         ]);
     }
 }

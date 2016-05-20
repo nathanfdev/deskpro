@@ -26,23 +26,18 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\GlobalSettings;
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings;
-
-use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings\WidgetBrandChatPopupSettings;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\WidgetGlobalChatSettings;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class WidgetChatPopupSetupType.
+ * Class WidgetGlobalChatSettingsType.
  */
-class WidgetChatPopupSetupType extends AbstractType
+class WidgetGlobalChatSettingsType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -50,16 +45,13 @@ class WidgetChatPopupSetupType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class)
-            ->add('message', TextType::class)
-            ->add('reply_type', ChoiceType::class, [
-                'property_path'     => 'replyType',
-                'choices_as_values' => true,
-                'choices'           => [
-                    WidgetBrandChatPopupSettings::REPLY_TYPE_BUTTON,
-                    WidgetBrandChatPopupSettings::REPLY_TYPE_BUTTONS,
-                ],
+            ->add('email_validation', ApiBooleanType::class, [
+                'property_path' => 'emailValidation',
             ])
+            ->add('require_login', ApiBooleanType::class, [
+                'property_path' => 'requireLogin',
+            ])
+            ->add('enabled', ApiBooleanType::class)
         ;
     }
 
@@ -69,7 +61,7 @@ class WidgetChatPopupSetupType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => WidgetBrandChatPopupSettings::class,
+            'data_class' => WidgetGlobalChatSettings::class,
         ]);
     }
 }
