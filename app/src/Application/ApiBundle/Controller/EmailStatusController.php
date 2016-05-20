@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\PermissionStrategy\UserTypePermission;
@@ -512,14 +513,14 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 
     public function deleteSendmailAction($id)
     {
-        $sendmail = $this->em->find('DeskPRO:SendmailQueue', $id);
+        $sendmail = $this->em->find('EmailBundle:SendmailSource', $id);
         if (!$sendmail) {
             throw $this->createNotFoundException();
         }
 
-        if ($sendmail->blob) {
+        if ($sendmail->getBlob()) {
             try {
-                $this->container->getBlobStorage()->deleteBlobRecord($sendmail->blob);
+                $this->container->getBlobStorage()->deleteBlobRecord($sendmail->getBlob());
             } catch (\Exception $e) {
             }
         }
