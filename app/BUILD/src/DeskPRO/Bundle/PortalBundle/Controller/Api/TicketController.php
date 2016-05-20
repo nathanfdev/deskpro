@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebFullType;
@@ -121,9 +122,8 @@ class TicketController extends AbstractApiController
         }
 
         $form_full = $this->createForm(TicketWithLayoutsWebFullType::class, $ticket, [
-            'person'      => $person,
-            'action'      => $this->generateUrl('portal_api_ticket_new'),
-            'use_captcha' => false,
+            'person' => $person,
+            'action' => $this->generateUrl('portal_api_ticket_new'),
         ]);
 
         $params = [
