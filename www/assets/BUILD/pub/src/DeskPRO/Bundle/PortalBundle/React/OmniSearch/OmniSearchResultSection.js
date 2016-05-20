@@ -23,6 +23,8 @@ class SearchResultCollection {
 
     this.items[item.id] = item;
     this.ordered_items.push(item);
+
+    return this;
   }
 
   getNum(num) {
@@ -41,26 +43,26 @@ class SearchResultCollection {
 export class OmniSearchResultSection extends React.Component {
 
   static propTypes = {
-    name: PropTypes.string,
-    nameApi: PropTypes.string,
-    nameIcon: PropTypes.string,
+    name:          PropTypes.string,
+    nameApi:       PropTypes.string,
+    nameIcon:      PropTypes.string,
     initialResult: PropTypes.object,
-    q: PropTypes.string
+    q:             PropTypes.string
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      name: props.name,
-      nameApi: props.nameApi,
-      nameIcon: props.nameIcon,
-      display_amount: 10,
+      name:                 props.name,
+      nameApi:              props.nameApi,
+      nameIcon:             props.nameIcon,
+      display_amount:       10,
       currently_displaying: 10,
-      page: 1,
-      total_results: _.parseInt(props.initialResult.pageinfo.total_results),
-      q: props.q,
-      doSpin: false
+      page:                 1,
+      total_results:        _.parseInt(props.initialResult.pageinfo.total_results),
+      q:                    props.q,
+      doSpin:               false
     };
 
     this.state.items = this.createsItemsFromProps(props);
@@ -68,16 +70,16 @@ export class OmniSearchResultSection extends React.Component {
 
   componentWillReceiveProps(newProps) {
     this.setState({
-      name: this.props.name,
-      nameApi: this.props.nameApi,
-      nameIcon: this.props.nameIcon,
-      display_amount: 10,
+      name:                 this.props.name,
+      nameApi:              this.props.nameApi,
+      nameIcon:             this.props.nameIcon,
+      display_amount:       10,
       currently_displaying: 10,
-      page: 1,
-      total_results: _.parseInt(newProps.initialResult.pageinfo.total_results),
-      q: newProps.q,
-      doSpin: false,
-      items: this.createsItemsFromProps(newProps)
+      page:                 1,
+      total_results:        _.parseInt(newProps.initialResult.pageinfo.total_results),
+      q:                    newProps.q,
+      doSpin:               false,
+      items:                this.createsItemsFromProps(newProps)
     });
   }
 
@@ -102,8 +104,8 @@ export class OmniSearchResultSection extends React.Component {
 
       portalHttp.sendGet('DP_URL/search/omni', {
         data: {
-          q: this.state.q,
-          page: newpage,
+          q:         this.state.q,
+          page:      newpage,
           'types[]': this.state.nameApi
         }
       }).then(response => {
@@ -113,8 +115,8 @@ export class OmniSearchResultSection extends React.Component {
 
         const resultData = response.data.data[this.state.nameApi];
         this.setState({
-          doSpin: false,
-          page: newpage,
+          doSpin:        false,
+          page:          newpage,
           total_results: _.parseInt(resultData.pageinfo.total_results)
         });
 
@@ -165,10 +167,12 @@ export class OmniSearchResultSection extends React.Component {
         <span>
           <span className="date-mark">
             <i className="fa fa-calendar-o" />
-            <TimeAgo className="dpdesignportal-event-time"
-                     formatter={timeAgoFormatter}
-                     minPeriod={60000}
-                     date={moment(item.date)} />
+            <TimeAgo
+              className="dpdesignportal-event-time"
+              formatter={timeAgoFormatter}
+              minPeriod={60000}
+              date={moment(item.date)}
+            />
           </span>
           <span className="item-name">{item.name}</span>
         </span>
@@ -187,7 +191,7 @@ export class OmniSearchResultSection extends React.Component {
     } else if (this.state.nameApi === 'download') {
       t = (
         <span>
-          <span dangerouslySetInnerHTML={{__html: item.icon_html}}></span>
+          <span dangerouslySetInnerHTML={{ __html: item.icon_html }}></span>
           <span className="item-name">{item.name}</span>
         </span>
       );

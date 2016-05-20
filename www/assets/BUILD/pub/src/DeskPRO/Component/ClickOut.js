@@ -17,12 +17,12 @@ import $ from 'jquery';
 export class ClickOut extends React.Component {
 
   static propTypes = {
-    context: PropTypes.any,
-    ignoreNodes: PropTypes.array,
+    context:         PropTypes.any,
+    ignoreNodes:     PropTypes.array,
     additionalNodes: PropTypes.any,
-    children: PropTypes.node,
-    onClickOut: PropTypes.func.isRequired,
-    onClick: PropTypes.func
+    children:        PropTypes.node,
+    onClickOut:      PropTypes.func.isRequired,
+    onClick:         PropTypes.func
   };
 
   componentDidMount() {
@@ -73,6 +73,8 @@ export class ClickOut extends React.Component {
               skip = true;
             }
           }
+
+          return null;
         });
       });
 
@@ -93,7 +95,7 @@ export class ClickOut extends React.Component {
       // If event target element was removed before this handler was called we can check by its class name
       if (typeof node === 'string' && node.length > 0) {
         const $target = $(event.target);
-        if (node[0] === '.' && $target.hasClass(node.substr(1))) {
+        if (node[0] === '.' && ($target.hasClass(node.substr(1)) || $target.parent().hasClass(node.substr(1)))) {
           outside = false;
         }
       }

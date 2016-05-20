@@ -10,23 +10,26 @@ import moment from 'moment';
 export class OmniSearch extends React.Component {
 
   static propTypes = {
-    $input: PropTypes.object,
-    $close: PropTypes.object,
-    $button: PropTypes.object
+    $input:    PropTypes.object,
+    $close:    PropTypes.object,
+    $button:   PropTypes.object,
+    $showMore: PropTypes.string
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      doSpin: false, // a search is in progress
+      doSpin:     false, // a search is in progress
       lastSearch: moment(), // the last time a user executed a search (typed something in)
       userTyping: false,
+
       data: {
         pageinfo: {
           total_results: 0,
-          curpage: 1
+          curpage:       1
         }
       },
+
       searchQuery: {
         q: ''
       }
@@ -42,7 +45,7 @@ export class OmniSearch extends React.Component {
       // ensure we don't trigger a search if the actual search val hasn't changed
       if (lastVal !== e.target.value) {
         lastVal = e.target.value;
-        this.doSearch({q: e.target.value});
+        this.doSearch({ q: e.target.value });
       }
     }, 250);
 
@@ -69,12 +72,12 @@ export class OmniSearch extends React.Component {
     event.preventDefault();
 
     this.props.$input.val('');
-    this.doSearch({q: ''}); // reset/close search
+    this.doSearch({ q: '' }); // reset/close search
   };
 
   doSearch(queryModifications) {
     const lastQuery = this.state.searchQuery || {};
-    const searchQuery = {...lastQuery, ...queryModifications};
+    const searchQuery = { ...lastQuery, ...queryModifications };
     this.setState({
       lastSearch: moment(),
       searchQuery
@@ -96,7 +99,7 @@ export class OmniSearch extends React.Component {
       }
 
       this.setState({
-        data: response.data.data,
+        data:   response.data.data,
         searchQuery,
         doSpin: false
       });
@@ -126,7 +129,7 @@ export class OmniSearch extends React.Component {
             nameIcon="fa fa-support"
             initialResult={'ticket' in data ? data.ticket : []}
             q={this.state.searchQuery.q}
-            />
+          />
 
           <OmniSearchResultSection
             name={portalPhrases.get('portal.general.nav-kb')}
@@ -134,7 +137,7 @@ export class OmniSearch extends React.Component {
             nameIcon="fa fa-file-text-o"
             initialResult={'article' in data ? data.article : []}
             q={this.state.searchQuery.q}
-            />
+          />
 
           <OmniSearchResultSection
             name={portalPhrases.get('portal.general.nav-downloads')}
@@ -142,7 +145,7 @@ export class OmniSearch extends React.Component {
             nameIcon="fa fa-download"
             initialResult={'download' in data ? data.download : []}
             q={this.state.searchQuery.q}
-            />
+          />
 
           <OmniSearchResultSection
             name={portalPhrases.get('portal.general.nav-news')}
@@ -150,7 +153,7 @@ export class OmniSearch extends React.Component {
             nameIcon="fa fa-file-text-o"
             initialResult={'news' in data ? data.news : []}
             q={this.state.searchQuery.q}
-            />
+          />
 
           <OmniSearchResultSection
             name={portalPhrases.get('portal.general.nav-feedback')}
@@ -158,7 +161,7 @@ export class OmniSearch extends React.Component {
             nameIcon="fa fa-comments"
             initialResult={'feedback' in data ? data.feedback : []}
             q={this.state.searchQuery.q}
-            />
+          />
         </div>
       );
     }
@@ -178,14 +181,15 @@ export class OmniSearch extends React.Component {
     }
 
     return (
-      <ClickOut onClickOut={this.onClickOut} additionalNodes={[$input, $button]}>
+      <ClickOut onClickOut={this.onClickOut} additionalNodes={[$input, $button, '.search-results-show-more']}>
         <div
           ref="searchDropdown"
           className="expanded-search-results"
           style={{
             display: this.state.searchQuery.q.length > 0 ? 'block' : 'none',
-            width: $input.closest('.search-form').width()
-          }}>
+            width:   $input.closest('.search-form').width()
+          }}
+        >
 
           {this.state.doSpin || (!this.doResultsExist() && this.state.userTyping)
             ? <div className="search-result-collection-loading"></div>
