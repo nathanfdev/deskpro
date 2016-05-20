@@ -182,6 +182,12 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
             $this->throwUnauthorized($unauthorized_msg);
         }
 
+        // At the moment tokens only work for agents
+        // for use in the mobile apps
+        if (!$api_token->person->isAgent()) {
+            $this->throwUnauthorized($unauthorized_msg);
+        }
+
         return new ApiTokenSecurityToken(
             $api_token->person,
             $token->getCredentials(),
