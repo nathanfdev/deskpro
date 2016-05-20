@@ -9,7 +9,7 @@ import { addToCollection, setCollection, collectionSelectorFactory, removeFromCo
   from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import invariant from 'invariant';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
-import { myAgentTeamsSelector, myDepartmentsSelector }
+import { myAgentTeamsSelector, myTicketsDepartmentsSelector }
   from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/common';
 import { loadCounts } from './navActions';
 
@@ -170,7 +170,7 @@ const isTaskMatch = function (task, state) {
 
       // my departments
       case 'assigned_department':
-        const deps = myDepartmentsSelector(state);
+        const deps = myTicketsDepartmentsSelector(state);
         for (const i of task.get('departments')) {
           if (deps.has(i)) {
             return true;

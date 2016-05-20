@@ -6,14 +6,14 @@ import * as actions from '../../Actions/chatsActions';
 import * as messagesActions from '../../Actions/messagesActions';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
-import { myDepartmentsSelector, myAgentTeamsSelector, addToCollection, loadFromApi, isLoadedCollectionSelectorFactory,
+import { myTicketsDepartmentsSelector, myAgentTeamsSelector, addToCollection, loadFromApi, isLoadedCollectionSelectorFactory,
   collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 @connect(state => ({
   me:            meSelector(state),
   agents:        agentsSelector(state),
   teams:         myAgentTeamsSelector(state),
-  departments:   myDepartmentsSelector(state),
+  departments:   myTicketsDepartmentsSelector(state),
   recentChats:   collectionSelectorFactory('AgentChat', 'recent')(state),
   current:       state.IM.chats.get('current'),
   chating:       state.IM.chats.get('chating'),

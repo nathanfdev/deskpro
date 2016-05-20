@@ -4,43 +4,43 @@ import { connect } from 'react-redux';
 // agents
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
-import { myDepartmentsSelector, myAgentTeamsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { myTicketsDepartmentsSelector, myAgentTeamsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 @connect(state => ({
-  me: meSelector(state),
-  agents: agentsSelector(state),
-  teams: myAgentTeamsSelector(state),
-  departments: myDepartmentsSelector(state),
-  current: state.IM.chats.get('current')
+  me:          meSelector(state),
+  agents:      agentsSelector(state),
+  teams:       myAgentTeamsSelector(state),
+  departments: myTicketsDepartmentsSelector(state),
+  current:     state.IM.chats.get('current')
 }))
 export class Header extends React.Component {
   static propTypes = {
-    me: PropTypes.object.isRequired,
-    agents: PropTypes.object.isRequired,
-    teams: PropTypes.object.isRequired,
-    departments: PropTypes.object.isRequired,
-    current: PropTypes.object.isRequired,
-    dispatch: PropTypes.func.isRequired,
+    me:           PropTypes.object.isRequired,
+    agents:       PropTypes.object.isRequired,
+    teams:        PropTypes.object.isRequired,
+    departments:  PropTypes.object.isRequired,
+    current:      PropTypes.object.isRequired,
+    dispatch:     PropTypes.func.isRequired,
     toggleSearch: PropTypes.func.isRequired,
-    online: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired
+    online:       PropTypes.bool.isRequired,
+    onClose:      PropTypes.func.isRequired
   };
 
   calculateAgentText = () => {
     const { agents, current, me } = this.props;
     if (agents && agents.size > 0) {
-      const filteredAgents = current.agents.filter(agent => agent !== me.get('id') );
+      const filteredAgents = current.agents.filter(agent => agent !== me.get('id'));
       let text = agents.getIn([filteredAgents[0], 'name']);
       if (filteredAgents.length > 1) {
-        text = ' and ' + (filteredAgents.length - 1) + ' more';
+        text = ` and ${filteredAgents.length - 1} more`;
       }
       return text;
     }
+
+    return null;
   };
 
-  wrapHeaderText = (text) => {
-    return <h1>Your IM with <span>{text}</span> {this.renderOnline()}</h1>;
-  };
+  wrapHeaderText = (text) => <h1>Your IM with <span>{text}</span> {this.renderOnline()}</h1>;
 
   renderHeader() {
     const { current, teams, departments } = this.props;
@@ -64,7 +64,7 @@ export class Header extends React.Component {
         render = this.wrapHeaderText(text);
         break;
       default:
-        render = <Loader opacity={0} scale={0.5} left="20" components="span" color="#fff" width={3} top="45%"/>;
+        render = <Loader opacity={0} scale={0.5} left="20" components="span" color="#fff" width={3} top="45%" />;
     }
 
     return render;
@@ -74,6 +74,8 @@ export class Header extends React.Component {
     if (this.props.current.chat_type === 'agent') {
       return this.props.online ? <b className="user-status online"></b> : <b className="user-status offline"></b>;
     }
+
+    return null;
   }
 
   render() {

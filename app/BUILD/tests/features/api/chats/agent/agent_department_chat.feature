@@ -12,7 +12,7 @@ Feature: /agent_chats endpoint
     """
 {
   "type": "department",
-  "participant": 3
+  "participant": 1
 }
     """
     Then the response should be in JSON
@@ -20,7 +20,7 @@ Feature: /agent_chats endpoint
     And the header "Location" should be equal to "/api/v2/agent_chats/1"
     And the JSON node "data.id" should be equal to 1
     And the JSON node "data.departments" should have 1 element
-    And the JSON node "data.departments[0]" should be equal to 3
+    And the JSON node "data.departments[0]" should be equal to 1
 
   Scenario: I try to create chat with ticket department
     Given I remove "admin" usergroup relation "agent_all_perms"

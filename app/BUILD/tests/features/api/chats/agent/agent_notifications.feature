@@ -40,7 +40,7 @@ Feature: Notifications Api feature
     When I send a GET request to "/api/v2/notify/action-alerts/0"
     Then the response status code should be 200
     And the JSON node "data" should have 1 element
-    And print last JSON response
+
     And the JSON node "data[0].data" should have 3 elements
     And the JSON node "data[0].data.data.id" should be equal to 1
     And the JSON node "data[0].data.data.chat" should be equal to 1
