@@ -74,7 +74,7 @@ class OrganizationEmailDomain extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setDomain($domain)
     {
-        $this->setModelField('domain', $domain);
+        $this->domain = $domain;
 
         return $this;
     }
@@ -94,7 +94,7 @@ class OrganizationEmailDomain extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setOrganization(Organization $organization = null)
     {
-        $this->setModelField('organization', $organization);
+        $this->organization = $organization;
 
         return $this;
     }
