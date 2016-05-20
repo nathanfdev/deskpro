@@ -1158,6 +1158,11 @@ button, .button, input[type="submit"] {
       text-decoration: none;
     }
 
+    &.with-logo {
+      display: block;
+      float: none;
+    }
+
     @media screen and (max-width: 760px) {
       float: none;
       display: block;
