@@ -77,6 +77,8 @@ Feature: API Authentication
     Then the JSON node "code" should be equal to "invalid_session_id"
     And the JSON node "message" should be equal to "Invalid session ID."
 
+  @skip-ci
+  # test is skipped, api is for agents only for now
   Scenario: I have a valid api key (user "user" id=3 in the "api" data set)
     Given a valid api key exists with the code "XYZ" for user
     When I add Authorization header of my Api Key
