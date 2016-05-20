@@ -135,7 +135,7 @@ security:
                 authenticator: api_authenticator
 
     access_control:
-        - { path: '^/api/v2(?!/api_tokens|/doc|/man|/get_session|/helpdesk/discover)', roles: ['ROLE_API'] }
+        - { path: '^/api/v2(?!/api_tokens|/doc|/man|/get_session|/helpdesk/discover)', roles: ['ROLE_AGENT'] }
 
 sensio_framework_extra:
     cache:    { annotations: true }

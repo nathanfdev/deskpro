@@ -4335,6 +4335,9 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         if ($this->isAdmin()) {
             $roles[] = 'ROLE_ADMIN';
         }
+        if ($this->isAgent()) {
+            $roles[] = 'ROLE_AGENT';
+        }
 
         return $roles;
     }
