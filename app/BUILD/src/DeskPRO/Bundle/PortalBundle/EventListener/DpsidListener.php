@@ -35,10 +35,10 @@ use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
@@ -84,14 +84,14 @@ class DpsidListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            KernelEvents::CONTROLLER => ['onController', 150],
+            KernelEvents::CONTROLLER => ['onSetApiToken', 150],
         ];
     }
 
     /**
      * @param FilterControllerEvent $event
      */
-    public function onController(FilterControllerEvent $event)
+    public function onSetApiToken(FilterControllerEvent $event)
     {
         if (!$event->isMasterRequest()) {
             return;
@@ -123,19 +123,31 @@ class DpsidListener implements EventSubscriberInterface
         if (!$session = $repo->getSessionFromCode($token)) {
             throw new AccessDeniedHttpException('Invalid token');
         } else {
-            $this->tokenStorage->setToken(self::createTokenFromSession($session));
+            self::setPortalApiToken($this->tokenStorage, $session, $request);
         }
     }
 
     /**
-     * @param Session $session
+     * We should use 'dpsid' (portal api) token to work with voters, call getUser() in api controllers etc.
      *
-     * @return AnonymousToken|UsernamePasswordToken
+     * But we need to reset request session to prevent storing 'portal api' token in the 'portal' session.
+     *
+     * @see ContextListener::onKernelResponse.
+     *
+     * @param TokenStorage $tokenStorage
+     * @param Session      $session
+     * @param Request      $request
      */
-    public static function createTokenFromSession(Session $session)
+    public static function setPortalApiToken(TokenStorage $tokenStorage, Session $session, Request $request)
     {
         $person = $session->getPerson() ?: new PersonGuest();
+        $token  = new UsernamePasswordToken($person, $session->getId(), 'portal_api', $person->getRoles());
 
-        return new UsernamePasswordToken($person, $session->getId(), 'portal_api', $person->getRoles());
+        $property = new \ReflectionProperty(Request::class, 'session');
+        $property->setAccessible(true);
+        $property->setValue($request, null);
+        $property->setAccessible(false);
+
+        $tokenStorage->setToken($token);
     }
 }
