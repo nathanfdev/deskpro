@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 
 use Application\DeskPRO\TicketLayout\LayoutField;
@@ -101,7 +97,7 @@ class TicketLayoutHelper extends AbstractType
      *
      * @return array the form key and its selected entity ID (or null if not submitted)
      */
-    public function getTicketDataIds(array $submitted_data, TicketWithLayoutsContext $context)
+    public function getExtractedData(array $submitted_data, TicketWithLayoutsContext $context)
     {
         $form       = $context->getForm();
         $final_data = [];
@@ -145,7 +141,7 @@ class TicketLayoutHelper extends AbstractType
      *
      * @return TicketLayoutChanges
      */
-    public function getLayoutChanges(TicketWithLayoutsContext $context, $extracted_data)
+    public function getLayoutChanges(TicketWithLayoutsContext $context, $extracted_data = [])
     {
         $initial_layout = $context->getPreviouslyActiveLayout();
         $new_layout     = $context->getActiveLayout();
@@ -157,6 +153,9 @@ class TicketLayoutHelper extends AbstractType
         // find fields that should be rendered, but weren't before, via criteria with recently submitted data
         $fields_requiring_rerender = [];
         foreach ($new_layout->all() as $field) {
+            if (!$context->hasValidVisibility($field)) {
+                continue;
+            }
             if ($context->fieldWasDisplayedBefore($field)) {
                 // this field was displayed before. should it continue to be displayed?
                 if ($this->fieldHasCriteriaAndCriteriaDoesNOTMatch($field, $extracted_data)) {

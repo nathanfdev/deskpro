@@ -33,8 +33,8 @@ use Application\DeskPRO\Entity\TicketMessage;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorMessageFactory;
 use DeskPRO\Bundle\AppBundle\Form\Error\FormErrorsGenerator;
 use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsType;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket as TicketModel;
@@ -195,10 +195,9 @@ class TicketHandler extends AbstractEntityHandler
      */
     public function getTicketErrors(TicketEntity $entity, SideloadSerializationContext $context, $viewContext)
     {
-        $form = $this->formFactory->create(TicketWithLayoutsType::class, $entity, [
+        $form = $this->formFactory->create(TicketWithLayoutsApiType::class, $entity, [
             'ticket_view_context' => $viewContext,
             'person'              => $context->getUser(),
-            'for_api'             => true,
             'disabled'            => true,
         ]);
 

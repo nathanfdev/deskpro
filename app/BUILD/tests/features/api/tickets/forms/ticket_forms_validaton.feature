@@ -528,8 +528,11 @@ Feature: /ticket_forms endpoint
     And the JSON node "linked.ticket_agent_errors.6.fields.organization_fields.fields.organization_fields_6.errors[0].message" should contain "This value should not be blank."
     And the JSON node "linked.ticket_agent_errors.6.fields.user_fields.fields.user_fields_6.errors[0].code" should be equal to "required"
     And the JSON node "linked.ticket_agent_errors.6.fields.user_fields.fields.user_fields_6.errors[0].message" should contain "This value should not be blank."
+    And the JSON node "linked.ticket_agent_errors.6.fields.subject.errors[0].code" should be equal to "required"
+    And the JSON node "linked.ticket_agent_errors.6.fields.subject.errors[0].message" should contain "This value should not be blank."
 
-    And the JSON node "linked.ticket_user_errors.6" should have 0 elements
+    And the JSON node "linked.ticket_user_errors.6.fields.subject.errors[0].code" should be equal to "required"
+    And the JSON node "linked.ticket_user_errors.6.fields.subject.errors[0].message" should contain "This value should not be blank."
 
   @skip-ci
   # Current response status code is 400, but 204 expected

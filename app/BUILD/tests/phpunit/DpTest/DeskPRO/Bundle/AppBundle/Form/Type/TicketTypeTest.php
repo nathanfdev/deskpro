@@ -39,7 +39,8 @@ use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebType;
 use DpTest\PortalTestCase;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -187,10 +188,10 @@ class TicketTypeTest extends PortalTestCase
             'message',
             'attachments',
             'more_attachments',
-            'displayed_fields',
             'ticket_field_1',
-            'rerender_form',
+            'displayed_fields',
             'submit',
+            'rerender_form',
         ]);
         $this->assertEquals('My Test Subject', $ticket->getSubject());
 
@@ -398,9 +399,8 @@ class TicketTypeTest extends PortalTestCase
         $ticket = new Ticket();
         $person = $this->getNormalPerson();
 
-        $form = $this->getContainer()->get('form.factory')->create(TicketWithLayoutsType::class, $ticket, [
-            'person'  => $person,
-            'for_api' => true,
+        $form = $this->getContainer()->get('form.factory')->create(TicketWithLayoutsApiType::class, $ticket, [
+            'person' => $person,
         ]);
 
         $this->assertTrue($form->has('fields'));
@@ -476,7 +476,7 @@ class TicketTypeTest extends PortalTestCase
         $message->setPerson($person);
         $ticket->addMessage($message);
 
-        $form = $this->getContainer()->get('form.factory')->create(TicketWithLayoutsType::class, $ticket, [
+        $form = $this->getContainer()->get('form.factory')->create(TicketWithLayoutsWebType::class, $ticket, [
             'person'          => $person,
             'csrf_protection' => false,
         ]);

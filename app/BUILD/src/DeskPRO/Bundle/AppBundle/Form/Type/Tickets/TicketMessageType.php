@@ -35,8 +35,8 @@ use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\HiddenType;
 use DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -115,10 +115,9 @@ class TicketMessageType extends AbstractType
         ]);
 
         if ($options['with_ticket_validation']) {
-            $builder->add('ticket', TicketWithLayoutsType::class, [
+            $builder->add('ticket', TicketWithLayoutsApiType::class, [
                 'person'              => $options['person'],
                 'ticket_view_context' => TicketWithLayoutsContext::VIEW_AGENT,
-                'for_api'             => true,
                 'disabled'            => true,
                 'constraints'         => [
                     // don't add this constraint on the `ticket_message.ticket` property

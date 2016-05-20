@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,10 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
+
+use Application\DeskPRO\TicketLayout\LayoutField;
 
 /**
  * Class TicketLayoutChanges.
@@ -39,53 +38,53 @@ class TicketLayoutChanges
     /**
      * @var array
      */
-    private $fields_requiring_rerender;
+    private $fieldsRequiringRerender;
 
     /**
      * @var array
      */
-    private $fields_to_remove;
+    private $fieldsToRemove;
 
     /**
      * @var array
      */
-    private $additional_fields;
+    private $additionalFields;
 
     /**
      * Constructor.
      *
-     * @param array $fields_requiring_rerender
-     * @param array $fields_to_remove
-     * @param array $additional_fields
+     * @param array $fieldsRequiringRerender
+     * @param array $fieldsToRemove
+     * @param array $additionalFields
      */
-    public function __construct(array $fields_requiring_rerender, array $fields_to_remove, array $additional_fields)
+    public function __construct(array $fieldsRequiringRerender, array $fieldsToRemove, array $additionalFields)
     {
-        $this->fields_requiring_rerender = $fields_requiring_rerender;
-        $this->fields_to_remove          = $fields_to_remove;
-        $this->additional_fields         = $additional_fields;
+        $this->fieldsRequiringRerender = $fieldsRequiringRerender;
+        $this->fieldsToRemove          = $fieldsToRemove;
+        $this->additionalFields        = $additionalFields;
     }
 
     /**
-     * @return array
+     * @return LayoutField[]
      */
     public function getFieldsRequiringRerender()
     {
-        return $this->fields_requiring_rerender;
+        return $this->fieldsRequiringRerender;
     }
 
     /**
-     * @return array
+     * @return LayoutField[]
      */
     public function getFieldsToRemove()
     {
-        return $this->fields_to_remove;
+        return $this->fieldsToRemove;
     }
 
     /**
-     * @return array
+     * @return LayoutField[]
      */
     public function getAdditionalFields()
     {
-        return $this->additional_fields;
+        return $this->additionalFields;
     }
 }

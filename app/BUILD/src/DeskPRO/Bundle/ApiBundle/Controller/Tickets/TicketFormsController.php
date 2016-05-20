@@ -34,7 +34,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -50,7 +50,7 @@ use Symfony\Component\HttpFoundation\Request;
 class TicketFormsController extends AbstractTicketsController
 {
     public static $exposeOnly         = [];
-    public static $type               = TicketWithLayoutsType::class;
+    public static $type               = TicketWithLayoutsApiType::class;
     public static $forcePartialUpdate = true;
 
     /**
@@ -74,18 +74,15 @@ class TicketFormsController extends AbstractTicketsController
      * )
      * @Rest\Post("")
      *
-     * @param string  $context
      * @param Request $request
      *
      * @return View
      */
-    public function postContextAction($context, Request $request)
+    public function postContextAction(Request $request)
     {
         $this->denyAccessUnlessGranted(PermissionGroupVoter::CREATE, new PermissionGroupContext(Ticket::class));
 
-        return $this->handleForm($this->instantiateEntity($request), $request, [
-            'ticket_view_context' => $context,
-        ]);
+        return $this->handleForm($this->instantiateEntity($request), $request);
     }
 
     /**
@@ -114,20 +111,17 @@ class TicketFormsController extends AbstractTicketsController
      * )
      * @Rest\Put("/{id}", requirements={"id"="\d+"})
      *
-     * @param string  $context
      * @param int     $id
      * @param Request $request
      *
      * @return View
      */
-    public function putContextAction($context, $id, Request $request)
+    public function putContextAction($id, Request $request)
     {
         $ticket = $this->findEntity($id, $request);
         $this->denyAccessUnlessGranted(PermissionGroupVoter::MODIFY, new PermissionGroupContext($ticket));
 
-        return $this->handleForm($ticket, $request, [
-            'ticket_view_context' => $context,
-        ]);
+        return $this->handleForm($ticket, $request);
     }
 
     /**
@@ -136,9 +130,8 @@ class TicketFormsController extends AbstractTicketsController
     protected function handleForm($model, Request $request, array $options = [])
     {
         $options = array_merge($options, [
-            'person'      => $this->getUser(),
-            'use_captcha' => false,
-            'for_api'     => true,
+            'person'              => $this->getUser(),
+            'ticket_view_context' => $request->attributes->get('context'),
         ]);
 
         return parent::handleForm($model, $request, $options);

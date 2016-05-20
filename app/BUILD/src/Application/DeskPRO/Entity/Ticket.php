@@ -462,7 +462,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      * @Assert\NotBlank()
      * @Assert\Type(type="string")
      */
-    protected $subject = '(No Subject)';
+    protected $subject = '';
 
     /**
      * @var string

@@ -31,7 +31,8 @@
  */
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebFullType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\UseSectionVoter;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -89,13 +90,14 @@ class TicketController extends AbstractApiController
         $person         = $ticket->getPerson();
         $ticket_message = $ticket->messages[0];
 
-        $form = $this->createForm(TicketWithLayoutsType::class, $ticket, [
+        $form = $this->createForm(TicketWithLayoutsWebType::class, $ticket, [
             'person'                        => $person,
             'action'                        => $this->generateUrl('portal_api_ticket_new'),
             'csrf_protection'               => false,
             'csrf_double_submit_protection' => false,
             'allow_extra_fields'            => true,
             'use_captcha'                   => false,
+            'department_id'                 => $request->query->getInt('department_id'),
         ]);
 
         $form->handleRequest($request);
@@ -118,11 +120,10 @@ class TicketController extends AbstractApiController
             return new View();
         }
 
-        $form_full = $this->createForm(TicketWithLayoutsType::class, $ticket, [
-            'person'       => $person,
-            'full_version' => true,
-            'action'       => $this->generateUrl('portal_api_ticket_new'),
-            'use_captcha'  => false,
+        $form_full = $this->createForm(TicketWithLayoutsWebFullType::class, $ticket, [
+            'person'      => $person,
+            'action'      => $this->generateUrl('portal_api_ticket_new'),
+            'use_captcha' => false,
         ]);
 
         $params = [
