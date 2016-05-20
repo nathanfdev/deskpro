@@ -201,7 +201,6 @@ abstract class AbstractFieldResolver
         $options = [
             'label'       => $this->phrase('portal.forms.label_subject'),
             'required'    => true,
-            'empty_data'  => '(No Subject)',
             'constraints' => [
                 new Assert\Length(['min' => 5]),
             ],
