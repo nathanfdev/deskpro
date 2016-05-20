@@ -76,6 +76,10 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         () => @refreshReviewUrl()
       )
 
+    clearWelcomeBox: () =>
+       @welcome_box = {title: '', message: ''}
+       @saveWelcomeBox()
+
     editWelcomeBox: () =>
       request = @$http({
         method: 'PUT',

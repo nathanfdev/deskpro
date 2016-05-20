@@ -44,6 +44,9 @@
                         <input type="text" placeholder="Welcome Box title" ng-model="welcome_box.title">
                         <textarea placeholder="Content (HTML)" style="height: 200px;" ng-model="welcome_box.message"></textarea>
                         <div class="footer">
+                            <div style="float:left" ng-show="welcome_box.title || welcome_box.message">
+                                <button ng-click="Portal.clearWelcomeBox()">Clear</button>
+                            </div>
                             <button ng-click="Portal.saveWelcomeBox()">Set &amp; Preview</button>
                         </div>
                     </form>
