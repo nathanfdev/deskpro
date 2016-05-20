@@ -82,8 +82,8 @@ class AuthController extends AbstractApiController
             $em->flush();
         }
 
-        $this->get('security.token_storage')->setToken(DpsidListener::createTokenFromSession($session));
         $options = $this->container->get('widget_settings_resolver')->getWidgetGlobalOptions();
+        DpsidListener::setPortalApiToken($this->get('security.token_storage'), $session, $request);
 
         return new View($this->wrap(new WidgetSession($session, $options, $this->isGranted(UseSectionVoter::USE_CHAT))));
     }

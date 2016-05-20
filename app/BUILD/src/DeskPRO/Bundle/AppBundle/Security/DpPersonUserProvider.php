@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,19 +26,17 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\Security;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\Person as PersonRepo;
-use Orb\Auth\Identity;
-use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Application\DeskPRO\People\PersonGuest;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
+/**
+ * Class DpPersonUserProvider.
+ */
 class DpPersonUserProvider implements UserProviderInterface
 {
     /**
@@ -51,25 +49,19 @@ class DpPersonUserProvider implements UserProviderInterface
      */
     private $people_refs;
 
+    /**
+     * Constructor.
+     *
+     * @param PersonRepo $person_repo
+     */
     public function __construct(PersonRepo $person_repo)
     {
-        $this->people_refs = array();
+        $this->people_refs = [];
         $this->person_repo = $person_repo;
     }
 
     /**
-     * Loads the user for the given username.
-     *
-     * This method must throw UsernameNotFoundException if the user is not
-     * found.
-     *
-     * @param string $username The username
-     *
-     * @throws UsernameNotFoundException if the user is not found
-     *
-     * @return UserInterface
-     *
-     * @see UsernameNotFoundException
+     * {@inheritdoc}
      */
     public function loadUserByUsername($username)
     {
@@ -83,18 +75,7 @@ class DpPersonUserProvider implements UserProviderInterface
     }
 
     /**
-     * Refreshes the user for the account interface.
-     *
-     * It is up to the implementation to decide if the user data should be
-     * totally reloaded (e.g. from the database), or if the UserInterface
-     * object can just be merged into some internal array of users / identity
-     * map.
-     *
-     * @param UserInterface $user
-     *
-     * @throws UnsupportedUserException if the account is not supported
-     *
-     * @return UserInterface
+     * {@inheritdoc}
      */
     public function refreshUser(UserInterface $user)
     {
@@ -104,9 +85,22 @@ class DpPersonUserProvider implements UserProviderInterface
 
         $person = $this->fetchPerson($user->getId());
 
-        return $person;
+        return $person ?: new PersonGuest();
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function supportsClass($class)
+    {
+        return $class === Person::class;
+    }
+
+    /**
+     * @param $id
+     *
+     * @return Person|null
+     */
     protected function fetchPerson($id)
     {
         // subrequests or esi calls may reload the user from this provider multiple times. we'll use the same ref.
@@ -128,17 +122,5 @@ class DpPersonUserProvider implements UserProviderInterface
         }
 
         return $person;
-    }
-
-    /**
-     * Whether this provider supports the given user class.
-     *
-     * @param string $class
-     *
-     * @return bool
-     */
-    public function supportsClass($class)
-    {
-        return $class === 'Application\DeskPRO\Entity\Person';
     }
 }
