@@ -124,7 +124,7 @@ class LabelDef extends DomainObject
      */
     public function setLabel($label)
     {
-        $this->label = $label;
+        $this->setModelField('label', $label);
     }
 
     /**

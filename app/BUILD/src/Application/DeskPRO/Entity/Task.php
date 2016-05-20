@@ -247,9 +247,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
             throw new \InvalidArgumentException('Invalid visibility');
         }
 
-        $old_visibility   = $this->visibility;
-        $this->visibility = $visibility;
-        $this->_onPropertyChanged('visibility', $old_visibility, $visibility);
+        $this->setModelField('visibility', $visibility);
     }
 
     /**
@@ -636,7 +634,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setIsCompleted($isCompleted)
     {
-        $this->is_completed = $isCompleted;
+        $this->setModelField('is_completed', $isCompleted);
 
         return $this;
     }
@@ -680,7 +678,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setDateDue($dateDue)
     {
-        $this->date_due = $dateDue;
+        $this->setModelField('date_due', $dateDue);
 
         return $this;
     }
@@ -704,7 +702,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setDateCreated($dateCreated)
     {
-        $this->date_created = $dateCreated;
+        $this->setModelField('date_created', $dateCreated);
 
         return $this;
     }
@@ -728,7 +726,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setDateCompleted($dateCompleted)
     {
-        $this->date_completed = $dateCompleted;
+        $this->setModelField('date_completed', $dateCompleted);
 
         return $this;
     }
@@ -752,7 +750,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setPerson(\Application\DeskPRO\Entity\Person $person = null)
     {
-        $this->person = $person;
+        $this->setModelField('person', $person);
 
         return $this;
     }
@@ -776,7 +774,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setAssignedAgent(\Application\DeskPRO\Entity\Person $assignedAgent = null)
     {
-        $this->assigned_agent = $assignedAgent;
+        $this->setModelField('assigned_agent', $assignedAgent);
 
         return $this;
     }
@@ -800,7 +798,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setAssignedAgentTeam(\Application\DeskPRO\Entity\AgentTeam $assignedAgentTeam = null)
     {
-        $this->assigned_agent_team = $assignedAgentTeam;
+        $this->setModelField('assigned_agent_team', $assignedAgentTeam);
 
         return $this;
     }

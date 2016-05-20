@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -75,9 +76,9 @@ class TwitterAccountFriend extends \Application\DeskPRO\Domain\DomainObject
     public function setAccountId($id)
     {
         if ($id && $account = App::getOrm()->getRepository('DeskPRO:TwitterAccount')->find($id)) {
-            $this->account = $account;
+            $this->setModelField('account', $account);
         } else {
-            $this->account = null;
+            $this->setModelField('account', null);
         }
     }
 
@@ -99,9 +100,9 @@ class TwitterAccountFriend extends \Application\DeskPRO\Domain\DomainObject
     public function setUserId($id)
     {
         if ($id && $user = App::getOrm()->getRepository('DeskPRO:TwitterUser')->find($id)) {
-            $this->user = $user;
+            $this->setModelField('user', $user);
         } else {
-            $this->user = null;
+            $this->setModelField('user', null);
         }
     }
 
@@ -109,16 +110,15 @@ class TwitterAccountFriend extends \Application\DeskPRO\Domain\DomainObject
     # Doctrine Metadata
     ############################################################################
 
-
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterAccountFriend';
-        $metadata->setPrimaryTable(array('name' => 'twitter_accounts_friends', 'uniqueConstraints' => array('account_user_idx' => array('columns' => array(0 => 'account_id', 1 => 'user_id')))));
+        $metadata->setPrimaryTable(['name' => 'twitter_accounts_friends', 'uniqueConstraints' => ['account_user_idx' => ['columns' => [0 => 'account_id', 1 => 'user_id']]]]);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(['fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array('fieldName' => 'account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'account_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => null))));
-        $metadata->mapManyToOne(array('fieldName' => 'user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'user_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => null))));
+        $metadata->mapManyToOne(['fieldName' => 'account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => [0 => ['name' => 'account_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => null]]]);
+        $metadata->mapManyToOne(['fieldName' => 'user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => [0 => ['name' => 'user_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => null]]]);
     }
 }

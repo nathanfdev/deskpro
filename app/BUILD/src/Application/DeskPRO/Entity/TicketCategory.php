@@ -143,7 +143,7 @@ class TicketCategory extends DomainObject implements HasPhraseName
      */
     public function setRealTitle($title)
     {
-        $this->title = $title;
+        $this->setModelField('title', $title);
 
         return $this;
     }

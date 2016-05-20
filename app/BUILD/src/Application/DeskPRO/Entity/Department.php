@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -295,7 +296,7 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
      */
     public function setRealTitle($title)
     {
-        $this->title = $title;
+        $this->setModelField('title', $title);
     }
 
     /**

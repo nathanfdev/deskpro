@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -73,7 +74,7 @@ class LogEvent extends DomainObject implements Loggable
         $this->person      = $person;
         $this->children    = new ArrayCollection();
 
-        $this->_event = $event;
+        $this->setModelField('_event', $event);
     }
 
     public function getEventObject()
@@ -105,7 +106,7 @@ class LogEvent extends DomainObject implements Loggable
 
     public function context()
     {
-        return array();
+        return [];
     }
 
     ############################################################################
@@ -116,43 +117,43 @@ class LogEvent extends DomainObject implements Loggable
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name'    => 'log_event',
-            'indexes' => array(
-                'subject' => array('columns' => array('subject', 'subject_id')),
-            ),
-        ));
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'nullable' => false, 'id' => true, 'options' => array('unsigned' => true)));
-        $metadata->mapField(array('fieldName' => 'timestamp', 'type' => 'integer', 'nullable' => false, 'options' => array('unsigned' => true)));
-        $metadata->mapField(array('fieldName' => 'event', 'type' => 'string', 'nullable' => false));
-        $metadata->mapField(array('fieldName' => 'subject', 'type' => 'string', 'nullable' => true));
-        $metadata->mapField(array('fieldName' => 'api_key', 'type' => 'string', 'nullable' => true));
-        $metadata->mapField(array('fieldName' => 'subject_id', 'type' => 'integer', 'nullable' => true, 'options' => array('unsigned' => true)));
-        $metadata->mapField(array('fieldName' => 'details', 'type' => 'array', 'nullable' => false));
+            'indexes' => [
+                'subject' => ['columns' => ['subject', 'subject_id']],
+            ],
+        ]);
+        $metadata->mapField(['fieldName' => 'id', 'type' => 'integer', 'nullable' => false, 'id' => true, 'options' => ['unsigned' => true]]);
+        $metadata->mapField(['fieldName' => 'timestamp', 'type' => 'integer', 'nullable' => false, 'options' => ['unsigned' => true]]);
+        $metadata->mapField(['fieldName' => 'event', 'type' => 'string', 'nullable' => false]);
+        $metadata->mapField(['fieldName' => 'subject', 'type' => 'string', 'nullable' => true]);
+        $metadata->mapField(['fieldName' => 'api_key', 'type' => 'string', 'nullable' => true]);
+        $metadata->mapField(['fieldName' => 'subject_id', 'type' => 'integer', 'nullable' => true, 'options' => ['unsigned' => true]]);
+        $metadata->mapField(['fieldName' => 'details', 'type' => 'array', 'nullable' => false]);
 
-        $metadata->mapManyToOne(array(
+        $metadata->mapManyToOne([
             'fieldName'    => 'parent',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\LogEvent',
-            'joinColumns'  => array(0 => array(
+            'joinColumns'  => [0 => [
                 'nullable' => true,
                 'onDelete' => 'cascade',
-            )),
-        ));
+            ]],
+        ]);
 
-        $metadata->mapOneToMany(array(
+        $metadata->mapOneToMany([
             'fieldName'    => 'children',
             'mappedBy'     => 'parent',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\LogEvent',
-        ));
+        ]);
 
-        $metadata->mapManyToOne(array(
+        $metadata->mapManyToOne([
             'fieldName'    => 'person',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
-            'joinColumns'  => array(0 => array(
+            'joinColumns'  => [0 => [
                 'nullable' => true,
                 'onDelete' => 'cascade',
-            )),
-        ));
+            ]],
+        ]);
 
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }
