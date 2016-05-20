@@ -33,7 +33,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
 
         @initLiveDemo()
 
-      departmentsPromise = @Api2.sendGet('/ticket_departments').then (response) =>
+      departmentsPromise = @Api2.sendGet('/departments?type=tickets').then (response) =>
         @$scope.departments = response.data.data
 
       updateLiveDemoDebounce = Functions.debounce( =>
