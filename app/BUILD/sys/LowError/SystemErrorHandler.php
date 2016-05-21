@@ -29,11 +29,13 @@
 /**
  * DeskPRO.
  */
-
 namespace DpSys\LowError;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class SystemErrorHandler
 {
@@ -109,21 +111,7 @@ class SystemErrorHandler
      */
     public static function handleException(/*Throwable*/ $exception)
     {
-        if (self::$isHandlingException) {
-            return;
-        }
-
-        // Dont log 404's
-        if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
-            return;
-        }
-        if ($exception instanceof \Symfony\Component\Routing\Exception\MethodNotAllowedException) {
-            return;
-        }
-        if ($exception instanceof \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException) {
-            return;
-        }
-        if ($exception instanceof \Application\DeskPRO\HttpKernel\Exception\NoPermissionException) {
+        if (self::$isHandlingException || !self::shouldLog($exception)) {
             return;
         }
 
@@ -145,6 +133,10 @@ class SystemErrorHandler
      */
     public static function logException(\Exception $exception, $send = false, $unique_id = null)
     {
+        if (!self::shouldLog($exception)) {
+            return;
+        }
+
         static $got_unique_ids = array();
 
         /* @var \DpRun\DpEnv */
@@ -182,6 +174,20 @@ class SystemErrorHandler
             $einfo['no_send_error'] = true;
         }
         self::logErrorInfo($einfo);
+    }
+
+    private static function shouldLog(\Exception $exception)
+    {
+        if (($exception instanceof HttpException
+             && $exception->getStatusCode() >= 400
+             && $exception->getStatusCode() < 500)
+            || $exception instanceof MethodNotAllowedException
+            || $exception instanceof AccessDeniedException
+        ) {
+            return false;
+        }
+
+        return true;
     }
 
     public static function logExceptionIfUniqueBacktrace(/*Throwable*/ $e, $send = false)
