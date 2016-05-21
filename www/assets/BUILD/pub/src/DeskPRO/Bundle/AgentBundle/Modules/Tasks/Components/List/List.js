@@ -41,13 +41,13 @@ export class List extends React.Component {
           {!selected.size && <ControlBarContainer key="1"/>}
           {selected.size && <MassActionContainer key="2"/>}
         </ListFrameMenu>
-        {currentNav &&
+        {currentNav ?
         <ListFrameContents isLoaded={isLoaded}>
           <ListGroupContainer>
             {this.renderView()}
           </ListGroupContainer>
         </ListFrameContents>
-        }
+        : null}
       </ListFrameContainer>
     );
   }

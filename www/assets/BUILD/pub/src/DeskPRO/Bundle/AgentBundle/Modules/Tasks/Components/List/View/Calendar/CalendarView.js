@@ -8,9 +8,9 @@ import { TaskCardDragTarget } from './TaskCard/TaskCardDragTarget';
 import { TaskCardEditContainer } from '../../TaskCard/TaskCardEditContainer';
 import { TaskCardPreviewContainer } from '../../TaskCard/TaskCardPreviewContainer';
 import { TaskCardPreview } from './TaskCard/TaskCardPreview';
-import { CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
+import { CustomCardDragLayer } from '../../CustomCardDragLayer';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
-import { Detached as Positioned }  from 'DeskPRO/Component/Positioned/Detached';
+import { Detached as Positioned } from 'DeskPRO/Component/Positioned/Detached';
 
 export class CalendarView extends React.Component {
 
@@ -72,9 +72,11 @@ export class CalendarView extends React.Component {
 
         <Positioned positionTarget={this.newTaskTarget} positionAt="center center" isOpen={!!this.state.task}>
           <ClickOut onClickOut={() => this.resetNewTask(false)}>
-            <TaskCardNew task={this.state.task} onSetEditing={this.onSetEditing}
+            <TaskCardNew
+              task={this.state.task}
+              onSetEditing={this.onSetEditing}
               onClose={() => this.resetNewTask(true)}
-              />
+            />
           </ClickOut>
         </Positioned>
 

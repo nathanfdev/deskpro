@@ -1,22 +1,29 @@
 import React, { PropTypes } from 'react';
 import { DragLayer } from 'react-dnd';
+import { constants } from '../../../../Constants/Constants';
 
 @DragLayer(monitor => ({
-  item: monitor.getItem(),
+  item:          monitor.getItem(),
+  itemType:      monitor.getItemType(),
   currentOffset: monitor.getSourceClientOffset(),
-  isDragging: monitor.isDragging()
+  isDragging:    monitor.isDragging()
 }))
 export class CustomCardDragLayer extends React.Component {
 
   static propTypes = {
-    item: PropTypes.object,
+    item:          PropTypes.object,
     currentOffset: PropTypes.shape({
       x: PropTypes.number.isRequired,
       y: PropTypes.number.isRequired
     }),
     isDragging: PropTypes.bool.isRequired,
-    children: PropTypes.node.isRequired
+    children:   PropTypes.node.isRequired,
+    itemType:   PropTypes.string.isRequired
   };
+
+  shouldComponentUpdate(props) {
+    return props.itemType === constants.TYPE_TASK;
+  }
 
   getItemStyles() {
     const { currentOffset } = this.props;
@@ -29,14 +36,18 @@ export class CustomCardDragLayer extends React.Component {
     const transform = `translate(${currentOffset.x}px, ${currentOffset.y}px)`;
 
     return {
-      transform: transform,
+      transform,
       WebkitTransform: transform
     };
   }
 
   render() {
-    const { isDragging, item, children } = this.props;
+    const { isDragging, item, children, itemType } = this.props;
     const childProps = children.props;
+
+    if (itemType !== constants.TYPE_TASK) {
+      return null;
+    }
 
     if (!isDragging) {
       return null;
@@ -44,17 +55,18 @@ export class CustomCardDragLayer extends React.Component {
 
     return (
       <div style={{
-        position: 'fixed',
+        position:      'fixed',
         pointerEvents: 'none',
-        zIndex: 10000,
-        left: 0,
-        top: 0,
-        width: '100%',
-        height: '100%'
-      }}>
+        zIndex:        10000,
+        left:          0,
+        top:           0,
+        width:         '100%',
+        height:        '100%'
+      }}
+      >
 
         <div style={this.getItemStyles()}>
-          {React.cloneElement(children, {...childProps, item: item})}
+          {React.cloneElement(children, { ...childProps, item })}
         </div>
       </div>
     );

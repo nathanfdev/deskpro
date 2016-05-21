@@ -7,13 +7,15 @@ import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export const cardSource = {
   beginDrag({ value }, {}, component) {
+    console.info('begin drag', value);
     return {
       id:    value,
       width: jQuery(findDOMNode(component)).width()
     };
   },
   canDrag({ editing, updateData = {} }) {
-    return !editing && !updateData.date_created && !updateData.date_done;
+    console.info(editing, updateData);
+    return true;
   }
 };
 

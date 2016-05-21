@@ -7,7 +7,6 @@ import { Menu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/
 import { Item } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item';
 import { ViewOptionsList } from './ViewOptionsList';
 import { MenuFooter } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooter';
-import jQuery from 'jquery';
 
 @connect()
 export class ViewMenuContainer extends Component {
@@ -90,7 +89,7 @@ class ViewOptionsContainer extends Component {
 
     return (
       <Menu widgetClass="dpw-navigation-dropdown-secondary">
-        {jQuery.map(options, (option, type) => {
+        {Object.entries(options).map(([type, option]) => {
           if (!option.configurableFields) {
             return null;
           }
@@ -110,7 +109,9 @@ class ViewOptionsContainer extends Component {
                 isActive={viewMode === type}
               />
 
-              <ViewOptionsList visibleFields={option.visibleFields} configurableFields={option.configurableFields}
+              <ViewOptionsList
+                visibleFields={option.visibleFields}
+                configurableFields={option.configurableFields}
                 type={type}
                 onClick={onClick}
               />
@@ -142,15 +143,15 @@ class ViewModeMenu extends Component {
 
     return (
       <Menu>
-        {jQuery.map(options, (option, type) =>
-            <Item
-              key={type}
-              label={option.label}
-              isActive={viewMode === type}
-              checked={viewMode === type}
-              onClick={() => dispatch(viewModeAction(type))}
-              icon={option.icon}
-            />
+        {Object.entries(options).map(([type, option]) =>
+          <Item
+            key={type}
+            label={option.label}
+            isActive={viewMode === type}
+            checked={viewMode === type}
+            onClick={() => dispatch(viewModeAction(type))}
+            icon={option.icon}
+          />
         )}
         <MenuFooter>
           <div className="dpw-navigation-dropdown-options-link">
