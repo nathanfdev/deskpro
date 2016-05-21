@@ -57,7 +57,11 @@ class SystemErrorHandler
     /**
      * @var string|null
      */
-    private static $bugsnagApiKey = null;
+    private static $bugsnagConfig = [
+        'api_key'     => null,
+        'app_version' => null,
+        'metadata'    => [],
+    ];
 
     /**
      * @var null|\Bugsnag_Client
@@ -729,21 +733,28 @@ class SystemErrorHandler
             return self::$bugsnagClient;
         }
 
-        if (self::$bugsnagApiKey) {
+        if (self::$bugsnagConfig['api_key']) {
             if (!class_exists('Bugsnag_Client', true)) {
                 // failed to autoload the class, so ignore
-                self::$bugsnagApiKey = null;
+                self::$bugsnagConfig['api_key'] = null;
 
                 return;
             }
 
-            self::$bugsnagClient = new \Bugsnag_Client(self::$bugsnagApiKey);
+            self::$bugsnagClient = new \Bugsnag_Client(self::$bugsnagConfig['api_key']);
             self::$bugsnagClient->setProjectRoot(self::getDpEnv()->getDpRoot());
             self::$bugsnagClient->setAutoNotify(false);
+            if (isset(self::$bugsnagConfig['metadata']) && is_array(self::$bugsnagConfig['metadata'])) {
+                self::$bugsnagClient->setMetaData(['deskpro' => self::$bugsnagConfig['metadata']]);
+            }
 
-            $buildNumFile = self::getDpEnv()->getAppDir().'/sys/config/build-num.txt';
-            if (file_exists($buildNumFile)) {
-                self::$bugsnagClient->setAppVersion(trim(file_get_contents($buildNumFile)));
+            if (self::$bugsnagConfig['app_version']) {
+                self::$bugsnagClient->setAppVersion(self::$bugsnagConfig['app_version']);
+            } else {
+                $buildNumFile = self::getDpEnv()->getAppDir().'/sys/config/build-num.txt';
+                if (file_exists($buildNumFile)) {
+                    self::$bugsnagClient->setAppVersion(trim(file_get_contents($buildNumFile)));
+                }
             }
         }
 
@@ -751,12 +762,13 @@ class SystemErrorHandler
     }
 
     /**
-     * @param string $bugsnagApiKey
+     * @param array $bugsnagConfig
      */
-    public static function setBugsnagApiKey($bugsnagApiKey)
+    public static function setBugsnagConfig(array $bugsnagConfig = ['api_key' => null])
     {
-        self::$bugsnagApiKey = $bugsnagApiKey;
+        self::$bugsnagConfig = array_replace(self::$bugsnagConfig, $bugsnagConfig);
         self::$bugsnagClient = null;
+        self::getBugsnagClient()->notifyError('test', 'test');
     }
 
     /**
