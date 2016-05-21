@@ -19,6 +19,7 @@ DeskPRO.Agent.PageFragment.ListPane.FeedbackFilter = new Orb.Class({
 			refreshUrl: this.meta.refreshUrl,
 			prefSaveResultId: '0'
 		});
+
 		this.ownObject(this.displayOptions);
 
 		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {

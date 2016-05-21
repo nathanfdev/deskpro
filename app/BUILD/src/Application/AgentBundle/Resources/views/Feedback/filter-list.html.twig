@@ -42,15 +42,7 @@
 		{% if not feedback %}
 			pageMeta.noResults = true;
 		{% endif %}
-
-		{% if list_type == 'status '%}
-			pageMeta.url_fragment = '{{ url_fragment('agent_feedback_status', {'status': status}) }}';
-		{% elseif list_type == 'label' %}
-			pageMeta.url_fragment = '{{ url_fragment('agent_feedback_label', {'label': label.id}) }}';
-		{% elseif list_type == 'category' %}
-			pageMeta.url_fragment = '{{ url_fragment('agent_feedback_category', {'category_id': category_id}) }}';
-		{% endif %}
-
+		pageMeta.baseId = '{{ tplvars.baseId }}';
 		pageMeta.perPage = 50;
 		pageMeta.currentPage = {{ cur_page }};
 		pageMeta.resultIds = {{ result_ids|json_encode|raw }};
