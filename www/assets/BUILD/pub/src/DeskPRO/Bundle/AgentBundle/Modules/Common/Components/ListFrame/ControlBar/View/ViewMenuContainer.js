@@ -5,9 +5,8 @@ import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { Menu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
 import { Item } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Item';
-import { ViewOptionsListContainer } from './ViewOptionsListContainer';
+import { ViewOptionsList } from './ViewOptionsList';
 import { MenuFooter } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/MenuFooter';
-import { ViewField } from './ViewField';
 import jQuery from 'jquery';
 
 @connect()
@@ -28,8 +27,8 @@ export class ViewMenuContainer extends Component {
     };
   }
 
-  expandMenu = () => this.setState({expanded: true});
-  expandOptions = () => this.setState({optionsExpanded: true});
+  expandMenu = () => this.setState({ expanded: true });
+  expandOptions = () => this.setState({ optionsExpanded: true });
   collapse = () => this.setState({
     expanded:        false,
     optionsExpanded: false
@@ -111,17 +110,10 @@ class ViewOptionsContainer extends Component {
                 isActive={viewMode === type}
               />
 
-              <ViewOptionsListContainer visibleFields={option.visibleFields}>
-                {jQuery.map(option.configurableFields, (label, name) =>
-                  <ViewField
-                    key={`${type}_${name}`}
-                    value={name}
-                    label={label}
-                    isShown={(option.visibleFields || []).indexOf(name) > -1}
-                    changeState={onClick}
-                  />
-                )}
-              </ViewOptionsListContainer>
+              <ViewOptionsList visibleFields={option.visibleFields} configurableFields={option.configurableFields}
+                type={type}
+                onClick={onClick}
+              />
             </div>
           );
         })}
