@@ -86,7 +86,10 @@ class SettingsManager
         $grouping = [];
         /** @var TicketFilterPreference $pref */
         foreach ($prefs as $pref) {
-            $grouping[$pref->getFilter()->getId()] = $pref->getMainGrouping();
+            $grouping[$pref->getFilter()->getId()] = [
+                'id'            => $pref->getId(),
+                'main_grouping' => $pref->getMainGrouping(),
+            ];
         }
 
         $settings->setFilterGroupings($grouping);

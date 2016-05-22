@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { ListGroupingControlContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { filterSetGroupingsSettingsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Selectors/settings';
 import { editedFilterSelector } from '../../Selectors/nav';
-import { applyFilterEditing, closeFilterEditing } from '../../Actions/navActions';
+import { applyFilterEditing } from '../../Actions/navActions';
 import Immutable from 'immutable';
 
 @connect(state => ({
@@ -38,7 +38,10 @@ export class FilterEditPopupContainer extends Component {
 
   render() {
     const { filter = Immutable.fromJS({}), grouping, attachTo, filterId } = this.props;
-    const groupBy = grouping.get(String(filterId), '');
+    let groupBy = '';
+    if (grouping.get(String(filterId))) {
+      groupBy = grouping.get(String(filterId)).get('main_grouping');
+    }
     const content = filter.get('title') || 'none';
 
     return (
