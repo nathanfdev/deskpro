@@ -1,4 +1,4 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
+define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
   class Admin_Portal_Ctrl_PortalEditor extends Admin_Ctrl_Base
     @CTRL_ID = 'Admin_Portal_Ctrl_PortalEditor'
     @CTRL_AS = 'Portal'
@@ -6,17 +6,25 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
     init: ->
       @open_panels = []
-      @values = {}
+
+
       @recompiling = false
       @advanced = {header: '', footer: '', scss: '', javascript: ''}
       @available_themes = [
         {id: "standard", title: "Standard"},
         {id: "sidebar", title: "Sidebar"}
       ]
-      @welcome_box = {
+
+
+      @$scope.welcome_box = {
         title: '',
         message: ''
       }
+      @welcome_box = angular.copy(@$scope.welcome_box);
+
+      @$scope.values = {}
+      @values = angular.copy(@$scope.values)
+
       @advanced_tab = 'header'
       @is_advanced_expanded = false
       @asset_files = []
@@ -41,9 +49,11 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         url: '/portal/api/style/edit-theme-set/advanced-edits',
         data: @advanced
       })
+      promises = [@saveValues(), @editWelcomeBox(), request]
+      all = Promise.all(promises)
       @recompiling = true
-      request.then(
-        @saveValues,
+      all.then(
+        () => @recompiling = false; @refreshPreviewUrl(),
         () => @serverError(); @recompiling = false
       )
 
@@ -61,15 +71,20 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         () => @serverError(); @recompiling = false
       )
 
+    saveWelcomeBox: () =>
+      @editWelcomeBox().then(
+        () => @refreshReviewUrl()
+      )
+
     editWelcomeBox: () =>
       request = @$http({
         method: 'PUT',
         url: '/portal/api/style/edit-theme-set/welcome-message',
-        data: @welcome_box
+        data: @$scope.welcome_box
       })
       @recompiling = true
       request.then(
-        () => @refreshPreviewUrl(); @recompiling = false,
+        () => @recompiling = false; @welcome_box = angular.copy(@$scope.welcome_box),
         () => @serverError(); @recompiling = false
       )
 
@@ -77,20 +92,28 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       request = @$http({
         method: 'PUT',
         url: '/portal/api/style/edit-theme-set/variable-values',
-        data: @values
+        data: @$scope.values
       })
       @recompiling = true
       request.then(
-        () => @refreshPreviewUrl(); @recompiling = false,
+        () => @recompiling = false; @values = angular.copy(@$scope.values),
         () => @serverError(); @recompiling = false
       )
 
     commit: () ->
       @showConfirm('Are you sure you want to apply this changes to the portal?', 'Confirm save').result.then(
         () =>
-          @$http.get('/portal/api/style/edit-theme-set/commit').then(
-            () => @success('Changes were applied to the portal'),
-            () => @serverError(); @recompiling = false
+          if @isDirtyState()
+            promises = [@saveValues(), @editWelcomeBox()];
+          else
+            promises = [true]
+          all = Promise.all(promises)
+          all.then (
+            () =>
+              @$http.get('/portal/api/style/edit-theme-set/commit').then(
+                () => @success('Changes were applied to the portal'),
+                () => @serverError(); @recompiling = false
+              );
           );
       );
 
@@ -98,11 +121,11 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @showConfirm('Are you sure you want to discard all changes you\'ve made?', 'Confirm discard').result.then(
         () =>
           @recompiling = true
-          @$http.get('/portal/api/style/edit-theme-set/discard').then(
-            () => @loadAdvancedEdits(
-              () =>
-                @loadLogo()
-                @loadValues(() => @success('Changes were discarded'); @recompiling = false)),
+          request = @$http.get('/portal/api/style/edit-theme-set/discard')
+          promises = [request, @loadAdvancedEdits(), @loadLogo(), @loadValues()]
+          all = Promise.all(promises)
+          all.then(
+            () => new Promise( (resolve) => resolve(@refrechPreviewUrl())).then(() => @success('Changes were discarded'); @recompiling = false),
             () => @serverError(); @recompiling = false
           );
       )
@@ -141,7 +164,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     loadValues: (success) ->
       @$http.get('/portal/api/style/edit-theme-set/variable-values').success(
         (values) =>
-          angular.extend(@values, values)
+          angular.extend(@$scope.values, values)
+          @values = angular.copy(@$scope.values)
+
           if success
             success()
       )
@@ -254,7 +279,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
     loadWelcomeBox: () ->
       @$http.get('/portal/api/style/edit-theme-set/welcome-message').success((response) =>
-        @welcome_box = response.data
+        @$scope.welcome_box = response.data
+        @welcome_box = angular.copy(@$scope.welcome_box)
       )
 
     loadLogo: () ->
@@ -287,7 +313,10 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       return
 
     isDirtyState: ->
-      return @recompiling
+      return true if not angular.equals(@welcome_box, @$scope.welcome_box)
+      return true if not angular.equals(@values, @$scope.values)
+
+      return false
 
     notifyUrlCopied: () ->
       @Growl.success('File URL was copied to your clipboard');
