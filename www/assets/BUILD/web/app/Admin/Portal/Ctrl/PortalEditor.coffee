@@ -61,7 +61,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         () => @serverError(); @recompiling = false
       )
 
-     editWelcomeBox: () =>
+    editWelcomeBox: () =>
       request = @$http({
         method: 'PUT',
         url: '/portal/api/style/edit-theme-set/welcome-message',
@@ -86,22 +86,26 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       )
 
     commit: () ->
-      if window.confirm('Are you sure you want to apply this changes to the portal?')
-        @$http.get('/portal/api/style/edit-theme-set/commit').then(
-          () => @success('Changes were applied to the portal'),
-          () => @serverError(); @recompiling = false
-        );
+      @showConfirm('Are you sure you want to apply this changes to the portal?', 'Confirm save').result.then(
+        () =>
+          @$http.get('/portal/api/style/edit-theme-set/commit').then(
+            () => @success('Changes were applied to the portal'),
+            () => @serverError(); @recompiling = false
+          );
+      );
 
     discard: () ->
-      if window.confirm('Are you sure you want to discard all changes you\'ve made?')
-        @recompiling = true
-        @$http.get('/portal/api/style/edit-theme-set/discard').then(
-          () => @loadAdvancedEdits(
-            () =>
-              @loadLogo()
-              @loadValues(() => @success('Changes were discarded'); @recompiling = false)),
-          () => @serverError(); @recompiling = false
-        );
+      @showConfirm('Are you sure you want to discard all changes you\'ve made?', 'Confirm discard').result.then(
+        () =>
+          @recompiling = true
+          @$http.get('/portal/api/style/edit-theme-set/discard').then(
+            () => @loadAdvancedEdits(
+              () =>
+                @loadLogo()
+                @loadValues(() => @success('Changes were discarded'); @recompiling = false)),
+            () => @serverError(); @recompiling = false
+          );
+      )
 
     initialLoad: ->
       @$q.all([
@@ -282,6 +286,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       window.prompt('Copy this:', file.url)
       return
 
+    isDirtyState: ->
+      return @recompiling
+
     notifyUrlCopied: () ->
       @Growl.success('File URL was copied to your clipboard');
       return
@@ -330,8 +337,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       });
       modalInstance.result.then((email) => @preview_as_email = email; @refreshPreviewUrl())
 
-    error: (message) -> window.alert(message)
-    success: (message) -> window.alert(message)
+    error: (message) => @showAlert(message, 'Changes were not applied')
+    success: (message) => @showAlert(message, 'Changes were applied')
     serverError: => @error('Server error occurred. Unable to save data.')
 
   Admin_Portal_Ctrl_PortalEditor.EXPORT_CTRL()
