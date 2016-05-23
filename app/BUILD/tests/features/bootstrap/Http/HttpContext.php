@@ -89,6 +89,6 @@ class HttpContext extends BaseContext
      */
     public function iShouldSeeInTheHeader($header, $value)
     {
-        $this->assertSession()->responseHeaderEquals($header, $value);
+        $this->assertSession()->responseHeaderContains($header, $value);
     }
 }
