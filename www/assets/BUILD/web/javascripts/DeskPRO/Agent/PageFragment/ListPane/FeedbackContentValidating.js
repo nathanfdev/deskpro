@@ -48,11 +48,10 @@ DeskPRO.Agent.PageFragment.ListPane.FeedbackContentValidating = new Orb.Class({
 						complete: function() {
 							load.hide();
 							btn.show();
+							self.selectionBar.checkNone();
 						},
 						success: function() {
-							$(lines).fadeOut().each(function() {
-								self.listRemove($(this));
-							});
+							self.listRemove($(lines));
 						}
 					});
 				};
@@ -80,5 +79,23 @@ DeskPRO.Agent.PageFragment.ListPane.FeedbackContentValidating = new Orb.Class({
 		this.ownObject(this.selectionBar);
 
 		this.enableHighlightOpenRows('feedback', 'feedback_id', '.row-item.feedback-');
+	},
+
+	listRemove: function(el) {
+		var self = this;
+		if (el) {
+			el.slideUp({
+				complete: function() {
+					el.remove();
+					if ($('.row-item', self.wrapper).length < 1) {
+						DeskPRO_Window.loadListPane(self.meta.resetUrl);
+					}
+				}
+			});
+
+			DeskPRO_Window.util.modCountEl($('#validation-list-header-count', self.wrapper), '-', el.length);
+			DeskPRO_Window.util.modCountEl($('#feedback_validating_count'), '-', el.length);
+		}
+		DeskPRO_Window.sections.feedback_section.recountBadge();
 	}
 });
