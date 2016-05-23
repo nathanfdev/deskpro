@@ -4,9 +4,8 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.Basic,
 
 	initPage: function(el) {
-		var self = this;
 		this.wrapper = el;
-
+    var self = this;
 		var btn  = this.wrapper.find('.list-selection-bar .perform-actions-trigger');
 		var load = this.wrapper.find('.list-selection-bar .ajax-loading');
 
@@ -33,7 +32,8 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 
 				btn.hide();
 				load.show();
-
+        $(lines).fadeOut();
+        self.updateCount('sub', lines.length);
 				var action = $(info.itemEl).data('action');
 
 				$.ajax({
@@ -41,14 +41,17 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 					data: data,
 					type: 'POST',
 					dataType: 'json',
+          error: function() {
+            $(lines).fadeIn();
+            self.updateCount('add', lines.length)
+          },
 					complete: function() {
 						load.hide();
 						btn.show();
 					},
 					success: function() {
 						self.selectionBar.checkNone();
-						self.updateCount('sub', lines.length);
-						$(lines).fadeOut();
+            self.removeElement($(lines));
 					}
 				});
 			}
