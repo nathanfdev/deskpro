@@ -3,7 +3,8 @@ import { HeaderContainer } from './HeaderContainer';
 import { TaskCardPreviewContainer } from '../../TaskCard/TaskCardPreviewContainer';
 import { TaskCardPreview } from '../Card/TaskCard/TaskCardPreview';
 import { ListGroup } from './ListGroup';
-import { Table, CustomCardDragLayer } from '../../CustomCardDragLayer';
+import { Table } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
+import { CustomCardDragLayer } from '../../CustomCardDragLayer';
 import Immutable from 'immutable';
 
 export class TableView extends React.Component {

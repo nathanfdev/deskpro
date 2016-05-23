@@ -35,6 +35,7 @@ export class TaskCard extends BaseTaskCard {
     const onChange = this.onChange;
 
     const isVisible = type => tableVisibleFields.includes(type);
+
     const classes = classNames('ticket-tabular', {
       'is-over':       isOver,
       done:            task.get('is_done'),
@@ -44,7 +45,7 @@ export class TaskCard extends BaseTaskCard {
     let result = connectDragSource(
       <tr className={classes}>
         <Td className="bulk-edit-col">
-          <TableCheckbox selected={selected} onClick={onToggleSelected}/>
+          <TableCheckbox selected={selected} onClick={onToggleSelected} />
         </Td>
         <TdId visible={isVisible('id')}>
           <span className="dpw--ticket-id">

@@ -33,7 +33,7 @@ export class HeaderContainer extends React.Component {
       <thead>
       <tr className="tickets-tabular">
         <Th className="bulk-edit-col" />
-        <Th title="Id" className="id-col" sort="id" cvisible={isVisible('id')} {...columnProps} />
+        <Th title="Id" className="id-col" sort="id" visible={isVisible('id')} {...columnProps} />
         <Th title="Title" className="subject-col" sort="title" {...columnProps} />
         <Th title="Project" sort="project" visible={isVisible('project')} {...columnProps} />
         <Th title="Due" sort="date_due" visible={isVisible('date_due')} {...columnProps} />

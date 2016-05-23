@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import update from 'react/lib/update';
 import Immutable from 'immutable';
 import { ViewField } from './ViewField';
 
@@ -11,20 +10,20 @@ export class ViewOptionsList extends Component {
     configurableFields:  PropTypes.object.isRequired,
     overrideWidgetClass: PropTypes.bool,
     children:            PropTypes.node,
-    onClick:             PropTypes.func.isRequired
+    onClick:             PropTypes.func.isRequired,
+    type:                PropTypes.string.isRequired
   };
 
   constructor(props) {
     super(props);
-    this.moveCard = this.moveCard.bind(this);
     this.state = {
-      items: props.visibleFields
+      items: this.setItemsFromProps(props)
     };
   }
 
   componentWillReceiveProps(props) {
     this.setState({
-      items: props.visibleFields
+      items: this.setItemsFromProps(props)
     });
   }
 
@@ -32,45 +31,44 @@ export class ViewOptionsList extends Component {
     return !Immutable.is(state.items, this.state.items);
   }
 
-  onChangeDisplayOrder = () => {
-    const { value } = this.props;
-    console.log('Value', value);
+  onChangeDisplayOrder = (from, to) => {
+    let { items } = this.state;
+    const fromItem = items.get(from);
+    const toItem = items.get(to);
+    if (fromItem && toItem) {
+      items = items.set(from, toItem);
+      items = items.set(to, fromItem);
+      this.setState({ items });
+    }
   };
 
-  moveCard(dragIndex, hoverIndex) {
-    const { items } = this.state;
-    const dragCard = items[dragIndex];
-    console.log('Items', items);
-    console.log('Drag index', dragIndex);
-    console.log('Drag card', dragCard);
-
-    /*this.setState(update(this.state, {
-      items: {
-        $splice: [
-          [dragIndex, 1],
-          [hoverIndex, 0, dragCard]
-        ]
+  setItemsFromProps(props) {
+    return Immutable.List().withMutations(items => {
+      for (const [key, value] of Object.entries(props.configurableFields)) {
+        items.push({ key, value });
       }
-    }));*/
+    });
   }
 
   render() {
     // dpw-navigation-dropdown-column-list-v2 must be a widgetClass prop, because in some Item list we don't need this class
-    const { configurableFields, visibleFields, onClick } = this.props;
+    const { visibleFields, onClick, type } = this.props;
+    const { items } = this.state;
 
     return (
       <div className="dpw-navigation-dropdown-column-list">
         <ul>
-          {Object.entries(configurableFields).map(([name, label], index) =>
+          {items.map(({ key, value }, index) =>
             <ViewField
               key={`${index}`}
-              value={name}
-              label={label}
-              isShown={visibleFields.indexOf(name) > -1}
+              index={index}
+              value={key}
+              label={value}
+              type={type}
+              isShown={visibleFields.indexOf(key) > -1}
               changeState={onClick}
               widgetClass="dpw-navigation-dropdown-column-list-item"
               onChangeDisplayOrder={this.onChangeDisplayOrder}
-              moveCard={this.moveCard}
               overrideWidgetClass
               listItem
             />

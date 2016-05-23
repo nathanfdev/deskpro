@@ -18,7 +18,7 @@ export class CustomCardDragLayer extends React.Component {
     }),
     isDragging: PropTypes.bool.isRequired,
     children:   PropTypes.node.isRequired,
-    itemType:   PropTypes.string.isRequired
+    itemType:   PropTypes.string
   };
 
   shouldComponentUpdate(props) {

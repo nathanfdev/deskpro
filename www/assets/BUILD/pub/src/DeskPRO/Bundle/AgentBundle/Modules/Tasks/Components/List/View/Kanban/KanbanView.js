@@ -46,10 +46,12 @@ export class KanbanView extends React.Component {
     return (
       <div className="kanban kanban-columns">
         {groups.map((taskGroup, index) =>
-          <ListGroup key={index}
-                     group={taskGroup}
-                     onChangeGroup={onChangeGroup}
-                     onUpdate={this.onUpdate.bind(this, index)} />
+          <ListGroup
+            key={index}
+            group={taskGroup}
+            onChangeGroup={onChangeGroup}
+            onUpdate={this.onUpdate.bind(this, index)}
+          />
         )}
 
         <CustomCardDragLayer>

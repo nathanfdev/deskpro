@@ -54,7 +54,13 @@ export class TaskCardEditContainer extends React.Component {
       return true;
     }
 
-    return !Immutable.is(this.state.task, state.task);
+    return !Immutable.is(this.state.task, state.task)
+      || !Immutable.is(props.cardVisibleFields, this.props.cardVisibleFields)
+      || !Immutable.is(props.tableVisibleFields, this.props.tableVisibleFields)
+      || !Immutable.is(props.kanbanVisibleFields, this.props.kanbanVisibleFields)
+      || !Immutable.is(props.calendarVisibleFields, this.props.calendarVisibleFields)
+      || !Immutable.is(props.currentOrderBy, this.props.currentOrderBy)
+      ;
   }
 
   componentWillUpdate(props, state) {

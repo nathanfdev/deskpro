@@ -4,71 +4,33 @@ import { findDOMNode } from 'react-dom';
 import classNames from 'classnames';
 import { DragSource, DropTarget } from 'react-dnd';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import { getEmptyImage } from 'react-dnd-html5-backend';
 
 export const cardSource = {
-  beginDrag({ value }, {}, component) {
-    console.info('begin drag', value);
+  beginDrag({ index, type, onChangeDisplayOrder }, {}, component) {
     return {
-      id:    value,
+      index,
+      type,
+      onChangeDisplayOrder,
       width: jQuery(findDOMNode(component)).width()
     };
-  },
-  canDrag({ editing, updateData = {} }) {
-    console.info(editing, updateData);
-    return true;
   }
 };
 
 export const cardSourceCollect = (dragConnect, monitor) => ({
   connectDragSource:  dragConnect.dragSource(),
-  connectDragPreview: dragConnect.dragPreview(),
   isDragging:         monitor.isDragging()
 });
 
 export const cardTarget = {
-  hover(props, monitor, component) {
-    const dragIndex  = monitor.getItem().index;
-    const hoverIndex = props.index;
-
-    // Don't replace items with themselves
-    if (dragIndex === hoverIndex) {
-      return;
+  drop({ index, type }, monitor) {
+    const item = monitor.getItem();
+    if (item.onChangeDisplayOrder) {
+      item.onChangeDisplayOrder(item.index, index);
     }
-
-    // Determine rectangle on screen
-    const hoverBoundingRect = findDOMNode(component).getBoundingClientRect();
-
-    // Get vertical middle
-    const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-
-    // Determine mouse position
-    const clientOffset = monitor.getClientOffset();
-
-    // Get pixels to the top
-    const hoverClientY = clientOffset.y - hoverBoundingRect.top;
-
-    // Only perform the move when the mouse has crossed half of the items height
-    // When dragging downwards, only move when the cursor is below 50%
-    // When dragging upwards, only move when the cursor is above 50%
-
-    // Dragging downwards
-    if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-      return;
-    }
-
-    // Dragging upwards
-    if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
-      return;
-    }
-
-    // Time to actually perform the action
-    props.moveCard(dragIndex, hoverIndex);
-
-    // Note: we're mutating the monitor item here!
-    // Generally it's better to avoid mutations,
-    // but it's good here for the sake of performance
-    // to avoid expensive index searches.
-    monitor.getItem().index = hoverIndex;
+  },
+  canDrop({ index, type }, monitor) {
+    return type === (monitor.getItem() || {}).type;
   }
 };
 
@@ -86,15 +48,14 @@ export class ViewField extends Component {
    * @type {Object}
    */
   static propTypes = {
-    fixed:             PropTypes.bool,
-    isShown:           PropTypes.any,
-    changeState:       PropTypes.func,
-    value:             PropTypes.string.isRequired,
-    label:             PropTypes.string.isRequired,
-    connectDragSource: PropTypes.func.isRequired,
-    connectDropTarget: PropTypes.func.isRequired,
-    isDragging:        PropTypes.bool.isRequired,
-    moveCard:          PropTypes.func.isRequired
+    fixed:              PropTypes.bool,
+    isShown:            PropTypes.any,
+    changeState:        PropTypes.func,
+    value:              PropTypes.string.isRequired,
+    label:              PropTypes.string.isRequired,
+    connectDragSource:  PropTypes.func.isRequired,
+    connectDropTarget:  PropTypes.func.isRequired,
+    isDragging:         PropTypes.bool.isRequired
   };
 
   clickHandle = (event) => {
@@ -106,13 +67,12 @@ export class ViewField extends Component {
   };
 
   renderStatus() {
-    const style = {};
     if (!this.props.isShown) {
-      style.display = 'none';
+      return null;
     }
 
     return (
-      <span className="dpw-navigation-dropdown-column-list-status" style={style}>
+      <span className="dpw-navigation-dropdown-column-list-status">
         <i className="fa fa-check" />
       </span>
     );
@@ -127,7 +87,7 @@ export class ViewField extends Component {
 
     return connectDragSource(connectDropTarget(
       <li className={classNames({ 'dragging-item': isDragging })} onClick={this.clickHandle}>
-        <a className={anchorClasses} href="#">
+        <a className={anchorClasses}>
           {this.renderStatus()}
           <span className="dpw-navigation-dropdown-column-list-move">
             <i className={moveIconClass} />

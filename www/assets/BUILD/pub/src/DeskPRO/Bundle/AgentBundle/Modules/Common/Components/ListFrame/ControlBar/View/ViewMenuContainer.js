@@ -109,9 +109,7 @@ class ViewOptionsContainer extends Component {
                 isActive={viewMode === type}
               />
 
-              <ViewOptionsList
-                visibleFields={option.visibleFields}
-                configurableFields={option.configurableFields}
+              <ViewOptionsList visibleFields={option.visibleFields} configurableFields={option.configurableFields}
                 type={type}
                 onClick={onClick}
               />
