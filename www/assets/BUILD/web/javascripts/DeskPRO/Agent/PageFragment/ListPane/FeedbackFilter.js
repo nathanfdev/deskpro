@@ -19,6 +19,7 @@ DeskPRO.Agent.PageFragment.ListPane.FeedbackFilter = new Orb.Class({
 			refreshUrl: this.meta.refreshUrl,
 			prefSaveResultId: '0'
 		});
+
 		this.ownObject(this.displayOptions);
 
 		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {
@@ -42,7 +43,7 @@ DeskPRO.Agent.PageFragment.ListPane.FeedbackFilter = new Orb.Class({
 			onItemClicked: function(info) {
 				var item = $(info.itemEl);
 
-				var prop = item.data('order-by')
+				var prop = item.data('order-by');
 				var label = item.text().trim();
 
 				// Change the displayed label for some visual feedback

@@ -33,6 +33,9 @@ namespace DpSys\LowError;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class SystemErrorHandler
 {
@@ -54,7 +57,11 @@ class SystemErrorHandler
     /**
      * @var string|null
      */
-    private static $bugsnagApiKey = null;
+    private static $bugsnagConfig = [
+        'api_key'     => null,
+        'app_version' => null,
+        'metadata'    => [],
+    ];
 
     /**
      * @var null|\Bugsnag_Client
@@ -108,21 +115,7 @@ class SystemErrorHandler
      */
     public static function handleException(/*Throwable*/ $exception)
     {
-        if (self::$isHandlingException) {
-            return;
-        }
-
-        // Dont log 404's
-        if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
-            return;
-        }
-        if ($exception instanceof \Symfony\Component\Routing\Exception\MethodNotAllowedException) {
-            return;
-        }
-        if ($exception instanceof \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException) {
-            return;
-        }
-        if ($exception instanceof \Application\DeskPRO\HttpKernel\Exception\NoPermissionException) {
+        if (self::$isHandlingException || !self::shouldLog($exception)) {
             return;
         }
 
@@ -144,6 +137,10 @@ class SystemErrorHandler
      */
     public static function logException(\Exception $exception, $send = false, $unique_id = null)
     {
+        if (!self::shouldLog($exception)) {
+            return;
+        }
+
         static $got_unique_ids = array();
 
         /* @var \DpRun\DpEnv */
@@ -181,6 +178,20 @@ class SystemErrorHandler
             $einfo['no_send_error'] = true;
         }
         self::logErrorInfo($einfo);
+    }
+
+    private static function shouldLog(\Exception $exception)
+    {
+        if (($exception instanceof HttpException
+             && $exception->getStatusCode() >= 400
+             && $exception->getStatusCode() < 500)
+            || $exception instanceof MethodNotAllowedException
+            || $exception instanceof AccessDeniedException
+        ) {
+            return false;
+        }
+
+        return true;
     }
 
     public static function logExceptionIfUniqueBacktrace(/*Throwable*/ $e, $send = false)
@@ -722,21 +733,28 @@ class SystemErrorHandler
             return self::$bugsnagClient;
         }
 
-        if (self::$bugsnagApiKey) {
+        if (self::$bugsnagConfig['api_key']) {
             if (!class_exists('Bugsnag_Client', true)) {
                 // failed to autoload the class, so ignore
-                self::$bugsnagApiKey = null;
+                self::$bugsnagConfig['api_key'] = null;
 
                 return;
             }
 
-            self::$bugsnagClient = new \Bugsnag_Client(self::$bugsnagApiKey);
+            self::$bugsnagClient = new \Bugsnag_Client(self::$bugsnagConfig['api_key']);
             self::$bugsnagClient->setProjectRoot(self::getDpEnv()->getDpRoot());
             self::$bugsnagClient->setAutoNotify(false);
+            if (isset(self::$bugsnagConfig['metadata']) && is_array(self::$bugsnagConfig['metadata'])) {
+                self::$bugsnagClient->setMetaData(['deskpro' => self::$bugsnagConfig['metadata']]);
+            }
 
-            $buildNumFile = self::getDpEnv()->getAppDir().'/sys/config/build-num.txt';
-            if (file_exists($buildNumFile)) {
-                self::$bugsnagClient->setAppVersion(trim(file_get_contents($buildNumFile)));
+            if (self::$bugsnagConfig['app_version']) {
+                self::$bugsnagClient->setAppVersion(self::$bugsnagConfig['app_version']);
+            } else {
+                $buildNumFile = self::getDpEnv()->getAppDir().'/sys/config/build-num.txt';
+                if (file_exists($buildNumFile)) {
+                    self::$bugsnagClient->setAppVersion(trim(file_get_contents($buildNumFile)));
+                }
             }
         }
 
@@ -744,12 +762,13 @@ class SystemErrorHandler
     }
 
     /**
-     * @param string $bugsnagApiKey
+     * @param array $bugsnagConfig
      */
-    public static function setBugsnagApiKey($bugsnagApiKey)
+    public static function setBugsnagConfig(array $bugsnagConfig = ['api_key' => null])
     {
-        self::$bugsnagApiKey = $bugsnagApiKey;
+        self::$bugsnagConfig = array_replace(self::$bugsnagConfig, $bugsnagConfig);
         self::$bugsnagClient = null;
+        self::getBugsnagClient()->notifyError('test', 'test');
     }
 
     /**
