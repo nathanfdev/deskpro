@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 export class ListGroupingControlContainer extends Component {
   static propTypes = {
     dispatch:                PropTypes.func.isRequired,
+    id:                      PropTypes.number,
     content:                 PropTypes.string.isRequired,
     visible:                 PropTypes.bool.isRequired,
     changeListGrouping:      PropTypes.func.isRequired,
@@ -24,10 +25,11 @@ export class ListGroupingControlContainer extends Component {
 
   applyFilterEditing = (e) => {
     const options = e.target.options;
-    const { dispatch, content, closeGroupingVisibility, changeListGrouping } = this.props;
+    const { dispatch, content, closeGroupingVisibility, changeListGrouping, id = null } = this.props;
+
     for (let i = 0; i < options.length; i++) {
       if (options[i].selected) {
-        dispatch(changeListGrouping(options[i].value, content));
+        dispatch(changeListGrouping(options[i].value, content, id));
         break;
       }
     }

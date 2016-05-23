@@ -50,40 +50,6 @@ class TicketFilterPrefsController extends CrudSubController
     public static $parentProperty = 'filter';
 
     /**
-     * @ApiDoc(
-     *      description="Set current user preferences for filter",
-     *      requirements={
-     *          {
-     *              "name"="parentId",
-     *              "requirement"="\d+",
-     *              "description"="the id of the filter",
-     *              "dataType"="integer"
-     *          },
-     *     },
-     *      statusCodes={
-     *          200="Success",
-     *          404="Returned if set was not found"
-     *      }
-     * )
-     * @Rest\Post("")
-     *
-     * @param Request $request
-     *
-     * @return \FOS\RestBundle\View\View
-     */
-    public function setPrefAction(Request $request)
-    {
-        $filter = $this->findParentOr404();
-        $pref   = $this->getManager()->getRepository(TicketFilterPreference::class)
-            ->findOneBy(['filter' => $filter, 'agent' => $this->getUser()]);
-        if ($pref) {
-            return $this->putAction($pref->getId(), $request);
-        }
-
-        return $this->postAction($request);
-    }
-
-    /**
      * {@inheritdoc}
      */
     protected function handleForm($model, Request $request, array $options = [])

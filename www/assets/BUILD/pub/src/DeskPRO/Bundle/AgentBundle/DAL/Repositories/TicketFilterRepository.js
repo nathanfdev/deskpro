@@ -17,4 +17,9 @@ export class TicketFilterRepository extends ApiRepository {
     const params = { main_grouping: groupBy };
     return this.api.sendPost(`DP_API/${this.url}/${parentId}/prefs`, params);
   }
+
+  putFilterPref(parentId, prefId, groupBy) {
+    const params = { main_grouping: groupBy };
+    return this.api.sendPut(`DP_API/${this.url}/${parentId}/prefs/${prefId}`, params);
+  }
 }
