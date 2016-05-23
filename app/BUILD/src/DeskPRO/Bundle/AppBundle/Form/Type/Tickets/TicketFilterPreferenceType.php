@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
-use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterPreference;
 use Symfony\Component\Form\AbstractType;
@@ -89,7 +88,7 @@ class TicketFilterPreferenceType extends AbstractType
                  'main_grouping'   => '',
                  'result_grouping' => '', ]
             )
-            ->setRequired(['filter', 'agent'])
-            ->setAllowedTypes(['filter' => TicketFilter::class, 'agent' => Person::class]);
+            ->setRequired(['filter'])
+            ->setAllowedTypes(['filter' => TicketFilter::class]);
     }
 }

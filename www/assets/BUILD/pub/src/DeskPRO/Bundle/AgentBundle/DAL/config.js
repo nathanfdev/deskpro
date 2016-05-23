@@ -10,7 +10,6 @@ import { ContentRepository } from './Repositories/ContentRepository';
 import { CommentsRepository } from './Repositories/CommentsRepository';
 
 export const repositoriesConfig = {
-  Agent:                { type: 'api', url: '/helpdesk/agent-client/settings' },
   Ticket:               { type: 'api', url: '/tickets' },
   TicketFilter:         { type: 'api', url: '/new/ticket_filters', repositoryClass: TicketFilterRepository },
   UserChat:             { type: 'api', url: '/user_chats', repositoryClass: UserChatRepository },
