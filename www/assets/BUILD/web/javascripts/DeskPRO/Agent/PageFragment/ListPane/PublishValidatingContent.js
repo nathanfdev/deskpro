@@ -6,15 +6,12 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingContent = new Orb.Class({
 	initPage: function(el) {
 		var self = this;
 		this.wrapper = el;
-
-		DeskPRO_Window.getMessageBroker().addMessageListener('publish.validating.list-remove', function (info) {
-			var el = $('article.' + info.typename + '-' + info.contentId).slideUp();
-			self.reduceCount();
-			self.listRemove(el);
-		});
-
 		var btn  = this.wrapper.find('.list-selection-bar .perform-actions-trigger');
 		var load = this.wrapper.find('.list-selection-bar .ajax-loading');
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('publish.validating.list-remove', function (info) {
+			self.selectionBar.checkNone();
+		});
 
 		this.actionsMenu = new DeskPRO.UI.Menu({
 			menuElement: $('ul.actions-menu:first', this.wrapper),
@@ -84,18 +81,4 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingContent = new Orb.Class({
 
 		this.enableHighlightOpenRows('feedback', 'feedback_id', '.row-item.feedback-');
 	},
-
-	listRemove: function(el) {
-		DeskPRO_Window.util.modCountEl($('#publish_validating_count'), '-');
-		DeskPRO_Window.sections.publish_section.recountBadge();
-		this.selectionBar.checkNone();
-	},
-
-	reduceCount: function() {
-		var validation = $('#validation-list-header-count');
-		var text = validation.text();
-		var val         = parseInt(text, 10) - 1;
-    val = (val < 0) ? 0 : val;
-		validation.text(text.replace(/(\d+)/, val));
-	}
 });

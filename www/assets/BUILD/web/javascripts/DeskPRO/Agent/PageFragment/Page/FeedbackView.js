@@ -68,9 +68,9 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 		});
 		this.ownObject(this.relatedContent);
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('publish.validating.list-remove', function (info) {
-			$('article.' + info.typename + '-' + info.contentId).slideUp();
-		});
+		//DeskPRO_Window.getMessageBroker().addMessageListener('publish.validating.list-remove', function (info) {
+		//	$('article.' + info.typename + '-' + info.contentId).slideUp();
+		//});
 
 		this.miscContent = new DeskPRO.Agent.PageHelper.MiscContent(this, {
 			revisionCompareUrl: BASE_URL + 'agent/feedback/compare-revs/{OLD}/{NEW}'
