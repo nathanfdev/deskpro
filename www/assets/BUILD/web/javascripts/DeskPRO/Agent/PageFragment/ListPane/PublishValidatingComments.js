@@ -178,6 +178,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 		if (!el) {
 			el = $('article.' + typename + '-' + commentId, this.wrapper);
 		}
+
 		el.fadeOut();
 
 		this.updateCount('sub');
@@ -192,8 +193,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 				el.fadeIn();
 			},
 			success: function(data) {
-				el.remove();
-
+        this.removeElement(el);
 				if (DeskPRO_Window.sections.publish_section) {
 					DeskPRO_Window.sections.publish_section.modCommentCount(typename, '-');
 				}
@@ -217,14 +217,10 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 			dataType: 'json',
 			error: function() {
 				this.updateCount('add');
-				if (el) {
-					el.fadeIn();
-				}
+        !el || el.fadeIn();
 			},
 			success: function(data) {
-				if (el) {
-					el.remove();
-				}
+        this.removeElement(el);
 			}
 		});
 	},
@@ -238,23 +234,17 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 	},
 
 	updateCount: function(action, num) {
-		var countEl = $('#publish_validating_comments_count');
-		var count = parseInt(countEl.text());
-
+		var countEl = '#publish_validating_comments_count';
 		num = num || 1;
-
-		if (action == 'add') {
-			count += num;
-		} else {
-			count -= num;
-		}
-
-		if (count < 0) {
-			count = 0;
-		}
-
-		var countEl = $('#publish_validating_comments_count').text(count);
-
+		DeskPRO_Window.util.modCountEl(countEl, action, num);
 		DeskPRO_Window.sections.publish_section.recountBadge();
-	}
+	},
+
+  removeElement(el) {
+    el.remove();
+    if ($('.row-item', this.wrapper).not('.edit-comment').length < 1) {
+      DeskPRO_Window.loadListPane(this.meta.resetUrl);
+      this.destroy();
+    }
+  }
 });

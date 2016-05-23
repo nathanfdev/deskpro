@@ -77,7 +77,7 @@ DeskPRO.Agent.WindowElement.Section.Feedback = new Orb.Class({
 				}
 			});
 
-			DeskPRO_Window.util.modCountEl($('#validation-list-header-count'), '-');
+			DeskPRO_Window.util.modCountEl($('#validation-list-header-count', this.wrapper), '-');
 		}
 		this.recountBadge();
 	}
