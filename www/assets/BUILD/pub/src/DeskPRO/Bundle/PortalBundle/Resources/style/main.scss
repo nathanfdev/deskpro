@@ -2925,6 +2925,13 @@ header {
     &:hover { background: darken($surface-secondary, 10%); }
     &.unsubscribe { background: darken($surface-secondary, 5%); }
 
+    //span {
+    //  display: none;
+    //}
+    //&:hover span{
+    //  display: inline;
+    //}
+
     i {
       position: relative;
       top: -1px;

@@ -422,4 +422,16 @@ class ArticlesController extends AbstractController
 
         return $pdfRenderer->generateFile($contentHtml->getContent(), $article->getTitle().'.pdf');
     }
+
+    /**
+     * @Route("/kb/articles/share/{slug}", name="portal_articles_share")
+     * @ParamConverter(name="article", converter="deskpro_share")
+     * @Security("is_granted('USE_ARTICLES') and is_granted('SHARE_ARTICLES') and is_granted('VIEW_ARTICLE', article)")
+     *
+     * @param Article $article
+     * @param int     $visitor_id
+     */
+    public function shareAction(Article $article, $visitor_id)
+    {
+    }
 }
