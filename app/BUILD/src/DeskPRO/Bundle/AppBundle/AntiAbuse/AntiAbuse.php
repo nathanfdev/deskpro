@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\AntiAbuse;
 
 use Application\DeskPRO\Entity\Person;
@@ -53,6 +54,7 @@ class AntiAbuse
     const ACTION_SUBMIT_COMMENT  = 'submit_comment';
     const ACTION_SUBMIT_FEEDBACK = 'submit_feedback';
     const ACTION_SUBMIT_TICKET   = 'submit_ticket';
+    const ACTION_SHARE_CONTENT   = 'share_content';
 
     // the EVENT_ consts are needed, because the ACTION_ are legacy and
     // cannot be used by themselves as event names for this sytem.

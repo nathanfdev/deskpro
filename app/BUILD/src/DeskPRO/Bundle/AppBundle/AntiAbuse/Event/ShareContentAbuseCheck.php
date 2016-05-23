@@ -31,15 +31,15 @@ namespace DeskPRO\Bundle\AppBundle\AntiAbuse\Event;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
 
 /**
- * Check vs "registration form" feature abuse.
+ * Check vs "share content" feature abuse.
  */
-class SubmitCommentAbuseCheck extends AntiAbuseEvent
+class ShareContentAbuseCheck extends AntiAbuseEvent
 {
     /**
      * @return string
      */
     public function getType()
     {
-        return AntiAbuse::ACTION_SUBMIT_COMMENT;
+        return AntiAbuse::ACTION_SHARE_CONTENT;
     }
 }

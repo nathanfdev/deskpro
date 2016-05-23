@@ -1,0 +1,13 @@
+<dp:subject>{{ phrase('portal.email_subjects.share-article') }}</dp:subject>
+
+{{ phrase('portal.emails.greeting') }}
+
+<br /><br />
+
+{{ message }}
+
+<a href="{{ portal_url(article) }}">{{ article.title }}</a>
+
+<br /><br />
+
+{{ phrase('portal.emails.end_greeting')| raw }}

@@ -1,0 +1,26 @@
+{% extends 'Theme::layout.html.twig' %}
+{% block inner_content %}
+
+<div class="article-share" id="article-share-form">
+    {{ form_errors(form) }}
+    {{ form_start(form, { attr: { class: 'form-article' } }) }}
+    {% if form_errors|length > 0 %}
+        <div class="column-full">
+            <div class="bucket">
+                <div class="form-error-list" style="max-width: 620px;">
+                    <ul>
+                        {% for error in form_errors %}
+                            {% set error_view = error.origin.createView() %}
+                            <li>
+                                <span>{{ phrase_form_error(error) }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    {{ form_rest(form) }}
+    {{ form_end(form) }}
+</div>
+{% endblock %}

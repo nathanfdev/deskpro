@@ -33,6 +33,7 @@
 namespace DeskPRO\Bundle\PortalBundle\EmailSender;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Person;
@@ -240,6 +241,28 @@ class PortalEmailSender
         $message->addFrom($this->getDefaultOutgoingEmailAddress());
         $message->prepare();
         $this->container->get('mailer')->send($message);
+    }
+
+    public function sendShareArticle(Article $article, Person $author, $emails)
+    {
+        foreach ($emails as $email) {
+            if ($email instanceof Person) {
+                $emailTo = new EmailTo($email);
+            } else {
+                $emailTo = new EmailTo();
+                $emailTo->setTo($email['address'], $email['name']);
+            }
+
+            $this->sendTo(
+                $emailTo,
+                'DeskPRO:emails_user:share-article.html.twig',
+                [
+                    'author_email' => $author->getEmailAddress(),
+                    'author_name'  => $author->getName(),
+                    'article'      => $article,
+                ]
+            );
+        }
     }
 
     public function getDefaultOutgoingEmailAddress()

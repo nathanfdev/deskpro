@@ -51,6 +51,7 @@ return array(
     'portal.general.btn-email'                   => 'Email',
     'portal.general.btn-go'                      => 'Go',
     'portal.general.btn-print'                   => 'Print',
+    'portal.general.btn-send-email'              => 'Send e-mail',
     'portal.general.btn-share'                   => 'Share',
     'portal.general.btn-subscribe'               => 'Subscribe',
     'portal.general.btn-unsubscribe'             => 'Unsubscribe',

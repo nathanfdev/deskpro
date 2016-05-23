@@ -13,7 +13,7 @@
           {% show kb_subscription_link %}
           {#<a href="#"><span>{{ phrase('portal.general.btn-email') }} </span><i class="fa fa-envelope"></i></a>#}
           {#<a href="#"><span>{{ phrase('portal.general.btn-print') }} </span><i class="fa fa-print"></i></a>#}
-          <a href="#" class="share-button"><span>{{ phrase('portal.general.btn-share') }}</span> <i class="fa fa-share"></i></a>
+          <a href="{{ path('portal_articles_share', {slug: article.slug}) }}" class="share-button"><span>{{ phrase('portal.general.btn-share') }}</span> <i class="fa fa-share"></i></a>
           <a href="{{ path('portal_articles_pdf', {slug: article.slug}) }}"><span>{{ phrase('portal.general.btn-download-pdf') }}</span> <i class="fa fa-file-pdf-o"></i></a>
         </div>
       </div>

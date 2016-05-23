@@ -128,3 +128,9 @@ services:
         arguments: ["@service_container"]
         tags:
             - { name: security.voter }
+
+    share_content.voter:
+        class: DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ShareContentVoter
+        arguments: ["@service_container"]
+        tags:
+            - { name: security.voter }

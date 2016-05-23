@@ -54,6 +54,7 @@ return [
     'portal.forms.label_workflow'         => 'Workflow',
     'portal.forms.label_cc'               => 'CCs',
     'portal.forms.label_select'           => 'Select...',
+    'portal.forms.label_send_to_myself'   => 'Send to myself',
 
     'portal.forms.error_ticket_department_required' => 'A department is required',
     'portal.forms.error_ticket_department_invalid'  => 'You can\'t select a parent department',

@@ -5,14 +5,13 @@ import { ShareButton as ReactShareButton } from '../React/ShareButton';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import $ from 'jquery';
 
-export class ShareButton extends PageWidget {
+export class ShareWidget extends PageWidget {
 
   renderWidget() {
-    this.$element.hide();
-    this.$rElement = $('<a href="#">' + portalPhrases.get('portal.general.btn-share') + '<i class="fa fa-share"></i></a>').insertAfter(this.$element);
+    this.$rElement = $('<div></div>').insertAfter(this.$element);
 
     const component = React.createElement(ReactShareButton, {});
-    this.$rElement.get(0).click(function (e) {
+    this.$element.click(function (e) {
       console.log(component);
     });
 

@@ -425,13 +425,41 @@ class ArticlesController extends AbstractController
 
     /**
      * @Route("/kb/articles/share/{slug}", name="portal_articles_share")
-     * @ParamConverter(name="article", converter="deskpro_share")
+     * @ParamConverter(name="article", converter="deskpro_slug")
      * @Security("is_granted('USE_ARTICLES') and is_granted('SHARE_ARTICLES') and is_granted('VIEW_ARTICLE', article)")
      *
+     * @param Request $request
      * @param Article $article
-     * @param int     $visitor_id
+     *
+     * @return Response
      */
-    public function shareAction(Article $article, $visitor_id)
+    public function shareAction(Request $request, Article $article)
     {
+        $form = $this->createForm('share_article');
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            //            $this->runAntiAbuseCheck($request);
+
+            $emails = [];
+
+            $this->getEmailSender()->sendShareArticle($article, $this->getUser(), $emails);
+
+            $this->addFlash('success', $this->phrase('portal.flashes.email_sent'));
+
+            return $this->redirectToRoute('portal_kb_view', ['slug' => $article->getSlug()]);
+        } elseif ($form->isSubmitted()) {
+            //            $this->runAntiAbuseCheck($request);
+        }
+
+        return $this->renderThemeView(
+            'Theme:Articles:share.html.twig',
+            [
+                'article'     => $article,
+                'form'        => $form->createView(),
+                'form_errors' => $form->isSubmitted() ? $form->getErrors() : [],
+            ]
+        );
     }
 }

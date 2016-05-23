@@ -61,6 +61,7 @@ return array(
     'portal.email_subjects.remind_unresolved_final_subject' => 'REMINDER: {{ticket.subject}}',
     'portal.email_subjects.register-welcome-byagent'        => 'Your new helpdesk account',
     'portal.email_subjects.ticket-rate'                     => 'Rate your support experience for your ticket "{{ticket.subject}}"',
+    'portal.email_subjects.share-article'                   => '{{author_name}} wants to share this article with you',
     'portal.email_subjects.ticket_new-participant'          => 'A new person has been added to your ticket',
     'portal.email_subjects.ticket_added_cc'                 => 'You have been added to the ticket "{{ticket.subject}}"',
     'portal.email_subjects.tickets_re'                      => 'RE: {{ticket.subject}}',
