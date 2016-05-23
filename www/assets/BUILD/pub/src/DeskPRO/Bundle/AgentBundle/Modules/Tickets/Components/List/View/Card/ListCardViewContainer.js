@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { toggleSelectedAction } from '../../../../../Application/Actions/massActions';
 import { cardVisibleFieldsSelector } from '../../../../Selectors/list';
 import { TicketCard } from './TicketCard';
-import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { collectionSelectorFactory } from '../../../../../../../AppBundle/Modules/RecordsStore';
 import { selectedSelector } from '../../../../../Application/Selectors/massActions';
 
 @connect(state => ({
@@ -15,14 +15,12 @@ import { selectedSelector } from '../../../../../Application/Selectors/massActio
 export class ListCardViewContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    ids:      PropTypes.array.isRequired,
     tickets:  PropTypes.object.isRequired,
     fields:   PropTypes.object.isRequired,
     selected: PropTypes.object.isRequired
   };
 
   toggleSelected = (id) => {
-//    e.stopPropagation();
     this.props.dispatch(toggleSelectedAction(id));
   };
 
@@ -31,11 +29,13 @@ export class ListCardViewContainer extends Component {
     const id = ticket.get('id');
 
     return (
-      <TicketCard key={id}
-                  fields={fields}
-                  selected={selected.indexOf(id) > -1}
-                  toggleSelected={this.toggleSelected}
-                  ticket={ticket} />
+      <TicketCard
+        key={id}
+        fields={fields}
+        selected={selected.indexOf(id) > -1}
+        toggleSelected={this.toggleSelected}
+        ticket={ticket}
+      />
     );
   }
 

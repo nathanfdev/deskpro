@@ -1,11 +1,11 @@
 import React, { Component, PropTypes } from 'react';
-import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import { constants } from '../../../../../../../Bundle/AgentBundle/Constants/Constants';
 import classNames from 'classnames';
 
 export class Table extends Component {
 
   static propTypes = {
-    children: PropTypes.any.isRequired,
+    children:       PropTypes.any.isRequired,
     tableClassName: PropTypes.string
   };
 
@@ -59,6 +59,7 @@ export class Th extends Component {
 
   onChange = () => {
     const { sort, orderBy, orderDir, onChange } = this.props;
+
     if (!onChange) {
       return;
     }
@@ -80,11 +81,7 @@ export class Th extends Component {
     return (
       <th onClick={this.onChange} className={classNames(className, { hidden: !visible }, { sortable: !!onChange })}>
         {title}
-        {sort && orderBy === sort &&
-        <span>
-          <i className={classNames('fa', classes)} />
-        </span>
-        || null}
+        {sort && orderBy === sort && <span><i className={classNames('fa', classes)} /></span>}
       </th>
     );
   }
@@ -143,7 +140,7 @@ export class PersonInTable extends Component {
     const { person } = this.props;
     return (
       <div className="user">
-        <span className="dpw--avatar-face" style={{ backgroundImage: 'url(../img/avatars/avatar1.png)' }}></span>
+        <span className="dpw--avatar-face" style={{ backgroundImage: 'url(../img/avatars/avatar1.png)' }} />
         <span className="agent-name">{person.get('name')} {person.get('primary_email')}</span>
       </div>
     );
@@ -160,12 +157,12 @@ export class TableCheckbox extends Component {
   render() {
     const divClasses      = classNames('dpwd-navigation-top-row-mass-action-checkbox', { active: this.props.selected });
     const checkboxClasses = classNames('fa', { 'fa-check': this.props.selected });
-    const style = { position: 'relative', border: 'none', margin: 0, width: 'auto', height: 'auto' };
+    const style           = { position: 'relative', border: 'none', margin: 0, width: 'auto', height: 'auto' };
 
     return (
       <div className="dpwd-navigation-top-row-mass-action-checkbox-container" style={style}>
         <div className={divClasses} onClick={this.props.onClick} style={{ margin: 0, padding: 0 }}>
-          <i className={checkboxClasses}></i>
+          <i className={checkboxClasses} />
         </div>
       </div>
     );

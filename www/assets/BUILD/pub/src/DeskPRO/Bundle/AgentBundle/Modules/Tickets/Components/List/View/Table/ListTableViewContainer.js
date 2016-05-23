@@ -7,20 +7,14 @@ import {
   TdId,
   TdTitle,
   TableCheckbox
-} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
-import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
-import {
-  elementsSelector,
-  listOrderBySelector,
-  listOrderDirSelector,
-  tableVisibleFieldsSelector
-} from '../../../../Selectors/list';
+} from '../../../../../Common/Components/ListFrame';
+import { collectionSelectorFactory } from '../../../../../../../AppBundle/Modules/RecordsStore';
+import { listOrderBySelector, listOrderDirSelector, tableVisibleFieldsSelector } from '../../../../Selectors/list';
 import { selectedSelector } from '../../../../../Application/Selectors/massActions';
 import { toggleSelectedAction } from '../../../../../Application/Actions/massActions';
 import { applyListParams } from '../../../../Actions/listActions';
 
 @connect(state => ({
-  ids:      elementsSelector(state),
   tickets:  collectionSelectorFactory('Ticket', 'list')(state),
   orderBy:  listOrderBySelector(state),
   orderDir: listOrderDirSelector(state),
@@ -30,7 +24,6 @@ import { applyListParams } from '../../../../Actions/listActions';
 export class ListTableViewContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    ids:      PropTypes.object.isRequired,
     tickets:  PropTypes.object.isRequired,
     selected: PropTypes.object.isRequired,
     orderBy:  PropTypes.string.isRequired,
@@ -50,61 +43,72 @@ export class ListTableViewContainer extends Component {
   isVisible = field => this.props.fields.includes(field);
 
   renderHeader() {
+    const { orderBy, orderDir } = this.props;
+
     return (
       <tr>
         <Th />
         <Th
           sort="id" title="ID"
           visible={this.isVisible('id')}
-          order={false}
+          orderDir={orderDir}
+          orderBy={orderBy}
           onChange={this.sortTable}
         />
         <Th
           sort="urgency" title="Urgency"
           visible={this.isVisible('urgency')}
-          order={false}
+          orderDir={orderDir}
+          orderBy={orderBy}
           onChange={this.sortTable}
         />
         <Th
           sort="person" title="Person"
           visible={this.isVisible('person')}
-          order={false}
+          orderDir={orderDir}
+          orderBy={orderBy}
           onChange={this.sortTable}
         />
         <Th
           sort="person_email" title="Person email"
           visible={this.isVisible('person_email')}
-          order={false}
+          orderDir={orderDir}
+          orderBy={orderBy}
           onChange={this.sortTable}
         />
         <Th
           sort="agent" title="Agent"
           visible={this.isVisible('agent')}
-          order={false}
+          orderDir={orderDir}
+          orderBy={orderBy}
           onChange={this.sortTable}
         />
         <Th
           sort="subject" title="Subject"
           visible={this.isVisible('subject')}
-          order={false}
+          orderDir={orderDir}
+          orderBy={orderBy}
           onChange={this.sortTable}
         />
         <Th
           sort="status" title="Status"
           visible={this.isVisible('status')}
-          order={false}
+          orderDir={orderDir}
+          orderBy={orderBy}
           onChange={this.sortTable}
         />
         <Th
           sort="date_created" title="Created"
           visible={this.isVisible('date_created')}
-          order={false}
+          orderDir={orderDir}
+          orderBy={orderBy}
           onChange={this.sortTable}
         />
         <Th
           sort="labels" title="Labels"
           visible={this.isVisible('labels')}
-          order={false}
+          orderDir={orderDir}
+          orderBy={orderBy}
           onChange={this.sortTable}
         />
       </tr>
@@ -112,21 +116,22 @@ export class ListTableViewContainer extends Component {
   }
 
   render() {
-    const { ids, tickets, selected } = this.props;
+    const { tickets, selected } = this.props;
     return (
       <Table>
         <thead>
         {this.renderHeader()}
         </thead>
         <tbody>
-        {ids.map(id =>
-                   <TicketRow
-                     key={id}
-                     ticket={tickets.get(id)}
-                     isSelected={selected.includes(id)}
-                     onClick={this.onClick}
-                     isVisible={this.isVisible}
-                   />
+        {tickets.map(
+          ticket =>
+            <TicketRow
+              key={ticket.get('id')}
+              ticket={ticket}
+              isSelected={selected.includes(ticket.get('id'))}
+              onClick={this.onClick}
+              isVisible={this.isVisible}
+            />
         )}
         </tbody>
       </Table>
