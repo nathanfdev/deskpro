@@ -46,12 +46,18 @@ class PhpTicketLanguageTermCompiler extends AbstractPhpTermCompiler
      */
     protected function doCompile(TermInterface $term)
     {
-        $op     = $term->getOp();
-        $langId = $term->getOption('language');
+        $op   = $term->getOp();
+        $lang = $term->getOption('language');
+        if (is_numeric($lang)) {
+            return new PhpCheck(
+                'check_contains(ticket.getLanguage().id, :op, :language)',
+                ['op' => $op, 'language' => $lang]
+            );
+        }
 
         return new PhpCheck(
-            'check_contains(ticket.getLanguage().id, :op, :language)',
-            ['op' => $op, 'language' => $langId]
+            'check_contains(ticket.getLanguage().lang_code, :op, :language)',
+            ['op' => $op, 'language' => $lang]
         );
     }
 }

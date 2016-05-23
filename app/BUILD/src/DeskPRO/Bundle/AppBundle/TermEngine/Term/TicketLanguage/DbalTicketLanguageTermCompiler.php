@@ -41,21 +41,60 @@ class DbalTicketLanguageTermCompiler extends AbstractDbalTermCompiler
     {
         $query_part = new DbalQueryPart();
 
-        $op    = $term->getOp();
-        $isser = $this->isOp($op, TermInterface::OP_NOT) ? '!=' : '=';
-
         $query_part->addUniqueJoin(
             'languages',
             'languages',
             '{languages}.id = ticket.language_id'
         );
 
-        $query_part->setParameter('language', $term->getOption('language'));
+        $language = $term->getOption('language');
+        $query_part->setParameter('language', $language);
+        $op = $term->getOp();
 
-        $query_part->setWhereString(sprintf('{languages}.id %s :language', $isser));
+        $whereString = $this->isOp($op, TermInterface::OP_NOT)
+            ? $this->getNotEqualWhereString($language)
+            : $this->getEqualWhereString($language);
+
+        $query_part->setWhereString($whereString);
 
         $this->logQueryPart($query_part);
 
         return $query_part;
+    }
+
+    /**
+     * @param $language
+     *
+     * @return string
+     */
+    private function getNotEqualWhereString($language)
+    {
+        if (!$language) {
+            return '{languages}.id IS NOT NULL';
+        }
+
+        $isser = '!=';
+
+        return sprintf(
+            '({languages}.id %s :language AND {languages}.lang_code %s :language) OR {languages}.id IS NULL',
+            $isser,
+            $isser
+        );
+    }
+
+    /**
+     * @param $language
+     *
+     * @return string
+     */
+    private function getEqualWhereString($language)
+    {
+        if (!$language) {
+            return '{languages}.id IS NULL';
+        }
+
+        $isser = '=';
+
+        return sprintf('{languages}.id %s :language OR {languages}.lang_code %s :language', $isser, $isser);
     }
 }

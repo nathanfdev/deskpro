@@ -59,7 +59,7 @@ class DbalTicketLanguageTermCompilerTest extends AbstractDbalTicketFilterTermCom
 
         $query_part = $this->term_compiler->compile($term);
 
-        $this->assertWhere($query_part, '{languages}.id = :language');
+        $this->assertWhere($query_part, '{languages}.id = :language OR {languages}.lang_code = :language');
         $this->assertParameters(
             $query_part,
             array(
@@ -89,11 +89,72 @@ class DbalTicketLanguageTermCompilerTest extends AbstractDbalTicketFilterTermCom
 
         $query_part = $this->term_compiler->compile($term);
 
-        $this->assertWhere($query_part, '{languages}.id != :language');
+        $this->assertWhere(
+            $query_part,
+            '({languages}.id != :language AND {languages}.lang_code != :language) OR {languages}.id IS NULL'
+        );
         $this->assertParameters(
             $query_part,
             array(
                 'language' => '1',
+            )
+        );
+        $this->assertUniqueJoins(
+            $query_part,
+            array(
+                'languages' => array(
+                    'table' => 'languages',
+                    'on'    => '{languages}.id = ticket.language_id',
+                    'type'  => DbalQuery::JOIN_LEFT,
+                ),
+            )
+        );
+    }
+
+    public function testLangCodeCompileIs()
+    {
+        $term = new TicketLanguageTerm(
+            array(
+                'language' => 'eng',
+            )
+        );
+        $query_part = $this->term_compiler->compile($term);
+        $this->assertWhere($query_part, '{languages}.id = :language OR {languages}.lang_code = :language');
+        $this->assertParameters(
+            $query_part,
+            array(
+                'language' => 'eng',
+            )
+        );
+        $this->assertUniqueJoins(
+            $query_part,
+            array(
+                'languages' => array(
+                    'table' => 'languages',
+                    'on'    => '{languages}.id = ticket.language_id',
+                    'type'  => DbalQuery::JOIN_LEFT,
+                ),
+            )
+        );
+    }
+
+    public function testLangCodeCompileIsNOT()
+    {
+        $term = new TicketLanguageTerm(
+            array(
+                'language' => 'ger',
+            ),
+            TermInterface::OP_NOT
+        );
+        $query_part = $this->term_compiler->compile($term);
+        $this->assertWhere(
+            $query_part,
+            '({languages}.id != :language AND {languages}.lang_code != :language) OR {languages}.id IS NULL'
+        );
+        $this->assertParameters(
+            $query_part,
+            array(
+                'language' => 'ger',
             )
         );
         $this->assertUniqueJoins(

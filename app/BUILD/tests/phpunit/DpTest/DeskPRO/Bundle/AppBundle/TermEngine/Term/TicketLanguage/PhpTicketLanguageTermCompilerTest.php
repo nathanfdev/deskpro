@@ -91,6 +91,50 @@ class PhpTicketLanguageTermCompilerTest extends AbstractPhpTermCompilerTest
         );
     }
 
+    public function testLangCodeCompileIs()
+    {
+        $term = new TicketLanguageTerm(['language' => 'eng']);
+
+        $php_check = $this->term_compiler->compile($term);
+
+        $ticket = $this->createTicketProphecy();
+
+        $ticket->getLanguage()->willReturn((object) ['lang_code' => 'eng']);
+        $this->assertTicketCheck(
+            $php_check,
+            true,
+            $ticket
+        );
+        $ticket->getLanguage()->willReturn((object) ['lang_code' => 'ger']);
+        $this->assertTicketCheck(
+            $php_check,
+            false,
+            $ticket
+        );
+    }
+
+    public function testLangCodeCompileIsNot()
+    {
+        $term = new TicketLanguageTerm(['language' => 'ger'], TermInterface::OP_NOT);
+
+        $php_check = $this->term_compiler->compile($term);
+
+        $ticket = $this->createTicketProphecy();
+
+        $ticket->getLanguage()->willReturn((object) ['lang_code' => 'ger']);
+        $this->assertTicketCheck(
+            $php_check,
+            false,
+            $ticket
+        );
+        $ticket->getLanguage()->willReturn((object) ['lang_code' => 'eng']);
+        $this->assertTicketCheck(
+            $php_check,
+            true,
+            $ticket
+        );
+    }
+
     protected function createTicketProphecy()
     {
         $ticket = $this->prophesize('Application\DeskPRO\Entity\Ticket');
