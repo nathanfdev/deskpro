@@ -56,7 +56,7 @@ class TicketFilterPrefsController extends CrudSubController
     {
         $options = array_merge(
             $options,
-            ['filter' => $this->findParentOr404()]
+            ['filter' => $this->findParentOr404(), 'agent' => $this->getUser()]
         );
 
         return parent::handleForm($model, $request, $options);

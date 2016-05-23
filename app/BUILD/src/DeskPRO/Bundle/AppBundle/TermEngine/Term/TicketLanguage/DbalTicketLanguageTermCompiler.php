@@ -73,13 +73,7 @@ class DbalTicketLanguageTermCompiler extends AbstractDbalTermCompiler
             return '{languages}.id IS NOT NULL';
         }
 
-        $isser = '!=';
-
-        return sprintf(
-            '({languages}.id %s :language AND {languages}.lang_code %s :language) OR {languages}.id IS NULL',
-            $isser,
-            $isser
-        );
+        return '({languages}.id != :language AND {languages}.lang_code != :language) OR {languages}.id IS NULL';
     }
 
     /**
@@ -93,8 +87,6 @@ class DbalTicketLanguageTermCompiler extends AbstractDbalTermCompiler
             return '{languages}.id IS NULL';
         }
 
-        $isser = '=';
-
-        return sprintf('{languages}.id %s :language OR {languages}.lang_code %s :language', $isser, $isser);
+        return '{languages}.id = :language OR {languages}.lang_code = :language';
     }
 }
