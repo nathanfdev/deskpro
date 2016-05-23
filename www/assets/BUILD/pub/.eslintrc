@@ -1,5 +1,5 @@
 {
-  "extends": "airbnb",
+  "extends": ["eslint:recommended", "plugin:react/recommended", "airbnb"],
   "env": {
     "browser": true,
     "mocha": true,
@@ -64,6 +64,18 @@
     "valid-jsdoc": 2
   },
   "plugins": [
-    "react"
-  ]
+    "react",
+    "jsx-a11y"
+  ],
+  "settings": {
+    "react": {
+      "version": "0.14.8"
+      // React version, default to the latest React stable release
+    }
+  },
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  }
 }
