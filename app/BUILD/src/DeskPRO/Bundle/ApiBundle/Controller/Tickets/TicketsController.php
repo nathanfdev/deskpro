@@ -98,6 +98,7 @@ class TicketsController extends AbstractTicketsController
      *          {"name"="status", "description"="status filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="agent", "description"="agent filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="person", "description"="person filter", "dataType"="integer", "pattern"="\d+"},
+     *          {"name"="language", "description"="language filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="organization", "description"="organization filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="problem", "description"="problem filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="department", "description"="department filter", "dataType"="integer", "pattern"="\d+"},

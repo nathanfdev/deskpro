@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,7 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\Settings;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Entity\PersonSetting;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilterPreference;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\TicketsSettings;
 use Doctrine\ORM\EntityManager;
@@ -80,20 +80,16 @@ class SettingsManager
     private function getTicketsSettings()
     {
         $settings = new TicketsSettings();
+        $prefs    = $this->em->getRepository(TicketFilterPreference::class)
+            ->findBy(['agent' => $this->user]);
 
-        /** @var PersonSetting[] $personSettings */
-        $personSettings = $this->em
-            ->createQuery('
-              SELECT ps
-              FROM App:PersonSetting ps
-              JOIN ps.person p
-              WHERE  ps.name LIKE ?0 AND p.id = ?1
-            ')
-            ->setParameters([TicketsSettings::FILTER_GROUPING_PREFIX.'%', $this->user->getId()])
-            ->getResult();
         $grouping = [];
-        foreach ($personSettings as $ps) {
-            $grouping[(int) str_replace(TicketsSettings::FILTER_GROUPING_PREFIX, '', $ps->getName())] = $ps->getValue();
+        /** @var TicketFilterPreference $pref */
+        foreach ($prefs as $pref) {
+            $grouping[$pref->getFilter()->getId()] = [
+                'id'            => $pref->getId(),
+                'main_grouping' => $pref->getMainGrouping(),
+            ];
         }
 
         $settings->setFilterGroupings($grouping);

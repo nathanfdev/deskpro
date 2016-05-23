@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { ListItem, ListItemLabelSpinner, ListItemStatefulContainer }
+import {
+  ListItem, ListItemLabelSpinner, ListItemStatefulContainer
+}
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { routingStateSelector } from '../../../../../Application/Selectors/routing';
 import { startFilterEditing } from '../../../../Actions/navActions';
@@ -61,7 +63,6 @@ export class ListItemContainer extends Component {
 
   render() {
     const { dispatch, count, id, type, notDoneFilters, isTopLevel, listFilters, children } = this.props;
-
     const props = {
       count,
       children,

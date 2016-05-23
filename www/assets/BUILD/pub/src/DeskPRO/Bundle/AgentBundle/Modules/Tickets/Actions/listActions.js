@@ -30,12 +30,19 @@ export const applyListParams = createAction(
   'TICKETS_LIST_APPLY_LIST_PARAMS',
   (overwrite) => (dispatch, getState) => {
     const current = listParamsSelector(getState()).toJS();
-    const params  = { ...current, ...overwrite };
 
-    // reset pagination when switching to another filter
+    // reset pagination and previous filter settings when switching to another filter
     if (overwrite.filter) {
-      delete params.page;
+      delete current.page;
+      const stableProps = ['order_by', 'order_dir', 'date_created', 'labels', 'status'];
+      for (const key in current) {
+        if (current.hasOwnProperty(key) && stableProps.indexOf(key) === -1) {
+          delete current[key];
+        }
+      }
     }
+
+    const params = { ...current, ...overwrite };
 
     dispatch(setListParams(params));
 

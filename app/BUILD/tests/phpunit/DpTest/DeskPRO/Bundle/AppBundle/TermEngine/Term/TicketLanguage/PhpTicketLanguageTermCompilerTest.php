@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,7 +31,6 @@
  */
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLanguage;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker\TermCompiler\PhpTicketStatusTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLanguage\TicketLanguageTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractPhpTermCompilerTest;
@@ -39,7 +38,7 @@ use DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractPhpTermCompilerTest;
 class PhpTicketLanguageTermCompilerTest extends AbstractPhpTermCompilerTest
 {
     /**
-     * @var PhpTicketStatusTermCompiler
+     * @var \DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatus\PhpTicketStatusTermCompiler
      */
     protected $term_compiler;
 
@@ -50,23 +49,19 @@ class PhpTicketLanguageTermCompilerTest extends AbstractPhpTermCompilerTest
 
     public function testCompileIs()
     {
-        $term = new TicketLanguageTerm(
-            array(
-                'language' => 'eng',
-            )
-        );
+        $term = new TicketLanguageTerm(['language' => 1]);
 
         $php_check = $this->term_compiler->compile($term);
 
         $ticket = $this->createTicketProphecy();
 
-        $ticket->getLanguage()->willReturn((object) array('lang_code' => 'eng'));
+        $ticket->getLanguage()->willReturn((object) ['id' => 1]);
         $this->assertTicketCheck(
             $php_check,
             true,
             $ticket
         );
-        $ticket->getLanguage()->willReturn((object) array('lang_code' => 'ger'));
+        $ticket->getLanguage()->willReturn((object) ['id' => 2]);
         $this->assertTicketCheck(
             $php_check,
             false,
@@ -76,24 +71,63 @@ class PhpTicketLanguageTermCompilerTest extends AbstractPhpTermCompilerTest
 
     public function testCompileIsNot()
     {
-        $term = new TicketLanguageTerm(
-            array(
-                'language' => 'eng',
-            ),
-            TermInterface::OP_NOT
-        );
+        $term = new TicketLanguageTerm(['language' => '1'], TermInterface::OP_NOT);
 
         $php_check = $this->term_compiler->compile($term);
 
         $ticket = $this->createTicketProphecy();
 
-        $ticket->getLanguage()->willReturn((object) array('lang_code' => 'eng'));
+        $ticket->getLanguage()->willReturn((object) ['id' => 1]);
         $this->assertTicketCheck(
             $php_check,
             false,
             $ticket
         );
-        $ticket->getLanguage()->willReturn((object) array('lang_code' => 'ger'));
+        $ticket->getLanguage()->willReturn((object) ['id' => 2]);
+        $this->assertTicketCheck(
+            $php_check,
+            true,
+            $ticket
+        );
+    }
+
+    public function testLangCodeCompileIs()
+    {
+        $term = new TicketLanguageTerm(['language' => 'eng']);
+
+        $php_check = $this->term_compiler->compile($term);
+
+        $ticket = $this->createTicketProphecy();
+
+        $ticket->getLanguage()->willReturn((object) ['lang_code' => 'eng']);
+        $this->assertTicketCheck(
+            $php_check,
+            true,
+            $ticket
+        );
+        $ticket->getLanguage()->willReturn((object) ['lang_code' => 'ger']);
+        $this->assertTicketCheck(
+            $php_check,
+            false,
+            $ticket
+        );
+    }
+
+    public function testLangCodeCompileIsNot()
+    {
+        $term = new TicketLanguageTerm(['language' => 'ger'], TermInterface::OP_NOT);
+
+        $php_check = $this->term_compiler->compile($term);
+
+        $ticket = $this->createTicketProphecy();
+
+        $ticket->getLanguage()->willReturn((object) ['lang_code' => 'ger']);
+        $this->assertTicketCheck(
+            $php_check,
+            false,
+            $ticket
+        );
+        $ticket->getLanguage()->willReturn((object) ['lang_code' => 'eng']);
         $this->assertTicketCheck(
             $php_check,
             true,

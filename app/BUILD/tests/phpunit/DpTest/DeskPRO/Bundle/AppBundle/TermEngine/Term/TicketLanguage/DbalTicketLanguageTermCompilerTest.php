@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,6 +32,7 @@
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLanguage;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLanguage\DbalTicketLanguageTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLanguage\TicketLanguageTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractDbalTicketFilterTermCompilerTest;
@@ -52,24 +53,24 @@ class DbalTicketLanguageTermCompilerTest extends AbstractDbalTicketFilterTermCom
     {
         $term = new TicketLanguageTerm(
             array(
-                'language' => 'eng',
+                'language' => '1',
             )
         );
 
         $query_part = $this->term_compiler->compile($term);
 
-        $this->assertWhere($query_part, '{languages}.lang_code = :language');
+        $this->assertWhere($query_part, '{languages}.id = :language OR {languages}.lang_code = :language');
         $this->assertParameters(
             $query_part,
             array(
-                'language' => 'eng',
+                'language' => '1',
             )
         );
         $this->assertUniqueJoins(
             $query_part,
             array(
                 'languages' => array(
-                    'table' => 'tickets_languages',
+                    'table' => 'languages',
                     'on'    => '{languages}.id = ticket.language_id',
                     'type'  => DbalQuery::JOIN_LEFT,
                 ),
@@ -81,14 +82,75 @@ class DbalTicketLanguageTermCompilerTest extends AbstractDbalTicketFilterTermCom
     {
         $term = new TicketLanguageTerm(
             array(
-                'language' => 'ger',
+                'language' => '1',
             ),
             TermInterface::OP_NOT
         );
 
         $query_part = $this->term_compiler->compile($term);
 
-        $this->assertWhere($query_part, '{languages}.lang_code != :language');
+        $this->assertWhere(
+            $query_part,
+            '({languages}.id != :language AND {languages}.lang_code != :language) OR {languages}.id IS NULL'
+        );
+        $this->assertParameters(
+            $query_part,
+            array(
+                'language' => '1',
+            )
+        );
+        $this->assertUniqueJoins(
+            $query_part,
+            array(
+                'languages' => array(
+                    'table' => 'languages',
+                    'on'    => '{languages}.id = ticket.language_id',
+                    'type'  => DbalQuery::JOIN_LEFT,
+                ),
+            )
+        );
+    }
+
+    public function testLangCodeCompileIs()
+    {
+        $term = new TicketLanguageTerm(
+            array(
+                'language' => 'eng',
+            )
+        );
+        $query_part = $this->term_compiler->compile($term);
+        $this->assertWhere($query_part, '{languages}.id = :language OR {languages}.lang_code = :language');
+        $this->assertParameters(
+            $query_part,
+            array(
+                'language' => 'eng',
+            )
+        );
+        $this->assertUniqueJoins(
+            $query_part,
+            array(
+                'languages' => array(
+                    'table' => 'languages',
+                    'on'    => '{languages}.id = ticket.language_id',
+                    'type'  => DbalQuery::JOIN_LEFT,
+                ),
+            )
+        );
+    }
+
+    public function testLangCodeCompileIsNOT()
+    {
+        $term = new TicketLanguageTerm(
+            array(
+                'language' => 'ger',
+            ),
+            TermInterface::OP_NOT
+        );
+        $query_part = $this->term_compiler->compile($term);
+        $this->assertWhere(
+            $query_part,
+            '({languages}.id != :language AND {languages}.lang_code != :language) OR {languages}.id IS NULL'
+        );
         $this->assertParameters(
             $query_part,
             array(
@@ -99,7 +161,7 @@ class DbalTicketLanguageTermCompilerTest extends AbstractDbalTicketFilterTermCom
             $query_part,
             array(
                 'languages' => array(
-                    'table' => 'tickets_languages',
+                    'table' => 'languages',
                     'on'    => '{languages}.id = ticket.language_id',
                     'type'  => DbalQuery::JOIN_LEFT,
                 ),

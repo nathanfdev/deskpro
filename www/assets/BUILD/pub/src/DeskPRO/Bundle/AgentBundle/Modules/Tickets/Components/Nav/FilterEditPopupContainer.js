@@ -38,12 +38,20 @@ export class FilterEditPopupContainer extends Component {
 
   render() {
     const { filter = Immutable.fromJS({}), grouping, attachTo, filterId } = this.props;
-    const groupBy = grouping.get(String(filterId), '');
     const content = filter.get('title') || 'none';
+
+    let groupBy = '';
+    let id;
+
+    if (grouping.get(String(filterId))) {
+      groupBy = grouping.get(String(filterId)).get('main_grouping');
+      id      = grouping.get(String(filterId)).get('id');
+    }
 
     return (
       <ListGroupingControlContainer
         visible={filter.get('id') === filterId}
+        id={id}
         content={content}
         options={FilterEditPopupContainer.groupingOptions}
         changeListGrouping={applyFilterEditing}

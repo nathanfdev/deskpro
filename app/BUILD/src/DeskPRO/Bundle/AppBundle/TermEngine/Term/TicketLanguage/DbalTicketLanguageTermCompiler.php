@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -41,21 +41,52 @@ class DbalTicketLanguageTermCompiler extends AbstractDbalTermCompiler
     {
         $query_part = new DbalQueryPart();
 
-        $op    = $term->getOp();
-        $isser = $this->isOp($op, TermInterface::OP_NOT) ? '!=' : '=';
-
         $query_part->addUniqueJoin(
             'languages',
-            'tickets_languages',
+            'languages',
             '{languages}.id = ticket.language_id'
         );
 
-        $query_part->setParameter('language', $term->getOption('language'));
+        $language = $term->getOption('language');
+        $query_part->setParameter('language', $language);
+        $op = $term->getOp();
 
-        $query_part->setWhereString(sprintf('{languages}.lang_code %s :language', $isser));
+        $whereString = $this->isOp($op, TermInterface::OP_NOT)
+            ? $this->getNotEqualWhereString($language)
+            : $this->getEqualWhereString($language);
+
+        $query_part->setWhereString($whereString);
 
         $this->logQueryPart($query_part);
 
         return $query_part;
+    }
+
+    /**
+     * @param $language
+     *
+     * @return string
+     */
+    private function getNotEqualWhereString($language)
+    {
+        if (!$language) {
+            return '{languages}.id IS NOT NULL';
+        }
+
+        return '({languages}.id != :language AND {languages}.lang_code != :language) OR {languages}.id IS NULL';
+    }
+
+    /**
+     * @param $language
+     *
+     * @return string
+     */
+    private function getEqualWhereString($language)
+    {
+        if (!$language) {
+            return '{languages}.id IS NULL';
+        }
+
+        return '{languages}.id = :language OR {languages}.lang_code = :language';
     }
 }

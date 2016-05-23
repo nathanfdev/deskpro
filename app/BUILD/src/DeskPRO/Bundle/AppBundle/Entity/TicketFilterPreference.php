@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,10 +34,12 @@ namespace DeskPRO\Bundle\AppBundle\Entity;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketFilterPreferenceRepository")
  * @ORM\Table(name="ticket_filter_preferences")
+ * @JMS\ExclusionPolicy("ALL")
  */
 class TicketFilterPreference implements EntityInterface, NotifyPropertyChanged
 {
@@ -53,6 +55,9 @@ class TicketFilterPreference implements EntityInterface, NotifyPropertyChanged
     /**
      * @var TicketFilter
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilter", inversedBy="filter_preferences")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\TicketFilter>")
      */
     protected $filter;
 
@@ -66,6 +71,9 @@ class TicketFilterPreference implements EntityInterface, NotifyPropertyChanged
      * @var Person
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person", cascade={"remove"})
      * @ORM\JoinColumn(name="person_id")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
      */
     protected $agent;
 
@@ -78,18 +86,27 @@ class TicketFilterPreference implements EntityInterface, NotifyPropertyChanged
     /**
      * @var string
      * @ORM\Column(name="main_grouping", type="string")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      */
     protected $main_grouping;
 
     /**
      * @var string
      * @ORM\Column(name="result_grouping", type="string")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      */
     protected $result_grouping;
 
     /**
      * @var bool
      * @ORM\Column(name="show_sla", type="boolean")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
      */
     protected $show_sla;
 
@@ -117,11 +134,15 @@ class TicketFilterPreference implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param TicketFilter $filter
+     *
+     * @return TicketFilterPreference
      */
     public function setFilter(TicketFilter $filter)
     {
         $this->setModelField('filter', $filter);
         $filter->addFilterPreference($this);
+
+        return $this;
     }
 
     /**
@@ -150,10 +171,14 @@ class TicketFilterPreference implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param Person $agent
+     *
+     * @return TicketFilterPreference
      */
     public function setAgent(Person $agent = null)
     {
         $this->setModelField('agent', $agent);
+
+        return $this;
     }
 
     /**

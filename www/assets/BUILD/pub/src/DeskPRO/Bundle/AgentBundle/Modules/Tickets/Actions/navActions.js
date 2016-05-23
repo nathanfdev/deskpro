@@ -3,9 +3,9 @@ import { api, repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { editedFilterIdSelector } from '../Selectors/nav';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import { filterSetGroupingsSettingsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Selectors/settings';
-import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { updateFilterGrouping } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
 import { setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { setAgentSettings } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
 
 /**
  * Used to identify requests within record stores
@@ -24,7 +24,7 @@ const removeFilterNestedCounts = createAction('TICKET_NAV_REMOVE_FILTER_NESTED_C
 const loadFilterCount = createAction(
   'TICKETS_NAV_LOAD_FILTER_COUNT',
   id => (dispatch, getState) => new Promise(resolve => {
-    const groupBy = filterSetGroupingsSettingsSelector(getState()).get(String(id), '');
+    const groupBy = filterSetGroupingsSettingsSelector(getState()).get(String(id), '').get('main_grouping');
     repository('TicketFilter').loadFilterCounts(id, groupBy).success(response => resolve(response.data));
   })
 );
@@ -35,7 +35,7 @@ export const startFilterEditing = createAction('TICKETS_NAV_FILTER_EDITING_START
 export const closeFilterEditing = createAction('TICKETS_NAV_FILTER_EDITING_CLOSE');
 export const applyFilterEditing = createAction(
   'TICKETS_NAV_FILTER_EDITING_APPLY',
-  (groupBy) => (dispatch, getState) => {
+  (groupBy, content, prefId) => (dispatch, getState) => {
     const id = editedFilterIdSelector(getState());
     dispatch(closeFilterEditing());
 
@@ -46,22 +46,34 @@ export const applyFilterEditing = createAction(
       dispatch(markFilterLoading(id));
     }
 
-    repository('TicketFilter').update({ id, group_by: groupBy }).success(() => {
-      dispatch(updateFilterGrouping(id, groupBy));
-
-      // reload filter counts if grouping is applied
-      if (groupBy) {
+    if (prefId) {
+      repository('TicketFilter').putFilterPref(id, prefId, groupBy).success(() => {
+        dispatch(updateFilterGrouping(id, prefId, groupBy));
         dispatch(loadFilterCount(id));
-      }
-    });
+      });
+    } else {
+      repository('TicketFilter').postFilterPref(id, groupBy).success(() => {
+        api.sendGet('DP_API/helpdesk/agent-client/settings').success(({ data }) => {
+          dispatch(setAgentSettings(data));
+          dispatch(loadFilterCount(id));
+        });
+      });
+    }
   }
 );
-export const initialLoad        = createAction(
+
+export const initialLoad = createAction(
   'TICKETS_NAV_INITIAL_LOAD',
   () => (dispatch, getState) => new Promise(
     (resolve) => {
-      const groupingQueryString =
-              compileParams({ group_by: filterSetGroupingsSettingsSelector(getState()).toJS() }).replace(/&/g, '%26');
+      const currentGroupingParams = filterSetGroupingsSettingsSelector(getState()).toJS();
+      const groupingQuery         = [];
+      for (const key in currentGroupingParams) {
+        if (currentGroupingParams.hasOwnProperty(key)) {
+          groupingQuery.push(`group_by[${key}]` + '=' + currentGroupingParams[key].main_grouping);
+        }
+      }
+      const groupingQueryString = groupingQuery.join('%26');
 
       const batch = 'DP_API/batch'
               + `?get[filterSetsCount]=DP_API/new/ticket_filter_sets/all/counts%3F${groupingQueryString}`

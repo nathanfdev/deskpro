@@ -28,7 +28,7 @@ export class FiltersTab extends Component {
             <NestedListContainer
               items={this.getFilterSetCounts(count)}
               alwaysExpanded
-              />
+            />
           </div>
         ))}
       </div>
