@@ -70,6 +70,21 @@ class HttpContext extends BaseContext
     }
 
     /**
+     * Opens specified page and doesn't display the response in the console
+     * Example: Given I am on "http://batman.com"
+     * Example: And I am on "/articles/isBatmanBruceWayne"
+     * Example: When I go to "/articles/isBatmanBruceWayne".
+     *
+     * @Given /^(?:|I )download "(?P<page>[^"]+)"$/
+     */
+    public function download($page)
+    {
+        ob_start();
+        $this->visitPath($page);
+        ob_end_clean();
+    }
+
+    /**
      * @Then /^I should see in the header "([^"]*)":"([^"]*)"$/
      */
     public function iShouldSeeInTheHeader($header, $value)

@@ -29,6 +29,7 @@
 namespace DeskPRO\Component\Pdf;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use Symfony\Component\HttpFoundation\Response;
 
 interface PdfRendererInterface
 {
@@ -50,6 +51,8 @@ interface PdfRendererInterface
     /**
      * @param $contentHtml
      * @param $fileName
+     *
+     * @return Response
      */
     public function generateFile($contentHtml, $fileName);
 

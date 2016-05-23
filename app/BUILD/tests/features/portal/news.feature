@@ -20,13 +20,13 @@ Feature: News
     Then I should be on "/news/general"
     And the response status code should be 200
 
-  Scenario: I visit a download from the browse page
+  Scenario: I visit a news from the browse page
     Given I am on "/news/general"
     When I follow "Example News Post"
     Then I should be on "/news/posts/example-news-post-3"
     And the response status code should be 200
 
   Scenario: I  download a pdf version of a news page
-    Given I go to "/news/posts/pdf/example-news-post-3"
+    Given I download "/news/posts/pdf/example-news-post-3"
     Then the response status code should be 200
     And I should see in the header "content-type":"application/pdf"
