@@ -133,6 +133,7 @@ export class ControlBarContainer extends React.Component {
               title:    'Title',
               project:  'Project',
               date_due: 'Due Date',
+              linked:   'Linked Items',
               assignee: 'Assignee'
             },
             visibleFields:         cardVisibleFields,
