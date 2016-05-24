@@ -6,8 +6,8 @@ export class AttachedFile extends React.Component {
 
   static propTypes = {
     inputName: PropTypes.string,
-    file: PropTypes.object.isRequired,
-    onDelete: PropTypes.func.isRequired
+    file:      PropTypes.object.isRequired,
+    onDelete:  PropTypes.func.isRequired
   };
 
   onDelete = event => {
@@ -45,7 +45,7 @@ export class AttachedFile extends React.Component {
           <i className="fa fa-times" />{portalPhrases.get('portal.general.delete')}
         </a>
 
-        {blob.is_image && <img src={blob.url} ref="image" style={{display: 'none'}} />}
+        {blob.is_image && <img src={blob.url} ref="image" style={{ display: 'none' }} />}
       </li>
     );
   }

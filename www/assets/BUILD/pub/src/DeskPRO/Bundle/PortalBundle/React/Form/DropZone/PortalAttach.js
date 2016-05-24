@@ -9,8 +9,8 @@ export class PortalAttach extends React.Component {
 
   static propTypes = {
     widgetOptions: PropTypes.object,
-    $input: PropTypes.object,
-    inputName: PropTypes.string
+    $input:        PropTypes.object,
+    inputName:     PropTypes.string
   };
 
   constructor(props) {
@@ -50,7 +50,7 @@ export class PortalAttach extends React.Component {
     });
 
     this.setState({
-      files: files,
+      files,
       lastError: null
     });
   };
@@ -65,7 +65,7 @@ export class PortalAttach extends React.Component {
       if (f.file !== file) {
         newFiles.push(f);
       } else {
-        newFiles.push({...f, info});
+        newFiles.push({ ...f, info });
       }
     });
 
@@ -81,7 +81,7 @@ export class PortalAttach extends React.Component {
     const error = response && response.error;
 
     this.setState({
-      files: this.state.files.filter(f => f.file !== file),
+      files:     this.state.files.filter(f => f.file !== file),
       lastError: error && error.message || portalPhrases.get('portal.forms.error_upload_file')
     });
   };
@@ -106,27 +106,27 @@ export class PortalAttach extends React.Component {
     }
 
     return (
-       <div className="new-ticket-attachments">
-         <DropZone
-           ref="dropZone"
-           getExternalInput={() => this.refs.fileUpload}
-           uploadUrl={portalUrlGenerator.path('/') + 'dpblob'}
-           uploadParams={params}
-           context={context}
-           onSend={this.onUploadStarted}
-           onSuccess={this.onUploadSuccess}
-           onFail={this.onUploadFail}>
-
-           <span className="attach-file">
-              <i className="fa fa-upload" />
-              <span className="text">{portalPhrases.get('portal.forms.label_drag')}</span>
-              <span className="fake-button">{portalPhrases.get('portal.forms.label_choose')}</span>
-              <input type="file" ref="fileUpload" name="file[blob]" />
+      <div className="new-ticket-attachments">
+        <DropZone
+          ref="dropZone"
+          getExternalInput={() => this.refs.fileUpload}
+          uploadUrl={`${portalUrlGenerator.path('/')}dpblob`}
+          uploadParams={params}
+          context={context}
+          onSend={this.onUploadStarted}
+          onSuccess={this.onUploadSuccess}
+          onFail={this.onUploadFail}
+        >
+          <span className="attach-file">
+            <i className="fa fa-upload" />
+            <span className="text">{portalPhrases.get('portal.forms.label_drag')}</span>
+            <span className="fake-button">{portalPhrases.get('portal.forms.label_choose')}</span>
+            <input type="file" ref="fileUpload" name="file[blob]" />
           </span>
-         </DropZone>
+        </DropZone>
 
-         <AttachedList files={this.state.files} inputName={inputName} onDelete={this.onDelete} />
-         {this.state.lastError}
+        <AttachedList files={this.state.files} inputName={inputName} onDelete={this.onDelete} />
+        {this.state.lastError}
       </div>
     );
   }

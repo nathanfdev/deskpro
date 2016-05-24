@@ -18,10 +18,10 @@ export class AttachedList extends React.Component {
 
     return (
       <ul>
-        {files.map((file, key) => file.info
+        {files.map((file, key) => (file.info
             ? <AttachedFile file={file} key={key} inputName={inputName} onDelete={onDelete} />
             : <UploadingFile file={file} key={key} />
-        )}
+        ))}
       </ul>
     );
   }
