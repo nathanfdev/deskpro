@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
 use Application\DeskPRO\People\UserPermissions\UserPermissions;
@@ -53,16 +54,18 @@ class DefaultPermissionsFixture extends DeskProAbstractFixture implements Ordere
      */
     public function load(ObjectManager $manager)
     {
-        $insert_dep_perms = [];
-        $insert_perms     = [];
+        $insertDepPerms = [];
+        $insertPerms    = [];
+
+        $specificPermissions = $this->getSpecificPermissions();
 
         foreach ([
-            $this->getReference('usergroup.everyone'),
-            $this->getReference('usergroup.registered'),
-        ] as $ug) {
+                     $this->getReference('usergroup.everyone'),
+                     $this->getReference('usergroup.registered'),
+                 ] as $ug) {
             foreach (['support', 'sales'] as $id) {
-                $dep                = $this->getReference('department.'.$id);
-                $insert_dep_perms[] = [
+                $dep              = $this->getReference('department.'.$id);
+                $insertDepPerms[] = [
                     'usergroup_id'  => $ug->getId(),
                     'department_id' => $dep->getId(),
                     'name'          => 'full',
@@ -71,8 +74,8 @@ class DefaultPermissionsFixture extends DeskProAbstractFixture implements Ordere
                 ];
             }
             foreach (['support', 'sales'] as $id) {
-                $dep                = $this->getReference('chat_department.'.$id);
-                $insert_dep_perms[] = [
+                $dep              = $this->getReference('chat_department.'.$id);
+                $insertDepPerms[] = [
                     'usergroup_id'  => $ug->getId(),
                     'department_id' => $dep->getId(),
                     'name'          => 'full',
@@ -82,18 +85,19 @@ class DefaultPermissionsFixture extends DeskProAbstractFixture implements Ordere
             }
 
             foreach ($this->getUsergroupPermNames() as $p) {
-                $insert_perms[] = [
+                $insertPerms[] = [
                     'usergroup_id' => $ug->getId(),
                     'name'         => $p,
-                    'value'        => 1,
+                    'value'        => isset($specificPermissions[$ug->getId()][$p]) ?
+                        $specificPermissions[$ug->getId()][$p] : 1,
                 ];
             }
         }
 
         /** @var \Application\DeskPRO\DBAL\Connection $db */
         $db = $this->container->get('database_connection');
-        $db->batchInsert('department_permissions', $insert_dep_perms);
-        $db->batchInsert('permissions', $insert_perms);
+        $db->batchInsert('department_permissions', $insertDepPerms);
+        $db->batchInsert('permissions', $insertPerms);
     }
 
     private function getUsergroupPermNames()
@@ -104,14 +108,25 @@ class DefaultPermissionsFixture extends DeskProAbstractFixture implements Ordere
 
         $perms = new UserPermissions();
 
-        $set_perms = array();
-        foreach (UserPermissions::$prefix_map as $real_name => $coll_name) {
-            $obj = $perms->$coll_name;
+        $setPerms = [];
+        foreach (UserPermissions::$prefix_map as $realName => $collName) {
+            $obj = $perms->$collName;
             foreach ($obj->getNames() as $prop) {
-                $set_perms[] = $real_name.'.'.$prop;
+                $setPerms[] = $realName.'.'.$prop;
             }
         }
 
-        return $this->permNames = $set_perms;
+        return $this->permNames = $setPerms;
+    }
+
+    private function getSpecificPermissions()
+    {
+        return [
+            $this->getReference('usergroup.everyone')->getId() => [
+                'articles.share' => 0,
+            ],
+            $this->getReference('usergroup.registered')->getId() => [
+            ],
+        ];
     }
 }

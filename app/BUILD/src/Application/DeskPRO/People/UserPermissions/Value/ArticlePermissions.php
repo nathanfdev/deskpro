@@ -31,6 +31,7 @@
  *
  * @category People
  */
+
 namespace Application\DeskPRO\People\UserPermissions\Value;
 
 class ArticlePermissions implements PermissionValueInterface
@@ -43,11 +44,13 @@ class ArticlePermissions implements PermissionValueInterface
     public $comment = false;
     /** @var bool */
     public $no_comment_validate = false;
+    /** @var bool */
+    public $share = false;
 
     public function getNames()
     {
         return [
-            'use', 'rate', 'comment', 'no_comment_validate',
+            'use', 'rate', 'comment', 'no_comment_validate', 'share',
         ];
     }
 }

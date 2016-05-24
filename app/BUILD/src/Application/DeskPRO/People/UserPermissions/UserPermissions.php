@@ -31,6 +31,7 @@
  *
  * @category People
  */
+
 namespace Application\DeskPRO\People\UserPermissions;
 
 use Application\DeskPRO\People\PermissionsSetInterface;
@@ -100,9 +101,9 @@ class UserPermissions implements PermissionsSetInterface
      */
     public function toArray()
     {
-        $arr = array();
+        $arr = [];
         foreach ($this->getTypes() as $prop) {
-            $arr[$prop] = array();
+            $arr[$prop] = [];
             foreach ($this->$prop->getNames() as $name) {
                 $arr[$prop][$name] = (bool) $this->$prop->$name;
             }
@@ -134,6 +135,6 @@ class UserPermissions implements PermissionsSetInterface
      */
     public function getTypes()
     {
-        return array('ticket', 'chat', 'feedback', 'article', 'download', 'news');
+        return ['ticket', 'chat', 'feedback', 'article', 'download', 'news'];
     }
 }
