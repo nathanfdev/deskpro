@@ -1,7 +1,9 @@
 import React, { Component, PropTypes } from 'react';
-import { Card, CardLine, CardLineLeft, CardLineRight, CardLineItem, CardCheckbox,
-  CardDisc, CardTitle, CardLabel, CardStatusBar }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
+import {
+  Card, CardLine, CardLineLeft, CardLineRight, CardLineItem, CardCheckbox,
+  CardDisc, CardTitle, CardLabel, CardStatusBar
+}
+  from '../../../../../Common/Components/ListFrame/View/Card';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 
 @injectIntl
@@ -11,7 +13,8 @@ export class TicketCard extends Component {
     intl:           intlShape.isRequired,
     fields:         PropTypes.object.isRequired,
     selected:       PropTypes.bool.isRequired,
-    ticket:         PropTypes.object.isRequired
+    ticket:         PropTypes.object.isRequired,
+    agent:          PropTypes.object
   };
 
   renderStatus = ticket => {
@@ -26,10 +29,16 @@ export class TicketCard extends Component {
     );
   };
 
-  renderAgent = () =>
-    <div className="dpwd--card-line-item">
-      <i className="fa fa-user"></i> Admin Admin
-    </div>;
+  renderAgent = () => {
+    if (this.props.agent) {
+      return (
+        <div className="dpwd--card-line-item">
+          <i className="fa fa-user" /> {this.props.agent.get('name')}
+        </div>
+      );
+    }
+    return null;
+  };
 
   renderPerson(ticket) {
     if (this.props.fields.includes('person')) {
@@ -37,7 +46,7 @@ export class TicketCard extends Component {
       return (
         <CardLine>
           <div className="dpwd--card-line-item">
-            <i className="fa fa-user"></i> John Doe {email ? `<${email}>` : ''}
+            <i className="fa fa-user" /> John Doe {email ? `<${email}>` : ''}
           </div>
         </CardLine>
       );
@@ -49,9 +58,9 @@ export class TicketCard extends Component {
     if (this.props.fields.includes('id')) {
       return (
         <span>
-        <CardDisc />
-        <CardLineItem>ID: {ticket.get('id')}</CardLineItem>
-      </span>
+          <CardDisc />
+          <CardLineItem>ID: {ticket.get('id')}</CardLineItem>
+        </span>
       );
     }
     return null;
@@ -85,7 +94,7 @@ export class TicketCard extends Component {
         return (
           <CardLine>
             <CardLineItem>
-              <i className="fa fa-tags"></i>
+              <i className="fa fa-tags" />
               {labels.map((label, index) => <CardLabel key={index} label={label} />)}
             </CardLineItem>
           </CardLine>
@@ -120,7 +129,7 @@ export class TicketCard extends Component {
 
         {this.renderPerson(ticket)}
         <CardLine>
-          {this.renderAgent(ticket)}
+          {this.renderAgent()}
           {this.renderId(ticket)}
           {this.renderUrgency(ticket)}
           {this.renderDateCreated(ticket)}

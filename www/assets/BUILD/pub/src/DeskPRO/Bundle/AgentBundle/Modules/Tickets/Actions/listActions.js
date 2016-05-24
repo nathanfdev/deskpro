@@ -32,7 +32,7 @@ export const applyListParams = createAction(
     const current = listParamsSelector(getState()).toJS();
 
     // reset pagination and previous filter settings when switching to another filter
-    if (overwrite.filter || overwrite.label) {
+    if (overwrite.filter || overwrite.label || overwrite.star) {
       delete current.page;
       const stableProps = ['order_by', 'order_dir', 'date_created', 'labels', 'status'];
       Object.keys(current).forEach(key => {
@@ -49,7 +49,7 @@ export const applyListParams = createAction(
     dispatch(setListParams(params));
 
     // reload if filter param is set i.e. navigation menu item is selected
-    if (params.filter || overwrite.label) {
+    if (params.filter || overwrite.label || overwrite.star) {
       dispatch(loadList(params));
     }
   }
