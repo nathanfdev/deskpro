@@ -40,11 +40,7 @@ export class TaskCard extends BaseTaskCard {
   }
 
   renderField(field) {
-    if (!field) {
-      return null;
-    }
-
-    if (!field.get('visible')) {
+    if (!field || !field.get('visible')) {
       return null;
     }
 

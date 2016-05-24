@@ -2,6 +2,7 @@ import { createSelector } from 'reselect';
 import { hashStateSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
 import { DatePeriods } from 'DeskPRO/Bundle/AgentBundle/Services/DatePeriods';
 import { collectionSelectorFactory, allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { constants } from '../../../Constants/Constants';
 
 const stateSelector = state => state.CRM.list;
 
@@ -42,19 +43,14 @@ export const currentContentSelector = createSelector(
   params => params.get('content')
 );
 
-export const visibleFieldsSelector = createSelector(
+export const peopleFieldsSelector = createSelector(
   stateSelector,
-  state => state.get('visibleFields')
+  state => state.getIn(['fields', 'people'])
 );
 
-export const peopleVisibleFieldsSelector = createSelector(
-  visibleFieldsSelector,
-  visibleFields => visibleFields.get('people')
-);
-
-export const organizationVisibleFieldsSelector = createSelector(
-  visibleFieldsSelector,
-  visibleFields => visibleFields.get('organizations')
+export const orgFieldsSelector = createSelector(
+  stateSelector,
+  state => state.getIn(['fields', 'org'])
 );
 
 export const listFiltersSelector = createSelector(

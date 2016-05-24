@@ -12,85 +12,77 @@ export class OrganizationsTable extends Component {
     sortTable:       PropTypes.func.isRequired,
     currentOrderBy:  PropTypes.string.isRequired,
     currentOrderDir: PropTypes.string.isRequired,
-    visibleFields:   PropTypes.object
+    fields:          PropTypes.object.isRequired
   };
 
-  isVisible(field) {
-    return this.props.visibleFields.includes(field);
+  renderHeaderField(field) {
+    if (!field || !field.get('visible')) {
+      return null;
+    }
+
+    const { currentOrderDir, currentOrderBy, sortTable } = this.props;
+
+    return (
+      <Th
+        key={field.get('id')}
+        sort={field.get('id')}
+        title={field.get('title')}
+        orderDir={currentOrderDir}
+        orderBy={currentOrderBy}
+        onChange={sortTable}
+      />
+    );
+  }
+
+  renderField(field, element) {
+    if (!field || !field.get('visible')) {
+      return null;
+    }
+
+    const fieldId = field.get('id');
+    switch (fieldId) {
+
+      case 'id':
+        return <TdId key={fieldId}>{element.get(fieldId)}</TdId>
+
+      case 'date_created':
+        return (
+          <Td key={fieldId}>
+            <div className="dpw--timer">
+              <FormattedRelative value={element.get(fieldId)} />
+            </div>
+          </Td>
+        );
+
+      case 'summary':
+      case 'name':
+        return (
+          <Td className="item-title" key={fieldId}>
+            <a href="#">
+              <SlicedString string={element.get(fieldId)} />
+            </a>
+          </Td>
+        );
+
+      default:
+        return <Td key={fieldId}>{element.get(fieldId)}</Td>;
+    }
   }
 
   render() {
-    const { organizations, currentOrderDir, currentOrderBy, sortTable } = this.props;
+    const { organizations, fields } = this.props;
     return (
       <Table>
         <thead>
-        <tr>
-          <Th
-            sort="id"
-            title="ID"
-            visible
-            orderDir={currentOrderDir}
-            orderBy={currentOrderBy}
-            onChange={sortTable}
-            visible={this.isVisible('id')}
-          />
-          <Th
-            sort="date_created"
-            title="Created"
-            visible
-            orderDir={currentOrderDir}
-            orderBy={currentOrderBy}
-            onChange={sortTable}
-            visible={this.isVisible('date_created')}
-          />
-          <Th
-            sort="importance"
-            title="Importance"
-            visible
-            orderDir={currentOrderDir}
-            orderBy={currentOrderBy}
-            onChange={sortTable}
-            visible={this.isVisible('importance')}
-          />
-          <Th
-            sort="name"
-            title="Name"
-            visible
-            orderDir={currentOrderDir}
-            orderBy={currentOrderBy}
-            onChange={sortTable}
-            visible={this.isVisible('name')}
-          />
-          <Th
-            sort="summary"
-            title="Summary"
-            visible
-            orderDir={currentOrderDir}
-            orderBy={currentOrderBy}
-            onChange={sortTable}
-            visible={this.isVisible('summary')}
-          />
-        </tr>
+          <tr>
+            {fields.map(field => this.renderHeaderField(field))}
+          </tr>
         </thead>
         <tbody>
         {organizations && organizations.map((element, index) =>
-            <tr key={index}>
-              <TdId visible={this.isVisible('id')}>
-                {element.get('id')}
-              </TdId>
-              <Td visible={this.isVisible('date_created')}>
-                <div className="dpw--timer"><FormattedRelative value={element.get('date_created')} /></div>
-              </Td>
-              <Td visible={this.isVisible('importance')}>
-                {element.get('importance')}
-              </Td>
-              <Td className="item-title" visible={this.isVisible('name')}>
-                <a href="#"><SlicedString string={element.get('name')} /></a>
-              </Td>
-              <Td className="item-title" visible={this.isVisible('summary')}>
-                <a href="#"><SlicedString string={element.get('summary')} /></a>
-              </Td>
-            </tr>
+          <tr key={index}>
+            {fields.map(field => this.renderField(field, element))}
+          </tr>
         )}
         </tbody>
       </Table>

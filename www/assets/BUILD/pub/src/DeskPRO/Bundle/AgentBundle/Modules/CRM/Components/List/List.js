@@ -16,27 +16,41 @@ export class List extends Component {
     content:         PropTypes.string.isRequired,
     handlePageClick: PropTypes.func.isRequired,
     isLoaded:        PropTypes.bool,
-    pagination:      PropTypes.object
+    pagination:      PropTypes.object,
+    peopleFields:    PropTypes.object.isRequired,
+    orgFields:       PropTypes.object.isRequired
   };
 
   render() {
-    const { currentViewMode, selected, isLoaded, pagination, content, handlePageClick } = this.props;
+    const { currentViewMode, selected, isLoaded, pagination, content, handlePageClick, peopleFields,
+            orgFields } = this.props;
 
     return (
       <ListFrameContainer>
         <ListFrameMenu>
-          {!selected.size && <ControlBarContainer key="1" />}
-          {selected.size && <MassActionContainer key="2" />}
+          {!selected.size && <ControlBarContainer key="1"/>}
+          {selected.size && <MassActionContainer key="2"/>}
         </ListFrameMenu>
         <ListFrameContents isLoaded={isLoaded}>
-          {currentViewMode === constants.VIEW_MODE_CARD ?
-            <CrmCardContainer content={content} /> :
-            <CrmTableContainer content={content} />}
+          {currentViewMode === constants.VIEW_MODE_CARD
+            ? <CrmCardContainer
+                content={content}
+                peopleFields={peopleFields.get(constants.VIEW_MODE_CARD)}
+                orgFields={orgFields.get(constants.VIEW_MODE_CARD)}
+              />
+            : <CrmTableContainer
+                content={content}
+                peopleFields={peopleFields.get(constants.VIEW_MODE_TABLE)}
+                orgFields={orgFields.get(constants.VIEW_MODE_TABLE)}
+              />
+          }
           {pagination && pagination.get('total_pages') > 1 &&
-          <PaginationBoxView breakLabel={<li><span className="pagination-dots">&hellip;</span></li>}
-                             pageNum={pagination.get('total_pages')}
-                             currentPage={pagination.get('current_page')}
-                             clickCallback={handlePageClick} />}
+          <PaginationBoxView
+            breakLabel={<li><span className="pagination-dots">&hellip;</span></li>}
+            pageNum={pagination.get('total_pages')}
+            currentPage={pagination.get('current_page')}
+            clickCallback={handlePageClick}
+          />}
         </ListFrameContents>
       </ListFrameContainer>
     );

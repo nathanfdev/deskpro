@@ -37,13 +37,13 @@ export class TicketRow extends Component {
     switch (fieldId) {
 
       case 'id':
-        return <TdId key={fieldId}>{ticket.get('id')}</TdId>
+        return <TdId key={fieldId}>{ticket.get('id')}</TdId>;
 
       case 'subject':
       case 'status':
       case 'date_created':
       case 'labels':
-        return <TdTitle key={fieldId}>{ticket.get(fieldId)}</TdTitle>
+        return <TdTitle key={fieldId}>{ticket.get(fieldId)}</TdTitle>;
 
       default:
         return <Td key={fieldId}>{ticket.get(fieldId)}</Td>

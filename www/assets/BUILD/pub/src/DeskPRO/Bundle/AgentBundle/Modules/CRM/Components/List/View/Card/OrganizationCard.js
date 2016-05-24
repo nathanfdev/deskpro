@@ -13,7 +13,8 @@ export class OrganizationCard extends Component {
     viewEmployees:  PropTypes.func.isRequired,
     toggleSelected: PropTypes.func.isRequired,
     organization:   PropTypes.object.isRequired,
-    selected:       PropTypes.bool
+    selected:       PropTypes.bool,
+    fields:         PropTypes.object.isRequired
   };
 
   handleClick = () => {
@@ -48,8 +49,30 @@ export class OrganizationCard extends Component {
     return null;
   };
 
+  renderField(field) {
+    if (!field || !field.get('visible')) {
+      return null;
+    }
+
+    const fieldId = field.get('id');
+    const { organization } = this.props;
+    switch (fieldId) {
+
+      case 'date_created':
+        return (
+          <CardLineItem>
+            <CardDisc />,
+            <FormattedRelative value={organization.get(fieldId)} />
+          </CardLineItem>
+        );
+
+      default:
+        return null;
+    }
+  }
+
   render() {
-    const { organization, selected, viewEmployees } = this.props;
+    const { organization, selected, viewEmployees, fields } = this.props;
     const clickParams = {
       content:      'people',
       orderBy:      'name',
@@ -74,16 +97,20 @@ export class OrganizationCard extends Component {
 
         <CardLine>
           <CardLineLeft>
-            <CardLineItem icon="fa-users"
-                          onClick={viewEmployees}
-                          clickParams={clickParams}>
+            <CardLineItem icon="fa-users" onClick={viewEmployees} clickParams={clickParams}>
               {organization.get('employees_count')}
             </CardLineItem>
-            <CardLineItem><CardDisc /><FormattedRelative value={organization.get('date_created')} /></CardLineItem>
+
+            {this.renderField(fields.first())}
+
           </CardLineLeft>
           <CardLineRight>
-            <CardLineItem icon="fa-envelope">{organization.get('tickets_count')}</CardLineItem>
-            <CardLineItem icon="fa-comment">{organization.get('chats_count')}</CardLineItem>
+            <CardLineItem icon="fa-envelope">
+              {organization.get('tickets_count')}
+            </CardLineItem>
+            <CardLineItem icon="fa-comment">
+              {organization.get('chats_count')}
+            </CardLineItem>
           </CardLineRight>
         </CardLine>
       </Card>

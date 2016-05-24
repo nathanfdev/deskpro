@@ -26,11 +26,7 @@ export class HeaderContainer extends React.Component {
   };
 
   renderField(field) {
-    if (!field) {
-      return null;
-    }
-
-    if (!field.get('visible')) {
+    if (!field || !field.get('visible')) {
       return null;
     }
 

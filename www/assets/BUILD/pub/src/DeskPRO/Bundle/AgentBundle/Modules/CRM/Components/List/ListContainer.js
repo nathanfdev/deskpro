@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { List } from './List';
-import { currentViewModeSelector, currentContentSelector, isLoadedSelector, paginationSelector }
-  from '../../Selectors/list';
+import { currentViewModeSelector, currentContentSelector, isLoadedSelector, paginationSelector, orgFieldsSelector,
+  peopleFieldsSelector } from '../../Selectors/list';
 import { selectedSelector } from '../../../Application/Selectors/massActions';
 import { applyParams } from '../../Actions/crmListActions';
 import { connect } from 'react-redux';
@@ -11,26 +11,31 @@ import { connect } from 'react-redux';
   pagination:      paginationSelector(state),
   selected:        selectedSelector(state),
   currentViewMode: currentViewModeSelector(state),
-  content:         currentContentSelector(state)
-}))
+  content:         currentContentSelector(state),
+  peopleFields:    peopleFieldsSelector(state),
+  orgFields:       orgFieldsSelector(state)
+}), {
+  applyParams
+})
 
 export class ListContainer extends Component {
 
   static propTypes = {
-    dispatch:        PropTypes.func.isRequired,
-    handlePageClick: PropTypes.func.isRequired,
     selected:        PropTypes.object.isRequired,
     currentViewMode: PropTypes.string.isRequired,
     content:         PropTypes.string.isRequired,
     isLoaded:        PropTypes.bool,
-    pagination:      PropTypes.object
+    pagination:      PropTypes.object,
+    applyParams:     PropTypes.func.isRequired,
+    peopleFields:    PropTypes.object.isRequired,
+    orgFields:       PropTypes.object.isRequired
   };
 
-  render() {
-    const handlePageClick = page => this.props.dispatch(applyParams({ page }));
+  handlePageClick = page => this.props.applyParams({ page });
 
+  render() {
     return (
-      <List {...this.props} handlePageClick={handlePageClick} />
+      <List {...this.props} handlePageClick={this.handlePageClick} />
     );
   }
 }

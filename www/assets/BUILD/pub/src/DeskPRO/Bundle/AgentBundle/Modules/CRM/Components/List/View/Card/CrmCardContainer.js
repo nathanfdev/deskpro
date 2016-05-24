@@ -27,7 +27,9 @@ export class CrmCardContainer extends Component {
     content:       PropTypes.string.isRequired,
     usergroups:    PropTypes.object.isRequired,
     languages:     PropTypes.object.isRequired,
-    selected:      PropTypes.object.isRequired
+    selected:      PropTypes.object.isRequired,
+    peopleFields:  PropTypes.object.isRequired,
+    orgFields:     PropTypes.object.isRequired
   };
 
   viewEmployees = (listOptions) => {
@@ -41,29 +43,35 @@ export class CrmCardContainer extends Component {
   };
 
   renderOrganizationCard = (id, index) => {
-    const { organizations, selected } = this.props;
+    const { organizations, selected, orgFields } = this.props;
 
     return (
-      <OrganizationCard key={index}
-                        organization={organizations.get(id)}
-                        selected={selected.indexOf(id) > -1}
-                        toggleSelected={this.toggleSelected}
-                        viewEmployees={this.viewEmployees} />
+      <OrganizationCard
+        key={index}
+        organization={organizations.get(id)}
+        selected={selected.indexOf(id) > -1}
+        toggleSelected={this.toggleSelected}
+        viewEmployees={this.viewEmployees}
+        fields={orgFields}
+      />
     );
   };
 
   renderPersonCard = (id, index) => {
-    const { people, organizations, selected, usergroups, languages } = this.props;
+    const { people, organizations, selected, usergroups, languages, peopleFields } = this.props;
     const person = people.get(id);
 
     return (
-      <PersonCard key={index}
-                  person={person}
-                  usergroups={usergroups}
-                  organization={organizations.get(person.get('organization'))}
-                  language={languages.get(person.get('language'))}
-                  toggleSelected={this.toggleSelected}
-                  selected={selected.indexOf(id) > -1} />
+      <PersonCard
+        key={index}
+        person={person}
+        usergroups={usergroups}
+        organization={organizations.get(person.get('organization'))}
+        language={languages.get(person.get('language'))}
+        toggleSelected={this.toggleSelected}
+        selected={selected.indexOf(id) > -1}
+        fields={peopleFields}
+      />
     );
   };
 
