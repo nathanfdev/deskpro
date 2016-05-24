@@ -27,11 +27,9 @@
  */
 
 /**
- * DeskPRO.
- *.
- *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -363,7 +361,6 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     public function setTitle($title)
     {
-        $old_title = $this->title;
         $this->setModelField('title', $title);
 
         // note: removed the setSlug call, we do that in the DoctrineContentSlugListener now (prepersist/preupdate)
