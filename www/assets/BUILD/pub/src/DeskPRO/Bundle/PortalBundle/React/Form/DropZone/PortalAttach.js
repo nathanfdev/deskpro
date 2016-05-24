@@ -76,13 +76,23 @@ export class PortalAttach extends React.Component {
   };
 
   onUploadFail = (event, data) => {
+    console.log(event, data);
+
     const file = data.files[0];
     const response = data.jqXHR.responseJSON;
     const error = response && response.error;
 
+    let lastError =  portalPhrases.get('portal.forms.error_upload_file');
+    if (error && error.message) {
+      lastError = error.message;
+    }
+    if (data.jqXHR.status === 413) {
+      lastError = portalPhrases.get('portal.forms.error_upload_html_size');
+    }
+
     this.setState({
-      files:     this.state.files.filter(f => f.file !== file),
-      lastError: error && error.message || portalPhrases.get('portal.forms.error_upload_file')
+      files: this.state.files.filter(f => f.file !== file),
+      lastError
     });
   };
 

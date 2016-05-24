@@ -93,6 +93,7 @@ class LanguageController extends AbstractApiController
             'portal.general.toggle_on',
             'portal.general.toggle_off',
             'portal.forms.error_upload_file',
+            'portal.forms.error_upload_html_size',
             'portal.forms.label_choose',
             'portal.forms.label_drag',
             'portal.forms.label_drag_overlay',
