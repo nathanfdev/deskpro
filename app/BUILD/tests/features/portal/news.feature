@@ -25,9 +25,3 @@ Feature: News
     When I follow "Example News Post"
     Then I should be on "/news/posts/example-news-post"
     And the response status code should be 200
-
-  Scenario: I download a pdf version of a news page
-    Given I am on "/news/posts/example-news-post"
-    And I download "Download PDF"
-    Then the response status code should be 200
-    And I should see in the header "content-type":"application/pdf"
