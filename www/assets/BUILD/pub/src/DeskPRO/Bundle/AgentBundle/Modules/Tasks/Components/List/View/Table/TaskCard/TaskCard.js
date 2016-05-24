@@ -104,7 +104,7 @@ export class TaskCard extends BaseTaskCard {
 
     let result = connectDragSource(
       <tr className={classes}>
-        <Td className="bulk-edit-col">
+        <Td className="bulk-edit-col" key="bulk-edit-col">
           <TableCheckbox selected={selected} onClick={onToggleSelected} />
         </Td>
 

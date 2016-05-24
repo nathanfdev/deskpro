@@ -43,19 +43,19 @@ export class HeaderContainer extends React.Component {
     switch (field.get('id')) {
 
       case 'id':
-        return <Th title="Id" className="id-col" sort="id" {...columnProps} />;
+        return <Th title="Id" className="id-col" sort="id" {...columnProps} key={field.get('id')} />;
 
       case 'title':
-        return <Th title="Title" className="subject-col" sort="title" {...columnProps} />;
+        return <Th title="Title" className="subject-col" sort="title" {...columnProps} key={field.get('id')} />;
 
       case 'project':
-        return <Th title="Project" sort="project" {...columnProps} />;
+        return <Th title="Project" sort="project" {...columnProps} key={field.get('id')} />;
 
       case 'date_due':
-        return <Th title="Due" sort="date_due" {...columnProps} />;
+        return <Th title="Due" sort="date_due" {...columnProps} key={field.get('id')} />;
 
       case 'assignee':
-        return <Th title="Assignee" className="agent-col" sort="assignee" {...columnProps} />;
+        return <Th title="Assignee" className="agent-col" sort="assignee" {...columnProps} key={field.get('id')} />;
 
       default:
         return null;
