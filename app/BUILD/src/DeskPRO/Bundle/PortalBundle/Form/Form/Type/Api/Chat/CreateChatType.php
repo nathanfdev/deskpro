@@ -26,17 +26,16 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\AutoSetShouldSentTranscriptTrait;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\SetPersonListener;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
@@ -54,23 +53,23 @@ class CreateChatType extends AbstractType
     /**
      * @var SetPersonListener
      */
-    private $set_person_listener;
+    private $personListener;
 
     /**
      * @var WidgetSettingsResolver
      */
-    private $user_chat_settings;
+    private $settingsResolver;
 
     /**
      * Constructor.
      *
-     * @param SetPersonListener      $set_person_listener
-     * @param WidgetSettingsResolver $user_chat_settings
+     * @param SetPersonListener      $personListener
+     * @param WidgetSettingsResolver $settingsResolver
      */
-    public function __construct(SetPersonListener $set_person_listener, WidgetSettingsResolver $user_chat_settings)
+    public function __construct(SetPersonListener $personListener, WidgetSettingsResolver $settingsResolver)
     {
-        $this->set_person_listener = $set_person_listener;
-        $this->user_chat_settings  = $user_chat_settings;
+        $this->personListener   = $personListener;
+        $this->settingsResolver = $settingsResolver;
     }
 
     /**
@@ -78,26 +77,26 @@ class CreateChatType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $email_constraints = [new Assert\Email()];
-        if ($this->user_chat_settings->isChatEmailValidation() && !$this->user_chat_settings->isChatRequireLogin()) {
-            $email_constraints[] = new Assert\NotBlank();
+        $emailConstraints = [new Assert\Email()];
+        if ($this->settingsResolver->isChatEmailValidation() && !$this->settingsResolver->isChatRequireLogin()) {
+            $emailConstraints[] = new Assert\NotBlank();
         }
 
         $builder
-            ->add('name', 'text', [
+            ->add('name', TextType::class, [
                 'property_path' => 'person_name',
                 'required'      => false,
             ])
-            ->add('email', 'email', [
+            ->add('email', EmailType::class, [
                 'property_path' => 'person_email',
                 'required'      => false,
-                'constraints'   => $email_constraints,
+                'constraints'   => $emailConstraints,
             ])
         ;
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetPersonEmailFromSession']);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onCheckRequireLogin']);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this->set_person_listener, 'onSetPerson']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this->personListener, 'onSetPerson']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetEmailValidationCode']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetShouldSentTranscript']);
     }
@@ -107,15 +106,21 @@ class CreateChatType extends AbstractType
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults([
-            'csrf_protection'               => false,
-            'csrf_double_submit_protection' => false,
-            'person'                        => null,
-        ]);
+        $resolver
+            ->setDefaults([
+                'data_class'                    => ChatConversation::class,
+                'csrf_protection'               => false,
+                'csrf_double_submit_protection' => false,
+            ])
+            ->setRequired('person')
+            ->setAllowedTypes([
+                'person' => ['null', Person::class],
+            ])
+        ;
     }
 
     /**
-     * If session has user entity we can use assign it to the chat.
+     * If session has person entity we can assign it to the chat.
      * Uses if chat settings require user to be logged in.
      *
      * @param FormEvent $event
@@ -141,12 +146,12 @@ class CreateChatType extends AbstractType
     public function onSetEmailValidationCode(FormEvent $event)
     {
         // Option is disabled, skipping
-        if (!$this->user_chat_settings->isChatEmailValidation()) {
+        if (!$this->settingsResolver->isChatEmailValidation()) {
             return;
         }
 
         // Chat requires user to be logged in, skipping
-        if ($this->user_chat_settings->isChatRequireLogin()) {
+        if ($this->settingsResolver->isChatRequireLogin()) {
             return;
         }
 
@@ -171,7 +176,7 @@ class CreateChatType extends AbstractType
         $form   = $event->getForm();
         $person = $form->getConfig()->getOption('person');
 
-        if ($this->user_chat_settings->isChatRequireLogin() && !$person) {
+        if ($this->settingsResolver->isChatRequireLogin() && !$person) {
             $form->addError(new FormError('Login required'));
         }
     }
