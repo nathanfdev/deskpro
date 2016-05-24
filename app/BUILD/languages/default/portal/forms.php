@@ -85,6 +85,7 @@ return [
     'portal.forms.error_accept_no_file'             => 'You cannot upload an empty file.',
     'portal.forms.error_accept_server_error'        => 'There was a problem uploading this file. Please try again.',
     'portal.forms.error_accept_not_allowed_exts'    => 'You cannot upload a file with any of the following file extensions: {{ detail }}',
+    'portal.forms.error_accept_not_in_allowed_exts' => 'You can only upload a file with any of the following file extensions: {{ detail }}',
     'portal.forms.error_server_rejected_size'       => 'There was a problem uploading files due to the maximum size limit. Please try uploading smaller files.',
     'portal.forms.error_unique_entity'              => 'This value already exists in the system.',
     'portal.forms.error_dupe_email'                 => 'Email "{{ email }}" is already in use by other user.',
