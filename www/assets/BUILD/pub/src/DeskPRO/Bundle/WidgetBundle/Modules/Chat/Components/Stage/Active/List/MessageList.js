@@ -2,9 +2,9 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import ScrollArea from 'react-scrollbar-iframe';
 import { MessageFactoryContainer } from './MessageFactoryContainer';
-import popMp3 from '../../../../../../Resources/sounds/pop.mp3';
-import popOgg from '../../../../../../Resources/sounds/pop.ogg';
-import popWav from '../../../../../../Resources/sounds/pop.wav';
+import '../../../../../../Resources/sounds/pop.mp3';
+import '../../../../../../Resources/sounds/pop.ogg';
+import '../../../../../../Resources/sounds/pop.wav';
 
 export class MessageList extends React.Component {
 
@@ -75,9 +75,9 @@ export class MessageList extends React.Component {
     return (
       <div className="dpdesignportal-content">
         <audio ref="sound" preload="preload">
-          <source src={popMp3} />
-          <source src={popOgg} />
-          <source src={popWav} />
+          <source src={`${DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/WidgetBundle/Resources/sounds/pop.mp3`} />
+          <source src={`${DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/WidgetBundle/Resources/sounds/pop.ogg`} />
+          <source src={`${DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/WidgetBundle/Resources/sounds/pop.wav`} />
         </audio>
         <ScrollArea ref="scrollArea" ownerDocument={window.widgetFrame.document} vertical>
           <div className="bottom-aligner"></div>
