@@ -153,16 +153,7 @@ class WidgetSettingsController extends BaseController
      */
     public function applyPortalWidgetSettingsAction(Request $request)
     {
-        // store form settings
         $this->handleForm($request);
-
-        // update portal widget brand settings as well
-        $dataStore = $this->getOrCreatePortalWidgetBrandSettings();
-        $dataStore->setData('brand_settings', $this->getOrCreateWidgetBrandSettings()->getData('brand_settings'));
-
-        $em = $this->getManager();
-        $em->persist($dataStore);
-        $em->flush();
 
         // enable widget on the portal
         $settingRepo = $this->getSettingsRepository();
@@ -242,14 +233,6 @@ class WidgetSettingsController extends BaseController
     protected function getOrCreateWidgetBrandSettings()
     {
         return $this->getOrCreateDataStore('widget.brand_settings');
-    }
-
-    /**
-     * @return DataStore|null
-     */
-    protected function getOrCreatePortalWidgetBrandSettings()
-    {
-        return $this->getOrCreateDataStore('widget.portal_brand_settings');
     }
 
     /**

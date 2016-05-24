@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
 use Application\DeskPRO\Entity\Setting;
@@ -52,17 +49,20 @@ class SettingsFixture extends AbstractFixture implements OrderedFixtureInterface
      */
     public function load(ObjectManager $manager)
     {
-        foreach (array(
+        $settings = [
             'core.done_data_initializer' => 1,
-            'core.deskpro_build' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
-            'core.deskpro_build_num' => defined('DP_BUILD_NUM') ? DP_BUILD_NUM : 0,
-            'core.install_build' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : time(),
-            'core.install_timestamp' => time(),
-            'core.install_key' => RandUtils::randomStringFormat('%25An'),
-            'core.app_secret' => RandUtils::randomStringFormat('%75An'),
-            'portal.widget.enabled' => 1,
-            'core_tickets.use_ref' => 1,
-        ) as $name => $value) {
+            'core.deskpro_build'         => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
+            'core.deskpro_build_num'     => defined('DP_BUILD_NUM') ? DP_BUILD_NUM : 0,
+            'core.install_build'         => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : time(),
+            'core.install_timestamp'     => time(),
+            'core.install_key'           => RandUtils::randomStringFormat('%25An'),
+            'core.app_secret'            => RandUtils::randomStringFormat('%75An'),
+            'portal.widget.enabled'      => 1,
+            'portal.chat.enabled'        => 1,
+            'core_tickets.use_ref'       => 1,
+        ];
+
+        foreach ($settings as $name => $value) {
             $s        = $this->findOrCreate($name, $manager);
             $s->value = $value;
             $manager->persist($s);
@@ -79,7 +79,7 @@ class SettingsFixture extends AbstractFixture implements OrderedFixtureInterface
      */
     private function findOrCreate($name, ObjectManager $manager)
     {
-        $setting = $manager->getRepository(Setting::class)->findBy(array('name' => $name));
+        $setting = $manager->getRepository(Setting::class)->findBy(['name' => $name]);
         if (!$setting) {
             $setting       = new Setting();
             $setting->name = $name;
