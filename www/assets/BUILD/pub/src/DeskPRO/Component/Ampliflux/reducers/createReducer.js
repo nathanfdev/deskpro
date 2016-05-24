@@ -24,8 +24,7 @@ export function createReducer(initialState, ...handlerGroups) {
     let newState = inState;
 
     if (actionType && handlers.hasOwnProperty(actionType)) {
-      const payload = action.payload || undefined;
-      newState = handlers[actionType](state, payload, action);
+      newState = handlers[actionType](state, action.payload, action);
     }
 
     if (!Immutable.Iterable.isIterable(newState)) {
