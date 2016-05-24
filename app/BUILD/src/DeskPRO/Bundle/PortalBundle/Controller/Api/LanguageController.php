@@ -29,8 +29,10 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
+use Application\DeskPRO\Entity\Language;
 use DeskPRO\Component\Util\MapUtils;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -203,11 +205,15 @@ class LanguageController extends AbstractApiController
      */
     protected function getResponse(Request $request, array $phrases)
     {
-        $tr       = $this->container->get('deskpro.core.translate');
-        $language = $this->container->get('language_stack')->getActiveOrDefault();
+        $translate = $this->container->get('deskpro.core.translate');
+        $language  = $this->container->get('language_stack')->getActiveOrDefault();
 
-        $output = MapUtils::map($phrases, function ($idx, $id) use ($tr, $language) {
-            return [$id, $tr->phrase($id, [], $language)];
+        if ($request->get('language')) {
+            $language = $this->getManager()->getRepository(Language::class)->find($request->get('language'));
+        }
+
+        $output = MapUtils::map($phrases, function ($idx, $id) use ($translate, $language) {
+            return [$id, $translate->phrase($id, [], $language)];
         });
 
         $res = new JsonResponse($output);

@@ -11,6 +11,7 @@ import {
 } from '../Selectors/bootstrap';
 
 import { liveDemoSelector } from '../Selectors/dpWindow';
+import { widgetLanguageSelector } from '../Selectors/bootstrap';
 import { onlineAgentsCountSelector } from '../Selectors/peopleSelectors';
 import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
@@ -65,21 +66,26 @@ export const reloadSettings = createAction(
 
 export const loadPortalPhraseTranslations = createAction(
   'WIDGET_LOAD_PHRASE_TRANSLATIONS',
-  () => new Promise(resolve => {
+  () => (dispatch, getState) => new Promise(resolve => {
+    const state = getState();
+    const language = widgetLanguageSelector(state);
+
     const setPhrases = (data) => {
       portalPhrases.setPhrases(data);
       resolve();
     };
 
-    const cachedData = lscache.get('dpWidget.phrases');
+    const cacheKey = `dpWidget.phrases.${language}`;
+    const cachedData = lscache.get(cacheKey);
+
     if (cachedData) {
       setPhrases(cachedData);
     } else {
       widgetApi
-        .sendGet('DP_API/lang/widget-phrases.json', { ...ajaxOptions })
+        .sendGet(`DP_API/lang/widget-phrases.json?language=${language}`, { ...ajaxOptions })
         .success(response => {
           setPhrases(response);
-          lscache.set('dpWidget.phrases', response, 60);
+          lscache.set(cacheKey, response, 60);
         });
     }
   })
@@ -125,6 +131,11 @@ export const bootstrapWidget = createAction(
       dispatch(loadPortalPhraseTranslations())
     ])
     .then(response => {
+      // possibly reload translations with proper user's lang
+      // do it again when user's session is loaded
+      dispatch(loadPortalPhraseTranslations());
+
+      // try to resume chat
       const onFinish = () => {
         windowApiActions.widgetLoaded();
         resolve(response);
