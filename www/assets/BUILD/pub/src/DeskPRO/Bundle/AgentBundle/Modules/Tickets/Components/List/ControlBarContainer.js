@@ -17,6 +17,7 @@ import {
 }
   from '../../Actions/listActions';
 import { labelsSelector } from '../../Selectors/nav';
+import { listFiltersSelector } from '../../Selectors/filters';
 
 @connect(state => ({
   viewMode:           currentViewModeSelector(state),
@@ -25,6 +26,7 @@ import { labelsSelector } from '../../Selectors/nav';
   tableVisibleFields: tableVisibleFieldsSelector(state),
   cardVisibleFields:  cardVisibleFieldsSelector(state),
   currentParams:      listParamsSelector(state),
+  filters:            listFiltersSelector(state),
   labels:             labelsSelector(state)
 }))
 
@@ -36,14 +38,16 @@ export class ControlBarContainer extends Component {
     tableVisibleFields: PropTypes.object.isRequired,
     cardVisibleFields:  PropTypes.object.isRequired,
     viewMode:           PropTypes.string.isRequired,
+    filters:            PropTypes.array.isRequired,
     currentParams:      PropTypes.object.isRequired,
     labels:             PropTypes.object.isRequired
   };
 
   render() {
-    const { currentParams } = this.props;
+    const { currentParams, filters } = this.props;
     const config = {
       currentParams,
+      filters,
 
       applyParams: applyListParams,
       sorting:     {
@@ -51,34 +55,6 @@ export class ControlBarContainer extends Component {
         date_last_user_reply: { label: 'Last user reply date', icon: 'calendar' },
         urgency:              { label: 'Urgency', icon: 'calendar-o' }
       },
-
-      filters: [
-        { label: 'Date Created', type: 'date', fromParam: 'from', toParam: 'to' },
-        {
-          label:     'Labels',
-          type:      'labels',
-          param:     'labels',
-          modeParam: 'labels_mode',
-          labels:    this.props.labels
-        },
-        {
-          label:   'Status',
-          type:    'select',
-          param:   'status',
-          options: [
-            {
-              value:  'new',
-              label:  'New',
-              nested: [
-                { value: 'very_new', label: 'Very new' },
-                { value: 'not_so_new', label: 'Not so new' }
-              ]
-            },
-            { value: 'awaiting_agent', label: 'Awaiting agent' },
-            { value: 'closed', label: 'Closed' }
-          ]
-        }
-      ],
 
       view: {
         options: {

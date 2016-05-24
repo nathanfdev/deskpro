@@ -1,18 +1,23 @@
 import React, { Component, PropTypes } from 'react';
-import { SectionHeader, NestedList } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
+import { SectionHeader, NestedList } from '../../../../Common/Components/NavFrame';
 
 export class StarsTab extends Component {
   static propTypes = {
-    starsCount: PropTypes.object.isRequired
+    starsCount:  PropTypes.object.isRequired,
+    onStarClick: PropTypes.func.isRequired
   };
 
   render() {
+    const { starsCount, onStarClick } = this.props;
+
     return (
       <div>
         <SectionHeader>Stars</SectionHeader>
 
-        <NestedList items={this.props.starsCount.toJS()}
-                    onClick={() => {}} />
+        <NestedList
+          items={starsCount.toJS()}
+          onClick={onStarClick}
+        />
       </div>
     );
   }
