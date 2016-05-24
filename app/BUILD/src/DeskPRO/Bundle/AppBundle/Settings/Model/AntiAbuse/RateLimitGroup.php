@@ -55,7 +55,7 @@ class RateLimitGroup
      *
      * @var int
      *
-     * @JMS\Type("integer")
+     * @JMS\Exclude()
      */
     private $time = 0;
 
@@ -89,11 +89,14 @@ class RateLimitGroup
     }
 
     /**
+     * @JMS\VirtualProperty()
+     * @JMS\Type("integer")
+     *
      * @return int
      */
     public function getTime()
     {
-        return $this->time;
+        return $this->time / 60;
     }
 
     /**
