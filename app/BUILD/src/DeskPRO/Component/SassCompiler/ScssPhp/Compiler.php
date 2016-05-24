@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Component\SassCompiler\ScssPhp;
 
 use Leafo\ScssPhp\Compiler as BaseCompiler;
@@ -108,6 +109,16 @@ class Compiler extends BaseCompiler
             }
         }
 
+        // Manually locate plain CSS files cause BaseCompiler doesnt handle them properly
+        if (preg_match('/^\.\/.*?\.css$/', $url) || preg_match('/^[^\/\\\].*?\.css$/', $url)) {
+            foreach ($this->importPaths as $path) {
+                $p = realpath($path.DIRECTORY_SEPARATOR.$url);
+                if ($p && is_file($p)) {
+                    return $p;
+                }
+            }
+        }
+
         $p = parent::findImport($url);
         if ($p) {
             return $p;
@@ -159,6 +170,9 @@ class Compiler extends BaseCompiler
         foreach ($this->file_loaders as $fl) {
             try {
                 $f = $fl->loadFile($path);
+                if ($f !== null) {
+                    return $f;
+                }
             } catch (\Exception $e) {
                 switch ($this->options['error_load_file']) {
                     case 'throw':
@@ -168,9 +182,6 @@ class Compiler extends BaseCompiler
                     case 'ignore':
                         return '';
                 }
-            }
-            if ($f !== null) {
-                return $f;
             }
         }
 

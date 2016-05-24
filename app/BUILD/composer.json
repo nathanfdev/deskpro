@@ -45,7 +45,7 @@
     "friendsofsymfony/rest-bundle": "~1.5",
     "jms/serializer-bundle": "~1.0",
     "nelmio/api-doc-bundle": "~2.10",
-    "leafo/scssphp": "0.6.2",
+    "leafo/scssphp": "0.6.3",
     "beberlei/DoctrineExtensions": "^1.0",
     "willdurand/negotiation": "^1.4",
     "defuse/php-encryption": "^1.2",
