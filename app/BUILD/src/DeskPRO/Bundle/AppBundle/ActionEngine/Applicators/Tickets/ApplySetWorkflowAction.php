@@ -26,29 +26,33 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketWorkflow;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\InitializationInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class ApplySetWorkflowAction extends AbstractTicketApplicator implements ActionApplicatorInterface
+class ApplySetWorkflowAction extends AbstractTicketApplicator implements ActionApplicatorInterface, InitializationInterface
 {
-    /**
-     * @param Ticket[] $tickets
-     */
-    public function apply(array $tickets)
+    /** @var  TicketWorkflow */
+    private $workflow;
+
+    public function init()
     {
-        $workflow = $this->em->getRepository('DeskPRO:TicketWorkflow')->find($this->options['set_workflow']);
-        if (!$workflow) {
+        $this->workflow = $this->em->getRepository(TicketWorkflow::class)->find($this->options['set_workflow']);
+        if (!$this->workflow) {
             throw new BadRequestHttpException('Workflow with ID='.$this->options['set_workflow']." doesn't exists");
         }
-        foreach ($tickets as $ticket) {
-            $ticket->setWorkflow($workflow);
-            $this->saveTicket($ticket, 'set_workflow');
-        }
+    }
+
+    /**
+     * @param Ticket $ticket
+     */
+    public function apply($ticket)
+    {
+        $ticket->setWorkflow($this->workflow);
+        $this->saveTicket($ticket, 'set_workflow');
     }
 }

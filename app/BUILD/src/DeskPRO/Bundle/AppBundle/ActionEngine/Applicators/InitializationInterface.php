@@ -26,32 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators;
 
-use Application\DeskPRO\Entity\Feedback;
-use Application\DeskPRO\Entity\FeedbackCategory;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\InitializationInterface;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-
-class ApplySetTypeAction extends AbstractActionApplicator implements ActionApplicatorInterface, InitializationInterface
+interface InitializationInterface
 {
-    private $type;
-
-    public function init()
-    {
-        $this->type = $this->em->getRepository(FeedbackCategory::class)->find($this->options['set_type']);
-        if (null === $this->type) {
-            throw new BadRequestHttpException('Feedback type with ID='.$this->options['set_type']." doesn't exists");
-        }
-    }
-
-    /**
-     * @param Feedback $feedback
-     */
-    public function apply($feedback)
-    {
-        $feedback->setCategory($this->type);
-    }
+    public function init();
 }

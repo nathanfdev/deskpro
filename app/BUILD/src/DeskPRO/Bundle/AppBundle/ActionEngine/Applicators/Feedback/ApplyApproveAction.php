@@ -29,30 +29,36 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\InitializationInterface;
 
-class ApplyApproveAction extends AbstractActionApplicator implements ActionApplicatorInterface
+class ApplyApproveAction extends AbstractActionApplicator implements ActionApplicatorInterface, InitializationInterface
 {
-    /**
-     * @param Feedback[] $feedback
-     */
-    public function apply(array $feedback)
+    private $defaultStatusCategory;
+
+    public function init()
     {
-        $activeStatusCategories = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')
+        $activeStatusCategories = $this->em->getRepository(FeedbackStatusCategory::class)
             ->findBy(['status_type' => Feedback::STATUS_ACTIVE], ['display_order' => 'ASC']);
-        $defaultStatusCategory = $activeStatusCategories[0];
-        foreach ($feedback as $item) {
-            if ($item->getStatus() === Feedback::STATUS_HIDDEN) {
-                $item->setHiddenStatus();
-                $item->setStatus(Feedback::STATUS_ACTIVE);
-                $item->setStatusCategory($defaultStatusCategory);
-            }
-            $item->setIsReviewed(true);
+        $this->defaultStatusCategory = $activeStatusCategories[0];
+    }
+
+    /**
+     * @param Feedback $feedback
+     */
+    public function apply($feedback)
+    {
+        if ($feedback->getStatus() === Feedback::STATUS_HIDDEN) {
+            $feedback
+                ->setHiddenStatus()
+                ->setStatus(Feedback::STATUS_ACTIVE)
+                ->setStatusCategory($this->defaultStatusCategory);
         }
+        $feedback->setIsReviewed(true);
     }
 }

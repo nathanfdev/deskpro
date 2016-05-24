@@ -26,47 +26,42 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\InitializationInterface;
 
-class ApplySetFollowersAction extends AbstractTicketApplicator implements ActionApplicatorInterface
+class ApplySetFollowersAction extends AbstractTicketApplicator implements ActionApplicatorInterface, InitializationInterface
 {
     /** @var  Person[] */
     private $followers;
 
-    /**
-     * @param Ticket[] $tickets
-     */
-    public function apply(array $tickets)
+    public function init()
     {
-        if (empty($this->options['set_followers'])) {
-            foreach ($tickets as $ticket) {
-                $ticket->resetParticipants();
-                $this->saveTicket($ticket, 'unset_followers');
-            }
-        } else {
-            $this->init();
-            foreach ($tickets as $ticket) {
-                $ticket->setAgentParticipants($this->followers);
-                $this->saveTicket($ticket, 'set_followers');
-            }
+        if (!empty($this->options['set_followers'])) {
+            $qb = $this->em->createQueryBuilder();
+            $qb
+                ->select('p')
+                ->from('DeskPRO:Person', 'p')
+                ->andWhere('p.id IN (:ids)')
+                ->setParameter('ids', $this->options['set_followers']);
+            $this->followers = $qb->getQuery()->getResult();
         }
     }
 
-    private function init()
+    /**
+     * @param Ticket $ticket
+     */
+    public function apply($ticket)
     {
-        $qb = $this->em->createQueryBuilder();
-        $qb
-            ->select('p')
-            ->from('DeskPRO:Person', 'p')
-            ->andWhere('p.id IN (:ids)')
-            ->setParameter('ids', $this->options['set_followers']);
-        $this->followers = $qb->getQuery()->getResult();
+        if (empty($this->options['set_followers'])) {
+            $ticket->resetParticipants();
+            $this->saveTicket($ticket, 'unset_followers');
+        } else {
+            $ticket->setAgentParticipants($this->followers);
+            $this->saveTicket($ticket, 'set_followers');
+        }
     }
 }

@@ -26,14 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Services;
+
+use DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection\ActionCollection;
 
 interface ApplicatorServiceInterface
 {
-    public function apply($object, array $actions);
+    /**
+     * Transform array of actions parameters into ActionCollection.
+     *
+     * @param array $params
+     *
+     * @return ActionCollection
+     */
+    public function getActionCollection(array $params);
 
     public function getEntities(array $ids);
 }

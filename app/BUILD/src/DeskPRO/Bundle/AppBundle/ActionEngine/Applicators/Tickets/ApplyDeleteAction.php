@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -37,15 +34,13 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 class ApplyDeleteAction extends AbstractTicketApplicator implements ActionApplicatorInterface
 {
     /**
-     * @param Ticket[] $tickets
+     * @param Ticket $ticket
      */
-    public function apply(array $tickets)
+    public function apply($ticket)
     {
-        foreach ($tickets as $ticket) {
-            $ticket->setHiddenStatus(Ticket::HIDDEN_STATUS_DELETED);
-            $context = $this->tm->createAgentExecutorContext(null, 'delete', 'mass_actions');
-            $this->tm->saveTicket($ticket, $context);
-            $ticket->deleteTicket(null, '', false);
-        }
+        $ticket->setHiddenStatus(Ticket::HIDDEN_STATUS_DELETED);
+        $context = $this->tm->createAgentExecutorContext(null, 'delete', 'mass_actions');
+        $this->tm->saveTicket($ticket, $context);
+        $ticket->deleteTicket(null, '', false);
     }
 }

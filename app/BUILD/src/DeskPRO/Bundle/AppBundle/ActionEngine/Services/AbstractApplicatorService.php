@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Services;
 use DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection\ActionCollection;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\InitializationInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionTransformer;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionTypeCodes;
 use Doctrine\ORM\EntityManager;
@@ -57,25 +58,23 @@ abstract class AbstractApplicatorService implements ApplicatorServiceInterface
     }
 
     /**
-     * @param array $actions
+     * {@inheritdoc}
      */
-    public function apply($object, array $actions)
+    public function getActionCollection(array $params)
     {
-        //        $entities = $this->getEntities($this->class, $ids);
-        // Transform array of actions into ActionInterface collection
-        $this->actionCollection->prepare($this->namespace, $actions);
-
-        /** @var ActionInterface $action */
+        $this->actionCollection->prepare($this->namespace, $params);
         foreach ($this->actionCollection->getActions() as $action) {
             $options         = $this->getOptions($action);
             $applicatorClass = $this->getApplicatorClass($action);
             $applicator      = $this->createApplicator($applicatorClass);
-            $applicator
-                ->setOptions($options)
-                ->apply($object);
+            $applicator->setOptions($options);
+            if ($applicator instanceof InitializationInterface) {
+                $applicator->init();
+            }
+            $this->actionCollection->addApplicator($applicator);
         }
 
-        $this->em->flush();
+        return $this->actionCollection;
     }
 
     /**

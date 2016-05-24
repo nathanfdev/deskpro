@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -36,56 +33,16 @@ use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
-use Doctrine\ORM\EntityManager;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\InitializationInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class ApplyAssignAction extends AbstractTicketApplicator implements ActionApplicatorInterface
+class ApplyAssignAction extends AbstractTicketApplicator implements ActionApplicatorInterface, InitializationInterface
 {
     /** @var  array */
     private $collection;
 
-    public function __construct(EntityManager $em)
+    public function init()
     {
-        parent::__construct($em);
-        $this->collection = $this->init();
-    }
-
-    /**
-     * @param Ticket[] $tickets
-     */
-    public function apply(array $tickets)
-    {
-        foreach ($this->collection as $type => $value) {
-            switch ($type) {
-                case 'agent':
-                    foreach ($tickets as $ticket) {
-                        $ticket->setAgent($value);
-                        $this->saveTicket($ticket, 'assign');
-                    }
-                    break;
-                case 'team':
-                    foreach ($tickets as $ticket) {
-                        $ticket->setAgentTeam($value);
-                        $this->saveTicket($ticket, 'assign');
-                    }
-                    break;
-                case 'department':
-                    foreach ($tickets as $ticket) {
-                        $ticket->setDepartment($value);
-                        $this->saveTicket($ticket, 'assign');
-                    }
-                    break;
-            }
-        }
-    }
-
-    /**
-     * @return array
-     */
-    private function init()
-    {
-        $collection = [];
-
         foreach ($this->options['assign'] as $type => $id) {
             switch ($type) {
                 case 'agent':
@@ -96,7 +53,7 @@ class ApplyAssignAction extends AbstractTicketApplicator implements ActionApplic
                             throw new BadRequestHttpException("Agent with ID=$id doesn't exists");
                         }
                     }
-                    $collection['agent'] = $agent;
+                    $this->collection['agent'] = $agent;
                     break;
                 case 'team':
                     $team = null;
@@ -106,7 +63,7 @@ class ApplyAssignAction extends AbstractTicketApplicator implements ActionApplic
                             throw new BadRequestHttpException("Agents team with ID=$id doesn't exists");
                         }
                     }
-                    $collection['team'] = $team;
+                    $this->collection['team'] = $team;
                     break;
                 case 'department':
                     $department = null;
@@ -116,11 +73,32 @@ class ApplyAssignAction extends AbstractTicketApplicator implements ActionApplic
                             throw new BadRequestHttpException("Department with ID=$id doesn't exists");
                         }
                     }
-                    $collection['department'] = $department;
+                    $this->collection['department'] = $department;
                     break;
             }
         }
+    }
 
-        return $collection;
+    /**
+     * @param Ticket $ticket
+     */
+    public function apply($ticket)
+    {
+        foreach ($this->collection as $type => $value) {
+            switch ($type) {
+                case 'agent':
+                    $ticket->setAgent($value);
+                    $this->saveTicket($ticket, 'assign');
+                    break;
+                case 'team':
+                    $ticket->setAgentTeam($value);
+                    $this->saveTicket($ticket, 'assign');
+                    break;
+                case 'department':
+                    $ticket->setDepartment($value);
+                    $this->saveTicket($ticket, 'assign');
+                    break;
+            }
+        }
     }
 }

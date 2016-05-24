@@ -29,32 +29,57 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionTypeCodes;
 use Doctrine\Common\Collections\ArrayCollection;
 
 class ActionCollection
 {
-    /** @var ArrayCollection */
+    /** @var ArrayCollection|ActionInterface[] */
     private $actions;
+
+    /** @var ArrayCollection|ActionApplicatorInterface[] */
+    private $applicators;
 
     public function __construct()
     {
-        $this->actions = new ArrayCollection();
+        $this->actions     = new ArrayCollection();
+        $this->applicators = new ArrayCollection();
     }
 
+    /**
+     * @return ActionInterface[]
+     */
     public function getActions()
     {
         return $this->actions;
     }
 
     /**
+     * @param ActionApplicatorInterface $applicator
+     */
+    public function addApplicator(ActionApplicatorInterface $applicator)
+    {
+        $this->applicators->add($applicator);
+    }
+
+    /**
+     * @return ActionApplicatorInterface[]
+     */
+    public function getApplicators()
+    {
+        return $this->applicators;
+    }
+
+    /**
      * @param string $namespace
      * @param array  $actions
+     *
+     * @return ActionCollection
      */
     public function prepare($namespace, array $actions)
     {
@@ -68,6 +93,8 @@ class ActionCollection
                 $this->resolveAction($namespace, $name, $options);
             }
         }
+
+        return $this;
     }
 
     private function resolveAction($namespace, $name, $options = null)

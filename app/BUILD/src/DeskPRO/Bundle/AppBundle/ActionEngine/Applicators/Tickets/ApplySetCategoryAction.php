@@ -26,29 +26,31 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\InitializationInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class ApplySetCategoryAction extends AbstractTicketApplicator implements ActionApplicatorInterface
+class ApplySetCategoryAction extends AbstractTicketApplicator implements ActionApplicatorInterface, InitializationInterface
 {
-    /**
-     * @param Ticket[] $tickets
-     */
-    public function apply(array $tickets)
+    private $category;
+
+    public function init()
     {
-        $category = $this->em->getRepository('DeskPRO:TicketCategory')->find($this->options['set_category']);
-        if (!$category) {
+        $this->category = $this->em->getRepository('DeskPRO:TicketCategory')->find($this->options['set_category']);
+        if (!$this->category) {
             throw new BadRequestHttpException('Category with ID='.$this->options['set_category']." doesn't exists");
         }
-        foreach ($tickets as $ticket) {
-            $ticket->setCategory($category);
-            $this->saveTicket($ticket, 'set_category');
-        }
+    }
+
+    /**
+     * @param Ticket $ticket
+     */
+    public function apply($ticket)
+    {
+        $ticket->setCategory($this->category);
+        $this->saveTicket($ticket, 'set_category');
     }
 }

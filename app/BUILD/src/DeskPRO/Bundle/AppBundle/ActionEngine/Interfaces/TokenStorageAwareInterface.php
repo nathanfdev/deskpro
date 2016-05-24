@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Interfaces;
 
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;

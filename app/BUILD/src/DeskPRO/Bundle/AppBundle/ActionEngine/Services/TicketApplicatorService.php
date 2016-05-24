@@ -94,10 +94,10 @@ class TicketApplicatorService extends AbstractApplicatorService
     /**
      * {@inheritdoc}
      */
-    protected function getEntities($class, array $ids)
+    public function getEntities(array $ids)
     {
         /** @var Ticket[] $entities */
-        $entities = parent::getEntities($class, $ids);
+        $entities = parent::getEntities($ids);
         foreach ($entities as $entity) {
             $entity->disableAutoTicketProcess();
         }
