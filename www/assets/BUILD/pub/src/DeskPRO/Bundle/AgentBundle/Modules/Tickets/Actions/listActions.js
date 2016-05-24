@@ -1,7 +1,7 @@
 import { createAction } from 'Ampliflux';
 import { listParamsSelector } from '../Selectors/list';
-import { setCollection, releaseCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
-import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { setCollection, releaseCollection } from '../../../../AppBundle/Modules/RecordsStore';
+import { repository } from '../../../../AppBundle/DAL';
 
 // Private -------------------------------------------------------------------------------------------------------------
 
@@ -32,22 +32,24 @@ export const applyListParams = createAction(
     const current = listParamsSelector(getState()).toJS();
 
     // reset pagination and previous filter settings when switching to another filter
-    if (overwrite.filter) {
+    if (overwrite.filter || overwrite.label) {
       delete current.page;
       const stableProps = ['order_by', 'order_dir', 'date_created', 'labels', 'status'];
-      for (const key in current) {
-        if (current.hasOwnProperty(key) && stableProps.indexOf(key) === -1) {
+      Object.keys(current).forEach(key => {
+        if (stableProps.indexOf(key) === -1) {
           delete current[key];
         }
+      });
+      if (overwrite.label) {
+        delete current.labels;
       }
     }
 
     const params = { ...current, ...overwrite };
-
     dispatch(setListParams(params));
 
     // reload if filter param is set i.e. navigation menu item is selected
-    if (params.filter) {
+    if (params.filter || overwrite.label) {
       dispatch(loadList(params));
     }
   }

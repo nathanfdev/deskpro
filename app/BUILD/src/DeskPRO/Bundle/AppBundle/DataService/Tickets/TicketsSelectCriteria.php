@@ -131,6 +131,9 @@ class TicketsSelectCriteria
                 case 'labels':
                     $composite->addTerm(new TicketLabelTerm(['label' => $value[0], TermInterface::OP_IS]));
                     break;
+                case 'label':
+                    $composite->addTerm(new TicketLabelTerm(['label' => $value[0], TermInterface::OP_IS]));
+                    break;
                 case 'language':
                     $composite->addTerm(new TicketLanguageTerm(['language' => $value[0], TermInterface::OP_IS]));
                     break;
