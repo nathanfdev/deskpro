@@ -53,6 +53,7 @@ class CaptchaAntiAbuseType extends AbstractType
             ->add('comments', CaptchaSettingChoiceType::class)
             ->add('feedback', CaptchaSettingChoiceType::class)
             ->add('register', CaptchaSettingChoiceType::class)
+            ->add('sharing', CaptchaSettingChoiceType::class)
         ;
     }
 

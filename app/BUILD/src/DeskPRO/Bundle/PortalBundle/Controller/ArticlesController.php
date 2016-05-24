@@ -34,6 +34,7 @@ use Application\DeskPRO\Entity\ArticleComment;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ShareContentVoter;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -237,6 +238,8 @@ class ArticlesController extends AbstractController
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedContent($article, $this->getUser());
         }
 
+        $canShare = $this->isGranted(ShareContentVoter::SHARE_ARTICLES);
+
         //
         // RENDER THEME
         //
@@ -254,6 +257,7 @@ class ArticlesController extends AbstractController
                 'new_comment_form'   => $newCommentForm ? $newCommentForm->createView() : null,
                 'show_rating_counts' => $showRatingCounts,
                 'rating_counts'      => $ratingCounts,
+                'can_share'          => $canShare,
             ]
         );
     }

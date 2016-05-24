@@ -912,6 +912,7 @@ return [
     'user.captcha.comments' => false,
     'user.captcha.feedback' => false,
     'user.captcha.register' => false,
+    'user.captcha.sharing'  => false,
 
     'core.use_recaptcha2'        => false,
     'core.recaptcha2_site_key'   => '',
