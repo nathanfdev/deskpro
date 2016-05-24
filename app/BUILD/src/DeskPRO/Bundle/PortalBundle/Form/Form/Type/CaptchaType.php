@@ -56,15 +56,22 @@ class CaptchaType extends AbstractType
     private $brand_stack;
 
     /**
+     * @var array
+     */
+    private $captchaConfig;
+
+    /**
      * Constructor.
      *
      * @param BrandStack      $brand_stack
      * @param LanguageManager $language_manager
+     * @param array           $captchaConfig
      */
-    public function __construct(BrandStack $brand_stack, LanguageManager $language_manager)
+    public function __construct(BrandStack $brand_stack, LanguageManager $language_manager, array $captchaConfig)
     {
         $this->language_manager = $language_manager;
         $this->brand_stack      = $brand_stack;
+        $this->captchaConfig    = $captchaConfig;
     }
 
     /**
@@ -91,6 +98,7 @@ class CaptchaType extends AbstractType
                     'invalid_message' => 'portal.forms.error_captcha',
                     // Workaround to avoid null bypass_code to be cast as a string that de-require the captcha
                     'bypass_code' => rand(0, 123456),
+                    'length'      => $this->captchaConfig['length'],
                 ]);
             }
         });
