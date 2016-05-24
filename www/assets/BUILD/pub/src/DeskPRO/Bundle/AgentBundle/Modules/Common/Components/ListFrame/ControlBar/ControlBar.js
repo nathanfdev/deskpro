@@ -3,8 +3,7 @@ import { SortingMenu } from './Sorting/SortingMenu';
 import { FilteringMenuContainer } from './Filtering/FilteringMenuContainer';
 import { ViewMenuContainer } from './View/ViewMenuContainer';
 
-import { connect } from 'react-redux';
-@connect()
+
 export class ControlBar extends Component {
 
   static propTypes = {

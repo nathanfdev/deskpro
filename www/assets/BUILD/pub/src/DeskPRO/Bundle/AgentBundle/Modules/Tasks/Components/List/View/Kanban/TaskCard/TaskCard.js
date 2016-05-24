@@ -6,6 +6,9 @@ import {
   DateDue,
   SubTasks,
   Comments,
+  AssignButton,
+  CardProjectContainer,
+  LinkedItemContainer,
   AssigneeName
 } from '../../../TaskCard';
 import classNames from 'classnames';
@@ -13,13 +16,61 @@ import classNames from 'classnames';
 export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
-    className: PropTypes.string,
-    moving:    PropTypes.bool,
-    dragging:  PropTypes.bool
+    className:    PropTypes.string,
+    moving:       PropTypes.bool,
+    dragging:     PropTypes.bool,
+    kanbanFields: PropTypes.object.isRequired
   };
 
+  renderField(field) {
+    if (!field) {
+      return null;
+    }
+
+    if (!field.get('visible')) {
+      return null;
+    }
+
+    const { task } = this.props;
+    const onChange = this.onChange;
+
+    switch (field.get('id')) {
+
+      case 'date_due':
+        return (
+          <div key={field.get('id')}>
+            <DateDue value={task.get('date_due')} onChange={val => onChange('date_due', val)} />
+          </div>
+        );
+
+      case 'project':
+        return (
+          <div key={field.get('id')}>
+            <CardProjectContainer value={task.get('project')} onChange={val => onChange('project', val)} />
+          </div>
+        );
+
+      case 'linked':
+        return (
+          <div key={field.get('id')}>
+            <LinkedItemContainer value={task} onChange={val => onChange('linked_items', val)} />
+          </div>
+        );
+
+      case 'assignee':
+        return (
+          <div key={field.get('id')}>
+            <AssignButton value={task} onChange={val => onChange('assignee', val)} />
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  }
+
   render() {
-    const { task, selected, moving, dragging } = this.props;
+    const { task, selected, moving, dragging, kanbanFields } = this.props;
     const { onToggleSelected } = this.props;
     const onChange = this.onChange;
 
@@ -35,14 +86,9 @@ export class TaskCard extends BaseTaskCard {
           <Title value={task.get('title')} isDone={task.get('is_done')} onSubmit={val => onChange('title', val)} />
 
           <div className="card-line task-details">
-            <div className="top-right-box">
-                <span className="assignment">
-                  <AssigneeName task={task} />
-                </span>
-            </div>
-            <div>
-              <DateDue value={task.get('date_due')} onChange={val => onChange('date_due', val)} />
-            </div>
+
+            {kanbanFields.map(field => this.renderField(field))}
+
           </div>
           <hr />
           <div className="card-line task-properties">

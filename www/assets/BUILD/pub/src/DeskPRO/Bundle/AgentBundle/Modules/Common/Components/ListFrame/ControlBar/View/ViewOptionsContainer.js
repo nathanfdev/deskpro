@@ -10,6 +10,8 @@ export class ViewOptionsContainer extends Component {
   static propTypes = {
     dispatch:                PropTypes.func.isRequired,
     onViewFieldsMenuUnmount: PropTypes.func,
+    toggleFieldVisibility:   PropTypes.func,
+    changeFieldOrder:        PropTypes.func,
     viewMode:                PropTypes.string.isRequired,
     options:                 PropTypes.object.isRequired
   };
@@ -23,30 +25,26 @@ export class ViewOptionsContainer extends Component {
   }
 
   render() {
-    const { viewMode, options, dispatch } = this.props;
+    const { viewMode, options, toggleFieldVisibility, changeFieldOrder } = this.props;
 
     return (
       <Menu widgetClass="dpw-navigation-dropdown-secondary">
-        {Object.entries(options).map(([type, option]) => {
-
-          const onClick = name => {
-            if (option.toggleFieldVisibility) {
-              dispatch(option.toggleFieldVisibility(name));
-            }
-          };
-
-          return (
-            <div key={type}>
-              <Item
-                discMarked
-                label={option.label}
-                widgetClass="dpw-navigation-dropdown-column-list-item"
-                isActive={viewMode === type}
-              />
-              <ViewOptionsList fields={option.fields} type={type} />
-            </div>
-          );
-        })}
+        {Object.entries(options).map(([type, option]) =>
+          <div key={type}>
+            <Item
+              discMarked
+              label={option.label}
+              widgetClass="dpw-navigation-dropdown-column-list-item"
+              isActive={viewMode === type}
+            />
+            <ViewOptionsList
+              {...option}
+              type={type}
+              toggleFieldVisibility={toggleFieldVisibility}
+              changeFieldOrder={changeFieldOrder}
+            />
+          </div>
+        )}
       </Menu>
     );
   }

@@ -1,76 +1,46 @@
 import React, { Component, PropTypes } from 'react';
 import Immutable from 'immutable';
-import { ViewField } from './ViewField';
+import { ViewFieldContainer } from './ViewFieldContainer';
 
 export class ViewOptionsList extends Component {
 
   static propTypes = {
-    widgetClass:         PropTypes.string,
-    visibleFields:       PropTypes.object.isRequired,
-    configurableFields:  PropTypes.object.isRequired,
-    overrideWidgetClass: PropTypes.bool,
-    children:            PropTypes.node,
-    onClick:             PropTypes.func.isRequired,
-    type:                PropTypes.string.isRequired
+    fields:                PropTypes.object.isRequired,
+    toggleFieldVisibility: PropTypes.func,
+    changeFieldOrder:      PropTypes.func,
+    type:                  PropTypes.string.isRequired
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      items: this.setItemsFromProps(props)
-    };
+  shouldComponentUpdate(props) {
+    return !Immutable.is(props.fields, this.props.fields);
   }
 
-  componentWillReceiveProps(props) {
-    this.setState({
-      items: this.setItemsFromProps(props)
-    });
-  }
-
-  shouldComponentUpdate(props, state) {
-    return !Immutable.is(state.items, this.state.items);
-  }
-
-  onChangeDisplayOrder = (from, to) => {
-    let { items } = this.state;
-    const fromItem = items.get(from);
-    const toItem = items.get(to);
-    if (fromItem && toItem) {
-      items = items.set(from, toItem);
-      items = items.set(to, fromItem);
-      this.setState({ items });
-    }
+  toggleVisibility = index => {
+    const { toggleFieldVisibility, type } = this.props;
+    if (!toggleFieldVisibility) return;
+    toggleFieldVisibility({ type, index });
   };
 
-  setItemsFromProps(props) {
-    return Immutable.List().withMutations(items => {
-      for (const [key, value] of Object.entries(props.configurableFields)) {
-        items.push({ key, value });
-      }
-    });
-  }
+  changeOrder = (from, to) => {
+    const { changeFieldOrder, type } = this.props;
+    if (!changeFieldOrder) return;
+    changeFieldOrder({ type, from, to });
+  };
 
   render() {
-    // dpw-navigation-dropdown-column-list-v2 must be a widgetClass prop, because in some Item list we don't need this class
-    const { visibleFields, onClick, type } = this.props;
-    const { items } = this.state;
+    const { type, fields } = this.props;
 
     return (
       <div className="dpw-navigation-dropdown-column-list">
         <ul>
-          {items.map(({ key, value }, index) =>
-            <ViewField
-              key={`${index}`}
+          {fields.map((field, index) =>
+            <ViewFieldContainer
+              key={index}
               index={index}
-              value={key}
-              label={value}
+              field={field}
               type={type}
-              isShown={visibleFields.indexOf(key) > -1}
-              changeState={onClick}
-              widgetClass="dpw-navigation-dropdown-column-list-item"
-              onChangeDisplayOrder={this.onChangeDisplayOrder}
-              overrideWidgetClass
-              listItem
+              toggleVisibility={this.toggleVisibility}
+              changeOrder={this.changeOrder}
             />
           )}
         </ul>

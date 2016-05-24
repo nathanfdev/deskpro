@@ -11,40 +11,40 @@ export const currentOrderDirSelector = hashStateSelectorFactory(['list', 'order_
 
 export const listParamsNavSelector = createSelector(
   stateSelector,
-    state => state.getIn(['listParams', 'nav'])
+  state => state.getIn(['listParams', 'nav'])
 );
 
 export const listParamsFiltersSelector = createSelector(
   stateSelector,
-    state => state.getIn(['listParams', 'filters'])
+  state => state.getIn(['listParams', 'filters'])
 );
 
-export const tableVisibleFieldsSelector = createSelector(
+export const tableFieldsSelector = createSelector(
   stateSelector,
-    state => state.getIn(['visibleFields', constants.VIEW_MODE_TABLE])
+  state => state.getIn(['fields', constants.VIEW_MODE_TABLE])
 );
 
-export const cardVisibleFieldsSelector = createSelector(
+export const cardFieldsSelector = createSelector(
   stateSelector,
-    state => state.getIn(['visibleFields', constants.VIEW_MODE_CARD])
+  state => state.getIn(['fields', constants.VIEW_MODE_CARD])
 );
 
-export const kanbanVisibleFieldsSelector = createSelector(
+export const kanbanFieldsSelector = createSelector(
   stateSelector,
-    state => state.getIn(['visibleFields', constants.VIEW_MODE_KANBAN])
+  state => state.getIn(['fields', constants.VIEW_MODE_KANBAN])
 );
 
-export const calendarVisibleFieldsSelector = createSelector(
+export const calendarFieldsSelector = createSelector(
   stateSelector,
-    state => state.getIn(['visibleFields', constants.VIEW_MODE_CALENDAR])
+  state => state.getIn(['fields', constants.VIEW_MODE_CALENDAR])
 );
 
 export const elementsSelector = createSelector(
   stateSelector,
-    state => state.get('elements')
+  state => state.get('elements')
 );
 
 export const isLoadedSelector = createSelector(
   stateSelector,
-    state => state.getIn(['async', 'done'])
+  state => state.getIn(['async', 'done'])
 );

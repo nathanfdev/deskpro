@@ -12,27 +12,22 @@ import {
   CardProjectContainer,
   LinkedItemContainer
 } from '../../../TaskCard/index';
+import Immutable from 'immutable';
 
 export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
-    cardVisibleFields: PropTypes.object,
-    moving:            PropTypes.bool
+    cardFields: PropTypes.object,
+    moving:     PropTypes.bool
   };
 
   renderDetails() {
-    const { task, cardVisibleFields } = this.props;
-    const onChange = this.onChange;
-    const isVisible = type => cardVisibleFields.includes(type);
+    const { task } = this.props;
 
     return (
       <div className="details-line">
         <div>
-          {this.renderField('date_due')}
-
-          {this.renderField('project')}
-
-          {this.renderField('linked')}
+          {this._fields.map(field => this.renderField(field))}
         </div>
         <div className="icon-block">
           <Comments count={this.state.comments} />
@@ -45,19 +40,18 @@ export class TaskCard extends BaseTaskCard {
   }
 
   renderField(field) {
-    const { task, cardVisibleFields } = this.props;
-    const onChange = this.onChange;
-    const isVisible = type => cardVisibleFields.includes(type);
-
-    if (!isVisible(field)) {
+    if (!field) {
       return null;
     }
 
-    switch (field) {
-      case 'title':
-        return (
-          <Title value={task.get('title')} isDone={task.get('is_done')} onSubmit={value => onChange('title', value)} />
-        );
+    if (!field.get('visible')) {
+      return null;
+    }
+
+    const { task } = this.props;
+    const onChange = this.onChange;
+
+    switch (field.get('id')) {
 
       case 'date_due':
         return [
@@ -91,20 +85,32 @@ export class TaskCard extends BaseTaskCard {
   }
 
   render() {
-    const { task, moving, selected, cardVisibleFields, onToggleSelected } = this.props;
+    const { task, moving, selected, onToggleSelected, cardFields } = this.props;
     const onChange = this.onChange;
+
+    this._fields = [];
+    let assignee;
+
+    cardFields.map(field => {
+      if (field.get('id') === 'assignee') {
+        assignee = field;
+      } else {
+        this._fields.push(field);
+      }
+    });
 
     return (
       <Card moving={moving} minimized={this.isMinimized()} type="task">
         <MarkDoneButton isDone={task.get('is_done')} onToggle={value => onChange('is_done', value)}/>
         <CardCheckbox selected={selected} onClick={onToggleSelected}/>
         <div className="title-line">
-          {this.renderField('title')}
+
+          <Title value={task.get('title')} isDone={task.get('is_done')} onSubmit={value => onChange('title', value)} />
 
           <div className="icon-block">
             {task.get('is_done')
               ? <ShowDetailsButton expanded={this.state.expanded} onToggleExpand={this.onToggleExpand}/>
-              : this.renderField('assignee')
+              : this.renderField(assignee)
             }
           </div>
         </div>

@@ -11,10 +11,13 @@ import { ViewModeMenu } from './ViewModeMenu';
 export class ViewMenuContainer extends Component {
 
   static propTypes = {
-    dispatch:       PropTypes.func.isRequired,
-    options:        PropTypes.object.isRequired,
-    viewMode:       PropTypes.string.isRequired,
-    viewModeAction: PropTypes.func.isRequired
+    dispatch:                PropTypes.func.isRequired,
+    options:                 PropTypes.object.isRequired,
+    viewMode:                PropTypes.string.isRequired,
+    viewModeAction:          PropTypes.func.isRequired,
+    onViewFieldsMenuUnmount: PropTypes.func,
+    toggleFieldVisibility:   PropTypes.func,
+    changeFieldOrder:        PropTypes.func
   };
 
   constructor(props) {

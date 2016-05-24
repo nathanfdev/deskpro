@@ -7,21 +7,21 @@ import { selectedSelector } from '../../../../Application/Selectors/massActions'
 import Immutable from 'immutable';
 import { addToCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import {
-  cardVisibleFieldsSelector,
-  tableVisibleFieldsSelector,
-  kanbanVisibleFieldsSelector,
-  calendarVisibleFieldsSelector,
+  cardFieldsSelector,
+  tableFieldsSelector,
+  kanbanFieldsSelector,
+  calendarFieldsSelector,
   currentOrderBySelector
 } from '../../../Selectors/list';
 import jQuery from 'jquery';
 
 @connect(state => ({
-  selectedTasks:         selectedSelector(state),
-  cardVisibleFields:     cardVisibleFieldsSelector(state),
-  tableVisibleFields:    tableVisibleFieldsSelector(state),
-  kanbanVisibleFields:   kanbanVisibleFieldsSelector(state),
-  calendarVisibleFields: calendarVisibleFieldsSelector(state),
-  currentOrderBy:        currentOrderBySelector(state)
+  selectedTasks:  selectedSelector(state),
+  cardFields:     cardFieldsSelector(state),
+  tableFields:    tableFieldsSelector(state),
+  kanbanFields:   kanbanFieldsSelector(state),
+  calendarFields: calendarFieldsSelector(state),
+  currentOrderBy: currentOrderBySelector(state)
 }))
 
 export class TaskCardEditContainer extends React.Component {
@@ -55,10 +55,10 @@ export class TaskCardEditContainer extends React.Component {
     }
 
     return !Immutable.is(this.state.task, state.task)
-      || !Immutable.is(props.cardVisibleFields, this.props.cardVisibleFields)
-      || !Immutable.is(props.tableVisibleFields, this.props.tableVisibleFields)
-      || !Immutable.is(props.kanbanVisibleFields, this.props.kanbanVisibleFields)
-      || !Immutable.is(props.calendarVisibleFields, this.props.calendarVisibleFields)
+      || !Immutable.is(props.cardFields, this.props.cardFields)
+      || !Immutable.is(props.tableFields, this.props.tableFields)
+      || !Immutable.is(props.kanbanFields, this.props.kanbanFields)
+      || !Immutable.is(props.calendarFields, this.props.calendarFields)
       || !Immutable.is(props.currentOrderBy, this.props.currentOrderBy)
       ;
   }
@@ -72,7 +72,7 @@ export class TaskCardEditContainer extends React.Component {
   onToggleSelected = () => {
     const { dispatch } = this.props;
     const { task } = this.state;
-    this.setState({ selected: !this.state.selected });
+    this.setState({selected: !this.state.selected});
     dispatch(toggleSelectedAction(task.get('id')));
   };
 
@@ -85,14 +85,16 @@ export class TaskCardEditContainer extends React.Component {
       const agents = value.get('agents').toArray();
       const teams = value.get('teams').toArray();
       const departments = value.get('departments').toArray();
-      params = { agents, teams, departments };
+      params = {
+        agents,
+        teams,
+        departments
+      };
       task = task.mergeWith(value);
     } else if (prop === 'linked_items') {
       task = task.withMutations(map => {
-        map
-          .set('linked_tickets', value.get('linked_tickets'))
-          .set('linked_articles', value.get('linked_articles'))
-          .set('linked_chats', value.get('linked_chats'));
+        map.set('linked_tickets', value.get('linked_tickets')).set('linked_articles', value.get('linked_articles')).
+          set('linked_chats', value.get('linked_chats'));
       });
 
       params = {
@@ -101,11 +103,11 @@ export class TaskCardEditContainer extends React.Component {
         linked_chats:    value.get('linked_chats').toArray()
       };
     } else {
-      params = { [prop]: value };
+      params = {[prop]: value};
       task = task.set(prop, value);
     }
 
-    this.setState({ task });
+    this.setState({task});
     dispatch(addToCollection('Task', 'all', Immutable.List([task])));
     dispatch(editTask(task.get('id'), params));
   };

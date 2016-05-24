@@ -12,11 +12,31 @@ const initialState = {
       label_mode: 'any'
     }
   },
-  visibleFields: {
-    [constants.VIEW_MODE_CARD]: ['title', 'project', 'date_due', 'linked', 'assignee'],
-    [constants.VIEW_MODE_TABLE]: ['id', 'project', 'date_due', 'assignee'],
-    [constants.VIEW_MODE_KANBAN]: ['title', 'project', 'date_due', 'assignee'],
-    [constants.VIEW_MODE_CALENDAR]: ['title', 'project', 'date_due', 'assignee']
+  fields: {
+    [constants.VIEW_MODE_CARD]: [
+      { id: 'project', title: 'Project', visible: true },
+      { id: 'date_due', title: 'Due', visible: true },
+      { id: 'linked', title: 'Linked Items', visible: true },
+      { id: 'assignee', title: 'Assignee', visible: true }
+    ],
+    [constants.VIEW_MODE_TABLE]: [
+      { id: 'id', title: 'Id', visible: true },
+      { id: 'title', title: 'Title', visible: true },
+      { id: 'project', title: 'Project', visible: true },
+      { id: 'date_due', title: 'Due', visible: true },
+      { id: 'assignee', title: 'Assignee', visible: true }
+    ],
+    [constants.VIEW_MODE_KANBAN]: [
+      { id: 'date_due', title: 'Due', visible: true },
+      { id: 'project', title: 'Project', visible: true },
+      { id: 'linked', title: 'Linked Items', visible: true },
+      { id: 'assignee', title: 'Assignee', visible: true }
+    ],
+    [constants.VIEW_MODE_CALENDAR]: [
+      { id: 'project', title: 'Project', visible: true },
+      { id: 'date_due', title: 'Due', visible: true },
+      { id: 'assignee', title: 'Assignee', visible: true }
+    ]
   },
   elements: {},
   selected: [],
@@ -30,10 +50,19 @@ export default createReducer(initialState, {
   [actions.loadIndicator]: setValue('async.done', false),
   [actions.setListParamsNav]: setFullPayload('listParams.nav'),
   [actions.setListParamsFilters]: setFullPayload('listParams.filters'),
-  [actions.toggleCardFieldVisibility]: togglePayloadInCollection(['visibleFields', constants.VIEW_MODE_CARD]),
-  [actions.toggleTableFieldVisibility]: togglePayloadInCollection(['visibleFields', constants.VIEW_MODE_TABLE]),
-  [actions.toggleKanbanFieldVisibility]: togglePayloadInCollection(['visibleFields', constants.VIEW_MODE_KANBAN]),
-  [actions.toggleCalendarFieldVisibility]: togglePayloadInCollection(['visibleFields', constants.VIEW_MODE_CALENDAR]),
+  [actions.toggleFieldVisibility]: (state, { type, index }) => {
+    const old = state.getIn(['fields', type, index, 'visible']);
+    if (undefined === old) return state;
+    return state.setIn(['fields', type, index, 'visible'], !old);
+  },
+  [actions.changeFieldOrder]: (state, { type, from, to }) => {
+    const fromField = state.getIn(['fields', type, from]);
+    const toField = state.getIn(['fields', type, to]);
+    if (undefined === fromField || undefined === toField) return state;
+    return state
+      .setIn(['fields', type, from], toField)
+      .setIn(['fields', type, to], fromField);
+  },
   [actions.toggleSelected]: togglePayloadInCollection('selected'),
   [actions.toggleAll]: handleMassAction('elements', 'selected'),
   [actions.unload]: setValue('elements', []),

@@ -8,49 +8,53 @@ import { loadAll, allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/Re
 
 import {
   currentViewModeSelector,
-  cardVisibleFieldsSelector,
-  tableVisibleFieldsSelector,
-  calendarVisibleFieldsSelector,
-  kanbanVisibleFieldsSelector,
+  cardFieldsSelector,
+  tableFieldsSelector,
+  calendarFieldsSelector,
+  kanbanFieldsSelector,
   listParamsFiltersSelector
 } from '../../Selectors/list';
 import {
-  toggleCardFieldVisibility,
-  toggleTableFieldVisibility,
-  toggleKanbanFieldVisibility,
-  toggleCalendarFieldVisibility,
+  toggleFieldVisibility,
+  changeFieldOrder
 } from '../../Actions/listActions';
 
 @connect(state => ({
-  viewMode:              currentViewModeSelector(state),
-  cardVisibleFields:     cardVisibleFieldsSelector(state),
-  tableVisibleFields:    tableVisibleFieldsSelector(state),
-  kanbanVisibleFields:   kanbanVisibleFieldsSelector(state),
-  calendarVisibleFields: calendarVisibleFieldsSelector(state),
-  currentParams:         listParamsFiltersSelector(state),
-  labels:                allSelectorFactory('TaskLabel')(state)
-}))
+  viewMode:       currentViewModeSelector(state),
+  cardFields:     cardFieldsSelector(state),
+  tableFields:    tableFieldsSelector(state),
+  kanbanFields:   kanbanFieldsSelector(state),
+  calendarFields: calendarFieldsSelector(state),
+  currentParams:  listParamsFiltersSelector(state),
+  labels:         allSelectorFactory('TaskLabel')(state)
+}), {
+  toggleFieldVisibility,
+  changeFieldOrder,
+  loadAll
+})
 export class ControlBarContainer extends React.Component {
 
   static propTypes = {
     dispatch:              PropTypes.func.isRequired,
     viewMode:              PropTypes.string.isRequired,
-    cardVisibleFields:     PropTypes.object.isRequired,
-    tableVisibleFields:    PropTypes.object.isRequired,
-    kanbanVisibleFields:   PropTypes.object.isRequired,
-    calendarVisibleFields: PropTypes.object.isRequired,
+    cardFields:            PropTypes.object.isRequired,
+    tableFields:           PropTypes.object.isRequired,
+    kanbanFields:          PropTypes.object.isRequired,
+    calendarFields:        PropTypes.object.isRequired,
     currentParams:         PropTypes.object.isRequired,
-    labels:                PropTypes.object.isRequired
+    labels:                PropTypes.object.isRequired,
+    loadAll:               PropTypes.func.isRequired,
+    toggleFieldVisibility: PropTypes.func,
+    changeFieldOrder:      PropTypes.func
   };
 
-  constructor(props) {
-    super(props);
-    props.dispatch(loadAll('TaskLabel'));
+  componentDidMount() {
+    this.props.loadAll('TaskLabel');
   }
 
   render() {
     const { labels = [], currentParams, viewMode } = this.props;
-    const { cardVisibleFields, tableVisibleFields, kanbanVisibleFields, calendarVisibleFields } = this.props;
+    const { cardFields, tableFields, kanbanFields, calendarFields } = this.props;
 
     const config = {
       applyParams:   applyFilters,
@@ -127,58 +131,31 @@ export class ControlBarContainer extends React.Component {
       view:          {
         options: {
           [constants.VIEW_MODE_CARD]:     {
-            label:                 'Card View',
-            icon:                  'list',
-            configurableFields:    {
-              title:    'Title',
-              project:  'Project',
-              date_due: 'Due Date',
-              linked:   'Linked Items',
-              assignee: 'Assignee'
-            },
-            visibleFields:         cardVisibleFields,
-            toggleFieldVisibility: toggleCardFieldVisibility
+            label:  'Card View',
+            icon:   'list',
+            fields: cardFields
           },
           [constants.VIEW_MODE_TABLE]:    {
-            label:                 'Table View',
-            icon:                  'table',
-            configurableFields:    {
-              id:       'ID',
-              project:  'Project',
-              date_due: 'Due Date',
-              assignee: 'Assignee'
-            },
-            visibleFields:         tableVisibleFields,
-            toggleFieldVisibility: toggleTableFieldVisibility
+            label:  'Table View',
+            icon:   'table',
+            fields: tableFields
           },
           [constants.VIEW_MODE_KANBAN]:   {
-            label:                 'Kanban View',
-            icon:                  'sticky-note-o',
-            configurableFields:    {
-              title:    'Title',
-              project:  'Project',
-              date_due: 'Due Date',
-              assignee: 'Assignee'
-            },
-            visibleFields:         kanbanVisibleFields,
-            toggleFieldVisibility: toggleKanbanFieldVisibility
+            label:  'Kanban View',
+            icon:   'sticky-note-o',
+            fields: kanbanFields
           },
           [constants.VIEW_MODE_CALENDAR]: {
-            label:                 'Calendar View',
-            icon:                  'calendar',
-            configurableFields:    {
-              title:    'Title',
-              project:  'Project',
-              date_due: 'Due Date',
-              assignee: 'Assignee'
-            },
-            visibleFields:         calendarVisibleFields,
-            toggleFieldVisibility: toggleCalendarFieldVisibility
+            label:  'Calendar View',
+            icon:   'calendar',
+            fields: calendarFields
           }
         },
 
-        viewMode:       viewMode,
-        viewModeAction: value => updateRoutingState('list', 'view', value)
+                               viewMode,
+        viewModeAction:        value => updateRoutingState('list', 'view', value),
+        toggleFieldVisibility: this.props.toggleFieldVisibility,
+        changeFieldOrder:      this.props.changeFieldOrder
       }
     };
 

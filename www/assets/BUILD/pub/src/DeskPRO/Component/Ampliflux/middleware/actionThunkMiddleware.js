@@ -3,7 +3,7 @@ import { isDSA } from '../actions/actionUtils';
 function copyActionNewPayload(action, payload) {
   return {
     ...action,
-    payload: payload
+    payload
   };
 }
 
