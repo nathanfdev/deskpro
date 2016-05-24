@@ -20,5 +20,7 @@ Feature: KB
 
   Scenario: I download a pdf version of an article
     Given I download "/kb/articles/pdf/example-article"
-    Then the response status code should be 200
+    Then print last response
+    And print last response headers
+    And the response status code should be 200
     And I should see in the header "content-type":"application/pdf"

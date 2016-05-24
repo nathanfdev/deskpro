@@ -79,9 +79,9 @@ class HttpContext extends BaseContext
      */
     public function download($page)
     {
-        ob_start();
+        //        ob_start();
         $this->visitPath($page);
-        ob_end_clean();
+//        ob_end_clean();
     }
 
     /**
