@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { hashStateSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
+import { hashStateSelectorFactory } from '../../../Modules/Application/Selectors/routing';
 
 
 const stateSelector = state => state.Feedback.list;

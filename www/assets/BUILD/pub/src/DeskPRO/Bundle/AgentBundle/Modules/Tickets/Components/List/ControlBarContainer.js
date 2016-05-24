@@ -1,15 +1,25 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/ControlBar';
-import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-import { tableVisibleFieldsSelector, cardVisibleFieldsSelector, viewModeSelector, listParamsSelector, listOrderBySelector, listOrderDirSelector }
+import { ControlBar } from '../../../Common/Components/ListFrame/ControlBar/ControlBar';
+import { constants } from '../../../../Constants/Constants';
+import {
+  tableVisibleFieldsSelector,
+  cardVisibleFieldsSelector,
+  currentViewModeSelector,
+  listParamsSelector,
+  listOrderBySelector,
+  listOrderDirSelector
+}
   from '../../Selectors/list';
-import { setViewMode, toggleTableFieldVisibility, toggleCardFieldVisibility, applyListParams }
+import { updateRoutingState } from '../../../Application/Actions/routingActions';
+import {
+  toggleTableFieldVisibility, toggleCardFieldVisibility, applyListParams
+}
   from '../../Actions/listActions';
 import { labelsSelector } from '../../Selectors/nav';
 
 @connect(state => ({
-  viewMode:           viewModeSelector(state),
+  viewMode:           currentViewModeSelector(state),
   orderBy:            listOrderBySelector(state),
   orderDir:           listOrderDirSelector(state),
   tableVisibleFields: tableVisibleFieldsSelector(state),
@@ -87,6 +97,7 @@ export class ControlBarContainer extends Component {
               labels:       'Labels'
             }
           },
+          
           [constants.VIEW_MODE_TABLE]: {
             label:                 'Table View',
             icon:                  'table',
@@ -108,7 +119,7 @@ export class ControlBarContainer extends Component {
         },
 
         viewMode:       this.props.viewMode,
-        viewModeAction: setViewMode
+        viewModeAction: (mode) => updateRoutingState('list', 'view', mode)
       }
     };
 

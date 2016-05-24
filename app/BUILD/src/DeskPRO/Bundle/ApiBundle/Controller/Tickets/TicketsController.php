@@ -85,7 +85,7 @@ class TicketsController extends AbstractTicketsController
      *          {
      *              "name"="sort",
      *              "description"="tickets list sort",
-     *              "pattern"="id|urgency|date_created|date_last_agent_reply|date_last_user_reply|date_last_reply|date_user_waiting|total_user_waiting",
+     *              "pattern"="id|urgency|date_created|date_last_agent_reply|date_last_user_reply|date_last_reply|date_user_waiting|total_user_waiting|subject|status",
      *              "dataType"="string",
      *          },
      *          {"name"="ids", "description"="ticket list to fetch, comma separated list", "dataType"="string", "pattern"="[\d+,]+"},
@@ -151,7 +151,7 @@ class TicketsController extends AbstractTicketsController
             if (array_key_exists('order_by', $params)) {
                 $allowed = [
                     'id', 'urgency', 'date_created', 'date_last_agent_reply', 'date_last_user_reply',
-                    'date_last_reply', 'date_user_waiting', 'total_user_waiting',
+                    'date_last_reply', 'date_user_waiting', 'total_user_waiting', 'subject', 'status',
                 ];
                 $orderBy = $params['order_by'];
                 if (!in_array($orderBy, $allowed)) {

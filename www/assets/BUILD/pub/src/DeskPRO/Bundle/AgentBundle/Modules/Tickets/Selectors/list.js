@@ -1,11 +1,14 @@
 import { createSelector } from 'reselect';
+import { hashStateSelectorFactory } from '../../../Modules/Application/Selectors/routing';
 
 const stateSelector = state => state.Tickets.list;
 
-export const viewModeSelector = createSelector(
+export const elementsSelector = createSelector(
   stateSelector,
-   state => state.get('viewMode')
+  state => state.get('elements')
 );
+
+export const currentViewModeSelector = hashStateSelectorFactory(['list', 'view'], 'card');
 
 export const listParamsSelector = createSelector(
   stateSelector,

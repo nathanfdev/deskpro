@@ -15,9 +15,9 @@ import {
   updateDisplayFieldsToPersonSetting
 }
   from '../../../Actions/FeedbackListActions';
-import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
-import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/ControlBar';
+import { updateRoutingState } from '../../../../Application/Actions/routingActions';
+import { constants } from '../../../../../Constants/Constants';
+import { ControlBar } from '../../../../Common/Components/ListFrame/ControlBar/ControlBar';
 
 @connect(state => ({
   currentParams: currentListParamsSelector(state),

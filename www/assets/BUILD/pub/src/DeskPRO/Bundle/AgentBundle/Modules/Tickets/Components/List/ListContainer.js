@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { List } from './List';
-import { viewModeSelector,paginationSelector } from '../../Selectors/list';
+import { currentViewModeSelector,paginationSelector } from '../../Selectors/list';
 import { isLoadedCollectionSelectorFactory, releaseCollection, setCollection }
   from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { selectedSelector } from '../../../Application/Selectors/massActions';
@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
   isLoaded:   isLoadedCollectionSelectorFactory('Ticket', 'list')(state),
   selected:   selectedSelector(state),
   pagination: paginationSelector(state),
-  viewMode:   viewModeSelector(state)
+  viewMode:   currentViewModeSelector(state)
 }))
 export class ListContainer extends Component {
   static propTypes = {
