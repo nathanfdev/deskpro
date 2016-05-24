@@ -70,14 +70,13 @@ class HttpContext extends BaseContext
     }
 
     /**
-     * Opens specified page and doesn't display the response in the console.
+     * Click on a link and doesn't display the response in the console.
      *
      * @Given /^(?:|I )download "(?P<link>[^"]+)"$/
      */
     public function download($link)
     {
         ob_start();
-//        $this->visitPath($page);
         $this->getSession()->getPage()->clickLink($link);
         ob_end_clean();
     }
