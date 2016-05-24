@@ -48,6 +48,11 @@ class BugsnagJsListener implements EventSubscriberInterface
     private $settings;
 
     /**
+     * @var AppEnv
+     */
+    private $env;
+
+    /**
      * BugsnagJsListener constructor.
      *
      * @param AppEnv $appEnv
@@ -55,6 +60,7 @@ class BugsnagJsListener implements EventSubscriberInterface
     public function __construct(AppEnv $appEnv)
     {
         $this->settings = $appEnv->getConfig('settings.bugsnag', []);
+        $this->env      = $appEnv;
     }
 
     /**
@@ -88,8 +94,32 @@ class BugsnagJsListener implements EventSubscriberInterface
             return;
         }
 
+        $data = ['apikey' => $settings['api_key']];
+        if (isset($settings['app_version']) && $settings['app_version']) {
+            $data['appversion'] = $settings['app_version'];
+        } elseif (($buildNumFile = $this->env->getAppDir().'/sys/config/build-num.txt') && file_exists($buildNumFile)) {
+            $data['appversion'] = trim(file_get_contents($buildNumFile));
+        }
+
+        $strings = [];
+        foreach ($data as $key => $value) {
+            $strings[] = sprintf('data-%s="%s"', $key, $value);
+        }
+        $add = implode(' ', $strings);
+        if (isset($settings['metadata']) && is_array($settings['metadata'])) {
+            $metadata = ['deskpro' => $settings['metadata']];
+            $metadata = json_encode($metadata, JSON_PRETTY_PRINT);
+            $metadata = <<<CODE
+            <script>
+                Bugsnag.metaData = {$metadata};
+                Bugsnag.notify("ErrorName", "Something bad happened here");
+            </script>
+CODE;
+        }
+
         $code = <<<CODE
-<script src="//d2wy8f7a9ursnm.cloudfront.net/bugsnag-2.min.js" data-apikey="{$settings['api_key']}"></script>
+<script src="//d2wy8f7a9ursnm.cloudfront.net/bugsnag-2.min.js" {$add}"></script>
+{$metadata}
 CODE;
         $response = $event->getResponse();
         $html     = $response->getContent();

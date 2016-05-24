@@ -71,7 +71,7 @@ DeskPRO.Agent.PageFragment.ListPane.OrganizationList = new Orb.Class({
 			onItemClicked: function(info) {
 				var item = $(info.itemEl);
 
-				var prop = item.data('order-by')
+				var prop = item.data('order-by');
 				var label = item.text().trim();
 
 				// Change the displayed label for some visual feedback

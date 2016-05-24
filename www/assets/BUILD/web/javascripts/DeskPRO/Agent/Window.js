@@ -95,7 +95,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 					count = num;
 				}
 
-				el.text(count);
+				el.text(el.text().trim().replace(/(\d+)/, count));
 
 				if (el.data('tag')) {
 					$('i.' + el.data('tag')).text(count);

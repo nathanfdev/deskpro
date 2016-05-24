@@ -4,9 +4,8 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.Basic,
 
 	initPage: function(el) {
-		var self = this;
 		this.wrapper = el;
-
+    var self = this;
 		var btn  = this.wrapper.find('.list-selection-bar .perform-actions-trigger');
 		var load = this.wrapper.find('.list-selection-bar .ajax-loading');
 
@@ -33,7 +32,8 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 
 				btn.hide();
 				load.show();
-
+        $(lines).fadeOut();
+        self.updateCount('sub', lines.length);
 				var action = $(info.itemEl).data('action');
 
 				$.ajax({
@@ -41,14 +41,17 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 					data: data,
 					type: 'POST',
 					dataType: 'json',
+          error: function() {
+            $(lines).fadeIn();
+            self.updateCount('add', lines.length)
+          },
 					complete: function() {
 						load.hide();
 						btn.show();
 					},
 					success: function() {
 						self.selectionBar.checkNone();
-						self.updateCount('sub', lines.length);
-						$(lines).fadeOut();
+            self.removeElement($(lines));
 					}
 				});
 			}
@@ -178,6 +181,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 		if (!el) {
 			el = $('article.' + typename + '-' + commentId, this.wrapper);
 		}
+
 		el.fadeOut();
 
 		this.updateCount('sub');
@@ -192,8 +196,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 				el.fadeIn();
 			},
 			success: function(data) {
-				el.remove();
-
+        this.removeElement(el);
 				if (DeskPRO_Window.sections.publish_section) {
 					DeskPRO_Window.sections.publish_section.modCommentCount(typename, '-');
 				}
@@ -217,14 +220,10 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 			dataType: 'json',
 			error: function() {
 				this.updateCount('add');
-				if (el) {
-					el.fadeIn();
-				}
+        !el || el.fadeIn();
 			},
 			success: function(data) {
-				if (el) {
-					el.remove();
-				}
+        this.removeElement(el);
 			}
 		});
 	},
@@ -238,23 +237,17 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 	},
 
 	updateCount: function(action, num) {
-		var countEl = $('#publish_validating_comments_count');
-		var count = parseInt(countEl.text());
-
+		var countEl = '#publish_validating_comments_count';
 		num = num || 1;
-
-		if (action == 'add') {
-			count += num;
-		} else {
-			count -= num;
-		}
-
-		if (count < 0) {
-			count = 0;
-		}
-
-		var countEl = $('#publish_validating_comments_count').text(count);
-
+		DeskPRO_Window.util.modCountEl(countEl, action, num);
 		DeskPRO_Window.sections.publish_section.recountBadge();
-	}
+	},
+
+  removeElement(el) {
+    el.remove();
+    if ($('.row-item', this.wrapper).not('.edit-comment').length < 1) {
+      DeskPRO_Window.loadListPane(this.meta.resetUrl);
+      this.destroy();
+    }
+  }
 });

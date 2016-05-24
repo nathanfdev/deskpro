@@ -33,9 +33,6 @@ namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 
 /**
  * Class ExceptionLoggerListener.
@@ -49,19 +46,6 @@ class ExceptionLoggerListener
      */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
-        $exception = $event->getException();
-        if (
-            (
-                $exception instanceof HttpException
-                && $exception->getStatusCode() >= 400
-                && $exception->getStatusCode() < 500
-            )
-            || $exception instanceof MethodNotAllowedException
-            || $exception instanceof NotFoundHttpException
-        ) {
-            return;
-        }
-
-        SystemErrorHandler::logException($exception);
+        SystemErrorHandler::logException($event->getException());
     }
 }

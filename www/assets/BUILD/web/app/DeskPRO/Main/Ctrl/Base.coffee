@@ -15,7 +15,7 @@ define ['angular'], (angular) ->
   class DeskPRO_Main_Ctrl_Base
     @CTRL_AS   = null
     @CTRL_ID   = 'DeskPRO_Main_Ctrl_Base'
-    @DEPS      = []
+    @DEPS      = ['$rootScope']
 
     ###*
     * Exports this controller to the ***_App (where *** is name of module like Admin or Reports) angular module
@@ -126,7 +126,7 @@ define ['angular'], (angular) ->
         if fnTrue
           inst.result.then(=> fnTrue() )
 
-      ###
+
       @$scope.$on('$stateChangeStart', (ev, toState, toParams, fromState, fromParams) =>
         if ev.defaultPrevented then return
         if @_state_cont_ignore
@@ -153,7 +153,7 @@ define ['angular'], (angular) ->
           @_state_cont_state_params = toParams
           @_showStateConfirmLeave()
       )
-        ###
+
 
       @$scope.dp_ctrl_elemnt_ping = {}
       @_saved_state = {}

@@ -27,3 +27,11 @@ $SETTINGS['api_log.writer.file'] = [
 
 $SETTINGS['api_log.dupe.modes'] = ['key'];
 $SETTINGS['audit_log.storage'] = "db";
+
+$SETTINGS['bugsnag'] = [
+    'api_key'    => '',
+    'enable_php' => false,
+    'enable_js'  => false,
+    'app_version' => null, //if not set, or null it will be taken as DP_BUILD_NUM
+    'metadata' => [], //anything you want
+];
