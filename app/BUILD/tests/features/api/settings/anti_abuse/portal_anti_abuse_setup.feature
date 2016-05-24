@@ -44,7 +44,7 @@ Feature: Portal Anti-Abuse Setup
     And the JSON node "data.user_rate_limit.upload_attachment.response" should be equal to "lockout"
 
     And the JSON node "data.user_rate_limit.share_content.enabled" should be equal to 1
-    And the JSON node "data.user_rate_limit.share_content.limit" should be equal to 50
+    And the JSON node "data.user_rate_limit.share_content.limit" should be equal to 3
     And the JSON node "data.user_rate_limit.share_content.time" should be equal to 900
     And the JSON node "data.user_rate_limit.share_content.response" should be equal to "captcha"
 
@@ -69,7 +69,7 @@ Feature: Portal Anti-Abuse Setup
     And the JSON node "data.guest_rate_limit.upload_attachment.response" should be equal to "lockout"
 
     And the JSON node "data.guest_rate_limit.share_content.enabled" should be equal to 1
-    And the JSON node "data.guest_rate_limit.share_content.limit" should be equal to 50
+    And the JSON node "data.guest_rate_limit.share_content.limit" should be equal to 3
     And the JSON node "data.guest_rate_limit.share_content.time" should be equal to 900
     And the JSON node "data.guest_rate_limit.share_content.response" should be equal to "captcha"
 
