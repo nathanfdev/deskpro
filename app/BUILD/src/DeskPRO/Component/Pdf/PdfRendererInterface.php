@@ -36,8 +36,9 @@ interface PdfRendererInterface
      * PdfRendererInterface constructor.
      *
      * @param SettingsResolver $resolver
+     * @param string           $tmpRootDir
      */
-    public function __construct($resolver);
+    public function __construct($resolver, $tmpRootDir);
 
     /**
      * @param string $contentHtml

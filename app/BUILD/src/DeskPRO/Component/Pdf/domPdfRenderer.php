@@ -31,6 +31,12 @@ namespace DeskPRO\Component\Pdf;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use Dompdf\Dompdf;
 
+/**
+ * Class domPdfRenderer.
+ *
+ * Implementation of DomPdf as a different renderer need work fixing the template and add domPdf to vendor
+ * before usage.
+ */
 class domPdfRenderer implements PdfRendererInterface
 {
     /**
@@ -43,7 +49,7 @@ class domPdfRenderer implements PdfRendererInterface
      */
     private $resolver;
 
-    public function __construct($resolver)
+    public function __construct($resolver, $tmpRootDir)
     {
         $this->resolver = $resolver;
 

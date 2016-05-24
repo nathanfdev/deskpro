@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -53,7 +53,7 @@ function dp_get_backup_dir()
 }
 
 /**
- * @deprecated
+ * @deprecated inject @=service('deskpro.app_env').getUserTmpDir() instead
  *
  * @return string
  */
