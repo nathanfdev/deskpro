@@ -46,6 +46,19 @@ class mPdfRenderer implements PdfRendererInterface
     {
         $this->resolver = $resolver;
 
+        if (!defined('_MPDF_TTFONTDATAPATH')) {
+            $tmpdir = dp_get_tmp_dir().'/mpdf/ttfontdata';
+            if (!is_dir(dp_get_tmp_dir().'/mpdf/ttfontdata')) {
+                if (!@mkdir($tmpdir, 0777, true)) {
+                    $tmpdir = sys_get_temp_dir().'/mpdf/ttfontdata';
+                    if (!is_dir($tmpdir)) {
+                        @mkdir($tmpdir, 0777, true);
+                    }
+                }
+            }
+            define('_MPDF_TTFONTDATAPATH', $tmpdir.'/');
+        }
+
         $this->object = new \mPDF(
             'utf-8', // Language/Character set
             'A4', // Size
