@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener;
 
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
@@ -45,7 +42,7 @@ class SetPersonListener
     /**
      * @var EmailAccountManager
      */
-    protected $email_account_manager;
+    protected $accountManager;
 
     /**
      * @var EntityManager
@@ -55,13 +52,13 @@ class SetPersonListener
     /**
      * Constructor.
      *
-     * @param EmailAccountManager $email_account_manager
+     * @param EmailAccountManager $accountManager
      * @param EntityManager       $em
      */
-    public function __construct(EmailAccountManager $email_account_manager, EntityManager $em)
+    public function __construct(EmailAccountManager $accountManager, EntityManager $em)
     {
-        $this->email_account_manager = $email_account_manager;
-        $this->em                    = $em;
+        $this->accountManager = $accountManager;
+        $this->em             = $em;
     }
 
     /**
@@ -76,10 +73,10 @@ class SetPersonListener
         $email        = $conversation->getPersonEmail();
 
         /** @var \Application\DeskPRO\EntityRepository\Person $repository */
-        $repository = $this->em->getRepository('DeskPRO:Person');
+        $repository = $this->em->getRepository(Person::class);
         $person     = $repository->findOneByEmail($email);
 
-        if ($this->email_account_manager->findAccountForEmailAddress($email)) {
+        if ($this->accountManager->findAccountForEmailAddress($email)) {
             return;
         }
 
@@ -87,19 +84,17 @@ class SetPersonListener
             $person = new Person();
             $person->setName($conversation->getPersonName());
             $person->setEmail($email);
-            $this->em->persist($person);
-            $this->em->flush();
         } elseif (!$email) {
             return;
         }
 
-        $entered_name = $conversation->getPersonName();
+        $enteredName = $conversation->getPersonName();
         $conversation->setPerson($person);
 
         // Person entity will overwrite custom person name entered in the form
         // If user entered custom name then set it back
-        if ($entered_name) {
-            $conversation->setPersonName($entered_name);
+        if ($enteredName) {
+            $conversation->setPersonName($enteredName);
         }
     }
 }
