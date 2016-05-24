@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { ControlBar } from '../../../Common/Components/ListFrame/ControlBar/ControlBar';
 import { constants } from '../../../../Constants/Constants';
 import {
-  tableVisibleFieldsSelector,
-  cardVisibleFieldsSelector,
+  tableFieldsSelector,
+  cardFieldsSelector,
   currentViewModeSelector,
   listParamsSelector,
   listOrderBySelector,
@@ -13,38 +13,42 @@ import {
   from '../../Selectors/list';
 import { updateRoutingState } from '../../../Application/Actions/routingActions';
 import {
-  toggleTableFieldVisibility, toggleCardFieldVisibility, applyListParams
+  toggleFieldVisibility, changeFieldOrder, applyListParams
 }
   from '../../Actions/listActions';
 import { labelsSelector } from '../../Selectors/nav';
 import { listFiltersSelector } from '../../Selectors/filters';
 
 @connect(state => ({
-  viewMode:           currentViewModeSelector(state),
-  orderBy:            listOrderBySelector(state),
-  orderDir:           listOrderDirSelector(state),
-  tableVisibleFields: tableVisibleFieldsSelector(state),
-  cardVisibleFields:  cardVisibleFieldsSelector(state),
-  currentParams:      listParamsSelector(state),
-  filters:            listFiltersSelector(state),
-  labels:             labelsSelector(state)
-}))
+  viewMode:      currentViewModeSelector(state),
+  orderBy:       listOrderBySelector(state),
+  orderDir:      listOrderDirSelector(state),
+  tableFields:   tableFieldsSelector(state),
+  cardFields:    cardFieldsSelector(state),
+  currentParams: listParamsSelector(state),
+  filters:       listFiltersSelector(state),
+  labels:        labelsSelector(state)
+}), {
+  toggleFieldVisibility,
+  changeFieldOrder
+})
 
 export class ControlBarContainer extends Component {
   static propTypes = {
-    dispatch:           PropTypes.func.isRequired,
-    orderBy:            PropTypes.string.isRequired,
-    orderDir:           PropTypes.string.isRequired,
-    tableVisibleFields: PropTypes.object.isRequired,
-    cardVisibleFields:  PropTypes.object.isRequired,
-    viewMode:           PropTypes.string.isRequired,
-    filters:            PropTypes.array.isRequired,
-    currentParams:      PropTypes.object.isRequired,
-    labels:             PropTypes.object.isRequired
+    orderBy:               PropTypes.string.isRequired,
+    orderDir:              PropTypes.string.isRequired,
+    tableFields:           PropTypes.object.isRequired,
+    cardFields:            PropTypes.object.isRequired,
+    viewMode:              PropTypes.string.isRequired,
+    filters:               PropTypes.array.isRequired,
+    currentParams:         PropTypes.object.isRequired,
+    labels:                PropTypes.object.isRequired,
+    toggleFieldVisibility: PropTypes.func.isRequired,
+    changeFieldOrder:      PropTypes.func.isRequired
   };
 
   render() {
-    const { currentParams, filters } = this.props;
+    const { currentParams, tableFields, cardFields, filters } = this.props;
     const config = {
       currentParams,
       filters,
@@ -60,42 +64,22 @@ export class ControlBarContainer extends Component {
         options: {
 
           [constants.VIEW_MODE_CARD]: {
-            label:                 'Card View',
-            icon:                  'list',
-            visibleFields:         this.props.cardVisibleFields,
-            toggleFieldVisibility: toggleCardFieldVisibility,
-
-            configurableFields: {
-              id:           'ID',
-              urgency:      'Urgency',
-              person:       'Person',
-              date_created: 'Date created',
-              labels:       'Labels'
-            }
+            label:  'Card View',
+            icon:   'list',
+            fields: cardFields
           },
-          
-          [constants.VIEW_MODE_TABLE]: {
-            label:                 'Table View',
-            icon:                  'table',
-            visibleFields:         this.props.tableVisibleFields,
-            toggleFieldVisibility: toggleTableFieldVisibility,
 
-            configurableFields: {
-              id:           'ID',
-              urgency:      'Urgency',
-              person:       'Person',
-              person_email: 'Person email',
-              agent:        'Agent',
-              subject:      'Subject',
-              status:       'Status',
-              date_created: 'Date created',
-              labels:       'Labels'
-            }
+          [constants.VIEW_MODE_TABLE]: {
+            label:  'Table View',
+            icon:   'table',
+            fields: tableFields
           }
         },
 
-        viewMode:       this.props.viewMode,
-        viewModeAction: (mode) => updateRoutingState('list', 'view', mode)
+        viewMode:              this.props.viewMode,
+        viewModeAction:        (mode) => updateRoutingState('list', 'view', mode),
+        toggleFieldVisibility: this.props.toggleFieldVisibility,
+        changeFieldOrder:      this.props.changeFieldOrder
       }
     };
 

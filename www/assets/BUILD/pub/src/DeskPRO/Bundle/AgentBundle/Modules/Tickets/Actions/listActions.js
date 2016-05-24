@@ -61,6 +61,6 @@ export const setOrderBy                 = createAction(
   'TICKETS_LIST_SET_ORDER_BY',
   orderBy => dispatch => dispatch(applyListParams({ order_by: orderBy }))
 );
-export const toggleTableFieldVisibility = createAction('TICKETS_LIST_TOGGLE_TABLE_FIELD_VISIBILITY');
-export const toggleCardFieldVisibility  = createAction('TICKETS_LIST_TOGGLE_CARD_FIELD_VISIBILITY');
-export const setViewMode                = createAction('TICKETS_LIST_SET_VIEW_MODE');
+export const toggleFieldVisibility = createAction('TICKETS_LIST_TOGGLE_FIELD_VISIBILITY');
+export const changeFieldOrder      = createAction('TICKETS_LIST_CHANGE_FIELD_ORDER');
+export const setViewMode           = createAction('TICKETS_LIST_SET_VIEW_MODE');

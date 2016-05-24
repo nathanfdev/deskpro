@@ -1,8 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { collectionSelectorFactory } from '../../../../../../../AppBundle/Modules/RecordsStore';
 import { toggleSelectedAction } from '../../../../../Application/Actions/massActions';
-import { cardVisibleFieldsSelector } from '../../../../Selectors/list';
+import { cardFieldsSelector } from '../../../../Selectors/list';
+import { TicketCard } from './TicketCard';
+import { collectionSelectorFactory } from '../../../../../../../AppBundle/Modules/RecordsStore';
 import { selectedSelector } from '../../../../../Application/Selectors/massActions';
 import { TicketCard } from './TicketCard';
 
@@ -10,7 +11,7 @@ import { TicketCard } from './TicketCard';
   tickets:  collectionSelectorFactory('Ticket', 'list')(state),
   agents:   collectionSelectorFactory('Person', 'agents')(state),
   selected: selectedSelector(state),
-  fields:   cardVisibleFieldsSelector(state)
+  fields:   cardFieldsSelector(state)
 }))
 
 export class ListCardViewContainer extends Component {
