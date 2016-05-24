@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -92,7 +92,14 @@ class AvailableTrigger
                     $dep_check = App::getDb()->fetchColumn("
                         SELECT department_id
                         FROM department_permissions
-                        WHERE (person_id IN ($agent_ids_cs) or usergroup_id IN ($ug_ids_cs)) AND app = 'chat' AND value = '1'
+                        WHERE 
+                          (
+                            department_permissions.person_id IN ($agent_ids_cs) 
+                            OR department_permissions.usergroup_id IN ($ug_ids_cs)
+                          ) 
+                          AND department_permissions.app = 'chat' 
+                          AND department_permissions.value = '1'
+                          AND department_permissions.is_active = 1  
                         LIMIT 1
                     ");
                 }

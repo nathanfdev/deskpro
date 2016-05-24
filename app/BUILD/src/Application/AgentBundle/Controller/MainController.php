@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -153,7 +152,9 @@ class MainController extends AbstractController
                 FROM department_permissions
                 WHERE
                     department_permissions.person_id IN (?)
-                    AND department_permissions.app = 'chat' AND department_permissions.value = 1
+                    AND department_permissions.app = 'chat' 
+                    AND department_permissions.value = 1
+                    AND department_permissions.is_active = 1
             ", [$with_chat_perm], 'person_id', null, 'department_id', [Connection::PARAM_INT_ARRAY]);
 
             foreach ($agent_chat_depmap as &$v) {
