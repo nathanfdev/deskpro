@@ -33,7 +33,10 @@
 namespace DeskPRO\Bundle\AppBundle\Settings;
 
 use Application\DeskPRO\Entity\DataStore;
+use Application\DeskPRO\Entity\Language;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings\WidgetBrandButtonTranslation;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings\WidgetBrandChatPopupTranslation;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\WidgetGlobalSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\WidgetOptions;
@@ -232,6 +235,18 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
 
         if (!$model instanceof WidgetBrandSettings) {
             $model = new WidgetBrandSettings();
+
+            // set default translations
+            $defaultLanguage = $this->em->getRepository(Language::class)->findOneBy(['sys_name' => 'default']);
+
+            $defaultPopupTranslation = new WidgetBrandChatPopupTranslation();
+            $defaultPopupTranslation->setLanguage($defaultLanguage->getId());
+
+            $defaultButtonTranslation = new WidgetBrandButtonTranslation();
+            $defaultButtonTranslation->setLanguage($defaultLanguage->getId());
+
+            $model->getChat()->getPopup()->getTranslations()->add($defaultPopupTranslation);
+            $model->getButton()->getTranslations()->add($defaultButtonTranslation);
         }
 
         return $model;

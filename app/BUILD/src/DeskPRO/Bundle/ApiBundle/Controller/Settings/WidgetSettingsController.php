@@ -38,7 +38,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\WidgetSetupType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\WidgetOptionsType;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -204,7 +204,7 @@ class WidgetSettingsController extends BaseController
     {
         $model = $this->container->get('widget_settings_resolver')->getWidgetOptions();
 
-        $form = $this->createForm(WidgetSetupType::class, $model);
+        $form = $this->createForm(WidgetOptionsType::class, $model);
         $form->submit($request->request->all());
 
         if (!$form->isValid()) {

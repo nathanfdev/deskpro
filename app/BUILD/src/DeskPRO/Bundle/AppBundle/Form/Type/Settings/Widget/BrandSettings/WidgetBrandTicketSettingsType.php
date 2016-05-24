@@ -26,47 +26,63 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings;
 
-use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandCommonSettings;
+use Application\DeskPRO\Entity\Department;
+use DeskPRO\Bundle\AppBundle\Form\DataTransformer\EntityToIdTransformer;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandTicketSettings;
+use Doctrine\ORM\EntityManager;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\ReversedTransformer;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class WidgetCommonSettingsType.
+ * Class WidgetBrandTicketSettingsType.
  */
-class WidgetCommonSettingsType extends AbstractType
+class WidgetBrandTicketSettingsType extends AbstractType
 {
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('type', ChoiceType::class, [
+            ->add('select_department', ChoiceType::class, [
+                'property_path'     => 'selectDepartment',
                 'choices_as_values' => true,
                 'choices'           => [
-                    WidgetBrandCommonSettings::TYPE_COLUMN,
-                    WidgetBrandCommonSettings::TYPE_BUBBLE,
+                    WidgetBrandTicketSettings::SELECT_DEFAULT,
+                    WidgetBrandTicketSettings::SELECT_CUSTOM,
                 ],
             ])
-            ->add('position', ChoiceType::class, [
-                'choices_as_values' => true,
-                'choices'           => [
-                    WidgetBrandCommonSettings::POSITION_LEFT,
-                    WidgetBrandCommonSettings::POSITION_RIGHT,
-                ],
+            ->add('default_department', EntityType::class, [
+                'property_path' => 'defaultDepartment',
+                'class'         => Department::class,
             ])
-            ->add('agent_polling_timeout', IntegerType::class, [
-                'property_path' => 'agentPollingTimeout',
-            ])
+        ;
+
+        $departmentRepo = $this->em->getRepository(Department::class);
+        $builder
+            ->get('default_department')
+            ->addModelTransformer(new ReversedTransformer(new EntityToIdTransformer($departmentRepo)))
         ;
     }
 
@@ -76,7 +92,7 @@ class WidgetCommonSettingsType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => WidgetBrandCommonSettings::class,
+            'data_class' => WidgetBrandTicketSettings::class,
         ]);
     }
 }

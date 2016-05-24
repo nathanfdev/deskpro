@@ -287,12 +287,19 @@ services:
     tags:
       - { name: form.type }
 
-  form.widget_ticket_setup:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\WidgetTicketSetupType
+  form.widget_brand_ticket_settings:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\WidgetBrandTicketSettingsType
     arguments:
       - "@doctrine.orm.default_entity_manager"
     tags:
-      - { name: form.type, alias: widget_ticket_setup }
+      - { name: form.type }
+
+  form.base_settings_traslation:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Settings\BaseTranslationType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: form.type }
 
   form.api.agent_chat.start_chat:
     class: DeskPRO\Bundle\AppBundle\Form\Type\AgentChat\AgentChatType

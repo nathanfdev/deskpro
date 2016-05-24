@@ -26,23 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings;
 
-use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings\WidgetBrandButtonSettings;
+use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\Button\WidgetBrandButtonSettingsType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\Chat\WidgetBrandChatSettingsType;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandSettings;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class WidgetButtonSetupType.
+ * Class WidgetBrandSettingsType.
  */
-class WidgetButtonSetupType extends AbstractType
+class WidgetBrandSettingsType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -50,16 +46,10 @@ class WidgetButtonSetupType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('size', ChoiceType::class, [
-                'choices_as_values' => true,
-                'choices'           => [
-                    WidgetBrandButtonSettings::SIZE_SMALL,
-                    WidgetBrandButtonSettings::SIZE_MEDIUM,
-                    WidgetBrandButtonSettings::SIZE_LARGE,
-                ],
-            ])
-            ->add('name', TextType::class)
-            ->add('colors', WidgetButtonColorsSetupType::class)
+            ->add('widget', WidgetBrandCommonSettingsType::class)
+            ->add('button', WidgetBrandButtonSettingsType::class)
+            ->add('chat', WidgetBrandChatSettingsType::class)
+            ->add('ticket', WidgetBrandTicketSettingsType::class)
         ;
     }
 
@@ -69,7 +59,7 @@ class WidgetButtonSetupType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => WidgetBrandButtonSettings::class,
+            'data_class' => WidgetBrandSettings::class,
         ]);
     }
 }

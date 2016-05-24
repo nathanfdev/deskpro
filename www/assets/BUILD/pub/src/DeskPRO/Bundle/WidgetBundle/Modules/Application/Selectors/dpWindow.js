@@ -1,4 +1,18 @@
 import { createSelector } from 'reselect';
+import { widgetLanguageSelector } from './bootstrap';
+
+export const translationsSelectorFactory = (property, defaultValue) => (options, language) => {
+  const filtered = options.get('translations').filter(translation => translation.get('language') === language);
+
+  if (filtered.size) {
+    return filtered.first().get(property);
+  }
+  if (options.get('translations').size) {
+    return options.get('translations').first().get(property);
+  }
+
+  return defaultValue;
+};
 
 const stateSelector = state => state.Application.dpWindow;
 
@@ -89,7 +103,8 @@ export const helpButtonSizeSelector = createSelector(
 
 export const helpButtonNameSelector = createSelector(
   helpButtonSelector,
-  options => options.get('name') || 'Help'
+  widgetLanguageSelector,
+  translationsSelectorFactory('name', 'Help')
 );
 
 export const helpButtonColorsSelector = createSelector(
@@ -130,12 +145,14 @@ export const helpPopupSelector = createSelector(
 
 export const helpPopupTitleSelector = createSelector(
   helpPopupSelector,
-  options => options.get('title')
+  widgetLanguageSelector,
+  translationsSelectorFactory('title', 'Customer Support')
 );
 
 export const helpPopupMessageSelector = createSelector(
   helpPopupSelector,
-  options => options.get('message')
+  widgetLanguageSelector,
+  translationsSelectorFactory('message', 'Need help? Just reply to start a live chat with one of our team.')
 );
 
 export const helpPopupReplyTypeSelector = createSelector(

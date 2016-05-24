@@ -26,28 +26,29 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\Chat;
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\GlobalSettings;
-
-use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\WidgetGlobalSettings;
+use DeskPRO\Bundle\AppBundle\Form\Type\Settings\BaseTranslationType;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings\WidgetBrandChatPopupTranslation;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class WidgetGlobalSetupType.
+ * Class WidgetBrandChatPopupTranslationType.
  */
-class WidgetGlobalSetupType extends AbstractType
+class WidgetBrandChatPopupTranslationType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('chat', WidgetChatSetupType::class);
+        $builder
+            ->add('title', TextType::class)
+            ->add('message', TextType::class)
+        ;
     }
 
     /**
@@ -56,8 +57,15 @@ class WidgetGlobalSetupType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class'         => WidgetGlobalSettings::class,
-            'allow_extra_fields' => true,
+            'data_class' => WidgetBrandChatPopupTranslation::class,
         ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getParent()
+    {
+        return BaseTranslationType::class;
     }
 }

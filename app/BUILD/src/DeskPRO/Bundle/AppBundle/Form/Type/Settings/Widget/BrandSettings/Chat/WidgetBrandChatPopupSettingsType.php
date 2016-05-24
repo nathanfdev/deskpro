@@ -26,21 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\Chat;
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings;
-
-use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandSettings;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings\WidgetBrandChatPopupSettings;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class WidgetBrandSetupType.
+ * Class WidgetBrandChatPopupSettingsType.
  */
-class WidgetBrandSetupType extends AbstractType
+class WidgetBrandChatPopupSettingsType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -48,10 +46,20 @@ class WidgetBrandSetupType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('widget', WidgetCommonSettingsType::class)
-            ->add('button', WidgetButtonSetupType::class)
-            ->add('chat', WidgetChatSetupType::class)
-            ->add('ticket', WidgetTicketSetupType::class)
+            ->add('translations', CollectionType::class, [
+                'entry_type'     => WidgetBrandChatPopupTranslationType::class,
+                'allow_add'      => true,
+                'allow_delete'   => true,
+                'error_bubbling' => false,
+            ])
+            ->add('reply_type', ChoiceType::class, [
+                'property_path'     => 'replyType',
+                'choices_as_values' => true,
+                'choices'           => [
+                    WidgetBrandChatPopupSettings::REPLY_TYPE_BUTTON,
+                    WidgetBrandChatPopupSettings::REPLY_TYPE_BUTTONS,
+                ],
+            ])
         ;
     }
 
@@ -61,7 +69,7 @@ class WidgetBrandSetupType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => WidgetBrandSettings::class,
+            'data_class' => WidgetBrandChatPopupSettings::class,
         ]);
     }
 }

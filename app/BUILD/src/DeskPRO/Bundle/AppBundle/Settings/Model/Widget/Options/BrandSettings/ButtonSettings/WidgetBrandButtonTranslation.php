@@ -26,46 +26,73 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings;
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\GlobalSettings;
-
-use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
-use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\WidgetGlobalChatSettings;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class WidgetChatSetupType.
+ * Class WidgetBrandButtonTranslation.
  */
-class WidgetChatSetupType extends AbstractType
+class WidgetBrandButtonTranslation
 {
     /**
-     * {@inheritdoc}
+     * Language.
+     *
+     * @var int
+     *
+     * @JMS\Type("integer")
+     * @Assert\NotNull()
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    private $language;
+
+    /**
+     * Button name.
+     *
+     * @var string
+     *
+     * @JMS\Type("string")
+     * @Assert\NotBlank()
+     */
+    private $name = 'Help';
+
+    /**
+     * @return int
+     */
+    public function getLanguage()
     {
-        $builder
-            ->add('email_validation', ApiBooleanType::class, [
-                'property_path' => 'emailValidation',
-            ])
-            ->add('require_login', ApiBooleanType::class, [
-                'property_path' => 'requireLogin',
-            ])
-            ->add('enabled', ApiBooleanType::class)
-        ;
+        return $this->language;
     }
 
     /**
-     * {@inheritdoc}
+     * @param int $language
+     *
+     * @return $this
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function setLanguage($language)
     {
-        $resolver->setDefaults([
-            'data_class' => WidgetGlobalChatSettings::class,
-        ]);
+        $this->language = $language;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
     }
 }

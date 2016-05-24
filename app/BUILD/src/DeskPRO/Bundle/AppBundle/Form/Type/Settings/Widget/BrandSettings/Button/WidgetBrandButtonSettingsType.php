@@ -26,67 +26,41 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\Button;
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings;
-
-use Application\DeskPRO\Entity\Department;
-use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandTicketSettings;
-use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\EntityToIdTransformer;
-use Doctrine\ORM\EntityManager;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings\WidgetBrandButtonSettings;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\ReversedTransformer;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class WidgetTicketSetupType.
+ * Class WidgetBrandButtonSettingsType.
  */
-class WidgetTicketSetupType extends AbstractType
+class WidgetBrandButtonSettingsType extends AbstractType
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
-
-    /**
-     * Constructor.
-     *
-     * @param EntityManager $em
-     */
-    public function __construct(EntityManager $em)
-    {
-        $this->em = $em;
-    }
-
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('select_department', ChoiceType::class, [
-                'property_path'     => 'selectDepartment',
+            ->add('translations', CollectionType::class, [
+                'entry_type'     => WidgetBrandButtonTranslationType::class,
+                'allow_add'      => true,
+                'allow_delete'   => true,
+                'error_bubbling' => false,
+            ])
+            ->add('size', ChoiceType::class, [
                 'choices_as_values' => true,
                 'choices'           => [
-                    WidgetBrandTicketSettings::SELECT_DEFAULT,
-                    WidgetBrandTicketSettings::SELECT_CUSTOM,
+                    WidgetBrandButtonSettings::SIZE_SMALL,
+                    WidgetBrandButtonSettings::SIZE_MEDIUM,
+                    WidgetBrandButtonSettings::SIZE_LARGE,
                 ],
             ])
-            ->add('default_department', EntityType::class, [
-                'property_path' => 'defaultDepartment',
-                'class'         => Department::class,
-            ])
-        ;
-
-        $departmentRepo = $this->em->getRepository(Department::class);
-        $builder
-            ->get('default_department')
-            ->addModelTransformer(new ReversedTransformer(new EntityToIdTransformer($departmentRepo)))
+            ->add('colors', WidgetBrandButtonColorsSettingsType::class)
         ;
     }
 
@@ -96,7 +70,7 @@ class WidgetTicketSetupType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => WidgetBrandTicketSettings::class,
+            'data_class' => WidgetBrandButtonSettings::class,
         ]);
     }
 }

@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Model;
 
+use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\WidgetGlobalSettings;
@@ -75,18 +76,32 @@ class WidgetSession
     private $isChatGranted;
 
     /**
+     * @var Language
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Language>")
+     */
+    private $language;
+
+    /**
      * Constructor.
      *
      * @param Session              $session
      * @param WidgetGlobalSettings $globalSettings
      * @param bool                 $isChatGranted
+     * @param Language             $defaultLanguage
      */
-    public function __construct(Session $session, WidgetGlobalSettings $globalSettings, $isChatGranted)
+    public function __construct(Session $session, WidgetGlobalSettings $globalSettings, $isChatGranted, Language $defaultLanguage)
     {
         $this->sessionCode    = $session->getSessionCode();
         $this->person         = $session->getPerson();
         $this->globalSettings = $globalSettings;
         $this->isChatGranted  = $isChatGranted;
+
+        if ($this->person && $this->person->getLanguage()) {
+            $this->language = $this->person->getLanguage();
+        } else {
+            $this->language = $defaultLanguage;
+        }
     }
 
     /**

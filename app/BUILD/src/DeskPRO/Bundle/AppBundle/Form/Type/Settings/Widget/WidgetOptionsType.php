@@ -26,14 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget;
 
-use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\WidgetBrandSetupType;
-use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\GlobalSettings\WidgetGlobalSetupType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\WidgetBrandSettingsType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\GlobalSettings\WidgetGlobalSettingsType;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\WidgetOptions;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -42,7 +38,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 /**
  * Class WidgetSetupType.
  */
-class WidgetSetupType extends AbstractType
+class WidgetOptionsType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -50,8 +46,8 @@ class WidgetSetupType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('global', WidgetGlobalSetupType::class)
-            ->add('brand', WidgetBrandSetupType::class)
+            ->add('global', WidgetGlobalSettingsType::class)
+            ->add('brand', WidgetBrandSettingsType::class)
         ;
     }
 

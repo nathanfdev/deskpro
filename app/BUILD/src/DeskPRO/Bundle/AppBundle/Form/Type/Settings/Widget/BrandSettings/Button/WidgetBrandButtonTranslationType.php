@@ -26,33 +26,34 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\Button;
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings;
-
-use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings\WidgetBrandButtonColorsSettings;
+use DeskPRO\Bundle\AppBundle\Form\Type\Settings\BaseTranslationType;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings\WidgetBrandButtonTranslation;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class WidgetButtonColorsSetupType.
+ * Class WidgetBrandButtonTranslationType.
  */
-class WidgetButtonColorsSetupType extends AbstractType
+class WidgetBrandButtonTranslationType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('background', TextType::class)
-            ->add('text', TextType::class)
-            ->add('border', TextType::class)
-        ;
+        $builder->add('name', TextType::class);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getParent()
+    {
+        return BaseTranslationType::class;
     }
 
     /**
@@ -61,7 +62,7 @@ class WidgetButtonColorsSetupType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => WidgetBrandButtonColorsSettings::class,
+            'data_class' => WidgetBrandButtonTranslation::class,
         ]);
     }
 }

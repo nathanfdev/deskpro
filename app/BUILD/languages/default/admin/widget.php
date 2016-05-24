@@ -28,6 +28,7 @@
 
 return [
     'admin.widget.settings_heading'                 => 'Site Widget & Chat',
+    'admin.widget.add_translation'                  => 'Add translation',
     'admin.widget.button_settings'                  => 'Button settings',
     'admin.widget.button_size'                      => 'Button size',
     'admin.widget.button_word'                      => 'Button word',

@@ -26,44 +26,49 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\DataTransformer;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings;
 
-use Doctrine\ORM\EntityRepository;
-use Symfony\Component\Form\DataTransformerInterface;
+use Application\DeskPRO\Entity\Language;
+use DeskPRO\Bundle\AppBundle\Form\DataTransformer\EntityToIdTransformer;
+use Doctrine\ORM\EntityManager;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\ReversedTransformer;
 
 /**
- * Class EntityToIdTransformer.
+ * Class BaseTranslationType.
  */
-class EntityToIdTransformer implements DataTransformerInterface
+class BaseTranslationType extends AbstractType
 {
     /**
-     * @var \Doctrine\ORM\EntityRepository
+     * @var EntityManager
      */
-    private $repo;
+    private $em;
 
     /**
      * Constructor.
      *
-     * @param EntityRepository $repo
+     * @param EntityManager $em
      */
-    public function __construct(EntityRepository $repo)
+    public function __construct(EntityManager $em)
     {
-        $this->repo = $repo;
+        $this->em = $em;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function transform($value)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        return is_object($value) ? $value->getId() : null;
-    }
+        $builder->add('language', EntityType::class, [
+            'class' => Language::class,
+        ]);
 
-    /**
-     * {@inheritdoc}
-     */
-    public function reverseTransform($value)
-    {
-        return $value ? $this->repo->find($value) : null;
+        $languageRepository = $this->em->getRepository(Language::class);
+        $builder
+            ->get('language')
+            ->addModelTransformer(new ReversedTransformer(new EntityToIdTransformer($languageRepository)))
+        ;
     }
 }

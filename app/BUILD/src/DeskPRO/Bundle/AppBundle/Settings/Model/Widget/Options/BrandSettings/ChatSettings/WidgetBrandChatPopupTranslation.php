@@ -28,71 +28,101 @@
 
 namespace DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings;
 
-use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
-use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class WidgetBrandChatPopupSettings.
+ * Class WidgetBrandChatPopupTranslation.
  */
-class WidgetBrandChatPopupSettings
+class WidgetBrandChatPopupTranslation
 {
-    const REPLY_TYPE_BUTTONS = 'buttons';
-    const REPLY_TYPE_BUTTON  = 'reply';
-
     /**
-     * @var ArrayCollection|WidgetBrandChatPopupTranslation[]
+     * Language.
      *
-     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings\WidgetBrandChatPopupTranslation>")
+     * @var int
      *
-     * @Assert\Count(min=1)
-     * @Assert\Valid()
-     * @AppAssert\UniqueCollection(property="language")
+     * @JMS\Type("integer")
+     * @Assert\NotNull()
      */
-    private $translations;
+    private $language;
 
     /**
+     * Translation title.
+     *
      * @var string
      *
      * @JMS\Type("string")
      * @Assert\NotBlank()
      */
-    private $replyType = self::REPLY_TYPE_BUTTONS;
+    private $title = 'Customer Support';
 
     /**
-     * Constructor.
+     * Translation message.
+     *
+     * @var string
+     *
+     * @JMS\Type("string")
+     * @Assert\NotBlank()
      */
-    public function __construct()
+    private $message = 'Need help? Just reply to start a live chat with one of our team.';
+
+    /**
+     * @return int
+     */
+    public function getLanguage()
     {
-        $this->translations = new ArrayCollection();
+        return $this->language;
     }
 
     /**
-     * @return string
-     */
-    public function getReplyType()
-    {
-        return $this->replyType;
-    }
-
-    /**
-     * @param string $replyType
+     * @param int $language
      *
      * @return $this
      */
-    public function setReplyType($replyType)
+    public function setLanguage($language)
     {
-        $this->replyType = $replyType;
+        $this->language = $language;
 
         return $this;
     }
 
     /**
-     * @return ArrayCollection
+     * @return string
      */
-    public function getTranslations()
+    public function getTitle()
     {
-        return $this->translations;
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     *
+     * @return $this
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
+
+    /**
+     * @param string $message
+     *
+     * @return $this
+     */
+    public function setMessage($message)
+    {
+        $this->message = $message;
+
+        return $this;
     }
 }

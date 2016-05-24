@@ -16,6 +16,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
 
       @$scope.widgetLoaded = false
       @$scope.departments = []
+      @$scope.languages = []
 
       @$scope.saving_code = false
       @$scope.applying_to_portal = false
@@ -36,6 +37,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
       departmentsPromise = @Api2.sendGet('/ticket_departments').then (response) =>
         @$scope.departments = response.data.data
 
+      languagesPromise = @Api2.sendGet('/languages').then (response) =>
+        @$scope.languages = response.data.data
+
       updateLiveDemoDebounce = Functions.debounce( =>
         @$scope.formErrors = {}
         @updateLiveDemo()
@@ -44,7 +48,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
       @$scope.$watch('brand_settings', updateLiveDemoDebounce, true)
       @$scope.$watch('global_settings', updateLiveDemoDebounce, true)
 
-      return @$q.all([setupPromise, departmentsPromise])
+      return @$q.all([setupPromise, departmentsPromise, languagesPromise])
 
     getOptions: (liveDemo = false) ->
       options = $.extend(true, {company: @$scope.company}, @$scope.brand_settings)
@@ -56,6 +60,41 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
     loadCode: ->
       @Api2.sendGet('widget/code').then (response) =>
         @$scope.code = response.data
+
+    getLanguage: (translation) ->
+      for language in @$scope.languages
+        if (translation.language == language.id)
+          return language
+
+    filterUsedLanguages: (translations) ->
+      return (language) ->
+        if not translations
+          return true
+
+        for translation in translations
+          if language.id == translation.language
+            return false
+
+        return true
+
+    addButtonTranslation: (languageId) ->
+      if not languageId
+        return
+
+      @$scope.brand_settings.button.translations.push({
+        language: parseInt(languageId),
+        name: ''
+      })
+
+    addChatPopupTranslation: (languageId) ->
+      if not languageId
+        return
+
+      @$scope.brand_settings.chat.popup.translations.push({
+        language: parseInt(languageId),
+        title: '',
+        message: ''
+      })
 
     getFrameNode: ->
       document.getElementById('live-demo')
