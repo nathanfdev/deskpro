@@ -20,12 +20,29 @@
                     <li>
                         <label class="option-label">{{ phrase('admin.widget.button_word') }}:</label>
                         <div class="option-group">
-                            <input type="text" ng-model="brand_settings.button.name" />
                             <ul class="errors">
-                                <li ng-repeat="error in formErrors.brand.fields.button.fields.name.errors">
+                                <li ng-repeat="error in formErrors.brand.fields.button.fields.translations.errors">
                                     {{ ng_var('error.message') }}
                                 </li>
                             </ul>
+
+                            <div ng-if="languages.length" ng-repeat="translation in brand_settings.button.translations" ng-init="language = Ctrl.getLanguage(translation)">
+                                <b>{{ ng_var('language.title') }}</b> <button ng-if="$index > 0" ng-click="brand_settings.button.translations.splice($index, 1)">x</button>:<br/>
+                                <input type="hidden" ng-model="translation.language" />
+                                <input type="text" ng-model="translation.name" />
+
+                                <ul class="errors">
+                                    <li ng-repeat="error in formErrors.brand.fields.button.fields.translations.fields['translations_' + $index].fields.name.errors">
+                                        {{ ng_var('error.message') }}
+                                    </li>
+                                </ul>
+                                <br/>
+                            </div>
+
+                            <div ng-if="(languages | filter:Ctrl.filterUsedLanguages(brand_settings.button.translations)).length">
+                                <select ng-options="item.id as item.title for item in languages | filter:Ctrl.filterUsedLanguages(brand_settings.button.translations)" ng-model="newButtonTranslationLanguage"></select>
+                                <button ng-click="Ctrl.addButtonTranslation(newButtonTranslationLanguage); newButtonTranslationLanguage = null" ng-disabled="!newButtonTranslationLanguage">{{ phrase('admin.widget.add_translation') }}</button>
+                            </div>
                         </div>
                     </li>
                     <li>
@@ -135,16 +152,43 @@
 
                         <ul class="options" ng-if="brand_settings.chat.proactive">
                             <li>
-                                <label class="option-label">{{ phrase('admin.widget.proactive_chat_agent_title') }}:</label>
-                                <div class="option-group">
-                                    <input type="text" ng-model="brand_settings.chat.popup.title" />
+                                <ul class="errors">
+                                    <li ng-repeat="error in formErrors.brand.fields.chat.fields.popup.fields.translations.errors">
+                                        {{ ng_var('error.message') }}
+                                    </li>
+                                </ul>
+
+                                <div ng-if="languages.length" ng-repeat="translation in brand_settings.chat.popup.translations" ng-init="language = Ctrl.getLanguage(translation)">
+                                    <b>{{ ng_var('language.title') }}</b> <button ng-if="$index > 0" ng-click="brand_settings.chat.popup.translations.splice($index, 1)">x</button>:<br/>
+                                    <input type="hidden" ng-model="translation.language" />
+
+                                    <label class="option-label">{{ phrase('admin.widget.proactive_chat_agent_title') }}:</label>
+                                    <div class="option-group">
+                                        <input type="text" ng-model="translation.title" />
+                                        <ul class="errors">
+                                            <li ng-repeat="error in formErrors.brand.fields.chat.fields.popup.fields.translations.fields['translations_' + $index].fields.title.errors">
+                                                {{ ng_var('error.message') }}
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <label class="option-label">{{ phrase('admin.widget.proactive_chat_agent_message') }}:</label>
+                                    <div class="option-group">
+                                        <textarea ng-model="translation.message"></textarea>
+                                        <ul class="errors">
+                                            <li ng-repeat="error in formErrors.brand.fields.chat.fields.popup.fields.translations.fields['translations_' + $index].fields.message.errors">
+                                                {{ ng_var('error.message') }}
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
-                            </li>
-                            <li>
-                                <label class="option-label">{{ phrase('admin.widget.proactive_chat_agent_title') }}:</label>
-                                <div class="option-group">
-                                    <textarea ng-model="brand_settings.chat.popup.message"></textarea>
+
+                                <div ng-if="(languages | filter:Ctrl.filterUsedLanguages(brand_settings.chat.popup.translations)).length">
+                                    <select ng-options="item.id as item.title for item in languages | filter:Ctrl.filterUsedLanguages(brand_settings.chat.popup.translations)" ng-model="newChatPopupTranslationLanguage"></select>
+                                    <button ng-click="Ctrl.addChatPopupTranslation(newChatPopupTranslationLanguage); newChatPopupTranslationLanguage = null" ng-disabled="!newChatPopupTranslationLanguage">{{ phrase('admin.widget.add_translation') }}</button>
                                 </div>
+
+                                <br/><br/>
                             </li>
                             <li>
                                 <label class="option-label">{{ phrase('admin.widget.proactive_chat_reply_type') }}:</label>
