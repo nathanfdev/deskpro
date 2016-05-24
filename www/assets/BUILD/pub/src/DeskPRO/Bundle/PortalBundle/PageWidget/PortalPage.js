@@ -22,7 +22,6 @@ import { MobileMenuWidget } from './MobileMenuWidget';
 import { ArticleHighlighter } from './ArticleHighlighter';
 import { CustomPerFieldEdit } from './Common/Form/CustomPerFieldEdit';
 import { Attachment } from './Common/Attachment';
-import { ShareWidget } from './ShareWidget';
 import { TouchFocusWidget } from './TouchFocusWidget';
 import { WidgetButton } from './WidgetButton';
 import $ from 'jquery';
@@ -56,7 +55,6 @@ export class PortalPage extends PageWidget {
     this.addWidgetDef(AlertsWidget, '#dpx-alerts');
     this.addWidgetDef(SearchResultsPage, '#search-results-page');
     this.addWidgetDef(Attachment, '.dpx-attachment');
-    this.addWidgetDef(ShareWidget, '.share-button');
     this.addWidgetDef(TouchFocusWidget, '.as-touch-focus');
     this.addWidgetDef(WidgetButton, '.widget-button');
 
