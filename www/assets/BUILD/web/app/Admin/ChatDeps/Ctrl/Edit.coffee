@@ -74,6 +74,7 @@ define [
     ###
 
     isDirtyState: ->
+      return false
       return not Util.equals(@form, @origForm)
 
     ###

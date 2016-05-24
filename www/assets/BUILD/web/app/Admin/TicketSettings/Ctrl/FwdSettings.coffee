@@ -35,8 +35,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'DeskPRO/Util/Arrays'], (Ad
       return @$q.all([data_promise])
 
     isDirtyState: ->
+      return false
       if not @settings then return false
-      if not equals.equals(@settings, @$scope.settings)
+      if not Util.equals(@settings, @$scope.settings)
         return true
       else
         return false

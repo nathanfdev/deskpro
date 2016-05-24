@@ -146,7 +146,9 @@ define [
       )
 
     isDirtyState: ->
-      return not Util.equals(@form, @origForm)
+      return false
+      # should check this
+      # return not Util.equals(@form, @origForm)
 
     ###*
     # Save everything
