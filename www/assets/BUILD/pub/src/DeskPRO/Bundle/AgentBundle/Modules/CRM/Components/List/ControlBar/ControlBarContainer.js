@@ -15,22 +15,23 @@ import {
   changePeopleFieldOrder,
   changeOrgFieldOrder
 } from '../../../Actions/crmListActions';
-import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
-import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/ControlBar';
+import { updateRoutingState } from '../../../../Application/Actions/routingActions';
+import { constants } from '../../../../../Constants/Constants';
+import { ControlBar } from '../../../../../Modules/Common/Components/ListFrame/ControlBar/ControlBar';
 
 @connect(state => ({
-  content:       currentContentSelector(state),
-  filters:       listFiltersSelector(state),
-  currentParams: currentListParamsSelector(state),
-  viewMode:      currentViewModeSelector(state),
-  peopleFields:  peopleFieldsSelector(state),
-  orgFields:     orgFieldsSelector(state)
+    content:       currentContentSelector(state),
+    filters:       listFiltersSelector(state),
+    currentParams: currentListParamsSelector(state),
+    viewMode:      currentViewModeSelector(state),
+    peopleFields:  peopleFieldsSelector(state),
+    orgFields:     orgFieldsSelector(state)
 }), {
   togglePeopleFieldVisibility,
   toggleOrgFieldVisibility,
   changePeopleFieldOrder,
-  changeOrgFieldOrder
+  changeOrgFieldOrder,
+  applyParams
 })
 export class ControlBarContainer extends Component {
 
@@ -39,18 +40,17 @@ export class ControlBarContainer extends Component {
     filters:                     PropTypes.array.isRequired,
     currentParams:               PropTypes.object.isRequired,
     viewMode:                    PropTypes.string.isRequired,
-    peopleCardFields:            PropTypes.object.isReqiured,
-    peopleTableFields:           PropTypes.object.isReqiured,
-    orgCardFields:               PropTypes.object.isReqiured,
-    orgTableFields:              PropTypes.object.isReqiured,
-    togglePeopleFieldVisibility: PropTypes.func.isReqiured,
-    toggleOrgFieldVisibility:    PropTypes.func.isReqiured,
-    changePeopleFieldOrder:      PropTypes.func.isReqiured,
-    changeOrgFieldOrder:         PropTypes.func.isReqiured
+    peopleFields:                PropTypes.object.isRequired,
+    orgFields:                   PropTypes.object.isRequired,
+    togglePeopleFieldVisibility: PropTypes.func.isRequired,
+    toggleOrgFieldVisibility:    PropTypes.func.isRequired,
+    changePeopleFieldOrder:      PropTypes.func.isRequired,
+    changeOrgFieldOrder:         PropTypes.func.isRequired,
+    applyParams:                 PropTypes.func.isRequired
   };
 
   getPeopleConfig() {
-    const { filters, currentParams, peopleFields, togglePeopleFieldVisibility, changePeopleFieldOrder } = this.props;
+    const { filters, currentParams, peopleFields, applyParams } = this.props;
 
     return {
       applyParams,
@@ -93,14 +93,14 @@ export class ControlBarContainer extends Component {
 
         viewMode:              this.props.viewMode,
         viewModeAction:        (mode) => updateRoutingState('list', 'view', mode),
-        toggleFieldVisibility: togglePeopleFieldVisibility,
-        changeFieldOrder:      changePeopleFieldOrder
+        toggleFieldVisibility: this.props.togglePeopleFieldVisibility,
+        changeFieldOrder:      this.props.changePeopleFieldOrder
       }
     };
   }
 
   getOrganizationConfig() {
-    const { filters, currentParams, orgFields, toggleOrgFieldVisibility, changeOrgFieldOrder } = this.props;
+    const { filters, currentParams, orgFields } = this.props;
 
     return {
       applyParams,
@@ -135,8 +135,8 @@ export class ControlBarContainer extends Component {
 
         viewMode:              this.props.viewMode,
         viewModeAction:        (mode) => updateRoutingState('list', 'view', mode),
-        toggleFieldVisibility: toggleOrgFieldVisibility,
-        changeFieldOrder:      changeOrgFieldOrder
+        toggleFieldVisibility: this.props.toggleOrgFieldVisibility,
+        changeFieldOrder:      this.props.changeOrgFieldOrder
       }
     };
   }

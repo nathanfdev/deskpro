@@ -103,9 +103,9 @@ export class CardProject extends CardWidget {
                       <QuickFilter onChange={this.filterProjects}/>
                       <div className="dpw--popup-item-collection">
                         <ul>
-                          {projects.map((item) =>
-                            <li>
-                              <div className="dpw--popup-item-box" onClick={() => this.onChange(item.get('id'))}>
+                          {projects.entrySeq().map(([id, item]) =>
+                            <li key={id}>
+                              <div className="dpw--popup-item-box" onClick={() => this.onChange(id)}>
                                 <span className="dpw--checkbox-boxy">
                                   {project === item ? <i className="fa fa-check"></i> : null}
                                 </span>

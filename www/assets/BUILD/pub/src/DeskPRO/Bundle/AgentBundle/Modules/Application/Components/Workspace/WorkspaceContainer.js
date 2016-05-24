@@ -10,9 +10,9 @@ import { closeWorkspace, setColumnDimensions, setColumnMode, setSidebarMode } fr
 export class WorkspaceContainer extends React.Component {
 
   static propTypes = {
-    dpWindow: PropTypes.object.isRequired,
-    dispatch: PropTypes.func.isRequired,
-    positionTarget: PropTypes.any.isRequired
+    dpWindow:          PropTypes.object.isRequired,
+    dispatch:          PropTypes.func.isRequired,
+    getPositionTarget: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -20,8 +20,8 @@ export class WorkspaceContainer extends React.Component {
     const { dpWindow } = props;
 
     this.state = {
-      columnMode: dpWindow.get('columnMode'),
-      sidebarMode: dpWindow.get('sidebarMode'),
+      columnMode:       dpWindow.get('columnMode'),
+      sidebarMode:      dpWindow.get('sidebarMode'),
       columnDimensions: dpWindow.get('columnDimensions')
     };
   }
@@ -65,8 +65,8 @@ export class WorkspaceContainer extends React.Component {
     const { dpWindow } = this.props;
 
     this.setState({
-      columnMode: dpWindow.get('columnMode'),
-      sidebarMode: dpWindow.get('sidebarMode'),
+      columnMode:       dpWindow.get('columnMode'),
+      sidebarMode:      dpWindow.get('sidebarMode'),
       columnDimensions: dpWindow.get('columnDimensions')
     });
 
@@ -74,22 +74,26 @@ export class WorkspaceContainer extends React.Component {
   };
 
   render() {
-    const { dpWindow, positionTarget } = this.props;
+    const { dpWindow, getPositionTarget } = this.props;
 
     return (
-      <Simple isOpen={dpWindow.get('isWorkspaceOpen')}
-              positionTarget={positionTarget}
-              positionAt="right bottom"
-              postionMy="right top">
+      <Simple
+        isOpen={dpWindow.get('isWorkspaceOpen')}
+        positionTarget={getPositionTarget()}
+        positionAt="right bottom"
+        postionMy="right top"
+      >
 
-        <Workspace dpWindow={dpWindow}
-                   close={this.close}
-                   saveWorkspace={this.saveWorkspace}
-                   closeWorkspace={this.closeWorkspace}
-                   setColumnMode={this.setColumnMode}
-                   setColumnDimensions={this.setColumnDimensions}
-                   setSidebarMode={this.setSidebarMode}
-                   resetAll={this.resetAll}/>
+        <Workspace
+          dpWindow={dpWindow}
+          close={this.close}
+          saveWorkspace={this.saveWorkspace}
+          closeWorkspace={this.closeWorkspace}
+          setColumnMode={this.setColumnMode}
+          setColumnDimensions={this.setColumnDimensions}
+          setSidebarMode={this.setSidebarMode}
+          resetAll={this.resetAll}
+        />
       </Simple>
     );
   }

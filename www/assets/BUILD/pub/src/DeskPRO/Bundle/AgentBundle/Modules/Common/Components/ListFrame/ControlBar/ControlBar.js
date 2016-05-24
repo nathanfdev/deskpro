@@ -7,7 +7,6 @@ import { ViewMenuContainer } from './View/ViewMenuContainer';
 export class ControlBar extends Component {
 
   static propTypes = {
-    dispatch:      PropTypes.func.isRequired,
     applyParams:   PropTypes.func.isRequired,
     currentParams: PropTypes.object.isRequired,
     sorting:       PropTypes.objectOf(
@@ -92,9 +91,9 @@ export class ControlBar extends Component {
   };
 
   reloadList = () => {
-    const { dispatch, applyParams } = this.props;
+    const { applyParams } = this.props;
     if (this.state.changed) {
-      dispatch(applyParams(this.state.params));
+      applyParams(this.state.params);
     }
     this.setState({
       changed: false

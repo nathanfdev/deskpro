@@ -21,14 +21,11 @@ export class FiltersTab extends Component {
   render() {
     return (
       <div>
-        {this.props.filterSetsCount.map(count => (
+        {this.props.filterSetsCount.entrySeq().map(([id, count]) => (
           <div key={count.get('id')}>
             <SectionHeader>{count.get('title')}</SectionHeader>
 
-            <NestedListContainer
-              items={this.getFilterSetCounts(count)}
-              alwaysExpanded
-            />
+            <NestedListContainer items={this.getFilterSetCounts(count)} alwaysExpanded />
           </div>
         ))}
       </div>

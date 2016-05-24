@@ -38,7 +38,7 @@ const initialState = {
       { id: 'assignee', title: 'Assignee', visible: true }
     ]
   },
-  elements: {},
+  elements: [],
   selected: [],
   view: 'card',
   async: {
@@ -65,7 +65,7 @@ export default createReducer(initialState, {
   },
   [actions.toggleSelected]: togglePayloadInCollection('selected'),
   [actions.toggleAll]: handleMassAction('elements', 'selected'),
-  [actions.unload]: setValue('elements', []),
+  //[actions.unload]: setValue('elements', []),
   [actions.loadList]: async({
     success: (state, payload) => {
       invariant(

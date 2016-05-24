@@ -30,12 +30,12 @@ import {
 }), {
   toggleFieldVisibility,
   changeFieldOrder,
-  loadAll
+  loadAll,
+  applyFilters
 })
 export class ControlBarContainer extends React.Component {
 
   static propTypes = {
-    dispatch:              PropTypes.func.isRequired,
     viewMode:              PropTypes.string.isRequired,
     cardFields:            PropTypes.object.isRequired,
     tableFields:           PropTypes.object.isRequired,
@@ -44,8 +44,9 @@ export class ControlBarContainer extends React.Component {
     currentParams:         PropTypes.object.isRequired,
     labels:                PropTypes.object.isRequired,
     loadAll:               PropTypes.func.isRequired,
-    toggleFieldVisibility: PropTypes.func,
-    changeFieldOrder:      PropTypes.func
+    toggleFieldVisibility: PropTypes.func.isRequired,
+    changeFieldOrder:      PropTypes.func.isRequired,
+    applyFilters:          PropTypes.func.isRequired
   };
 
   componentDidMount() {
@@ -57,7 +58,7 @@ export class ControlBarContainer extends React.Component {
     const { cardFields, tableFields, kanbanFields, calendarFields } = this.props;
 
     const config = {
-      applyParams:   applyFilters,
+      applyParams:   this.props.applyFilters,
       currentParams: currentParams,
       sorting:       {
         list:         {

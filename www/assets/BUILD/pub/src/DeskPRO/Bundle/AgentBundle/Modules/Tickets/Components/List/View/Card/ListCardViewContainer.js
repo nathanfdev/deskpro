@@ -47,7 +47,7 @@ export class ListCardViewContainer extends Component {
   render() {
     return (
       <div>
-        {this.props.tickets.map(ticket => this.renderCard(ticket))}
+        {this.props.tickets.entrySeq().map(([id, ticket]) => this.renderCard(ticket))}
       </div>
     );
   }

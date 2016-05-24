@@ -29,16 +29,8 @@ export class DownloadsTab extends Component {
     return (
       <SectionsPane>
         <Section>
-          <SectionGroupedHeader
-            label="Downloads"
-            ref="downloads"
-            count={downloads.get('count')}
-            callback={toggle}
-          />
-          <NestedList
-            content="downloads"
-            items={downloads.get('nested').toJS()}
-          />
+          <SectionGroupedHeader label="Downloads" ref="downloads" count={downloads.get('count')} callback={toggle} />
+          <NestedList content="downloads" items={downloads.get('nested').toJS()} />
           <NavGroupingPopup
             attachTo={this.refs.downloads}
             content="downloads"

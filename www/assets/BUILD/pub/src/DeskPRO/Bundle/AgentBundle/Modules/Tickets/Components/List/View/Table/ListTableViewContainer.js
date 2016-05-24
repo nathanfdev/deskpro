@@ -72,7 +72,7 @@ export class ListTableViewContainer extends Component {
           </tr>
         </thead>
         <tbody>
-        {tickets.map(ticket =>
+        {tickets.entrySeq().map(([id, ticket]) =>
           <TicketRow
             key={ticket.get('id')}
             ticket={ticket}

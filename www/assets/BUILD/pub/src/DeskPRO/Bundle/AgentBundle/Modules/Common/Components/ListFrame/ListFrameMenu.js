@@ -13,10 +13,8 @@ export class ListFrameMenu extends Component {
       <div className="control-bar">
         <div className="ticket-controls-bulk-editing">
           <div className="dpwd-navigation-dropdown-top-row">
-            <MassActionsCheckboxContainer/>
-            <ReactCSSTransitionGroup transitionName="example"
-                                     transitionEnterTimeout={500}
-                                     transitionLeaveTimeout={100}>
+            <MassActionsCheckboxContainer />
+            <ReactCSSTransitionGroup transitionName="example" transitionEnterTimeout={500} transitionLeaveTimeout={100}>
               {this.props.children}
             </ReactCSSTransitionGroup>
           </div>

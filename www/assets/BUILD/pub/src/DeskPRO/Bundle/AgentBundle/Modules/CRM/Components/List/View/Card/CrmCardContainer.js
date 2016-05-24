@@ -21,7 +21,7 @@ import { connect } from 'react-redux';
 export class CrmCardContainer extends Component {
   static propTypes = {
     dispatch:      PropTypes.func.isRequired,
-    elements:      PropTypes.array,
+    elements:      PropTypes.object,
     people:        PropTypes.object,
     organizations: PropTypes.object,
     content:       PropTypes.string.isRequired,

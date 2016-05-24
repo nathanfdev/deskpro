@@ -20,10 +20,6 @@ export class ListContainer extends React.Component {
     dispatch: PropTypes.func.isRequired
   };
 
-  componentWillUnmount() {
-    this.props.dispatch(unload());
-  }
-
   render() {
     return <List {...this.props} />;
   }

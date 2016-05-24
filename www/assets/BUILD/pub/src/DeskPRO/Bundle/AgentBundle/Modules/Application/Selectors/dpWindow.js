@@ -22,6 +22,6 @@ export const currentAppStateSelector = createSelector(
       ? state.CRM // @ToDo remove this temp solution
       : state[currentApp.charAt(0).toUpperCase() + currentApp.slice(1)];
 
-    return appState ? appState : {list: Immutable.fromJS({})};
+    return appState ? appState : { list: Immutable.fromJS({ elements: [] }) };
   }
 );

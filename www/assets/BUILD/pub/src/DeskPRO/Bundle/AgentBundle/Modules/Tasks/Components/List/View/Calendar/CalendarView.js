@@ -72,10 +72,7 @@ export class CalendarView extends React.Component {
 
         <Positioned positionTarget={this.newTaskTarget} positionAt="center center" isOpen={!!this.state.task}>
           <ClickOut onClickOut={() => this.resetNewTask(false)}>
-            <TaskCardNew
-              task={this.state.task}
-              onSetEditing={this.onSetEditing}
-              onClose={() => this.resetNewTask(true)}
+            <TaskCardNew task={this.state.task} onSetEditing={this.onSetEditing} onClose={() => this.resetNewTask(true)}
             />
           </ClickOut>
         </Positioned>

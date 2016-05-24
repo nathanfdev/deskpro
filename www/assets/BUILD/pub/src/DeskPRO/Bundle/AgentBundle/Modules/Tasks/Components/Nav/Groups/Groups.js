@@ -35,7 +35,6 @@ const options = {
 export class Groups extends React.Component {
 
   static propTypes = {
-    options:        PropTypes.object.isRequired,
     groupsCountMap: PropTypes.object.isRequired
   };
 

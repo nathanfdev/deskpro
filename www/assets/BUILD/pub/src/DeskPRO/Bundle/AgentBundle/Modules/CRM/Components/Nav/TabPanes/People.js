@@ -16,12 +16,7 @@ export class People extends Component {
     return (
       <TabsPaneStatefulContainer id="peopleTab">
         <Tab title="Groups">
-          <NestedList
-            items={[users.toJS()]}
-            isAgent={0}
-            group="people"
-            alwaysExpanded
-          />
+          <NestedList items={[users.toJS()]} isAgent={0} group="people" alwaysExpanded />
         </Tab>
         <Tab title="Filters">Filters tab content</Tab>
         <Tab title="Labels">

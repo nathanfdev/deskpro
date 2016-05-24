@@ -28,15 +28,11 @@ export class DpApp extends React.Component {
     dispatch: PropTypes.func.isRequired
   };
 
-  constructor(props) {
-    super(props);
+  componentDidMount() {
     this._resetWinSize();
     this.onResize = debounce(() => {
       this._resetWinSize();
     }, 350);
-  }
-
-  componentDidMount() {
     $(window).on('resize', this.onResize);
   }
 
@@ -67,14 +63,14 @@ export class DpApp extends React.Component {
 
     return (
       <div className="dp-window">
-        <Header user={user} toggleWorkspace={this.toggleWorkspace} togglePreferences={this.togglePreferences}/>
-        <AppSwitcher switchApp={this.switchApp} currentApp={dpWindow.get('activeAppId')}/>
+        <Header user={user} toggleWorkspace={this.toggleWorkspace} togglePreferences={this.togglePreferences} />
+        <AppSwitcher switchApp={this.switchApp} currentApp={dpWindow.get('activeAppId')} />
 
         <div className="dp-panes-middle">
           {children}
 
           <TabBodyPane>
-            <TabFrame dpWindow={dpWindow}/>
+            <TabFrame dpWindow={dpWindow} />
           </TabBodyPane>
         </div>
         <NotificationsContainer />

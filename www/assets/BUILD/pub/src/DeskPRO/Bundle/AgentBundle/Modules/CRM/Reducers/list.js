@@ -7,6 +7,8 @@ import * as actions from '../Actions/crmListActions';
 export const crmListInitialState = {
   async:             { done: true },
   view:              constants.VIEW_MODE_CARD, // view mode (table or list)
+  elements:          [],
+  selected:          [],
   currentListParams: { // currently viewed list GET parameters map
     content:    'people',
     order_by:   'name',
@@ -48,7 +50,7 @@ export default createReducer(crmListInitialState, {
   [actions.setParams]: setFullPayload('currentListParams'),
   [actions.load]:      async({
     success: (state, payload) =>
-      state.set('elements', payload.ids).set('pagination', Immutable.fromJS(payload.pagination)),
+      state.set('elements', Immutable.List(payload.ids)).set('pagination', Immutable.fromJS(payload.pagination)),
     start: setValue('async.done', false),
     done:  setValue('async.done', true)
   }),
