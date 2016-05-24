@@ -20,6 +20,8 @@ Feature: KB
 
   Scenario: I download a pdf version of an article
     Given I am on "/kb/articles/example-article"
+    And print last response
+    And print last response headers
     And I download "Download PDF"
     Then print last response
     And print last response headers
