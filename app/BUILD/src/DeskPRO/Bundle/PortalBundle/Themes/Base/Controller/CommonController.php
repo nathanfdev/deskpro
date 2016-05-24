@@ -50,15 +50,6 @@ use Symfony\Component\HttpFoundation\Response;
 class CommonController extends AbstractController
 {
     /**
-     * @Tag(name="get_in_touch", esi=true)
-     * @TagHttpCache()
-     */
-    public function getInTouchAction(TagRequest $tag_request)
-    {
-        return $this->renderThemeView('Theme:Common:get_in_touch.html.twig');
-    }
-
-    /**
      * @Tag(name="agent_bar", esi=true)
      */
     public function agentBarAction(TagRequest $tag_request)

@@ -114,11 +114,14 @@
                      ng-show="Portal.isOpen('advanced')">
                     <nav>
                         <ul>
-                            <li ng-class="{active: Portal.isAdvancedTab('header')}">
-                                <a href ng-click="Portal.openAdvancedTab('header')">Header</a>
+                            <li ng-class="{active: Portal.isAdvancedTab('headerfooter')}">
+                                <a href ng-click="Portal.openAdvancedTab('header')">Header &amp; Footer</a>
                             </li>
-                            <li ng-class="{active: Portal.isAdvancedTab('footer')}">
-                                <a href ng-click="Portal.openAdvancedTab('footer')">Footer</a>
+                            <li ng-class="{active: Portal.isAdvancedTab('homepage')}">
+                                <a href ng-click="Portal.openAdvancedTab('homepage')">Home</a>
+                            </li>
+                            <li ng-class="{active: Portal.isAdvancedTab('sidebar')}" ng-show="Portal.selected_theme == 'sidebar'">
+                                <a href ng-click="Portal.openAdvancedTab('sidebar')">Side</a>
                             </li>
                             <li ng-class="{active: Portal.isAdvancedTab('scss')}">
                                 <a href ng-click="Portal.openAdvancedTab('scss')">CSS</a>
@@ -129,20 +132,34 @@
                         </ul>
                     </nav>
 
-                    <!-- Header -->
+                    <!-- Header / Footer -->
                     <div class="the-code" ng-show="Portal.isAdvancedTab('header')">
                         <p>
-                            The header template is prepended to the very top of the page.
+                            These temlpates let you put HTML code at the very top or very bottom of the page.
                         </p>
-                        <div style="text-align: center; padding-top: 8px;"><button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-header.html.twig')">Edit Header Template</button></div>
+                        <div style="text-align: center; padding-top: 8px;">
+                            <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-header.html.twig')">Edit Header Template</button>
+                            <br />
+                            <div style="margin-top: 4px;">
+                                <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-footer.html.twig')">Edit Footer Template</button>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Footer -->
-                    <div class="the-code" ng-show="Portal.isAdvancedTab('footer')">
+                    <!-- Home -->
+                    <div class="the-code" ng-show="Portal.isAdvancedTab('homepage')">
                         <p>
-                            The footer template is appended to the very bottom of th epage.
+                            Edit the homepage template to add or remove elements from the main portal homepage.
                         </p>
-                        <div style="text-align: center; padding-top: 8px;"><button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-footer.html.twig')">Edit Footer Template</button></div>
+                        <div style="text-align: center; padding-top: 8px;"><button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Portal:home.html.twig')">Edit Homepage Template</button></div>
+                    </div>
+
+                    <!-- Sidebar -->
+                    <div class="the-code" ng-show="Portal.isAdvancedTab('sidebar')">
+                        <p>
+                            Edit the sidebar template to add or remove elements from the site-wide sidebar.
+                        </p>
+                        <div style="text-align: center; padding-top: 8px;"><button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Portal:sidebar.html.twig')">Edit Sidebar Template</button></div>
                     </div>
 
                     <!-- CSS -->
