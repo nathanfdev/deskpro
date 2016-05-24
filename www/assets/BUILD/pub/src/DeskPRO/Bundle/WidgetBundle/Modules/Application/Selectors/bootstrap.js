@@ -56,6 +56,11 @@ export const widgetHasChatSelector = createSelector(
   (chatSettings, sessionSettings) => chatSettings.get('enabled') && sessionSettings.get('is_chat_granted')
 );
 
+export const widgetLanguageSelector = createSelector(
+  widgetSessionSelector,
+  sessionSettings => sessionSettings.get('language')
+);
+
 // Company options selectors
 export const companyOptionsSelector = createSelector(
   widgetSettingsSelector,

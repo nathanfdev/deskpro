@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { widgetLanguageSelector } from './bootstrap';
 
 const stateSelector = state => state.Application.dpWindow;
 
@@ -89,7 +90,19 @@ export const helpButtonSizeSelector = createSelector(
 
 export const helpButtonNameSelector = createSelector(
   helpButtonSelector,
-  options => options.get('name') || 'Help'
+  widgetLanguageSelector,
+  (options, language) => {
+    const filtered = options.get('translations').filter(translation => translation.get('language') === language);
+
+    if (filtered.size) {
+      return filtered.first().get('name');
+    }
+    if (options.get('translations').size) {
+      return options.get('translations').first().get('name');
+    }
+
+    return 'Help';
+  }
 );
 
 export const helpButtonColorsSelector = createSelector(
