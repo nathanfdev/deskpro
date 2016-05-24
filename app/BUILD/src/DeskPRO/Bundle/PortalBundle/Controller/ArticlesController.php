@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
@@ -447,14 +448,23 @@ class ArticlesController extends AbstractController
             //            $this->runAntiAbuseCheck($request);
 
             $emails = [];
+            $email  = $form->getViewData()['email'];
+            /** @var Person $person */
+            if ($person = $this->getEm()->getRepository(Person::class)->findOneByEmail($email)) {
+                $emails[] = $person;
+            } else {
+                $emails[] = ['address' => $email, 'name' => $form->getViewData()['name']];
+            }
 
-            $this->getEmailSender()->sendShareArticle($article, $this->getUser(), $emails);
+            if ($form->getViewData()['send_myself']) {
+                $emails[] = $this->getUser();
+            }
+
+            $this->getEmailSender()->sendShareArticle($article, $this->getUser(), $emails, $form->getViewData());
 
             $this->addFlash('success', $this->phrase('portal.flashes.email_sent'));
 
             return $this->redirectToRoute('portal_kb_view', ['slug' => $article->getSlug()]);
-        } elseif ($form->isSubmitted()) {
-            //            $this->runAntiAbuseCheck($request);
         }
 
         return $this->renderThemeView(

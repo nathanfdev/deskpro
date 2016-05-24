@@ -229,7 +229,7 @@ class PortalEmailSender
 
     public function sendTo(EmailTo $emailTo, $template, $vars)
     {
-        $vars['site_name'] = $this->getSetting('site_name');
+        $vars['site_name'] = $this->getSetting('site_name') ?: $this->getSetting('helpdesk_name');
         /** @var \Application\DeskPRO\Mail\Message $message */
         $message = $this->container->get('mailer')->createMessage();
         if ($person = $emailTo->getPerson()) {
@@ -243,7 +243,7 @@ class PortalEmailSender
         $this->container->get('mailer')->send($message);
     }
 
-    public function sendShareArticle(Article $article, Person $author, $emails)
+    public function sendShareArticle(Article $article, Person $author, $emails, $formData)
     {
         foreach ($emails as $email) {
             if ($email instanceof Person) {
@@ -253,14 +253,18 @@ class PortalEmailSender
                 $emailTo->setTo($email['address'], $email['name']);
             }
 
+            $variables = [
+                'author_email' => $author->getEmailAddress(),
+                'author_name'  => $author->getName(),
+                'article'      => $article,
+            ];
+
+            $variables = array_merge($variables, $formData);
+
             $this->sendTo(
                 $emailTo,
                 'DeskPRO:emails_user:share-article.html.twig',
-                [
-                    'author_email' => $author->getEmailAddress(),
-                    'author_name'  => $author->getName(),
-                    'article'      => $article,
-                ]
+                $variables
             );
         }
     }
