@@ -10,6 +10,7 @@ parameters:
   file_locator.class: DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator
   twig.class: DeskPRO\Bundle\PortalBundle\Twig\Environment
   templating.name_parser.class: DeskPRO\Bundle\AppBundle\Templating\TemplateNameParser
+  jms_serializer.json_serialization_visitor.class: DeskPRO\Bundle\AppBundle\Serializer\Visitor\JsonSerializationVisitor
 
 framework:
     esi:             { enabled: true }

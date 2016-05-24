@@ -10,6 +10,7 @@ parameters:
   monolog.logger.class: DeskPRO\Bundle\AppBundle\Logging\NoExceptionsLogger
   file_locator.class: DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator
   nelmio_api_doc.extractor.api_doc_extractor.class: DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor\ApiDocExtractor
+  jms_serializer.json_serialization_visitor.class: DeskPRO\Bundle\AppBundle\Serializer\Visitor\JsonSerializationVisitor
 
 services:
   # legacy ext is required by some ticket functions (e.g. rendering notifications)
