@@ -1,0 +1,6 @@
+// This file is pre-compiled to precompiled-fontawesome.scss
+// in a gulp task.
+
+$default-layout-direction: "LTR"; // needed just because its used in setup
+@import "setup";
+@import "../../../../../../node_modules/font-awesome/scss/font-awesome.scss";

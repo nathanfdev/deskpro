@@ -3,11 +3,17 @@
 @import "custom_vars";
 @import "../../../../../../node_modules/bourbon/app/assets/stylesheets/_bourbon.scss";
 @import "../../../../../../node_modules/bourbon-neat/app/assets/stylesheets/_neat.scss";
-@import "../../../../../../node_modules/font-awesome/scss/font-awesome.scss";
+
+// FA mixins for people to use
+@import "../../../../../../node_modules/font-awesome/scss/variables";
+@import "../../../../../../node_modules/font-awesome/scss/mixins";
+
+// Real pre-compiled FA
+@import "precompiled-fontawesome.css";
+
 @import "../../../../../../node_modules/hover.css/scss/hover";
 @import "../../../AppBundle/Resources/style/message-formatting";
 @import "hover-apply";
 @import "dpx";
 @import "main";
-@import "recent-changes";
 @import "custom_style";

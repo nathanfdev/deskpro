@@ -35,6 +35,7 @@ phantomjsdriver.log
 /www/assets/BUILD/pub/build
 /www/assets/BUILD/pub/src/DeskPRO/Bundle/AgentBundle/AgentApp_Reducers.js
 /www/assets/BUILD/pub/src/DeskPRO/Bundle/WidgetBundle/WidgetApp_Reducers.js
+/www/assets/BUILD/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/precompiled-fontawesome.css
 
 /app/BUILD/tests/tools/node_modules
 

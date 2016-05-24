@@ -12,6 +12,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const babel = require('babel-core');
 const uglify = require('uglify-js');
 const fs = require('fs');
+const sass = require('node-sass');
 const reducerRefresh = require('./build-tools/app-reducer-gen/loader').refreshBundle;
 
 // ######################################################################################################################
@@ -102,6 +103,21 @@ function refreshWidgetLoader(loaderFilename) {
   fs.writeFileSync(buildDir + loaderFilePath, loaderCode);
   fs.writeFileSync(path.join(__dirname, 'build') + minLoaderFilePath, loaderCodemin);
   console.log('.. done writing ' + loaderFilename);
+
+  // Refresh precompiled-fontawesome
+  console.log('Writing precompiled-fontawesome.css:');
+  const faInPath  = __dirname + '/src/DeskPRO/Bundle/PortalBundle/Resources/style/precompiled-fontawesome.scss';
+  const faOutPath = __dirname + '/src/DeskPRO/Bundle/PortalBundle/Resources/style/precompiled-fontawesome.css';
+  const faResult = sass.renderSync({
+    file: faInPath,
+    outFile: faOutPath,
+    includePaths: [
+      path.resolve(__dirname, './bower_components'),
+      path.resolve(__dirname, './node_modules')
+    ]
+  });
+  fs.writeFileSync(faOutPath, faResult.css);
+  console.log('.. done writing ' + faOutPath);
 }
 
 function refreshPortalDesignerVariables() {
