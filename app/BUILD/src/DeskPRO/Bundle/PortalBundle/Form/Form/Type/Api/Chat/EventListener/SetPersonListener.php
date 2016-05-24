@@ -84,8 +84,6 @@ class SetPersonListener
             $person = new Person();
             $person->setName($conversation->getPersonName());
             $person->setEmail($email);
-            $this->em->persist($person);
-            $this->em->flush();
         } elseif (!$email) {
             return;
         }

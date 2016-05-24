@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -1664,6 +1665,7 @@ class ChatConversation extends DomainObject
             [
                 'fieldName'    => 'person',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+                'cascade'      => ['persist'],
                 'mappedBy'     => null,
                 'inversedBy'   => null,
                 'joinColumns'  => [
