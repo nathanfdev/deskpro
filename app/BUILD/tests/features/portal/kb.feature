@@ -19,7 +19,8 @@ Feature: KB
     And the response status code should be 200
 
   Scenario: I download a pdf version of an article
-    Given I download "/kb/articles/pdf/example-article"
+    Given I am on "/kb/articles/example-article"
+    And I download "Download PDF"
     Then print last response
     And print last response headers
     And the response status code should be 200

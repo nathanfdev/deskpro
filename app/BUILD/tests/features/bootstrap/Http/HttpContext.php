@@ -70,18 +70,16 @@ class HttpContext extends BaseContext
     }
 
     /**
-     * Opens specified page and doesn't display the response in the console
-     * Example: Given I am on "http://batman.com"
-     * Example: And I am on "/articles/isBatmanBruceWayne"
-     * Example: When I go to "/articles/isBatmanBruceWayne".
+     * Opens specified page and doesn't display the response in the console.
      *
-     * @Given /^(?:|I )download "(?P<page>[^"]+)"$/
+     * @Given /^(?:|I )download "(?P<link>[^"]+)"$/
      */
-    public function download($page)
+    public function download($link)
     {
-        //        ob_start();
-        $this->visitPath($page);
-//        ob_end_clean();
+        ob_start();
+//        $this->visitPath($page);
+        $this->getSession()->getPage()->clickLink($link);
+        ob_end_clean();
     }
 
     /**
