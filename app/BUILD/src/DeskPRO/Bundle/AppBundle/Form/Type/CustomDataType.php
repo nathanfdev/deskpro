@@ -443,6 +443,16 @@ class CustomDataType extends AbstractType
         if (!$customDefData->count()) {
             if (!$customDef->isChoiceType()) {
                 $defaultValue = $customDef->getDefaultValue();
+
+                // datetime default value stored as string, convert to timestamp
+                if ($customDef->isDateType()) {
+                    try {
+                        $defaultValue = (new \DateTime($defaultValue))->getTimestamp();
+                    } catch (\Exception $e) {
+                        $defaultValue = null;
+                    }
+                }
+
                 if ($defaultValue) {
                     $defaultCustomData = $this->createCustomData($customDef);
                     $defaultCustomData
