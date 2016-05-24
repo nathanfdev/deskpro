@@ -243,7 +243,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 		DeskPRO_Window.sections.publish_section.recountBadge();
 	},
 
-  removeElement(el) {
+  removeElement: function(el) {
     el.remove();
     if ($('.row-item', this.wrapper).not('.edit-comment').length < 1) {
       DeskPRO_Window.loadListPane(this.meta.resetUrl);
