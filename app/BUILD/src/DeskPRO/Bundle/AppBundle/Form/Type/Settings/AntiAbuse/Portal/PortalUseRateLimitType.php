@@ -49,6 +49,7 @@ class PortalUseRateLimitType extends AbstractType
             ->add('submit_feedback', RateLimitGroupType::class)
             ->add('submit_comment', RateLimitGroupType::class)
             ->add('upload_attachment', RateLimitGroupType::class)
+            ->add('share_content', RateLimitGroupType::class)
         ;
     }
 

@@ -975,6 +975,11 @@ return [
     ####################################################################################################################
     # rate limit
     ####################################################################################################################
+    'rate_limit.share_content.enabled'  => true,
+    'rate_limit.share_content.limit'    => 3,
+    'rate_limit.share_content.time'     => 15 * 60, // 15 min
+    'rate_limit.share_content.response' => 'captcha',
+
     'rate_limit.upload_attachment.enabled'  => true,
     'rate_limit.upload_attachment.limit'    => 50,
     'rate_limit.upload_attachment.time'     => 15 * 60, // 15 min
@@ -1014,6 +1019,11 @@ return [
     'rate_limit.submit_ticket.limit'    => 3,
     'rate_limit.submit_ticket.time'     => 15 * 60, // 15 min
     'rate_limit.submit_ticket.response' => 'captcha',
+
+    'rate_limit.share_content.guest.enabled'  => true,
+    'rate_limit.share_content.guest.limit'    => 3,
+    'rate_limit.share_content.guest.time'     => 15 * 60, // 15 min
+    'rate_limit.share_content.guest.response' => 'captcha',
 
     'rate_limit.upload_attachment.guest.enabled'  => true,
     'rate_limit.upload_attachment.guest.limit'    => 50,
