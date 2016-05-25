@@ -31,4 +31,6 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators;
 interface ActionApplicatorInterface
 {
     public function apply($object);
+
+    public function setOptions($options);
 }

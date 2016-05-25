@@ -97,11 +97,18 @@ class ActionCollection
         return $this;
     }
 
-    private function resolveAction($namespace, $name, $options = null)
+    /**
+     * @param string     $namespace
+     * @param string     $actionName
+     * @param null|array $options
+     *
+     * @return $this
+     */
+    private function resolveAction($namespace, $actionName, $options = null)
     {
-        $actionClass = ActionTypeCodes::getActionClass($namespace, $name);
+        $actionClass = ActionTypeCodes::getActionClass($namespace, $actionName);
         if ($options) {
-            $this->addAction(new $actionClass([$name => $options]));
+            $this->addAction(new $actionClass([$actionName => $options]));
         } else {
             $this->addAction(new $actionClass());
         }

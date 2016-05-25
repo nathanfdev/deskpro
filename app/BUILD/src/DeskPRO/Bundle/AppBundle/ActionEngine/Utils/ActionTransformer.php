@@ -26,14 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Utils;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Exception\ActionApplicatorDoesNotExists;
 
 class ActionTransformer
 {
@@ -59,24 +54,8 @@ class ActionTransformer
     public function actionToArray(ActionInterface $action)
     {
         return array_merge(
-            ['type' => ActionTypeCodes::getActionTypeCode($action)],
+            ['name' => ActionTypeCodes::getActionName($action)],
             ['options' => $action->serialize()]
         );
-    }
-
-    /**
-     * @param string $namespace
-     * @param string $type
-     *
-     * @return string
-     */
-    public function actionToApplicatorClassName($namespace, $type)
-    {
-        $class = ActionTypeCodes::getActionApplicatorClassForTypeCode($namespace, $type);
-        if (!class_exists($class)) {
-            throw new ActionApplicatorDoesNotExists($type);
-        }
-
-        return $class;
     }
 }

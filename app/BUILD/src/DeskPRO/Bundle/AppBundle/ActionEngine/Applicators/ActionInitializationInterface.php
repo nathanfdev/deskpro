@@ -26,17 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Interfaces;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators;
 
-use Symfony\Component\Validator\Validator\RecursiveValidator;
-
-interface ValidatorAwareInterface
+interface ActionInitializationInterface extends ActionApplicatorInterface
 {
-    /**
-     * @param RecursiveValidator $validator
-     */
-    public function setValidator(RecursiveValidator $validator);
+    public function init();
 }

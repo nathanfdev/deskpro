@@ -28,18 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Services;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection\ActionCollection;
-
 interface ApplicatorServiceInterface
 {
-    /**
-     * Transform array of actions parameters into ActionCollection.
-     *
-     * @param array $params
-     *
-     * @return ActionCollection
-     */
-    public function getActionCollection(array $params);
-
-    public function getEntities(array $ids);
+    public function apply(array $ids, array $params);
 }

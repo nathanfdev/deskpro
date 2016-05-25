@@ -26,20 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Services;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\TicketManager;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Interfaces\EnvironmentServiceAwareInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Interfaces\TicketManagerAwareInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Interfaces\TokenStorageAwareInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Interfaces\ValidatorAwareInterface;
-use DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices\EnvironmentService;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Validator\Validator\RecursiveValidator;
 
 class TicketApplicatorService extends AbstractApplicatorService
@@ -49,44 +41,38 @@ class TicketApplicatorService extends AbstractApplicatorService
 
     /** @var  EntityManager */
     protected $em;
+
     /** @var  TicketManager */
     protected $tm;
-    /** @var  TokenStorageInterface */
-    protected $tokenStorage;
-    /** @var  EnvironmentService */
-    protected $environmentService;
+
     /** @var RecursiveValidator $validator */
     protected $validator;
 
-    public function __construct(
-        EntityManager $em,
-        TicketManager $tm,
-        TokenStorageInterface $tokenStorage,
-        RecursiveValidator $validator,
-        EnvironmentService $environmentService
-    ) {
-        parent::__construct($em);
-        $this->tm                 = $tm;
-        $this->tokenStorage       = $tokenStorage;
-        $this->validator          = $validator;
-        $this->environmentService = $environmentService;
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+        $this->tm        = $container->get('ticket_manager');
+        $this->validator = $container->get('validator');
+        parent::__construct($container->get('doctrine.orm.default_entity_manager'));
     }
 
-    protected function createApplicator($class)
+    /**
+     * {@inheritdoc}
+     */
+    protected function createApplicator($actionName)
     {
-        $applicator = new $class($this->em);
-        if ($applicator instanceof TicketManagerAwareInterface) {
-            $applicator->setTicketManager($this->tm);
+        $applicator = $this->container
+            ->get('action_engine.ticket.'.$actionName, ContainerInterface::NULL_ON_INVALID_REFERENCE);
+        if (null === $applicator) {
+            $applicator = parent::createApplicator($actionName);
         }
-        if ($applicator instanceof ValidatorAwareInterface) {
-            $applicator->setValidator($this->validator);
-        }
-        if ($applicator instanceof TokenStorageAwareInterface) {
-            $applicator->setTokenStorage($this->tokenStorage);
-        }
-        if ($applicator instanceof EnvironmentServiceAwareInterface) {
-            $applicator->setEnvironmentService($this->environmentService);
-        }
+        $applicator->setTicketManager($this->tm);
+        $applicator->setValidator($this->validator);
 
         return $applicator;
     }
@@ -96,12 +82,12 @@ class TicketApplicatorService extends AbstractApplicatorService
      */
     public function getEntities(array $ids)
     {
-        /** @var Ticket[] $entities */
-        $entities = parent::getEntities($ids);
-        foreach ($entities as $entity) {
-            $entity->disableAutoTicketProcess();
+        /** @var Ticket[] $tickets */
+        $tickets = parent::getEntities($ids);
+        foreach ($tickets as $ticket) {
+            $ticket->disableAutoTicketProcess();
         }
 
-        return $entities;
+        return $tickets;
     }
 }

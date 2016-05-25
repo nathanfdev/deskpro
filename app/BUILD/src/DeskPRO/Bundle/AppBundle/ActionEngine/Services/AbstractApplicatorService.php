@@ -26,15 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Services;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection\ActionCollection;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\InitializationInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionInitializationInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionTransformer;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionTypeCodes;
 use Doctrine\ORM\EntityManager;
@@ -45,46 +42,36 @@ abstract class AbstractApplicatorService implements ApplicatorServiceInterface
     protected $namespace;
     /** @var EntityManager */
     protected $em;
-    /** @var ActionCollection */
-    protected $actionCollection;
     /** @var ActionTransformer */
     protected $transformer;
 
     public function __construct(EntityManager $em)
     {
-        $this->em               = $em;
-        $this->transformer      = new ActionTransformer();
-        $this->actionCollection = new ActionCollection();
+        $this->em          = $em;
+        $this->transformer = new ActionTransformer();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getActionCollection(array $params)
+    public function apply(array $ids, array $params)
     {
-        $this->actionCollection->prepare($this->namespace, $params);
-        foreach ($this->actionCollection->getActions() as $action) {
-            $options         = $this->getOptions($action);
-            $applicatorClass = $this->getApplicatorClass($action);
-            $applicator      = $this->createApplicator($applicatorClass);
-            $applicator->setOptions($options);
-            if ($applicator instanceof InitializationInterface) {
-                $applicator->init();
+        $objects          = $this->getEntities($ids);
+        $actionCollection = $this->getActionCollection($params);
+        foreach ($objects as $object) {
+            foreach ($actionCollection->getApplicators() as $applicator) {
+                $applicator->apply($object);
             }
-            $this->actionCollection->addApplicator($applicator);
         }
-
-        return $this->actionCollection;
     }
 
     /**
-     * @param string $class
+     * @param string $actionName
      *
      * @return AbstractActionApplicator
      */
-    protected function createApplicator($class)
+    protected function createApplicator($actionName)
     {
-        return new $class($this->em);
+        $applicatorClass = $this->getApplicatorClass($actionName);
+
+        return new $applicatorClass($this->em);
     }
 
     /**
@@ -94,7 +81,7 @@ abstract class AbstractApplicatorService implements ApplicatorServiceInterface
      *
      * @return array
      */
-    public function getEntities(array $ids)
+    protected function getEntities(array $ids)
     {
         $qb = $this->em->createQueryBuilder();
         $qb
@@ -104,6 +91,26 @@ abstract class AbstractApplicatorService implements ApplicatorServiceInterface
             ->setParameter('ids', $ids);
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Transform array of actions parameters into ActionCollection.
+     *
+     * @param array $params
+     *
+     * @return ActionCollection
+     */
+    private function getActionCollection(array $params)
+    {
+        $actionCollection = new ActionCollection();
+        $actionCollection->prepare($this->namespace, $params);
+        foreach ($actionCollection->getActions() as $action) {
+            $applicator = $this->createApplicator($action->getName());
+            $this->initApplicator($action, $applicator);
+            $actionCollection->addApplicator($applicator);
+        }
+
+        return $actionCollection;
     }
 
     /**
@@ -117,14 +124,26 @@ abstract class AbstractApplicatorService implements ApplicatorServiceInterface
     }
 
     /**
-     * @param ActionInterface $action
+     * @param string $actionName
      *
      * @return string
      */
-    private function getApplicatorClass(ActionInterface $action)
+    private function getApplicatorClass($actionName)
     {
-        $type = ActionTypeCodes::getActionTypeCode($action);
+        return ActionTypeCodes::getActionApplicatorClassForActionName($this->namespace, $actionName);
+    }
 
-        return $this->transformer->actionToApplicatorClassName($this->namespace, $type);
+    /**
+     * @param ActionInterface          $action
+     * @param AbstractActionApplicator $applicator
+     */
+    private function initApplicator(ActionInterface $action, AbstractActionApplicator $applicator)
+    {
+        $options = $this->getOptions($action);
+        $applicator->setOptions($options);
+
+        if ($applicator instanceof ActionInitializationInterface) {
+            $applicator->init();
+        }
     }
 }

@@ -26,21 +26,16 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Interfaces\TicketManagerAwareInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Interfaces\ValidatorAwareInterface;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Bundle\AppBundle\Validator\ValidatorErrorsException;
 use Symfony\Component\Validator\Validator\RecursiveValidator;
 
-abstract class AbstractTicketApplicator extends AbstractActionApplicator implements TicketManagerAwareInterface, ValidatorAwareInterface
+abstract class AbstractTicketApplicator extends AbstractActionApplicator
 {
     /** @var  TicketManager */
     protected $tm;

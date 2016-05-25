@@ -32,11 +32,10 @@ use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\InitializationInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionInitializationInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class ApplyAssignAction extends AbstractTicketApplicator implements ActionApplicatorInterface, InitializationInterface
+class ApplyAssignAction extends AbstractTicketApplicator implements ActionInitializationInterface
 {
     /** @var  array */
     private $collection;

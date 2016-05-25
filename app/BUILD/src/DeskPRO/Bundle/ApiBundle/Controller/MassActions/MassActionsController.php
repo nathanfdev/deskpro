@@ -91,17 +91,11 @@ class MassActionsController extends BaseController
      */
     public function postRealTimeAction(Request $request, $content)
     {
-        list($ids, $params) = $this->checkRequest($request, $content);
         $service            = $this->getActionApplicatorService($content);
+        list($ids, $params) = $this->checkRequest($request, $content);
 
         try {
-            $objects          = $service->getEntities($ids);
-            $actionCollection = $service->getActionCollection($params);
-            foreach ($objects as $object) {
-                foreach ($actionCollection->getApplicators() as $applicator) {
-                    $applicator->apply($object);
-                }
-            }
+            $service->apply($ids, $params);
         } catch (\Exception $e) {
             throw new BadRequestHttpException($e->getMessage());
         }

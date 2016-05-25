@@ -26,13 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionTypeCodes;
 
 abstract class AbstractAction implements ActionInterface
 {
@@ -47,6 +44,11 @@ abstract class AbstractAction implements ActionInterface
             static::configureOptions($resolver);
             $this->options = $resolver->resolve($options);
         }
+    }
+
+    public function getName()
+    {
+        return ActionTypeCodes::getActionName($this);
     }
 
     /**
