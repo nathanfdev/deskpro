@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -152,6 +151,7 @@ class Person extends AbstractEntityRepository
             AND dep_per.name = :permission
             AND dep_per.app = :app
             AND dep_per.value = 1
+            AND dep_per.is_active = 1
             ORDER BY p.last_name ASC, p.first_name ASC
         ')
             ->setParameter('department', $department)

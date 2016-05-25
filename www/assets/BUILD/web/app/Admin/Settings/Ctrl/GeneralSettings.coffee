@@ -13,7 +13,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 				attach_user_must_exts: [],
 				attach_user_not_exts: []
 			}
-			@$scope.settings = @settings
+			@$scope.settings = angular.copy(@settings)
 			@skip_url_check = false
 
 		initialLoad: ->
@@ -23,7 +23,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 			}).then( (res) =>
 				@$scope.settings = res.data.settings.general_settings
 				@$scope.maxUploadSize = res.data.settings.max_filesize
-				@settings = angular.copy(@$scope.settings)
+				angular.copy(@$scope.settings, @settings)
 
 				@$scope.email_accounts = res.data.email_accounts.email_accounts
 				@$scope.email_accounts = @$scope.email_accounts.filter( (x) -> x.outgoing_account_type != null)
@@ -52,6 +52,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 			return @$q.all([data_promise])
 
 		isDirtyState: ->
+			return false
 			if not @settings then return false
 			if not angular.equals(@settings, @$scope.settings)
 				return true
@@ -125,7 +126,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 			}
 
 			promise = @Api.sendPostJson('/general_settings', postData).success( =>
-				@settings = angular.copy(@$scope.settings)
+				angular.copy(@$scope.settings, @settings)
 
 				@stopSpinner('saving').then(=>
 					@Growl.success(@getRegisteredMessage('saved_settings'))

@@ -210,6 +210,17 @@
 								</div>
 							</div>
 						{% endif %}
+						{% set token_error = app.session.getFlash('request_token_expired') %}
+							<div class="dp-control-group {% if captcha_error %}dp-error dp-error-static{% endif %}" style="position: relative;margin-left:-9px;">
+								<div class="dp-controls dp-fill">
+									<div class="dp-help-inline dp-error-explain" style="color: red;">
+										{{ phrase('user.general.request_token_expired') }}
+									</div>
+								</div>
+							</div>
+						{% if token_error %}
+
+						{% endif %}
 						<br /><br />
 
 						<ul style="margin:0;padding:0; line-height:20px;">

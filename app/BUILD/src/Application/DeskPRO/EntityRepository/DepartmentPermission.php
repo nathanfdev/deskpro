@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
@@ -147,6 +146,7 @@ class DepartmentPermission extends AbstractEntityRepository
 
         $wheres[] = "name = 'full'";
         $wheres[] = 'value = 1';
+        $wheres[] = 'is_active = 1';
 
         $wheres = implode(' AND ', $wheres);
         $sql    = "
@@ -164,10 +164,13 @@ class DepartmentPermission extends AbstractEntityRepository
     public function getAllPersonPermissionsForAllDepartments($app, $name, $value)
     {
         return App::getDb()->fetchAllGrouped('
-            SELECT department_id, person_id
+            SELECT department_permissions.department_id, department_permissions.person_id
             FROM department_permissions
-            WHERE app = ? AND person_id IS NOT NULL
-                AND name = ? AND value = ?
+            WHERE department_permissions.app = ? 
+              AND department_permissions.person_id IS NOT NULL
+              AND department_permissions.is_active = 1
+              AND department_permissions.name = ? 
+              AND department_permissions.value = ?
         ', array($app, $name, $value), 'department_id', null, 'person_id');
     }
 

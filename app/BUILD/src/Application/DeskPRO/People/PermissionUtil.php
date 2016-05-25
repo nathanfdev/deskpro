@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\DeskPRO\People;
 
 use Application\DeskPRO\App;
@@ -131,17 +130,19 @@ class PermissionUtil
                 $dep_id_assign_perms = array_unique($dep_id_assign_perms);
             } else {
                 $dep_id_full_perms = $db->fetchAllCol("
-                    SELECT department_id
+                    SELECT department_permissions.department_id
                     FROM department_permissions
-                    WHERE name = 'full'
-                      AND usergroup_id IN (?)
+                    WHERE department_permissions.name = 'full'
+                      AND department_permissions.is_active = 1
+                      AND department_permissions.usergroup_id IN (?)
                 ", array($ag_ids), array(Connection::PARAM_INT_ARRAY));
 
                 $dep_id_assign_perms = $db->fetchAllCol("
-                    SELECT department_id
-                    FROM department_permissions
-                    WHERE name = 'assign'
-                      AND usergroup_id IN (?)
+                    SELECT department_permissions.department_id
+                    FROM department_permissions.department_permissions
+                    WHERE department_permissions.name = 'assign'
+                      AND department_permissions.is_active = 1
+                      AND department_permissions.usergroup_id IN (?)
                 ", array($ag_ids), array(Connection::PARAM_INT_ARRAY));
             }
         }

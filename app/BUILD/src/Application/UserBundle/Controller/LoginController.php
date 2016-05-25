@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -58,6 +57,7 @@ use Orb\Util\Util;
 use Orb\Validator\StringEmail;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class LoginController extends \Application\DeskPRO\Controller\AbstractController
@@ -442,7 +442,14 @@ HTML;
             }
         }
 
-        $this->ensureRequestToken('user_login');
+        try {
+            $this->ensureRequestToken('user_login');
+        } catch (HttpException $e) {
+            $this->session->setFlash('request_token_expired', true);
+
+            return $this->redirectRoute($this->route_prefix.'_login', ['return' => $return]);
+        }
+
         $result = $this->authLocalInput();
 
         // Form wasnt inputted (eg direct url)

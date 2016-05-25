@@ -151,7 +151,7 @@ services:
 
   form.captcha:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CaptchaType
-    arguments: ["@brand_stack", "@language_manager"]
+    arguments: ["@brand_stack", "@language_manager", "%gregwar_captcha.config%"]
     tags:
       - { name: form.type, alias: deskpro_captcha }
 

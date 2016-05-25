@@ -57,6 +57,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'angular'], (Admin_Ctrl_Bas
       @$q.all [data_promise]
 
     isDirtyState: ->
+      return false
       if not @settings then return false
       if not angular.equals(@settings, @$scope.settings)
         return true

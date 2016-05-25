@@ -74,7 +74,7 @@ class PortalAntiAbuseSetupController extends AbstractAntiAbuseSetupController
         $settings_repository
             ->updateSetting($settingPrefix.'.enabled', $group->isEnabled())
             ->updateSetting($settingPrefix.'.limit', $group->getLimit())
-            ->updateSetting($settingPrefix.'.time', $group->getTime())
+            ->updateSetting($settingPrefix.'.time', $group->getTime() * 60)
             ->updateSetting($settingPrefix.'.response', $group->getResponse())
         ;
     }
