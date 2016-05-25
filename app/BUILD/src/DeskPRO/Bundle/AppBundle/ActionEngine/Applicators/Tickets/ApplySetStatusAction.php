@@ -39,6 +39,5 @@ class ApplySetStatusAction extends AbstractTicketApplicator implements ActionApp
     public function apply($ticket)
     {
         $ticket->setStatus($this->options['set_status']);
-        $this->saveTicket($ticket, 'set_status');
     }
 }

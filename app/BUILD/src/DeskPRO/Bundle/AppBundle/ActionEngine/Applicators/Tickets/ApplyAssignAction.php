@@ -87,15 +87,12 @@ class ApplyAssignAction extends AbstractTicketApplicator implements ActionInitia
             switch ($type) {
                 case 'agent':
                     $ticket->setAgent($value);
-                    $this->saveTicket($ticket, 'assign');
                     break;
                 case 'team':
                     $ticket->setAgentTeam($value);
-                    $this->saveTicket($ticket, 'assign');
                     break;
                 case 'department':
                     $ticket->setDepartment($value);
-                    $this->saveTicket($ticket, 'assign');
                     break;
             }
         }

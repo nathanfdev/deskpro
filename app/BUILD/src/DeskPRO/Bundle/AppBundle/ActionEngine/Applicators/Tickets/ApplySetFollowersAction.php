@@ -30,10 +30,9 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\InitializationInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionInitializationInterface;
 
-class ApplySetFollowersAction extends AbstractTicketApplicator implements ActionApplicatorInterface, InitializationInterface
+class ApplySetFollowersAction extends AbstractTicketApplicator implements ActionInitializationInterface
 {
     /** @var  Person[] */
     private $followers;
@@ -58,10 +57,8 @@ class ApplySetFollowersAction extends AbstractTicketApplicator implements Action
     {
         if (empty($this->options['set_followers'])) {
             $ticket->resetParticipants();
-            $this->saveTicket($ticket, 'unset_followers');
         } else {
             $ticket->setAgentParticipants($this->followers);
-            $this->saveTicket($ticket, 'set_followers');
         }
     }
 }

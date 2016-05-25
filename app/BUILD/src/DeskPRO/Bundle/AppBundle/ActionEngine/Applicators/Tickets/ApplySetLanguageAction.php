@@ -30,11 +30,10 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\InitializationInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionInitializationInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class ApplySetLanguageAction extends AbstractTicketApplicator implements ActionApplicatorInterface, InitializationInterface
+class ApplySetLanguageAction extends AbstractTicketApplicator implements ActionInitializationInterface
 {
     /** @var  Language */
     private $language;
@@ -53,6 +52,5 @@ class ApplySetLanguageAction extends AbstractTicketApplicator implements ActionA
     public function apply($ticket)
     {
         $ticket->setLanguage($this->language);
-        $this->saveTicket($ticket, 'set_language');
     }
 }

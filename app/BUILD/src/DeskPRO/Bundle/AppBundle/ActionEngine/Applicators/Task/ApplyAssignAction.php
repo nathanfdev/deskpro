@@ -28,14 +28,16 @@
 
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Task;
 
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\InitializationInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionInitializationInterface;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class ApplyAssignAction extends AbstractActionApplicator implements ActionApplicatorInterface, InitializationInterface
+class ApplyAssignAction extends AbstractActionApplicator implements ActionInitializationInterface
 {
     /** @var  array */
     private $collection;
@@ -48,21 +50,21 @@ class ApplyAssignAction extends AbstractActionApplicator implements ActionApplic
         foreach ($this->options['assign'] as $type => $id) {
             switch ($type) {
                 case 'agent':
-                    $agent = $this->em->getRepository('DeskPRO:Person')->find($id);
+                    $agent = $this->em->getRepository(Person::class)->find($id);
                     if (!$agent) {
                         throw new BadRequestHttpException("Agent with ID=$id doesn't exists");
                     }
                     $this->collection['agent'] = $agent;
                     break;
                 case 'team':
-                    $team = $this->em->getRepository('DeskPRO:AgentTeam')->find($id);
+                    $team = $this->em->getRepository(AgentTeam::class)->find($id);
                     if (!$team) {
                         throw new BadRequestHttpException("Agents team with ID=$id doesn't exists");
                     }
                     $this->collection['team'] = $team;
                     break;
                 case 'department':
-                    $department = $this->em->getRepository('DeskPRO:Department')->find($id);
+                    $department = $this->em->getRepository(Department::class)->find($id);
                     if (!$department) {
                         throw new BadRequestHttpException("Department with ID=$id doesn't exists");
                     }

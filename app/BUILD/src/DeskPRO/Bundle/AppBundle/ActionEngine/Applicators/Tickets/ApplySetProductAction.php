@@ -30,11 +30,10 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\InitializationInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionInitializationInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class ApplySetProductAction extends AbstractTicketApplicator implements ActionApplicatorInterface, InitializationInterface
+class ApplySetProductAction extends AbstractTicketApplicator implements ActionInitializationInterface
 {
     /** @var  Product */
     private $product;
@@ -53,6 +52,5 @@ class ApplySetProductAction extends AbstractTicketApplicator implements ActionAp
     public function apply($ticket)
     {
         $ticket->setProduct($this->product);
-        $this->saveTicket($ticket, 'set_product');
     }
 }

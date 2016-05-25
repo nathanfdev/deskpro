@@ -59,7 +59,9 @@ abstract class AbstractApplicatorService implements ApplicatorServiceInterface
             foreach ($actionCollection->getApplicators() as $applicator) {
                 $applicator->apply($object);
             }
+            $this->saveObject($object);
         }
+        $this->em->flush();
     }
 
     /**
@@ -91,6 +93,11 @@ abstract class AbstractApplicatorService implements ApplicatorServiceInterface
             ->setParameter('ids', $ids);
 
         return $qb->getQuery()->getResult();
+    }
+
+    protected function saveObject($object)
+    {
+        $this->em->persist($object);
     }
 
     /**

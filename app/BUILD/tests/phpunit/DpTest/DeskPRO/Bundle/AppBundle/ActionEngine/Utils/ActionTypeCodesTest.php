@@ -26,43 +26,30 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DpTest\DeskPRO\Bundle\AppBundle\ActionEngine\Utils;
 
-use DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionTransformer;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionTypeCodes;
 use DpTest\DeskProTestCase;
 
-class ActionTransformerTest extends DeskProTestCase
+class ActionTypeCodesTest extends DeskProTestCase
 {
     public static $serializedArray = [
-        'type'    => 'set_type',
+        'name'    => 'set_type',
         'options' => ['id' => 1],
     ];
 
     public static $wrongSerializedArray = [
-        'type'    => 'something',
+        'name'    => 'something',
         'options' => ['id' => 1],
     ];
-
-    /**
-     * @test
-     */
-    public function it_should_be_instantiable()
-    {
-        $transformer = $this->instance();
-        $this->assertInstanceOf(ActionTransformer::class, $transformer);
-    }
 
     /**
      * @test
      */
     public function actionToApplicatorClassName_should_return_string()
     {
-        $transformer     = $this->instance();
-        $applicatorClass = $transformer->actionToApplicatorClassName('Feedback', self::$serializedArray['type']);
+        $applicatorClass =
+            ActionTypeCodes::getActionApplicatorClassForActionName('Feedback', self::$serializedArray['name']);
         $this->assertStringStartsWith('DeskPRO\\Bundle\\AppBundle\\ActionEngine\\Applicators\\', $applicatorClass);
         $this->assertStringEndsWith('Action', $applicatorClass);
     }
@@ -73,13 +60,6 @@ class ActionTransformerTest extends DeskProTestCase
      */
     public function actionToApplicatorClassName_should_raise_ActionApplicatorDoesNotExists_on_wrong_action()
     {
-        $transformer = $this->instance();
-
-        return $transformer->actionToApplicatorClassName('Feedback', self::$wrongSerializedArray['type']);
-    }
-
-    private function instance()
-    {
-        return new ActionTransformer();
+        return ActionTypeCodes::getActionApplicatorClassForActionName('Feedback', self::$wrongSerializedArray['name']);
     }
 }

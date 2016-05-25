@@ -39,6 +39,5 @@ class ApplyMarkAsSpamAction extends AbstractTicketApplicator implements ActionAp
     public function apply($ticket)
     {
         $ticket->setHiddenStatus(Ticket::HIDDEN_STATUS_SPAM);
-        $this->saveTicket($ticket, 'mark_as_spam');
     }
 }

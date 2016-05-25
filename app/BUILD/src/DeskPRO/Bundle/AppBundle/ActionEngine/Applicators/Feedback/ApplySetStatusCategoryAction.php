@@ -31,11 +31,10 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\InitializationInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionInitializationInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class ApplySetStatusCategoryAction extends AbstractActionApplicator implements ActionApplicatorInterface, InitializationInterface
+class ApplySetStatusCategoryAction extends AbstractActionApplicator implements ActionInitializationInterface
 {
     /** @var  FeedbackStatusCategory */
     private $statusCategory;

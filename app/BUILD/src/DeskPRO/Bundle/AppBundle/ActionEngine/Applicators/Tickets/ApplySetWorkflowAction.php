@@ -30,11 +30,10 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketWorkflow;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\InitializationInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionInitializationInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class ApplySetWorkflowAction extends AbstractTicketApplicator implements ActionApplicatorInterface, InitializationInterface
+class ApplySetWorkflowAction extends AbstractTicketApplicator implements ActionInitializationInterface
 {
     /** @var  TicketWorkflow */
     private $workflow;
@@ -53,6 +52,5 @@ class ApplySetWorkflowAction extends AbstractTicketApplicator implements ActionA
     public function apply($ticket)
     {
         $ticket->setWorkflow($this->workflow);
-        $this->saveTicket($ticket, 'set_workflow');
     }
 }

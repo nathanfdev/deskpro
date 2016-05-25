@@ -30,6 +30,8 @@ namespace DeskPRO\Bundle\AppBundle\ActionEngine\Services;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\TicketManager;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use DeskPRO\Bundle\AppBundle\Validator\ValidatorErrorsException;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Validator\Validator\RecursiveValidator;
@@ -67,7 +69,7 @@ class TicketApplicatorService extends AbstractApplicatorService
     protected function createApplicator($actionName)
     {
         $applicator = $this->container
-            ->get('action_engine.ticket.'.$actionName, ContainerInterface::NULL_ON_INVALID_REFERENCE);
+            ->get('action_engine.tickets.'.$actionName, ContainerInterface::NULL_ON_INVALID_REFERENCE);
         if (null === $applicator) {
             $applicator = parent::createApplicator($actionName);
         }
@@ -89,5 +91,36 @@ class TicketApplicatorService extends AbstractApplicatorService
         }
 
         return $tickets;
+    }
+
+    /**
+     * @param Ticket $ticket
+     *
+     * @throws \Exception
+     */
+    protected function saveObject($ticket)
+    {
+        $this->validateTicket($ticket);
+
+        $context = $this->tm->createAgentExecutorContext(null, 'mass_actions', 'api');
+        $this->tm->saveTicket($ticket, $context);
+    }
+
+    /**
+     * @param Ticket $ticket
+     */
+    protected function validateTicket(Ticket $ticket)
+    {
+        $errors = $this->validator->validate(
+            $ticket,
+            [new AppAssert\Ticket\TicketLayout(['context' => 'agent'])]
+        );
+
+        if ($errors->count() > 0) {
+            foreach ($errors as $error) {
+                echo $error;
+            }
+            throw new ValidatorErrorsException($errors);
+        }
     }
 }

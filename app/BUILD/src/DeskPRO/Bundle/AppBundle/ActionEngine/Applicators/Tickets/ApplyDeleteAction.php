@@ -38,9 +38,7 @@ class ApplyDeleteAction extends AbstractTicketApplicator implements ActionApplic
      */
     public function apply($ticket)
     {
-        $ticket->setHiddenStatus(Ticket::HIDDEN_STATUS_DELETED);
-        $context = $this->tm->createAgentExecutorContext(null, 'delete', 'mass_actions');
-        $this->tm->saveTicket($ticket, $context);
-        $ticket->deleteTicket(null, '', false);
+        //        $ticket->setHiddenStatus(Ticket::HIDDEN_STATUS_DELETED);
+        $ticket->deleteTicket(null, 'mass_delete');
     }
 }

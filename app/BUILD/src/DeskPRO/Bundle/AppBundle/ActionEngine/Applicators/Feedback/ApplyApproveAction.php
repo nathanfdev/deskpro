@@ -26,18 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\InitializationInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionInitializationInterface;
 
-class ApplyApproveAction extends AbstractActionApplicator implements ActionApplicatorInterface, InitializationInterface
+class ApplyApproveAction extends AbstractActionApplicator implements ActionInitializationInterface
 {
     private $defaultStatusCategory;
 

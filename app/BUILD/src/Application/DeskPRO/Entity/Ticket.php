@@ -1589,8 +1589,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
                 if (!$this->date_first_agent_reply && !$message->is_agent_note) {
                     $this['date_first_agent_reply'] = $now;
-                    $this['total_to_first_reply']   = $this->date_first_agent_reply->getTimestamp(
-                        ) - $this->date_created->getTimestamp();
+                    $this['total_to_first_reply']   = $this->date_first_agent_reply->getTimestamp() - $this->date_created->getTimestamp();
                 }
             }
         } else {
@@ -1621,8 +1620,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
                 if (!$this->date_first_agent_reply) {
                     $this['date_first_agent_reply'] = $now;
-                    $this['total_to_first_reply']   = $this->date_first_agent_reply->getTimestamp(
-                        ) - $this->date_created->getTimestamp();
+                    $this['total_to_first_reply']   = $this->date_first_agent_reply->getTimestamp() - $this->date_created->getTimestamp();
                 }
             }
         } else {
@@ -1822,7 +1820,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                 $changed = true;
                 $this->custom_data->removeElement($data);
             } elseif ($field->parent && ($data->field->getId() === $field->parent->getId()
-                    || $data->root_field->getId() === $field->parent->getId())) {
+                    || $data->root_field->getId() === $field->parent->getId())
+            ) {
                 $changed = true;
                 $this->custom_data->removeElement($data);
             }
@@ -3092,6 +3091,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function deleteTicket($person = null, $reason = '', $persist_self = true)
     {
+        if ($persist_self) {
+            $this->setStatus('hidden.deleted');
+            $tm      = App::$container->getTicketManager();
+            $context = $tm->createAgentExecutorContext($person, $reason, '');
+            $tm->saveTicket($this, $context);
+        }
         $del = $this->getDeletionRecord();
         if (!$del) {
             $del = new TicketDeleted();
@@ -3103,14 +3108,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $del['new_ticket_id'] = 0;
         $del['reason']        = $reason;
 
-        $this->setStatus('hidden.deleted');
-
         App::getOrm()->persist($del);
         App::getOrm()->flush($del);
-
-        if ($persist_self) {
-            App::getOrm()->persist($this);
-        }
     }
 
     public function updateWorstSlaStatus()

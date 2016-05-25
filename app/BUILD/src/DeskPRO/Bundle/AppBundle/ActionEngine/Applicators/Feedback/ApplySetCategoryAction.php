@@ -26,19 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
 
 use Application\DeskPRO\Entity\CustomDataFeedback;
 use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\InitializationInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionInitializationInterface;
 
-class ApplySetCategoryAction extends AbstractActionApplicator implements ActionApplicatorInterface, InitializationInterface
+class ApplySetCategoryAction extends AbstractActionApplicator implements ActionInitializationInterface
 {
     /** @var  CustomDefFeedback */
     private $customDef;

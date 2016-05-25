@@ -28,11 +28,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
-use DeskPRO\Bundle\AppBundle\Validator\ValidatorErrorsException;
 use Symfony\Component\Validator\Validator\RecursiveValidator;
 
 abstract class AbstractTicketApplicator extends AbstractActionApplicator
@@ -56,34 +53,5 @@ abstract class AbstractTicketApplicator extends AbstractActionApplicator
     public function setValidator(RecursiveValidator $validator)
     {
         $this->validator = $validator;
-    }
-
-    /**
-     * @param Ticket $ticket
-     * @param string $actionName
-     *
-     * @throws \Exception
-     */
-    protected function saveTicket(Ticket $ticket, $actionName)
-    {
-        $this->validateTicket($ticket);
-
-        $context = $this->tm->createAgentExecutorContext(null, $actionName, 'mass_actions');
-        $this->tm->saveTicket($ticket, $context);
-    }
-
-    /**
-     * @param Ticket $ticket
-     */
-    protected function validateTicket(Ticket $ticket)
-    {
-        $errors = $this->validator->validate(
-            $ticket,
-            [new AppAssert\Ticket\TicketLayout(['context' => 'agent'])]
-        );
-
-        if ($errors->count() > 0) {
-            throw new ValidatorErrorsException($errors);
-        }
     }
 }

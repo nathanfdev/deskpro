@@ -29,17 +29,17 @@
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\InitializationInterface;
+use Application\DeskPRO\Entity\TicketCategory;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionInitializationInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class ApplySetCategoryAction extends AbstractTicketApplicator implements ActionApplicatorInterface, InitializationInterface
+class ApplySetCategoryAction extends AbstractTicketApplicator implements ActionInitializationInterface
 {
     private $category;
 
     public function init()
     {
-        $this->category = $this->em->getRepository('DeskPRO:TicketCategory')->find($this->options['set_category']);
+        $this->category = $this->em->getRepository(TicketCategory::class)->find($this->options['set_category']);
         if (!$this->category) {
             throw new BadRequestHttpException('Category with ID='.$this->options['set_category']." doesn't exists");
         }
@@ -51,6 +51,5 @@ class ApplySetCategoryAction extends AbstractTicketApplicator implements ActionA
     public function apply($ticket)
     {
         $ticket->setCategory($this->category);
-        $this->saveTicket($ticket, 'set_category');
     }
 }

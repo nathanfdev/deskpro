@@ -29,13 +29,12 @@
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Task;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\InitializationInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionInitializationInterface;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class ApplySetProjectAction extends AbstractActionApplicator implements ActionApplicatorInterface, InitializationInterface
+class ApplySetProjectAction extends AbstractActionApplicator implements ActionInitializationInterface
 {
     /** @var  TaskProject */
     private $project;

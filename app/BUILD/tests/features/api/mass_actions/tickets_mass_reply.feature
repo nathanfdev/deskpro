@@ -84,7 +84,6 @@ Feature: /mass_actions/tickets endpoint for mass reply
     When I send a GET request to "/api/v2/tickets/2/messages"
     Then the response status code should be 200
     And the response should be in JSON
-    And the JSON node "data" should exist
     And the JSON node "data[0].ticket" should be equal to 2
     And the JSON node "data[0].message" should be equal to "<p>Something no <u>interest</u>ing</p>"
     And the JSON node "data[0].creation_system" should be equal to "web.agent"
