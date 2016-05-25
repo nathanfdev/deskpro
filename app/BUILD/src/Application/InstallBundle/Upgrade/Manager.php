@@ -26,16 +26,16 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\InstallBundle\Upgrade;
 
 use Application\DeskPRO\App\Native\NativeAppsSync;
 use Application\DeskPRO\App\Package\PackageInstaller;
+use Application\DeskPRO\DataSync\AbstractDataSync;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Languages\LangPackInfo;
 use Application\InstallBundle\Data\DefaultDataProcessor;
+use Application\InstallBundle\Upgrade\Build\AbstractBuild;
 use DeskPRO\Component\Util\TypeUtils;
 use DpSys\LowError\SystemErrorHandler;
 use Monolog\Logger;
@@ -68,12 +68,12 @@ class Manager
     /**
      * @var int
      */
-    protected $db_version;
+    protected $dbVersion;
 
     /**
      * @var array
      */
-    protected $build_list;
+    protected $buildList;
 
     /**
      * @var Logger
@@ -96,7 +96,7 @@ class Manager
      */
     public function getCurrentBuild()
     {
-        return $this->db_version;
+        return $this->dbVersion;
     }
 
     /**
@@ -104,21 +104,25 @@ class Manager
      */
     public function reset()
     {
-        $this->db_version = $this->container->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_build'");
+        $this->dbVersion = $this->container->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_build'");
     }
 
     /**
      * Runs the next build script.
      *
-     * @param int $build_id
+     * @param int $buildId
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Exception
      */
-    public function runBuild($build_id)
+    public function runBuild($buildId)
     {
-        $class = $this->getBuildClass($build_id);
+        $class = $this->getBuildClass($buildId);
+        /** @var AbstractBuild $build */
         $build = new $class($this->container, $this->logger);
         $ts    = microtime(true);
         if ($this->logger) {
-            $this->logger->info(sprintf('********** #%s :: %s :: Begin **********', $build_id, TypeUtils::getBaseTypeName($build)));
+            $this->logger->info(sprintf('********** #%s :: %s :: Begin **********', $buildId, TypeUtils::getBaseTypeName($build)));
         }
 
         try {
@@ -134,25 +138,25 @@ class Manager
         }
 
         if ($build->shouldRerun()) {
-            $current_run = $build->getStatus('runcount', 0);
-            $next_run    = $current_run + 1;
+            $currentRun = $build->getStatus('runcount', 0);
+            $nextRun    = $currentRun + 1;
             if ($this->logger) {
-                $this->logger->debug(sprintf('runBuild(%d.%d)', $build_id, $next_run));
+                $this->logger->debug(sprintf('runBuild(%d.%d)', $buildId, $nextRun));
             }
-            $build->saveStatus('runcount', $current_run + 1);
+            $build->saveStatus('runcount', $currentRun + 1);
         } else {
             if ($this->logger) {
-                $this->logger->debug(sprintf('Set core.deskpro_build = %s', $build_id));
+                $this->logger->debug(sprintf('Set core.deskpro_build = %s', $buildId));
             }
-            $this->db_version = $build_id;
-            $this->container->getDb()->update('settings', array('value' => $build_id), array('name' => 'core.deskpro_build'));
-            $this->container->getDb()->executeUpdate('DELETE FROM import_datastore WHERE typename LIKE ?', array(
+            $this->dbVersion = $buildId;
+            $this->container->getDb()->update('settings', ['value' => $buildId], ['name' => 'core.deskpro_build']);
+            $this->container->getDb()->executeUpdate('DELETE FROM import_datastore WHERE typename LIKE ?', [
                 'up.'.$build->getBuildId().'.%',
-            ));
+            ]);
         }
 
         if ($this->logger) {
-            $this->logger->info(sprintf('.......... #%s :: %s :: Done in %.3fs', $build_id, TypeUtils::getBaseTypeName($build), microtime(true) - $ts));
+            $this->logger->info(sprintf('.......... #%s :: %s :: Done in %.3fs', $buildId, TypeUtils::getBaseTypeName($build), microtime(true) - $ts));
             $this->logger->info('');
         }
     }
@@ -166,44 +170,44 @@ class Manager
             $this->logger->debug('Post upgrade begin');
         }
 
-        \Application\DeskPRO\DataSync\AbstractDataSync::syncAllBaseToLive();
+        AbstractDataSync::syncAllBaseToLive();
 
         // Update lang titles and has_agent flags
-        $langpacks = new \Application\DeskPRO\Languages\LangPackInfo();
+        $langPacks = new LangPackInfo();
 
-        foreach ($langpacks->getLangTitles(true) as $id => $title) {
+        foreach ($langPacks->getLangTitles(true) as $id => $title) {
             if ($this->logger) {
                 $this->logger->debug(sprintf('lang(%s).title = %s', $title, $id));
             }
-            $this->container->getDb()->executeUpdate("UPDATE languages SET title = ? WHERE sys_name = ? AND title = ''", array($title, $id));
+            $this->container->getDb()->executeUpdate("UPDATE languages SET title = ? WHERE sys_name = ? AND title = ''", [$title, $id]);
 
-            $info = $langpacks->getLangInfo($id);
-            $this->container->getDb()->executeUpdate('UPDATE languages SET has_user = ?, has_agent = ?, has_admin = ? WHERE sys_name = ?', array($info['has_user'], $info['has_agent'], $info['has_admin'], $id));
+            $info = $langPacks->getLangInfo($id);
+            $this->container->getDb()->executeUpdate('UPDATE languages SET has_user = ?, has_agent = ?, has_admin = ? WHERE sys_name = ?', [$info['has_user'], $info['has_agent'], $info['has_admin'], $id]);
         }
 
         // Update flags if theyre blank
-        $blank_flags = $this->container->getDb()->fetchAllCol("SELECT sys_name FROM languages WHERE flag_image = ''");
-        foreach ($blank_flags as $sys_name) {
-            if (!$langpacks->hasLang($sys_name)) {
+        $blankFlags = $this->container->getDb()->fetchAllCol("SELECT sys_name FROM languages WHERE flag_image = ''");
+        foreach ($blankFlags as $sysName) {
+            if (!$langPacks->hasLang($sysName)) {
                 continue;
             }
 
-            $flag = $langpacks->getLangInfo($sys_name, 'flag_image');
+            $flag = $langPacks->getLangInfo($sysName, 'flag_image');
             if ($flag) {
                 if ($this->logger) {
-                    $this->logger->debug(sprintf('lang(%s).flag = %s', $flag, $sys_name));
+                    $this->logger->debug(sprintf('lang(%s).flag = %s', $flag, $sysName));
                 }
-                $this->container->getDb()->executeUpdate('UPDATE languages SET flag_image = ? WHERE sys_name = ?', array($flag, $sys_name));
+                $this->container->getDb()->executeUpdate('UPDATE languages SET flag_image = ? WHERE sys_name = ?', [$flag, $sysName]);
             }
         }
 
         // Auto-install any new langs
-        $auto_install = $this->container->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.lang_auto_install'");
-        if ($auto_install) {
+        $autoInstall = $this->container->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.lang_auto_install'");
+        if ($autoInstall) {
             if ($this->logger) {
                 $this->logger->debug('running lang auto-install');
             }
-            $this->container->getEm()->getRepository('DeskPRO:Language')->installAll($langpacks);
+            $this->container->getEm()->getRepository(Language::class)->installAll($langPacks);
         }
 
         if ($this->logger) {
@@ -218,17 +222,17 @@ class Manager
         # Data
         #------------------------------
 
-        $data_proc = new DefaultDataProcessor($this->container);
+        $dataProcessor = new DefaultDataProcessor($this->container);
         if ($this->logger) {
-            $data_proc->setLogger($this->logger);
+            $dataProcessor->setLogger($this->logger);
         }
-        $data_proc->runSync();
+        $dataProcessor->runSync();
 
         #------------------------------
         # Apps
         #------------------------------
 
-        $app_syncer = new NativeAppsSync(
+        $appSyncer = new NativeAppsSync(
             $this->container,
             $this->container->getAppManager(),
             new PackageInstaller($this->container->getEm(), $this->container->getBlobStorage(), $this->container->getImagine()),
@@ -237,16 +241,18 @@ class Manager
 
         // Dont fail the upgrade at this point
         // but log the error so we can know something went wrong with an app
-        $app_syncer->setExceptionHandler(function ($e) { SystemErrorHandler::logException($e); });
+        $appSyncer->setExceptionHandler(function ($e) {
+            SystemErrorHandler::logException($e);
+        });
 
-        $app_syncer->runUpdates();
-        $app_syncer->runSync();
+        $appSyncer->runUpdates();
+        $appSyncer->runSync();
 
         #------------------------------
         # Clear error logs
         #------------------------------
 
-        foreach (array('cli-phperr.log', 'server-phperr-web.log', 'error.log') as $l) {
+        foreach (['cli-phperr.log', 'server-phperr-web.log', 'error.log'] as $l) {
             $path = dp_get_log_dir().DIRECTORY_SEPARATOR.$l;
             if (file_exists($path)) {
                 if ($this->logger) {
@@ -276,21 +282,23 @@ class Manager
     /**
      * Get the build class for a build ID.
      *
-     * @param int $build_id
+     * @param int $buildId
+     *
+     * @throws \Exception
      *
      * @return string
      */
-    public function getBuildClass($build_id)
+    public function getBuildClass($buildId)
     {
-        $class = 'Application\\InstallBundle\\Upgrade\\Build\\Build'.$build_id;
+        $class = 'Application\\InstallBundle\\Upgrade\\Build\\Build'.$buildId;
 
         if (!class_exists($class, false)) {
             $manifest = require DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/build-manifest.php';
-            if (isset($manifest[$build_id])) {
-                $file  = DP_ROOT.$manifest[$build_id]['file'];
-                $class = $manifest[$build_id]['classname'];
+            if (isset($manifest[$buildId])) {
+                $file  = DP_ROOT.$manifest[$buildId]['file'];
+                $class = $manifest[$buildId]['classname'];
             } else {
-                throw new \Exception("Unknown build. $build_id is not in the manifest.");
+                throw new \Exception("Unknown build. $buildId is not in the manifest.");
             }
             require_once $file;
         }
@@ -306,11 +314,11 @@ class Manager
      */
     public function getWaitingBuildIds()
     {
-        $ret = array();
+        $ret = [];
 
-        foreach ($this->getAllBuildIds() as $build_id) {
-            if ($this->db_version < $build_id) {
-                $ret[] = $build_id;
+        foreach ($this->getAllBuildIds() as $buildId) {
+            if ($this->dbVersion < $buildId) {
+                $ret[] = $buildId;
             }
         }
 
@@ -324,17 +332,17 @@ class Manager
      */
     public function getAllBuildIds()
     {
-        if ($this->build_list !== null) {
-            return $this->build_list;
+        if ($this->buildList !== null) {
+            return $this->buildList;
         }
 
-        $manifest         = require DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/build-manifest.php';
-        $this->build_list = array_keys($manifest);
+        $manifest        = require DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/build-manifest.php';
+        $this->buildList = array_keys($manifest);
 
-        array_unique($this->build_list, \SORT_NUMERIC);
-        sort($this->build_list, \SORT_NUMERIC);
+        array_unique($this->buildList, \SORT_NUMERIC);
+        sort($this->buildList, \SORT_NUMERIC);
 
-        return $this->build_list;
+        return $this->buildList;
     }
 
     /**
@@ -344,9 +352,9 @@ class Manager
      */
     public function getNextBuildId()
     {
-        foreach ($this->getAllBuildIds() as $build_id) {
-            if ($this->db_version < $build_id) {
-                return $build_id;
+        foreach ($this->getAllBuildIds() as $buildId) {
+            if ($this->dbVersion < $buildId) {
+                return $buildId;
             }
         }
 
@@ -366,12 +374,12 @@ class Manager
     /**
      * Formats a build ID.
      *
-     * @param int $build_id
+     * @param int $buildId
      *
      * @return string
      */
-    public function formatBuildId($build_id)
+    public function formatBuildId($buildId)
     {
-        return date('Y-m-d H:i:s', $build_id);
+        return date('Y-m-d H:i:s', $buildId);
     }
 }
