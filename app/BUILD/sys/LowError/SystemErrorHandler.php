@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpSys\LowError;
 
 use Psr\Log\LoggerInterface;
@@ -768,7 +769,6 @@ class SystemErrorHandler
     {
         self::$bugsnagConfig = array_replace(self::$bugsnagConfig, $bugsnagConfig);
         self::$bugsnagClient = null;
-        self::getBugsnagClient()->notifyError('test', 'test');
     }
 
     /**
