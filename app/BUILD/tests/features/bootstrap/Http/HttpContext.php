@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -67,5 +67,25 @@ class HttpContext extends BaseContext
     private function getPath($filename)
     {
         return realpath(__DIR__.'/../files/'.$filename);
+    }
+
+    /**
+     * Click on a link and doesn't display the response in the console.
+     *
+     * @Given /^(?:|I )download "(?P<link>[^"]+)"$/
+     */
+    public function download($link)
+    {
+        ob_start();
+        $this->getSession()->getPage()->clickLink($link);
+        ob_end_clean();
+    }
+
+    /**
+     * @Then /^I should see in the header "([^"]*)":"([^"]*)"$/
+     */
+    public function iShouldSeeInTheHeader($header, $value)
+    {
+        $this->assertSession()->responseHeaderContains($header, $value);
     }
 }

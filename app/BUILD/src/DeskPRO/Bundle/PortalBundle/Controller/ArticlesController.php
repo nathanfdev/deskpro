@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Article;
@@ -383,7 +380,6 @@ class ArticlesController extends AbstractController
      * @Route("/kb/articles/pdf/{slug}", name="portal_articles_pdf")
      * @ParamConverter(name="article", converter="deskpro_slug")
      * @Security("is_granted('USE_ARTICLES') and is_granted('VIEW_ARTICLE', article)")
-     * @PageHttpCache(content="article")
      *
      * @param Article $article
      * @param int     $visitor_id

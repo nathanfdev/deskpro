@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\News;
@@ -419,8 +416,7 @@ class NewsController extends AbstractController
      * @Route("/news/posts/pdf/{slug}", name="portal_news_pdf")
      * @ParamConverter(name="post", converter="deskpro_slug")
      * @Security("is_granted('USE_NEWS') and is_granted('VIEW_NEWS', post)")
-     * @PageHttpCache(content="post")
-     
+     *
      * @param News $post
      * @param int  $visitor_id
      *

@@ -29,6 +29,7 @@
 namespace DeskPRO\Component\Pdf;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use Symfony\Component\HttpFoundation\Response;
 
 class mPdfRenderer implements PdfRendererInterface
 {
@@ -66,7 +67,7 @@ class mPdfRenderer implements PdfRendererInterface
             '', // Default Font
             20, // Margin Left
             20, // Margin Right
-            20, // Margin Top
+            40, // Margin Top
             40, // Margin Bottom
             10, // Margin Header
             10, // Margin Footer
@@ -93,6 +94,6 @@ class mPdfRenderer implements PdfRendererInterface
     {
         $this->object->WriteHTML($contentHtml);
 
-        return $this->object->Output($fileName, 'D');
+        return new Response($this->object->Output($fileName, 'D'), 200, ['Content-Type' => 'application/pdf']);
     }
 }
