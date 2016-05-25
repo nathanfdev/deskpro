@@ -40,7 +40,7 @@
                     <ul>
                         <li><i class="fa fa-user"></i> {{ item.person.display_name }}</li>
                         <li><a href="#comments"><i
-                                        class="fa fa-comment"></i> {{ phrase('portal.general.comments-count', { count: item.num_comments }) }}</a></li>
+                                        class="fa fa-comment"></i> {{ phrase('portal.general.comments-count', { count: item.calc_num_comments }) }}</a></li>
                         {% if item.getCustomDataSelection() %}
                             <li><i class="fa fa-inbox"></i> {{ item.getCustomDataSelection().title }}</li>
                         {% endif %}
@@ -78,10 +78,10 @@
 
     {% show related_content %}
 
-    {% if item.num_comments or new_comment_form %}
+    {% if item.calc_num_comments or new_comment_form %}
         <div class="comment-box" id="comments">
             <div class="titled-header">
-                <h1>{{ phrase('portal.general.comments-title', {count: item.num_comments}) }}</h1>
+                <h1>{{ phrase('portal.general.comments-title', {count: item.calc_num_comments}) }}</h1>
             </div>
             {% show feedback_comments %}
             {% show comment_form %}

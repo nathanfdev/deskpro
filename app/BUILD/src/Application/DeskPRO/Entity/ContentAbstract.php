@@ -287,7 +287,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * Check if this content is publicly visible (i.e. not spam, not a draft, etc).
-     * 
+     *
      * @return bool
      */
     public function isPublic()
@@ -932,5 +932,27 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
                 return true;
             }
         }
+    }
+
+    public function getCalcNumComments()
+    {
+        static $numComments = null;
+        if ($numComments !== null) {
+            return $numComments;
+        }
+        $ent    = $this->getEntityName();
+        $entity = strtolower(Util::getBaseClassname(get_called_class()));
+        $result = App::getOrm()->createQuery(
+            "
+            SELECT count(1) as num_comment
+            FROM {$ent}Comment c
+            WHERE c.status = 'visible' AND c.{$entity} = ?1
+        "
+        )->setParameter(1, $this)->getSingleResult();
+        if ($result) {
+            return $result['num_comment'];
+        }
+
+        return 0;
     }
 }

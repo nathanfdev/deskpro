@@ -78,10 +78,10 @@
                                             <hr>
                                             <span>{{ date(result.date_published) }}</span>
                                         {% endif %}
-                                        {% if result.num_comments > 0 %}
+                                        {% if result.calc_num_comments > 0 %}
                                             <hr>
                                             <a href="{{ portal_path(result) }}#comments">
-                                                {{ phrase('portal.general.comments-count', { count: result.num_comments }) }}
+                                                {{ phrase('portal.general.comments-count', { count: result.calc_num_comments }) }}
                                             </a>
                                         {% endif %}
                                     </div>

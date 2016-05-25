@@ -16,7 +16,7 @@
                 -
                 {{ article.date_published | date('Y-m-d') }}
                 -
-                <span class="comments"><i class="fa fa-comments-o"></i> <a href="#comments">{{ phrase('portal.general.comments-count', {count: article.num_comments}) }}</a></span>
+                <span class="comments"><i class="fa fa-comments-o"></i> <a href="#comments">{{ phrase('portal.general.comments-count', {count: article.calc_num_comments}) }}</a></span>
                 -
                 {{ phrase('portal.general.in') }} <a href="{{ portal_path(article.primary_category) }}">{{ object_phrase(article.primary_category) }}</a>
             </div>
@@ -44,13 +44,12 @@
     {% show kb_attachments %}
     {% show related_content %}
 
-    {% if article.num_comments or new_comment_form %}
+    {% if article.num_comments %}
         <div class="comment-box" id="comments">
             <div class="titled-header">
-                <h1>{{ phrase('portal.general.comments-title', {count: article.num_comments}) }}</h1>
+                <h1>{{ phrase('portal.general.comments-title', {count: article.calc_num_comments}) }}</h1>
             </div>
             {% show kb_article_comments %}
-            {% show comment_form %}
         </div>
     {% endif %}
 {% endblock inner_content %}
