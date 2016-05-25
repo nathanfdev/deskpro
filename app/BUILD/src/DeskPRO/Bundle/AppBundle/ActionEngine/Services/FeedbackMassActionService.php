@@ -28,7 +28,10 @@
 
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Services;
 
-interface ApplicatorServiceInterface
+use Application\DeskPRO\Entity\Feedback;
+
+class FeedbackMassActionService extends AbstractMassActionService
 {
-    public function apply(array $ids, array $params);
+    protected $class     = Feedback::class;
+    protected $namespace = 'Feedback';
 }

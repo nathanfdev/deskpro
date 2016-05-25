@@ -37,7 +37,7 @@ use DeskPRO\Bundle\AppBundle\Validator\ValidatorErrorsException;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-abstract class AbstractApplicatorService implements ApplicatorServiceInterface
+abstract class AbstractMassActionService implements MassActionServiceInterface
 {
     /** @var  string */
    protected $class;

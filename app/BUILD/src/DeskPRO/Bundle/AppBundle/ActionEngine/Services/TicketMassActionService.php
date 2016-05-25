@@ -34,7 +34,7 @@ use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Bundle\AppBundle\Validator\ValidatorErrorsException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class TicketApplicatorService extends AbstractApplicatorService
+class TicketMassActionService extends AbstractMassActionService
 {
     protected $class     = Ticket::class;
     protected $namespace = 'Tickets';
