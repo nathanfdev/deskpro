@@ -7,11 +7,11 @@ import {
   widgetSessionCodeSelector,
   requireChatLoginSelector,
   requireChatEmailValidationSelector,
-  widgetHasChatSelector
+  widgetHasChatSelector,
+  widgetLanguageSelector
 } from '../Selectors/bootstrap';
 
 import { liveDemoSelector } from '../Selectors/dpWindow';
-import { widgetLanguageSelector } from '../Selectors/bootstrap';
 import { onlineAgentsCountSelector } from '../Selectors/peopleSelectors';
 import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
