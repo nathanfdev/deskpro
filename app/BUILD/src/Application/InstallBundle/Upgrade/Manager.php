@@ -36,6 +36,8 @@ use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Languages\LangPackInfo;
 use Application\InstallBundle\Data\DefaultDataProcessor;
 use Application\InstallBundle\Upgrade\Build\AbstractBuild;
+use DeskPRO\Bundle\PortalBundle\Designer\AdvancedEditsManager;
+use DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler;
 use DeskPRO\Component\Util\TypeUtils;
 use DpSys\LowError\SystemErrorHandler;
 use Monolog\Logger;
@@ -260,6 +262,19 @@ class Manager
                 }
                 @file_put_contents($path, '');
             }
+        }
+
+        #------------------------------
+        # Compile Custom Scss
+        #------------------------------
+
+        /** @var AdvancedEditsManager $advancedEditManager */
+        $advancedEditManager = $this->container->get('dp.portal.designer.advanced_edits_manager');
+        if ($advancedEditManager->getEditThemeSetScss()) {
+            /** @var PortalStylesCompiler $styleCompiler */
+            $styleCompiler = $this->container->get('dp.portal.designer.portal_styles_compiler');
+            $styleCompiler->recompile([]);
+            $this->logger->info('Compile Custom Scss scripts');
         }
 
         if ($this->logger) {
