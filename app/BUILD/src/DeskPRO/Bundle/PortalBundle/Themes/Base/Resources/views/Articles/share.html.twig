@@ -2,7 +2,7 @@
 {% block inner_content %}
     <header>
         <h1>{{ article.translated_title }}</h1>
-        {{ phrase('portal.articles.link') }} <a href="{{ article.permalink }}">{{ article.permalink }}</a>
+        {{ phrase('portal.articles.link', {'link': article.permalink})|raw }}
     </header>
 
 <div class="article-share" id="article-share-form">

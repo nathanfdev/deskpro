@@ -28,7 +28,7 @@
 
 return [
     'portal.articles.by-line'         => 'By {{name}} on {{date}}',
-    'portal.articles.link'            => 'Link:',
+    'portal.articles.link'            => 'Link: <a href="{{link}}">{{link}}</a>',
     'portal.articles.none'            => 'No articles yet',
     'portal.articles.search-title'    => 'Knowledgebase',
     'portal.articles.section-desc'    => 'Our knowledgebase contains articles written by our support agents to help you.',
