@@ -1,14 +1,22 @@
 import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { createChat } from '../../../Actions/chatActions';
 import { liveDemoSelector } from '../../../../Application/Selectors/dpWindow';
 import { requireChatEmailValidationSelector, requireChatLoginSelector } from '../../../../Application/Selectors/bootstrap';
+import { customChatFieldsOrderedSelector } from '../../../../Application/Selectors/customFields';
 import { history } from '../../../../../Services/history';
+import { loadAll, isLoadedCollectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { Fieldset, createValue } from 'react-forms';
+import { PortalFormWidget } from 'DeskPRO/Bundle/PortalBundle/PageWidget/PortalFormWidget';
+import $ from 'jquery';
 
 @connect(state => ({
   liveDemo:               liveDemoSelector(state),
   requireEmailValidation: requireChatEmailValidationSelector(state),
-  requireLogin:           requireChatLoginSelector(state)
+  requireLogin:           requireChatLoginSelector(state),
+  customFieldsLoaded:     isLoadedCollectionSelectorFactory('CustomDefChat', 'all')(state),
+  customFields:           customChatFieldsOrderedSelector(state)
 }))
 export class ChatBeginContainer extends React.Component {
 
@@ -18,58 +26,48 @@ export class ChatBeginContainer extends React.Component {
     dispatch:               PropTypes.func.isRequired,
     children:               PropTypes.node,
     isCreated:              PropTypes.bool,
-    liveDemo:               PropTypes.bool
+    liveDemo:               PropTypes.bool,
+    customFields:           PropTypes.object
   };
 
   constructor(props) {
     super(props);
+
     this.state = {
-      name:         '',
-      email:        '',
-      hidden_email: false,
-      submit:       false,
-      errors:       null
+      formData: this.getInitialFormData(),
+      submit:   false,
+      errors:   null
     };
   }
 
   componentDidMount() {
+    this.props.dispatch(loadAll('CustomDefChat'));
     this.mounted = true;
   }
 
   componentWillReceiveProps(newProps) {
+    const newState = {};
     if (newProps.children !== this.props.children) {
-      this.setState({
-        name:         '',
-        email:        '',
-        hidden_email: false,
-        errors:       null
-      });
+      newState.formData = this.getInitialFormData();
     }
+
+    this.setState(newState);
+  }
+
+  componentDidUpdate() {
+    this.formWidget = new PortalFormWidget($(ReactDOM.findDOMNode(this)), null, {
+      context: [parent.document, window.widgetFrame.document]
+    });
+
+    this.formWidget.renderWhenReady();
   }
 
   componentWillUnmount() {
     this.mounted = false;
   }
 
-  onChangeName = event => {
-    this.setState({
-      name:   event.target.value,
-      errors: null
-    });
-  };
-
-  onChangeEmail = event => {
-    this.setState({
-      email:  event.target.value,
-      errors: null
-    });
-  };
-
-  onToggleHiddenEmail = event => {
-    event.preventDefault();
-    this.setState({
-      hidden_email: !this.state.hidden_email
-    });
+  onChange = formData => {
+    this.setState({ formData });
   };
 
   onSubmit = event => {
@@ -77,7 +75,7 @@ export class ChatBeginContainer extends React.Component {
       event.preventDefault();
     }
 
-    const { liveDemo, requireEmailValidation, requireLogin } = this.props;
+    const { liveDemo, requireEmailValidation, requireLogin, dispatch } = this.props;
 
     // Disabled in live demo mode
     if (liveDemo) {
@@ -88,11 +86,7 @@ export class ChatBeginContainer extends React.Component {
       submit: true
     });
 
-    const promise = this.props.dispatch(createChat({
-      name:  this.state.name,
-      email: this.state.email
-    }));
-
+    const promise = dispatch(createChat(this.state.formData.value));
     promise.then(
       () => {
         if (requireEmailValidation && !requireLogin) {
@@ -118,30 +112,30 @@ export class ChatBeginContainer extends React.Component {
     );
   };
 
-  render() {
-    const props = this.props;
-    const state = this.state;
+  getInitialFormData() {
+    return createValue({
+      onChange: this.onChange,
+      value:    {
+        name:  '',
+        email: ''
+      }
+    });
+  }
 
-    const { children } = props;
+  render() {
+    const { children } = this.props;
     const childProps = children.props;
 
-    const content = React.cloneElement(children, {
-      ...props,
-      ...childProps,
-      ...state,
-
-      hiddenEmail: state.hidden_email,
-
-      onChangeName:        this.onChangeName,
-      onChangeEmail:       this.onChangeEmail,
-      onToggleHiddenEmail: this.onToggleHiddenEmail,
-      onSubmit:            this.onSubmit
-    });
-
     return (
-      <div>
-        {content}
-      </div>
+      <Fieldset formValue={this.state.formData}>
+        {React.cloneElement(children, {
+          ...this.props,
+          ...childProps,
+          ...this.state,
+
+          onSubmit: this.onSubmit
+        })}
+      </Fieldset>
     );
   }
 }

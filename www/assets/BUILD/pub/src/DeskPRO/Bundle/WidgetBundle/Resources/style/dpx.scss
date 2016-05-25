@@ -25,7 +25,6 @@ $grey: #e6e6e6;
 
 .multiselect {
   position: relative;
-  margin-bottom: 10px;
   cursor: pointer;
   background: #ffffff;
 
@@ -627,6 +626,7 @@ $grey: #e6e6e6;
   position: absolute;
   left: 0 !important;
   top: 70px !important;
+  width: 320px;
 }
 
 .email-present {

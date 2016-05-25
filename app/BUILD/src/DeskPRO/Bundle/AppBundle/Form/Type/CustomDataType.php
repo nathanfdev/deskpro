@@ -29,11 +29,13 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\CustomDataAbstract;
+use Application\DeskPRO\Entity\CustomDataChat;
 use Application\DeskPRO\Entity\CustomDataFeedback;
 use Application\DeskPRO\Entity\CustomDataOrganization;
 use Application\DeskPRO\Entity\CustomDataPerson;
 use Application\DeskPRO\Entity\CustomDataTicket;
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
@@ -421,6 +423,8 @@ class CustomDataType extends AbstractType
             return new CustomDataOrganization();
         } elseif ($customDef instanceof CustomDefFeedback) {
             return new CustomDataFeedback();
+        } elseif ($customDef instanceof CustomDefChat) {
+            return new CustomDataChat();
         }
 
         throw new \RuntimeException('Unsupported custom data owner '.get_class($customDef));

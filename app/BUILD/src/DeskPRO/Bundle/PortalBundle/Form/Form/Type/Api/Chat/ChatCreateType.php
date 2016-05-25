@@ -30,6 +30,9 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
+use DeskPRO\Bundle\AppBundle\Form\Type\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\AutoSetShouldSentTranscriptTrait;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\EventListener\SetPersonListener;
@@ -44,9 +47,9 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class CreateChatType.
+ * Class ChatCreateType.
  */
-class CreateChatType extends AbstractType
+class ChatCreateType extends AbstractType
 {
     use AutoSetShouldSentTranscriptTrait;
 
@@ -61,15 +64,22 @@ class CreateChatType extends AbstractType
     private $settingsResolver;
 
     /**
+     * @var CustomFieldManager
+     */
+    private $fieldManager;
+
+    /**
      * Constructor.
      *
      * @param SetPersonListener      $personListener
      * @param WidgetSettingsResolver $settingsResolver
+     * @param CustomFieldManager     $fieldManager
      */
-    public function __construct(SetPersonListener $personListener, WidgetSettingsResolver $settingsResolver)
+    public function __construct(SetPersonListener $personListener, WidgetSettingsResolver $settingsResolver, CustomFieldManager $fieldManager)
     {
         $this->personListener   = $personListener;
         $this->settingsResolver = $settingsResolver;
+        $this->fieldManager     = $fieldManager;
     }
 
     /**
@@ -91,6 +101,10 @@ class CreateChatType extends AbstractType
                 'property_path' => 'person_email',
                 'required'      => false,
                 'constraints'   => $emailConstraints,
+            ])
+            ->add('fields', CombinedType::class, [
+                'forms'          => $this->getCustomDataFields(),
+                'error_bubbling' => false,
             ])
         ;
 
@@ -123,6 +137,8 @@ class CreateChatType extends AbstractType
      * If session has person entity we can assign it to the chat.
      * Uses if chat settings require user to be logged in.
      *
+     * @internal
+     *
      * @param FormEvent $event
      */
     public function onSetPersonEmailFromSession(FormEvent $event)
@@ -140,6 +156,8 @@ class CreateChatType extends AbstractType
 
     /**
      * If portal chat settings require email validation we need to generate a validation code.
+     *
+     * @internal
      *
      * @param FormEvent $event
      */
@@ -169,6 +187,8 @@ class CreateChatType extends AbstractType
     }
 
     /**
+     * @internal
+     *
      * @param FormEvent $event
      */
     public function onCheckRequireLogin(FormEvent $event)
@@ -179,5 +199,29 @@ class CreateChatType extends AbstractType
         if ($this->settingsResolver->isChatRequireLogin() && !$person) {
             $form->addError(new FormError('Login required'));
         }
+    }
+
+    /**
+     * @return array
+     */
+    private function getCustomDataFields()
+    {
+        $defs   = $this->fieldManager->getAvailableChatDefs();
+        $fields = [];
+
+        foreach ($defs as $def) {
+            $fields[] = [
+                'name'    => $def->getId(),
+                'type'    => CustomDataType::class,
+                'options' => [
+                    'custom_def'      => $def,
+                    'property_path'   => 'custom_data',
+                    'agent_interface' => false,
+                    'inline'          => true,
+                ],
+            ];
+        }
+
+        return $fields;
     }
 }

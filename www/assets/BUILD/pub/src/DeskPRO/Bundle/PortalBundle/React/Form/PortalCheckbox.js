@@ -7,13 +7,13 @@ export class PortalCheckbox extends React.Component {
 
   static propTypes = {
     $checkbox: PropTypes.object,
-    $label: PropTypes.object
+    $label:    PropTypes.object
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      checked: props.$checkbox.prop('checked'),
+      checked:      props.$checkbox.prop('checked'),
       isClickFocus: false
     };
   }
@@ -31,7 +31,7 @@ export class PortalCheckbox extends React.Component {
 
   onReset = () => {
     this.setState({
-      checked: false,
+      checked:      false,
       isClickFocus: false
     });
   };
@@ -76,16 +76,17 @@ export class PortalCheckbox extends React.Component {
     const { $label } = this.props;
 
     return (
-      <div className={classNames('checkbox-container', {'no-focus-border': this.state.isClickFocus})}
-           tabIndex={0}
-           ref="wrapper"
-           onClick={this.onClick}
-           onMouseDown={this.onMouseDown}
-           onKeyDown={this.onKeyDown}
-           onBlur={this.onBlur}>
-
-        <span className={classNames('checkbox', {'checked': this.state.checked})}>
-          <i className="fa fa-check"></i>
+      <div
+        className={classNames('checkbox-container', { 'no-focus-border': this.state.isClickFocus })}
+        tabIndex={0}
+        ref="wrapper"
+        onClick={this.onClick}
+        onMouseDown={this.onMouseDown}
+        onKeyDown={this.onKeyDown}
+        onBlur={this.onBlur}
+      >
+        <span className={classNames('checkbox', { checked: this.state.checked })}>
+          <i className="fa fa-check" />
         </span>
 
         {$label.text()}

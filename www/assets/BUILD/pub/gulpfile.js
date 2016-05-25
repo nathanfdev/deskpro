@@ -285,8 +285,7 @@ function getWebpackConfig(mode, isProd) {
         {
           test: /\.js$/,
           include: [
-            path.resolve(__dirname, 'src/DeskPRO'),
-            path.resolve(__dirname, 'node_modules/formsy-react')
+            path.resolve(__dirname, 'src/DeskPRO')
           ],
           exclude: [
             path.resolve(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Legacy')

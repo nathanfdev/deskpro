@@ -59,18 +59,8 @@ abstract class AbstractDateTimeValidator extends AbstractSingleValueValidator
         $validators[] = $this->getFormatValidator();
 
         // Range validator
-        $range_type = $constraint->getCustomDefOption('date_valid_type');
-
-        if ($range_type === 'range') {
-            $min_range = (int) $constraint->getCustomDefOption('date_valid_range1');
-            $max_range = (int) $constraint->getCustomDefOption('date_valid_range2');
-
-            $min_range_format = $min_range ? ('-'.$min_range.' days') : null;
-            $max_range_format = $max_range ? ('+'.$max_range.' days') : null;
-        } elseif ($range_type === 'date') {
-            $min_range_format = $constraint->getCustomDefOption('date_valid_date1');
-            $max_range_format = $constraint->getCustomDefOption('date_valid_date2');
-        }
+        $min_range_format = $constraint->custom_def->getDateMinFormat();
+        $max_range_format = $constraint->custom_def->getDateMaxFormat();
 
         if (isset($min_range_format)) {
             $min_range_date = new \DateTime($min_range_format);

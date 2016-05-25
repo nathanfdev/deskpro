@@ -3,8 +3,7 @@ import $ from 'jquery';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import moment from 'moment';
 import 'DeskPRO/Bundle/AppBundle/moment-locales';
-// import 'jquery-datetimepicker/jquery.datetimepicker';
-import 'jquery-datetimepicker/build/jquery.datetimepicker.full';
+import 'jquery-datetimepicker-iframe/jquery.datetimepicker';
 
 export class DpxDateWidget extends PageWidget {
 
@@ -17,15 +16,13 @@ export class DpxDateWidget extends PageWidget {
       moment.locale(window.DESKPRO_LANG.toLowerCase().replace('_', '-'));
     }
 
-    // Change 'jquery.datetimepicker.full' to 'jquery.datetimepicker' when this will be fixed
-    // https://github.com/xdan/datetimepicker/issues/392
-    // $.datetimepicker.setDateFormatter({
-    //   parseDate: (date, format) => {
-    //     const d = moment(date, format);
-    //     return d.isValid() ? d.toDate() : false;
-    //   },
-    //   formatDate: (date, format) => moment(date).format(format)
-    // });
+    $.datetimepicker.setDateFormatter({
+      parseDate: (date, format) => {
+        const d = moment(date, format);
+        return d.isValid() ? d.toDate() : false;
+      },
+      formatDate: (date, format) => moment(date).format(format)
+    });
 
     // this widget can work with a DATE form type or a DATETIME
     // it works by following "id" naming conventions from symfony's form component ("choice" widgets for the date)
@@ -57,17 +54,18 @@ export class DpxDateWidget extends PageWidget {
       isTimeIncluded = false;
     }
 
-    const minDate = ($el.data('min-date').length === 0) ? null : moment($el.data('min-date'), 'YYYY MM DD');
-    const maxDate = ($el.data('max-date').length === 0) ? null : moment($el.data('max-date'), 'YYYY MM DD');
+    const minDate = ($el.data('min-date').length === 0) ? null : moment($el.data('min-date'), 'L');
+    const maxDate = ($el.data('max-date').length === 0) ? null : moment($el.data('max-date'), 'L');
 
     const $textBox = $('<input type="text">');
+    const format  = isTimeIncluded ? 'L LT' : 'L';
     const options = {
       parentID:   $el.parent(),
       timepicker: isTimeIncluded,
 
-      // change format when https://github.com/xdan/datetimepicker/issues/392 will be fixed
-      // format:            isTimeIncluded ? 'L LT' : 'L',
-      format: isTimeIncluded ? 'm/d/Y h:ia' : 'm/d/Y',
+      format,
+      formatTime: 'LT',
+      formatDate: 'L',
 
       closeOnDateSelect: true,
       scrollInput:       false,
@@ -100,28 +98,28 @@ export class DpxDateWidget extends PageWidget {
       weekdays = [0, 1, 2, 3, 4, 5, 6];
     }
 
+    weekdays = weekdays.map(weekDay => {
+      // php stores 1 as monday and sunday as 7, but our cal uses 0 for sunday, 1 for monday, and so on.
+      const d = parseInt(weekDay, 10);
+      return d === 6 ? 0 : d + 1;
+    });
+
     if (weekdays.length > 0) {
       // disable all days of week
       options.onGenerate = function () {
         const that = this;
-        const allowedWeekdays = _.map(weekdays, weekDay => {
-          // php stores 1 as monday and sunday as 7, but our cal uses 0 for sunday, 1 for monday, and so on.
-          const d = _.parseInt(weekDay);
-          return d === 6 ? 0 : d + 1;
-        });
-
         _.forEach([0, 1, 2, 3, 4, 5, 6], weekDay => {
-          if (!_.includes(allowedWeekdays, weekDay)) {
+          if (!_.includes(weekdays, weekDay)) {
             $(that).find(`.xdsoft_day_of_week${weekDay}`).addClass('xdsoft_disabled');
           }
         });
       };
     }
 
-    // min date
+    // min and max date
     if (minDate && maxDate) {
-      options.minDate = minDate.format('YYYY/MM/DD');
-      options.maxDate = maxDate.format('YYYY/MM/DD');
+      options.minDate = minDate.format('L');
+      options.maxDate = maxDate.format('L');
     }
 
     $textBox.datetimepicker(options);
@@ -131,7 +129,7 @@ export class DpxDateWidget extends PageWidget {
       const month = $sMonth.val();
       const year  = $sYear.val();
 
-      const onUpdateValue = (newDate, format) => {
+      const onUpdateValue = (newDate) => {
         const oldValue = moment($textBox.datetimepicker('getValue'));
         const newValue = moment(newDate);
 
@@ -146,10 +144,10 @@ export class DpxDateWidget extends PageWidget {
           const hour   = $sHour.val();
 
           if (minute.length && hour.length) {
-            onUpdateValue(new Date(year, month - 1, day, hour, minute), 'MM/DD/YYYY hh:mma');
+            onUpdateValue(new Date(year, month - 1, day, hour, minute));
           }
         } else {
-          onUpdateValue(new Date(year, month - 1, day), 'MM/DD/YYYY');
+          onUpdateValue(new Date(year, month - 1, day));
         }
       }
     };

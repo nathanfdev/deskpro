@@ -61,13 +61,11 @@ services:
     tags:
       - { name: form.type_extension, extended_type: 'Symfony\Component\Form\Extension\Core\Type\FormType', order: 1000 }
 
-
   form.ticket_reply:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\TicketReplyType
     arguments: ["@language_manager"]
     tags:
       - { name: form.type, alias: ticket_reply }
-
 
   form.person_registration:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonRegistrationType
@@ -75,13 +73,11 @@ services:
     tags:
       - { name: form.type, alias: person_registration }
 
-
   form.person_profile:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonEditProfileType
     arguments: ["@custom_field_manager", "@language_manager", "@blob.storage", "@doctrine.orm.default_entity_manager"]
     tags:
       - { name: form.type, alias: person_profile }
-
 
   form.comment:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CommentType
@@ -91,13 +87,11 @@ services:
       - "@captcha_decider"
       - "@language_manager"
 
-
   form.new_feedback:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\NewFeedbackType
     arguments: ["@captcha_decider", "@language_manager", "@custom_field_manager"]
     tags:
       - { name: form.type, alias: new_feedback }
-
 
   form.feedback_attachment:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\FeedbackAttachmentType
@@ -105,18 +99,15 @@ services:
     tags:
       - { name: form.type, alias: feedback_attachment }
 
-
   form.feedback_attachment_collection:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\FeedbackAttachmentCollectionType
     tags:
       - { name: form.type, alias: feedback_attachment_collection }
 
-
   form.feedback_category:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\FeedbackCategoryType
     tags:
       - { name: form.type, alias: feedback_category }
-
 
   form.request_password_reset:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PasswordResetRequestType
@@ -126,7 +117,6 @@ services:
       - "@captcha_decider"
       - "@language_manager"
 
-
   form.person_change_password:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonChangePasswordType
     tags:
@@ -135,19 +125,16 @@ services:
       - "@captcha_decider"
       - "@deskpro.core.translate"
 
-
   form.deskpro_contextual_per_field_choice:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\ContextualPerFieldChoiceType
     arguments: ["@form_hierarchy_generator"]
     tags:
       - { name: form.type, alias: deskpro_contextual_per_field_choice }
 
-
   form.language:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\LanguageType
     tags:
       - { name: form.type, alias: deskpro_language }
-
 
   form.captcha:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CaptchaType
@@ -155,13 +142,11 @@ services:
     tags:
       - { name: form.type, alias: deskpro_captcha }
 
-
   form.recaptcha:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\ReCaptchaType
     arguments: ["@brand_stack", "@language_manager"]
     tags:
       - { name: form.type, alias: deskpro_recaptcha }
-
 
   form.blob:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\BlobType
@@ -169,41 +154,20 @@ services:
     tags:
       - { name: form.type, alias: deskpro_blob }
 
-
   form.heirarchical_entity:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\HeirarchicalEntityType
     tags:
       - { name: form.type, alias: deskpro_heirarchical_entity }
 
-
   form.api.chat_create:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\CreateChatType
-    arguments: ["@form.api.chat.set_person_listener", "@widget_settings_resolver"]
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatCreateType
+    arguments: ["@form.api.chat.set_person_listener", "@widget_settings_resolver", "@custom_field_manager"]
     tags:
       - { name: form.type }
-
-
-  form.api.api_chat_validate_email:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatValidateEmailType
-    tags:
-      - { name: form.type }
-
 
   form.api.chat_transcription_info:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatTranscriptInfoType
     arguments: ["@form.api.chat.set_person_listener", "@widget_settings_resolver"]
-    tags:
-      - { name: form.type }
-
-
-  form.api.chat_transcription_toggle:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatTranscriptToggleType
-    tags:
-      - { name: form.type }
-
-
-  form.api.chat_feedback:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatFeedbackType
     tags:
       - { name: form.type }
 
