@@ -47,13 +47,13 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
     protected function configure()
     {
         $this->setName('dp:upgrade')
-             ->addOption('info', null, InputOption::VALUE_NONE, 'Set this flag to get info about your current instance')
-             ->addOption('dobuildrun', null, InputOption::VALUE_REQUIRED, 'Runs a build script. Usually used internally.')
-             ->addOption('runsync', null, InputOption::VALUE_NONE, 'Only runs the post sync scripts')
-             ->addOption('setbuild', null, InputOption::VALUE_NONE, 'Sets the build number to now')
-             ->addOption('reset', null, InputOption::VALUE_NONE, 'Removes status files that tells the system an upgrade is running. Use this if the systme is "stuck" in upgrade mode.')
-             ->addOption('ignore-errors', null, InputOption::VALUE_NONE, 'Does not halt the upgrade loop when an error happens')
-             ->setHelp('This command executes the upgrader to bring your database to the same version the filesystem is');
+            ->addOption('info', null, InputOption::VALUE_NONE, 'Set this flag to get info about your current instance')
+            ->addOption('dobuildrun', null, InputOption::VALUE_REQUIRED, 'Runs a build script. Usually used internally.')
+            ->addOption('runsync', null, InputOption::VALUE_NONE, 'Only runs the post sync scripts')
+            ->addOption('setbuild', null, InputOption::VALUE_NONE, 'Sets the build number to now')
+            ->addOption('reset', null, InputOption::VALUE_NONE, 'Removes status files that tells the system an upgrade is running. Use this if the systme is "stuck" in upgrade mode.')
+            ->addOption('ignore-errors', null, InputOption::VALUE_NONE, 'Does not halt the upgrade loop when an error happens')
+            ->setHelp('This command executes the upgrader to bring your database to the same version the filesystem is');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -109,11 +109,11 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
         if ($input->getOption('info')) {
             $next_id = $manager->getNextBuildId();
-            $output->writeln(sprintf("\tInstalled version:   %d (%s)", $manager->getCurrentBuild(),  $manager->formatBuildId($manager->getCurrentBuild())));
+            $output->writeln(sprintf("\tInstalled version:   %d (%s)", $manager->getCurrentBuild(), $manager->formatBuildId($manager->getCurrentBuild())));
             if (!$next_id) {
-                $output->writeln(sprintf("\t     Next version:   none", $manager->getNextBuildId(),  $manager->formatBuildId($manager->getNextBuildId())));
+                $output->writeln(sprintf("\t     Next version:   none", $manager->getNextBuildId(), $manager->formatBuildId($manager->getNextBuildId())));
             } else {
-                $output->writeln(sprintf("\t     Next version:   %d (%s)", $manager->getNextBuildId(),  $manager->formatBuildId($manager->getNextBuildId())));
+                $output->writeln(sprintf("\t     Next version:   %d (%s)", $manager->getNextBuildId(), $manager->formatBuildId($manager->getNextBuildId())));
             }
 
             $output->writeln(sprintf("\t   Latest version:   %d (%s)", $manager->getLatestBuildId(), $manager->formatBuildId($manager->getLatestBuildId())));
@@ -139,7 +139,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         if ($input->getOption('setbuild')) {
             $num = time();
             $logger->info('(Via --setbuild) Setting deskpro_build = '.$num);
-            App::getDb()->replace('settings', array('value' => $num, 'name' => 'core.deskpro_build'));
+            App::getDb()->replace('settings', ['value' => $num, 'name' => 'core.deskpro_build']);
             $output->writeln('<info>Done</info>');
 
             return 0;
@@ -191,7 +191,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
                 if (!$ignore_errors) {
                     return $ret;
                 } else {
-                    $this->getContainer()->getDb()->update('settings', array('value' => $next_id), array('name' => 'core.deskpro_build'));
+                    $this->getContainer()->getDb()->update('settings', ['value' => $next_id], ['name' => 'core.deskpro_build']);
                 }
             }
 
@@ -209,8 +209,8 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             $logger->info('Setting deskpro_build = '.DP_BUILD_TIME);
             $current = App::getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_build'");
             if ($current < DP_BUILD_TIME) {
-                App::getDb()->replace('settings', array('value' => DP_BUILD_TIME, 'name' => 'core.deskpro_build'));
-                App::getDb()->replace('settings', array('value' => DP_BUILD_NUM, 'name' => 'core.deskpro_build_num'));
+                App::getDb()->replace('settings', ['value' => DP_BUILD_TIME, 'name' => 'core.deskpro_build']);
+                App::getDb()->replace('settings', ['value' => DP_BUILD_NUM, 'name' => 'core.deskpro_build_num']);
             }
         }
 
