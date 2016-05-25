@@ -14,6 +14,8 @@ $fa-font-path: "#{$modules-path}/font-awesome/fonts";
 $form-widget-selector: 'input[type="text"], input[type="email"], input[type="[password"], textarea, .dp-choice-widget-group, .dp-medium-rte-wrapper';
 $zindex-very-top: 7000;
 
+$default-layout-direction: "LTR" !default;
+
 @if $default-layout-direction == "LTR" {
   $text-right:  right;
   $text-left:   left;
