@@ -3,47 +3,38 @@ import { connect } from 'react-redux';
 import { AgentDisconnected } from './AgentDisconnected';
 import { FindAnotherAgent } from './FindAnotherAgent';
 import { WaitingLoader } from './WaitingLoader';
-import {
-  agentNameSelector,
-  agentAvatarSelector,
-  messagesSelector,
-  lastMessageIdSelector,
-  agentIdSelector,
-} from '../../../../Selectors/chat';
+import { agentNameSelector, agentAvatarSelector, agentIdSelector } from '../../../../Selectors/chat';
 
 @connect(state => ({
-  agentId:       agentIdSelector(state),
-  agentName:     agentNameSelector(state),
-  agentAvatar:   agentAvatarSelector(state),
-  messages:      messagesSelector(state),
-  lastMessageId: lastMessageIdSelector(state)
+  agentId:     agentIdSelector(state),
+  agentName:   agentNameSelector(state),
+  agentAvatar: agentAvatarSelector(state)
 }))
 export class AgentDisconnectedContainer extends React.Component {
 
   static propTypes = {
-    agentId:       PropTypes.number,
-    agentName:     PropTypes.string,
-    agentAvatar:   PropTypes.object,
-    lastMessageId: PropTypes.number,
-    messages:      PropTypes.object
+    agentId:     PropTypes.number,
+    agentName:   PropTypes.string,
+    agentAvatar: PropTypes.object
   };
 
   constructor(props) {
     super(props);
+
     this.state = {
-      shown:           false,
-      started:         false,
-      lastMessageId:   null,
-      lastAgentName:   props.agentName,
-      lastAgentAvatar: props.agentAvatar
+      started: !props.agentId
     };
   }
 
-  componentDidUpdate() {
-    if (this.state.shown) {
-      this.checkForNewAgent();
+  componentWillReceiveProps(newProps) {
+    if (newProps.agentId) {
+      this.setState({
+        started: false
+      });
     } else {
-      this.checkForAgentTimeoutMessage();
+      this.setState({
+        started: true // auto reassign for now
+      });
     }
   }
 
@@ -53,50 +44,18 @@ export class AgentDisconnectedContainer extends React.Component {
     });
   };
 
-  checkForAgentTimeoutMessage() {
-    const { messages, lastMessageId } = this.props;
-    if (lastMessageId !== this.state.lastMessageId) {
-      const agentTimeoutMessages = messages.filter(message =>
-        message.get('id') > this.state.lastMessageId
-        && message.get('is_sys')
-        && message.get('content').indexOf('message_agent-timeout') !== -1
-      );
-
-      if (agentTimeoutMessages.size > 0) {
-        this.setState({
-          shown:   true,
-          started: true, // auto reassign for now
-          lastMessageId
-        });
-      } else {
-        this.setState({ lastMessageId });
-      }
-    }
-  }
-
-  checkForNewAgent() {
+  render() {
     const { agentId, agentName, agentAvatar } = this.props;
 
     if (agentId) {
-      this.setState({
-        shown:           false,
-        started:         false,
-        lastAgentName:   agentName,
-        lastAgentAvatar: agentAvatar
-      });
-    }
-  }
-
-  render() {
-    if (!this.state.shown) {
       return null;
     }
 
     return (
-      <AgentDisconnected agentAvatar={this.state.lastAgentAvatar}>
+      <AgentDisconnected agentAvatar={agentAvatar}>
         {this.state.started
-          ? <WaitingLoader agentName={this.state.lastAgentName} />
-          : <FindAnotherAgent onClick={this.onStart} agentName={this.state.lastAgentName} />
+          ? <WaitingLoader agentName={agentName} />
+          : <FindAnotherAgent onClick={this.onStart} agentName={agentName} />
         }
       </AgentDisconnected>
     );

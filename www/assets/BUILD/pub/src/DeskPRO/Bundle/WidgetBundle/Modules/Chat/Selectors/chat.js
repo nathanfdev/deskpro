@@ -53,6 +53,11 @@ export const chatInfoSelector = createSelector(
   state => state.getIn(['chat', 'info'])
 );
 
+export const lastAgentIdSelector = createSelector(
+  stateSelector,
+  state => state.getIn(['chat', 'lastAgent'])
+);
+
 export const hasChatInfoSelector = createSelector(
   chatInfoSelector,
   chatInfo => chatInfo && chatInfo.size > 0
@@ -69,14 +74,40 @@ export const agentSelector = createSelector(
   (agentId, people) => people.get(agentId)
 );
 
+export const lastAgentSelector = createSelector(
+  lastAgentIdSelector,
+  peopleSelector,
+  (agentId, people) => people.get(agentId)
+);
+
 export const agentNameSelector = createSelector(
   agentSelector,
-  agent => agent && agent.get('display_name') || 'Agent'
+  lastAgentSelector,
+  (agent, lastAgent) => {
+    if (agent) {
+      return agent.get('display_name') || 'Agent';
+    }
+    if (lastAgent) {
+      return lastAgent.get('display_name') || 'Agent';
+    }
+
+    return 'Agent';
+  }
 );
 
 export const agentAvatarSelector = createSelector(
   agentSelector,
-  agent => agent && agent.get('avatar')
+  lastAgentSelector,
+  (agent, lastAgent) => {
+    if (agent) {
+      return agent.get('avatar');
+    }
+    if (lastAgent) {
+      return lastAgent.get('avatar');
+    }
+
+    return null;
+  }
 );
 
 export const agentTypingDateSelector = createSelector(
@@ -151,6 +182,13 @@ export const messageIdsSelector = createSelector(
 export const lastMessageIdSelector = createSelector(
   messageIdsSelector,
   messageIds => (messageIds.size ? messageIds.max((a, b) => a - b) : null)
+);
+
+export const hasAssignedMessageSelector = createSelector(
+  messagesSelector,
+  messages => messages
+    .filter(message => message.get('content') && message.get('content').indexOf('message_assigned') !== -1)
+    .size > 0
 );
 
 // Uploading files selectors

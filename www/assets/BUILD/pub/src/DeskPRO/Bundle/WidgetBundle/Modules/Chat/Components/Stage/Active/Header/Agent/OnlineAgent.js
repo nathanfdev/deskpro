@@ -27,7 +27,7 @@ export class OnlineAgent extends React.Component {
           </ul>
         </div>
         <hr />
-        <h1 dangerouslySetInnerHTML={portalPhrases.getHtml('portal.chat.online_agent', {'{agentName}': agentName})} />
+        <h1 dangerouslySetInnerHTML={portalPhrases.getHtml('portal.chat.online_agent', { '{agentName}': agentName })} />
         <h2>{departmentName}</h2>
       </div>
     );

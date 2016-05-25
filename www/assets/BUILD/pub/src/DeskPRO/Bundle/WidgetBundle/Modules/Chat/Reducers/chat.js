@@ -21,7 +21,8 @@ const initialState = {
     id:        null,
     loaded:    false,
     canReopen: true,
-    info:      {}
+    info:      {},
+    lastAgent: null
   },
   uploading: {
     files:  [],
@@ -47,6 +48,7 @@ export default createReducer(initialState, {
     setFullPayload('chat.id'),
     setValue('chat.loaded', false),
     setValue('chat.info', {}),
+    setValue('chat.lastAgent', null),
     setValue('messages', []),
     setValue('feedbackStage', 'dialog')
   ),
@@ -54,11 +56,13 @@ export default createReducer(initialState, {
     id:        null,
     loaded:    false,
     canReopen: true,
-    info:      {}
+    info:      {},
+    lastAgent: null
   }),
   [actions.setLoaded]:      setValue('chat.loaded', true),
   [actions.unsetLoaded]:    setValue('chat.loaded', false),
   [actions.updateChatInfo]: setFullPayload('chat.info'),
+  [actions.setLastAgentId]: setFullPayload('chat.lastAgent'),
 
   [actions.optimisticToggleSendTranscript]: setFullPayload('chat.info.should_send_transcript'),
 

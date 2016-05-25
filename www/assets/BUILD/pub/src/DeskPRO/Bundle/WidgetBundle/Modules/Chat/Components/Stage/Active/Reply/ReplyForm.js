@@ -95,7 +95,9 @@ export class ReplyForm extends React.Component {
             imageDragging: true,
 
             placeholder: {
-              text: portalPhrases.get('portal.chat.message_type', { '{agentName}': this.props.agentName })
+              // replaced this.props.agentName to default 'Agent'
+              // because the placeholder text is not updated on re-assign agent properly (e.g. on change this.props.agentName value)
+              text: portalPhrases.get('portal.chat.message_type', { '{agentName}': 'Agent' })
             },
             toolbar: {
               buttons:                ['bold', 'italic', 'underline'],
@@ -122,14 +124,14 @@ export class ReplyForm extends React.Component {
           <div className="message-container message-container-with-attached-images">
             {attachedImagesCount
               ? <div>
-              <AttachmentContainer>
-                <AttachedImages />
-              </AttachmentContainer>
+                <AttachmentContainer>
+                  <AttachedImages />
+                </AttachmentContainer>
 
-              <div className="textarea-container">
-                {this.renderRte()}
+                <div className="textarea-container">
+                  {this.renderRte()}
+                </div>
               </div>
-            </div>
               : this.renderRte()
             }
 
@@ -157,9 +159,9 @@ export class ReplyForm extends React.Component {
             </span>
 
             {false /* disabled for now */ &&
-            <a href="#" className="dpdesignportal-chat-form-button" onClick={this.onScreenShare}>
-              <i className="fa fa-camera" /> {portalPhrases.get('portal.chat.screen_share')}
-            </a>
+              <a href="#" className="dpdesignportal-chat-form-button" onClick={this.onScreenShare}>
+                <i className="fa fa-camera" /> {portalPhrases.get('portal.chat.screen_share')}
+              </a>
             }
 
             <EmotionButton

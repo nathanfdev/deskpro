@@ -10,7 +10,7 @@ export class WaitingLoader extends React.Component {
     return (
       <div>
         <h1>{this.props.agentName} seems to have been disconnected</h1>
-        <h2>We're looking for a new agent lorel ipsum dolor sit amet.</h2>
+        <h2>We're looking for a new agent.</h2>
         <div className="search-dots">
           <div className="dot-1"></div>
           <div className="dot-2"></div>

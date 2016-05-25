@@ -18,7 +18,8 @@ import {
   chatIdSelector,
   agentIdSelector,
   dateEndedSelector,
-  needValidateEmailSelector
+  needValidateEmailSelector,
+  hasAssignedMessageSelector
 } from '../../Chat/Selectors/chat';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { addSessionCode } from './bootstrapActions';
@@ -96,10 +97,11 @@ export const openWidget = createAction(
     const agentId = agentIdSelector(state);
     const dateEnded = dateEndedSelector(state);
     const needValidateEmail = needValidateEmailSelector(state);
+    const hasAssignedMessage = hasAssignedMessageSelector(state);
 
     if (widgetHasChat && (liveDemo || agentsCounts > 0)) {
       if (chatId && !liveDemo) {
-        if (agentId || dateEnded) {
+        if (agentId || dateEnded || hasAssignedMessage) {
           history.replace('/chat/active');
         } else if (needValidateEmail) {
           history.replace('/chat/validation/email');

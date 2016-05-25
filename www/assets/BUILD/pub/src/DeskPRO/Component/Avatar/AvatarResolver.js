@@ -5,8 +5,8 @@ import { Gravatar } from './Gravatar';
 export class AvatarResolver extends React.Component {
 
   static propTypes = {
-    size: PropTypes.number,
-    avatar: PropTypes.object,
+    size:     PropTypes.number,
+    avatar:   PropTypes.object,
     children: PropTypes.node
   };
 

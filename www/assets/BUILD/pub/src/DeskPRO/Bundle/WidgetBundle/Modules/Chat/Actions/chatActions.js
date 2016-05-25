@@ -19,6 +19,7 @@ import {
   messageIdsSelector,
   attachmentsSelector,
   canReopenSelector,
+  lastAgentIdSelector
 } from '../Selectors/chat';
 
 // Chat setup actions
@@ -35,6 +36,15 @@ export const unsetChatId = createAction(
   () => {
     localStorage.removeItem('dpWidget.chat.chatId');
     localStorage.removeItem('dpWidget.chat.partial');
+    localStorage.removeItem('dpWidget.chat.lastAgentId');
+  }
+);
+
+export const setLastAgentId = createAction(
+  'WIDGET_CHAT_SET_LAST_AGENT',
+  lastAgentId => {
+    localStorage.setItem('dpWidget.chat.lastAgentId', lastAgentId);
+    return lastAgentId;
   }
 );
 
@@ -42,13 +52,23 @@ export const setLoaded = createAction('WIDGET_CHAT_SET_LOADED');
 export const unsetLoaded = createAction('WIDGET_CHAT_UNSET_LOADED');
 export const updateChatInfo = createAction(
   'WIDGET_CHAT_UPDATE_CHAT_INFO',
-  chatInfo => dispatch => {
+  chatInfo => (dispatch, getState) => {
+    const state = getState();
+    const lastAgentId = lastAgentIdSelector(state);
     const peopleIds = [];
+
     if (chatInfo.person) {
       peopleIds.push(chatInfo.person);
     }
     if (chatInfo.agent) {
       peopleIds.push(chatInfo.agent);
+
+      if (lastAgentId !== chatInfo.agent) {
+        dispatch(setLastAgentId(chatInfo.agent));
+      }
+    }
+    if (lastAgentId && lastAgentId !== chatInfo.agent) {
+      peopleIds.push(lastAgentId);
     }
 
     if (peopleIds.length) {
@@ -186,30 +206,10 @@ export const sendTranscriptInfo = createAction(
     const queryParams = compileParams(addSessionCode(state));
 
     const promise = widgetApi.sendPost(`DP_API/chats/${chatId}/transcript/info?${queryParams}`, params, { ...ajaxOptions });
-
     promise.success(() => dispatch(unlockPollingResponse()));
     promise.catch(() => dispatch(unlockPollingResponse()));
 
     return promise;
-  }
-);
-
-export const loadChatInfo = createAction(
-  'WIDGET_CHAT_LOAD_INFO',
-  chatId => (dispatch, getState) => {
-    if (!chatId) {
-      return null;
-    }
-
-    const state = getState();
-    const queryParams = compileParams(addSessionCode(state));
-
-    return new Promise((resolve, reject) => {
-      widgetApi
-        .sendGet(`DP_API/chats/${chatId}/polling?${queryParams}`, { ...ajaxOptions })
-        .success(response => resolve(response.chat_info && response.chat_info.data))
-        .catch(response => reject(response.data));
-    });
   }
 );
 
