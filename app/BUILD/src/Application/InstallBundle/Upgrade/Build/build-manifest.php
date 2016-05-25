@@ -1699,8 +1699,4 @@ return array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0200_oldtables2.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0200_oldtables2',
     ),
-    1460678424 => array(
-        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0900_post.php',
-        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0900_post',
-    ),
 );
