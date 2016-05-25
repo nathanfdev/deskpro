@@ -603,6 +603,8 @@ $text-faded: lighten($text-color, 20%);
 }
 
 .ticket-not-available {
+  border: none;
+  box-shadow: none;
   padding: 0 10px 10px;
   h1 {
     font-size: 18px;
