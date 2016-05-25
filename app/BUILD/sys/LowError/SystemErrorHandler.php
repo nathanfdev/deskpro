@@ -180,7 +180,7 @@ class SystemErrorHandler
         self::logErrorInfo($einfo);
     }
 
-    private static function shouldLog(\Exception $exception)
+    private static function shouldLog(/* Throwable */ $exception)
     {
         if (($exception instanceof HttpException
              && $exception->getStatusCode() >= 400
