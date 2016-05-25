@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Designer;
 
 use Application\DeskPRO\Entity\Blob;
@@ -50,42 +51,42 @@ class StylesManager
     /**
      * @var ThemeSet
      */
-    private $theme_set;
+    private $themeSet;
 
     /**
      * @var ThemeSet
      */
-    private $edit_theme_set;
+    private $editThemeSet;
 
     /**
      * @var ThemeSetCopyingService
      */
-    private $theme_set_copying_service;
+    private $themeSetCopyingService;
 
     /**
      * @var SassDocParser
      */
-    private $sass_doc_parser;
+    private $sassDocParser;
 
     /**
      * @param EntityManager          $em
-     * @param ThemeSetCopyingService $theme_set_copying_service
-     * @param SassDocParser          $sass_doc_parser
-     * @param ThemeSet               $theme_set
-     * @param ThemeSet               $edit_theme_set
+     * @param ThemeSetCopyingService $themeSetCopyingService
+     * @param SassDocParser          $sassDocParser
+     * @param ThemeSet               $themeSet
+     * @param ThemeSet               $editThemeSet
      */
     public function __construct(
         EntityManager $em,
-        ThemeSetCopyingService $theme_set_copying_service,
-        SassDocParser $sass_doc_parser,
-        ThemeSet $theme_set,
-        ThemeSet $edit_theme_set
+        ThemeSetCopyingService $themeSetCopyingService,
+        SassDocParser $sassDocParser,
+        ThemeSet $themeSet,
+        ThemeSet $editThemeSet
     ) {
-        $this->em                        = $em;
-        $this->theme_set_copying_service = $theme_set_copying_service;
-        $this->sass_doc_parser           = $sass_doc_parser;
-        $this->theme_set                 = $theme_set;
-        $this->edit_theme_set            = $edit_theme_set;
+        $this->em                     = $em;
+        $this->themeSetCopyingService = $themeSetCopyingService;
+        $this->sassDocParser          = $sassDocParser;
+        $this->themeSet               = $themeSet;
+        $this->editThemeSet           = $editThemeSet;
     }
 
     /**
@@ -113,15 +114,15 @@ class StylesManager
     }
 
     /**
-     * @param bool $add_default
+     * @param bool $addDefault
      *
      * @return array
      */
-    public function getEditThemeSetVariableValues($add_default = true)
+    public function getEditThemeSetVariableValues($addDefault = true)
     {
-        $values = $this->edit_theme_set->getOption(PortalStylesCompiler::$custom_vars_theme_set_option, []);
-        if ($add_default) {
-            $values = array_merge($this->sass_doc_parser->getVariableValues(), $values);
+        $values = $this->editThemeSet->getOption(PortalStylesCompiler::$customVarsThemeSetOption, []);
+        if ($addDefault) {
+            $values = array_merge($this->sassDocParser->getVariableValues(), $values);
         }
 
         return $values;
@@ -132,7 +133,7 @@ class StylesManager
      */
     public function commitEditThemeSet()
     {
-        $this->theme_set_copying_service->copy($this->edit_theme_set, $ts = $this->theme_set);
+        $this->themeSetCopyingService->copy($this->editThemeSet, $ts = $this->themeSet);
         $this->em->persist($ts);
         $this->em->flush();
     }
@@ -142,14 +143,14 @@ class StylesManager
      */
     public function discardEditThemeSet()
     {
-        $this->theme_set_copying_service->copy($this->theme_set, $ts = $this->edit_theme_set);
+        $this->themeSetCopyingService->copy($this->themeSet, $ts = $this->editThemeSet);
         $this->em->persist($ts);
         $this->em->flush();
     }
 
     /**
-     *
      * @param string $direction Stylesheet for which direction? LTR or RTL
+     *
      * @throws \Exception
      *
      * @return Blob|null
@@ -159,7 +160,7 @@ class StylesManager
         $direction = strtoupper($direction);
 
         $criteria = [
-            'theme_set' => $this->theme_set,
+            'theme_set' => $this->themeSet,
             'name'      => $direction === 'RTL' ? 'portal-rtl.css' : 'portal.css',
         ];
         if ($asset = $this->em->getRepository(ThemeSetAsset::class)->findOneBy($criteria)) {
@@ -170,8 +171,8 @@ class StylesManager
     }
 
     /**
-     *
      * @param string $direction Stylesheet for which direction? LTR or RTL
+     *
      * @throws \Exception
      *
      * @return Blob|null
@@ -181,7 +182,7 @@ class StylesManager
         $direction = strtoupper($direction);
 
         $criteria = [
-            'theme_set' => $this->edit_theme_set,
+            'theme_set' => $this->editThemeSet,
             'name'      => $direction === 'RTL' ? 'portal-rtl.css' : 'portal.css',
         ];
         if ($asset = $this->em->getRepository(ThemeSetAsset::class)->findOneBy($criteria)) {

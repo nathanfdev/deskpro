@@ -29,11 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Designer;
 
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\BlobStorage;
-use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use Doctrine\ORM\EntityManager;
@@ -48,7 +48,7 @@ class PortalStylesCompiler
     /**
      * @var string ThemeSet option name
      */
-    public static $custom_vars_theme_set_option = 'custom_vars';
+    public static $customVarsThemeSetOption = 'custom_vars';
 
     /**
      * @var EntityManager
@@ -58,22 +58,22 @@ class PortalStylesCompiler
     /**
      * @var ThemeSet
      */
-    private $edit_theme_set;
+    private $editThemeSet;
 
     /**
      * @var string path to the portal SCSS file
      */
-    private $styles_lrt_file_path;
+    private $stylesLrtFilePath;
 
     /**
      * @var string path to the portal SCSS file
      */
-    private $styles_rtl_file_path;
+    private $stylesRtlFilePath;
 
     /**
      * @var string
      */
-    private $custom_scss;
+    private $customScss;
 
     /**
      * @param EntityManager $em
@@ -92,14 +92,14 @@ class PortalStylesCompiler
         $custom_scss
     ) {
         $this->em = $em;
-        if (!$this->styles_lrt_file_path = realpath($styles_lrt_file_path)) {
-            throw new \Exception("Can't resolve a file from the given path: {$this->styles_lrt_file_path}");
+        if (!$this->stylesLrtFilePath = realpath($styles_lrt_file_path)) {
+            throw new \Exception("Can't resolve a file from the given path: {$this->stylesLrtFilePath}");
         }
-        if (!$this->styles_rtl_file_path = realpath($styles_rtl_file_path)) {
+        if (!$this->stylesRtlFilePath = realpath($styles_rtl_file_path)) {
             throw new \Exception("Can't resolve a file from the given path: {$this->$styles_rtl_file_path}");
         }
-        $this->custom_scss    = $custom_scss;
-        $this->edit_theme_set = $edit_theme_set;
+        $this->customScss   = $custom_scss;
+        $this->editThemeSet = $edit_theme_set;
     }
 
     /**
@@ -109,8 +109,8 @@ class PortalStylesCompiler
      */
     public function recompile(array $variables)
     {
-        $themeSet = $this->edit_theme_set;
-        $themeSet->setOption(self::$custom_vars_theme_set_option, $variables);
+        $themeSet = $this->editThemeSet;
+        $themeSet->setOption(self::$customVarsThemeSetOption, $variables);
 
         $this->em->persist($themeSet);
         $this->em->flush();
@@ -127,12 +127,12 @@ class PortalStylesCompiler
      */
     private function doRecompile($direction, array $variables)
     {
-        $themeSet = $this->edit_theme_set;
+        $themeSet = $this->editThemeSet;
 
         $css = $this->compileCss($direction, $variables);
 
         // Find existing or create a new blob storage for the custom Css
-        if (!$blob_storage = $this->getEditThemeSetCssBlobStorage($direction)) {
+        if (!$blobStorage = $this->getEditThemeSetCssBlobStorage($direction)) {
             $blob = new Blob();
             $blob->setFilename($direction === 'RTL' ? 'portal-rtl.css' : 'portal.css');
             $blob->blob_hash = md5($css);
@@ -149,14 +149,14 @@ class PortalStylesCompiler
         } else {
             // Saving in a new BlobStorage instance to use its' $id as CSS version to bypass caches
             $blob = $this->getEditThemeSetCssBlob($direction);
-            $this->em->remove($blob_storage);
+            $this->em->remove($blobStorage);
             $this->em->flush();
         }
 
-        $blob_storage          = new BlobStorage();
-        $blob_storage->blob_id = $blob->getId();
-        $blob_storage->data    = $css;
-        $this->em->persist($blob_storage);
+        $blobStorage = new BlobStorage();
+        $blobStorage->setBlobId($blob->getId());
+        $blobStorage->setData($css);
+        $this->em->persist($blobStorage);
         $this->em->flush();
     }
 
@@ -187,9 +187,9 @@ class PortalStylesCompiler
         $compiler = new StylesheetCompiler();
 
         return $compiler->compile(
-            $direction === 'RTL' ? $this->styles_rtl_file_path : $this->styles_lrt_file_path,
+            $direction === 'RTL' ? $this->stylesRtlFilePath : $this->stylesLrtFilePath,
             $variables,
-            $this->custom_scss
+            $this->customScss
         );
     }
 
@@ -201,7 +201,7 @@ class PortalStylesCompiler
     private function getEditThemeSetCssBlob($direction)
     {
         $criteria = [
-            'theme_set' => $this->edit_theme_set,
+            'theme_set' => $this->editThemeSet,
             'name'      => $direction === 'RTL' ? 'portal-rtl.css' : 'portal.css',
         ];
         if ($asset = $this->em->getRepository(ThemeSetAsset::class)->findOneBy($criteria)) {
