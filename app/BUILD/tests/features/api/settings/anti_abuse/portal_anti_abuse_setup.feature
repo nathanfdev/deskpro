@@ -125,7 +125,7 @@ Feature: Portal Anti-Abuse Setup
     "share_content": {
         "enabled": 1,
         "limit": 37,
-        "time": 908,
+        "time": 32,
         "response": "captcha"
     }
   },
@@ -157,7 +157,7 @@ Feature: Portal Anti-Abuse Setup
     "share_content": {
         "enabled": 1,
         "limit": 38,
-        "time": 909,
+        "time": 20,
         "response": "captcha"
     }
   }
@@ -205,7 +205,7 @@ Feature: Portal Anti-Abuse Setup
 
     And the JSON node "data.user_rate_limit.share_content.enabled" should be equal to 1
     And the JSON node "data.user_rate_limit.share_content.limit" should be equal to 37
-    And the JSON node "data.user_rate_limit.share_content.time" should be equal to 908
+    And the JSON node "data.user_rate_limit.share_content.time" should be equal to 32
     And the JSON node "data.user_rate_limit.share_content.response" should be equal to "captcha"
 
     And the JSON node "data.guest_rate_limit.submit_ticket.enabled" should be equal to 0
@@ -230,5 +230,5 @@ Feature: Portal Anti-Abuse Setup
 
     And the JSON node "data.guest_rate_limit.share_content.enabled" should be equal to 1
     And the JSON node "data.guest_rate_limit.share_content.limit" should be equal to 38
-    And the JSON node "data.guest_rate_limit.share_content.time" should be equal to 909
+    And the JSON node "data.guest_rate_limit.share_content.time" should be equal to 20
     And the JSON node "data.guest_rate_limit.share_content.response" should be equal to "captcha"
