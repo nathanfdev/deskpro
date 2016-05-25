@@ -2,15 +2,21 @@ services:
 
   action_engine.feedback:
     class: DeskPRO\Bundle\AppBundle\ActionEngine\Services\FeedbackApplicatorService
-    arguments: ["@doctrine.orm.default_entity_manager"]
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@validator"
 
   action_engine.feedback_comments:
     class: DeskPRO\Bundle\AppBundle\ActionEngine\Services\FeedbackCommentApplicatorService
-    arguments: ["@doctrine.orm.default_entity_manager"]
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@validator"
 
   action_engine.tasks:
     class: DeskPRO\Bundle\AppBundle\ActionEngine\Services\TaskApplicatorService
-    arguments: ["@doctrine.orm.default_entity_manager"]
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@validator"
 
   action_engine.tickets:
     class: DeskPRO\Bundle\AppBundle\ActionEngine\Services\TicketApplicatorService

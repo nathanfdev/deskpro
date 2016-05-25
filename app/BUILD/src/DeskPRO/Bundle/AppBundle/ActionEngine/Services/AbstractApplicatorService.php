@@ -32,23 +32,29 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\ActionCollection\ActionCollection;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionInitializationInterface;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionTransformer;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Utils\ActionTypeCodes;
+use DeskPRO\Bundle\AppBundle\Validator\ValidatorErrorsException;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 abstract class AbstractApplicatorService implements ApplicatorServiceInterface
 {
-    protected $class;
+    /** @var  string */
+   protected $class;
+
+    /** @var  string */
     protected $namespace;
+
     /** @var EntityManager */
     protected $em;
-    /** @var ActionTransformer */
-    protected $transformer;
 
-    public function __construct(EntityManager $em)
+    /** @var ValidatorInterface $validator */
+    protected $validator;
+
+    public function __construct(EntityManager $em, ValidatorInterface $validator)
     {
-        $this->em          = $em;
-        $this->transformer = new ActionTransformer();
+        $this->em        = $em;
+        $this->validator = $validator;
     }
 
     public function apply(array $ids, array $params)
@@ -59,6 +65,7 @@ abstract class AbstractApplicatorService implements ApplicatorServiceInterface
             foreach ($actionCollection->getApplicators() as $applicator) {
                 $applicator->apply($object);
             }
+            $this->validateObject($object);
             $this->saveObject($object);
         }
         $this->em->flush();
@@ -93,6 +100,15 @@ abstract class AbstractApplicatorService implements ApplicatorServiceInterface
             ->setParameter('ids', $ids);
 
         return $qb->getQuery()->getResult();
+    }
+
+    protected function validateObject($object)
+    {
+        $errors = $this->validator->validate($object);
+
+        if ($errors->count() > 0) {
+            throw new ValidatorErrorsException($errors);
+        }
     }
 
     protected function saveObject($object)

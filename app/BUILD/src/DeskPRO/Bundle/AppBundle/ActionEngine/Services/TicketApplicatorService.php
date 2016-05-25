@@ -32,23 +32,15 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Bundle\AppBundle\Validator\ValidatorErrorsException;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Validator\Validator\RecursiveValidator;
 
 class TicketApplicatorService extends AbstractApplicatorService
 {
     protected $class     = Ticket::class;
     protected $namespace = 'Tickets';
 
-    /** @var  EntityManager */
-    protected $em;
-
     /** @var  TicketManager */
     protected $tm;
-
-    /** @var RecursiveValidator $validator */
-    protected $validator;
 
     /**
      * @var ContainerInterface
@@ -59,8 +51,9 @@ class TicketApplicatorService extends AbstractApplicatorService
     {
         $this->container = $container;
         $this->tm        = $container->get('ticket_manager');
-        $this->validator = $container->get('validator');
-        parent::__construct($container->get('doctrine.orm.default_entity_manager'));
+        $em              = $container->get('doctrine.orm.default_entity_manager');
+        $validator       = $container->get('validator');
+        parent::__construct($em, $validator);
     }
 
     /**
@@ -100,8 +93,6 @@ class TicketApplicatorService extends AbstractApplicatorService
      */
     protected function saveObject($ticket)
     {
-        $this->validateTicket($ticket);
-
         $context = $this->tm->createAgentExecutorContext(null, 'mass_actions', 'api');
         $this->tm->saveTicket($ticket, $context);
     }
@@ -109,7 +100,7 @@ class TicketApplicatorService extends AbstractApplicatorService
     /**
      * @param Ticket $ticket
      */
-    protected function validateTicket(Ticket $ticket)
+    protected function validateObject($ticket)
     {
         $errors = $this->validator->validate(
             $ticket,
@@ -117,9 +108,6 @@ class TicketApplicatorService extends AbstractApplicatorService
         );
 
         if ($errors->count() > 0) {
-            foreach ($errors as $error) {
-                echo $error;
-            }
             throw new ValidatorErrorsException($errors);
         }
     }
