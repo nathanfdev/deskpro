@@ -20,7 +20,7 @@
                     -
 
                     <span class="comments"><i class="fa fa-comments"></i>
-                        <a href="#comments">{{ phrase('portal.general.comments-count', {count: post.num_comments}) }}</a>
+                        <a href="#comments">{{ phrase('portal.general.comments-count', {count: post.calc_num_comments}) }}</a>
                     </span>
 
                     {% if post.category %}
@@ -53,10 +53,10 @@
 
     {% show related_content %}
 
-    {% if post.num_comments or new_comment_form %}
+    {% if post.calc_num_comments or new_comment_form %}
         <div class="comment-box" id="comments">
             <div class="titled-header">
-                <h1>{{ phrase('portal.general.comments-title', {count: post.num_comments}) }}</h1>
+                <h1>{{ phrase('portal.general.comments-title', {count: post.calc_num_comments}) }}</h1>
             </div>
             {% show news_comments %}
         </div>
