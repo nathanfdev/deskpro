@@ -39,6 +39,7 @@ return array(
     'portal.flashes.download_subscribe'                     => 'You have successfully subscribed to this download. You will be notified when it is updated or when there is a new comment.',
     'portal.flashes.download_unsubscribe'                   => 'Successfully unsubscribed from this download.',
     'portal.flashes.download_unsubscribe_everything'        => 'Unsubscribed from all downloads subscriptions',
+    'portal.flashes.email_sent'                             => 'Your email has been sent',
     'portal.flashes.feedback_login'                         => 'You should log in to vote',
     'portal.flashes.feedback_subscribe'                     => 'You have successfully subscribed to this feedback item. You will be notified when it is updated or when there is a new comment.',
     'portal.flashes.feedback_unsubscribe'                   => 'Successfully unsubscribed from this feedback item.',

@@ -57,6 +57,7 @@ class LanguageController extends AbstractApiController
         $phrases = [
             'portal.tickets.related_articles_title',
             'portal.tickets.related_articles_desc',
+            'portal.general.btn-share',
             'portal.general.prop_date',
             'portal.general.prop_views',
             'portal.general.prop_rating',
@@ -90,6 +91,7 @@ class LanguageController extends AbstractApiController
             'portal.general.start-chat',
             'portal.general.agents-available',
             'portal.general.no-agents-available',
+            'portal.general.share-this',
             'portal.general.toggle_on',
             'portal.general.toggle_off',
             'portal.forms.error_upload_file',

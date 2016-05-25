@@ -26,40 +26,51 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\Portal;
+/**
+ * DeskPRO.
+ */
 
-use DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\RateLimitGroupType;
-use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalUserRateLimit;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+namespace DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
+
+use DeskPRO\Bundle\AppBundle\Security\Voter\AbstractVoter;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 /**
- * Class PortalUseRateLimitType.
+ * Concerned only with wether or not a person can use a section / module of the portal.
  */
-class PortalUseRateLimitType extends AbstractType
+class ShareContentVoter extends AbstractVoter
 {
+    const SHARE_ARTICLES = 'SHARE_ARTICLES';
+
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    protected function supports($attribute, $subject)
     {
-        $builder
-            ->add('submit_ticket', RateLimitGroupType::class)
-            ->add('submit_feedback', RateLimitGroupType::class)
-            ->add('submit_comment', RateLimitGroupType::class)
-            ->add('upload_attachment', RateLimitGroupType::class)
-            ->add('share_content', RateLimitGroupType::class)
-        ;
+        return in_array($attribute, [
+            self::SHARE_ARTICLES,
+        ]);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    protected function voteOnAttribute($attribute, $object, TokenInterface $token)
     {
-        $resolver->setDefaults([
-            'data_class' => PortalUserRateLimit::class,
-        ]);
+        $user = $token->getUser();
+
+        if ($this->isLoggedIn($user)) {
+            $permissionBag = $this->getPortalPermissionsManager()->getPermissionsBagForPerson($user);
+        } else {
+            $permissionBag = $this->getPortalPermissionsManager()->getPermissionsBagForGuest();
+        }
+
+        switch ($attribute) {
+            case static::SHARE_ARTICLES:
+                // TODO provide some actual rights
+                return $this->isLoggedIn($user);
+        }
+
+        return false;
     }
 }

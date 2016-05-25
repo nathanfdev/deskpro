@@ -39,6 +39,7 @@ class CaptchaSettingsResolver extends AbstractBrandAwareSettingsResolver impleme
     const COMMENTS = 'user.captcha.comments';
     const FEEDBACK = 'user.captcha.feedback';
     const REGISTER = 'user.captcha.register';
+    const SHARING  = 'user.captcha.sharing';
 
     const USE_RECAPTCHA        = 'core.use_recaptcha2';
     const RECAPTCHA_SITE_KEY   = 'core.recaptcha2_site_key';
@@ -60,6 +61,7 @@ class CaptchaSettingsResolver extends AbstractBrandAwareSettingsResolver impleme
             ->setComments($this->getSetting(self::COMMENTS))
             ->setFeedback($this->getSetting(self::FEEDBACK))
             ->setRegister($this->getSetting(self::REGISTER))
+            ->setSharing($this->getSetting(self::SHARING))
         ;
 
         return $model;

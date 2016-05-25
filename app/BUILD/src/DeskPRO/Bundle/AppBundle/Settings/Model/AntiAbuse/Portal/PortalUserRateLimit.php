@@ -73,6 +73,15 @@ class PortalUserRateLimit
     private $uploadAttachment;
 
     /**
+     * Limits for sharing content.
+     *
+     * @var RateLimitGroup
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
+     */
+    private $shareContent;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -81,6 +90,7 @@ class PortalUserRateLimit
         $this->submitFeedback   = new RateLimitGroup();
         $this->submitComment    = new RateLimitGroup();
         $this->uploadAttachment = new RateLimitGroup();
+        $this->shareContent     = new RateLimitGroup();
     }
 
     /**
@@ -113,5 +123,13 @@ class PortalUserRateLimit
     public function getUploadAttachment()
     {
         return $this->uploadAttachment;
+    }
+
+    /**
+     * @return RateLimitGroup
+     */
+    public function getShareContent()
+    {
+        return $this->shareContent;
     }
 }

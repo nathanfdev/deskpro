@@ -200,6 +200,33 @@
                 </div>
             </div>
         </article>
+
+        <article class="form-horizontal dp-form">
+            <div class="panel panel-innertable">
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="inner-group">
+                            <label>
+                                <input type="checkbox" ng-model="settings.user_rate_limit.share_content.enabled" />
+                                <h4>Share Content Rate Limiting</h4>
+                            </label>
+                            <div ng-show="settings.user_rate_limit.share_content.enabled">
+                                After a user has shared
+                                <input type="number" min="1" ng-model="settings.user_rate_limit.share_content.limit" class="form-control" style="width: 60px;" />
+                                contents within
+                                <input type="number" min="1" ng-model="settings.user_rate_limit.share_content.time" class="form-control" style="width: 60px;" />
+                                minutes,
+                                <select ng-model="settings.user_rate_limit.share_content.response">
+                                    <option value="captcha">show a CAPTCHA to the user </option>
+                                    <option value="lockout">disable login form for the user</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </article>
     </section>
 
     <section class="dp-paneblock dp-listpane">
@@ -304,6 +331,33 @@
                                 <input type="number" min="1" ng-model="settings.guest_rate_limit.upload_attachment.time" class="form-control" style="width: 60px;" />
                                 minutes,
                                 <select ng-model="settings.guest_rate_limit.upload_attachment.response">
+                                    <option value="captcha">show a CAPTCHA to the user </option>
+                                    <option value="lockout">disable login form for the user</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <article class="form-horizontal dp-form">
+            <div class="panel panel-innertable">
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="inner-group">
+                            <label>
+                                <input type="checkbox" ng-model="settings.guest_rate_limit.share_content.enabled" />
+                                <h4>Share Content Rate Limiting</h4>
+                            </label>
+                            <div ng-show="settings.guest_rate_limit.share_content.enabled">
+                                After a user has shared
+                                <input type="number" min="1" ng-model="settings.guest_rate_limit.share_content.limit" class="form-control" style="width: 60px;" />
+                                contents within
+                                <input type="number" min="1" ng-model="settings.guest_rate_limit.share_content.time" class="form-control" style="width: 60px;" />
+                                minutes,
+                                <select ng-model="settings.guest_rate_limit.share_content.response">
                                     <option value="captcha">show a CAPTCHA to the user </option>
                                     <option value="lockout">disable login form for the user</option>
                                 </select>

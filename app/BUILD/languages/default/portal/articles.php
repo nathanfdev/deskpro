@@ -28,10 +28,12 @@
 
 return [
     'portal.articles.by-line'         => 'By {{name}} on {{date}}',
+    'portal.articles.link'            => 'Link: <a href="{{link}}">{{link}}</a>',
     'portal.articles.none'            => 'No articles yet',
     'portal.articles.search-title'    => 'Knowledgebase',
     'portal.articles.section-desc'    => 'Our knowledgebase contains articles written by our support agents to help you.',
     'portal.articles.section-title'   => 'Knowledgebase',
+    'portal.articles.share-by-email'  => 'Share this article by email:',
     'portal.articles.view-x-articles' => 'View 1 article|View {{count}} articles',
     'portal.articles.x-articles'      => '1 article|{{count}} articles',
     'portal.articles.view-as-agent'   => 'You can see this page because you are an agent. Normal users will not be able to view this page.',

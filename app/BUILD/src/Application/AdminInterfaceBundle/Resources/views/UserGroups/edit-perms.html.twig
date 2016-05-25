@@ -181,6 +181,13 @@
 
 			{% endif %}
 
+			<tr>
+				<td width="100%">{{ phrase('admin.user_groups.can_share_articles') }}</td>
+				<td>
+					{{ _self.perm_toggle('article', 'share') }}
+				</td>
+			</tr>
+
 		</tbody>
 	</table>
 

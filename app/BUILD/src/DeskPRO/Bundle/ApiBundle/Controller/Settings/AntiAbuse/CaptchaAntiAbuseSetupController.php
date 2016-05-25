@@ -63,6 +63,7 @@ class CaptchaAntiAbuseSetupController extends AbstractAntiAbuseSetupController
             ->updateSetting(CaptchaSettingsResolver::COMMENTS, $model->getComments())
             ->updateSetting(CaptchaSettingsResolver::FEEDBACK, $model->getFeedback())
             ->updateSetting(CaptchaSettingsResolver::REGISTER, $model->getRegister())
+            ->updateSetting(CaptchaSettingsResolver::SHARING, $model->getSharing())
         ;
     }
 }

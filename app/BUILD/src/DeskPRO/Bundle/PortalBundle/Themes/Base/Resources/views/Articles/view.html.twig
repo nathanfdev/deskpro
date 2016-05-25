@@ -11,9 +11,10 @@
       <div class="header-button-container">
         <div class="header-buttons">
           {% show kb_subscription_link %}
-          {#<a href="#">{{ phrase('portal.general.btn-email') }} <i class="fa fa-envelope"></i></a>#}
-          {#<a href="#">{{ phrase('portal.general.btn-print') }} <i class="fa fa-print"></i></a>#}
-          <a href="{{ path('portal_articles_pdf', {slug: article.slug}) }}">{{ phrase('portal.general.btn-download-pdf') }} <i class="fa fa-file-pdf-o"></i></a>
+          {% if can_share %}
+            <a href="{{ path('portal_articles_share', {slug: article.slug}) }}" class="share-button"><span>{{ phrase('portal.general.btn-share') }}</span> <i class="fa fa-share"></i></a>
+          {%  endif %}
+          <a href="{{ path('portal_articles_pdf', {slug: article.slug}) }}"><span>{{ phrase('portal.general.btn-download-pdf') }}</span> <i class="fa fa-file-pdf-o"></i></a>
         </div>
       </div>
 

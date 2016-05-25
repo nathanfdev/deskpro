@@ -26,31 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\AppBundle\AntiAbuse\Event;
+
+use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
+
 /**
- * DeskPRO.
- *
- * @category People
+ * Check vs "share content" feature abuse.
  */
-
-namespace Application\DeskPRO\People\UserPermissions\Value;
-
-class ArticlePermissions implements PermissionValueInterface
+class ShareContentAbuseCheck extends AntiAbuseEvent
 {
-    /** @var bool */
-    public $use = false;
-    /** @var bool */
-    public $rate = false;
-    /** @var bool */
-    public $comment = false;
-    /** @var bool */
-    public $no_comment_validate = false;
-    /** @var bool */
-    public $share = false;
-
-    public function getNames()
+    /**
+     * @return string
+     */
+    public function getType()
     {
-        return [
-            'use', 'rate', 'comment', 'no_comment_validate', 'share',
-        ];
+        return AntiAbuse::ACTION_SHARE_CONTENT;
     }
 }

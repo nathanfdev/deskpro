@@ -103,6 +103,15 @@ class CaptchaAntiAbuseSettings
     private $register = self::TYPE_BASED_RATE_LIMITS;
 
     /**
+     * Use it for sharing.
+     *
+     * @var bool|string
+     *
+     * @JMS\Type("string")
+     */
+    private $sharing = self::TYPE_BASED_RATE_LIMITS;
+
+    /**
      * @return mixed
      */
     public function getUseRecaptcha2()
@@ -238,6 +247,26 @@ class CaptchaAntiAbuseSettings
     public function setRegister($register)
     {
         $this->register = $register;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSharing()
+    {
+        return $this->sharing;
+    }
+
+    /**
+     * @param mixed $sharing
+     *
+     * @return $this
+     */
+    public function setSharing($sharing)
+    {
+        $this->sharing = $sharing;
 
         return $this;
     }

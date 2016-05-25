@@ -206,3 +206,11 @@ services:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatFeedbackType
     tags:
       - { name: form.type }
+
+  form.share_article:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\ShareArticleType
+    tags:
+      - { name: form.type, alias: share_article }
+    arguments:
+      - "@captcha_decider"
+      - "@language_manager"

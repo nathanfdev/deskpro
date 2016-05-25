@@ -31,9 +31,11 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ShareContentVoter;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -237,6 +239,8 @@ class ArticlesController extends AbstractController
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedContent($article, $this->getUser());
         }
 
+        $canShare = $this->isGranted(ShareContentVoter::SHARE_ARTICLES);
+
         //
         // RENDER THEME
         //
@@ -254,6 +258,7 @@ class ArticlesController extends AbstractController
                 'new_comment_form'   => $newCommentForm ? $newCommentForm->createView() : null,
                 'show_rating_counts' => $showRatingCounts,
                 'rating_counts'      => $ratingCounts,
+                'can_share'          => $canShare,
             ]
         );
     }
@@ -421,5 +426,54 @@ class ArticlesController extends AbstractController
         );
 
         return $pdfRenderer->generateFile($contentHtml->getContent(), $article->getTitle().'.pdf');
+    }
+
+    /**
+     * @Route("/kb/articles/share/{slug}", name="portal_articles_share")
+     * @ParamConverter(name="article", converter="deskpro_slug")
+     * @Security("is_granted('USE_ARTICLES') and is_granted('SHARE_ARTICLES') and is_granted('VIEW_ARTICLE', article)")
+     *
+     * @param Request $request
+     * @param Article $article
+     *
+     * @return Response
+     */
+    public function shareAction(Request $request, Article $article)
+    {
+        $form = $this->createForm('share_article');
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            //            $this->runAntiAbuseCheck($request);
+
+            $emails = [];
+            $email  = $form->getViewData()['email'];
+            /** @var Person $person */
+            if ($person = $this->getEm()->getRepository(Person::class)->findOneByEmail($email)) {
+                $emails[] = $person;
+            } else {
+                $emails[] = ['address' => $email, 'name' => $form->getViewData()['name']];
+            }
+
+            if ($form->getViewData()['send_myself']) {
+                $emails[] = $this->getUser();
+            }
+
+            $this->getEmailSender()->sendShareArticle($article, $this->getUser(), $emails, $form->getViewData());
+
+            $this->addFlash('success', $this->phrase('portal.flashes.email_sent'));
+
+            return $this->redirectToRoute('portal_kb_view', ['slug' => $article->getSlug()]);
+        }
+
+        return $this->renderThemeView(
+            'Theme:Articles:share.html.twig',
+            [
+                'article'     => $article,
+                'form'        => $form->createView(),
+                'form_errors' => $form->isSubmitted() ? $form->getErrors() : [],
+            ]
+        );
     }
 }

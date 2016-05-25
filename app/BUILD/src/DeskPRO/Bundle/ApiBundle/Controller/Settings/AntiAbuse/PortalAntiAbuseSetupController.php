@@ -93,5 +93,6 @@ class PortalAntiAbuseSetupController extends AbstractAntiAbuseSetupController
         $this->updateRateLimitGroup($userRateLimit->getSubmitFeedback(), 'rate_limit.submit_feedback'.$userType);
         $this->updateRateLimitGroup($userRateLimit->getSubmitComment(), 'rate_limit.submit_comment'.$userType);
         $this->updateRateLimitGroup($userRateLimit->getUploadAttachment(), 'rate_limit.upload_attachment'.$userType);
+        $this->updateRateLimitGroup($userRateLimit->getShareContent(), 'rate_limit.share_content'.$userType);
     }
 }

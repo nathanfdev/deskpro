@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Form\Captcha;
 
 use Application\DeskPRO\Entity\Person;
@@ -36,6 +37,7 @@ use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\PasswordResetAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\RegistrationAbuseCheck;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\ShareContentAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitFeedbackAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitTicketAbuseCheck;
@@ -120,6 +122,11 @@ class CaptchaDecider
         return $this->shouldRequireCaptcha(AntiAbuse::ACTION_RESET_PASSWORD, 'user.captcha.register');
     }
 
+    public function shouldRequireShareCaptchaForCurrentPerson()
+    {
+        return $this->shouldRequireCaptcha(AntiAbuse::ACTION_SHARE_CONTENT, 'user.captcha.share_content');
+    }
+
     protected function shouldRequireCaptcha($where, $setting_name)
     {
         // We might not have a request at all (e.g. during tests)
@@ -158,6 +165,9 @@ class CaptchaDecider
                 break;
             case AntiAbuse::ACTION_RESET_PASSWORD:
                 $check = new PasswordResetAbuseCheck($this->getCurrentPerson(), $this->getRequestIp());
+                break;
+            case AntiAbuse::ACTION_SHARE_CONTENT:
+                $check = new ShareContentAbuseCheck($this->getCurrentPerson(), $this->getRequestIp());
                 break;
             default:
                 throw new \InvalidArgumentException('CaptchaDecider does not support $where = "'.$where.'"');

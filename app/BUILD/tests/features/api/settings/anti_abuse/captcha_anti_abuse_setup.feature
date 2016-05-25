@@ -15,6 +15,7 @@ Feature: Captcha Anti-Abuse Setup
     And the JSON node "data.comments" should be equal to 0
     And the JSON node "data.feedback" should be equal to 0
     And the JSON node "data.register" should be equal to 0
+    And the JSON node "data.sharing" should be equal to 0
 
   Scenario: I update configuration
     When I send a PUT request to "/api/v2/settings/anti_abuse/captcha" with body:
@@ -26,7 +27,8 @@ Feature: Captcha Anti-Abuse Setup
   "tickets": "everyone",
   "comments": "guests",
   "feedback": "everyone",
-  "register": "guests"
+  "register": "guests",
+  "sharing": "everyone"
 }
     """
     Then the response status code should be 204
@@ -41,6 +43,7 @@ Feature: Captcha Anti-Abuse Setup
     And the JSON node "data.comments" should be equal to "guests"
     And the JSON node "data.feedback" should be equal to "everyone"
     And the JSON node "data.register" should be equal to "guests"
+    And the JSON node "data.sharing" should be equal to "everyone"
 
     Scenario: I check validation
       When I send a PUT request to "/api/v2/settings/anti_abuse/captcha" with body:
