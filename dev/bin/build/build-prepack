@@ -190,6 +190,7 @@ find . -type d -maxdepth 1 ! \( \
         -o -name 'bi-app-sass' \
         -o -name 'html5shiv' \
         -o -name 'font-awesome' \
+        -o -name 'hover.css' \
 \) -exec rm -rf {} \;
 
 ########################################################################################################################
