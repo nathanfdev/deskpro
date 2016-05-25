@@ -140,9 +140,9 @@ class AdvancedEditsManager
 
 
 CODE;
-
-            return $scss;
         }
+
+        return $scss;
     }
 
     /**
@@ -198,12 +198,14 @@ CODE;
     }
 
     /**
+     * @param string $name
+     * @param string $tag
      * @param string $code
      */
     private function saveThemeSetAsset($name, $tag, $code)
     {
-        $storage       = $this->findOrCreateBlobStorage($name, $tag, md5($code));
-        $storage->data = $code;
+        $storage = $this->findOrCreateBlobStorage($name, $tag, md5($code));
+        $storage->setData($code);
         $this->em->persist($storage);
         $this->em->flush();
     }
@@ -249,8 +251,8 @@ CODE;
 
         $storage = $this->em->getRepository(BlobStorage::class)->findOneBy(['blob_id' => $blob->getId()]);
         if (!$storage) {
-            $storage          = new BlobStorage();
-            $storage->blob_id = $blob->getId();
+            $storage = new BlobStorage();
+            $storage->setBlobId($blob->getId());
         }
 
         return $storage;
@@ -264,6 +266,7 @@ CODE;
      */
     private function findBlobStorage($name, ThemeSet $theme_set = null)
     {
+        /** @var ThemeSetAsset $asset */
         if ($asset = $this->em->getRepository(ThemeSetAsset::class)->findOneBy(compact('name', 'theme_set'))) {
             if ($blob = $asset->getBlob()) {
                 return $this->em->getRepository(BlobStorage::class)->findOneBy(['blob_id' => $blob->getId()]);
