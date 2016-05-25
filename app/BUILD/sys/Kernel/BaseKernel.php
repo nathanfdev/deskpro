@@ -357,12 +357,12 @@ CODE;
     }
 
     /**
-     * Remove all container references from all loaded services.
-     *
      * @param Container $container
      */
     private function cleanupContainer(Container $container)
     {
+        // Remove all container references from all loaded services
+
         $containerReflection        = new \ReflectionObject($container);
         $servicesPropertyReflection = $containerReflection->getProperty('services');
         $servicesPropertyReflection->setAccessible(true);
@@ -384,5 +384,17 @@ CODE;
             }
         }
         $servicesPropertyReflection->setValue($container, []);
+
+        // Close mysql connections
+
+        if ($container->has('doctrine.orm.default_entity_manager')) {
+            $container->get('doctrine.orm.default_entity_manager')->getConnection()->close();
+        }
+        if ($container->has('doctrine.orm.system_entity_manager')) {
+            $container->get('doctrine.orm.system_entity_manager')->getConnection()->close();
+        }
+        if ($container->has('doctrine.orm.audit_entity_manager')) {
+            $container->get('doctrine.orm.audit_entity_manager')->getConnection()->close();
+        }
     }
 }
