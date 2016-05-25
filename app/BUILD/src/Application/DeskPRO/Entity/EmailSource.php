@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -382,6 +383,9 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         $current = null;
         $headers = explode("\n", $headers);
         foreach ($headers as $str) {
+            if (empty($str)) {
+                continue;
+            }
             if (preg_match('/^[A-Za-z]/', $str[0])) {
                 $parts                         = explode(':', $str);
                 $header                        = strtolower($parts[0]);
