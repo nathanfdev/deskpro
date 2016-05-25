@@ -446,10 +446,12 @@ class CustomDataType extends AbstractType
 
                 // datetime default value stored as string, convert to timestamp
                 if ($customDef->isDateType()) {
-                    try {
-                        $defaultValue = (new \DateTime($defaultValue))->getTimestamp();
-                    } catch (\Exception $e) {
-                        $defaultValue = null;
+                    if ($defaultValue) {
+                        try {
+                            $defaultValue = (new \DateTime($defaultValue))->getTimestamp();
+                        } catch (\Exception $e) {
+                            $defaultValue = null;
+                        }
                     }
                 }
 
