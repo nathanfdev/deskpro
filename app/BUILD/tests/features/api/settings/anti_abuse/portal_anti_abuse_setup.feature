@@ -45,7 +45,7 @@ Feature: Portal Anti-Abuse Setup
 
     And the JSON node "data.user_rate_limit.share_content.enabled" should be equal to 1
     And the JSON node "data.user_rate_limit.share_content.limit" should be equal to 3
-    And the JSON node "data.user_rate_limit.share_content.time" should be equal to 900
+    And the JSON node "data.user_rate_limit.share_content.time" should be equal to 15
     And the JSON node "data.user_rate_limit.share_content.response" should be equal to "captcha"
 
     And the JSON node "data.guest_rate_limit.submit_ticket.enabled" should be equal to 1
@@ -70,7 +70,7 @@ Feature: Portal Anti-Abuse Setup
 
     And the JSON node "data.guest_rate_limit.share_content.enabled" should be equal to 1
     And the JSON node "data.guest_rate_limit.share_content.limit" should be equal to 3
-    And the JSON node "data.guest_rate_limit.share_content.time" should be equal to 900
+    And the JSON node "data.guest_rate_limit.share_content.time" should be equal to 15
     And the JSON node "data.guest_rate_limit.share_content.response" should be equal to "captcha"
 
   Scenario: I update configuration
