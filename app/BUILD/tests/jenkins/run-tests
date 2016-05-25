@@ -31,9 +31,9 @@ echo "Running small test suites in parallel (phpunit, phpspec, jest, beaht insta
 (export DP_PARALLEL_TESTING_PROCESS_NUM=1; bin/phpunit --testsuite DeskPRO &> "$LOGS_DIR/phpunit.txt"; bin/phpunit --testsuite DeskPRO-TermEngine &> "$LOGS_DIR/phpunit-term-engine.txt"; bin/phpunit --testsuite DeskPRO-Portal &> "$LOGS_DIR/phpunit-portal.txt") &
 (bin/phpspec run --format=dot &> "$LOGS_DIR/phpspec.txt") &
 (cd ../../../www/assets/BUILD/pub/ && npm test &> "$LOGS_DIR/jest.txt") &
-(export DP_PARALLEL_TESTING_PROCESS_NUM=2 && bin/behat --profile=install --tags="~@skip-ci" &> "$LOGS_DIR/behat-install.txt") &
-(export DP_PARALLEL_TESTING_PROCESS_NUM=3 && bin/behat --profile=system-api --tags="~@skip-ci" &> "$LOGS_DIR/behat-system-api.txt") &
-(bin/behat --profile=production &> "$LOGS_DIR/behat-production.txt") &
+(export DP_PARALLEL_TESTING_PROCESS_NUM=2 && bin/behat --profile=install --tags="~@skip-ci" --verbose &> "$LOGS_DIR/behat-install.txt") &
+(export DP_PARALLEL_TESTING_PROCESS_NUM=3 && bin/behat --profile=system-api --tags="~@skip-ci" --verbose &> "$LOGS_DIR/behat-system-api.txt") &
+(bin/behat --verbose --profile=production &> "$LOGS_DIR/behat-production.txt") &
 wait
 echo "--> Done in $SECONDS seconds"
 
@@ -46,7 +46,7 @@ jenkins/tag-features --tag=parallel --num=$API_THREADS_NUM --path=../features/ap
 SECONDS=0
 echo "Running behat api suite in $API_THREADS_NUM parallel threads"
 for ((i=1;i<=$API_THREADS_NUM;i++)); do
-    (export DP_PARALLEL_TESTING_PROCESS_NUM=$i && bin/behat --profile=api --tags="@parallel-$i&&~@skip-ci" &> "$LOGS_DIR/behat-api-$i.txt") &
+    (export DP_PARALLEL_TESTING_PROCESS_NUM=$i && bin/behat --profile=api --tags="@parallel-$i&&~@skip-ci" --verbose &> "$LOGS_DIR/behat-api-$i.txt") &
 done
 wait
 echo "--> Done in $SECONDS seconds"
@@ -60,7 +60,7 @@ jenkins/tag-features --tag=parallel --num=$PORTAL_THREADS_NUM --path=../features
 SECONDS=0
 echo "Running behat portal suite in $PORTAL_THREADS_NUM parallel threads"
 for ((i=1;i<=$PORTAL_THREADS_NUM;i++)); do
-    (export DP_PARALLEL_TESTING_PROCESS_NUM=$i && bin/behat --profile=portal --tags="@parallel-$i&&~@skip-ci" &> "$LOGS_DIR/behat-portal-$i.txt") &
+    (export DP_PARALLEL_TESTING_PROCESS_NUM=$i && bin/behat --profile=portal --tags="@parallel-$i&&~@skip-ci" --verbose &> "$LOGS_DIR/behat-portal-$i.txt") &
 done
 wait
 echo "--> Done in $SECONDS seconds"
