@@ -27,8 +27,9 @@
  */
 
 return array(
-    'user.general.deskpro'       => 'DeskPRO',
-    'user.general.helpdesk_by'   => 'Helpdesk software by <strong>{{deskpro}}</strong>',
-    'user.general.label_captcha' => 'Confirmation code',
-    'user.general.page'          => 'Page',
+    'user.general.deskpro'               => 'DeskPRO',
+    'user.general.helpdesk_by'           => 'Helpdesk software by <strong>{{deskpro}}</strong>',
+    'user.general.label_captcha'         => 'Confirmation code',
+    'user.general.page'                  => 'Page',
+    'user.general.request_token_expired' => 'You request token has expired. Try again.',
 );
