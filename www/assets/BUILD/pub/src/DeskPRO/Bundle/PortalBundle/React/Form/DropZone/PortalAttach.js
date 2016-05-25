@@ -27,6 +27,10 @@ export class PortalAttach extends React.Component {
     pageWidgetEmitter.on('rteFileUpload', this.onRteFileUpload);
 
     $input.on('setBlobs', (event, blobs) => {
+      if (!Array.isArray(blobs)) {
+        return;
+      }
+
       this.setState({
         files: blobs
       });
@@ -76,8 +80,6 @@ export class PortalAttach extends React.Component {
   };
 
   onUploadFail = (event, data) => {
-    console.log(event, data);
-
     const file = data.files[0];
     const response = data.jqXHR.responseJSON;
     const error = response && response.error;
