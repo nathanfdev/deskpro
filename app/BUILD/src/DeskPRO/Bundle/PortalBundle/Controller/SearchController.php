@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity;
@@ -62,8 +63,8 @@ class SearchController extends AbstractController
 
         $is_search      = false;
         $person         = $this->getUser() ?: new PersonGuest();
-        $sticky_results = array();
-        $results        = array();
+        $sticky_results = [];
+        $results        = [];
         $total          = 0;
         $cur_page       = $request->get('page', 1);
         $ajax           = $request->isXmlHttpRequest();
@@ -97,10 +98,10 @@ class SearchController extends AbstractController
         if ($ajax) {
             return $this->renderThemeView(
                 'Theme:Search:search_results_ajax.html.twig',
-                array(
+                [
                     'is_search'  => $is_search,
                     'result_set' => $results[$type],
-                )
+                ]
             );
         }
 
@@ -112,7 +113,7 @@ class SearchController extends AbstractController
 
         return $this->renderThemeView(
             'Theme:Search:search_results.html.twig',
-            array(
+            [
                 'is_search'      => $is_search,
                 'results'        => $results,
                 'sticky_results' => $sticky_results,
@@ -121,7 +122,7 @@ class SearchController extends AbstractController
                 'breadcrumbs'    => $breadcrumbs,
                 'page_title'     => $this->createPageTitle()->search(),
                 'combined'       => $combined_counts,
-            )
+            ]
         );
     }
 
@@ -151,20 +152,21 @@ class SearchController extends AbstractController
         if ($request->getMethod() === 'POST') {
             $t = $request->request->get('type');
             $l = $request->request->get('label');
-            if (!in_array($type, array(
-                    'all',
-                    'articles',
-                    'feedback',
-                    'downloads',
-                    'news', ))
+            if (!in_array($type, [
+                'all',
+                'articles',
+                'feedback',
+                'downloads',
+                'news',
+            ])
             ) {
                 $type = 'all';
             }
 
-            return $this->redirectToRoute('portal_search_labels', array('type' => $t, 'label' => $l));
+            return $this->redirectToRoute('portal_search_labels', ['type' => $t, 'label' => $l]);
         }
 
-        if (!$type or !in_array($type, array('all', 'articles', 'feedback', 'downloads', 'news'))) {
+        if (!$type or !in_array($type, ['all', 'articles', 'feedback', 'downloads', 'news'])) {
             $type = 'all';
         }
 
@@ -174,22 +176,22 @@ class SearchController extends AbstractController
 
         switch ($type) {
             case 'all':
-                $search_types = array('article', 'feedback', 'download', 'news');
+                $search_types = ['article', 'feedback', 'download', 'news'];
                 break;
             case 'articles':
-                $search_types = array('article');
+                $search_types = ['article'];
                 break;
             case 'feedback':
-                $search_types = array('feedback');
+                $search_types = ['feedback'];
                 break;
             case 'downloads':
-                $search_types = array('download');
+                $search_types = ['download'];
                 break;
             case 'news':
-                $search_types = array('news');
+                $search_types = ['news'];
                 break;
             default:
-                $search_types = array();
+                $search_types = [];
         }
 
         $results  = null;
@@ -197,7 +199,7 @@ class SearchController extends AbstractController
         if ($label) {
             $search_adapter = $this->get('deskpro.search_adapter');
             $search_adapter->setPersonContext($this->getCurrentPerson());
-            $result_set = $search_adapter->getContentSearcher()->labelled(array($label), $per_page, $cur_page, $search_types);
+            $result_set = $search_adapter->getContentSearcher()->labelled([$label], $per_page, $cur_page, $search_types);
             $results    = $search_adapter->getResultSetObjects($result_set, true);
 
             $total    = $result_set->totalCount();
@@ -211,7 +213,7 @@ class SearchController extends AbstractController
         $content_cloud = new ContentLabelCloud();
         $cloud         = $content_cloud->getCloud();
 
-        $pagination = new Pagerfanta(new DeskproSearchAdapter($pageinfo ?: array()));
+        $pagination = new Pagerfanta(new DeskproSearchAdapter($pageinfo ?: []));
         $pagination->setMaxPerPage($pageinfo ? (int) $pageinfo['per_page'] : $per_page);
         $pagination->setCurrentPage($pageinfo ? (int) $pageinfo['curpage'] : $cur_page);
 
@@ -219,7 +221,7 @@ class SearchController extends AbstractController
 
         return $this->renderThemeView(
             'Theme:Search:search_labels_results.html.twig',
-            array(
+            [
                 'pager'       => $pagination,
                 'cloud'       => $cloud,
                 'label'       => $label,
@@ -229,7 +231,7 @@ class SearchController extends AbstractController
                 'num_results' => $total,
                 'breadcrumbs' => $breadcrumbs,
                 'page_title'  => $this->createPageTitle()->labelSearch(),
-            )
+            ]
         );
     }
 
@@ -243,19 +245,19 @@ class SearchController extends AbstractController
 
         if (!$content) {
             return $this->makeJsonResponse(
-                array(
-                    'results' => array(),
-                    'words'   => array(),
-                )
+                [
+                    'results' => [],
+                    'words'   => [],
+                ]
             );
         }
 
-        $allowed_types = array('article', 'news', 'download', 'feedback');
+        $allowed_types = ['article', 'news', 'download', 'feedback'];
 
         if (null === $content_type) {
             $content_type = $allowed_types;
         } else {
-            $content_type = array($content_type);
+            $content_type = [$content_type];
         }
 
         $person         = $this->getUser() ?: new PersonGuest();
@@ -267,15 +269,15 @@ class SearchController extends AbstractController
         $results = $se->getUserSearch()->similarTo(
             $context,
             $content,
-            array('limit_types' => $content_type)
+            ['limit_types' => $content_type]
         );
 
         $search_results = $results->getTypedResults();
 
         // filter out the unwanted types from response and get the "words" for allowed objects
         $property_accessor = PropertyAccess::createPropertyAccessor();
-        $typed_results     = array();
-        $words             = array();
+        $typed_results     = [];
+        $words             = [];
         foreach ($search_results as $result) {
             if (isset($result['type']) && in_array($result['type'], $allowed_types)) {
                 $typed_results[] = $result;
@@ -296,20 +298,20 @@ class SearchController extends AbstractController
         $serialized_results = $this->get('portal_search_serializer')->serializeArray($typed_results);
 
         return $this->makeJsonResponse(
-            array(
+            [
                 'results' => $serialized_results,
                 'words'   => $words,
-            )
+            ]
         );
     }
 
     /**
      * @param Request $request
-     * @param $type
-     * @param $q
-     * @param $person
-     * @param $cur_page
-     * @param $per_page
+     * @param         $type
+     * @param         $q
+     * @param         $person
+     * @param         $cur_page
+     * @param         $per_page
      *
      * @throws \Exception
      *
@@ -330,7 +332,7 @@ class SearchController extends AbstractController
             $result_set = $userSearch->search(
                 $context,
                 $q,
-               ['page' => $cur_page, 'per_page' => $per_page, 'limit_types' => array($type)]
+                ['page' => $cur_page, 'per_page' => $per_page, 'limit_types' => [$type]]
             );
 
             $total   = $result_set->getTotal();
@@ -341,7 +343,7 @@ class SearchController extends AbstractController
             $sticky_results = $sticky_search->getResults($q, 5, [$type]);
 
             if ($sticky_results) {
-                $got_sticky = array();
+                $got_sticky = [];
                 foreach ($sticky_results as $sitem) {
                     ++$total;
                     $got_sticky[get_class($sitem['object']).$sitem['object']->getId()] = true;
@@ -405,11 +407,11 @@ class SearchController extends AbstractController
 
     /**
      * @param Request $request
-     * @param $types
-     * @param $person
-     * @param $q
-     * @param $cur_page
-     * @param $per_page
+     * @param         $types
+     * @param         $person
+     * @param         $q
+     * @param         $cur_page
+     * @param         $per_page
      *
      * @return array
      */
@@ -417,7 +419,7 @@ class SearchController extends AbstractController
     {
         ////////////////////////////////////////////////////////////////////////
         // search types
-        $allowed_search_types = array('article', 'news', 'download', 'feedback', 'ticket');
+        $allowed_search_types = ['article', 'news', 'download', 'feedback', 'ticket'];
         if (!$limit_types_array = $types) {
             $limit_types_array = $allowed_search_types;
         }

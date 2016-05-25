@@ -141,10 +141,10 @@ export class NewTicketSuggestions extends React.Component {
   }
 
   componentDidMount() {
-    const throttleChanges = _.throttle((e) => {
+    const debounceChanges = _.debounce((e) => {
       this.doSearch({ content: e.target.value });
-    }, 250);
-    this.state.$input.on('keyup', throttleChanges);
+    }, 500);
+    this.state.$input.on('keyup', debounceChanges);
   }
 
   doSearch(queryModifications) {
@@ -164,7 +164,7 @@ export class NewTicketSuggestions extends React.Component {
       doSpin: true
     });
 
-    portalHttp.sendGet('DP_URL/search/similar', { data: search_query }).then((r) => {
+    portalHttp.sendGet('DP_URL/search/similar/article', { data: search_query }).then((r) => {
       if (!r.isError()) {
         this.setState({
           data: r.data.data,
