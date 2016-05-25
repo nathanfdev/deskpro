@@ -11,8 +11,6 @@
       <div class="header-button-container">
         <div class="header-buttons">
           {% show kb_subscription_link %}
-          {#<a href="#"><span>{{ phrase('portal.general.btn-email') }} </span><i class="fa fa-envelope"></i></a>#}
-          {#<a href="#"><span>{{ phrase('portal.general.btn-print') }} </span><i class="fa fa-print"></i></a>#}
           {% if can_share %}
             <a href="{{ path('portal_articles_share', {slug: article.slug}) }}" class="share-button"><span>{{ phrase('portal.general.btn-share') }}</span> <i class="fa fa-share"></i></a>
           {%  endif %}
