@@ -14,7 +14,7 @@ export const smiles = {
   ICON_TONGUE:       ':p',
   ICON_TONGUE_2:     ':P',
   ICON_SAD:          ':(',
-  ICON_HEART:        ['<3', '&lt;3'],
+  ICON_HEART:        [':heart:'],
   ICON_INLOVE:       ':inlove:',
   ICON_KISS:         ':*',
   ICON_CRY:          ';(',
