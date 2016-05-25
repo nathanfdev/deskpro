@@ -14,7 +14,7 @@
     <link href="{{ asset('DeskPRO_PortalBundle_style.css', 'app_assets') }}" media="all" rel="stylesheet" type="text/css" />
 </head>
 <body>
-    <div class="brand">
+    <div class="brand {% if portal_custom_logo() %}with-logo{% endif %}">
         <a href="{{ path('portal_home') }}">
             {% if portal_custom_logo() %}
                 <img alt="{{ global_settings.get('core.deskpro_name') }}"

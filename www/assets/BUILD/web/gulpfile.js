@@ -267,21 +267,6 @@ gulp.task('sassdoc', function () {
    * @returns {{}}
    */
   function transform(sassdoc_items) {
-    var default_type = {
-      colors: 'color',
-      button_colors: 'color',
-      font_colors: 'color',
-      form_colors: 'color',
-      generic_colors: 'color',
-      secondary_colors: 'color',
-      welcome_colors: 'color',
-      positioning: 'size',
-      form_positioning: 'size',
-      borders: 'size',
-      font_sizes: 'size',
-      fonts: 'font'
-    };
-
     var groups = {};
     for (var i = 0; i < sassdoc_items.length; i++) {
       var group = sassdoc_items[i]['group'][0];
@@ -295,11 +280,7 @@ gulp.task('sassdoc', function () {
       if (sassdoc_items[i].hasOwnProperty('type')) {
         type = sassdoc_items[i]['type'];
       } else {
-        if (default_type.hasOwnProperty(group)) {
-          type = default_type[group];
-        } else {
-          console.error('Error: ' + name + ' has no @type and there is no default type for the ' + group + ' group');
-        }
+        console.error('Error: ' + name + ' has no @type');
       }
       groups[group].push({
         type: type,

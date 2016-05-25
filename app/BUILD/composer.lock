@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7b804d83cd214c034db7e2441c83108f",
-    "content-hash": "b85b3ce4b32dd3ecfed944d26740ff58",
+    "hash": "7c325f1b51390244ba78aff5113fbbeb",
+    "content-hash": "87c28564f3cc5e26aadcfa8141de7c52",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -3083,16 +3083,16 @@
         },
         {
             "name": "leafo/scssphp",
-            "version": "v0.6.2",
+            "version": "v0.6.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/leafo/scssphp.git",
-                "reference": "feecdbe1defcd89089e51bf89bf77e0332658517"
+                "reference": "a27edad3d16635a222d7204706572e24c338aa17"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/leafo/scssphp/zipball/feecdbe1defcd89089e51bf89bf77e0332658517",
-                "reference": "feecdbe1defcd89089e51bf89bf77e0332658517",
+                "url": "https://api.github.com/repos/leafo/scssphp/zipball/a27edad3d16635a222d7204706572e24c338aa17",
+                "reference": "a27edad3d16635a222d7204706572e24c338aa17",
                 "shasum": ""
             },
             "require": {
@@ -3132,7 +3132,7 @@
                 "scss",
                 "stylesheet"
             ],
-            "time": "2015-12-16 22:46:24"
+            "time": "2016-01-15 02:50:06"
         },
         {
             "name": "league/url",

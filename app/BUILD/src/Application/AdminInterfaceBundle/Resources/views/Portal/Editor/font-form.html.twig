@@ -1,36 +1,4 @@
 <div class="input">
-    <ul class="select-expanded">
-        <li>
-            <span class="title">Select Font</span>
-        </li>
-        <li>
-            <a href ng-click="select(stack1)" class="font-stack stack-1" ng-class="{'selected-item': isSelected(stack1)}">
-                Open Sans, <span class="secondary">Helvetica, Arial, Sans Serif</span>
-            </a>
-        </li>
-        <li>
-            <a href ng-click="select(stack2)" class="font-stack stack-2" ng-class="{'selected-item': isSelected(stack2)}">
-                Baskerville, <span class="secondary">Georgia, Serif</span>
-            </a>
-        </li>
-        <li>
-            <a href ng-click="select(stack3)" class="font-stack stack-3" ng-class="{'selected-item': isSelected(stack3)}">
-                Lato, <span class="secondary">Myriad Pro, Arial, Sans Serif</span>
-            </a>
-        </li>
-        <li>
-            <a href ng-click="select(stack4)" class="font-stack stack-4" ng-class="{'selected-item': isSelected(stack4)}">
-                Ubuntu, <span class="secondary">Trebuchet, Arial, Sans Serif</span>
-            </a>
-        </li>
-        <li>
-            <a href ng-click="selectCustom()" class="font-stack custom" ng-class="{'selected-item': isCustomSelected()}">
-                Custom
-            </a>
-        </li>
-    </ul>
-
-    <div class="font-params" ng-if="isCustomSelected()">
-        <input type="text" placeholder="Custom font CSS value" ng-model="values[variable.name]" />
-    </div>
+    <div ng-bind="variable.label"></div>
+    <input type="text" placeholder="Custom font CSS value" ng-model="values[variable.name]" />
 </div>
