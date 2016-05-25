@@ -134,10 +134,20 @@ export class PortalRte extends React.Component {
             contentWindow,
             ownerDocument,
             toolbar: {
-              buttons: ['bold', 'italic', 'underline', 'anchor', 'unorderedlist', 'orderedlist', 'quote', 'pre', 'removeFormat'],
-              static:  true,
-              sticky:  true,
-              align:   'left',
+              buttons: [
+                'bold',
+                'italic',
+                'underline',
+                'anchor',
+                'unorderedlist',
+                'orderedlist',
+                'quote',
+                'pre',
+                'removeFormat'
+              ],
+              static: true,
+              sticky: true,
+              align:  'left',
 
               updateOnEmptySelection: true,
               relativeContainer:      $toolbarContainer.get(0)
@@ -159,7 +169,6 @@ export class PortalRte extends React.Component {
           onSuccess={this.onUploadSuccess}
           onFail={this.onUploadFail}
         >
-
           <DragOverlayListener context={context}>
             <div className="dp-medium-rte-wrapper-overlay">
               <h1>{portalPhrases.get('portal.forms.label_drag_overlay')}</h1>
