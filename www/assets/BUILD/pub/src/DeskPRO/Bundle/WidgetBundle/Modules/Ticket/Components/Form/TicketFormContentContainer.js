@@ -34,10 +34,14 @@ export class TicketFormContentContainer extends React.Component {
 
   render() {
     const { loading, saving, content } = this.props;
+    const style = {};
+    if (!$('.form-ticket', content).length) {
+      style.display = `none`;
+    }
     return loading
       ? <TicketFormSpinner />
       : <div>
-          <div className="header">
+          <div className="header open-new-ticket" style={style}>
             <span className="img" />
             <h1>{portalPhrases.get('portal.tickets.new-title')}</h1>
             <p>{portalPhrases.get('portal.tickets.new-intro')}</p>
