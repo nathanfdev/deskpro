@@ -113,8 +113,7 @@ class BugsnagJsListener implements EventSubscriberInterface
             $metadata = json_encode($metadata, JSON_PRETTY_PRINT);
             $metadata = <<<CODE
             <script>
-                Bugsnag.metaData = {$metadata};
-                Bugsnag.notify("ErrorName", "Something bad happened here");
+            if (window.Bugsnag) Bugsnag.metaData = {$metadata};
             </script>
 CODE;
         }
