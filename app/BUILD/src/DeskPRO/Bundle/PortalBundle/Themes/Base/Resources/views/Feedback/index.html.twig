@@ -1,10 +1,14 @@
 {% extends 'Theme::layout.html.twig' %}
+{% import 'Theme:Portal:User/macros.html.twig' as macros %}
 
 {% block inner_content %}
     <div class="breadcrumbs">
         {% show breadcrumbs %}
     </div>
     <article class="feedback main-feedback" id="feedback_page">
+        {% if lockout %}
+            {{ macros.user_notice('auth', phrase('portal.account.feedback-lockout')) }}
+        {% endif %}
         <header class="large-title">
             <div class="header-buttons">
                 {% show feedback_root_subscription_link %}

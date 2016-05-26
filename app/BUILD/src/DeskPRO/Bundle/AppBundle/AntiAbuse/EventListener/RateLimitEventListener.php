@@ -62,6 +62,9 @@ class RateLimitEventListener implements EventSubscriberInterface
      */
     private $logger;
 
+    /**
+     * @return array
+     */
     public static function getSubscribedEvents()
     {
         return [
@@ -69,6 +72,13 @@ class RateLimitEventListener implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * RateLimitEventListener constructor.
+     *
+     * @param EntityManager    $em
+     * @param SettingsResolver $settings_resolver
+     * @param LoggerInterface  $logger
+     */
     public function __construct(EntityManager $em, SettingsResolver $settings_resolver, LoggerInterface $logger)
     {
         $this->em                = $em;
@@ -76,6 +86,11 @@ class RateLimitEventListener implements EventSubscriberInterface
         $this->logger            = $logger;
     }
 
+    /**
+     * @param AntiAbuseEvent $event
+     *
+     * @throws \Exception
+     */
     public function checkAntiAbuse(AntiAbuseEvent $event)
     {
         if (!$this->supportsType($event)) {
@@ -99,33 +114,24 @@ class RateLimitEventListener implements EventSubscriberInterface
         }
 
         if ($this->isCaptchaRequired($event->getType(), $event->getPerson(), $event->getIp())) {
-            $person = $event->getPerson();
-            if ($person instanceof Person) {
-                $p = $person->isGuest() ? 'guest' : $person->getId();
-            } elseif (is_scalar($person)) {
-                $p = $person;
-            } else {
-                $p = 'unknown';
-            }
-            $this->logger->info(
-                sprintf(
-                    '[AntiAbuse->RateLimitEventListener] captcha is recommended for (IP=%s, Person=%s, Type=%s)',
-                    $event->getIp(),
-                    $p,
-                    $event->getType()
-                )
-            );
-
+            $this->log($event, 'captcha');
             $event->markCaptchaRecommended();
+        }
+
+        if ($this->isLockoutRequired($event->getType(), $event->getPerson(), $event->getIp())) {
+            $this->log($event, 'lockout');
+            $event->markLockoutRecommended();
+            $event->markResponseRequired();
+            $event->stopPropagation();
         }
     }
 
     /**
      * response. bool for now.
      *
-     * @param $action
+     * @param string $action
      * @param Person $person
-     * @param null   $ip
+     * @param string $ip
      *
      * @throws \Exception
      *
@@ -145,18 +151,72 @@ class RateLimitEventListener implements EventSubscriberInterface
         $rep = $this->em->getRepository('DeskPRO:RateLimitLog');
         $res = $rep->count($action, $params['time'], $person, $ip);
 
-        // all rate limit actions have a captcha as response, so we return bool for now
         return $res >= (int) $params['limit']
-            ? (bool) $params['response']
+            ? $params['response'] === 'captcha'
+            : false;
+    }
+
+    /**
+     * @param AntiAbuseEvent $event
+     * @param string         $sanction
+     */
+    private function log(AntiAbuseEvent $event, $sanction)
+    {
+        $person = $event->getPerson();
+        if ($person instanceof Person) {
+            $p = $person->isGuest() ? 'guest' : $person->getId();
+        } elseif (is_scalar($person)) {
+            $p = $person;
+        } else {
+            $p = 'unknown';
+        }
+        $this->logger->info(
+            sprintf(
+                '[AntiAbuse->RateLimitEventListener] [%s] is recommended for (IP=%s, Person=%s, Type=%s)',
+                $sanction,
+                $event->getIp(),
+                $p,
+                $event->getType()
+            )
+        );
+    }
+
+    /**
+     * response. bool for now.
+     *
+     * @param string $action
+     * @param Person $person
+     * @param string $ip
+     *
+     * @throws \Exception
+     *
+     * @return bool
+     */
+    public function isLockoutRequired($action, Person $person, $ip = null)
+    {
+        if (!$params = $this->getParams($action, $person, $ip)) {
+            throw new \Exception('Invalid rate limit action');
+        }
+
+        if (empty($params['enabled'])) {
+            return false;
+        }
+
+        /** @var RateLimitLog $rep */
+        $rep = $this->em->getRepository('DeskPRO:RateLimitLog');
+        $res = $rep->count($action, $params['time'], $person, $ip);
+
+        return $res >= (int) $params['limit']
+            ? $params['response'] === 'lockout'
             : false;
     }
 
     /**
      * params for current dataset.
      *
-     * @param $action
+     * @param string $action
      * @param Person $person
-     * @param null   $ip
+     * @param string $ip
      *
      * @return array
      */
@@ -182,6 +242,11 @@ class RateLimitEventListener implements EventSubscriberInterface
         return $params;
     }
 
+    /**
+     * @param AntiAbuseEvent $event
+     *
+     * @return bool
+     */
     protected function supportsType(AntiAbuseEvent $event)
     {
         return in_array(
@@ -199,11 +264,22 @@ class RateLimitEventListener implements EventSubscriberInterface
         );
     }
 
+    /**
+     * @param string $setting
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
     protected function getSetting($setting, $default = null)
     {
         return $this->settings_resolver->getGlobalSettings()->get($setting, $default);
     }
 
+    /**
+     * @param string $action
+     * @param Person $person
+     * @param string $ip
+     */
     protected function saveRateLimitAction($action, Person $person, $ip)
     {
         /** @var RateLimitLog $rep */
@@ -211,6 +287,11 @@ class RateLimitEventListener implements EventSubscriberInterface
         $rep->save($action, $person, $ip);
     }
 
+    /**
+     * @param string $ip
+     *
+     * @return bool
+     */
     protected function isWhitelisted($ip)
     {
         $ip          = ip2long($ip);

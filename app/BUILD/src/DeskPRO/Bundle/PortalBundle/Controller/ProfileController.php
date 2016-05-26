@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\PasswordHistory;
@@ -88,6 +87,7 @@ class ProfileController extends AbstractController
 
         if ($form->isSubmitted()) {
             $event = new RegistrationAbuseCheck($this->getCurrentPerson(), $request->getClientIp());
+            $event->setResponse($this->redirectToRoute('portal_user_registration', ['lockout' => 'register']));
             $this->getAntiAbuseService()->check($event);
             // check if the person already has an account (or is a contact)
             if ($email = $person->getEmailAddress()) {
@@ -144,6 +144,7 @@ class ProfileController extends AbstractController
             'Theme:Portal:User/register.html.twig',
             [
                 'form'        => $form->createView(),
+                'lockout'     => $request->get('lockout', false),
                 'breadcrumbs' => $breadcrumbs,
                 'page_title'  => $this->createPageTitle()->register(),
             ]

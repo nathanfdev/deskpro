@@ -259,6 +259,7 @@ class ArticlesController extends AbstractController
                 'show_rating_counts' => $showRatingCounts,
                 'rating_counts'      => $ratingCounts,
                 'can_share'          => $canShare,
+                'lockout'            => $request->get('lockout', false),
             ]
         );
     }

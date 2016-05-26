@@ -1,4 +1,5 @@
 {% extends 'Theme::layout.html.twig' %}
+{% import 'Theme:Portal:User/macros.html.twig' as macros %}
 
 {% block inner_content %}
     <div class="breadcrumbs">
@@ -11,6 +12,9 @@
     </header>
 
     <section class="padded">
+        {% if lockout %}
+            {{ macros.user_notice('auth', phrase('portal.account.register-lockout')) }}
+        {% endif %}
         <div class="form-ticket dpx-form">
             {{ form_start(form) }}
             {{ form_widget(form) }}

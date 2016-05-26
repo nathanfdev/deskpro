@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,6 +36,7 @@ use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\AgentLinkRoute;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\Common\Annotations\Reader;
+use Doctrine\Common\Util\ClassUtils;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -148,13 +149,7 @@ class LinkConfigAnnotationRepo implements LinkConfigRepoInterface, CacheWarmerIn
      */
     protected function readAnnotationConfig($object_or_filename)
     {
-        $class = $this->parseClassName($object_or_filename);
-
-        // trim off the doctrine entity proxy prefix if it's there, it may interfere with annotation reading
-        $proxy_prefix = 'Proxies\\__CG__\\';
-        if (0 === strpos($class, $proxy_prefix)) {
-            $class = substr($class, strlen($proxy_prefix));
-        }
+        $class = ClassUtils::getRealClass($this->parseClassName($object_or_filename));
 
         if (!$ref_class = new \ReflectionClass($class)) {
             throw new ObjectRouterException(sprintf('could not reflect on "%s" in file "%s"', $class, $object_or_filename));
@@ -191,6 +186,8 @@ class LinkConfigAnnotationRepo implements LinkConfigRepoInterface, CacheWarmerIn
      * Return the full $config array (already parsed) from the cache file (done during warmup).
      *
      * @param $object_classname_or_filename
+     * 
+     * @return array|null
      */
     protected function getAnnotationConfigFromCache($object_classname_or_filename)
     {

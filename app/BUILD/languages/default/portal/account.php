@@ -97,4 +97,7 @@ return array(
     'portal.account.welcome-back'                   => 'Welcome back',
     'portal.account.your-emails'                    => 'Your Email Addresses',
     'portal.account.your-pending-email-addresses'   => 'Your Pending Email Addresses',
+    'portal.account.register-lockout'               => 'You have registered too many times. For a small period of time registration is locked for you. Please try again later.',
+    'portal.account.feedback-lockout'               => 'You have submitted feedback too many times. You should wait a little bit, before submit new feedback item.',
+    'portal.account.comment-lockout'                => 'You have submitted too many commentaries. You should wait a little bit, before submit new commentaries.',
 );
