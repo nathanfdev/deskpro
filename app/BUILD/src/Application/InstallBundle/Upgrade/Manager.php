@@ -272,24 +272,28 @@ class Manager
 
         /** @var AdvancedEditsManager $advancedEditManager */
         $advancedEditManager = $this->container->get('dp.portal.designer.advanced_edits_manager');
-        if ($advancedEditManager->getEditThemeSetScss()) {
-            /** @var SassDocParser $sassDocParser */
-            $sassDocParser = $this->container->get('dp.portal.designer.sass_doc_parser');
 
-            /** @var PortalStylesCompiler $styleCompiler */
-            $styleCompiler = $this->container->get('dp.portal.designer.portal_styles_compiler');
+        /** @var BrandThemeManager $brandThemeManager */
+        $brandThemeManager = $this->container->get('dp.portal.designer.brand_theme_manager');
 
-            /** @var BrandThemeManager $brandThemeManager */
-            $brandThemeManager = $this->container->get('dp.portal.designer.brand_theme_manager');
+        /** @var SassDocParser $sassDocParser */
+        $sassDocParser = $this->container->get('dp.portal.designer.sass_doc_parser');
 
-            $variables = $sassDocParser->getVariableValues();
+        $variables = $sassDocParser->getVariableValues();
 
-            $editThemeSet = $brandThemeManager->getCurrentEditThemeSet();
+        /** @var PortalStylesCompiler $styleCompiler */
+        $styleCompiler = $this->container->get('dp.portal.designer.portal_styles_compiler');
+
+        $editThemeSet = $brandThemeManager->getCurrentEditThemeSet();
+        if ($advancedEditManager->findBlobStorage(AdvancedEditsManager::CUSTOM_SCSS_ASSET_NAME, $editThemeSet)) {
             $styleCompiler->recompile($variables, $editThemeSet);
+            $this->logger->info('Compile Custom Edit Scss script');
+        }
 
-            $themeSet = $brandThemeManager->getCurrentThemeSet();
+        $themeSet = $brandThemeManager->getCurrentThemeSet();
+        if ($advancedEditManager->findBlobStorage(AdvancedEditsManager::CUSTOM_SCSS_ASSET_NAME, $themeSet)) {
             $styleCompiler->recompile($variables, $themeSet);
-            $this->logger->info('Compile Custom Scss scripts');
+            $this->logger->info('Compile Custom Live Scss script');
         }
 
         if ($this->logger) {
