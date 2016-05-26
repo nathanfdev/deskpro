@@ -31,11 +31,11 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
@@ -155,6 +155,16 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
          * @var bool
          */
         protected $has_admin = true;
+
+        /**
+         * @var Article[]|ArrayCollection
+         */
+        protected $articles;
+
+        public function __construct()
+        {
+            $this->articles = new ArrayCollection();
+        }
 
         /**
          * @return int
@@ -350,6 +360,17 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
                 array('fieldName' => 'has_admin', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_admin')
             )
             ;
+
+            $metadata->mapOneToMany(
+                [
+                    'fieldName'     => 'articles',
+                    'targetEntity'  => 'Application\\DeskPRO\\Entity\\Article',
+                    'mappedBy'      => 'language',
+                    'cascade'       => ['remove', 'persist', 'merge'],
+                    'orphanRemoval' => true,
+                ]
+            );
+
             $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         }
     }

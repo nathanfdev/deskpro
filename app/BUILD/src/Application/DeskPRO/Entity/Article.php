@@ -37,6 +37,7 @@ use Application\DeskPRO\Domain\ObjectTranslatable;
 use Application\DeskPRO\Entity\Labels\Label;
 use Application\DeskPRO\Entity\Labels\LabelsOwner;
 use DateTime;
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -111,6 +112,11 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
     protected $labels;
 
     /**
+     * @var TaskLinkedArticle[]|ArrayCollection
+     */
+    protected $task_links;
+
+    /**
      * The search result highlights.
      *
      * @var array
@@ -128,6 +134,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
         $this->attachments = new ArrayCollection();
         $this->custom_data = new ArrayCollection();
         $this->labels      = new ArrayCollection();
+        $this->task_links  = new ArrayCollection();
     }
 
     /**
@@ -708,8 +715,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
             [
                 'fieldName'    => 'language',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language',
-                'mappedBy'     => null,
-                'inversedBy'   => null,
+                'inversedBy'   => 'articles',
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'language_id',
@@ -728,6 +734,16 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
                 'targetEntity' => 'Application\DeskPRO\Entity\ArticleSlugHistory',
                 'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
                 'mappedBy'     => 'article',
+            ]
+        );
+
+        $metadata->mapOneToMany(
+            [
+                'fieldName'     => 'task_links',
+                'targetEntity'  => TaskLinkedArticle::class,
+                'cascade'       => ['remove', 'persist', 'merge'],
+                'orphanRemovel' => true,
+                'mappedBy'      => 'article',
             ]
         );
 
