@@ -36,7 +36,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * This is stub form. Used to output a 'full' form with every field,
@@ -105,11 +104,9 @@ class TicketWithLayoutsWebFullType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function getBlockPrefix()
     {
-        $resolver->setDefaults([
-            'disabled' => true,
-        ]);
+        return 'ticket';
     }
 
     /**
