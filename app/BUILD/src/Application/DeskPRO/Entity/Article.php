@@ -715,13 +715,13 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
             [
                 'fieldName'    => 'language',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language',
-                'inversedBy'   => 'articles',
+                'inversedBy'   => null,
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'language_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
-                        'onDelete'             => 'cascade',
+                        'onDelete'             => 'CASCADE',
                         'columnDefinition'     => null,
                     ],
                 ],
@@ -739,11 +739,9 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
 
         $metadata->mapOneToMany(
             [
-                'fieldName'     => 'task_links',
-                'targetEntity'  => TaskLinkedArticle::class,
-                'cascade'       => ['remove', 'persist', 'merge'],
-                'orphanRemovel' => true,
-                'mappedBy'      => 'article',
+                'fieldName'    => 'task_links',
+                'targetEntity' => TaskLinkedArticle::class,
+                'mappedBy'     => 'article',
             ]
         );
 

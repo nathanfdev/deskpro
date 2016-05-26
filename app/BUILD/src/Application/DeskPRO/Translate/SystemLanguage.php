@@ -51,7 +51,7 @@ class SystemLanguage extends \Application\DeskPRO\Entity\Language
         return self::$instance;
     }
 
-    public function __construct()
+    protected function __construct()
     {
         $this->id            = 0;
         $this->sys_name      = 'default';

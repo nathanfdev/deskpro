@@ -35,7 +35,6 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
@@ -157,16 +156,6 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
         protected $has_admin = true;
 
         /**
-         * @var Article[]|ArrayCollection
-         */
-        protected $articles;
-
-        public function __construct()
-        {
-            $this->articles = new ArrayCollection();
-        }
-
-        /**
          * @return int
          */
         public function getId()
@@ -258,10 +247,10 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
         {
             $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
             $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Language';
-            $metadata->setPrimaryTable(array('name' => 'languages'));
+            $metadata->setPrimaryTable(['name' => 'languages']);
             $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
             $metadata->mapField(
-                array(
+                [
                     'fieldName'  => 'id',
                     'type'       => 'integer',
                     'precision'  => 0,
@@ -269,11 +258,10 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
                     'nullable'   => false,
                     'columnName' => 'id',
                     'id'         => true,
-                )
-            )
-            ;
+                ]
+            );
             $metadata->mapField(
-                array(
+                [
                     'fieldName'  => 'sys_name',
                     'type'       => 'string',
                     'length'     => 100,
@@ -281,11 +269,10 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
                     'scale'      => 0,
                     'nullable'   => false,
                     'columnName' => 'sys_name',
-                )
-            )
-            ;
+                ]
+            );
             $metadata->mapField(
-                array(
+                [
                     'fieldName'  => 'lang_code',
                     'type'       => 'string',
                     'length'     => 3,
@@ -293,11 +280,10 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
                     'scale'      => 0,
                     'nullable'   => false,
                     'columnName' => 'lang_code',
-                )
-            )
-            ;
+                ]
+            );
             $metadata->mapField(
-                array(
+                [
                     'fieldName'  => 'title',
                     'type'       => 'string',
                     'length'     => 255,
@@ -305,11 +291,10 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
                     'scale'      => 0,
                     'nullable'   => false,
                     'columnName' => 'title',
-                )
-            )
-            ;
+                ]
+            );
             $metadata->mapField(
-                array(
+                [
                     'fieldName'  => 'base_filepath',
                     'type'       => 'string',
                     'length'     => 255,
@@ -317,11 +302,10 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
                     'scale'      => 0,
                     'nullable'   => true,
                     'columnName' => 'base_filepath',
-                )
-            )
-            ;
+                ]
+            );
             $metadata->mapField(
-                array(
+                [
                     'fieldName'  => 'locale',
                     'type'       => 'string',
                     'length'     => 8,
@@ -329,11 +313,10 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
                     'scale'      => 0,
                     'nullable'   => false,
                     'columnName' => 'locale',
-                )
-            )
-            ;
+                ]
+            );
             $metadata->mapField(
-                array(
+                [
                     'fieldName'  => 'flag_image',
                     'type'       => 'string',
                     'length'     => 50,
@@ -341,33 +324,42 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
                     'scale'      => 0,
                     'nullable'   => false,
                     'columnName' => 'flag_image',
-                )
-            )
-            ;
-            $metadata->mapField(
-                array('fieldName' => 'is_rtl', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_rtl')
-            )
-            ;
-            $metadata->mapField(
-                array('fieldName' => 'has_user', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_user')
-            )
-            ;
-            $metadata->mapField(
-                array('fieldName' => 'has_agent', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_agent')
-            )
-            ;
-            $metadata->mapField(
-                array('fieldName' => 'has_admin', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_admin')
-            )
-            ;
+                ]
+            );
 
-            $metadata->mapOneToMany(
+            $metadata->mapField(
                 [
-                    'fieldName'     => 'articles',
-                    'targetEntity'  => 'Application\\DeskPRO\\Entity\\Article',
-                    'mappedBy'      => 'language',
-                    'cascade'       => ['remove', 'persist', 'merge'],
-                    'orphanRemoval' => true,
+                    'fieldName'  => 'is_rtl',
+                    'type'       => 'boolean',
+                    'nullable'   => false,
+                    'columnName' => 'is_rtl',
+                ]
+            );
+
+            $metadata->mapField(
+                [
+                    'fieldName'  => 'has_user',
+                    'type'       => 'boolean',
+                    'nullable'   => false,
+                    'columnName' => 'has_user',
+                ]
+            );
+
+            $metadata->mapField(
+                [
+                    'fieldName'  => 'has_agent',
+                    'type'       => 'boolean',
+                    'nullable'   => false,
+                    'columnName' => 'has_agent',
+                ]
+            );
+
+            $metadata->mapField(
+                [
+                    'fieldName'  => 'has_admin',
+                    'type'       => 'boolean',
+                    'nullable'   => false,
+                    'columnName' => 'has_admin',
                 ]
             );
 
