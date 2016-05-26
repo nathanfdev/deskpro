@@ -260,6 +260,7 @@ class RateLimitEventListener implements EventSubscriberInterface
                 AntiAbuse::ACTION_SUBMIT_TICKET,
                 AntiAbuse::ACTION_SUBMIT_FEEDBACK,
                 AntiAbuse::ACTION_SUBMIT_COMMENT,
+                AntiAbuse::ACTION_SHARE_CONTENT,
             ]
         );
     }

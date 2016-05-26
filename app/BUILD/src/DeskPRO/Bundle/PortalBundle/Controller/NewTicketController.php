@@ -186,7 +186,8 @@ class NewTicketController extends AbstractController
         }
 
         return $this->renderThemeView(
-            'Theme:NewTicket:new_ticket.html.twig', [
+            'Theme:NewTicket:new_ticket.html.twig',
+            [
                 'form'                    => $formView,
                 'form_full'               => $formFullView,
                 'ticket_display_js'       => $ticket_display_js,
@@ -196,6 +197,7 @@ class NewTicketController extends AbstractController
                 'page_title'              => $this->createPageTitle()->newticket(),
                 'form_errors'             => $form->isSubmitted() ? $form->getErrors() : [],
                 'show_ticket_suggestions' => $show_ticket_suggestions,
+                'lockout'                 => $request->get('lockout', false),
             ]
         );
     }

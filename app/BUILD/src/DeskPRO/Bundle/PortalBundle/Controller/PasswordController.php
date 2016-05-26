@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -118,6 +118,7 @@ class PasswordController extends AbstractController
                 'render_error' => $render_error,
                 'breadcrumbs'  => $this->getBreadcrumbGenerator()->buildPasswordReset($isResetting),
                 'page_title'   => $this->createPageTitle()->passwordReset($isResetting),
+                'lockout'      => $request->get('lockout', false),
             )
         );
     }
@@ -226,6 +227,7 @@ class PasswordController extends AbstractController
     protected function runAntiAbuseCheck(Request $request)
     {
         $check = new PasswordResetAbuseCheck($this->getCurrentPerson(), $request->getClientIp());
+        $check->setResponse($this->redirectToRoute('portal_reset_password', ['lockout' => 'reset']));
         $this->get('anti_abuse')->check($check);
     }
 }
