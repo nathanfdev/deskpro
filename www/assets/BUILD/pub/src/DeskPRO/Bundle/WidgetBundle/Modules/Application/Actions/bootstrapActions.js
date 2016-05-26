@@ -2,16 +2,16 @@ import { createAction } from 'Ampliflux';
 import { loadBatch } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { loadOnlineAgents } from './peopleActions';
 import { loadOptions, openWidget } from './dpWindowActions';
-import { loadChatInfo, setChatId, unsetChatId, updateChatInfo } from '../../Chat/Actions/chatActions';
+import { pollingChat, setChatId, unsetChatId, setLastAgentId } from '../../Chat/Actions/chatActions';
 import {
   widgetSessionCodeSelector,
   requireChatLoginSelector,
   requireChatEmailValidationSelector,
-  widgetHasChatSelector
+  widgetHasChatSelector,
+  widgetLanguageSelector
 } from '../Selectors/bootstrap';
 
 import { liveDemoSelector } from '../Selectors/dpWindow';
-import { widgetLanguageSelector } from '../Selectors/bootstrap';
 import { onlineAgentsCountSelector } from '../Selectors/peopleSelectors';
 import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
@@ -96,6 +96,7 @@ export const chatResume = createAction(
   () => (dispatch, getState) => {
     const state = getState();
     const storedChatId = Number(localStorage.getItem('dpWidget.chat.chatId'));
+    const storedLastAgentId = Number(localStorage.getItem('dpWidget.chat.lastAgentId'));
     const widgetHasChat = widgetHasChatSelector(state);
     const agentsCounts = onlineAgentsCountSelector(state);
     const liveDemo = liveDemoSelector(state);
@@ -104,17 +105,20 @@ export const chatResume = createAction(
       return Promise.resolve(true);
     }
 
-    const promise = dispatch(loadChatInfo(storedChatId));
-    promise.then(chatInfo => {
-      // Reset stored chat id on reload page if chat was ended
-      if (chatInfo.date_ended) {
-        dispatch(unsetChatId());
-        return;
-      }
+    // force reset chat state before initial load
+    dispatch(setChatId(storedChatId));
+    dispatch(setLastAgentId(storedLastAgentId));
 
-      dispatch(setChatId(storedChatId));
-      dispatch(updateChatInfo(chatInfo));
-      dispatch(openWidget());
+    const promise = dispatch(pollingChat(storedChatId));
+    promise.then(response => {
+      const chatInfo = response.data.chat_info && response.data.chat_info.data;
+
+      // Reset stored chat id on reload page if chat was ended
+      if (!chatInfo || chatInfo.date_ended) {
+        dispatch(unsetChatId());
+      } else {
+        dispatch(openWidget());
+      }
     });
 
     return promise;
