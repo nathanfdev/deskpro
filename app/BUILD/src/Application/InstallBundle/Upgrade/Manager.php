@@ -37,6 +37,7 @@ use Application\DeskPRO\Languages\LangPackInfo;
 use Application\InstallBundle\Data\DefaultDataProcessor;
 use Application\InstallBundle\Upgrade\Build\AbstractBuild;
 use DeskPRO\Bundle\PortalBundle\Designer\AdvancedEditsManager;
+use DeskPRO\Bundle\PortalBundle\Designer\BrandThemeManager;
 use DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler;
 use DeskPRO\Bundle\PortalBundle\Designer\SassDocParser;
 use DeskPRO\Component\Util\TypeUtils;
@@ -274,11 +275,20 @@ class Manager
         if ($advancedEditManager->getEditThemeSetScss()) {
             /** @var SassDocParser $sassDocParser */
             $sassDocParser = $this->container->get('dp.portal.designer.sass_doc_parser');
-            $variables     = $sassDocParser->getVariableValues();
+
             /** @var PortalStylesCompiler $styleCompiler */
             $styleCompiler = $this->container->get('dp.portal.designer.portal_styles_compiler');
-            $styleCompiler->recompile($variables, true);
-            $styleCompiler->recompile($variables, false);
+
+            /** @var BrandThemeManager $brandThemeManager */
+            $brandThemeManager = $this->container->get('dp.portal.designer.brand_theme_manager');
+
+            $variables = $sassDocParser->getVariableValues();
+
+            $editThemeSet = $brandThemeManager->getCurrentEditThemeSet();
+            $styleCompiler->recompile($variables, $editThemeSet);
+
+            $themeSet = $brandThemeManager->getCurrentThemeSet();
+            $styleCompiler->recompile($variables, $themeSet);
             $this->logger->info('Compile Custom Scss scripts');
         }
 

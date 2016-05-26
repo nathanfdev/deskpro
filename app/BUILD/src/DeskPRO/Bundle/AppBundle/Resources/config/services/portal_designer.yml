@@ -1,0 +1,52 @@
+services:
+
+  dp.portal.designer.brand_theme_manager:
+    class: DeskPRO\Bundle\PortalBundle\Designer\BrandThemeManager
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@brand_stack"
+      - "@dp.portal.designer.theme_set_copying_service"
+
+  dp.portal.designer.theme_set_copying_service:
+    class: DeskPRO\Bundle\PortalBundle\Designer\ThemeSetCopyingService
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+
+  dp.portal.designer.portal_styles_compiler:
+    class: DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - @=service('dp.portal.designer.brand_theme_manager').getCurrentThemeSet()
+      - @=service('dp.portal.designer.brand_theme_manager').getCurrentEditThemeSet()
+      - @=constant('DP_WEB_ROOT') ~ '/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-ltr-style.scss'
+      - @=constant('DP_WEB_ROOT') ~ '/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-rtl-style.scss'
+      - @=service('dp.portal.designer.advanced_edits_manager').getEditThemeSetScss()
+
+  dp.portal.designer.advanced_edits_manager:
+    class: DeskPRO\Bundle\PortalBundle\Designer\AdvancedEditsManager
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - @=service('dp.portal.designer.brand_theme_manager').getCurrentThemeSet()
+      - @=service('dp.portal.designer.brand_theme_manager').getCurrentEditThemeSet()
+      - "@twig"
+
+  dp.portal.designer.styles_manager:
+    class: DeskPRO\Bundle\PortalBundle\Designer\StylesManager
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@dp.portal.designer.theme_set_copying_service"
+      - "@dp.portal.designer.sass_doc_parser"
+      - @=service('dp.portal.designer.brand_theme_manager').getCurrentThemeSet()
+      - @=service('dp.portal.designer.brand_theme_manager').getCurrentEditThemeSet()
+
+  dp.portal.designer.assets_manager:
+    class: DeskPRO\Bundle\PortalBundle\Designer\AssetsManager
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - @=service('dp.portal.designer.brand_theme_manager').getCurrentThemeSet()
+      - @=service('dp.portal.designer.brand_theme_manager').getCurrentEditThemeSet()
+
+  dp.portal.designer.sass_doc_parser:
+    class: DeskPRO\Bundle\PortalBundle\Designer\SassDocParser
+    arguments:
+      - @=constant('DP_WEB_ROOT') ~ '/web/sassdoc/vars.json'

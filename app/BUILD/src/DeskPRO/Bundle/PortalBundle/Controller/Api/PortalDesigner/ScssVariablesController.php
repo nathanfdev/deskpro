@@ -33,6 +33,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api\PortalDesigner;
 
 use DeskPRO\Bundle\PortalBundle\Controller\Api\AbstractApiController;
+use DeskPRO\Bundle\PortalBundle\Designer\BrandThemeManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -75,7 +76,9 @@ class ScssVariablesController extends AbstractApiController
     public function saveVariableValuesAction(Request $request)
     {
         $variables = json_decode($request->getContent(), true);
-        $this->getPortalStylesCompiler()->recompile($variables);
+        /* @var BrandThemeManager $brandThemeManager */
+        $editThemeSet = $this->getBrandThemeManager()->getCurrentEditThemeSet();
+        $this->getPortalStylesCompiler()->recompile($variables, $editThemeSet);
 
         return new Response(null, Response::HTTP_NO_CONTENT);
     }
