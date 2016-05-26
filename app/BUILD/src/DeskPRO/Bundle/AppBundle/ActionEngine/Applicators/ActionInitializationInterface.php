@@ -26,15 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators;
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Interfaces;
-
-use Application\DeskPRO\Tickets\TicketManager;
-
-interface TicketManagerAwareInterface
+interface ActionInitializationInterface extends ActionApplicatorInterface
 {
-    public function setTicketManager(TicketManager $tm);
+    public function init();
 }

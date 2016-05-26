@@ -26,33 +26,33 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
 
 use Application\DeskPRO\Entity\CustomDataFeedback;
+use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionInitializationInterface;
 
-class ApplySetCategoryAction extends AbstractActionApplicator implements ActionApplicatorInterface
+class ApplySetCategoryAction extends AbstractActionApplicator implements ActionInitializationInterface
 {
-    /**
-     * @param Feedback[] $feedback
-     */
-    public function apply(array $feedback)
+    /** @var  CustomDefFeedback */
+    private $customDef;
+
+    public function init()
     {
-        $customDef = $this->em
-            ->getRepository('DeskPRO:CustomDefFeedback')
-            ->findOneBy(['title' => 'Category']);
-        foreach ($feedback as $item) {
-            $item->resetCustomData();
-            $customCategory = new CustomDataFeedback();
-            $customCategory->setInput($this->options['set_category']);
-            $customCategory->setField($customDef);
-            $item->addCustomData($customCategory);
-        }
+        $this->customDef = $this->em->getRepository(CustomDefFeedback::class)->findOneBy(['title' => 'Category']);
+    }
+
+    /**
+     * @param Feedback $feedback
+     */
+    public function apply($feedback)
+    {
+        $feedback->resetCustomData();
+        $customCategory = new CustomDataFeedback();
+        $customCategory->setInput($this->options['set_category']);
+        $customCategory->setField($this->customDef);
+        $feedback->addCustomData($customCategory);
     }
 }

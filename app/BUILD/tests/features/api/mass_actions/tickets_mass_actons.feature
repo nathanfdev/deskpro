@@ -14,7 +14,7 @@ Feature: /mass_actions/tickets endpoint
     And the JSON node "data" should exist
     And the JSON node "data.status" should be equal to "awaiting_user"
 
-  Scenario: I apply set of actions on ticket with ID=1
+  Scenario: I apply set of actions on ticket with ID=1,2
     When I send a POST request to "/api/v2/mass_actions/tickets" with body:
     """
 {
@@ -31,7 +31,7 @@ Feature: /mass_actions/tickets endpoint
     And the JSON node "data" should exist
     And the JSON node "data.status" should be equal to "awaiting_agent"
 
-  Scenario: I apply set of actions on ticket with ID=1
+  Scenario: I apply set of actions on tickets with ID=1,2
     When I send a POST request to "/api/v2/mass_actions/tickets" with body:
     """
 {
@@ -45,7 +45,7 @@ Feature: /mass_actions/tickets endpoint
      "assign": {
         "agent": 1,
         "team": 1,
-        "department": 2
+        "department": 3
      },
      "set_of_actions": ["mark_as_spam"]
   }
@@ -173,7 +173,7 @@ Feature: /mass_actions/tickets endpoint
     And the JSON node "data.product" should be equal to 1
     And the JSON node "data.agent" should be equal to 1
     And the JSON node "data.agent_team" should be equal to 1
-    And the JSON node "data.department" should be equal to 2
+    And the JSON node "data.department" should be equal to 3
     And the JSON node "data.category" should be equal to 1
     And the JSON node "data.language" should be equal to 1
     And the JSON node "data.followers" should have 2 elements
@@ -202,7 +202,7 @@ Feature: /mass_actions/tickets endpoint
     And the JSON node "data.product" should be equal to 1
     And the JSON node "data.agent" should be equal to 1
     And the JSON node "data.agent_team" should be equal to 1
-    And the JSON node "data.department" should be equal to 2
+    And the JSON node "data.department" should be equal to 3
     And the JSON node "data.category" should be equal to 1
     And the JSON node "data.language" should be equal to 1
     And the JSON node "data.followers" should have 0 element
@@ -232,11 +232,11 @@ Feature: /mass_actions/tickets endpoint
     And the JSON node "data.agent_team" should be null
     And the JSON node "data.department" should be equal to 1
 
-  Scenario: I delete ticket with ID=3,4 and check if delete mass actions was applied
+  Scenario: I delete ticket with ID=3,4
     When I send a POST request to "/api/v2/mass_actions/tickets" with body:
     """
 {
-  "ids": [3,4],
+  "ids": [2,3],
   "params":{
      "set_of_actions": ["delete"]
   }
@@ -245,7 +245,7 @@ Feature: /mass_actions/tickets endpoint
     Then the response status code should be 200
 
   Scenario: I get ticket with ID=3 and check if delete mass actions was applied
-    When I send a GET request to "/api/v2/tickets/3"
+    When I send a GET request to "/api/v2/tickets/2"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "data" should exist
@@ -253,7 +253,7 @@ Feature: /mass_actions/tickets endpoint
     And the JSON node "data.hidden_status" should be equal to "deleted"
 
   Scenario: I get ticket with ID=4 and check if delete mass actions was applied
-    When I send a GET request to "/api/v2/tickets/4"
+    When I send a GET request to "/api/v2/tickets/3"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "data" should exist

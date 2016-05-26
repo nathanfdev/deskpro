@@ -26,31 +26,32 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Task;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionInitializationInterface;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class ApplySetProjectAction extends AbstractActionApplicator implements ActionApplicatorInterface
+class ApplySetProjectAction extends AbstractActionApplicator implements ActionInitializationInterface
 {
-    /**
-     * @param Task[] $tasks
-     */
-    public function apply(array $tasks)
+    /** @var  TaskProject */
+    private $project;
+
+    public function init()
     {
-        /** @var \DeskPRO\Bundle\AppBundle\Entity\TaskProject $project */
-        $project = $this->em->getRepository(TaskProject::class)->find($this->options['set_project']);
-        if (null === $project) {
+        $this->project = $this->em->getRepository(TaskProject::class)->find($this->options['set_project']);
+        if (null === $this->project) {
             throw new BadRequestHttpException('Project with ID='.$this->options['set_project']." doesn't exists");
         }
-        foreach ($tasks as $task) {
-            $task->setProject($project);
-        }
+    }
+
+    /**
+     * @param Task $task
+     */
+    public function apply($task)
+    {
+        $task->setProject($this->project);
     }
 }

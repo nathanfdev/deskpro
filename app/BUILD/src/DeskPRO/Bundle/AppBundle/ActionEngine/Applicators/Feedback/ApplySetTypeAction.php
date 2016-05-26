@@ -26,30 +26,31 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackCategory;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionInitializationInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class ApplySetTypeAction extends AbstractActionApplicator implements ActionApplicatorInterface
+class ApplySetTypeAction extends AbstractActionApplicator implements ActionInitializationInterface
 {
-    /**
-     * @param Feedback[] $feedback
-     */
-    public function apply(array $feedback)
+    private $type;
+
+    public function init()
     {
-        $type = $this->em->getRepository('DeskPRO:FeedbackCategory')->find($this->options['set_type']);
-        if (null === $type) {
+        $this->type = $this->em->getRepository(FeedbackCategory::class)->find($this->options['set_type']);
+        if (null === $this->type) {
             throw new BadRequestHttpException('Feedback type with ID='.$this->options['set_type']." doesn't exists");
         }
-        foreach ($feedback as $item) {
-            $item->setCategory($type);
-        }
+    }
+
+    /**
+     * @param Feedback $feedback
+     */
+    public function apply($feedback)
+    {
+        $feedback->setCategory($this->type);
     }
 }

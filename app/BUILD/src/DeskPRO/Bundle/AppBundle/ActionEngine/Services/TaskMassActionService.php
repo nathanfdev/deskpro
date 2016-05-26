@@ -26,14 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Interfaces;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Services;
 
-use DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices\EnvironmentService;
+use DeskPRO\Bundle\AppBundle\Entity\Task;
 
-interface EnvironmentServiceAwareInterface
+class TaskMassActionService extends AbstractMassActionService
 {
-    public function setEnvironmentService(EnvironmentService $environmentService);
+    protected $class     = Task::class;
+    protected $namespace = 'Task';
 }

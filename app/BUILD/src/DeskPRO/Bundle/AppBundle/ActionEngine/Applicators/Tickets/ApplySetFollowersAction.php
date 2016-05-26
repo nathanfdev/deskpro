@@ -26,49 +26,39 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionInitializationInterface;
 
-class ApplySetFollowersAction extends AbstractTicketApplicator implements ActionApplicatorInterface
+class ApplySetFollowersAction extends AbstractTicketApplicator implements ActionInitializationInterface
 {
     /** @var  Person[] */
     private $followers;
 
-    /**
-     * @param Ticket[] $tickets
-     */
-    public function apply(array $tickets)
+    public function init()
     {
-        if (empty($this->options['set_followers'])) {
-            foreach ($tickets as $ticket) {
-                $ticket->resetParticipants();
-                $context = $this->tm->createAgentExecutorContext(null, 'unset_followers', 'mass_actions');
-                $this->tm->saveTicket($ticket, $context);
-            }
-        } else {
-            $this->init();
-            foreach ($tickets as $ticket) {
-                $ticket->setAgentParticipants($this->followers);
-                $context = $this->tm->createAgentExecutorContext(null, 'set_followers', 'mass_actions');
-                $this->tm->saveTicket($ticket, $context);
-            }
+        if (!empty($this->options['set_followers'])) {
+            $qb = $this->em->createQueryBuilder();
+            $qb
+                ->select('p')
+                ->from('DeskPRO:Person', 'p')
+                ->andWhere('p.id IN (:ids)')
+                ->setParameter('ids', $this->options['set_followers']);
+            $this->followers = $qb->getQuery()->getResult();
         }
     }
 
-    private function init()
+    /**
+     * @param Ticket $ticket
+     */
+    public function apply($ticket)
     {
-        $qb = $this->em->createQueryBuilder();
-        $qb
-            ->select('p')
-            ->from('DeskPRO:Person', 'p')
-            ->andWhere('p.id IN (:ids)')
-            ->setParameter('ids', $this->options['set_followers']);
-        $this->followers = $qb->getQuery()->getResult();
+        if (empty($this->options['set_followers'])) {
+            $ticket->resetParticipants();
+        } else {
+            $ticket->setAgentParticipants($this->followers);
+        }
     }
 }

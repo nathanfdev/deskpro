@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
@@ -39,15 +35,13 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 class ApplyRemoveLabelsAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
     /**
-     * @param Feedback[] $feedback
+     * @param Feedback $feedback
      */
-    public function apply(array $feedback)
+    public function apply($feedback)
     {
-        foreach ($feedback as $item) {
-            foreach ($this->options['remove_labels'] as $string) {
-                if ($label = $item->findLabelByString($string)) {
-                    $item->getLabels()->removeElement($label);
-                }
+        foreach ($this->options['remove_labels'] as $string) {
+            if ($label = $feedback->findLabelByString($string)) {
+                $feedback->getLabels()->removeElement($label);
             }
         }
     }

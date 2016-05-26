@@ -26,30 +26,33 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionInitializationInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class ApplySetStatusCategoryAction extends AbstractActionApplicator implements ActionApplicatorInterface
+class ApplySetStatusCategoryAction extends AbstractActionApplicator implements ActionInitializationInterface
 {
-    /**
-     * @param Feedback[] $feedback
-     */
-    public function apply(array $feedback)
+    /** @var  FeedbackStatusCategory */
+    private $statusCategory;
+
+    public function init()
     {
-        $statusCategory = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->find($this->options['set_status_category']);
-        if (!$statusCategory) {
+        $this->statusCategory = $this->em->getRepository(FeedbackStatusCategory::class)
+            ->find($this->options['set_status_category']);
+        if (!$this->statusCategory) {
             throw new BadRequestHttpException('Status category with ID='.$this->options['set_status_category']." doesn't exists");
         }
-        foreach ($feedback as $entity) {
-            $entity->setStatusCategory($statusCategory);
-        }
+    }
+
+    /**
+     * @param Feedback $feedback
+     */
+    public function apply($feedback)
+    {
+        $feedback->setStatusCategory($this->statusCategory);
     }
 }

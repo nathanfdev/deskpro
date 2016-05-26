@@ -26,31 +26,31 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
+use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionInitializationInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class ApplySetLanguageAction extends AbstractTicketApplicator implements ActionApplicatorInterface
+class ApplySetLanguageAction extends AbstractTicketApplicator implements ActionInitializationInterface
 {
-    /**
-     * @param Ticket[] $tickets
-     */
-    public function apply(array $tickets)
+    /** @var  Language */
+    private $language;
+
+    public function init()
     {
-        $language = $this->em->getRepository('DeskPRO:Language')->find($this->options['set_language']);
-        if (!$language) {
+        $this->language = $this->em->getRepository(Language::class)->find($this->options['set_language']);
+        if (!$this->language) {
             throw new BadRequestHttpException('Language with ID='.$this->options['set_language']." doesn't exists");
         }
-        foreach ($tickets as $ticket) {
-            $ticket->setLanguage($language);
-            $context = $this->tm->createAgentExecutorContext(null, 'set_language', 'mass_actions');
-            $this->tm->saveTicket($ticket, $context);
-        }
+    }
+
+    /**
+     * @param Ticket $ticket
+     */
+    public function apply($ticket)
+    {
+        $ticket->setLanguage($this->language);
     }
 }

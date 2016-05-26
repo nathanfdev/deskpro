@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators;
 
 use Doctrine\ORM\EntityManager;
@@ -51,5 +47,5 @@ abstract class AbstractActionApplicator implements ActionApplicatorInterface
         return $this;
     }
 
-    abstract public function apply(array $entities);
+    abstract public function apply($object);
 }

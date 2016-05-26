@@ -91,9 +91,9 @@ class MassActionsController extends BaseController
      */
     public function postRealTimeAction(Request $request, $content)
     {
+        $service            = $this->getActionApplicatorService($content);
         list($ids, $params) = $this->checkRequest($request, $content);
-        /* @var ApplicatorServiceInterface $applicator */
-        $service = $this->getActionApplicatorService($content);
+
         try {
             $service->apply($ids, $params);
         } catch (\Exception $e) {
@@ -153,6 +153,11 @@ class MassActionsController extends BaseController
         return [$ids, $params];
     }
 
+    /**
+     * @param $content
+     *
+     * @return ApplicatorServiceInterface
+     */
     private function getActionApplicatorService($content)
     {
         $service = $this->container->get('action_engine.'.$content, ContainerInterface::NULL_ON_INVALID_REFERENCE);

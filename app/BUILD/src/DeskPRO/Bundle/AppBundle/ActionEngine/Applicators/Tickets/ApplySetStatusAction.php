@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -38,14 +34,10 @@ use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
 class ApplySetStatusAction extends AbstractTicketApplicator implements ActionApplicatorInterface
 {
     /**
-     * @param Ticket[] $tickets
+     * @param Ticket $ticket
      */
-    public function apply(array $tickets)
+    public function apply($ticket)
     {
-        foreach ($tickets as $ticket) {
-            $ticket->setStatus($this->options['set_status']);
-            $context = $this->tm->createAgentExecutorContext(null, 'set_status', 'mass_actions');
-            $this->tm->saveTicket($ticket, $context);
-        }
+        $ticket->setStatus($this->options['set_status']);
     }
 }

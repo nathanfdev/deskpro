@@ -26,91 +26,75 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionInitializationInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class ApplyAssignAction extends AbstractTicketApplicator implements ActionApplicatorInterface
+class ApplyAssignAction extends AbstractTicketApplicator implements ActionInitializationInterface
 {
-    /**
-     * @param Ticket[] $tickets
-     */
-    public function apply(array $tickets)
-    {
-        $collection = $this->init();
-        $context    = $this->tm->createAgentExecutorContext(null, 'set_status', 'mass_actions');
+    /** @var  array */
+    private $collection;
 
-        foreach ($collection as $type => $value) {
+    public function init()
+    {
+        foreach ($this->options['assign'] as $type => $id) {
             switch ($type) {
                 case 'agent':
-                    foreach ($tickets as $ticket) {
-                        $ticket->setAgent($value);
-                        $this->tm->saveTicket($ticket, $context);
+                    $agent = null;
+                    if ($id) {
+                        $agent = $this->em->getRepository(Person::class)->find($id);
+                        if (!$agent) {
+                            throw new BadRequestHttpException("Agent with ID=$id doesn't exists");
+                        }
                     }
+                    $this->collection['agent'] = $agent;
                     break;
                 case 'team':
-                    foreach ($tickets as $ticket) {
-                        $ticket->setAgentTeam($value);
-                        $this->tm->saveTicket($ticket, $context);
+                    $team = null;
+                    if ($id) {
+                        $team = $this->em->getRepository(AgentTeam::class)->find($id);
+                        if (!$team) {
+                            throw new BadRequestHttpException("Agents team with ID=$id doesn't exists");
+                        }
                     }
+                    $this->collection['team'] = $team;
                     break;
                 case 'department':
-                    foreach ($tickets as $ticket) {
-                        $ticket->setDepartment($value);
-                        $this->tm->saveTicket($ticket, $context);
+                    $department = null;
+                    if ($id) {
+                        $department = $this->em->getRepository(Department::class)->find($id);
+                        if (!$department) {
+                            throw new BadRequestHttpException("Department with ID=$id doesn't exists");
+                        }
                     }
+                    $this->collection['department'] = $department;
                     break;
             }
         }
     }
 
     /**
-     * @return array
+     * @param Ticket $ticket
      */
-    private function init()
+    public function apply($ticket)
     {
-        $collection = [];
-
-        foreach ($this->options['assign'] as $type => $id) {
+        foreach ($this->collection as $type => $value) {
             switch ($type) {
                 case 'agent':
-                    $agent = null;
-                    if ($id) {
-                        $agent = $this->em->getRepository('DeskPRO:Person')->find($id);
-                        if (!$agent) {
-                            throw new BadRequestHttpException("Agent with ID=$id doesn't exists");
-                        }
-                    }
-                    $collection['agent'] = $agent;
+                    $ticket->setAgent($value);
                     break;
                 case 'team':
-                    $team = null;
-                    if ($id) {
-                        $team = $this->em->getRepository('DeskPRO:AgentTeam')->find($id);
-                        if (!$team) {
-                            throw new BadRequestHttpException("Agents team with ID=$id doesn't exists");
-                        }
-                    }
-                    $collection['team'] = $team;
+                    $ticket->setAgentTeam($value);
                     break;
                 case 'department':
-                    $department = null;
-                    if ($id) {
-                        $department = $this->em->getRepository('DeskPRO:Department')->find($id);
-                        if (!$department) {
-                            throw new BadRequestHttpException("Department with ID=$id doesn't exists");
-                        }
-                    }
-                    $collection['department'] = $department;
+                    $ticket->setDepartment($value);
                     break;
             }
         }
-
-        return $collection;
     }
 }

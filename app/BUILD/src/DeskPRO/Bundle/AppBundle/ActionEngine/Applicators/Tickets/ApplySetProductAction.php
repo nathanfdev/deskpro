@@ -26,31 +26,31 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
+use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionInitializationInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class ApplySetProductAction extends AbstractTicketApplicator implements ActionApplicatorInterface
+class ApplySetProductAction extends AbstractTicketApplicator implements ActionInitializationInterface
 {
-    /**
-     * @param Ticket[] $tickets
-     */
-    public function apply(array $tickets)
+    /** @var  Product */
+    private $product;
+
+    public function init()
     {
-        $product = $this->em->getRepository('DeskPRO:Product')->find($this->options['set_product']);
-        if (null === $product) {
+        $this->product = $this->em->getRepository(Product::class)->find($this->options['set_product']);
+        if (!$this->product) {
             throw new BadRequestHttpException('Product with ID='.$this->options['set_product']." doesn't exists");
         }
-        foreach ($tickets as $ticket) {
-            $ticket->setProduct($product);
-            $context = $this->tm->createAgentExecutorContext(null, 'set_product', 'mass_actions');
-            $this->tm->saveTicket($ticket, $context);
-        }
+    }
+
+    /**
+     * @param Ticket $ticket
+     */
+    public function apply($ticket)
+    {
+        $ticket->setProduct($this->product);
     }
 }

@@ -1,20 +1,30 @@
 services:
+
   action_engine.feedback:
-    class: DeskPRO\Bundle\AppBundle\ActionEngine\Services\FeedbackApplicatorService
+    class: DeskPRO\Bundle\AppBundle\ActionEngine\Services\FeedbackMassActionService
     arguments:
       - "@doctrine.orm.default_entity_manager"
+      - "@validator"
+
   action_engine.feedback_comments:
-    class: DeskPRO\Bundle\AppBundle\ActionEngine\Services\FeedbackCommentApplicatorService
+    class: DeskPRO\Bundle\AppBundle\ActionEngine\Services\FeedbackCommentMassActionService
     arguments:
       - "@doctrine.orm.default_entity_manager"
+      - "@validator"
+
   action_engine.tasks:
-    class: DeskPRO\Bundle\AppBundle\ActionEngine\Services\TaskApplicatorService
+    class: DeskPRO\Bundle\AppBundle\ActionEngine\Services\TaskMassActionService
     arguments:
       - "@doctrine.orm.default_entity_manager"
+      - "@validator"
+
   action_engine.tickets:
-    class: DeskPRO\Bundle\AppBundle\ActionEngine\Services\TicketApplicatorService
+    class: DeskPRO\Bundle\AppBundle\ActionEngine\Services\TicketMassActionService
+    arguments: ["@service_container"]
+
+  action_engine.tickets.reply:
+    class: DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets\ApplyReplyAction
     arguments:
       - "@doctrine.orm.default_entity_manager"
-      - "@ticket_manager"
       - "@security.token_storage"
       - "@app.environment"

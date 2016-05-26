@@ -26,14 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Interfaces;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Services;
 
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-
-interface TokenStorageAwareInterface
+interface MassActionServiceInterface
 {
-    public function setTokenStorage(TokenStorageInterface $tokenStorage);
+    public function apply(array $ids, array $params);
 }

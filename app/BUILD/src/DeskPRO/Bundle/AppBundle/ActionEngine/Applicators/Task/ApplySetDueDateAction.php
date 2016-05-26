@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Task;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
@@ -39,12 +35,10 @@ use DeskPRO\Bundle\AppBundle\Entity\Task;
 class ApplySetDueDateAction extends AbstractActionApplicator implements ActionApplicatorInterface
 {
     /**
-     * @param Task[] $tasks
+     * @param Task $task
      */
-    public function apply(array $tasks)
+    public function apply($task)
     {
-        foreach ($tasks as $task) {
-            $task->setDateDue(new \DateTime($this->options['set_due_date']));
-        }
+        $task->setDateDue(new \DateTime($this->options['set_due_date']));
     }
 }

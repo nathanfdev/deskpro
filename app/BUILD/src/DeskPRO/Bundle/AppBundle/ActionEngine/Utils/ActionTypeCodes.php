@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Utils;
 
 use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionInterface;
@@ -47,13 +43,13 @@ class ActionTypeCodes
     /**
      * Remove namespace and remove "Action" from the end of the class name, lowercase.
      *
-     * example: DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\ApproveAction converts to: "feedback_approve"
+     * example: DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\FooBarAction converts to: "foo_bar"
      *
      * @param ActionInterface $action
      *
      * @return string type code
      */
-    public static function getActionTypeCode(ActionInterface $action)
+    public static function getActionName(ActionInterface $action)
     {
         return strtolower(
             Strings::camelCaseToUnderscore(
@@ -62,6 +58,14 @@ class ActionTypeCodes
         );
     }
 
+    /**
+     * Example: ("feedback", "approve") to classname DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Common\ApproveAction.
+     *
+     * @param string $namespace
+     * @param string $actionName
+     *
+     * @return string
+     */
     public static function getActionClass($namespace, $actionName)
     {
         $actionClassName = ucfirst(Strings::underscoreToCamelCase($actionName));
@@ -90,22 +94,22 @@ class ActionTypeCodes
      * Example: "approve" to classname: DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Feedback\ApplyApproveAction.
      *
      * @param string $namespace
-     * @param string $action_type_code
+     * @param string $actionName
      *
      * @return string
      */
-    public static function getActionApplicatorClassForTypeCode($namespace, $action_type_code)
+    public static function getActionApplicatorClassForActionName($namespace, $actionName)
     {
-        $action_applicator_class_name = ucfirst(Strings::underscoreToCamelCase($action_type_code));
-        $action_applicator_class      = sprintf(
+        $actionApplicatorClassName = ucfirst(Strings::underscoreToCamelCase($actionName));
+        $actionApplicatorClass     = sprintf(
             'DeskPRO\\Bundle\\AppBundle\\ActionEngine\\Applicators\\%s\\Apply%sAction',
             $namespace,
-            $action_applicator_class_name
+            $actionApplicatorClassName
         );
-        if (!class_exists($action_applicator_class)) {
-            throw new ActionApplicatorDoesNotExists('Action Applicator Does Not Exists '.$action_type_code);
+        if (!class_exists($actionApplicatorClass)) {
+            throw new ActionApplicatorDoesNotExists('Action Applicator Does Not Exists '.$actionName);
         }
 
-        return $action_applicator_class;
+        return $actionApplicatorClass;
     }
 }

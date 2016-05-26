@@ -26,99 +26,95 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Task;
 
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\AbstractActionApplicator;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionApplicatorInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionInitializationInterface;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class ApplyAssignAction extends AbstractActionApplicator implements ActionApplicatorInterface
+class ApplyAssignAction extends AbstractActionApplicator implements ActionInitializationInterface
 {
-    /**
-     * @param Task[] $tasks
-     */
-    public function apply(array $tasks)
-    {
-        $collection = $this->init($tasks);
+    /** @var  array */
+    private $collection;
 
-        foreach ($collection as $type => $value) {
+    /**
+     * @return array
+     */
+    public function init()
+    {
+        foreach ($this->options['assign'] as $type => $id) {
             switch ($type) {
                 case 'agent':
-                    foreach ($tasks as $task) {
-                        $assignment = new TaskAssignment();
-                        $assignment->setPerson($value);
-                        $assignment->setTask($task);
-                        $this->em->persist($assignment);
-                        $task->addAssigned($assignment);
+                    $agent = $this->em->getRepository(Person::class)->find($id);
+                    if (!$agent) {
+                        throw new BadRequestHttpException("Agent with ID=$id doesn't exists");
                     }
+                    $this->collection['agent'] = $agent;
                     break;
                 case 'team':
-                    foreach ($tasks as $task) {
-                        $assignment = new TaskAssignment();
-                        $assignment->setTeam($value);
-                        $assignment->setTask($task);
-                        $this->em->persist($assignment);
-                        $task->addAssigned($assignment);
+                    $team = $this->em->getRepository(AgentTeam::class)->find($id);
+                    if (!$team) {
+                        throw new BadRequestHttpException("Agents team with ID=$id doesn't exists");
                     }
+                    $this->collection['team'] = $team;
                     break;
                 case 'department':
-                    foreach ($tasks as $task) {
-                        $assignment = new TaskAssignment();
-                        $assignment->setDepartment($value);
-                        $assignment->setTask($task);
-                        $this->em->persist($assignment);
-                        $task->addAssigned($assignment);
+                    $department = $this->em->getRepository(Department::class)->find($id);
+                    if (!$department) {
+                        throw new BadRequestHttpException("Department with ID=$id doesn't exists");
                     }
+                    $this->collection['department'] = $department;
                     break;
             }
         }
     }
 
     /**
-     * @param Task[] $tasks
-     *
-     * @return array
+     * @param Task $task
      */
-    private function init($tasks)
+    public function apply($task)
     {
-        foreach ($tasks as $task) {
-            foreach ($task->getAssigned() as $assigned) {
-                $this->em->remove($assigned);
-            }
-        }
+        $this->removeAssigned($task);
 
-        foreach ($this->options['assign'] as $type => $id) {
+        foreach ($this->collection as $type => $value) {
             switch ($type) {
                 case 'agent':
-                    $agent = $this->em->getRepository('DeskPRO:Person')->find($id);
-                    if (!$agent) {
-                        throw new BadRequestHttpException("Agent with ID=$id doesn't exists");
-                    }
-                    $collection['agent'] = $agent;
+                    $assignment = new TaskAssignment();
+                    $assignment->setPerson($value);
+                    $assignment->setTask($task);
+                    $this->em->persist($assignment);
+                    $task->addAssigned($assignment);
                     break;
                 case 'team':
-                    $team = $this->em->getRepository('DeskPRO:AgentTeam')->find($id);
-                    if (!$team) {
-                        throw new BadRequestHttpException("Agents team with ID=$id doesn't exists");
-                    }
-                    $collection['team'] = $team;
+                    $assignment = new TaskAssignment();
+                    $assignment->setTeam($value);
+                    $assignment->setTask($task);
+                    $this->em->persist($assignment);
+                    $task->addAssigned($assignment);
                     break;
                 case 'department':
-                    $department = $this->em->getRepository('DeskPRO:Department')->find($id);
-                    if (!$department) {
-                        throw new BadRequestHttpException("Department with ID=$id doesn't exists");
-                    }
-                    $collection['department'] = $department;
+                    $assignment = new TaskAssignment();
+                    $assignment->setDepartment($value);
+                    $assignment->setTask($task);
+                    $this->em->persist($assignment);
+                    $task->addAssigned($assignment);
                     break;
             }
         }
+    }
 
-        return $collection;
+    /**
+     * @param Task $task
+     */
+    private function removeAssigned($task)
+    {
+        foreach ($task->getAssigned() as $assigned) {
+            $this->em->remove($assigned);
+        }
     }
 }

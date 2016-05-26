@@ -325,6 +325,8 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         if ($this->status != 'hidden' && $last_status == 'hidden') {
             $this->date_published = new \DateTime();
         }
+
+        return $this;
     }
 
     public function setStatusCode($status_code)
