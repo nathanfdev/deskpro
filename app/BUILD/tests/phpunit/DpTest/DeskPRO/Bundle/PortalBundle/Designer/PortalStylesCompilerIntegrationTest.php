@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DpTest\DeskPRO\Bundle\PortalBundle\Designer;
 
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
@@ -48,6 +45,11 @@ class PortalStylesCompilerIntegrationTest extends PortalTestCase
     /**
      * @var ThemeSet
      */
+    private $theme_set;
+
+    /**
+     * @var ThemeSet
+     */
     private $edit_theme_set;
 
     /**
@@ -55,6 +57,8 @@ class PortalStylesCompilerIntegrationTest extends PortalTestCase
      */
     protected function setUp()
     {
+        $this->theme_set = new ThemeSet();
+        $this->theme_set->setThemeId('theme_set_id');
         $this->edit_theme_set = new ThemeSet();
         $this->edit_theme_set->setThemeId('edit_theme_set_id');
         $this->getEntityManager()->persist($this->edit_theme_set);
@@ -73,6 +77,7 @@ class PortalStylesCompilerIntegrationTest extends PortalTestCase
     {
         return new PortalStylesCompiler(
             $this->getEntityManager(),
+            $this->theme_set,
             $this->edit_theme_set,
             __DIR__."/scss/$style",
             __DIR__."/scss-rtl/$style",
