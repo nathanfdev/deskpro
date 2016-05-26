@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -95,4 +95,30 @@ return array(
     'admin.settings.your_site_url'                          => 'Your Site URL',
     'admin.settings.your_website_name'                      => 'Your website name',
     'admin.settings.your_website_url'                       => 'Your website URL',
+
+    'admin.settings.portal_rate_limit_account'      => 'Account Rate Limiting',
+    'admin.settings.portal_rate_limit_logged_in'    => 'Rate Limiting for Logged-In Users',
+    'admin.settings.portal_rate_limit_guests'       => 'Rate Limiting for Guests',
+    'admin.settings.portal_rate_limit_minutes'      => 'minutes,',
+    'admin.settings.portal_rate_limit_times_within' => 'times within',
+    'admin.settings.portal_rate_limit_show_captcha' => 'show a CAPTCHA to the user',
+    'admin.settings.portal_rate_limit_reject_form'  => 'reject the form',
+
+    'admin.settings.portal_rate_limit_login_rate_limit'           => 'Login Rate Limiting',
+    'admin.settings.portal_rate_limit_login_rate_limit_also'      => 'see also Login Lockout',
+    'admin.settings.portal_rate_limit_login_attempted'            => 'After a user has attempted to login',
+    'admin.settings.portal_rate_limit_registration_rate_limit'    => 'Registration Rate Limiting',
+    'admin.settings.portal_rate_limit_registration_attempted'     => 'After a user has attempted to register',
+    'admin.settings.portal_rate_limit_forgot_password_rate_limit' => 'Forgot Password Rate Limiting',
+    'admin.settings.portal_rate_limit_forgot_password_attempted'  => 'After a user used the "Forgot password" form',
+    'admin.settings.portal_rate_limit_ticket_rate_limit'          => 'Ticket Rate Limiting',
+    'admin.settings.portal_rate_limit_ticket_attempted'           => 'After a user has submitted ticket',
+    'admin.settings.portal_rate_limit_feedback_rate_limit'        => 'Feedback Rate Limiting',
+    'admin.settings.portal_rate_limit_feedback_attempted'         => 'After a user has submitted feedback items',
+    'admin.settings.portal_rate_limit_comment_rate_limit'         => 'Comment Rate Limiting',
+    'admin.settings.portal_rate_limit_comment_attempted'          => 'After a user has submitted comment',
+    'admin.settings.portal_rate_limit_upload_rate_limit'          => 'Upload Attachment Rate Limiting',
+    'admin.settings.portal_rate_limit_upload_attempted'           => 'After a user has submitted attachment',
+    'admin.settings.portal_rate_limit_share_rate_limit'           => 'Share Content Rate Limiting',
+    'admin.settings.portal_rate_limit_share_attempted'            => 'After a user has shared content',
 );
