@@ -68,6 +68,9 @@
     "jsx-a11y"
   ],
   "settings": {
+    "import/resolver": {
+      "babel-namespace": {}
+    },
     "react": {
       "version": "0.14.8"
       // React version, default to the latest React stable release
