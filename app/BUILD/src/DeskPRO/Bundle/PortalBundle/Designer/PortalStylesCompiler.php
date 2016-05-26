@@ -77,29 +77,29 @@ class PortalStylesCompiler
 
     /**
      * @param EntityManager $em
-     * @param ThemeSet      $edit_theme_set
-     * @param string        $styles_lrt_file_path
-     * @param string        $styles_rtl_file_path
-     * @param string        $custom_scss
+     * @param ThemeSet      $editThemeSet
+     * @param string        $stylesLrtFilePath
+     * @param string        $stylesRtlFilePath
+     * @param string        $customScss
      *
      * @throws \Exception
      */
     public function __construct(
         EntityManager $em,
-        ThemeSet $edit_theme_set,
-        $styles_lrt_file_path,
-        $styles_rtl_file_path,
-        $custom_scss
+        ThemeSet $editThemeSet,
+        $stylesLrtFilePath,
+        $stylesRtlFilePath,
+        $customScss
     ) {
         $this->em = $em;
-        if (!$this->stylesLrtFilePath = realpath($styles_lrt_file_path)) {
+        if (!$this->stylesLrtFilePath = realpath($stylesLrtFilePath)) {
             throw new \Exception("Can't resolve a file from the given path: {$this->stylesLrtFilePath}");
         }
-        if (!$this->stylesRtlFilePath = realpath($styles_rtl_file_path)) {
-            throw new \Exception("Can't resolve a file from the given path: {$this->$styles_rtl_file_path}");
+        if (!$this->stylesRtlFilePath = realpath($stylesRtlFilePath)) {
+            throw new \Exception("Can't resolve a file from the given path: {$this->stylesRtlFilePath}");
         }
-        $this->customScss   = $custom_scss;
-        $this->editThemeSet = $edit_theme_set;
+        $this->customScss   = $customScss;
+        $this->editThemeSet = $editThemeSet;
     }
 
     /**
