@@ -277,7 +277,8 @@ class Manager
             $variables     = $sassDocParser->getVariableValues();
             /** @var PortalStylesCompiler $styleCompiler */
             $styleCompiler = $this->container->get('dp.portal.designer.portal_styles_compiler');
-            $styleCompiler->recompile($variables);
+            $styleCompiler->recompile($variables, true);
+            $styleCompiler->recompile($variables, false);
             $this->logger->info('Compile Custom Scss scripts');
         }
 

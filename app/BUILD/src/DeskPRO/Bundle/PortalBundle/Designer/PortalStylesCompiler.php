@@ -58,6 +58,11 @@ class PortalStylesCompiler
     /**
      * @var ThemeSet
      */
+    private $themeSet;
+
+    /**
+     * @var ThemeSet
+     */
     private $editThemeSet;
 
     /**
@@ -77,6 +82,7 @@ class PortalStylesCompiler
 
     /**
      * @param EntityManager $em
+     * @param ThemeSet      $themeSet
      * @param ThemeSet      $editThemeSet
      * @param string        $stylesLrtFilePath
      * @param string        $stylesRtlFilePath
@@ -86,6 +92,7 @@ class PortalStylesCompiler
      */
     public function __construct(
         EntityManager $em,
+        ThemeSet $themeSet,
         ThemeSet $editThemeSet,
         $stylesLrtFilePath,
         $stylesRtlFilePath,
@@ -99,6 +106,7 @@ class PortalStylesCompiler
             throw new \Exception("Can't resolve a file from the given path: {$this->stylesRtlFilePath}");
         }
         $this->customScss   = $customScss;
+        $this->themeSet     = $themeSet;
         $this->editThemeSet = $editThemeSet;
     }
 
@@ -106,17 +114,18 @@ class PortalStylesCompiler
      * Recompile portal css.
      *
      * @param array $variables
+     * @param bool  $preview
      */
-    public function recompile(array $variables)
+    public function recompile(array $variables, $preview = true)
     {
-        $themeSet = $this->editThemeSet;
+        $themeSet = $preview ? $this->editThemeSet : $this->themeSet;
         $themeSet->setOption(self::$customVarsThemeSetOption, $variables);
 
         $this->em->persist($themeSet);
         $this->em->flush();
 
-        $this->doRecompile('LTR', $variables);
-        $this->doRecompile('RTL', $variables);
+        $this->doRecompile('LTR', $variables, $preview);
+        $this->doRecompile('RTL', $variables, $preview);
     }
 
     /**
@@ -124,15 +133,19 @@ class PortalStylesCompiler
      *
      * @param string $direction LTR or RTL
      * @param array  $variables
+     * @param bool   $preview
      */
-    private function doRecompile($direction, array $variables)
+    private function doRecompile($direction, array $variables, $preview = true)
     {
-        $themeSet = $this->editThemeSet;
+        $themeSet = $preview ? $this->editThemeSet : $this->themeSet;
 
         $css = $this->compileCss($direction, $variables);
 
         // Find existing or create a new blob storage for the custom Css
-        if (!$blobStorage = $this->getEditThemeSetCssBlobStorage($direction)) {
+        $blobStorage = $preview
+            ? $this->getEditThemeSetCssBlobStorage($direction)
+            : $this->getCssBlobStorage($direction);
+        if (!$blobStorage) {
             $blob = new Blob();
             $blob->setFilename($direction === 'RTL' ? 'portal-rtl.css' : 'portal.css');
             $blob->blob_hash = md5($css);
@@ -148,7 +161,9 @@ class PortalStylesCompiler
             $this->em->flush();
         } else {
             // Saving in a new BlobStorage instance to use its' $id as CSS version to bypass caches
-            $blob = $this->getEditThemeSetCssBlob($direction);
+            $blob = $preview
+                ? $this->getEditThemeSetCssBlob($direction)
+                : $this->getCssBlob($direction);
             $this->em->remove($blobStorage);
             $this->em->flush();
         }
@@ -174,6 +189,13 @@ class PortalStylesCompiler
         return;
     }
 
+    public function getCssBlobStorage($direction = 'LTR')
+    {
+        if ($blob = $this->getCssBlob($direction)) {
+            return $this->em->getRepository(BlobStorage::class)->findOneBy(['blob_id' => $blob->getId()]);
+        }
+    }
+
     /**
      * Compile portal css from scss sources.
      *
@@ -194,12 +216,36 @@ class PortalStylesCompiler
     }
 
     /**
-     * @param string $direction LTR or RTL
+     * @param string $direction Stylesheet for which direction? LTR or RTL
+     *
+     * @throws \Exception
      *
      * @return Blob|null
      */
-    private function getEditThemeSetCssBlob($direction)
+    private function getCssBlob($direction = 'LTR')
     {
+        $direction = strtoupper($direction);
+
+        $criteria = [
+            'theme_set' => $this->themeSet,
+            'name'      => $direction === 'RTL' ? 'portal-rtl.css' : 'portal.css',
+        ];
+        if ($asset = $this->em->getRepository(ThemeSetAsset::class)->findOneBy($criteria)) {
+            return $asset->getBlob();
+        }
+
+        return;
+    }
+
+    /**
+     * @param string $direction Stylesheet for which direction? LTR or RTL
+     *
+     * @return Blob|null
+     */
+    private function getEditThemeSetCssBlob($direction = 'LTR')
+    {
+        $direction = strtoupper($direction);
+
         $criteria = [
             'theme_set' => $this->editThemeSet,
             'name'      => $direction === 'RTL' ? 'portal-rtl.css' : 'portal.css',
