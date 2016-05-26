@@ -8,13 +8,13 @@ Feature: Buffering portal changes in the edit ThemeSet
     And I send a PUT request to "/portal/api/style/edit-theme-set/variable-values" with body:
     """
     {
-      "font-default": "Arial Test Font"
+      "font-family-sans-serif": "Sans Serif Test Font"
     }
     """
     And I send a GET request to "/portal/api/style/edit-theme-set/commit"
     When I send a GET request to "/portal/api/style/portal.css"
     Then the response status code should be 200
-    And the response should contain "Arial Test Font"
+    And the response should contain "Sans Serif Test Font"
 
   Scenario: I retrieve a custom asset
     And I send the "text.txt" file as "file" to "/portal/api/style/edit-theme-set/assets"
