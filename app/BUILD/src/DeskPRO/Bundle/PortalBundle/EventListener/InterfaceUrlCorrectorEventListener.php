@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use DeskPRO\Bundle\AppBundle\Request\InterfaceInfo;
@@ -75,6 +76,10 @@ class InterfaceUrlCorrectorEventListener implements EventSubscriberInterface
         // Not a URL format we care about
         if (!$urlParts || empty($urlParts['iface'])) {
             return;
+        }
+
+        if (empty($urlParts['path'])) {
+            $urlParts['path'] = '';
         }
 
         $newUrl = $request->getUriForPath("/{$urlParts['iface']}/{$urlParts['path']}");
