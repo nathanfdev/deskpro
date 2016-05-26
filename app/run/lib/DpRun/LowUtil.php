@@ -56,6 +56,8 @@ class LowUtil
             'dbname'   => null
         ], $config);
 
+
+
         $info = [
             'unix_socket'  => null,
             'host'         => null,
@@ -65,12 +67,14 @@ class LowUtil
             'dbname'       => $config['dbname'],
             'dsn'          => null,
             'chosen_key'   => $chosenKey,
+            'pdo_options'  => !empty($config['pdo_options']) ? $config['pdo_options'] : [],
             'doctrine'     => [
-                'driver'     => 'pdo_mysql',
-                'user'       => $config['user'],
-                'password'   => $config['password'],
-                'dbname'     => $config['dbname'] ?: null,
-                'charset'    => 'utf8'
+                'driver'        => 'pdo_mysql',
+                'user'          => $config['user'],
+                'password'      => $config['password'],
+                'dbname'        => $config['dbname'] ?: null,
+                'charset'       => 'utf8',
+                'driverOptions' => !empty($config['pdo_options']) ? $config['pdo_options'] : [],
             ],
         ];
 
@@ -113,9 +117,21 @@ class LowUtil
             $conn_info = self::getMysqlInfoFromConfigArray($conn_info);
         }
 
-        $pdo = new \PDO($conn_info['dsn'], $conn_info['user'], $conn_info['password']);
-        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        $pdo->exec("SET sql_mode=''");
+        $options = [
+            \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
+            \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET sql_mode=\'\', NAMES utf8'
+        ];
+
+        if (!empty($conn_info['pdo_options'])) {
+            $options = array_merge($options, $conn_info['pdo_options']);
+        }
+
+        $pdo = new \PDO(
+            $conn_info['dsn'],
+            $conn_info['user'],
+            $conn_info['password'],
+            $options
+        );
 
         return $pdo;
     }
