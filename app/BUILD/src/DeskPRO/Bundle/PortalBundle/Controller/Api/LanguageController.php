@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\Language;
@@ -52,7 +51,7 @@ class LanguageController extends AbstractApiController
      *
      * @return JsonResponse
      */
-    public function widgetPhrasesAction(Request $request)
+    public function widgetPhrasesAction(Request $request, $_format)
     {
         $phrases = [
             'portal.tickets.related_articles_title',
@@ -197,7 +196,7 @@ class LanguageController extends AbstractApiController
             'user.chat.window_upload-drag',
         ];
 
-        return $this->getResponse($request, $phrases);
+        return $this->getResponse($request, $phrases, $_format);
     }
 
     /**
@@ -206,7 +205,7 @@ class LanguageController extends AbstractApiController
      *
      * @return JsonResponse
      */
-    protected function getResponse(Request $request, array $phrases)
+    protected function getResponse(Request $request, array $phrases, $format)
     {
         $translate = $this->container->get('deskpro.core.translate');
         $language  = $this->container->get('language_stack')->getActiveOrDefault();
@@ -221,8 +220,8 @@ class LanguageController extends AbstractApiController
 
         $res = new JsonResponse($output);
 
-        $format = $request->getRequestFormat('json');
         if ($format === 'js') {
+            $res->headers->set('Content-Type', 'application/javascript');
             $cb = $request->request->get('callback', 'DP_SET_PHRASES');
             $res->setCallback($cb);
         }

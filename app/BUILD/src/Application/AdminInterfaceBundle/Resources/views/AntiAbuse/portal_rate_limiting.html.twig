@@ -3,7 +3,7 @@
 {% block fullpane_content %}
     <section class="dp-paneblock dp-listpane" ng-if="usersourceSettings.reg_enabled || usersourceSettings.has_user_login_form">
         <header>
-            <h3>Account Rate Limiting</h3>
+            <h3>{{ phrase('admin.settings.portal_rate_limit_account') }}</h3>
         </header>
 
         <article class="form-horizontal dp-form" ng-if="usersourceSettings.has_user_login_form">
@@ -13,17 +13,17 @@
                         <div class="inner-group">
                             <label>
                                 <input type="checkbox" ng-model="settings.account_rate_limit.login_settings.enabled" />
-                                <h4>Login Rate Limiting (<a href="{{ ng_href('setup.login_lockout_settings') }}">see also Login Lockout</a>)</h4>
+                                <h4>{{ phrase('admin.settings.portal_rate_limit_login_rate_limit') }} (<a href="{{ ng_href('setup.login_lockout_settings') }}">{{ phrase('admin.settings.portal_rate_limit_login_rate_limit_also') }}</a>)</h4>
                             </label>
                             <div ng-show="settings.account_rate_limit.login_settings.enabled">
-                                After a user has attempted to login
+                                {{ phrase('admin.settings.portal_rate_limit_login_attempted') }}
                                 <input type="number" min="1" ng-model="settings.account_rate_limit.login_settings.limit" class="form-control" style="width: 60px;" />
-                                times within
+                                {{ phrase('admin.settings.portal_rate_limit_times_within') }}
                                 <input type="number" min="1" ng-model="settings.account_rate_limit.login_settings.time" class="form-control" style="width: 60px;" />
-                                minutes,
+                                {{ phrase('admin.settings.portal_rate_limit_minutes') }}
                                 <select ng-model="settings.account_rate_limit.login_settings.response">
-                                    <option value="captcha">show a CAPTCHA to the user </option>
-                                    <option value="lockout">disable login form for the user</option>
+                                    <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
+                                    <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
                                 </select>
                             </div>
                         </div>
@@ -40,17 +40,17 @@
                         <div class="inner-group">
                             <label>
                                 <input type="checkbox" ng-model="settings.account_rate_limit.registration_settings.enabled" />
-                                <h4>Registration Rate Limiting</h4>
+                                <h4>{{ phrase('admin.settings.portal_rate_limit_registration_rate_limit') }}</h4>
                             </label>
                             <div ng-show="settings.account_rate_limit.registration_settings.enabled">
-                                After a user has attempted to register
+                                {{ phrase('admin.settings.portal_rate_limit_registration_attempted') }}
                                 <input type="number" min="1" ng-model="settings.account_rate_limit.registration_settings.limit" class="form-control" style="width: 60px;" />
-                                times within
+                                {{ phrase('admin.settings.portal_rate_limit_times_within') }}
                                 <input type="number" min="1" ng-model="settings.account_rate_limit.registration_settings.time" class="form-control" style="width: 60px;" />
-                                minutes,
+                                {{ phrase('admin.settings.portal_rate_limit_minutes') }}
                                 <select ng-model="settings.account_rate_limit.registration_settings.response">
-                                    <option value="captcha">show a CAPTCHA to the user </option>
-                                    <option value="lockout">disable login form for the user</option>
+                                    <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
+                                    <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
                                 </select>
                             </div>
                         </div>
@@ -67,17 +67,17 @@
                         <div class="inner-group">
                             <label>
                                 <input type="checkbox" ng-model="settings.account_rate_limit.reset_password_settings.enabled" />
-                                <h4>Forgot Password Rate Limiting</h4>
+                                <h4>{{ phrase('admin.settings.portal_rate_limit_forgot_password_rate_limit') }}</h4>
                             </label>
                             <div ng-show="settings.account_rate_limit.reset_password_settings.enabled">
-                                After a user used the "Forgot password" form
+                                {{ phrase('admin.settings.portal_rate_limit_forgot_password_attempted') }}
                                 <input type="number" min="1" ng-model="settings.account_rate_limit.reset_password_settings.limit" class="form-control" style="width: 60px;" />
-                                times within
+                                {{ phrase('admin.settings.portal_rate_limit_times_within') }}
                                 <input type="number" min="1" ng-model="settings.account_rate_limit.reset_password_settings.time" class="form-control" style="width: 60px;" />
-                                minutes,
+                                {{ phrase('admin.settings.portal_rate_limit_minutes') }}
                                 <select ng-model="settings.account_rate_limit.reset_password_settings.response">
-                                    <option value="captcha">show a CAPTCHA to the user </option>
-                                    <option value="lockout">disable login form for the user</option>
+                                    <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
+                                    <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
                                 </select>
                             </div>
                         </div>
@@ -90,7 +90,7 @@
 
     <section class="dp-paneblock dp-listpane">
         <header>
-            <h3>Rate Limiting for Logged-In Users</h3>
+            <h3>{{ phrase('admin.settings.portal_rate_limit_logged_in') }}</h3>
         </header>
 
         <article class="form-horizontal dp-form">
@@ -100,17 +100,17 @@
                         <div class="inner-group">
                             <label>
                                 <input type="checkbox" ng-model="settings.user_rate_limit.submit_ticket.enabled" />
-                                <h4>Ticket Rate Limiting</h4>
+                                <h4>{{ phrase('admin.settings.portal_rate_limit_ticket_rate_limit') }}</h4>
                             </label>
                             <div ng-show="settings.user_rate_limit.submit_ticket.enabled">
-                                After a user has submitted
+                                {{ phrase('admin.settings.portal_rate_limit_ticket_attempted') }}
                                 <input type="number" min="1" ng-model="settings.user_rate_limit.submit_ticket.limit" class="form-control" style="width: 60px;" />
-                                tickets within
+                                {{ phrase('admin.settings.portal_rate_limit_times_within') }}
                                 <input type="number" min="1" ng-model="settings.user_rate_limit.submit_ticket.time" class="form-control" style="width: 60px;" />
-                                minutes,
+                                {{ phrase('admin.settings.portal_rate_limit_minutes') }}
                                 <select ng-model="settings.user_rate_limit.submit_ticket.response">
-                                    <option value="captcha">show a CAPTCHA to the user </option>
-                                    <option value="lockout">disable login form for the user</option>
+                                    <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
+                                    <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
                                 </select>
                             </div>
                         </div>
@@ -127,17 +127,17 @@
                         <div class="inner-group">
                             <label>
                                 <input type="checkbox" ng-model="settings.user_rate_limit.submit_feedback.enabled" />
-                                <h4>Feedback Rate Limiting</h4>
+                                <h4>{{ phrase('admin.settings.portal_rate_limit_feedback_rate_limit') }}</h4>
                             </label>
                             <div ng-show="settings.user_rate_limit.submit_feedback.enabled">
-                                After a user has submitted
+                                {{ phrase('admin.settings.portal_rate_limit_feedback_attempted') }}
                                 <input type="number" min="1" ng-model="settings.user_rate_limit.submit_feedback.limit" class="form-control" style="width: 60px;" />
-                                feedback items within
+                                {{ phrase('admin.settings.portal_rate_limit_times_within') }}
                                 <input type="number" min="1" ng-model="settings.user_rate_limit.submit_feedback.time" class="form-control" style="width: 60px;" />
-                                minutes,
+                                {{ phrase('admin.settings.portal_rate_limit_minutes') }}
                                 <select ng-model="settings.user_rate_limit.submit_feedback.response">
-                                    <option value="captcha">show a CAPTCHA to the user </option>
-                                    <option value="lockout">disable login form for the user</option>
+                                    <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
+                                    <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
                                 </select>
                             </div>
                         </div>
@@ -154,17 +154,17 @@
                         <div class="inner-group">
                             <label>
                                 <input type="checkbox" ng-model="settings.user_rate_limit.submit_comment.enabled" />
-                                <h4>Comment Rate Limiting</h4>
+                                <h4>{{ phrase('admin.settings.portal_rate_limit_comment_rate_limit') }}</h4>
                             </label>
                             <div ng-show="settings.user_rate_limit.submit_comment.enabled">
-                                After a user has submitted
+                                {{ phrase('admin.settings.portal_rate_limit_comment_attempted') }}
                                 <input type="number" min="1" ng-model="settings.user_rate_limit.submit_comment.limit" class="form-control" style="width: 60px;" />
-                                comments within
+                                {{ phrase('admin.settings.portal_rate_limit_times_within') }}
                                 <input type="number" min="1" ng-model="settings.user_rate_limit.submit_comment.time" class="form-control" style="width: 60px;" />
-                                minutes,
+                                {{ phrase('admin.settings.portal_rate_limit_minutes') }}
                                 <select ng-model="settings.user_rate_limit.submit_comment.response">
-                                    <option value="captcha">show a CAPTCHA to the user </option>
-                                    <option value="lockout">disable login form for the user</option>
+                                    <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
+                                    <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
                                 </select>
                             </div>
                         </div>
@@ -181,17 +181,17 @@
                         <div class="inner-group">
                             <label>
                                 <input type="checkbox" ng-model="settings.user_rate_limit.upload_attachment.enabled" />
-                                <h4>Upload Attachment Rate Limiting</h4>
+                                <h4>{{ phrase('admin.settings.portal_rate_limit_upload_rate_limit') }}</h4>
                             </label>
                             <div ng-show="settings.user_rate_limit.upload_attachment.enabled">
-                                After a user has submitted
+                                {{ phrase('admin.settings.portal_rate_limit_upload_attempted') }}
                                 <input type="number" min="1" ng-model="settings.user_rate_limit.upload_attachment.limit" class="form-control" style="width: 60px;" />
-                                attachments within
+                                {{ phrase('admin.settings.portal_rate_limit_times_within') }}
                                 <input type="number" min="1" ng-model="settings.user_rate_limit.upload_attachment.time" class="form-control" style="width: 60px;" />
-                                minutes,
+                                {{ phrase('admin.settings.portal_rate_limit_minutes') }}
                                 <select ng-model="settings.user_rate_limit.upload_attachment.response">
-                                    <option value="captcha">show a CAPTCHA to the user </option>
-                                    <option value="lockout">disable login form for the user</option>
+                                    <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
+                                    <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
                                 </select>
                             </div>
                         </div>
@@ -208,17 +208,17 @@
                         <div class="inner-group">
                             <label>
                                 <input type="checkbox" ng-model="settings.user_rate_limit.share_content.enabled" />
-                                <h4>Share Content Rate Limiting</h4>
+                                <h4>{{ phrase('admin.settings.portal_rate_limit_share_rate_limit') }}</h4>
                             </label>
                             <div ng-show="settings.user_rate_limit.share_content.enabled">
-                                After a user has shared
+                                {{ phrase('admin.settings.portal_rate_limit_share_attempted') }}
                                 <input type="number" min="1" ng-model="settings.user_rate_limit.share_content.limit" class="form-control" style="width: 60px;" />
-                                contents within
+                                {{ phrase('admin.settings.portal_rate_limit_times_within') }}
                                 <input type="number" min="1" ng-model="settings.user_rate_limit.share_content.time" class="form-control" style="width: 60px;" />
-                                minutes,
+                                {{ phrase('admin.settings.portal_rate_limit_minutes') }}
                                 <select ng-model="settings.user_rate_limit.share_content.response">
-                                    <option value="captcha">show a CAPTCHA to the user </option>
-                                    <option value="lockout">disable login form for the user</option>
+                                    <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
+                                    <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
                                 </select>
                             </div>
                         </div>
@@ -231,7 +231,7 @@
 
     <section class="dp-paneblock dp-listpane">
         <header>
-            <h3>Rate Limiting for Guests</h3>
+            <h3>{{ phrase('admin.settings.portal_rate_limit_guests') }}</h3>
         </header>
 
         <article class="form-horizontal dp-form">
@@ -241,17 +241,17 @@
                         <div class="inner-group">
                             <label>
                                 <input type="checkbox" ng-model="settings.guest_rate_limit.submit_ticket.enabled" />
-                                <h4>Ticket Rate Limiting</h4>
+                                <h4>{{ phrase('admin.settings.portal_rate_limit_ticket_rate_limit') }}</h4>
                             </label>
                             <div ng-show="settings.guest_rate_limit.submit_ticket.enabled">
-                                After a user has submitted
+                                {{ phrase('admin.settings.portal_rate_limit_ticket_attempted') }}
                                 <input type="number" min="1" ng-model="settings.guest_rate_limit.submit_ticket.limit" class="form-control" style="width: 60px;" />
-                                tickets within
+                                {{ phrase('admin.settings.portal_rate_limit_times_within') }}
                                 <input type="number" min="1" ng-model="settings.guest_rate_limit.submit_ticket.time" class="form-control" style="width: 60px;" />
-                                minutes,
+                                {{ phrase('admin.settings.portal_rate_limit_minutes') }}
                                 <select ng-model="settings.guest_rate_limit.submit_ticket.response">
-                                    <option value="captcha">show a CAPTCHA to the user </option>
-                                    <option value="lockout">disable login form for the user</option>
+                                    <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
+                                    <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
                                 </select>
                             </div>
                         </div>
@@ -268,17 +268,17 @@
                         <div class="inner-group">
                             <label>
                                 <input type="checkbox" ng-model="settings.guest_rate_limit.submit_feedback.enabled" />
-                                <h4>Feedback Rate Limiting</h4>
+                                <h4>{{ phrase('admin.settings.portal_rate_limit_feedback_rate_limit') }}</h4>
                             </label>
                             <div ng-show="settings.guest_rate_limit.submit_feedback.enabled">
-                                After a user has submitted
+                                {{ phrase('admin.settings.portal_rate_limit_feedback_attempted') }}
                                 <input type="number" min="1" ng-model="settings.guest_rate_limit.submit_feedback.limit" class="form-control" style="width: 60px;" />
-                                feedback items within
+                                {{ phrase('admin.settings.portal_rate_limit_times_within') }}
                                 <input type="number" min="1" ng-model="settings.guest_rate_limit.submit_feedback.time" class="form-control" style="width: 60px;" />
-                                minutes,
+                                {{ phrase('admin.settings.portal_rate_limit_minutes') }}
                                 <select ng-model="settings.guest_rate_limit.submit_feedback.response">
-                                    <option value="captcha">show a CAPTCHA to the user </option>
-                                    <option value="lockout">disable login form for the user</option>
+                                    <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
+                                    <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
                                 </select>
                             </div>
                         </div>
@@ -295,17 +295,17 @@
                         <div class="inner-group">
                             <label>
                                 <input type="checkbox" ng-model="settings.guest_rate_limit.submit_comment.enabled" />
-                                <h4>Comment Rate Limiting</h4>
+                                <h4>{{ phrase('admin.settings.portal_rate_limit_comment_rate_limit') }}</h4>
                             </label>
                             <div ng-show="settings.guest_rate_limit.submit_comment.enabled">
-                                After a user has submitted
+                                {{ phrase('admin.settings.portal_rate_limit_comment_attempted') }}
                                 <input type="number" min="1" ng-model="settings.guest_rate_limit.submit_comment.limit" class="form-control" style="width: 60px;" />
-                                comments within
+                                {{ phrase('admin.settings.portal_rate_limit_times_within') }}
                                 <input type="number" min="1" ng-model="settings.guest_rate_limit.submit_comment.time" class="form-control" style="width: 60px;" />
-                                minutes,
+                                {{ phrase('admin.settings.portal_rate_limit_minutes') }}
                                 <select ng-model="settings.guest_rate_limit.submit_comment.response">
-                                    <option value="captcha">show a CAPTCHA to the user </option>
-                                    <option value="lockout">disable login form for the user</option>
+                                    <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
+                                    <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
                                 </select>
                             </div>
                         </div>
@@ -322,17 +322,17 @@
                         <div class="inner-group">
                             <label>
                                 <input type="checkbox" ng-model="settings.guest_rate_limit.upload_attachment.enabled" />
-                                <h4>Upload Attachment Rate Limiting</h4>
+                                <h4>{{ phrase('admin.settings.portal_rate_limit_upload_rate_limit') }}</h4>
                             </label>
                             <div ng-show="settings.guest_rate_limit.upload_attachment.enabled">
-                                After a user has submitted
+                                {{ phrase('admin.settings.portal_rate_limit_upload_attempted') }}
                                 <input type="number" min="1" ng-model="settings.guest_rate_limit.upload_attachment.limit" class="form-control" style="width: 60px;" />
-                                attachments within
+                                {{ phrase('admin.settings.portal_rate_limit_times_within') }}
                                 <input type="number" min="1" ng-model="settings.guest_rate_limit.upload_attachment.time" class="form-control" style="width: 60px;" />
-                                minutes,
+                                {{ phrase('admin.settings.portal_rate_limit_minutes') }}
                                 <select ng-model="settings.guest_rate_limit.upload_attachment.response">
-                                    <option value="captcha">show a CAPTCHA to the user </option>
-                                    <option value="lockout">disable login form for the user</option>
+                                    <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
+                                    <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
                                 </select>
                             </div>
                         </div>
@@ -349,17 +349,17 @@
                         <div class="inner-group">
                             <label>
                                 <input type="checkbox" ng-model="settings.guest_rate_limit.share_content.enabled" />
-                                <h4>Share Content Rate Limiting</h4>
+                                <h4>{{ phrase('admin.settings.portal_rate_limit_share_rate_limit') }}</h4>
                             </label>
                             <div ng-show="settings.guest_rate_limit.share_content.enabled">
-                                After a user has shared
+                                {{ phrase('admin.settings.portal_rate_limit_share_attempted') }}
                                 <input type="number" min="1" ng-model="settings.guest_rate_limit.share_content.limit" class="form-control" style="width: 60px;" />
-                                contents within
+                                {{ phrase('admin.settings.portal_rate_limit_times_within') }}
                                 <input type="number" min="1" ng-model="settings.guest_rate_limit.share_content.time" class="form-control" style="width: 60px;" />
-                                minutes,
+                                {{ phrase('admin.settings.portal_rate_limit_minutes') }}
                                 <select ng-model="settings.guest_rate_limit.share_content.response">
-                                    <option value="captcha">show a CAPTCHA to the user </option>
-                                    <option value="lockout">disable login form for the user</option>
+                                    <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
+                                    <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
                                 </select>
                             </div>
                         </div>
@@ -385,5 +385,5 @@
         </footer>
     </section>
 
-    <div dp-register-message="saved_settings">Settings saved successfully.</div>
+    <div dp-register-message="saved_settings">{{ phrase('admin.general.save_settings_success') }}</div>
 {% endblock %}
