@@ -9077,17 +9077,21 @@ table .form-help {
     border-radius: 2px;
     width: 100%;
     display: block;
-    padding: $padding-base-vertical $padding-base-horizontal;
     background: $page-bg;
     line-height: $line-height-base;
     height: $input-height-base;
     position: relative;
 
+    span {
+      padding: $padding-base-vertical $padding-base-horizontal;
+      display: block;
+    }
+
     .filter-box {
       width: 60%;
       input {
         width: 100%;
-        padding: 0;
+        padding: $padding-base-vertical $padding-base-horizontal;
         margin: 0;
         line-height: 100%;
         border: none;

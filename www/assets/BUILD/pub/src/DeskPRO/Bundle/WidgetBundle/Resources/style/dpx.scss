@@ -34,10 +34,13 @@ $grey: #e6e6e6;
     border-radius: 2px;
     width: 100%;
     display: block;
-    padding: $form-padding-vertical $form-padding-horizontal;
     background: #ffffff;
     line-height: normal;
     position: relative;
+
+    span {
+      padding: $form-padding-vertical $form-padding-horizontal;
+    }
 
     .filter-box {
       width: 60%;
