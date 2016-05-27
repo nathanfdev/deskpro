@@ -451,7 +451,7 @@ class PortalController extends AbstractController
         // rate limit first
         $check = new UploadAbuseCheck($this->getUser(), $request->getClientIp());
         $this->getAntiAbuseService()->check($check);
-        if ($check->isCaptchaRecommended() || $check->isLockoutRecommended()) {
+        if ($check->isLimited()) {
             return new JsonResponse([
                 'success' => false,
                 'error'   => [
