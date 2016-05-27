@@ -11600,9 +11600,6 @@ $datetime-hover-color: lighten($btn-primary-bg, 10%);
 .xdsoft_datetimepicker .xdsoft_calendar td,.xdsoft_datetimepicker .xdsoft_calendar th {
   border: 1px solid $datetime-cell-border;
 }
-.xdsoft_datetimepicker .xdsoft_calendar td.xdsoft_today {
-  color: $datetime-active-color;
-}
 .xdsoft_datetimepicker .xdsoft_calendar td.xdsoft_default,
 .xdsoft_datetimepicker .xdsoft_calendar td.xdsoft_current,
 .xdsoft_datetimepicker .xdsoft_timepicker .xdsoft_time_box >div >div.xdsoft_current {
