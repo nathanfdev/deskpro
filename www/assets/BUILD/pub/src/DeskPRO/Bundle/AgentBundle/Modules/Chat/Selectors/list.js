@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
-import { hashStateSelectorFactory } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Selectors/routing';
+import { hashStateSelectorFactory } from '../../Application/Selectors/routing';
+import { constants } from '../../../Constants/Constants';
 
 const stateSelector = state => state.Chat.list;
 
@@ -22,6 +23,22 @@ export const paginationSelector = createSelector(
   stateSelector,
   list => list.get('pagination')
 );
+
+export const elementsSelector = createSelector(
+  stateSelector,
+  list => list.get('elements')
+);
+
+export const tableFieldsSelector = createSelector(
+  stateSelector,
+  state => state.getIn(['fields', constants.VIEW_MODE_TABLE])
+);
+
+export const cardFieldsSelector = createSelector(
+  stateSelector,
+  state => state.getIn(['fields', constants.VIEW_MODE_CARD])
+);
+
 
 export const viewModeSelector = hashStateSelectorFactory(['list', 'view'], 'card');
 

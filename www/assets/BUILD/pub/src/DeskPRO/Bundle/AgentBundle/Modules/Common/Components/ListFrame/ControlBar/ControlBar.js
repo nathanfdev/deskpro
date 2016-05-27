@@ -44,12 +44,13 @@ export class ControlBar extends Component {
       options:                 PropTypes.objectOf(PropTypes.shape({
         label:                 PropTypes.string.isRequired,
         icon:                  PropTypes.string.isRequired,
-        fields:                PropTypes.object
+        fields:                PropTypes.object.isRequired
       })).isRequired,
       viewMode:                PropTypes.string.isRequired,
       viewModeAction:          PropTypes.func.isRequired,
       onViewFieldsMenuUnmount: PropTypes.func.isRequired,
-      toggleFieldVisibility:   PropTypes.func.isRequired
+      toggleFieldVisibility:   PropTypes.func.isRequired,
+      changeFieldOrder:        PropTypes.func.isRequired
     })
   };
 

@@ -7,30 +7,46 @@ export class Row extends Component {
     element:    PropTypes.object.isRequired,
     author:     PropTypes.object.isRequired,
     agent:      PropTypes.object.isRequired,
-    department: PropTypes.object.isRequired
+    department: PropTypes.object,
+    fields:     PropTypes.object.isRequired
   };
 
-  render() {
+  renderField(field) {
+    if (!field || !field.get('visible')) {
+      return null;
+    }
+
     const { element, author, agent, department } = this.props;
+    const fieldId = field.get('id');
+
+    switch (fieldId) {
+
+      case 'id':
+        return <TdId key={fieldId}>{element.get(fieldId)}</TdId>;
+
+      case 'person':
+        return <Td key={fieldId}><PersonInTable person={author} /></Td>;
+
+      case 'agent':
+        return <Td className="agent-col" key={fieldId}><PersonInTable person={agent} /></Td>;
+
+      case 'department':
+        return <Td key={fieldId}>{department ? department.get('title') : ''}</Td>;
+
+      case 'subject':
+        return <Td className="item-title">{element.get(fieldId)}</Td>;
+
+      default:
+        return <Td key={fieldId}>{element.get(fieldId)}</Td>;
+    }
+  }
+
+  render() {
+    const { fields } = this.props;
 
     return (
       <tr>
-        <TdId>
-          {element.get('id')}
-        </TdId>
-        <Td>
-          <PersonInTable person={author} />
-        </Td>
-        <Td className="agent-col">
-          <div className="agent">
-            <span className="dpw--avatar-face" style={{ backgroundImage: 'url(../img/avatars/avatar4.png)' }}></span>
-            {agent.get('name')}
-          </div>
-        </Td>
-        <Td />
-        <Td className="item-title">{element.get('subject')}</Td>
-        <Td>{department.get('title')}</Td>
-        <Td />
+        {fields.map(field => this.renderField(field))}
       </tr>);
   }
 }

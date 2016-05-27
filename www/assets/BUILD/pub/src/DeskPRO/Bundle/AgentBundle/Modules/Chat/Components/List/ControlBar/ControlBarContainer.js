@@ -1,73 +1,78 @@
 import React, { Component, PropTypes } from 'react';
-import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import { constants } from '../../../../../Constants/Constants';
 import { connect } from 'react-redux';
-import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
-import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/ControlBar';
-import { currentListParamsSelector, viewModeSelector } from '../../../Selectors/list';
+import { updateRoutingState } from '../../../../Application/Actions/routingActions';
+import { ControlBar } from '../../../../Common/Components/ListFrame/ControlBar/ControlBar';
+import { currentListParamsSelector, viewModeSelector, cardFieldsSelector, tableFieldsSelector }
+  from '../../../Selectors/list';
 import { listFiltersSelector } from '../../../Selectors/filters';
-import { applyParams } from '../../../Actions/chatListActions';
+import { applyParams, toggleFieldVisibility, changeFieldOrder } from '../../../Actions/chatListActions';
 
 @connect(state => ({
   currentParams: currentListParamsSelector(state),
   filters:       listFiltersSelector(state),
-  viewMode:      viewModeSelector(state)
-}))
+  viewMode:      viewModeSelector(state),
+  cardFields:    cardFieldsSelector(state),
+  tableFields:   tableFieldsSelector(state)
+}), {
+  applyParams,
+  toggleFieldVisibility,
+  changeFieldOrder
+})
 export class ControlBarContainer extends Component {
   static propTypes = {
-    currentParams: PropTypes.object.isRequired,
-    filters:       PropTypes.array.isRequired,
-    viewMode:      PropTypes.string.isRequired
+    filters:               PropTypes.array.isRequired,
+    currentParams:         PropTypes.object.isRequired,
+    viewMode:              PropTypes.string.isRequired,
+    cardFields:            PropTypes.object.isRequired,
+    tableFields:           PropTypes.object.isRequired,
+    applyParams:           PropTypes.func.isRequired,
+    toggleFieldVisibility: PropTypes.func.isRequired,
+    changeFieldOrder:      PropTypes.func.isRequired
   };
 
-  render = () => {
-    const { currentParams, filters } = this.props;
+  render() {
+    const { filters, currentParams, applyParams, toggleFieldVisibility, changeFieldOrder, cardFields, tableFields } = this.props;
     const config = {
       filters,
       applyParams,
       currentParams,
 
       sorting: {
-        date_created: { label: 'Date', icon: 'calendar' },
-        agent:        { label: 'Agent', icon: 'calendar' },
-        department:   { label: 'Department', icon: 'calendar-o' }
+        date_created: {
+          label: 'Date',
+          icon:  'calendar'
+        },
+        agent:        {
+          label: 'Agent',
+          icon:  'calendar'
+        },
+        department:   {
+          label: 'Department',
+          icon:  'calendar-o'
+        }
       },
 
       view: {
         options: {
 
-          [constants.VIEW_MODE_CARD]: {
-            label: 'Card View',
-            icon:  'list',
-
-            configurableFields: {
-              id:           'ID',
-              urgency:      'Urgency',
-              person:       'Person',
-              date_created: 'Date created',
-              labels:       'Labels'
-            }
+          [constants.VIEW_MODE_CARD]:  {
+            label:  'Card View',
+            icon:   'list',
+            fields: cardFields
           },
 
           [constants.VIEW_MODE_TABLE]: {
-            label: 'Table View',
-            icon:  'table',
-
-            configurableFields: {
-              id:           'ID',
-              urgency:      'Urgency',
-              person:       'Person',
-              person_email: 'Person email',
-              agent:        'Agent',
-              subject:      'Subject',
-              status:       'Status',
-              date_created: 'Date created',
-              labels:       'Labels'
-            }
+            label:  'Table View',
+            icon:   'table',
+            fields: tableFields
           }
         },
 
-        viewMode:       this.props.viewMode,
-        viewModeAction: (mode) => updateRoutingState('list', 'view', mode)
+        viewMode:              this.props.viewMode,
+        viewModeAction:        (mode) => updateRoutingState('list', 'view', mode),
+        toggleFieldVisibility: toggleFieldVisibility,
+        changeFieldOrder:      changeFieldOrder
       }
     };
 

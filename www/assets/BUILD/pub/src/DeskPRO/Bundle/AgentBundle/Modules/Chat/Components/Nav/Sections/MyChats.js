@@ -37,7 +37,6 @@ export class MyChats extends Component {
 
     return (
       <ListItemContainer
-        groupBy={groupBy}
         count={count}
         key={index}
         label={label}
@@ -46,7 +45,9 @@ export class MyChats extends Component {
     );
   };
 
-  render = () => {
+  getAttachTarget = () => this.refs.mySection;
+
+  render() {
     const { my } = this.props;
 
     return (
@@ -63,10 +64,10 @@ export class MyChats extends Component {
         </SectionHeader>
 
         <ul>
-          {my.get('nested').map((item, index) => this.renderItem(item, index))}
+          {my.get('nested').entrySeq().map(([index, item]) => this.renderItem(item, index))}
         </ul>
         <NavGroupingPopup
-          attachTo={this.refs.mySection}
+          attachTo={this.getAttachTarget}
           content="my"
           visible={this.state.expanded}
           closeGroupingVisibility={this.close}

@@ -34,12 +34,13 @@ export class TaskCard extends BaseTaskCard {
 
     const { task } = this.props;
     const onChange = this.onChange;
+    const fieldId = field.get('id');
 
-    switch (field.get('id')) {
+    switch (fieldId) {
 
       case 'id':
         return (
-          <TdId key={field.get('id')}>
+          <TdId key={fieldId}>
             <span className="dpw--ticket-id">
               {task.get('id')}
             </span>
@@ -48,7 +49,7 @@ export class TaskCard extends BaseTaskCard {
 
       case 'title':
         return (
-          <TdTitle className="nowrap subject-col" key={field.get('id')}>
+          <TdTitle className="nowrap subject-col" key={fieldId}>
             <div className="ticket-title overflow-ellipsis" title={task.get('title')}>
               {task.get('title')}
             </div>
@@ -57,7 +58,7 @@ export class TaskCard extends BaseTaskCard {
 
       case 'project':
         return (
-          <Td key={field.get('id')}>
+          <Td key={fieldId}>
             <CardProjectContainer value={task.get('project')} onChange={val => onChange('project', val)}
               className="overflow-ellipsis"
               withoutIcon
@@ -67,7 +68,7 @@ export class TaskCard extends BaseTaskCard {
 
       case 'date_due':
         return (
-          <Td key={field.get('id')}>
+          <Td key={fieldId}>
             <DateDue value={task.get('date_due')} onChange={val => onChange('date_due', val)}
               className="overflow-ellipsis"
               withoutIcon
@@ -77,13 +78,13 @@ export class TaskCard extends BaseTaskCard {
 
       case 'assignee':
         return (
-          <Td className="agent-col" key={field.get('id')}>
+          <Td className="agent-col" key={fieldId}>
             <AssignButton value={task} onChange={val => onChange('assignee', val)} />
           </Td>
         );
 
       default:
-        return null;
+        return <Td key={fieldId}>{task.get(fieldId)}</Td>;
     }
   }
 

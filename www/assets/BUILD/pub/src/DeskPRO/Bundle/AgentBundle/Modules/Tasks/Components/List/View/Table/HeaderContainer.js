@@ -30,28 +30,28 @@ export class HeaderContainer extends React.Component {
       return null;
     }
 
-    const props = this.props;
+    const fieldId = field.get('id');
     const columnProps = {
-      ...props,
+      ...this.props,
       onChange: this.onChange
     };
 
-    switch (field.get('id')) {
+    switch (fieldId) {
 
       case 'id':
-        return <Th title="Id" className="id-col" sort="id" {...columnProps} key={field.get('id')} />;
+        return <Th title="Id" className="id-col" sort="id" {...columnProps} key={fieldId} />;
 
       case 'title':
-        return <Th title="Title" className="subject-col" sort="title" {...columnProps} key={field.get('id')} />;
+        return <Th title="Title" className="subject-col" sort="title" {...columnProps} key={fieldId} />;
 
       case 'project':
-        return <Th title="Project" sort="project" {...columnProps} key={field.get('id')} />;
+        return <Th title="Project" sort="project" {...columnProps} key={fieldId} />;
 
       case 'date_due':
-        return <Th title="Due" sort="date_due" {...columnProps} key={field.get('id')} />;
+        return <Th title="Due" sort="date_due" {...columnProps} key={fieldId} />;
 
       case 'assignee':
-        return <Th title="Assignee" className="agent-col" sort="assignee" {...columnProps} key={field.get('id')} />;
+        return <Th title="Assignee" className="agent-col" sort="assignee" {...columnProps} key={fieldId} />;
 
       default:
         return null;

@@ -66,3 +66,6 @@ export const setOrderBy = createAction(
   orderBy => dispatch => dispatch(applyParams({ order_by: orderBy }))
 );
 
+export const toggleFieldVisibility = createAction('CHAT_LIST_TOGGLE_FIELD_VISIBILITY');
+export const changeFieldOrder = createAction('CHAT_LIST_CHANGE_FIELD_ORDER');
+

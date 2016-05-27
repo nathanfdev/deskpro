@@ -5,11 +5,10 @@ import { changeListGrouping } from '../../Actions/chatNavActions.js';
 export class NavGroupingPopup extends Component {
 
   static propTypes = {
-    dispatch:                PropTypes.func.isRequired,
     closeGroupingVisibility: PropTypes.func.isRequired,
     content:                 PropTypes.string.isRequired,
     groupedBy:               PropTypes.string.isRequired,
-    attachTo:                PropTypes.object.isRequired,
+    attachTo:                PropTypes.func.isRequired,
     visible:                 PropTypes.bool.isRequired
   };
 

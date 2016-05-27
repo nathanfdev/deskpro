@@ -12,32 +12,35 @@ import { connect } from 'react-redux';
 }))
 export class ChatsCardsContainer extends Component {
   static propTypes = {
-    ids:            PropTypes.array.isRequired,
     chats:          PropTypes.object.isRequired,
     people:         PropTypes.object.isRequired,
     departments:    PropTypes.object.isRequired,
     selected:       PropTypes.object.isRequired,
-    toggleSelected: PropTypes.func.isRequired
+    toggleSelected: PropTypes.func.isRequired,
+    fields:         PropTypes.object.isRequired
   };
 
   renderCard(element) {
-    const { toggleSelected, people, departments, selected } = this.props;
+    const { toggleSelected, people, departments, selected, fields } = this.props;
 
     return (
-      <ChatCard key={element.get('id')}
-                author={people.get(element.get('person'))}
-                agent={people.get(element.get('agent'))}
-                department={departments.get(element.get('department'))}
-                chat={element}
-                selected={selected.includes(element.get('id'))}
-                toggleSelected={toggleSelected} />
+      <ChatCard
+        key={element.get('id')}
+        author={people.get(element.get('person'))}
+        agent={people.get(element.get('agent'))}
+        department={departments.get(element.get('department'))}
+        chat={element}
+        selected={selected.includes(element.get('id'))}
+        toggleSelected={toggleSelected}
+        fields={fields}
+      />
     );
   }
 
   render() {
     return (
       <div>
-        {this.props.chats.map(chat => this.renderCard(chat))}
+        {this.props.chats.entrySeq().map(([id, chat]) => this.renderCard(chat))}
       </div>
     );
   }
