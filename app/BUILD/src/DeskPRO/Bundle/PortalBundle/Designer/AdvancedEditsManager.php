@@ -264,7 +264,7 @@ CODE;
      *
      * @return BlobStorage|null
      */
-    private function findBlobStorage($name, ThemeSet $theme_set = null)
+    public function findBlobStorage($name, ThemeSet $theme_set = null)
     {
         /** @var ThemeSetAsset $asset */
         if ($asset = $this->em->getRepository(ThemeSetAsset::class)->findOneBy(compact('name', 'theme_set'))) {

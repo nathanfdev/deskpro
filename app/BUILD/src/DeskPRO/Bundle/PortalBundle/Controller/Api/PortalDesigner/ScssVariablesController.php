@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,9 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api\PortalDesigner;
 
 use DeskPRO\Bundle\PortalBundle\Controller\Api\AbstractApiController;
+use DeskPRO\Bundle\PortalBundle\Designer\BrandThemeManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -66,11 +68,17 @@ class ScssVariablesController extends AbstractApiController
     /**
      * @Route("/portal/api/style/edit-theme-set/variable-values")
      * @Method({"PUT"})
+     *
+     * @param Request $request
+     *
+     * @return Response
      */
     public function saveVariableValuesAction(Request $request)
     {
         $variables = json_decode($request->getContent(), true);
-        $this->getPortalStylesCompiler()->recompile($variables);
+        /* @var BrandThemeManager $brandThemeManager */
+        $editThemeSet = $this->getBrandThemeManager()->getCurrentEditThemeSet();
+        $this->getPortalStylesCompiler()->recompile($variables, $editThemeSet);
 
         return new Response(null, Response::HTTP_NO_CONTENT);
     }

@@ -84,3 +84,4 @@ services:
   app.environment:
     class: DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices\EnvironmentService
     arguments: ["@request_stack"]
+
