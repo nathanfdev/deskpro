@@ -178,11 +178,7 @@ class TicketWithLayoutsManipulatorType extends AbstractType
                 continue;
             }
 
-            $skipValidation = $context->getOption('allow_rerender')
-                && $context->hadLayout()
-                && in_array($field, $changes->getFieldsRequiringRerender());
-
-            $formField = $context->getFieldResolver()->createFormField($context, $field, $skipValidation);
+            $formField = $context->getFieldResolver()->createFormField($context, $field);
             if ($formField) {
                 $context->getFieldRenderer()->addField($context, $field, $formField);
             }
