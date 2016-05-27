@@ -29,9 +29,11 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\CustomDefTicket;
 use Orb\Util\Strings;
 
 class TicketFieldManager extends FieldManager
@@ -96,7 +98,7 @@ class TicketFieldManager extends FieldManager
      */
     public function getDefinedFields()
     {
-        return array_values($this->em->getRepository('DeskPRO:CustomDefTicket')->getTopFields());
+        return array_values($this->em->getRepository(CustomDefTicket::class)->getTopFields());
     }
 
     public function setCustomDataOnObject($ticket, CustomDefAbstract $field_def, array $in_data)
