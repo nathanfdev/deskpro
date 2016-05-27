@@ -36,6 +36,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints;
+use Symfony\Component\Validator\Constraints as SymfonyConstraints;
 
 /**
  * Class PersonProfileType.
@@ -115,6 +116,9 @@ class PersonProfileType extends AbstractType
                 'emails' => 'emails',
             ],
             'constraints' => [
+                new SymfonyConstraints\Email([
+                    'property' => 'emailAddresses',
+                ]),
                 new AppConstraints\FreeEmail([
                     'property' => 'emailAddresses',
                 ]),
