@@ -6536,13 +6536,13 @@ ul.categories-article-list {
     }
 
     .as-positive {
-      border-bottom: 1px solid darken(darken($btn-primary-bg, 25%), 20%);
-      background: darken($btn-primary-bg, 25%);
+      border-bottom: 1px solid darken($state-success-bg, 20%);
+      background: $state-success-bg;
     }
 
     .as-negative {
-      border-bottom: 1px solid $state-warning-border;
-      background: $state-warning-bg;
+      border-bottom: 1px solid darken($state-danger-bg, 20%);
+      background: $state-danger-bg;
     }
 
     .rate-up {
@@ -6560,10 +6560,10 @@ ul.categories-article-list {
     }
 
     .rate-down {
-      border-bottom: 1px solid $state-warning-border;
-      background: darken($state-warning-bg, 10%);
+      border-bottom: 1px solid $state-danger-border;
+      background: darken($state-danger-bg, 10%);
       &:hover {
-        background: darken($state-warning-bg, 20%);
+        background: darken($state-danger-bg, 20%);
       }
 
       &:after {
@@ -6574,7 +6574,7 @@ ul.categories-article-list {
       span {
         @include margin-right(10px);
         padding: 3px 10px;
-        @include border-right(1px solid darken($state-warning-bg, 25%));
+        @include border-right(1px solid darken($state-danger-bg, 25%));
       }
     }
 
