@@ -67,13 +67,22 @@ class WidgetLoader
     }
 
     /**
+     * @param bool $dynamicVersion True to make the app source file a dynamic path
+     *
      * @return string
      */
-    public function getWidgetCode()
+    public function getWidgetCode($dynamicVersion = false)
     {
         $assetDir    = $this->appEnv->getAppWwwAssetDir();
         $urlSettings = $this->settingsResolver->getWidgetUrlSettings();
         $loaderPath  = $assetDir.'/pub/build/widget_loader.min.js';
+
+        $appSrc = $urlSettings->getWidgetBundle();
+        if ($dynamicVersion) {
+            // A request that is routed through HttpJsBootTask to make the backend JS use
+            // the proper build
+            $appSrc = preg_replace('#/assets/.*?/pub/#', '/dyn-assets/pub/', $appSrc);
+        }
 
         if (!file_exists($loaderPath)) {
             $loaderPath = $assetDir.'/pub/build/widget_loader.js';
@@ -85,7 +94,7 @@ class WidgetLoader
         $script = file_get_contents($loaderPath);
 
         // override options
-        $script = str_replace('__DP_APP_SRC__', '"'.$urlSettings->getWidgetBundle().'"', $script);
+        $script = str_replace('__DP_APP_SRC__', '"'.$appSrc.'"', $script);
         $script = str_replace('__DP_URL__', '"'.$urlSettings->getHelpdesk().'"', $script);
         $script = str_replace('__DP_OPTIONS__', $this->serializer->serialize($this->settingsResolver->getWidgetBrandOptions(), 'json'), $script);
 

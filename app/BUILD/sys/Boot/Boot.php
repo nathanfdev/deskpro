@@ -148,13 +148,6 @@ class Boot
             return;
         }
 
-        if (substr($path, 0, 30) === '/web/javascripts/DeskPRO/User/') {
-            header('Content-Type: application/javascript');
-            echo "/* This URL is no longer active. Please update your website to use the latest DeskPRO website widget code. */\n";
-
-            return;
-        }
-
         #------------------------------
         # Boot to low scripts
         #------------------------------
@@ -179,6 +172,7 @@ class Boot
         #------------------------------
         # Set trusted proxies
         #------------------------------
+
         $proxies     = [];
         $proxyConfig = $env->getConfig('env.trust_proxy_data', []);
         foreach ($proxyConfig as $item) {
@@ -195,6 +189,12 @@ class Boot
             }
         }
         Request::setTrustedProxies($proxies);
+
+        #------------------------------
+        # JS boot tasks
+        #------------------------------
+
+        self::runBootTasks($env, ['HttpJs'], $res);
 
         #------------------------------
         # Boot to a normal symfony request
