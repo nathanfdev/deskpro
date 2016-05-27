@@ -47,6 +47,19 @@ class mPdfRenderer implements PdfRendererInterface
     {
         $this->resolver = $resolver;
 
+        if (!defined('_MPDF_TEMP_PATH')) {
+            $tmpDir = $tmpRootDir.'/mpdf';
+            if (!is_dir($tmpDir)) {
+                if (!@mkdir($tmpDir, 0777, true)) {
+                    $tmpDir = sys_get_temp_dir().'/mpdf';
+                    if (!is_dir($tmpDir)) {
+                        @mkdir($tmpDir, 0777, true);
+                    }
+                }
+            }
+            define('_MPDF_TEMP_PATH', $tmpDir.'/');
+        }
+
         if (!defined('_MPDF_TTFONTDATAPATH')) {
             $tmpDir = $tmpRootDir.'/mpdf/ttfontdata';
             if (!is_dir($tmpDir)) {
