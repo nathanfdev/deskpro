@@ -26,12 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
@@ -45,12 +42,6 @@ use DeskPRO\Bundle\AppBundle\Form\FormFields;
 
 /**
  * Simple ticket layouts CRUD.
- *
- * SWG\Resource(
- *    resourcePath="/ticket_layout",
- *    description="Operations about Ticket layouts",
- *    basePath="/api"
- * )
  *
  * @ApiModes("all")
  */
@@ -76,35 +67,6 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
      * @param int $dep_id
      *
      * @return JsonResponse
-     *
-     * SWG\Api(
-     *    path="/ticket_layouts/{dep_id}",
-     *    SWG\Operation(
-     *        method="GET",
-     *        summary="Get ticket layout for given department",
-     *        notes="",
-     *        type="array",
-     *      SWG\Parameters (
-     *          SWG\Parameter(
-     *                name="dep_id",
-     *                description="Ticket department ID",
-     *                paramType="path",
-     *                required=true,
-     *                type="integer",
-     *            ),
-     *      )
-     *  )
-     * )
-     *
-     * SWG\Api(
-     *    path="/ticket_layouts/default",
-     *    SWG\Operation(
-     *        method="GET",
-     *        summary="Get default ticket layout",
-     *        notes="",
-     *        type="array",
-     *  )
-     * )
      */
     public function getAction($dep_id = 0)
     {
@@ -152,16 +114,6 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
 
     /**
      * @return JsonResponse
-     *
-     * SWG\Api(
-     *    path="/ticket_layouts/stats",
-     *    SWG\Operation(
-     *        method="GET",
-     *        summary="Show layout statistic by departments",
-     *        notes="",
-     *        type="array",
-     *  )
-     * )
      */
     public function getLayoutStatsAction()
     {
@@ -292,7 +244,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
             /** @var \Application\DeskPRO\CustomFields\TicketFieldManager $fieldManager */
             $fieldManager    = $this->container->getSystemService('ticket_fields_manager');
             $customFields    = $fieldManager->getDefinedFields();
-            $customFieldsIds = array_map(create_function('$o', 'return $o->getId();'), $customFields);
+            $customFieldsIds = array_map(function (CustomDefTicket $o) { return $o->getId(); }, $customFields);
         }
         if (!in_array($field->getFieldType(), $fields)) {
             return false;
@@ -339,25 +291,6 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
      * @param $field_id
      *
      * @return JsonResponse
-     *
-     * SWG\Api(
-     *    path="/ticket_layouts/fields/{field_id}",
-     *    SWG\Operation(
-     *        method="GET",
-     *        summary="Get field use statistic",
-     *        notes="",
-     *        type="array",
-     *      SWG\Parameters (
-     *          SWG\Parameter(
-     *                name="field_id",
-     *                description="Field ID",
-     *                paramType="path",
-     *                required=true,
-     *                type="integer",
-     *            ),
-     *      )
-     *  )
-     * )
      */
     public function getFieldStatusAction($field_id)
     {
@@ -423,25 +356,6 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
      * @param $field_id
      *
      * @return JsonResponse
-     *
-     * SWG\Api(
-     *    path="/ticket_layouts/fields/{field_id}",
-     *    SWG\Operation(
-     *        method="POST",
-     *        summary="Save field status",
-     *        notes="",
-     *        type="array",
-     *      SWG\Parameters (
-     *          SWG\Parameter(
-     *                name="field_id",
-     *                description="Field ID",
-     *                paramType="path",
-     *                required=true,
-     *                type="integer",
-     *            ),
-     *      )
-     *  )
-     * )
      */
     public function saveFieldStatusAction($field_id)
     {
