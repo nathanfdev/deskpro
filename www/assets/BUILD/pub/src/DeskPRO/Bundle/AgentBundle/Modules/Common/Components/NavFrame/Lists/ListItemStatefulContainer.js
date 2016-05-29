@@ -36,9 +36,7 @@ export class ListItemStatefulContainer extends React.Component {
       onClick: event => {
         event.preventDefault();
         event.stopPropagation();
-console.log('Group ID', groupId);
-console.log('Active', active);
-console.log('Item ID', itemId);
+
         onClick(event);
         dispatch(updateRoutingState(groupId, active, itemId));
       }
