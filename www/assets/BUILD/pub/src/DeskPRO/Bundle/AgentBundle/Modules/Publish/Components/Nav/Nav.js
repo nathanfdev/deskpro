@@ -24,13 +24,13 @@ export class Nav extends Component {
   toggle(event) {
     event.preventDefault();
     this.setState({ expanded: !this.state.expanded });
-  }
+  };
 
   close() {
     this.setState({ expanded: false });
   }
 
-  render() {
+  render = () => {
     const { articles, news, downloads, todo, setMine, isLoaded } = this.props;
 
     return (

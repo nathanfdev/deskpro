@@ -18,7 +18,7 @@ export class KBTab extends Component {
     this.state = { expanded: false };
   }
 
-  render() {
+  render = () => {
     const { articles, toggleGroupingVisibility, closeGroupingVisibility } = this.props;
     const toggle = toggleGroupingVisibility.bind(this);
     const close  = closeGroupingVisibility.bind(this);

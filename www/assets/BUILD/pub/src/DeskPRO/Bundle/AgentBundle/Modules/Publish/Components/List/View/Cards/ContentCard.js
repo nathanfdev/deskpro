@@ -1,6 +1,19 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
-import { Card, CardLine, CardLineLeft, CardLineRight, CardLineFull, CardContentText, CardLineItem, CardCheckbox, CardDisc, CardTitle, CardUser, CardLabel }
+import {
+  Card,
+  CardLine,
+  CardLineLeft,
+  CardLineRight,
+  CardLineFull,
+  CardContentText,
+  CardLineItem,
+  CardCheckbox,
+  CardDisc,
+  CardTitle,
+  CardUser,
+  CardLabel
+}
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
 import jQuery from 'jquery';
 import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SlicedString';
@@ -9,53 +22,54 @@ import { SlicedString } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Componen
 export class ContentCard extends Component {
 
   static propTypes = {
-    intl: intlShape.isRequired,
-    element: PropTypes.object.isRequired,
-    author: PropTypes.object.isRequired,
+    intl:               intlShape.isRequired,
+    element:            PropTypes.object.isRequired,
+    author:             PropTypes.object.isRequired,
     lastRevisionAuthor: PropTypes.object.isRequired,
-    selected: PropTypes.bool.isRequired,
-    toggleSelected: PropTypes.func.isRequired
+    selected:           PropTypes.bool.isRequired,
+    toggleSelected:     PropTypes.func.isRequired
   };
 
-  renderLabels() {
+  renderLabels = () => {
     const labels = this.props.element.get('labels');
     if (labels.size) {
       return (
         <CardLine>
           <CardLineItem>
-            <i className="fa fa-tags"></i> {labels.map((label, index)=> <CardLabel key={index} label={label}/>)}
+            <i className="fa fa-tags" /> {labels.map((label, index) => <CardLabel key={index} label={label} />)}
           </CardLineItem>
         </CardLine>
       );
     }
-  }
+    return null;
+  };
 
-  render() {
+  render = () => {
     const { element, author, lastRevisionAuthor, toggleSelected, selected } = this.props;
-    const containerWidth = jQuery('.dp-list-frame-contents').innerWidth();
+    const containerWidth    = jQuery('.dp-list-frame-contents').innerWidth();
     const feedbackMarkWidth = jQuery('.dpw--feedback-card-mark').innerWidth();
-    const cardWidth = containerWidth - feedbackMarkWidth - 20;
+    const cardWidth         = containerWidth - feedbackMarkWidth - 20;
 
     return (
       <Card type="article" width={cardWidth}>
 
-        <ArticleCardMark numRatings={element.get('num_ratings')}/>
+        <ArticleCardMark numRatings={element.get('num_ratings')} />
 
-        <CardCheckbox selected={selected} onClick={toggleSelected}/>
+        <CardCheckbox selected={selected} onClick={toggleSelected} />
 
         <CardLine>
           <CardLineLeft>
-            <CardTitle content={element.get('title')}/>
+            <CardTitle content={element.get('title')} />
           </CardLineLeft>
           <CardLineRight>
-            <CardUser user={author}/>
+            <CardUser user={author} />
           </CardLineRight>
         </CardLine>
 
         <CardLine>
           <CardLineFull>
             <CardContentText>
-              <p><SlicedString string={element.get('content')} length={255}/></p>
+              <p><SlicedString string={element.get('content')} length={255} /></p>
             </CardContentText>
           </CardLineFull>
         </CardLine>
@@ -65,16 +79,14 @@ export class ContentCard extends Component {
         <CardLine>
           <CardLineLeft>
             <CardLineItem>{element.get('status')}</CardLineItem>
-            {
-              element.get('revisions').size > 0 &&
-              <CardLineItem>
-                <CardDisc/>
-                <CardUser user={lastRevisionAuthor}/>
-                <CardDisc/>
-                <FormattedRelative value={element.get('date_updated')}/>
-                <CardDisc/>
-              </CardLineItem>
-            }
+            {element.get('revisions').size > 0
+            && <CardLineItem>
+              <CardDisc />
+              <CardUser user={lastRevisionAuthor} />
+              <CardDisc />
+              <FormattedRelative value={element.get('date_updated')} />
+              <CardDisc />
+            </CardLineItem>}
           </CardLineLeft>
           <CardLineRight>
             <CardLineItem icon="fa-thumbs-up">{element.get('vote_stats').get('up')}</CardLineItem>
@@ -95,17 +107,17 @@ export class ArticleCardMark extends Component {
     numRatings: PropTypes.number.isRequired
   };
 
-  render() {
-    const {numRatings} = this.props;
+  render = () => {
+    const { numRatings } = this.props;
 
     return (
       <div className="dpw--feedback-card-mark">
         <div className="dpw--feedback-card-mark-counter dpw--feedback-card-mark-thumbs">
-          <i className="fa fa-thumbs-up"></i> <span className="feedback-card-mark-count">{numRatings}</span>
+          <i className="fa fa-thumbs-up" /> <span className="feedback-card-mark-count">{numRatings}</span>
         </div>
-        <hr/>
+        <hr />
         <div className="dpw--feedback-card-mark-counter dpw--feedback-card-mark-stars">
-          <i className="fa fa-star"></i> <span className="feedback-card-mark-count">0</span>
+          <i className="fa fa-star" /> <span className="feedback-card-mark-count">0</span>
         </div>
       </div>
     );

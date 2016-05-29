@@ -1,4 +1,6 @@
-import React, { Component, PropTypes } from 'react';
+import React from 'react';
+const { Component, PropTypes } = React;
+
 import {
   SectionsPane, Section, SectionGroupedHeader
 }
@@ -19,7 +21,7 @@ export class DownloadsTab extends Component {
     this.state = { expanded: false };
   }
 
-  render() {
+  render = () => {
     const { downloads, toggleGroupingVisibility, closeGroupingVisibility } = this.props;
     const toggle = toggleGroupingVisibility.bind(this);
     const close  = closeGroupingVisibility.bind(this);

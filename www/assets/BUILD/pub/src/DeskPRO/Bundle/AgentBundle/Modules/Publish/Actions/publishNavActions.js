@@ -7,31 +7,54 @@ export const initialLoad = createAction(
   () => new Promise(
     (resolve) => {
       const batch = 'DP_API/batch'
-          + '?get[articles]=DP_API/articles/counts?group_by%3Dcategory'
-          + '&get[news]=DP_API/news/counts?group_by%3Dcategory'
-          + '&get[downloads]=DP_API/downloads/counts?group_by%3Dcategory'
-          + '&get[categories]=DP_API/content_categories'
-          + '&get[articlesDraftsCount]=DP_API/articles/counts?status%3Dhidden%26hidden_status%3Ddraft'
-          + '&get[articlesPendingCount]=DP_API/article_pending_creates/counts'
-          + '&get[articlesCommentsToValidateCount]=DP_API/article_comments/counts?status%3Dvalidating'
-          + '&get[newsCommentsToValidateCount]=DP_API/news_comments/counts?status%3Dvalidating'
-          + '&get[downloadsCommentsToValidateCount]=DP_API/download_comments/counts?status%3Dvalidating'
-          + '&get[articlesCommentsToReviewCount]=DP_API/article_comments/counts?is_reviewed%3D0'
-          + '&get[newsCommentsToReviewCount]=DP_API/news_comments/counts?is_reviewed%3D0'
-          + '&get[downloadsCommentsToReviewCount]=DP_API/download_comments/counts?is_reviewed%3D0'
+              + '?get[articles]=DP_API/articles/counts?group_by%3Dcategory'
+              + '&get[news]=DP_API/news/counts?group_by%3Dcategory'
+              + '&get[downloads]=DP_API/downloads/counts?group_by%3Dcategory'
+              + '&get[categories]=DP_API/content_categories'
+              + '&get[articlesDraftsCount]=DP_API/articles/counts?status%3Dhidden%26hidden_status%3Ddraft'
+              + '&get[articlesPendingCount]=DP_API/article_pending_creates/counts'
+              + '&get[articlesCommentsToValidateCount]=DP_API/article_comments/counts?status%3Dvalidating'
+              + '&get[newsCommentsToValidateCount]=DP_API/news_comments/counts?status%3Dvalidating'
+              + '&get[downloadsCommentsToValidateCount]=DP_API/download_comments/counts?status%3Dvalidating'
+              + '&get[articlesCommentsToReviewCount]=DP_API/article_comments/counts?is_reviewed%3D0'
+              + '&get[newsCommentsToReviewCount]=DP_API/news_comments/counts?is_reviewed%3D0'
+              + '&get[downloadsCommentsToReviewCount]=DP_API/download_comments/counts?is_reviewed%3D0'
         ;
 
-      api.sendGet(batch).success(({responses}) => {
+      api.sendGet(batch).success(({ responses }) => {
         const payload = flattenBatchResponses(responses);
-        payload.todo = { articles: {}, comments: { validate: {}, review: {} } };
-        payload.todo.articles.draft = payload.articlesDraftsCount.count;
-        payload.todo.articles.pending = payload.articlesPendingCount.count;
-        payload.todo.comments.validate.articles = payload.articlesCommentsToValidateCount.count;
-        payload.todo.comments.validate.news = payload.newsCommentsToValidateCount.count;
-        payload.todo.comments.validate.downloads = payload.downloadsCommentsToValidateCount.count;
-        payload.todo.comments.review.articles = payload.articlesCommentsToReviewCount.count;
-        payload.todo.comments.review.news = payload.newsCommentsToReviewCount.count;
-        payload.todo.comments.review.downloads = payload.downloadsCommentsToReviewCount.count;
+
+        /** @namespace payload.articlesPendingCount */
+        /** @namespace payload.articlesCommentsToValidateCount */
+        /** @namespace payload.newsCommentsToValidateCount */
+        /** @namespace payload.downloadsCommentsToValidateCount */
+        /** @namespace payload.articlesCommentsToReviewCount */
+        /** @namespace payload.downloadsCommentsToReviewCount */
+        /** @namespace payload.newsCommentsToReviewCount */
+        /** @namespace payload.articlesDraftsCount */
+
+        Object.assign(payload, {
+          todo: {
+            articles: {
+              draft:   payload.articlesDraftsCount.count,
+              pending: payload.articlesPendingCount.count
+            },
+            comments: {
+              validate: {
+                articles:  payload.articlesCommentsToValidateCount.count,
+                news:      payload.newsCommentsToValidateCount.count,
+                downloads: payload.downloadsCommentsToValidateCount.count
+              },
+
+              review: {
+                articles:  payload.articlesCommentsToReviewCount.count,
+                news:      payload.newsCommentsToReviewCount.count,
+                downloads: payload.downloadsCommentsToReviewCount.count
+              }
+            }
+          }
+        });
+
         delete payload.articlesDraftsCount;
         delete payload.articlesPendingCount;
         delete payload.articlesCommentsToValidateCount;
@@ -40,6 +63,7 @@ export const initialLoad = createAction(
         delete payload.articlesCommentsToReviewCount;
         delete payload.newsCommentsToReviewCount;
         delete payload.downloadsCommentsToReviewCount;
+
         resolve(payload);
       });
     }
