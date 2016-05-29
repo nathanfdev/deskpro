@@ -32,12 +32,15 @@
 namespace DeskPRO\Bundle\AppBundle\AntiAbuse\EventListener;
 
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\EntityRepository\RateLimitLog;
+use Application\DeskPRO\Entity\RateLimitLog;
+use Application\DeskPRO\EntityRepository\RateLimitLog as RateLimitLogRepository;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Service\RateLimit;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuseConfig;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\AntiAbuseEvent;
+use DeskPRO\Component\Util\StringUtils;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -68,7 +71,15 @@ class RateLimitEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            AntiAbuse::EVENT_NAME => 'checkAntiAbuse',
+            AntiAbuse::getEventName(AntiAbuse::ACTION_LOGIN)           => 'checkAntiAbuse',
+            AntiAbuse::getEventName(AntiAbuse::ACTION_REGISTER)        => 'checkAntiAbuse',
+            AntiAbuse::getEventName(AntiAbuse::ACTION_RESET_PASSWORD)  => 'checkAntiAbuse',
+            AntiAbuse::getEventName(AntiAbuse::ACTION_SUBMIT_COMMENT)  => 'checkAntiAbuse',
+            AntiAbuse::getEventName(AntiAbuse::ACTION_SUBMIT_FEEDBACK) => 'checkAntiAbuse',
+            AntiAbuse::getEventName(AntiAbuse::ACTION_SUBMIT_TICKET)   => 'checkAntiAbuse',
+            AntiAbuse::getEventName(AntiAbuse::ACTION_TOKEN_EXCHANGE)  => 'checkAntiAbuse',
+            AntiAbuse::getEventName(AntiAbuse::ACTION_UPLOAD)          => 'checkAntiAbuse',
+            AntiAbuse::getEventName(AntiAbuse::ACTION_SHARE_CONTENT)   => 'checkAntiAbuse',
         ];
     }
 
@@ -93,10 +104,6 @@ class RateLimitEventListener implements EventSubscriberInterface
      */
     public function checkAntiAbuse(AntiAbuseEvent $event)
     {
-        if (!$this->supportsType($event)) {
-            return;
-        }
-
         if ($this->getSetting(AntiAbuse::SETTING_RATE_LIMIT_IS_DISABLED)) {
             $this->logger->debug(
                 sprintf(
@@ -114,52 +121,56 @@ class RateLimitEventListener implements EventSubscriberInterface
             return;
         }
 
-        if ($this->isCaptchaRequired($event->getType(), $event->getPerson(), $event->getIp())) {
+        if ($this->checkRequired($event, 'captcha')) {
             $this->log($event, 'captcha');
             $event->markCaptchaRecommended();
         }
 
-        if ($this->isLockoutRequired($event->getType(), $event->getPerson(), $event->getIp())) {
+        if ($this->checkRequired($event, 'lockout')) {
             $this->log($event, 'lockout');
-            $event->markLockoutRecommended();
+            $antiAbuseConfig = $event->getConfig();
+            $estimated       = $antiAbuseConfig->getLockoutTime() ? $this->getLockoutTime($event) : 0;
             $event->markResponseRequired();
             $event->stopPropagation();
+            $event->markLockoutRecommended($estimated);
         }
 
-        // we should save attempt only AFTER check was performed. Because if the maximum
-        // attempts is set to 1 then it will be failed just while checking, thats not right
+        // We should save attempt only AFTER check was performed. Because if the maximum
+        // attempts is set to 1 then it will be failed just while checking, that's not right.
         if (!$event->isCheckOnly()) {
             $this->saveRateLimitAction($event->getType(), $event->getPerson(), $event->getIp());
         }
     }
 
     /**
-     * response. bool for now.
-     *
-     * @param string $action
-     * @param Person $person
-     * @param string $ip
+     * @param AntiAbuseEvent $event
+     * @param string         $response
      *
      * @throws \Exception
      *
      * @return bool
      */
-    public function isCaptchaRequired($action, Person $person, $ip = null)
+    private function checkRequired(AntiAbuseEvent $event, $response)
     {
-        if (!$params = $this->getParams($action, $person, $ip)) {
+        $action = $event->getType();
+        $person = $event->getPerson();
+        $config = $this->getConfig($action, $person);
+        if (!$config->isValid()) {
             throw new \Exception('Invalid rate limit action');
         }
 
-        if (empty($params['enabled'])) {
+        $event->setConfig($config);
+
+        if (!$config->isEnabled()) {
             return false;
         }
 
-        /** @var RateLimitLog $rep */
-        $rep = $this->em->getRepository('DeskPRO:RateLimitLog');
-        $res = $rep->count($action, $params['time'], $person, $ip);
+        /** @var RateLimitLogRepository $rep */
+        $rep = $this->em->getRepository(RateLimitLog::class);
+        $res = $rep->count($action, $config->getTime(), $person, $event->getIp());
 
-        return $res >= (int) $params['limit']
-            ? $params['response'] === 'captcha'
+        return $res >= (int) $config->getLimit()
+            ? $config->getResponse() === $response
             : false;
     }
 
@@ -189,52 +200,20 @@ class RateLimitEventListener implements EventSubscriberInterface
     }
 
     /**
-     * response. bool for now.
-     *
      * @param string $action
      * @param Person $person
-     * @param string $ip
      *
-     * @throws \Exception
-     *
-     * @return bool
+     * @return AntiAbuseConfig
      */
-    public function isLockoutRequired($action, Person $person, $ip = null)
+    protected function getConfig($action, Person $person)
     {
-        if (!$params = $this->getParams($action, $person, $ip)) {
-            throw new \Exception('Invalid rate limit action');
-        }
-
-        if (empty($params['enabled'])) {
-            return false;
-        }
-
-        /** @var RateLimitLog $rep */
-        $rep = $this->em->getRepository('DeskPRO:RateLimitLog');
-        $res = $rep->count($action, $params['time'], $person, $ip);
-
-        return $res >= (int) $params['limit']
-            ? $params['response'] === 'lockout'
-            : false;
-    }
-
-    /**
-     * params for current dataset.
-     *
-     * @param string $action
-     * @param Person $person
-     * @param string $ip
-     *
-     * @return array
-     */
-    protected function getParams($action, Person $person, $ip = null)
-    {
-        $params = [];
-        foreach (['limit', 'time', 'response', 'enabled'] as $key) {
+        $config = new AntiAbuseConfig();
+        foreach (['limit', 'time', 'response', 'enabled', 'lockout_time'] as $key) {
+            $method = StringUtils::toCamelCase(sprintf('set_%s', $key));
             // try guest first
             if ($person instanceof PersonGuest) {
                 if (null !== $value = $this->getSetting(RateLimit::KEY.'.'.$action.'.guest.'.$key)) {
-                    $params[$key] = $value;
+                    $config->$method($value);
                     continue;
                 }
             }
@@ -243,33 +222,10 @@ class RateLimitEventListener implements EventSubscriberInterface
                 continue;
             }
 
-            $params[$key] = $value;
+            $config->$method($value);
         }
 
-        return $params;
-    }
-
-    /**
-     * @param AntiAbuseEvent $event
-     *
-     * @return bool
-     */
-    protected function supportsType(AntiAbuseEvent $event)
-    {
-        return in_array(
-            $event->getType(),
-            [
-                AntiAbuse::ACTION_LOGIN,
-                AntiAbuse::ACTION_UPLOAD,
-                AntiAbuse::ACTION_REGISTER,
-                AntiAbuse::ACTION_RESET_PASSWORD,
-                AntiAbuse::ACTION_TOKEN_EXCHANGE,
-                AntiAbuse::ACTION_SUBMIT_TICKET,
-                AntiAbuse::ACTION_SUBMIT_FEEDBACK,
-                AntiAbuse::ACTION_SUBMIT_COMMENT,
-                AntiAbuse::ACTION_SHARE_CONTENT,
-            ]
-        );
+        return $config;
     }
 
     /**
@@ -290,8 +246,8 @@ class RateLimitEventListener implements EventSubscriberInterface
      */
     protected function saveRateLimitAction($action, Person $person, $ip)
     {
-        /** @var RateLimitLog $rep */
-        $rep = $this->em->getRepository('DeskPRO:RateLimitLog');
+        /** @var RateLimitLogRepository $rep */
+        $rep = $this->em->getRepository(RateLimitLog::class);
         $rep->save($action, $person, $ip);
     }
 
@@ -322,5 +278,20 @@ class RateLimitEventListener implements EventSubscriberInterface
         }
 
         return false;
+    }
+
+    protected function getLockoutTime(AntiAbuseEvent $event)
+    {
+        $antiAbuseConfig = $event->getConfig();
+        /** @var RateLimitLogRepository $rep */
+        $rep = $this->em->getRepository(RateLimitLog::class);
+
+        return $rep->getLockoutTime(
+            $event->getPerson(),
+            $event->getType(),
+            $antiAbuseConfig->getTime(),
+            $antiAbuseConfig->getLockoutTime(),
+            $event->getIp()
+        );
     }
 }

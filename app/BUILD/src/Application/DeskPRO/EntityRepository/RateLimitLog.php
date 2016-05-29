@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity\Person as PersonEntity;
+use Application\DeskPRO\People\PersonGuest;
 
 class RateLimitLog extends AbstractEntityRepository
 {
@@ -78,5 +79,67 @@ class RateLimitLog extends AbstractEntityRepository
         );
 
         return (int) $this->getEntityManager()->getConnection()->executeQuery($q, $params)->fetchColumn();
+    }
+
+    /**
+     * @param PersonEntity $person
+     * @param string       $action
+     * @param int          $time
+     * @param int          $maxLockTime
+     * @param string|null  $ip
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     *
+     * @return int
+     */
+    public function getLockoutTime(PersonEntity $person, $action, $time, $maxLockTime, $ip)
+    {
+        // All we need is just to find latest action attempt, it's written every time,
+        // so trying to perform an action while you were locked out will refresh lockout timer
+        // therefore user should keep calm and stop hit a button or them will be locked out forever
+        $time = (int) $time;
+
+        // if there is no person, then we should use IP for search
+        if ($person instanceof PersonGuest) {
+            $filter      = 'ip';
+            $filterValue = ip2long($ip);
+        } else {
+            $filter      = 'person_id';
+            $filterValue = $person->getId();
+        }
+
+        $q = sprintf(
+            '
+            SELECT `tab`.`date_created` 
+            FROM `%s` AS `tab` 
+            WHERE `tab`.`%s` = :filter_value 
+              AND `tab`.`date_created` > :date 
+              AND `tab`.`action` = :action 
+            ORDER BY `tab`.`date_created` DESC
+            LIMIT 1
+            ',
+            $this->getTableName(),
+            $filter
+        );
+
+        $res = $this->getEntityManager()->getConnection()->executeQuery(
+            $q,
+            [
+                'filter_value' => $filterValue,
+                'action'       => $action,
+                'date'         => date('Y-m-d H:i:s', time() - $time), // last N=$time seconds
+            ]
+        )->fetchAll();
+
+        // no such records
+        if (!$res) {
+            return 0;
+        }
+
+        $currentAttemptTime = time();
+        $lastAttemptTime    = strtotime(current($res)['date_created']);
+        $lockTime           = $currentAttemptTime - $lastAttemptTime;
+
+        return max(0, $maxLockTime - $lockTime);
     }
 }

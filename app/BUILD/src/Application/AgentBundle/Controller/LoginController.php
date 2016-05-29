@@ -195,6 +195,8 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
         $this->container->get('anti_abuse')->check($check);
         if ($check->isCaptchaRecommended()) {
             $captcha = $this->container->getSystemObject('form_captcha', ['type' => 'user_login']);
+        } elseif ($check->isLockoutRecommended() && $check->getLockoutTime()) {
+            $this->session->setFlash('failed_login_rate', $check->getLockoutTime());
         }
         $lockout = $this->session->hasFlash('failed_login_rate')
             ? $this->session->getFlash('failed_login_rate')['value']

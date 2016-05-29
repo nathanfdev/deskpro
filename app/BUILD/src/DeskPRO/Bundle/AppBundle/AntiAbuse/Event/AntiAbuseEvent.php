@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\AntiAbuse\Event;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuseConfig;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Exception\AntiAbuseException;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\Response;
@@ -85,6 +86,14 @@ abstract class AntiAbuseEvent extends Event
      * @var bool
      */
     protected $checkOnly = false;
+
+    /**
+     * @var int
+     */
+    protected $lockoutTime = 0;
+
+    /** @var AntiAbuseConfig */
+    protected $config;
 
     /**
      * AntiAbuseEvent constructor.
@@ -175,6 +184,14 @@ abstract class AntiAbuseEvent extends Event
     }
 
     /**
+     * @return int
+     */
+    public function getLockoutTime()
+    {
+        return $this->lockoutTime;
+    }
+
+    /**
      * @return bool
      */
     public function isLimited()
@@ -229,10 +246,15 @@ abstract class AntiAbuseEvent extends Event
     }
 
     /**
+     * @param int $lockoutTime
+     *
      * @return $this
      */
-    public function markLockoutRecommended()
+    public function markLockoutRecommended($lockoutTime = 0)
     {
+        if ($lockoutTime > 0) {
+            $this->lockoutTime = $lockoutTime;
+        }
         $this->recommendLockout = true;
         $this->limited          = true;
 
@@ -279,6 +301,26 @@ abstract class AntiAbuseEvent extends Event
     public function markAsCheckOnly()
     {
         $this->checkOnly = true;
+
+        return $this;
+    }
+
+    /**
+     * @return AntiAbuseConfig
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
+     * @param AntiAbuseConfig $config
+     *
+     * @return $this
+     */
+    public function setConfig(AntiAbuseConfig $config)
+    {
+        $this->config = $config;
 
         return $this;
     }

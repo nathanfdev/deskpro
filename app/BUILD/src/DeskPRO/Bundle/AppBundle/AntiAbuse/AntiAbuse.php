@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\AppBundle\AntiAbuse;
 
 use Application\DeskPRO\Entity\Person;
@@ -70,6 +69,12 @@ class AntiAbuse
      */
     private $em;
 
+    /**
+     * AntiAbuse constructor.
+     *
+     * @param EventDispatcherInterface $dispatcher
+     * @param EntityManager            $em
+     */
     public function __construct(EventDispatcherInterface $dispatcher, EntityManager $em)
     {
         $this->dispatcher = $dispatcher;
@@ -87,7 +92,7 @@ class AntiAbuse
     {
         $this->ensureEventHasAPersonObject($event);
 
-        $this->dispatcher->dispatch(self::EVENT_NAME, $event);
+        $this->dispatcher->dispatch(self::getEventName($event->getType()), $event);
 
         if ($event->isResponseRequired() && !$event->isCheckOnly()) {
             // a listener has signaled a response is required to be returned
@@ -100,6 +105,9 @@ class AntiAbuse
         return $event;
     }
 
+    /**
+     * @param AntiAbuseEvent $event
+     */
     private function ensureEventHasAPersonObject(AntiAbuseEvent $event)
     {
         // we allow emails to be used in place of a person object so we resolve that here
@@ -115,5 +123,15 @@ class AntiAbuse
         if (!$event->getPerson() instanceof Person) {
             $event->setPerson(new PersonGuest());
         }
+    }
+
+    /**
+     * @param $eventType
+     *
+     * @return string
+     */
+    public static function getEventName($eventType)
+    {
+        return self::EVENT_NAME.'.'.$eventType;
     }
 }

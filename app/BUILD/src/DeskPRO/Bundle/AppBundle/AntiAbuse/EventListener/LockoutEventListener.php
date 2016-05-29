@@ -71,7 +71,7 @@ class LockoutEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            AntiAbuse::EVENT_NAME => 'checkAntiAbuse',
+//            AntiAbuse::getEventName(AntiAbuse::ACTION_LOGIN) => 'checkAntiAbuse',
         ];
     }
 
@@ -89,10 +89,6 @@ class LockoutEventListener implements EventSubscriberInterface
 
     public function checkAntiAbuse(AntiAbuseEvent $event)
     {
-        if (!$this->supportsType($event)) {
-            return;
-        }
-
         $person = $event->getPerson();
 
         if (!$person instanceof Person) {
@@ -142,12 +138,5 @@ class LockoutEventListener implements EventSubscriberInterface
             $event->markResponseRequired();
             $event->stopPropagation();
         }
-    }
-
-    protected function supportsType(AntiAbuseEvent $event)
-    {
-        return in_array($event->getType(), [
-//            AntiAbuse::ACTION_LOGIN,
-        ]);
     }
 }

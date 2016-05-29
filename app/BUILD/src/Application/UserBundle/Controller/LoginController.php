@@ -406,8 +406,8 @@ HTML;
         }
 
         if ($check->isLockoutRecommended()) {
-            if ($lockTime = $this->getLoginLockoutTime($this->in->getString('email'))) {
-                $this->session->setFlash('failed_login_rate', $lockTime);
+            if ($check->getLockoutTime()) {
+                $this->session->setFlash('failed_login_rate', $check->getLockoutTime());
                 $this->session->save();
             }
 
