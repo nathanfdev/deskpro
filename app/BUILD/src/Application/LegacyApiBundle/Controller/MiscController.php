@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -37,12 +36,13 @@ use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Entity\ApiToken;
 use Application\DeskPRO\EntityRepository\LoginLog;
 use Application\DeskPRO\LoginLogs\LoginLogs;
-use Application\DeskPRO\Service\RateLimit;
 use Application\DeskPRO\Settings\LoginRateLimitSettings;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\TokenExchangeAbuseCheck;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Exception\AntiAbuseException;
 use Orb\Util\Strings;
 use Orb\Util\Util;
-use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @ApiModes("all")
@@ -160,19 +160,23 @@ class MiscController extends AbstractController
         return new \Orb\Auth\Result(\Orb\Auth\Result::FAILURE_INVALID_CREDS);
     }
 
-    public function tokenExchangeAction()
+    public function tokenExchangeAction(Request $request)
     {
-        if ($lockTime = $this->getLoginLockoutTime($this->in->getString('email'))) {
+        $email = $this->in->getString('email');
+        $check = new TokenExchangeAbuseCheck($email, $request->getClientIp());
+
+        try {
+            $this->getContainer()->get('anti_abuse')->check($check);
+        } catch (AntiAbuseException $e) {
+            $lockTime = $this->getLoginLockoutTime($email);
+
             return $this->createApiErrorResponse('account_locked', sprintf('Account locked for %d seconds', $lockTime), 403);
         }
 
-        /** @var RateLimit $rateLimit */
-        $rateLimit = $this->get(RateLimit::KEY);
-        if ($rateLimit->isActionLimited(RateLimit::ACT_TOKEN_EXCHANGE)) {
+        if ($check->isLimited()) {
             return $this->createApiErrorResponse('rate_limit_exceeded', 'Rate Limit Exceeded', 403);
         }
 
-        $rateLimit->saveAction(RateLimit::ACT_TOKEN_EXCHANGE);
         $result = $this->_authLocalInput($this->in->getString('email'), $this->in->getString('password'));
 
         if (!$result->isValid()) {

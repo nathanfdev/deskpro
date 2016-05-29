@@ -98,7 +98,12 @@ class RateLimitEventListener implements EventSubscriberInterface
         }
 
         if ($this->getSetting(AntiAbuse::SETTING_RATE_LIMIT_IS_DISABLED)) {
-            $this->logger->debug('[AntiAbuse->RateLimitEventListener] Rate Limit is disabled. Skipping.');
+            $this->logger->debug(
+                sprintf(
+                    '[AntiAbuse->RateLimitEventListener] Rate Limit for [ %s ] is disabled. Skipping.',
+                    $event->getType()
+                )
+            );
 
             return;
         }
@@ -107,10 +112,6 @@ class RateLimitEventListener implements EventSubscriberInterface
             $this->logger->info('[AntiAbuse->RateLimitEventListener] Whitelist matched IP "'.$event->getIp().'"". Skipping rate limit checks.');
 
             return;
-        }
-
-        if (!$event->isCheckOnly()) {
-            $this->saveRateLimitAction($event->getType(), $event->getPerson(), $event->getIp());
         }
 
         if ($this->isCaptchaRequired($event->getType(), $event->getPerson(), $event->getIp())) {
@@ -123,6 +124,12 @@ class RateLimitEventListener implements EventSubscriberInterface
             $event->markLockoutRecommended();
             $event->markResponseRequired();
             $event->stopPropagation();
+        }
+
+        // we should save attempt only AFTER check was performed. Because if the maximum
+        // attempts is set to 1 then it will be failed just while checking, thats not right
+        if (!$event->isCheckOnly()) {
+            $this->saveRateLimitAction($event->getType(), $event->getPerson(), $event->getIp());
         }
     }
 

@@ -486,15 +486,16 @@ class ArticlesController extends AbstractController
     private function runAntiAbuseCheck(Request $request, Article $article)
     {
         $check = new ShareContentAbuseCheck($this->getCurrentPerson(), $request->getClientIp());
-        $check->setResponse(
-            $this->redirectToRoute(
-                'portal_articles_share',
-                [
-                    'slug'    => $article->getSlug(),
-                    'lockout' => 'share',
-                ]
-            )
-        );
+        $check
+            ->setResponse(
+                $this->redirectToRoute(
+                    'portal_articles_share',
+                    [
+                        'slug'    => $article->getSlug(),
+                        'lockout' => 'share',
+                    ]
+                )
+            );
         $this->get('anti_abuse')->check($check);
     }
 }

@@ -32,6 +32,7 @@
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Auth\AuthenticationManager;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Controller\AbstractController;
 use Application\DeskPRO\Controller\Helper\LoginHelper;
@@ -52,18 +53,26 @@ use Application\DeskPRO\HttpFoundation\Cookie;
 use Application\DeskPRO\HttpFoundation\LegacyRequestUtils;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Service\CheckWhitelistedIP;
-use Application\DeskPRO\Service\RateLimit;
 use Application\DeskPRO\Settings\LoginRateLimitSettings;
 use Application\DeskPRO\Translate\SystemLanguage;
 use Application\DeskPRO\Twig\AppVariable;
 use Application\DeskPRO\Usersource\Adapter\ActiveDirectory;
 use Application\DeskPRO\Usersource\Adapter\Ldap;
 use Application\DeskPRO\Usersource\UsersourceInfo;
+use Application\DeskPRO\Usersource\UsersourceManager;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\PasswordResetAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Exception\AntiAbuseException;
+use DeskPRO\Bundle\PortalBundle\Twig\Environment;
+use Doctrine\DBAL\ConnectionException;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
+use Doctrine\ORM\TransactionRequiredException;
+use Orb\Auth\Adapter\AdapterInterface;
 use Orb\Auth\Adapter\CallbackInterface;
 use Orb\Auth\Adapter\SamlAdapterInterface;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
+use Orb\Auth\Result;
 use Orb\Log\Loggable;
 use Orb\Log\Logger;
 use Orb\Log\Writer\ArrayWriter;
@@ -83,23 +92,27 @@ class LoginController extends AbstractController
     protected $tpl_prefix = 'UserBundle:Login';
     /** @var string */
     protected $route_prefix = 'user';
-    const USERSOURCE_TEST   = 'usersource_test';
+
+    const USERSOURCE_TEST = 'usersource_test';
 
     /**
-     * @var \Application\DeskPRO\Controller\Helper\LoginHelper
+     * @var LoginHelper
      */
     protected $login_helper;
 
     /**
-     * @var \Application\DeskPRO\Usersource\UsersourceManager
+     * @var UsersourceManager
      */
     protected $usersource_manager;
 
     /**
-     * @var \Application\DeskPRO\Auth\AuthenticationManager
+     * @var AuthenticationManager
      */
     protected $auth_manager;
 
+    /**
+     *
+     */
     public function init()
     {
         parent::init();
@@ -121,7 +134,7 @@ class LoginController extends AbstractController
      */
     protected function getTplGlobals()
     {
-        /** @var \DeskPRO\Bundle\PortalBundle\Twig\Environment $twig */
+        /** @var Environment $twig */
         $twig = $this->get('twig');
         foreach ($twig->getGlobals() as $k => $v) {
             if ($v instanceof AppVariable) {
@@ -132,6 +145,9 @@ class LoginController extends AbstractController
         throw new \RuntimeException('No AppVariable in twig.');
     }
 
+    /**
+     * @return bool
+     */
     protected function loginViaToken()
     {
         if (($token = $this->in->getString('tok')) && strpos($token, '-')) {
@@ -183,6 +199,9 @@ class LoginController extends AbstractController
         return false;
     }
 
+    /**
+     *
+     */
     protected function _logoutPerson()
     {
         // When an agent actually logs out, we should be clearing the state
@@ -232,6 +251,11 @@ class LoginController extends AbstractController
         $this->deleteCookies(['dp-guest-cache']);
     }
 
+    /**
+     * @param $auth
+     *
+     * @return Response
+     */
     public function logoutAction($auth)
     {
         if (!\Orb\Util\Util::checkStaticSecurityToken($auth, md5(App::getAppSecret().'user_logout'))) {
@@ -294,8 +318,6 @@ HTML;
     /**
      * @param $usersource_id
      *
-     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     *
      * @return Response
      */
     public function samlSingleLogoutServiceAction($usersource_id)
@@ -318,8 +340,6 @@ HTML;
     /**
      * @param $usersource_id
      *
-     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     *
      * @return Response
      */
     public function samlMetadataAction($usersource_id)
@@ -337,6 +357,17 @@ HTML;
         throw $this->createNotFoundException('usersource / adapter not suitable for SLS');
     }
 
+    /**
+     * @param Request $request
+     *
+     * @throws ConnectionException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws TransactionRequiredException
+     * @throws \Exception
+     *
+     * @return Response
+     */
     public function authenticateLocalAction(Request $request)
     {
         $return = LegacyRequestUtils::readReturnParam($this->request);
@@ -511,6 +542,9 @@ HTML;
         }
     }
 
+    /**
+     * @param Person $person
+     */
     protected function rememberMe(Person $person)
     {
         if ($this->in->getBool('remember_me')) {
@@ -528,6 +562,12 @@ HTML;
         }
     }
 
+    /**
+     * @param Request $request
+     * @param Person  $person
+     * @param bool    $success
+     * @param string  $note
+     */
     protected function loginLog(Request $request, Person $person, $success = true, $note = '')
     {
         $this->db->insert('login_log', [
@@ -542,6 +582,10 @@ HTML;
         ]);
     }
 
+    /**
+     * @param Person $person
+     * @param bool   $success
+     */
     protected function sendLoginAlert(Person $person, $success = true)
     {
         $prefName = sprintf('agent_notif.login_attempt%s.email', $success ? '' : '_fail');
@@ -556,6 +600,9 @@ HTML;
         }
     }
 
+    /**
+     * @param Person $person
+     */
     protected function broadcastAgentIsOnline(Person $person)
     {
         $cm = new ClientMessage();
@@ -575,6 +622,9 @@ HTML;
         $this->em()->flush();
     }
 
+    /**
+     * @param Person $person
+     */
     protected function setAgentIsAvailable(Person $person)
     {
         $this->session->set('active_status', 'available');
@@ -585,6 +635,9 @@ HTML;
         }
     }
 
+    /**
+     * @param array $cookies
+     */
     protected function deleteCookies($cookies = ['dplogout', 'dp-guest-cache'])
     {
         foreach ($cookies as $cookie) {
@@ -592,6 +645,9 @@ HTML;
         }
     }
 
+    /**
+     * @param Request $request
+     */
     protected function handleLoginAttempt(Request $request)
     {
         /** @var PersonRepository $personRepository */
@@ -603,6 +659,11 @@ HTML;
         }
     }
 
+    /**
+     * @param Person $person
+     *
+     * @return Response
+     */
     protected function handleIpSecurityCheck(Person $person)
     {
         if (!CheckWhitelistedIP::checkIP($this->getRequest(), $this->container, $person)) {
@@ -612,6 +673,9 @@ HTML;
         }
     }
 
+    /**
+     *
+     */
     public function _doLoginSuccess()
     {
         return;
@@ -635,6 +699,9 @@ HTML;
         ]);
     }
 
+    /**
+     * @return Result
+     */
     public function authLocalInput()
     {
         $authResult = $this->auth_manager->authenticateFormLogin(
@@ -661,6 +728,15 @@ HTML;
     # Usersource auth
     ############################################################################
 
+    /**
+     * @param $usersource_id
+     *
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws TransactionRequiredException
+     *
+     * @return Response
+     */
     public function authenticateAction($usersource_id)
     {
         $return = LegacyRequestUtils::readReturnParam($this->request);
@@ -792,6 +868,15 @@ HTML;
         }
     }
 
+    /**
+     * @param $usersource_id
+     *
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws TransactionRequiredException
+     *
+     * @return Response
+     */
     public function authenticateCallbackAction($usersource_id)
     {
         $return     = LegacyRequestUtils::readReturnParam($this->request);
@@ -877,7 +962,7 @@ HTML;
      * @param Usersource $usersource
      * @param null       $displayContext
      *
-     * @return \Orb\Auth\Adapter\AdapterInterface
+     * @return AdapterInterface
      */
     protected function _initUserSourceAdapter(Usersource $usersource, $displayContext = null, $useInterface = null)
     {
@@ -891,6 +976,15 @@ HTML;
     # Resetting passwords
     ############################################################################
 
+    /**
+     * @param string  $_format
+     * @param Request $request
+     *
+     * @throws \Exception
+     * @throws null
+     *
+     * @return Response
+     */
     public function sendResetPasswordAction($_format = 'html', Request $request)
     {
         $p = $this->session->getPerson();
@@ -900,9 +994,22 @@ HTML;
             $this->ensureRequestToken('user_login');
         }
 
-        /** @var RateLimit $rateLimit */
-        $rateLimit = $this->get(RateLimit::KEY);
-        if ($rateLimit->isActionLimited(RateLimit::ACT_RESET_PWD)) {
+        $email = $this->in->getString('email');
+
+        try {
+            $check = new PasswordResetAbuseCheck($email, $request->getClientIp());
+            $this->getContainer()->get('anti_abuse')->check($check);
+        } catch (AntiAbuseException $e) {
+            if ($_format == 'json') {
+                return $this->createJsonResponse(['success' => 0, 'error' => 'lockout']);
+            } else {
+                $this->session->setFlash('failed_rate_limit', true);
+
+                return $this->redirectRoute($this->route_prefix.'_login_resetpass', ['return' => LegacyRequestUtils::readReturnParam($request)]);
+            }
+        }
+
+        if ($check->isCaptchaRecommended()) {
             $captcha = $this->container->getSystemObject('form_captcha', ['type' => 'user_reset_password']);
             if (!$captcha->validate()) {
                 if ($_format == 'json') {
@@ -914,10 +1021,6 @@ HTML;
                 }
             }
         }
-
-        $rateLimit->saveAction(RateLimit::ACT_RESET_PWD);
-
-        $email = $this->in->getString('email');
 
         if (!$email || !StringEmail::isValueValid($email)) {
             return $this->redirectRoute('user_login_resetpass', ['inv' => 1]);
@@ -1078,6 +1181,9 @@ HTML;
     # Inline login
     ############################################################################
 
+    /**
+     * @return Response
+     */
     public function inlineLoginAction()
     {
         if (!$lockTime = $this->getLoginLockoutTime($this->in->getString('email'))) {
@@ -1125,6 +1231,16 @@ HTML;
     # agent-login
     ############################################################################
 
+    /**
+     * @param Request $request
+     * @param         $code
+     *
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws TransactionRequiredException
+     *
+     * @return Response
+     */
     public function authAgentLoginAction(Request $request, $code)
     {
 
@@ -1177,6 +1293,15 @@ HTML;
         return $this->redirectRoute('user_profile');
     }
 
+    /**
+     * @param $code
+     *
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws TransactionRequiredException
+     *
+     * @return Response
+     */
     public function whitelistIpAction($code)
     {
         /** @var TmpDataRepository $tmpDataRepository */
@@ -1212,6 +1337,11 @@ HTML;
     # Use the standard callback URL if user is to see the response of this
     ############################################################################
 
+    /**
+     * @param $usersource_id
+     *
+     * @return Response|NotFoundHttpException
+     */
     public function usersourceSsoAction($usersource_id)
     {
         // TODO: user auth_manager for this
@@ -1291,11 +1421,13 @@ HTML;
         }
     }
 
-    protected function _setupUsersourceSession(
-        \Application\DeskPRO\Entity\Usersource $usersource,
-        \Application\DeskPRO\Entity\Person $person,
-        \Orb\Auth\Result $result
-    ) {
+    /**
+     * @param Usersource $usersource
+     * @param Person     $person
+     * @param Result     $result
+     */
+    protected function _setupUsersourceSession(Usersource $usersource, Person $person, Result $result)
+    {
         $this->session->set('auth_person_id', $person['id']);
         $this->session->setFlash('is_from_login', 'yes');
         $this->session->set('dp_interface', DP_INTERFACE);
