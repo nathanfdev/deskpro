@@ -59,7 +59,7 @@ export class ToDoTab extends Component {
           <ul>
             <ListItemContainer
               label="DraftArticles"
-              group="aticles"
+              group="articles"
               listOptions={{ content: 'articles', navItem: { hidden_status: 'draft' } }}
             >
               <ListItem

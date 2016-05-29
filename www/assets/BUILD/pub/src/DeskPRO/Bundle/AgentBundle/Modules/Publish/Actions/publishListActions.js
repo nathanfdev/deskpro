@@ -8,9 +8,11 @@ const recordStoresId = 'publish';
 
 const prepareLinkedData = linked => {
   const result = [];
-  Object.keys(linked).forEach(key => {
-    result.push(linked[key]);
-  });
+  if (linked) {
+    Object.keys(linked).forEach(key => {
+      result.push(linked[key]);
+    });
+  }
 
   return result;
 };
@@ -87,14 +89,4 @@ export const applyParams = createAction(
       dispatch(load(params));
     }
   }
-);
-
-export const setOrderBy = createAction(
-  'PUBLISH_LIST_SET_ORDER_BY',
-  orderBy => dispatch => dispatch(applyParams({ order_by: orderBy }))
-);
-
-export const setOrderDir = createAction(
-  'PUBLISH_LIST_SET_ORDER_DIR',
-  orderDir => dispatch => dispatch(applyParams({ order_dir: orderDir }))
 );

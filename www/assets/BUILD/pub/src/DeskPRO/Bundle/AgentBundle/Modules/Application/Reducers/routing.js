@@ -1,8 +1,7 @@
 import * as actions from '../Actions/routingActions';
 import { createReducer } from 'Ampliflux';
-import { stateToString, stateFromString } from '../Service/routing';
 import Immutable from 'immutable';
-import shallowEqual from 'fbjs/lib/shallowEqual';
+import { stateToString, stateFromString } from '../Service/routing';
 
 const initialState = {
   hash: {}
@@ -15,7 +14,7 @@ export default createReducer(initialState, {
     }
 
     const newHashState = stateFromString(payload.substring(1));
-    let next = state;
+    let next           = state;
 
     // When we update window.location.hash from updateRoutingState() action reducer and
     // window.onhashchange() event is fired, we don't actually need to update state
@@ -33,13 +32,14 @@ export default createReducer(initialState, {
 
     return next;
   },
+
   [actions.updateRoutingState]: (state, { component, option, value }) => {
     let next = state;
 
     if (!next.hasIn(['hash', component])) {
       next = next.setIn(['hash', component], Immutable.Map());
     }
-    next = next.setIn(['hash', component, option], Immutable.fromJS(value));
+    next = next.setIn(['hash', component], Immutable.fromJS({ [option]: value }));
 
     window.location.hash = stateToString(next.get('hash'));
 
