@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\AntiAbuse\EventListener;
 
 use Application\DeskPRO\Entity\Person;
@@ -156,7 +157,6 @@ class RateLimitEventListener implements EventSubscriberInterface
      */
     private function isCaptchaRequired(AntiAbuseEvent $event)
     {
-        return false;
         $action = $event->getType();
         $person = $event->getPerson();
         $config = $this->getConfig($action, $person);
@@ -172,7 +172,7 @@ class RateLimitEventListener implements EventSubscriberInterface
 
         /** @var RateLimitLogRepository $rep */
         $rep = $this->em->getRepository(RateLimitLog::class);
-        $res = $rep->count($action, $config->getTime(), $person, $config->getLockoutTime(), $event->getIp());
+        $res = $rep->count($action, $config->getTime(), $person, $event->getIp());
 
         return $res >= (int) $config->getLimit()
             ? $config->getResponse() === AntiAbuseConfig::RESPONSE_CAPTCHA

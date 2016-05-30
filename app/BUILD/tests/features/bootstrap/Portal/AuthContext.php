@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpBehat\Portal;
 
 use Application\DeskPRO\Entity\Organization;
@@ -100,6 +101,27 @@ class AuthContext extends BasePortalContext implements RebootableContextInterfac
         );
 
         $this->me = $this->getUserDetails()->getWho($who);
+    }
+
+    /**
+     * @When I use bad :who credentials for login
+     * @When I use bad credentials for login
+     *
+     * @param string $who
+     */
+    public function iLoginWithBadCredentialsFromTheLoginPage($who = '')
+    {
+        if ($who) {
+            $this->getPage('Login')->login(
+                $this->getUserDetails()->getEmail($who),
+                'wrong_password'
+            );
+        } else {
+            $this->getPage('Login')->login(
+                'wrong_email@example.wrong',
+                'wrong_password'
+            );
+        }
     }
 
     /**
