@@ -63,6 +63,7 @@ class RateLimitGroupType extends AbstractType
                     new Assert\GreaterThan(0),
                 ],
             ])
+
             ->add('response', ChoiceType::class, [
                 'choices_as_values' => true,
                 'choices'           => [
@@ -72,6 +73,7 @@ class RateLimitGroupType extends AbstractType
             ])
         ;
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'preSubmit']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'lockoutTimeSet']);
     }
 
     public function preSubmit(FormEvent $event)
@@ -79,6 +81,26 @@ class RateLimitGroupType extends AbstractType
         $data = $event->getData();
         if (isset($data['time'])) {
             $data['time'] *= 60;
+            $event->setData($data);
+        }
+    }
+
+    public function lockoutTimeSet(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (isset($data['response']) && $data['response'] === RateLimitGroup::RESPONSE_LOCKOUT) {
+            $event->getForm()->add('lockout_time', NumberType::class, [
+                'constraints' => [
+                    new Assert\NotBlank(),
+                    new Assert\GreaterThan(0),
+                ],
+            ]);
+            if (isset($data['lockout_time'])) {
+                $data['lockout_time'] *= 60;
+                $event->setData($data);
+            }
+        } elseif (isset($data['lockout_time'])) {
+            unset($data['lockout_time']);
             $event->setData($data);
         }
     }

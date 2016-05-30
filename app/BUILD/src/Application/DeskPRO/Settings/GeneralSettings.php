@@ -215,9 +215,7 @@ class GeneralSettings
             'attach_agent_must_exts'    => $this->attach_agent_must_exts,
             'attach_agent_not_exts'     => $this->attach_agent_not_exts,
             'attach_agent_maxsize'      => $this->attach_agent_maxsize,
-            'rate_limit_disabled'       => $this->rate_limit_disabled,
-            'rate_limit_ips'            => $this->rate_limit_ips,
-        ];
+        );
 
         return $export_settings;
     }

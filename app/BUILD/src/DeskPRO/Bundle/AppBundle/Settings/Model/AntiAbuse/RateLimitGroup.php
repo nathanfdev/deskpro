@@ -69,6 +69,13 @@ class RateLimitGroup
     private $response = self::RESPONSE_LOCKOUT;
 
     /**
+     * @var int
+     *
+     * @JMS\Exclude()
+     */
+    private $lockout_time = 0;
+
+    /**
      * @return int
      */
     public function getLimit()
@@ -107,6 +114,29 @@ class RateLimitGroup
     public function setTime($time)
     {
         $this->time = $time;
+
+        return $this;
+    }
+
+    /**
+     * @JMS\VirtualProperty()
+     * @JMS\Type("integer")
+     *
+     * @return int
+     */
+    public function getLockoutTime()
+    {
+        return $this->lockout_time / 60;
+    }
+
+    /**
+     * @param int $lockout_time
+     *
+     * @return $this
+     */
+    public function setLockoutTime($lockout_time)
+    {
+        $this->lockout_time = $lockout_time;
 
         return $this;
     }

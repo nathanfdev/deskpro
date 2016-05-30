@@ -86,7 +86,4 @@ $CONFIG['settings']['rate_limit.submit_comment.guest.limit']    = 9999;
 $CONFIG['settings']['rate_limit.submit_feedback.guest.limit']   = 9999;
 $CONFIG['settings']['rate_limit.submit_ticket.guest.limit']     = 9999;
 $CONFIG['settings']['rate_limit.share_content.guest.limit']     = 9999;
-
-$CONFIG['settings'] = [
-    'disable_outgoing_email' => true,
-];
+$CONFIG['settings']['disable_outgoing_email']                   = true;
