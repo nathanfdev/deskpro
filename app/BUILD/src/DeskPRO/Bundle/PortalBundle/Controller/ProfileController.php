@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\PasswordHistory;
@@ -140,11 +141,15 @@ class ProfileController extends AbstractController
         // BREADCRUMBS
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildRegistration();
 
+        $event = new RegistrationAbuseCheck($this->getCurrentPerson(), $request->getClientIp());
+        $event->markAsCheckOnly();
+        $this->getAntiAbuseService()->check($event);
+
         return $this->renderThemeView(
             'Theme:Portal:User/register.html.twig',
             [
                 'form'        => $form->createView(),
-                'lockout'     => $request->get('lockout', false),
+                'lockout'     => $event->isLockoutRecommended(),
                 'breadcrumbs' => $breadcrumbs,
                 'page_title'  => $this->createPageTitle()->register(),
             ]
