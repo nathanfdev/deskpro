@@ -34,16 +34,15 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity\Person as PersonEntity;
-use Application\DeskPRO\People\PersonGuest;
 
 class RateLimitLog extends AbstractEntityRepository
 {
-    public function save($action, PersonEntity $person, $ip = null)
+    public function save($action, PersonEntity $person, $ip = null, $lockout = false)
     {
         $ip = $ip ? ip2long($ip) : 0;
         $this->getEntityManager()->getConnection()->executeQuery(sprintf(
-            'insert into %s (action, ip, person_id, date_created) values (:action, %d, %d, NOW())',
-            $this->getTableName(), $ip, $person['id']
+            'insert into %s (action, ip, person_id, date_created, is_lockout) values (:action, %d, %d, NOW(), %d)',
+            $this->getTableName(), $ip, $person['id'], (int) $lockout
         ), array('action' => $action));
     }
 
@@ -52,20 +51,20 @@ class RateLimitLog extends AbstractEntityRepository
         $personIsNotGuest = $person && !$person->isGuest();
         if ($personIsNotGuest && $ip) {
             $q = sprintf(
-                'select count(*) from %s where action = :action and date_created >= :date and (ip = %d or person_id = %d)',
+                'select count(*) from %s where action = :action and date_created >= :date and (ip = %d or person_id = %d) and is_lockout = 0',
                 $this->getTableName(),
                 $ip ? ip2long($ip) : 0,
                 $person['id']
             );
         } elseif ($personIsNotGuest) {
             $q = sprintf(
-                'select count(*) from %s where action = :action and date_created >= :date and person_id = %d',
+                'select count(*) from %s where action = :action and date_created >= :date and person_id = %d and is_lockout = 0',
                 $this->getTableName(),
                 $person['id']
             );
         } elseif ($ip) {
             $q = sprintf(
-                'select count(*) from %s where action = :action and date_created >= :date and ip = %d',
+                'select count(*) from %s where action = :action and date_created >= :date and ip = %d and is_lockout = 0',
                 $this->getTableName(),
                 $ip ? ip2long($ip) : 0
             );
@@ -97,49 +96,125 @@ class RateLimitLog extends AbstractEntityRepository
         // All we need is just to find latest action attempt, it's written every time,
         // so trying to perform an action while you were locked out will refresh lockout timer
         // therefore user should keep calm and stop hit a button or them will be locked out forever
-        $time = (int) $time;
-
-        // if there is no person, then we should use IP for search
-        if ($person instanceof PersonGuest) {
-            $filter      = 'ip';
-            $filterValue = ip2long($ip);
-        } else {
-            $filter      = 'person_id';
-            $filterValue = $person->getId();
-        }
-
-        $q = sprintf(
-            '
-            SELECT `tab`.`date_created` 
-            FROM `%s` AS `tab` 
-            WHERE `tab`.`%s` = :filter_value 
-              AND `tab`.`date_created` > :date 
-              AND `tab`.`action` = :action 
-            ORDER BY `tab`.`date_created` DESC
-            LIMIT 1
-            ',
-            $this->getTableName(),
-            $filter
-        );
-
-        $res = $this->getEntityManager()->getConnection()->executeQuery(
-            $q,
-            [
-                'filter_value' => $filterValue,
-                'action'       => $action,
-                'date'         => date('Y-m-d H:i:s', time() - $time), // last N=$time seconds
-            ]
-        )->fetchAll();
-
-        // no such records
-        if (!$res) {
-            return 0;
-        }
-
         $currentAttemptTime = time();
-        $lastAttemptTime    = strtotime(current($res)['date_created']);
+        $lastAttemptTime    = $this->getLastAttempt($action, $person, $ip);
         $lockTime           = $currentAttemptTime - $lastAttemptTime;
 
         return max(0, $maxLockTime - $lockTime);
+    }
+
+    public function getLastLockedOutAttempt($action, PersonEntity $person, $ip = null)
+    {
+        $personIsNotGuest = $person && !$person->isGuest();
+        if ($personIsNotGuest && $ip) {
+            $q = sprintf(
+                '
+                  SELECT `tab`.`date_created`
+                  FROM %s AS `tab`
+                  WHERE `tab`.`action` = :action 
+                    AND (`tab`.`ip` = %d OR `tab`.`person_id` = %d) 
+                    AND `tab`.`is_lockout` = 1
+                  ORDER BY `date_created` DESC
+                  LIMIT 1
+                ',
+                $this->getTableName(),
+                $ip ? ip2long($ip) : 0,
+                $person['id']
+            );
+        } elseif ($personIsNotGuest) {
+            $q = sprintf(
+                '
+                  SELECT `tab`.`date_created`
+                  FROM %s AS `tab` 
+                  WHERE `tab`.`action` = :action 
+                    AND `tab`.`person_id` = %d
+                    AND `tab`.`is_lockout` = 1
+                  ORDER BY `tab`.`date_created` DESC
+                  LIMIT 1
+                ',
+                $this->getTableName(),
+                $person['id']
+            );
+        } elseif ($ip) {
+            $q = sprintf(
+                '
+                  SELECT `tab`.`date_created`
+                  FROM %s AS `tab` 
+                  WHERE `tab`.`action` = :action 
+                    AND `tab`.`ip` = %d 
+                    AND `tab`.`is_lockout` = 1
+                  ORDER BY `tab`.`date_created` DESC
+                  LIMIT 1
+                ',
+                $this->getTableName(),
+                $ip ? ip2long($ip) : 0
+            );
+        } else {
+            throw new \InvalidArgumentException('either a person with an ID or an IP address are required to count the rate_limit_log');
+        }
+
+        $params = array(
+            'action' => $action,
+        );
+
+        $res = $this->getEntityManager()->getConnection()->executeQuery($q, $params)->fetchColumn();
+
+        return $res ? strtotime($res) : false;
+    }
+
+    public function getLastAttempt($action, PersonEntity $person, $ip)
+    {
+        $personIsNotGuest = $person && !$person->isGuest();
+        if ($personIsNotGuest && $ip) {
+            $q = sprintf(
+                '
+                  SELECT `tab`.`date_created` 
+                  FROM %s AS `tab`
+                  WHERE `tab`.`action` = :action 
+                    AND (`tab`.`ip` = %d OR `tab`.`person_id` = %d) 
+                  ORDER BY `date_created` DESC
+                  LIMIT 1
+                ',
+                $this->getTableName(),
+                $ip ? ip2long($ip) : 0,
+                $person['id']
+            );
+        } elseif ($personIsNotGuest) {
+            $q = sprintf(
+                '
+                  SELECT `date_created` 
+                  FROM %s AS `tab` 
+                  WHERE `tab`.`action` = :action 
+                    AND `tab`.`person_id` = %d
+                  ORDER BY `tab`.`date_created` DESC
+                  LIMIT 1
+                ',
+                $this->getTableName(),
+                $person['id']
+            );
+        } elseif ($ip) {
+            $q = sprintf(
+                '
+                  SELECT `date_created` 
+                  FROM %s AS `tab` 
+                  WHERE `tab`.`action` = :action 
+                    AND `tab`.`ip` = %d 
+                  ORDER BY `tab`.`date_created` DESC
+                  LIMIT 1
+                ',
+                $this->getTableName(),
+                $ip ? ip2long($ip) : 0
+            );
+        } else {
+            throw new \InvalidArgumentException('either a person with an ID or an IP address are required to count the rate_limit_log');
+        }
+
+        $params = array(
+            'action' => $action,
+        );
+
+        $res = $this->getEntityManager()->getConnection()->executeQuery($q, $params)->fetchColumn();
+
+        return $res ? strtotime($res) : false;
     }
 }

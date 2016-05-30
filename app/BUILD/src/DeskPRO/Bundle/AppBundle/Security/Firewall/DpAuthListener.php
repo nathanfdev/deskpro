@@ -127,7 +127,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
     {
         $anti_abuse  = $this->container->get('anti_abuse');
         $abuse_check = new LoginAbuseCheck($request->get('username'), $request->getClientIp());
-        $abuse_check->markAsCheckOnly();
+        $abuse_check->setResponse(new RedirectResponse($this->container->get('router')->generate('portal_login')));
         $anti_abuse->check($abuse_check);
         if ($abuse_check->isCaptchaRecommended()) {
             $captchaForm = $this->container->get('form.factory')->create(CaptchaType::class, null, [

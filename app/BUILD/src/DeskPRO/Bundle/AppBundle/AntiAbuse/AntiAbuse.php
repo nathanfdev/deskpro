@@ -42,6 +42,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class AntiAbuse
 {
+    const KEY = 'rate_limit';
+
     const SETTING_RATE_LIMIT_IS_DISABLED = 'core.rate_limit_disabled';
     const SETTING_IP_WHITELIST           = 'core.rate_limit_ips';
 

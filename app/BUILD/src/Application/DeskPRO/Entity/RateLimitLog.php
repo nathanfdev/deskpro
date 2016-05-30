@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -63,6 +63,9 @@ class RateLimitLog extends DomainObject
      * @var \DateTime
      */
     protected $date_created;
+
+    /** @var  bool */
+    protected $is_lockout = false;
 
     public function __construct()
     {
@@ -128,6 +131,12 @@ class RateLimitLog extends DomainObject
             'columnName' => 'date_created',
             'fieldName'  => 'date_created',
             'type'       => 'datetime',
+            'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'is_lockout',
+            'fieldName'  => 'is_lockout',
+            'type'       => 'boolean',
             'nullable'   => false,
         ));
     }
