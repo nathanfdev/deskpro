@@ -276,7 +276,7 @@ services:
 
   form.ticket_message:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageType
-    arguments: ["@language_manager"]
+    arguments: ["@language_manager", "@?api_client_info"]
     tags:
       - { name: form.type }
 

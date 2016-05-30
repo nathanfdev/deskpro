@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
+use DeskPRO\Bundle\ApiBundle\Request\ApiClientInfo;
 use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\HiddenType;
@@ -55,16 +56,23 @@ class TicketMessageType extends AbstractType
     /**
      * @var LanguageManager
      */
-    private $language_manager;
+    private $languageManager;
+
+    /**
+     * @var ApiClientInfo
+     */
+    private $apiClientInfo;
 
     /**
      * Constructor.
      *
-     * @param LanguageManager $language_manager
+     * @param LanguageManager $languageManager
+     * @param ApiClientInfo   $apiClientInfo
      */
-    public function __construct(LanguageManager $language_manager)
+    public function __construct(LanguageManager $languageManager, ApiClientInfo $apiClientInfo = null)
     {
-        $this->language_manager = $language_manager;
+        $this->languageManager = $languageManager;
+        $this->apiClientInfo   = $apiClientInfo;
     }
 
     /**
@@ -134,6 +142,10 @@ class TicketMessageType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onSetMessageFromOptions']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onChangeMessageFormat'], 100);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations'], 100);
+
+        if ($this->apiClientInfo && $this->apiClientInfo->isIos()) {
+            $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPurifyIosMessage']);
+        }
     }
 
     /**
@@ -144,7 +156,7 @@ class TicketMessageType extends AbstractType
         $resolver
             ->setDefaults([
                 'data_class'             => TicketMessage::class,
-                'message_label'          => $this->language_manager->phrase('portal.forms.label_message'),
+                'message_label'          => $this->languageManager->phrase('portal.forms.label_message'),
                 'attr'                   => ['data-rte' => '1'],
                 'error_bubbling'         => false,
                 'ticket'                 => null,
@@ -250,5 +262,21 @@ class TicketMessageType extends AbstractType
         $property->setAccessible(true);
         $property->setValue($config, false);
         $property->setAccessible(false);
+    }
+
+    /**
+     * The ios app sends html message in bad format so we need to 'fix' it before submit.
+     *
+     * @param FormEvent $event
+     */
+    public function onPurifyIosMessage(FormEvent $event)
+    {
+        $data    = $event->getData();
+        $message = isset($data['message']) ? $data['message'] : '';
+
+        $data['format']  = 'html';
+        $data['message'] = nl2br($message);
+
+        $event->setData($data);
     }
 }
