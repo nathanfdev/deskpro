@@ -10,9 +10,7 @@ export class LevelSelectActionStore extends FormActionStore {
   onValueChanged(data) {
     const opts = this.el.find('option');
     opts.each((x, el) => {
-      el.selected = _.some(data.value, (v) => {
-        return _.parseInt(v) === _.parseInt(el.value);
-      });
+      el.selected = _.some(data.value, (v) => _.parseInt(v) === _.parseInt(el.value));
     });
     this.el.trigger('change');
   }
@@ -29,7 +27,7 @@ export class LevelSelectActionStore extends FormActionStore {
 
   getOptionData() {
     const options = [];
-    this.el.find('option').each((x, optEl) => {
+    this.el.find('option, optgroup').each((x, optEl) => {
       const $optEl = $(optEl);
       let parent = $optEl.data('parent') || null;
       if (!parent || parent === '0' || parent === 0) {
@@ -37,9 +35,9 @@ export class LevelSelectActionStore extends FormActionStore {
       }
 
       options.push({
-        id: $optEl.data('id'),
-        title: $optEl.data('title') || $optEl.data('name') || $optEl.text(),
-        parent: parent,
+        id:       $optEl.data('id'),
+        title:    $optEl.data('title') || $optEl.data('name') || $optEl.text(),
+        parent,
         children: []
       });
     });
@@ -68,7 +66,7 @@ export class PortalMultipleSelectBox extends React.Component {
 
   static propTypes = {
     widgetOptions: PropTypes.object,
-    actionStore: PropTypes.object
+    actionStore:   PropTypes.object
   };
 
   constructor(props) {
@@ -104,11 +102,11 @@ export class PortalMultipleSelectBox extends React.Component {
     const { widgetOptions } = this.props;
     const mapOption = (g) => {
       const r = {
-        id: g.id,
-        title: g.title,
+        id:       g.id,
+        title:    g.title,
         children: g.children.map(mapOption),
-        parent: g.parent,
-        depth: g.path.length
+        parent:   g.parent,
+        depth:    g.path.length
       };
 
       if (r.children.length > 0) {
@@ -121,9 +119,9 @@ export class PortalMultipleSelectBox extends React.Component {
     let options = this.optionData.hierarchy.map(mapOption);
     options = _.flattenDeep(options);
 
-    const values = this.state.value.map(selectedId => {
-      return _.find(options, (opt) => _.parseInt(opt.id) === _.parseInt(selectedId));
-    });
+    const values = this.state.value.map(selectedId =>
+      _.find(options, (opt) => _.parseInt(opt.id) === _.parseInt(selectedId))
+    );
 
     return (
       <PortalSimpleSelectBox
@@ -132,7 +130,8 @@ export class PortalMultipleSelectBox extends React.Component {
         options={options}
         value={values}
         level={1}
-        onChange={this.onClickOption} />
+        onChange={this.onClickOption}
+      />
     );
   }
 
@@ -151,7 +150,7 @@ export class PortalMultipleSelectBox extends React.Component {
  */
 export function createComponent(select, renderTo, widgetOptions = {}) {
   const $select = $(select);
-  $select.find('option').each((x, opt) => {
+  $select.find('option, optgroup').each((x, opt) => {
     const $opt = $(opt);
     if (!$opt.data('id')) {
       $opt.data('id', $opt.data('id', _.uniqueId('opt_')));

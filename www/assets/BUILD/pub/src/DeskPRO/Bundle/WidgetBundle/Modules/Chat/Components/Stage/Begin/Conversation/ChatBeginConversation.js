@@ -1,83 +1,138 @@
 import React, { PropTypes } from 'react';
 import { UserInfoForm } from './UserInfoForm';
-import { Checkbox } from './Checkbox';
-import { hasErrors, FieldErrors } from 'DeskPRO/Component/Form/FormErrors';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import { Field, Input } from 'react-forms';
+import { ChatBeginLoadingSpinner } from '../ChatBeginLoadingSpinner';
+import { CustomField } from 'DeskPRO/Component/CustomField/CustomField';
+import { CustomFieldTemplate } from './CustomFieldTemplate';
+import { hasErrors } from 'DeskPRO/Component/Form/FormErrors';
 
 export class ChatBeginConversation extends React.Component {
 
   static propTypes = {
-    name:                PropTypes.string,
-    email:               PropTypes.string,
-    hiddenEmail:         PropTypes.bool,
-    submit:              PropTypes.bool,
-    errors:              PropTypes.object,
-    onChangeName:        PropTypes.func,
-    onChangeEmail:       PropTypes.func,
-    onToggleHiddenEmail: PropTypes.func,
-    onSubmit:            PropTypes.func
+    submit:             PropTypes.bool,
+    errors:             PropTypes.object,
+    onSubmit:           PropTypes.func,
+    customFields:       PropTypes.object,
+    customFieldsLoaded: PropTypes.bool
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      step: 'name'
+      fields:  [],
+      current: null
     };
   }
 
-  onChangeStep = value => {
-    this.setState({
-      step: value
-    });
+  componentDidMount() {
+    this.prepareFormFields(this.props);
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.customFields !== this.props.customFields || newProps.errors || newProps.submit) {
+      this.prepareFormFields(newProps);
+    }
+  }
+
+  onSubmit = () => {
+    const { errors } = this.props;
+
+    if (!errors && this.state.fields[this.state.current + 1]) {
+      this.setState({
+        current: this.state.current + 1
+      });
+    } else {
+      this.props.onSubmit();
+    }
   };
 
-  renderNameForm() {
-    const { name, onChangeName, errors } = this.props;
+  prepareFormFields(props) {
+    const { customFields, errors, submit } = props;
+    if (!props.customFieldsLoaded) {
+      return;
+    }
 
-    return (
-      <UserInfoForm title="Just so we know lorel ipsum, what's your name?"
-                    onSubmit={() => this.onChangeStep('email')}
-                    error={hasErrors(errors, 'name')}>
+    const hiddenFields = customFields.valueSeq().filter(this.isHiddenField).map(customField =>
+      <CustomField config={customField} key={customField.get('id')}>
+        <CustomFieldTemplate />
+      </CustomField>
+    );
 
-        <input type="text"
-               placeholder="First & last name"
-               value={name}
-               onChange={onChangeName} />
-
-        <input type="submit" value="Go" />
+    let current = 0;
+    const fields = [];
+    fields.push(
+      <UserInfoForm
+        title={portalPhrases.get('portal.chat.label-details')}
+        isSubmit={submit}
+        onSubmit={this.onSubmit}
+        field="name"
+        errors={errors}
+      >
+        {hiddenFields}
+        <Field select="name">
+          <Input type="text" placeholder={portalPhrases.get('portal.chat.details-placeholder')} />
+        </Field>
       </UserInfoForm>
     );
-  }
-
-  renderEmailForm() {
-    const { email, hiddenEmail, submit, errors } = this.props;
-    const { onChangeEmail, onToggleHiddenEmail, onSubmit } = this.props;
-
-    return (
-      <UserInfoForm title="What's your email address so we can lorel ipsum?"
-                    onSubmit={onSubmit}
-                    error={hasErrors(errors, 'email')}>
-
-        <input type="text"
-               placeholder="email@example.com"
-               value={email}
-               onChange={onChangeEmail} />
-
-        <FieldErrors errors={errors} name="email" />
-
-        {submit
-          ? <div className="spinner"><i /></div>
-          : <input type="submit" value="Go" />
-        }
-
-        {false && /* disabled for now */ <Checkbox value={hiddenEmail} onToggle={onToggleHiddenEmail} />}
+    fields.push(
+      <UserInfoForm
+        title={portalPhrases.get('portal.chat.label-email')}
+        isSubmit={submit}
+        onSubmit={this.onSubmit}
+        field="email"
+        errors={errors}
+      >
+        {hiddenFields}
+        <Field select="email">
+          <Input type="text" placeholder="email@example.com" />
+        </Field>
       </UserInfoForm>
     );
+
+    if (hasErrors(errors, 'email')) {
+      current = 1;
+    }
+
+    customFields.valueSeq().filter(this.isNotHiddenField).forEach(customField => {
+      const field = (
+        <CustomField
+          config={customField}
+          formErrors={errors}
+          widgetOptions={{
+            context:       [parent.document, window.widgetFrame.document],
+            contentWindow: window.widgetFrame,
+            ownerDocument: window.widgetFrame.document
+          }}
+        >
+          <CustomFieldTemplate isSubmit={submit} onSubmit={this.onSubmit} hiddenFields={hiddenFields} />
+        </CustomField>
+      );
+
+      fields.push(field);
+      if (!current && hasErrors(errors, CustomField.getFieldPropertyPath({ config: customField }))) {
+        current = fields.indexOf(field);
+      }
+    });
+
+    if (!errors && submit) {
+      current = fields.length - 1;
+    }
+
+    setTimeout(() => this.setState({ fields, current }), 0);
   }
+
+  isHiddenField = customField => customField.get('widget_type') === 'hidden';
+  isNotHiddenField = customField => !this.isHiddenField(customField);
 
   render() {
+    if (!this.props.customFieldsLoaded || !this.state.fields.length) {
+      return <ChatBeginLoadingSpinner />;
+    }
+
     return (
       <div>
-        {this.state.step === 'email' ? this.renderEmailForm() : this.renderNameForm()}
+        {this.state.fields[this.state.current]}
       </div>
     );
   }

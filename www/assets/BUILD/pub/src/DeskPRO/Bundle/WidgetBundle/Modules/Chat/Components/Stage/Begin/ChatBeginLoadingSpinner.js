@@ -1,6 +1,6 @@
 import React from 'react';
 
-export class TicketFormSpinner extends React.Component {
+export class ChatBeginLoadingSpinner extends React.Component {
 
   render() {
     return (

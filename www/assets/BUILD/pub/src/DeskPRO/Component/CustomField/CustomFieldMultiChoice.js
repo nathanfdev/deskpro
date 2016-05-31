@@ -1,0 +1,21 @@
+import React from 'react';
+import { AbstractCustomField } from './AbstractCustomField';
+import { Field } from 'react-forms';
+import { PortalSimpleSelectBoxWrapper } from './PortalSimpleSelectBoxWrapper';
+
+export class CustomFieldMultiChoice extends AbstractCustomField {
+
+  render() {
+    const { name, config, widgetOptions } = this.props;
+
+    return (
+      <Field select={name}>
+        <PortalSimpleSelectBoxWrapper
+          multiple level={1}
+          choices={config.get('choices')}
+          widgetOptions={widgetOptions}
+        />
+      </Field>
+    );
+  }
+}

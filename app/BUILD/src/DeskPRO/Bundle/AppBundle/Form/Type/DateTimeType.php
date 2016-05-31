@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,12 +26,8 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
-use DeskPRO\Bundle\AppBundle\Validator\Constraints\DpDate;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
@@ -66,11 +62,19 @@ class DateTimeType extends AbstractType
         $current_date = new \DateTime();
         $current_year = (int) $current_date->format('Y');
 
-        $resolver->setDefaults([
-            'years'       => range(($current_year - 100), ($current_year + 100)),
-            'placeholder' => '',
-            'help'        => '',
-        ]);
+        $resolver
+            ->setDefaults([
+                'years'       => range(($current_year - 100), ($current_year + 100)),
+                'placeholder' => '',
+                'help'        => '',
+                'weekdays'    => [0, 1, 2, 3, 4, 5, 6],
+                'min_date'    => null,
+                'max_date'    => null,
+            ])
+            ->setAllowedTypes([
+                'weekdays' => ['array', 'null'],
+            ])
+        ;
     }
 
     /**
@@ -78,32 +82,8 @@ class DateTimeType extends AbstractType
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        $view->vars['weekdays'] = null;
-        $view->vars['min_date'] = null;
-        $view->vars['max_date'] = null;
-
-        if (array_key_exists('constraints', $options)) {
-            foreach ($options['constraints'] as $constraint) {
-                if ($constraint instanceof DpDate) {
-                    $view->vars['weekdays'] = implode(',', $constraint->days_of_week);
-                    $view->vars['min_date'] = $this->formatDate($constraint->min_date);
-                    $view->vars['max_date'] = $this->formatDate($constraint->max_date);
-                }
-            }
-        }
-    }
-
-    /**
-     * @param mixed $date
-     *
-     * @return string
-     */
-    private function formatDate($date)
-    {
-        if ($date instanceof \DateTime) {
-            return $date->format('Y m d');
-        }
-
-        return '';
+        $view->vars['weekdays'] = $options['weekdays'] ? implode(',', $options['weekdays']) : null;
+        $view->vars['min_date'] = $options['min_date'];
+        $view->vars['max_date'] = $options['max_date'];
     }
 }

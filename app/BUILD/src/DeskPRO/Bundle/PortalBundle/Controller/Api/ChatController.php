@@ -31,16 +31,17 @@ namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
+use Application\DeskPRO\Entity\CustomDefChat;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
 use DeskPRO\Bundle\PortalBundle\Annotation\Dpsid;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatCreateType;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatFeedbackType;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatMessageType;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatTranscriptInfoType;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatTranscriptToggleType;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatUserTypingType;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatValidateEmailType;
-use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\CreateChatType;
 use Doctrine\ORM\EntityManager;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -51,12 +52,27 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  * Class ChatController.
  *
  * @Rest\Route("/portal/api/chats")
- * @Dpsid()
  */
 class ChatController extends AbstractApiController
 {
     /**
+     * @Rest\Get("/custom_fields")
+     *
+     * @return View
+     */
+    public function getCustomFields()
+    {
+        $defs = $this->getManager()->getRepository(CustomDefChat::class)->findBy([
+            'parent'     => null,
+            'is_enabled' => 1,
+        ]);
+
+        return View::create($this->wrap($defs));
+    }
+
+    /**
      * @Rest\Post("/create")
+     * @Dpsid()
      *
      * @param Request $request
      *
@@ -67,7 +83,7 @@ class ChatController extends AbstractApiController
         $session      = $this->getApiSession();
         $conversation = ChatConversation::newForUserSession($session);
 
-        $form = $this->createForm(CreateChatType::class, $conversation, ['person' => $session->getPerson()]);
+        $form = $this->createForm(ChatCreateType::class, $conversation, ['person' => $session->getPerson()]);
         $form->submit($request->request->all());
         if (!$form->isValid()) {
             return $this->generateFormErrorsResponse($form);
@@ -88,6 +104,7 @@ class ChatController extends AbstractApiController
 
     /**
      * @Rest\Post("/{id}/validate/email/regenerate")
+     * @Dpsid()
      *
      * @param ChatConversation $conversation
      *
@@ -106,6 +123,7 @@ class ChatController extends AbstractApiController
 
     /**
      * @Rest\Post("/{id}/validate/email")
+     * @Dpsid()
      *
      * @param ChatConversation $conversation
      * @param Request          $request
@@ -130,6 +148,7 @@ class ChatController extends AbstractApiController
 
     /**
      * @Rest\Get("/{id}/polling")
+     * @Dpsid()
      *
      * @param ChatConversation $conversation
      * @param Request          $request
@@ -164,6 +183,7 @@ class ChatController extends AbstractApiController
 
     /**
      * @Rest\Post("/{id}/messages")
+     * @Dpsid()
      *
      * @param ChatConversation $conversation
      * @param Request          $request
@@ -253,6 +273,7 @@ class ChatController extends AbstractApiController
 
     /**
      * @Rest\Post("/{id}/ack_messages")
+     * @Dpsid()
      *
      * @param ChatConversation $conversation
      * @param Request          $request
@@ -293,6 +314,7 @@ class ChatController extends AbstractApiController
 
     /**
      * @Rest\Post("/{id}/user_typing")
+     * @Dpsid()
      *
      * @param ChatConversation $conversation
      * @param Request          $request
@@ -317,6 +339,7 @@ class ChatController extends AbstractApiController
 
     /**
      * @Rest\Post("/{id}/transcript/info")
+     * @Dpsid()
      *
      * @param ChatConversation $conversation
      * @param Request          $request
@@ -340,6 +363,7 @@ class ChatController extends AbstractApiController
 
     /**
      * @Rest\Post("/{id}/transcript/toggle")
+     * @Dpsid()
      *
      * @param ChatConversation $conversation
      * @param Request          $request
@@ -363,6 +387,7 @@ class ChatController extends AbstractApiController
 
     /**
      * @Rest\Post("/{id}/end")
+     * @Dpsid()
      *
      * @param ChatConversation $conversation
      *
@@ -385,6 +410,7 @@ class ChatController extends AbstractApiController
 
     /**
      * @Rest\Post("/{id}/reopen")
+     * @Dpsid()
      *
      * @param ChatConversation $conversation
      *
@@ -410,6 +436,7 @@ class ChatController extends AbstractApiController
 
     /**
      * @Rest\Post("/{id}/feedback")
+     * @Dpsid()
      *
      * @param ChatConversation $conversation
      * @param Request          $request

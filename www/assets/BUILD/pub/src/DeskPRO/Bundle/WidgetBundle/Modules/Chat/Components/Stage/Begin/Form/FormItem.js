@@ -5,17 +5,18 @@ import classNames from 'classnames';
 export class FormItem extends React.Component {
 
   static propTypes = {
-    label:    PropTypes.string,
-    field:    PropTypes.string,
-    errors:   PropTypes.object,
-    children: PropTypes.any
+    className: PropTypes.string,
+    label:     PropTypes.string,
+    field:     PropTypes.string,
+    errors:    PropTypes.object,
+    children:  PropTypes.any
   };
 
   render() {
-    const { label, field, children, errors } = this.props;
+    const { className, label, field, children, errors } = this.props;
 
     return (
-      <div className={classNames({ 'error-field': hasErrors(errors, field) })}>
+      <div className={classNames(className, { 'error-field': hasErrors(errors, field) })}>
         <label>{label}</label>
 
         {children}

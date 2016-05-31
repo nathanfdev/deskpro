@@ -13,8 +13,8 @@ export class PortalFormWidget extends PageWidget {
   init() {
     this.addWidgetDef(DpxDateWidget, '.dpx-date');
     this.addWidgetDef(DpxDateWidget, '.dpx-date-time');
-    this.addWidgetDef(DpxSelectBox, 'select[dpx-select]');
-    this.addWidgetDef(DpxMultipleSelectBox, 'select[dpx-select-multiple]');
+    this.addWidgetDef(DpxSelectBox, 'select[dpx-select], select.dpx-select');
+    this.addWidgetDef(DpxMultipleSelectBox, 'select[dpx-select-multiple], select.dpx-select-multiple');
     this.addWidgetDef(DpxCheckboxGroup, '.dpx-checkbox-group');
     this.addWidgetDef(DpxAttach, '.dpx-attach');
     this.addWidgetDef(DpxRte, '[data-rte]');
@@ -30,12 +30,14 @@ export class PortalFormWidget extends PageWidget {
 
   initForms($forms) {
     // Disable pressing enter from submitting forms by accident
-    $forms.find('input, select').not('[type="submit"], [type="reset"], [type="button"]').on('keyup keypress', function(ev) {
+    $forms.find('input, select').not('[type="submit"], [type="reset"], [type="button"]').on('keyup keypress', ev => {
       const keyCode = ev.keyCode || ev.which;
       if (keyCode === 13) {
         ev.preventDefault();
         return false;
       }
+
+      return true;
     });
   }
 }

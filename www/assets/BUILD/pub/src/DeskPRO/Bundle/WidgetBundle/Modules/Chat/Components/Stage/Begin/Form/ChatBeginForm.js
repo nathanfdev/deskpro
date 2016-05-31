@@ -1,51 +1,67 @@
 import React, { PropTypes } from 'react';
 import { FormItem } from './FormItem';
+import { CustomFieldTemplate } from './CustomFieldTemplate';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import { CustomField } from 'DeskPRO/Component/CustomField/CustomField';
+import { Field, Input } from 'react-forms';
+import { ChatBeginLoadingSpinner } from '../ChatBeginLoadingSpinner';
 
 export class ChatBeginForm extends React.Component {
 
   static propTypes = {
-    name:   PropTypes.string,
-    email:  PropTypes.string,
-    submit: PropTypes.bool,
-    errors: PropTypes.object,
-
-    onChangeName:  PropTypes.func,
-    onChangeEmail: PropTypes.func,
-    onSubmit:      PropTypes.func
+    submit:             PropTypes.bool,
+    errors:             PropTypes.object,
+    onChange:           PropTypes.func,
+    onSubmit:           PropTypes.func,
+    customFields:       PropTypes.object,
+    customFieldsLoaded: PropTypes.bool
   };
 
   render() {
-    const { name, email, submit, errors } = this.props;
-    const { onChangeName, onChangeEmail, onSubmit } = this.props;
+    const { customFields, customFieldsLoaded, submit, errors, onSubmit } = this.props;
+
+    if (!customFieldsLoaded) {
+      return <ChatBeginLoadingSpinner />;
+    }
 
     return (
       <div className="dpdesignportal-open-new-chat">
         <form className="dpdesignportal-form" onSubmit={onSubmit}>
           <FormItem label={portalPhrases.get('portal.chat.label-details')} field="name" errors={errors}>
-            <input type="text"
-                   placeholder={portalPhrases.get('portal.chat.details-placeholder')}
-                   value={name}
-                   onChange={onChangeName} />
+            <Field select="name" placeholder={portalPhrases.get('portal.chat.details-placeholder')}>
+              <Input type="text" />
+            </Field>
+          </FormItem>
+          <FormItem label={portalPhrases.get('portal.chat.label-email')} field="email" errors={errors}>
+            <Field select="email" placeholder="email@example.com">
+              <Input type="email" />
+            </Field>
           </FormItem>
 
-          <FormItem label={portalPhrases.get('portal.chat.label-email')} field="email" errors={errors}>
-            <input type="text"
-                   placeholder="email@example.com"
-                   value={email}
-                   onChange={onChangeEmail} />
-          </FormItem>
+          {customFields.valueSeq().map((customField, index) =>
+            <CustomField
+              key={index}
+              config={customField}
+              formErrors={errors}
+              widgetOptions={{
+                context: [parent.document, window.widgetFrame.document]
+              }}
+            >
+              <CustomFieldTemplate />
+            </CustomField>
+          )}
 
           <div className="button-label">
             {submit
               ? <div className="spinner"><i /></div>
-              : <input type="submit"
-                       value={portalPhrases.get('portal.chat.start')}
-                       className="dpdesignportal-button dpdesignportal-button-wide" />
+              : <input
+                type="submit"
+                value={portalPhrases.get('portal.chat.start')}
+                className="dpdesignportal-button dpdesignportal-button-wide"
+              />
             }
           </div>
         </form>
-
       </div>
     );
   }

@@ -33,6 +33,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\CustomFieldManager;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
@@ -129,6 +130,14 @@ class CustomFieldManager
     public function getAvailableTicketDefs()
     {
         return $this->getAvailableCustomDefs(CustomDefTicket::class);
+    }
+
+    /**
+     * @return CustomDefChat[]
+     */
+    public function getAvailableChatDefs()
+    {
+        return $this->getAvailableCustomDefs(CustomDefChat::class);
     }
 
     /**
@@ -249,8 +258,11 @@ class CustomFieldManager
                     ];
                 } else {
                     $options = [
-                        'input'  => 'timestamp',
-                        'widget' => 'choice',
+                        'input'    => 'timestamp',
+                        'widget'   => 'choice',
+                        'weekdays' => $def->getOption('date_valid_dow'),
+                        'min_date' => $def->getDateMinFormat(),
+                        'max_date' => $def->getDateMaxFormat(),
                     ];
                 }
 
@@ -272,9 +284,12 @@ class CustomFieldManager
                     );
                 } else {
                     $options = [
-                        'input'  => 'timestamp',
-                        'widget' => 'choice',
-                        'format' => 'Y-m-d H:i',
+                        'input'    => 'timestamp',
+                        'widget'   => 'choice',
+                        'format'   => 'Y-m-d H:i',
+                        'weekdays' => $def->getOption('date_valid_dow'),
+                        'min_date' => $def->getDateMinFormat(),
+                        'max_date' => $def->getDateMaxFormat(),
                     ];
 
                     return new FormField(

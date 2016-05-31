@@ -1,13 +1,16 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import { hasErrors, FieldErrors } from 'DeskPRO/Component/Form/FormErrors';
 
 export class UserInfoForm extends React.Component {
 
   static propTypes = {
     title:    PropTypes.string.isRequired,
+    field:    PropTypes.string,
+    isSubmit: PropTypes.bool,
     onSubmit: PropTypes.func.isRequired,
     children: PropTypes.any,
-    error:    PropTypes.bool
+    errors:   PropTypes.object
   };
 
   onSubmit = event => {
@@ -16,13 +19,18 @@ export class UserInfoForm extends React.Component {
   };
 
   render() {
-    const { title, children, error } = this.props;
+    const { field, title, children, errors, isSubmit } = this.props;
 
     return (
-      <div className={classNames('dpdesignportal-collect-user-info', { 'error-field': error })}>
+      <div className={classNames('dpdesignportal-collect-user-info', { error: hasErrors(errors, field) })}>
         <span className="title">{title}</span>
         <form onSubmit={this.onSubmit}>
           {children}
+          <FieldErrors errors={errors} name={field} />
+          {isSubmit
+            ? <div className="spinner"><i /></div>
+            : <input type="submit" value="Go" />
+          }
         </form>
       </div>
     );

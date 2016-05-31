@@ -61,7 +61,7 @@ export class PortalSelectBox extends React.Component {
 
   static propTypes = {
     widgetOptions: PropTypes.object,
-    actionStore: PropTypes.object
+    actionStore:   PropTypes.object
   };
 
   constructor(props) {
@@ -72,8 +72,8 @@ export class PortalSelectBox extends React.Component {
     const valuePath = this.getValuePath(value);
 
     this.state = {
-      value: value,
-      valuePath: valuePath,
+      value,
+      valuePath,
       expanded: false
     };
   }
@@ -84,7 +84,7 @@ export class PortalSelectBox extends React.Component {
 
     actionStore.on('formChanged', (data) => {
       this.setState({
-        value: data.value,
+        value:     data.value,
         valuePath: this.getValuePath(data.value)
       });
     });
@@ -142,7 +142,8 @@ export class PortalSelectBox extends React.Component {
           options={options}
           value={subGroup}
           level={level}
-          onChange={this.onClickOption} />
+          onChange={this.onClickOption}
+        />
 
         {subGroup && subGroup.children.length ? this.renderSelect(subGroup.children, subGroup.id, level + 1) : null}
       </div>

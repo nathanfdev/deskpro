@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -734,6 +735,22 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         }
     }
 
+    /**
+     * @return string|void
+     */
+    public function getDateMinFormat()
+    {
+        $dateMin = $this->getDateMin();
+
+        if ($dateMin instanceof  \DateTime) {
+            return $dateMin->format('c');
+        } elseif (is_int($dateMin)) {
+            return '-'.$dateMin.' days';
+        }
+
+        return;
+    }
+
     public function getDateMax()
     {
         $type = $this->getOption('date_valid_type', null);
@@ -749,6 +766,22 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
                     return;
                 }
         }
+    }
+
+    /**
+     * @return string|void
+     */
+    public function getDateMaxFormat()
+    {
+        $dateMax = $this->getDateMax();
+
+        if ($dateMax instanceof  \DateTime) {
+            return $dateMax->format('c');
+        } elseif (is_int($dateMax)) {
+            return '+'.$dateMax.' days';
+        }
+
+        return;
     }
 
     /**
