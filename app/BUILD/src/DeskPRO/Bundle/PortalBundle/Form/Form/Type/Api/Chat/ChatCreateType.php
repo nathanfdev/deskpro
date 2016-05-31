@@ -89,6 +89,7 @@ class ChatCreateType extends AbstractType
     {
         $emailConstraints = [new Assert\Email()];
         if ($this->settingsResolver->isChatEmailValidation() && !$this->settingsResolver->isChatRequireLogin()) {
+            $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onForceEmailSubmit'], 100);
             $emailConstraints[] = new Assert\NotBlank();
         }
 
@@ -131,6 +132,23 @@ class ChatCreateType extends AbstractType
                 'person' => ['null', Person::class],
             ])
         ;
+    }
+
+    /**
+     * Form fields are optional but we need to handle email field anyway if chat email validation is enabled.
+     *
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onForceEmailSubmit(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (!isset($data['email'])) {
+            $data['email'] = '';
+        }
+
+        $event->setData($data);
     }
 
     /**
