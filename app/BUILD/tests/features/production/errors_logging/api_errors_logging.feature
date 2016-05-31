@@ -7,6 +7,7 @@ Feature: Production errors logging with System Alerts
     Given I install the fresh data set
     And I log in as admin from the portal
     And I have no logged system alert events
+    And I disable anti-abuse rate limiting
 
   Scenario: I access API controller throwing an HTTP exception
     When I send a GET request to "/api/v2/_internal/incidents-demo/http-exception?confirm=Yes_I_use_it_for_testing"

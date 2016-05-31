@@ -167,6 +167,7 @@ production:
                 - DpBehat\Http\HttpContext
                 - DpBehat\System\Alerts\EventsContext
                 - DpBehat\ProductionModeContext
+                - DpBehat\System\AntiAbuse\AntiAbuseContext
                 - DpBehat\DataSetContext:
                     dataset_manager: @dataset_manager
     extensions:
