@@ -195,7 +195,7 @@ class PortalHttpCacheListener implements EventSubscriberInterface
         }
 
         // cache ajax requests differently (sometimes we return different response for the same url in these cases)
-        $response->setVary('X-Requested-With', false);
+        $response->setVary('X-Requested-With,X-User-Context-Hash', false);
 
         $event->setResponse($response);
     }
