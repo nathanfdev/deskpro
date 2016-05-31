@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnv;
@@ -68,9 +69,9 @@ class BugsnagJsListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::RESPONSE => array('onResponse', -10),
-        );
+        return [
+            KernelEvents::RESPONSE => ['onResponse', -10],
+        ];
     }
 
     /**
@@ -80,7 +81,7 @@ class BugsnagJsListener implements EventSubscriberInterface
     {
         $settings = $this->settings;
 
-        if (!$settings || !@$settings['enable_js'] || !@$settings['api_key']) {
+        if (!$settings || !@$settings['frontend_api_key']) {
             return;
         }
 
@@ -90,11 +91,12 @@ class BugsnagJsListener implements EventSubscriberInterface
             && !$event->getResponse()->isEmpty()
             && !$event->getRequest()->isXmlHttpRequest()
             && strpos($event->getResponse()->headers->get('Content-Type', ''), 'text/html') !== false
-        )) {
+        )
+        ) {
             return;
         }
 
-        $data = ['apikey' => $settings['api_key']];
+        $data = ['apikey' => $settings['frontend_api_key']];
         if (isset($settings['app_version']) && $settings['app_version']) {
             $data['appversion'] = $settings['app_version'];
         } elseif (($buildNumFile = $this->env->getAppDir().'/sys/config/build-num.txt') && file_exists($buildNumFile)) {

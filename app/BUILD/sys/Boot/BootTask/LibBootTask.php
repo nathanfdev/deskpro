@@ -47,7 +47,7 @@ class LibBootTask implements BootTaskInterface
             SystemErrorHandler::enableFatalErrorHandler();
 
             $bugsnagSettings = $env->getConfig('settings.bugsnag');
-            if ($bugsnagSettings && @$bugsnagSettings['enable_php'] && @$bugsnagSettings['api_key']) {
+            if ($bugsnagSettings && @$bugsnagSettings['backend_api_key']) {
                 SystemErrorHandler::setBugsnagConfig($bugsnagSettings);
             }
         }
