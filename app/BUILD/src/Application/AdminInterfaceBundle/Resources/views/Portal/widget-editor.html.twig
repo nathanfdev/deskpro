@@ -119,11 +119,6 @@
 
                 <div ng-if="global_settings.chat.enabled">
                     <div class="switcher">
-                        <button dp-toggle-switch ng-model="global_settings.chat.require_login"></button>
-                        <h4><span class="title-text">{{ phrase('admin.widget.chat_require_login') }}</span></h4>
-                    </div>
-
-                    <div class="switcher" ng-if="!global_settings.chat.require_login">
                         <button dp-toggle-switch ng-model="brand_settings.chat.request_user_info"></button>
                         <h4><span class="title-text">{{ phrase('admin.widget.chat_request_person_for_comments') }}</span></h4>
 
