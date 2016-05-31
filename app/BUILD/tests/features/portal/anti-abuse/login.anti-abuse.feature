@@ -3,9 +3,15 @@ Feature: Login anti-abuse feature
   user's password with bruteforce method
   anti-abuse system should work
 
+  Background:
+    Given I install the fresh data set
+    And rate limit table is empty
+    And the following languages are enabled:
+      | default |
+
   Scenario: Checking lockout response
     Given I set "login" rate limit to 1 attempts within 1 minute with "lockout" response and 15 minutes lockout time
-    And rate limit table is empty
+
     When I use bad "admin" credentials for login
     Then I should be on "/login"
     When I use bad "admin" credentials for login
@@ -14,7 +20,6 @@ Feature: Login anti-abuse feature
 
   Scenario: Checking lockout response for unknown user
     Given I set "login" rate limit to 1 attempts within 1 minute with "lockout" response and 15 minutes lockout time
-    And rate limit table is empty
     When I use bad credentials for login
     Then I should be on "/login"
     When I use bad credentials for login
@@ -23,21 +28,18 @@ Feature: Login anti-abuse feature
 
   Scenario: Checking captcha response
     Given I set "login" rate limit to 1 attempts within 1 minute with "captcha" response
-    And rate limit table is empty
     When I use bad "admin" credentials for login
     Then I should be on "/login"
     And I should see an "#deskpro_captcha_captcha" element
 
   Scenario: Checking captcha response for unknown user
     Given I set "login" rate limit to 1 attempts within 1 minute with "captcha" response
-    And rate limit table is empty
     When I use bad credentials for login
     Then I should be on "/login"
     And I should see an "#deskpro_captcha_captcha" element
 
   Scenario: I'm successfully log in after failure with captcha
     Given I set "login" rate limit to 2 attempts within 1 minute with "captcha" response
-    And rate limit table is empty
     When I use bad "admin" credentials for login
     Then I should be on "/login"
     When I login with "admin" credentials from the login page
@@ -45,7 +47,6 @@ Feature: Login anti-abuse feature
 
   Scenario: I'm successfully log in after failure with lockout
     Given I set "login" rate limit to 2 attempts within 1 minute with "lockout" response and 15 minutes lockout time
-    And rate limit table is empty
     When I use bad "admin" credentials for login
     Then I should be on "/login"
     When I login with "admin" credentials from the login page
