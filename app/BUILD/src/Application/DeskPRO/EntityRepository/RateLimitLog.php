@@ -31,9 +31,12 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity\Person as PersonEntity;
+use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\QueryBuilder;
 
 class RateLimitLog extends AbstractEntityRepository
 {
@@ -48,36 +51,23 @@ class RateLimitLog extends AbstractEntityRepository
 
     public function count($action, $time, PersonEntity $person, $ip = null)
     {
-        $personIsNotGuest = $person && !$person->isGuest();
-        if ($personIsNotGuest && $ip) {
-            $q = sprintf(
-                'select count(*) from %s where action = :action and date_created >= :date and (ip = %d or person_id = %d) and is_lockout = 0',
-                $this->getTableName(),
-                $ip ? ip2long($ip) : 0,
-                $person['id']
+        $date = new \DateTime('-'.(int) $time.' second');
+        $qb   = $this->createQueryBuilder('rll');
+        $qb
+            ->select('COUNT(rll.id)')
+            ->andWhere($qb->expr()->eq('rll.action', ':action'))
+            ->andWhere($qb->expr()->gte('rll.date_created', ':date'))
+            ->andWhere($qb->expr()->gte('rll.is_lockout', 0))
+            ->setParameters(
+                [
+                    'action' => $action,
+                    'date'   => $date->format('Y-m-d H:i:s'),
+                ]
             );
-        } elseif ($personIsNotGuest) {
-            $q = sprintf(
-                'select count(*) from %s where action = :action and date_created >= :date and person_id = %d and is_lockout = 0',
-                $this->getTableName(),
-                $person['id']
-            );
-        } elseif ($ip) {
-            $q = sprintf(
-                'select count(*) from %s where action = :action and date_created >= :date and ip = %d and is_lockout = 0',
-                $this->getTableName(),
-                $ip ? ip2long($ip) : 0
-            );
-        } else {
-            throw new \InvalidArgumentException('either a person with an ID or an IP address are required to count the rate_limit_log');
-        }
 
-        $params = array(
-            'action' => $action,
-            'date'   => date('Y-m-d H:i:s', time() - (int) $time),
-        );
+        $this->applyPersonCondition($qb, $person, $ip);
 
-        return (int) $this->getEntityManager()->getConnection()->executeQuery($q, $params)->fetchColumn();
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
     /**
@@ -105,116 +95,50 @@ class RateLimitLog extends AbstractEntityRepository
 
     public function getLastLockedOutAttempt($action, PersonEntity $person, $ip = null)
     {
-        $personIsNotGuest = $person && !$person->isGuest();
-        if ($personIsNotGuest && $ip) {
-            $q = sprintf(
-                '
-                  SELECT `tab`.`date_created`
-                  FROM %s AS `tab`
-                  WHERE `tab`.`action` = :action 
-                    AND (`tab`.`ip` = %d OR `tab`.`person_id` = %d) 
-                    AND `tab`.`is_lockout` = 1
-                  ORDER BY `date_created` DESC
-                  LIMIT 1
-                ',
-                $this->getTableName(),
-                $ip ? ip2long($ip) : 0,
-                $person['id']
-            );
-        } elseif ($personIsNotGuest) {
-            $q = sprintf(
-                '
-                  SELECT `tab`.`date_created`
-                  FROM %s AS `tab` 
-                  WHERE `tab`.`action` = :action 
-                    AND `tab`.`person_id` = %d
-                    AND `tab`.`is_lockout` = 1
-                  ORDER BY `tab`.`date_created` DESC
-                  LIMIT 1
-                ',
-                $this->getTableName(),
-                $person['id']
-            );
-        } elseif ($ip) {
-            $q = sprintf(
-                '
-                  SELECT `tab`.`date_created`
-                  FROM %s AS `tab` 
-                  WHERE `tab`.`action` = :action 
-                    AND `tab`.`ip` = %d 
-                    AND `tab`.`is_lockout` = 1
-                  ORDER BY `tab`.`date_created` DESC
-                  LIMIT 1
-                ',
-                $this->getTableName(),
-                $ip ? ip2long($ip) : 0
-            );
-        } else {
-            throw new \InvalidArgumentException('either a person with an ID or an IP address are required to count the rate_limit_log');
-        }
-
-        $params = array(
-            'action' => $action,
-        );
-
-        $res = $this->getEntityManager()->getConnection()->executeQuery($q, $params)->fetchColumn();
-
-        return $res ? strtotime($res) : false;
+        return $this->getLastAttempt($action, $person, $ip, true);
     }
 
-    public function getLastAttempt($action, PersonEntity $person, $ip)
+    public function getLastAttempt($action, PersonEntity $person, $ip, $lockout = null)
+    {
+        $qb = $this->createQueryBuilder('rll');
+        $qb
+            ->select('rll.date_created')
+            ->andWhere($qb->expr()->eq('rll.action', ':action'))
+            ->setParameter('action', $action)
+            ->addOrderBy('rll.date_created', 'DESC')
+            ->setMaxResults(1)
+        ;
+
+        if (null !== $lockout) {
+            $qb->andWhere($qb->expr()->eq('rll.is_lockout', (bool) $lockout));
+        }
+
+        $this->applyPersonCondition($qb, $person, $ip);
+        $res = $qb->getQuery()->getOneOrNullResult(AbstractQuery::HYDRATE_SCALAR);
+
+        return is_array($res) ? strtotime($res['date_created']) : false;
+    }
+
+    private function applyPersonCondition(QueryBuilder $qb, PersonEntity $person, $ip)
     {
         $personIsNotGuest = $person && !$person->isGuest();
         if ($personIsNotGuest && $ip) {
-            $q = sprintf(
-                '
-                  SELECT `tab`.`date_created` 
-                  FROM %s AS `tab`
-                  WHERE `tab`.`action` = :action 
-                    AND (`tab`.`ip` = %d OR `tab`.`person_id` = %d) 
-                  ORDER BY `date_created` DESC
-                  LIMIT 1
-                ',
-                $this->getTableName(),
-                $ip ? ip2long($ip) : 0,
-                $person['id']
-            );
+            $qb
+                ->andWhere(
+                    $qb->expr()->orX(
+                        $qb->expr()->eq('rll.ip', ':ip'),
+                        $qb->expr()->eq('rll.person_id', ':person')
+                    )
+                )
+                ->setParameter('person', $person)
+                ->setParameter('ip', ip2long($ip))
+            ;
         } elseif ($personIsNotGuest) {
-            $q = sprintf(
-                '
-                  SELECT `date_created` 
-                  FROM %s AS `tab` 
-                  WHERE `tab`.`action` = :action 
-                    AND `tab`.`person_id` = %d
-                  ORDER BY `tab`.`date_created` DESC
-                  LIMIT 1
-                ',
-                $this->getTableName(),
-                $person['id']
-            );
+            $qb->andWhere($qb->expr()->eq('rll.person_id', ':person'))->setParameter('person', $person);
         } elseif ($ip) {
-            $q = sprintf(
-                '
-                  SELECT `date_created` 
-                  FROM %s AS `tab` 
-                  WHERE `tab`.`action` = :action 
-                    AND `tab`.`ip` = %d 
-                  ORDER BY `tab`.`date_created` DESC
-                  LIMIT 1
-                ',
-                $this->getTableName(),
-                $ip ? ip2long($ip) : 0
-            );
+            $qb->andWhere($qb->expr()->eq('rll.ip', ':ip'))->setParameter('ip', ip2long($ip));
         } else {
             throw new \InvalidArgumentException('either a person with an ID or an IP address are required to count the rate_limit_log');
         }
-
-        $params = array(
-            'action' => $action,
-        );
-
-        $res = $this->getEntityManager()->getConnection()->executeQuery($q, $params)->fetchColumn();
-
-        return $res ? strtotime($res) : false;
     }
 }
