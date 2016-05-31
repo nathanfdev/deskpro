@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Util
  */
+
 namespace Orb\Util;
 
 /**
@@ -122,7 +123,7 @@ class Numbers
      */
     public static function romanNumerals($num)
     {
-        static $map = array(
+        static $map = [
             'M'  => 1000,
             'CM' => 900,
             'D'  => 500,
@@ -136,7 +137,7 @@ class Numbers
             'V'  => 5,
             'IV' => 4,
             'I'  => 1,
-        );
+        ];
 
         $num = intval($num);
         $res = '';
@@ -176,31 +177,32 @@ class Numbers
      * From a filesize in bytes return an array of the largest unit symbol
      * and its size. If you want a string, use filesizeDisplay().
      *
-     * @param  $bytes
+     * @param        $bytes
+     * @param string $mode
      *
      * @return array
      */
     public static function getFilesizeDisplayParts($bytes, $mode = 'si')
     {
         if (!$bytes or $bytes < 1) {
-            return array('number' => 0, 'symbol' => 'B');
+            return ['number' => 0, 'symbol' => 'B'];
         }
 
         $x = $mode == 'si' ? 1000 : 1024;
 
-        $all_symbols = array('B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
-        $exp         = floor(log($bytes) / log($x));
-        $val         = $bytes / pow($x, floor($exp));
+        $all_symbols = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+        $exp         = (int) floor(log($bytes) / log($x));
+        $val         = $bytes / pow($x, $exp);
 
         $sym = '';
         if (isset($all_symbols[$exp])) {
             $sym = $all_symbols[$exp];
         }
 
-        return array(
+        return [
             'number' => $val,
             'symbol' => $sym,
-        );
+        ];
     }
 
     /**
@@ -249,7 +251,7 @@ class Numbers
      */
     public static function getPaginationPages($num_results, $page, $per_page, $pad = 5)
     {
-        $info = array();
+        $info = [];
 
         $num_pages = ceil($num_results / $per_page);
         if (!$num_pages) {
@@ -290,9 +292,11 @@ class Numbers
      * Parses a filesize where the size may be expressed in php.ini shorthand notation with suffixes K, M or G.
      * The returned size is in bytes.
      *
-     * @param $size_string
+     * @param $val
      *
      * @return int
+     *
+     * @internal param $size_string
      */
     public static function parseIniSize($val)
     {
@@ -324,7 +328,11 @@ class Numbers
     }
 
     /**
-     * @deprcated use Colors instead
+     * @deprecated use Colors instead
+     *
+     * @param $hex
+     *
+     * @return array
      */
     public static function hex2rgb($hex)
     {
@@ -335,6 +343,8 @@ class Numbers
      * Get the ordinal suffix for a number.
      *
      * @param $number
+     *
+     * @return string
      */
     public static function ordinalSuffix($number)
     {
@@ -346,10 +356,17 @@ class Numbers
             $suffix = 'th';
         } else {
             switch (substr($number, -1, 1)) {
-                case '1': $suffix = 'st'; break;
-                case '2': $suffix = 'nd'; break;
-                case '3': $suffix = 'rd'; break;
-                default:  $suffix = 'th';
+                case '1':
+                    $suffix = 'st';
+                    break;
+                case '2':
+                    $suffix = 'nd';
+                    break;
+                case '3':
+                    $suffix = 'rd';
+                    break;
+                default:
+                    $suffix = 'th';
             }
         }
 

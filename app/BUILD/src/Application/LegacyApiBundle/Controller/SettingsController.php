@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Blob;
@@ -71,10 +72,10 @@ class SettingsController extends AbstractController implements ProtectedControll
     {
         $value = $this->settings->get($name);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'name'  => $name,
             'value' => $value,
-        ));
+        ]);
     }
 
     ####################################################################################################################
@@ -85,10 +86,10 @@ class SettingsController extends AbstractController implements ProtectedControll
     {
         $value = $this->settings->setSetting($name, $this->in->getString('value'));
 
-        return $this->createSuccessResponse(array(
+        return $this->createSuccessResponse([
             'name'  => $name,
             'value' => $value,
-        ));
+        ]);
     }
 
     ####################################################################################################################
@@ -99,9 +100,9 @@ class SettingsController extends AbstractController implements ProtectedControll
     {
         $ticket_settings = new TicketSettings($this->settings);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'ticket_settings' => $ticket_settings->toArray(),
-        ));
+        ]);
     }
 
     ####################################################################################################################
@@ -125,9 +126,9 @@ class SettingsController extends AbstractController implements ProtectedControll
     {
         $ticket_fwd_settings = new TicketFwdSettings($this->settings, $this->container->getEmailAccountManager());
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'ticket_fwd_settings' => $ticket_fwd_settings->toArray(),
-        ));
+        ]);
     }
 
     ####################################################################################################################
@@ -151,9 +152,9 @@ class SettingsController extends AbstractController implements ProtectedControll
     {
         $server_settings = new ServerSettings($this->settings);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'server_settings' => $server_settings->toArray(),
-        ));
+        ]);
     }
 
     ####################################################################################################################
@@ -177,10 +178,10 @@ class SettingsController extends AbstractController implements ProtectedControll
     {
         $general_settings = new GeneralSettings($this->settings);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'general_settings' => $general_settings->toArray(),
             'max_filesize'     => Env::getEffectiveMaxUploadSize(),
-        ));
+        ]);
     }
 
     ####################################################################################################################
@@ -204,9 +205,9 @@ class SettingsController extends AbstractController implements ProtectedControll
     {
         $portal_settings = new GeneralPortalSettings($this->settings);
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'portal_settings' => $portal_settings->toArray(),
-        ));
+        ]);
     }
 
     ####################################################################################################################
@@ -234,7 +235,7 @@ class SettingsController extends AbstractController implements ProtectedControll
 
         if ($blob) {
             $ext = strtolower(Strings::getExtension($blob->getFilename()));
-            if (!$ext || !in_array($ext, array('gif', 'png', 'jpg', 'jpeg', 'ico'))) {
+            if (!$ext || !in_array($ext, ['gif', 'png', 'jpg', 'jpeg', 'ico'])) {
                 throw $this->createNotFoundException();
             }
 
@@ -262,7 +263,7 @@ class SettingsController extends AbstractController implements ProtectedControll
                     $gd_dest = imagecreatetruecolor(16, 16);
                     imagecopyresampled($gd_dest, $gd, 0, 0, 0, 0, 16, 16, $width, $height);
 
-                    $file_content = \phpthumb_ico::GD2ICOstring(array($gd_dest));
+                    $file_content = \phpthumb_ico::GD2ICOstring([$gd_dest]);
                 }
             } else {
                 $file_content = $file;
@@ -293,7 +294,7 @@ class SettingsController extends AbstractController implements ProtectedControll
     public function allSettingsRawAction()
     {
         $settings_files = new AdvancedSettings();
-        $all_settings   = array();
+        $all_settings   = [];
 
         foreach ($settings_files->getAllSettings() as $name => $default_value) {
             $value = $set = $this->container->getSetting($name);
@@ -321,11 +322,11 @@ class SettingsController extends AbstractController implements ProtectedControll
                 $value = '<BLANK>';
             }
 
-            $all_settings[$name] = array(
+            $all_settings[$name] = [
                 'name'          => $name,
                 'default_value' => $default_value,
                 'value'         => $value,
-            );
+            ];
         }
 
         foreach ($this->container->getSettingsHandler()->getIterator() as $name => $value) {
@@ -343,16 +344,16 @@ class SettingsController extends AbstractController implements ProtectedControll
                 $value = '';
             }
 
-            $all_settings[$name] = array(
+            $all_settings[$name] = [
                 'name'          => $name,
                 'default_value' => '',
                 'value'         => $value,
-            );
+            ];
         }
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'all_settings' => array_values($all_settings),
-        ));
+        ]);
     }
 
     ####################################################################################################################
@@ -391,10 +392,10 @@ class SettingsController extends AbstractController implements ProtectedControll
         $reg_settings        = new RegistrationSettings($this->settings, $this->em);
         $rate_limit_settings = new LoginRateLimitSettings($this->settings, $this->in->getString('rate_limit_context'));
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'registration_settings' => $reg_settings->toArray(),
             'rate_limit_settings'   => $rate_limit_settings->toArray(),
-        ));
+        ]);
     }
 
     ####################################################################################################################
@@ -423,10 +424,10 @@ class SettingsController extends AbstractController implements ProtectedControll
         $password_settings   = new PasswordSettings($this->settings);
         $rate_limit_settings = new LoginRateLimitSettings($this->settings, $this->in->getString('rate_limit_context'));
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'settings'            => $password_settings->toArray(),
             'rate_limit_settings' => $rate_limit_settings->toArray(),
-        ));
+        ]);
     }
 
     ####################################################################################################################
@@ -526,44 +527,44 @@ class SettingsController extends AbstractController implements ProtectedControll
     {
         switch ($app) {
             case 'news':
-                $settings = array(
+                $settings = [
                     'enabled'       => (bool) $this->settings->get('core.apps_news'),
                     'tab_enabled'   => (bool) $this->settings->get('user.portal_tab_news'),
                     'subscriptions' => (bool) $this->settings->get('user.news_subscriptions'),
-                );
+                ];
                 break;
 
             case 'kb':
-                $settings = array(
+                $settings = [
                     'enabled'       => (bool) $this->settings->get('core.apps_kb'),
                     'tab_enabled'   => (bool) $this->settings->get('user.portal_tab_articles'),
                     'subscriptions' => (bool) $this->settings->get('user.kb_subscriptions'),
-                );
+                ];
                 break;
 
             case 'feedback':
-                $settings = array(
+                $settings = [
                     'enabled'       => (bool) $this->settings->get('core.apps_feedback'),
                     'tab_enabled'   => (bool) $this->settings->get('user.portal_tab_feedback'),
                     'subscriptions' => (bool) $this->settings->get('user.feedback_subscriptions'),
-                );
+                ];
                 break;
 
             case 'downloads':
-                $settings = array(
+                $settings = [
                     'enabled'       => (bool) $this->settings->get('core.apps_downloads'),
                     'tab_enabled'   => (bool) $this->settings->get('user.portal_tab_downloads'),
                     'subscriptions' => (bool) $this->settings->get('user.downloads_subscriptions'),
-                );
+                ];
                 break;
 
             default:
                 throw $this->createNotFoundException();
         }
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'settings' => $settings,
-        ));
+        ]);
     }
 
     ####################################################################################################################
@@ -574,35 +575,35 @@ class SettingsController extends AbstractController implements ProtectedControll
     {
         switch ($app) {
             case 'news':
-                $settings = array(
+                $settings = [
                     'core.apps_news'          => $this->in->getBoolInt('settings.enabled'),
                     'user.portal_tab_news'    => (int) ($this->in->getBool('settings.enabled') && $this->in->getBool('settings.tab_enabled')),
                     'user.news_subscriptions' => (int) $this->in->getBool('settings.subscriptions'),
-                );
+                ];
                 break;
 
             case 'kb':
-                $settings = array(
+                $settings = [
                     'core.apps_kb'             => $this->in->getBoolInt('settings.enabled'),
                     'user.portal_tab_articles' => (int) ($this->in->getBoolInt('settings.enabled') && $this->in->getBoolInt('settings.tab_enabled')),
                     'user.kb_subscriptions'    => (int) $this->in->getBool('settings.subscriptions'),
-                );
+                ];
                 break;
 
             case 'feedback':
-                $settings = array(
+                $settings = [
                     'core.apps_feedback'          => $this->in->getBoolInt('settings.enabled'),
                     'user.portal_tab_feedback'    => (int) ($this->in->getBool('settings.enabled') && $this->in->getBool('settings.tab_enabled')),
                     'user.feedback_subscriptions' => (int) $this->in->getBool('settings.subscriptions'),
-                );
+                ];
                 break;
 
             case 'downloads':
-                $settings = array(
+                $settings = [
                     'core.apps_downloads'          => $this->in->getBoolInt('settings.enabled'),
                     'user.portal_tab_downloads'    => (int) ($this->in->getBool('settings.enabled') && $this->in->getBool('settings.tab_enabled')),
                     'user.downloads_subscriptions' => (int) $this->in->getBool('settings.subscriptions'),
-                );
+                ];
                 break;
 
             default:

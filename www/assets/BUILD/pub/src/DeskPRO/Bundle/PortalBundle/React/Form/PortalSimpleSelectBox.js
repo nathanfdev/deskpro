@@ -333,10 +333,10 @@ export class PortalSimpleSelectBox extends React.Component {
     return (
       <div className={className} onClick={this.onClickHeader}>
         <div className="filter-box">
-          { options && options.length > 8
+          { options && options.length > 0
             ? <input
               type="text"
-              placeholder={portalPhrases.get('portal.general.select_search_placeholder')}
+              placeholder={options.length > 8 ? portalPhrases.get('portal.general.select_search_placeholder') : portalPhrases.get('portal.general.select_placeholder')}
               ref="filterInput"
               onKeyDown={this.filterNav}
               onKeyUp={this.filterChange}

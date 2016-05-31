@@ -49,7 +49,7 @@
     <a href="{{ ticket_attachment.blob.downloadUrl }}">
         {{ file_icon(ticket_attachment.blob) }}
         <span class="file-name">{{ ticket_attachment.blob.filename }}</span>
-        <span class="file-size">{{ ticket_attachment.blob.filesize }} {{ phrase('portal.tickets.file_size_bytes') }}</span>
+        <span class="file-size">{{ ticket_attachment.blob.readable_filesize }}</span>
     </a>
     {% endif %}
 {% endmacro %}
@@ -62,7 +62,7 @@
             {{ file_icon(ticket_attachment.blob) }}
         {% endif %}
         <span class="file-name">{{ ticket_attachment.blob.filename }}</span>
-        <span class="file-size">{{ ticket_attachment.blob.filesize }} {{ phrase('portal.tickets.file_size_bytes') }}</span>
+        <span class="file-size">{{ ticket_attachment.blob.readable_filesize }}</span>
     </a>
     {% endif %}
 {% endmacro %}

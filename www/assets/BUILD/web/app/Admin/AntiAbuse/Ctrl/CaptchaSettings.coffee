@@ -7,17 +7,26 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
     init: ->
       @$scope.settings = null
+      @$scope.general_settings = null
 
     initialLoad: ->
-      @Api2.sendGet(_url).then (res) =>
+      captchaPromise = @Api2.sendGet(_url).then (res) =>
         @$scope.settings = res.data.data
+      generalPromise = @Api.sendGet('/general_settings').then (res) =>
+        @$scope.general_settings = res.data.general_settings
+
+      return @$q.all([captchaPromise, generalPromise])
 
     save: ->
+      captchaPromise = @Api2.sendPutJson(_url, @$scope.settings) 
+      generalPromise = @Api.sendPostJson('/general_settings', {
+        general_settings: @$scope.general_settings
+      })
       @startSpinner('saving')
-      @Api2.sendPutJson(_url, @$scope.settings).success( =>
+      @$q.all([captchaPromise, generalPromise]).then( =>
         @stopSpinner('saving')
         @Growl.success @getRegisteredMessage('saved_settings')
-      ).error( (info) =>
+      , (info) =>
         @stopSpinner('saving', true)
         @applyErrorResponseToView(info)
       )

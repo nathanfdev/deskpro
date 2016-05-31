@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Settings;
 
 use Application\DeskPRO\App;
@@ -77,16 +78,16 @@ class GeneralSettings
     public $date_time;
 
     /** @var array */
-    public $attach_user_must_exts = array();
+    public $attach_user_must_exts = [];
     /** @var array */
-    public $attach_user_not_exts = array();
+    public $attach_user_not_exts = [];
     /** @var int */
     public $attach_user_maxsize;
 
     /** @var array */
-    public $attach_agent_must_exts = array();
+    public $attach_agent_must_exts = [];
     /** @var array */
-    public $attach_agent_not_exts = array();
+    public $attach_agent_not_exts = [];
     /** @var int */
     public $attach_agent_maxsize;
 
@@ -151,10 +152,10 @@ class GeneralSettings
         }
 
         if (!$this->attach_user_must_exts) {
-            $this->attach_user_must_exts = array();
+            $this->attach_user_must_exts = [];
         }
         if (!$this->attach_user_not_exts) {
-            $this->attach_user_not_exts = array();
+            $this->attach_user_not_exts = [];
         }
 
         $this->attach_agent_maxsize   = $this->settings->get('core.attach_agent_maxsize');
@@ -171,13 +172,13 @@ class GeneralSettings
         }
 
         if (!$this->attach_agent_must_exts) {
-            $this->attach_agent_must_exts = array();
+            $this->attach_agent_must_exts = [];
         }
         if (!$this->attach_agent_not_exts) {
-            $this->attach_agent_not_exts = array();
+            $this->attach_agent_not_exts = [];
         }
         $this->rate_limit_disabled = (bool) $this->settings->get(RateLimit::DISABLED);
-        $this->rate_limit_ips      = json_decode($this->settings->get(RateLimit::IPS, 1) ?: array());
+        $this->rate_limit_ips      = json_decode($this->settings->get(RateLimit::IPS, 1) ?: []);
     }
 
     /**
@@ -188,7 +189,7 @@ class GeneralSettings
     private function cleanExtsArray(array $array)
     {
         $array = Arrays::func($array, 'trim');
-        $array = Arrays::func($array, 'trim', array('.'));
+        $array = Arrays::func($array, 'trim', ['.']);
         $array = Arrays::removeEmptyString($array);
         $array = array_unique($array);
         sort($array, \SORT_STRING);
@@ -201,7 +202,7 @@ class GeneralSettings
      */
     public function toArray()
     {
-        $export_settings = array(
+        $export_settings = [
             'deskpro_name'              => $this->deskpro_name,
             'deskpro_url_autocorrect'   => $this->deskpro_url_autocorrect,
             'deskpro_url'               => $this->deskpro_url,
@@ -225,7 +226,7 @@ class GeneralSettings
             'attach_agent_maxsize'      => $this->attach_agent_maxsize,
             'rate_limit_disabled'       => $this->rate_limit_disabled,
             'rate_limit_ips'            => $this->rate_limit_ips,
-        );
+        ];
 
         return $export_settings;
     }
@@ -261,14 +262,14 @@ class GeneralSettings
         }
 
         $this->settings->setSetting('core.deskpro_name', $this->deskpro_name);
-        $this->settings->setSetting('core.site_url',  $this->site_url);
+        $this->settings->setSetting('core.site_url', $this->site_url);
         $this->settings->setSetting('core.site_name', $this->site_name);
         $this->settings->setSetting('core.default_from_email', $this->default_from_email);
 
-        $this->settings->setSetting('core.default_timezone',  $this->default_timezone ?: 'UTC');
+        $this->settings->setSetting('core.default_timezone', $this->default_timezone ?: 'UTC');
         $this->settings->setSetting('core.task_reminder_time', $this->task_reminder_time ?: '09:30');
 
-        foreach (array('fulltime', 'full', 'day', 'day_short', 'time') as $p) {
+        foreach (['fulltime', 'full', 'day', 'day_short', 'time'] as $p) {
             $p   = 'date_'.$p;
             $val = trim($this->$p) ?: null;
 
@@ -277,9 +278,9 @@ class GeneralSettings
 
         if ($this->attach_user_must_exts) {
             $this->attach_user_must_exts = $this->cleanExtsArray($this->attach_user_must_exts);
-            $this->attach_user_not_exts  = array();
+            $this->attach_user_not_exts  = [];
         } else {
-            $this->attach_user_must_exts = array();
+            $this->attach_user_must_exts = [];
             $this->attach_user_not_exts  = $this->cleanExtsArray($this->attach_user_not_exts);
         }
         $this->settings->setSetting('core.attach_user_maxsize', (int) $this->attach_user_maxsize);
@@ -288,9 +289,9 @@ class GeneralSettings
 
         if ($this->attach_agent_must_exts) {
             $this->attach_agent_must_exts = $this->cleanExtsArray($this->attach_agent_must_exts);
-            $this->attach_agent_not_exts  = array();
+            $this->attach_agent_not_exts  = [];
         } else {
-            $this->attach_agent_must_exts = array();
+            $this->attach_agent_must_exts = [];
             $this->attach_agent_not_exts  = $this->cleanExtsArray($this->attach_agent_not_exts);
         }
         $this->settings->setSetting('core.attach_agent_maxsize', (int) $this->attach_agent_maxsize);
@@ -299,7 +300,7 @@ class GeneralSettings
 
         $this->settings->setSetting(RateLimit::DISABLED, (bool) $this->rate_limit_disabled);
         if (!is_array($this->rate_limit_ips)) {
-            $this->rate_limit_ips = array();
+            $this->rate_limit_ips = [];
         }
         $this->settings->setSetting(RateLimit::IPS, json_encode($this->rate_limit_ips));
     }

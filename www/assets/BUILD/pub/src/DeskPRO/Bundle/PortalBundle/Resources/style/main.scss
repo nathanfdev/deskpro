@@ -6536,13 +6536,13 @@ ul.categories-article-list {
     }
 
     .as-positive {
-      border-bottom: 1px solid darken(darken($btn-primary-bg, 25%), 20%);
-      background: darken($btn-primary-bg, 25%);
+      border-bottom: 1px solid darken($state-success-bg, 20%);
+      background: $state-success-bg;
     }
 
     .as-negative {
-      border-bottom: 1px solid $state-warning-border;
-      background: $state-warning-bg;
+      border-bottom: 1px solid darken($state-danger-bg, 20%);
+      background: $state-danger-bg;
     }
 
     .rate-up {
@@ -6560,10 +6560,10 @@ ul.categories-article-list {
     }
 
     .rate-down {
-      border-bottom: 1px solid $state-warning-border;
-      background: darken($state-warning-bg, 10%);
+      border-bottom: 1px solid $state-danger-border;
+      background: darken($state-danger-bg, 10%);
       &:hover {
-        background: darken($state-warning-bg, 20%);
+        background: darken($state-danger-bg, 20%);
       }
 
       &:after {
@@ -6574,7 +6574,7 @@ ul.categories-article-list {
       span {
         @include margin-right(10px);
         padding: 3px 10px;
-        @include border-right(1px solid darken($state-warning-bg, 25%));
+        @include border-right(1px solid darken($state-danger-bg, 25%));
       }
     }
 
@@ -8501,7 +8501,7 @@ body.with-agent-bar {
   height: 40px;
   float: $float-right;
   color: #868889;
-  font-size: 0.7em;
+  font-size: 1em;
 
   > span {
     display: inline-block;
@@ -9077,17 +9077,21 @@ table .form-help {
     border-radius: 2px;
     width: 100%;
     display: block;
-    padding: $padding-base-vertical $padding-base-horizontal;
     background: $page-bg;
     line-height: $line-height-base;
     height: $input-height-base;
     position: relative;
 
+    span {
+      padding: $padding-base-vertical $padding-base-horizontal;
+      display: block;
+    }
+
     .filter-box {
       width: 60%;
       input {
         width: 100%;
-        padding: 0;
+        padding: $padding-base-vertical $padding-base-horizontal;
         margin: 0;
         line-height: 100%;
         border: none;
@@ -11599,9 +11603,6 @@ $datetime-hover-color: lighten($btn-primary-bg, 10%);
 }
 .xdsoft_datetimepicker .xdsoft_calendar td,.xdsoft_datetimepicker .xdsoft_calendar th {
   border: 1px solid $datetime-cell-border;
-}
-.xdsoft_datetimepicker .xdsoft_calendar td.xdsoft_today {
-  color: $datetime-active-color;
 }
 .xdsoft_datetimepicker .xdsoft_calendar td.xdsoft_default,
 .xdsoft_datetimepicker .xdsoft_calendar td.xdsoft_current,
