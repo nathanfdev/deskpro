@@ -203,7 +203,7 @@
                             <h4>{{ phrase('admin.widget.ticket_default_department') }}</h4>
                             <span class="help-block">{{ phrase('admin.widget.ticket_default_department_help') }}</span>
 
-                            <div>
+                            <div ng-show="brand_settings.ticket.select_department == 'default'">
                                 <select ng-model="brand_settings.ticket.default_department">
                                     <option ng-repeat="option in departments" ng-value="option.id" ng-selected="brand_settings.ticket.default_department == option.id">
                                         {{ ng_var('option.title') }}
