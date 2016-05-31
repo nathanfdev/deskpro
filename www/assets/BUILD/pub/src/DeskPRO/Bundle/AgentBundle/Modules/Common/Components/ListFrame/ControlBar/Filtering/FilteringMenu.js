@@ -9,52 +9,36 @@ import { SingleChoiceFilter } from './SingleChoiceFilter';
 export class FilteringMenu extends Component {
   static propTypes = {
     onMenuUnmount: PropTypes.func,
-    filters: PropTypes.array.isRequired,
-    setParam: PropTypes.func.isRequired,
-    unsetParam: PropTypes.func.isRequired,
+    filters:       PropTypes.array.isRequired,
+    setParam:      PropTypes.func.isRequired,
+    unsetParam:    PropTypes.func.isRequired,
     currentParams: PropTypes.object.isRequired
   };
 
-  componentWillUnmount() {
+  componentWillUnmount = () => {
     this.props.onMenuUnmount();
-  }
+  };
 
   // Generic <Filter /> component --------------------------------------------------------------------------------------
 
-  renderFilter(filter, index) {
+  renderFilter = (filter, index) => {
     switch (filter.type) {
       case 'date':
-        return (
-          <DateFilter {...this.props} filter={filter}
-                                      key={index}/>
-        );
+        return (<DateFilter {...this.props} filter={filter} key={index} />);
       case 'datePeriod':
-        return (
-          <DatePeriodFilter {...this.props} filter={filter}
-                                            key={index}/>
-        );
+        return (<DatePeriodFilter {...this.props} filter={filter} key={index} />);
       case 'labels':
-        return (
-          <LabelsFilter {...this.props} filter={filter}
-                                        key={index}
-                                        matchMode/>
-        );
+        return (<LabelsFilter {...this.props} filter={filter} key={index} matchMode />);
       case 'select':
-        return (
-          <MultipleChoiceFilter {...this.props} filter={filter}
-                                                key={index}/>
-        );
+        return (<MultipleChoiceFilter {...this.props} filter={filter} key={index} />);
       case 'singleSelect':
-        return (
-          <SingleChoiceFilter {...this.props} filter={filter}
-                                              key={index}/>
-        );
+        return (<SingleChoiceFilter {...this.props} filter={filter} key={index} />);
       default:
         throw new Error(`Unknown filter type - ${filter.type}`);
     }
-  }
+  };
 
-  render() {
+  render = () => {
     const { filters = [] } = this.props;
 
     return (

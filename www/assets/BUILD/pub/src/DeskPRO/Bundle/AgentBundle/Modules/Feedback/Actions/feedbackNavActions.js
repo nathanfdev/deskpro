@@ -1,7 +1,6 @@
 import { createAction } from 'Ampliflux';
-import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
-import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { repository, api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { setDisplayFields } from './FeedbackListActions';
 import { defaultCardFields, defaultTableFields, defaultCommentTableFields }

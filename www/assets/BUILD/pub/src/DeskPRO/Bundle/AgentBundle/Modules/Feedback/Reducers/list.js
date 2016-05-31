@@ -1,6 +1,8 @@
 import { createReducer } from 'Ampliflux';
 import Immutable from 'immutable';
-import { async, setValue, setFullPayload, togglePayloadInCollection, mergeFullPayload }
+import {
+  async, setValue, setFullPayload, togglePayloadInCollection, mergeFullPayload
+}
   from 'DeskPRO/Component/Ampliflux/reducers/handlers';
 import * as actions from '../Actions/FeedbackListActions';
 import * as commentsActions from '../Actions/FeedbackCommentsActions';
@@ -23,25 +25,27 @@ export const feedbackListInitialState = {
 };
 
 export default createReducer(feedbackListInitialState, {
-  [commentsActions.loadFeedbackCommentsList]: async({
-    success: (state, payload) =>
-               state.set('elements', payload.ids).set('pagination', Immutable.fromJS(payload.pagination)),
+  [commentsActions.loadFeedbackCommentsList]: async(
+    {
+      success: (state, payload) =>
+                 state.set('elements', payload.ids).set('pagination', Immutable.fromJS(payload.pagination)),
 
-    start: setValue('async.done', false),
-    done:  setValue('async.done', true)
-  }),
+      start: setValue('async.done', false),
+      done:  setValue('async.done', true)
+    }),
 
   [actions.setParams]: setFullPayload('currentListParams'),
 
   [actions.loadIndicator]: setValue('async.done', false),
 
-  [actions.loadFeedbackList]: async({
-    success: (state, payload) =>
-               state.set('elements', payload.ids).set('pagination', Immutable.fromJS(payload.pagination)),
+  [actions.loadFeedbackList]: async(
+    {
+      success: (state, payload) =>
+                 state.set('elements', payload.ids).set('pagination', Immutable.fromJS(payload.pagination)),
 
-    start: setValue('async.done', false),
-    done:  setValue('async.done', true)
-  }),
+      start: setValue('async.done', false),
+      done:  setValue('async.done', true)
+    }),
 
   [actions.setDisplayFields]: mergeFullPayload(),
 

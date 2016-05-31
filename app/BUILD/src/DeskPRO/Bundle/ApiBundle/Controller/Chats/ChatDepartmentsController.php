@@ -52,6 +52,6 @@ class ChatDepartmentsController extends DepartmentsController
     {
         $permissionBag = $this->get('permissions_manager')->getPortalPermissionsBag($this->getUser());
 
-        return $permissionBag->getAllowedTicketDepartmentIds();
+        return $permissionBag->getAllowedChatDepartmentIds();
     }
 }

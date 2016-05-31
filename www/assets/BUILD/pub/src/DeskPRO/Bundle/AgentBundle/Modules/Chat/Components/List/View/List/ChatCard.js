@@ -1,7 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
-import { Card, CardLine, CardLineLeft, CardLineRight, CardLineFull,
-  CardContentText, CardLineItem, CardCheckbox, CardDisc, CardUser }
+import {
+  Card, CardLine, CardLineLeft, CardLineRight, CardLineFull,
+  CardContentText, CardLineItem, CardCheckbox, CardDisc, CardUser
+}
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
 
 @injectIntl
@@ -51,19 +53,9 @@ export class ChatCard extends Component {
             <CardUser user={author} />
             <CardDisc />
             <CardUser user={agent} />
-            <CardDisc />
-            <CardLineItem>{department && department.get('title')}</CardLineItem>
-            <CardDisc />
-            <span className="text"></span> <i className="fa fa-comment"></i>
+            {department && <CardDisc />}
+            {department && <CardLineItem>{department.get('title')}</CardLineItem>}
           </CardLineLeft>
-
-          <CardLineRight>
-            <i className="fa fa-book"></i> <span className="chat-type"></span>
-            <span className="disc"></span>
-            <i className="fa fa-book"></i> <span
-            className="chat-custom-category"></span>
-            <span className="disc"></span>
-          </CardLineRight>
         </CardLine>
       </Card>
     );

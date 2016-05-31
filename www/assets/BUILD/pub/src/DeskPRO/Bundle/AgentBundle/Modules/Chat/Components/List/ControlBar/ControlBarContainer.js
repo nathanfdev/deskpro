@@ -4,21 +4,25 @@ import { connect } from 'react-redux';
 import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
 import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/ControlBar';
 import { currentListParamsSelector, viewModeSelector } from '../../../Selectors/list';
+import { listFiltersSelector } from '../../../Selectors/filters';
 import { applyParams } from '../../../Actions/chatListActions';
 
 @connect(state => ({
   currentParams: currentListParamsSelector(state),
+  filters:       listFiltersSelector(state),
   viewMode:      viewModeSelector(state)
 }))
 export class ControlBarContainer extends Component {
   static propTypes = {
     currentParams: PropTypes.object.isRequired,
+    filters:       PropTypes.array.isRequired,
     viewMode:      PropTypes.string.isRequired
   };
 
-  render() {
-    const { currentParams } = this.props;
+  render = () => {
+    const { currentParams, filters } = this.props;
     const config = {
+      filters,
       applyParams,
       currentParams,
 
@@ -43,6 +47,7 @@ export class ControlBarContainer extends Component {
               labels:       'Labels'
             }
           },
+
           [constants.VIEW_MODE_TABLE]: {
             label: 'Table View',
             icon:  'table',

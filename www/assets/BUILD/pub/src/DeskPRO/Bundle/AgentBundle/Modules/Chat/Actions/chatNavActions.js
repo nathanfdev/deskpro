@@ -1,8 +1,7 @@
 import { createAction } from 'Ampliflux';
-import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
-import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
-import { loadBatch, releaseCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { repository, api } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { releaseCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 /**
  * Used to identify requests within record stores
@@ -28,15 +27,11 @@ export const initialLoad = createAction(
 
 export const loadCounts = createAction(
   'CHAT_NAV_LOAD_CONVERSATIONS_COUNTS',
-  (groupBy, list) =>
-    (dispatch) => repository('UserChat').loadCounts(groupBy, (list === 'my' ? 'me' : null)).then(promise => {
-      const res = promise.getData();
-      if (groupBy === 'department') {
-        dispatch(loadBatch('Department', res.data.nested.map(count => count.group), recordStoresId));
-      }
+  (groupBy, list) => repository('UserChat').loadCounts(groupBy, (list === 'my' ? 'me' : null)).then(promise => {
+    const res = promise.getData();
 
-      return { list, counts: res.data };
-    })
+    return { list, counts: res.data };
+  })
 );
 
 export const toggleListGroupingVisibility = createAction(

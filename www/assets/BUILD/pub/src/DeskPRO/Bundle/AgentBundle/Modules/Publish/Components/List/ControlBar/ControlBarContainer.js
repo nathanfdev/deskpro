@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { currentListParamsSelector, listFiltersSelector, currentViewModeSelector } from '../../../Selectors/list';
 import { applyParams } from '../../../Actions/publishListActions';
@@ -8,52 +8,56 @@ import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components
 
 @connect(state => ({
   currentParams: currentListParamsSelector(state),
-  filters: listFiltersSelector(state),
-  viewMode: currentViewModeSelector(state)
+  filters:       listFiltersSelector(state),
+  viewMode:      currentViewModeSelector(state)
 }))
 export class ControlBarContainer extends Component {
   static propTypes = {
     currentParams: PropTypes.object.isRequired,
-    filters: PropTypes.array.isRequired,
-    viewMode: PropTypes.string.isRequired
+    filters:       PropTypes.array.isRequired,
+    viewMode:      PropTypes.string.isRequired
   };
 
-  render() {
+  render = () => {
+    const { currentParams, filters } = this.props;
     const config = {
-      applyParams: applyParams,
-      currentParams: this.props.currentParams,
+      applyParams,
+      currentParams,
+      filters,
+
       sorting: {
         date_created: { label: 'Created', icon: 'calendar' },
         date_updated: { label: 'Updated', icon: 'calendar-o' },
-        person: { label: 'Author', icon: 'calendar' }
+        person:       { label: 'Author', icon: 'calendar' }
       },
-      filters: this.props.filters,
+
       view: {
         options: {
           [constants.VIEW_MODE_CARD]: {
             label: 'Card View',
-            icon: 'list',
+            icon:  'list',
 
             configurableFields: {
-              id: 'ID',
+              id:           'ID',
               date_created: 'Date created'
             }
           },
+
           [constants.VIEW_MODE_TABLE]: {
             label: 'Table View',
-            icon: 'table',
+            icon:  'table',
 
             configurableFields: {
-              id: 'ID',
-              title: 'Title',
-              person: 'Person',
-              content: 'Content',
+              id:           'ID',
+              title:        'Title',
+              person:       'Person',
+              content:      'Content',
               date_created: 'Date created'
             }
           }
         },
 
-        viewMode: this.props.viewMode,
+        viewMode:       this.props.viewMode,
         viewModeAction: (mode) => updateRoutingState('list', 'view', mode)
       }
     };
