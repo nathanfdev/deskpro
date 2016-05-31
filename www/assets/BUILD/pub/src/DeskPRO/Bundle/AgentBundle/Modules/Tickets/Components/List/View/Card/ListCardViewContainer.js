@@ -5,7 +5,6 @@ import { cardFieldsSelector } from '../../../../Selectors/list';
 import { TicketCard } from './TicketCard';
 import { collectionSelectorFactory } from '../../../../../../../AppBundle/Modules/RecordsStore';
 import { selectedSelector } from '../../../../../Application/Selectors/massActions';
-import { TicketCard } from './TicketCard';
 
 @connect(state => ({
   tickets:  collectionSelectorFactory('Ticket', 'list')(state),

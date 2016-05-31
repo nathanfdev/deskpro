@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
+import { ListItem } from '../../../Common/Components/NavFrame';
 import { ListItemContainer } from './ListItemContainer';
 
 export class TypeTab extends Component {
@@ -8,10 +8,11 @@ export class TypeTab extends Component {
   };
 
   renderType = (item, index) =>
-    <ListItemContainer key={index}
-                       label={item.get('title')}
-                       listOptions={{ isComments: false, navItem: { category: item.get('title') } }}>
-
+    <ListItemContainer
+      key={index}
+      label={item.get('title')}
+      listOptions={{ isComments: false, navItem: { category: item.get('title') } }}
+    >
       <ListItem count={item.get('count')} label={item.get('title')} />
     </ListItemContainer>;
 

@@ -143,6 +143,6 @@ export const setOrderDir = createAction(
     orderDir => dispatch => dispatch(applyParams({ order_dir: orderDir }))
 );
 
-export const toggleTableFieldVisibility = createAction('FEEDBACK_LIST_TOGGLE_TABLE_FIELD_VISIBILITY');
+export const toggleFieldVisibility = createAction('FEEDBACK_LIST_TOGGLE_FIELD_VISIBILITY');
+export const changeFieldOrder = createAction('FEEDBACK_LIST_CHANGE_FIELD_ORDER');
 
-export const toggleCardFieldVisibility = createAction('FEEDBACK_LIST_TOGGLE_CARD_FIELD_VISIBILITY');

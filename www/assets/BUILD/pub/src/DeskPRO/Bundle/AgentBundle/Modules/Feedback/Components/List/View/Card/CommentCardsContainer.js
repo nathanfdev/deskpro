@@ -27,13 +27,15 @@ export class CommentCardsContainer extends Component {
     const { dispatch, comments, selected, toggleSelected, people, feedback } = this.props;
     const element = comments.get(id);
     return (
-      <CommentCard key={id}
-                   comment={element}
-                   dispatch={dispatch}
-                   feedback={feedback.get(element.get('feedback'))}
-                   selected={selected.includes(id)}
-                   toggleSelected={toggleSelected}
-                   author={people.get(element.get('person'))} />
+      <CommentCard
+        key={id}
+        comment={element}
+        dispatch={dispatch}
+        feedback={feedback.get(element.get('feedback'))}
+        selected={selected.includes(id)}
+        toggleSelected={toggleSelected}
+        author={people.get(element.get('person'))}
+      />
     );
   }
 
@@ -46,5 +48,4 @@ export class CommentCardsContainer extends Component {
       </div>
     );
   }
-
 }

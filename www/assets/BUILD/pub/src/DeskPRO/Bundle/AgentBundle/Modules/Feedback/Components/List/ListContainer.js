@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { List } from './List';
 import { selectedSelector } from '../../../Application/Selectors/massActions';
-import { isCommentsSelector, currentViewModeSelector, paginationSelector, isLoadedSelector } from '../../Selectors/list';
+import { isCommentsSelector, currentViewModeSelector, paginationSelector, isLoadedSelector, cardFieldsSelector,
+  tableFieldsSelector, idsSelector } from '../../Selectors/list';
 import { toggleSelectedAction } from '../../../Application/Actions/massActions';
 import { applyParams } from '../../Actions/FeedbackListActions';
 import { connect } from 'react-redux';
@@ -12,7 +13,10 @@ import { connect } from 'react-redux';
   pagination:      paginationSelector(state),
   isLoaded:        isLoadedSelector(state),
   currentApp:      state.Application.dpWindow.get('activeAppId'),
-  currentViewMode: currentViewModeSelector(state)
+  currentViewMode: currentViewModeSelector(state),
+  cardFields:      cardFieldsSelector(state),
+  tableFields:     tableFieldsSelector(state),
+  elements:        idsSelector(state)
 }))
 
 export class ListContainer extends Component {
@@ -22,7 +26,10 @@ export class ListContainer extends Component {
     currentApp:      PropTypes.string.isRequired,
     isComments:      PropTypes.bool,
     isLoaded:        PropTypes.bool.isRequired,
-    currentViewMode: PropTypes.string.isRequired
+    currentViewMode: PropTypes.string.isRequired,
+    cardFields:      PropTypes.object.isRequired,
+    tableFields:     PropTypes.object.isRequired,
+    elements:        PropTypes.object.isRequired
   };
 
   render() {

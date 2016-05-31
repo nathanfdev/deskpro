@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import { hashStateSelectorFactory } from '../../../Modules/Application/Selectors/routing';
+import { constants } from '../../../Constants/Constants';
 
 
 const stateSelector = state => state.Feedback.list;
@@ -14,19 +15,14 @@ export const currentListParamsSelector = createSelector(
   state => state.get('currentListParams')
 );
 
-export const visibleFieldsSelector = createSelector(
+export const tableFieldsSelector = createSelector(
   stateSelector,
-  state => state.get('visibleFields')
+  state => state.getIn(['fields', constants.VIEW_MODE_TABLE])
 );
 
-export const cardVisibleFieldsSelector = createSelector(
-  visibleFieldsSelector,
-  params => params.get('card')
-);
-
-export const tableVisibleFieldsSelector = createSelector(
-  visibleFieldsSelector,
-  params => params.get('table')
+export const cardFieldsSelector = createSelector(
+  stateSelector,
+  state => state.getIn(['fields', constants.VIEW_MODE_CARD])
 );
 
 export const currentListOrderBySelector  = createSelector(

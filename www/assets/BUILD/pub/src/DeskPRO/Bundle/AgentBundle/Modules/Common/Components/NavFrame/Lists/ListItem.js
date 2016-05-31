@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { pureRender } from 'Ampliflux';
+import invariant from 'invariant';
 
 @pureRender
 export class ListItem extends React.Component {
@@ -49,6 +50,8 @@ export class ListItem extends React.Component {
 
   renderCountIcon() {
     const { count = 0 } = this.props;
+
+    invariant(!isNaN(parseInt(count)) && isFinite(count), 'The "count" property is not a number');
 
     return (
       <a className="list-counter active" href="#">{count}</a>

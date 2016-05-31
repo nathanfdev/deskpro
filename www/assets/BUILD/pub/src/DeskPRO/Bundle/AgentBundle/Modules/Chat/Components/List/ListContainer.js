@@ -44,11 +44,11 @@ export class ListContainer extends Component {
 
   toggleSelected = id => () => this.props.toggleSelectedAction(id);
 
-  handlePageClick = page => this.props.applyParams({ page });
+  handlePageClick = page => this.props.applyParams({page});
 
   render() {
     return (
-      <List {...this.props} toggleSelected={this.toggleSelected} handlePageClick={this.handlePageClick} />
+      <List {...this.props} toggleSelected={this.toggleSelected} handlePageClick={this.handlePageClick}/>
     );
   }
 }

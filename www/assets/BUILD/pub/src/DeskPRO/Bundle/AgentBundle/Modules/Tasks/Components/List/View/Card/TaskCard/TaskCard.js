@@ -46,34 +46,35 @@ export class TaskCard extends BaseTaskCard {
 
     const { task } = this.props;
     const onChange = this.onChange;
+    const fieldId = field.get('id');
 
-    switch (field.get('id')) {
+    switch (fieldId) {
 
       case 'date_due':
         return [
-          <div className="dpwd--card-line-item-container" key={`${field.get('id')}-field`}>
+          <div className="dpwd--card-line-item-container" key={`${fieldId}-field`}>
             <DateDue value={task.get('date_due')} onChange={value => onChange('date_due', value)} />
           </div>,
-          <span className="dpw--card-disc" key={`${field.get('id')}-disc`} />
+          <span className="dpw--card-disc" key={`${fieldId}-disc`} />
         ];
 
       case 'project':
         return [
-          <div className="dpwd--card-line-item-container" key={`${field.get('id')}-field`}>
+          <div className="dpwd--card-line-item-container" key={`${fieldId}-field`}>
             <CardProjectContainer value={task.get('project')} onChange={value => onChange('project', value)} />
           </div>,
-          <span className="dpw--card-disc" key={`${field.get('id')}-disc`} />
+          <span className="dpw--card-disc" key={`${fieldId}-disc`} />
         ];
 
       case 'linked':
         return (
-          <div className="dpwd--card-line-item-container" key={field.get('id')}>
+          <div className="dpwd--card-line-item-container" key={fieldId}>
             <LinkedItemContainer value={task} onChange={value => onChange('linked_items', value)} />
           </div>
         );
 
       case 'assignee':
-        return <AssignButton value={task} onChange={value => onChange('assignee', value)} key={field.get('id')} />;
+        return <AssignButton value={task} onChange={value => onChange('assignee', value)} key={fieldId} />;
 
       default:
         return null;

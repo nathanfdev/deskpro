@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Section, SectionHeader, ListItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
+import { Section, SectionHeader, ListItem } from '../../../Common/Components/NavFrame';
 import { ListItemContainer } from './ListItemContainer';
 
 export class Pending extends Component {
@@ -12,22 +12,29 @@ export class Pending extends Component {
   render() {
     const { feedbackToReviewCount, commentsToReviewCount } = this.props;
 
+    const fCount = feedbackToReviewCount ? feedbackToReviewCount.get('count') : 0;
+    const cCount = commentsToReviewCount ? commentsToReviewCount.get('count') : 0;
+
     return (
       <Section>
         <SectionHeader>Pending</SectionHeader>
         <ul>
-          <ListItemContainer label="Feedback to Review"
-                             listOptions={{ isComments: false, navItem: { awaiting_validation: 1 } }}>
-
-            <ListItem count={feedbackToReviewCount}
-                      label="Feedback to Review" />
+          <ListItemContainer
+            label="Feedback to Review"
+            listOptions={{ isComments: false, navItem: { awaiting_validation: 1 } }}
+          >
+            <ListItem count={fCount} label="Feedback to Review"/>
           </ListItemContainer>
 
-          <ListItemContainer label="Comments to Review"
-                             listOptions={{ isComments: true, navItem: { awaiting_validation: 1 } }}>
+          <ListItemContainer
+            label="Comments to Review"
+            listOptions={{ isComments: true, navItem: { awaiting_validation: 1 } }}
+          >
 
-            <ListItem count={commentsToReviewCount}
-                      label="Comments to Review" />
+            <ListItem
+              count={cCount}
+              label="Comments to Review"
+            />
 
           </ListItemContainer>
         </ul>

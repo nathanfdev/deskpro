@@ -7,7 +7,7 @@ import {
   TabsPaneStatefulContainer,
   Tab
 }
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
+  from '../../../Common/Components/NavFrame';
 import { Pending } from './Pending';
 import { StatusTab } from './StatusTab';
 import { TypeTab } from './TypeTab';
