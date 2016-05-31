@@ -34,7 +34,7 @@ Feature: Widget Setup
     And the JSON node "data.settings.brand.chat.popup.translations[0].message" should be equal to the string "Need help? Just reply to start a live chat with one of our team."
     And the JSON node "data.settings.brand.chat.popup.reply_type" should be equal to the string "buttons"
     And the JSON node "data.settings.brand.chat.begin_mode" should be equal to the string "form"
-    And the JSON node "data.settings.brand.chat.waiting_timeout" should be equal to 30
+    And the JSON node "data.settings.brand.chat.waiting_timeout" should be equal to 150
     And the JSON node "data.settings.brand.ticket.select_department" should be equal to the string "custom"
     And the JSON node "data.settings.brand.ticket.default_department" should be equal to 0
 
