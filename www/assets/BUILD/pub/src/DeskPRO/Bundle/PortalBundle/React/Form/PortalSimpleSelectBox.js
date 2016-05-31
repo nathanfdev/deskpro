@@ -92,14 +92,6 @@ export class PortalSimpleSelectBox extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.refs.filterInput) {
-      this.refs.filterInput.focus();
-    } else if (this.refs.defaultRow && this.state.expanded !== prevState.expanded) {
-      this.refs.defaultRow.focus();
-    }
-  }
-
   onClickHeader = () => {
     if (!this.state.expanded) {
       this.toggleExpanded();
@@ -333,7 +325,7 @@ export class PortalSimpleSelectBox extends React.Component {
     return (
       <div className={className} onClick={this.onClickHeader}>
         <div className="filter-box">
-          { options && options.length > 0
+          {options && options.length > 0
             ? <input
               type="text"
               placeholder={options.length > 8 ? portalPhrases.get('portal.general.select_search_placeholder') : portalPhrases.get('portal.general.select_placeholder')}
