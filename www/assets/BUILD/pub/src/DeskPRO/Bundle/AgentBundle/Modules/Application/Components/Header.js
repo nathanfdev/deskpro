@@ -11,9 +11,7 @@ export class Header extends React.Component {
     togglePreferences: PropTypes.func.isRequired
   };
 
-  getPositionTarget = () => {
-    return this.refs.workspaceButton;
-  };
+  getPositionTarget = () => this.refs.workspaceButton;
 
   render() {
     const { user, togglePreferences, toggleWorkspace } = this.props;

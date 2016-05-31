@@ -11,18 +11,18 @@ export class Abstract extends React.Component {
    * @type {Object}
    */
   static propTypes = {
-    isOpen: PropTypes.bool,
-    positionCalc: PropTypes.func,
-    position: PropTypes.object,
-    positionAt: PropTypes.string,
-    positionMy: PropTypes.string,
+    isOpen:         PropTypes.bool,
+    positionCalc:   PropTypes.func,
+    position:       PropTypes.object,
+    positionAt:     PropTypes.string,
+    positionMy:     PropTypes.string,
     positionTarget: PropTypes.any,
-    zIndex: PropTypes.number,
-    collision: PropTypes.string,
-    onOpen: PropTypes.func,
-    onClose: PropTypes.func,
-    children: PropTypes.any,
-    style: PropTypes.object
+    zIndex:         PropTypes.number,
+    collision:      PropTypes.string,
+    onOpen:         PropTypes.func,
+    onClose:        PropTypes.func,
+    children:       PropTypes.any,
+    style:          PropTypes.object
   };
 
   constructor(props) {
@@ -40,9 +40,9 @@ export class Abstract extends React.Component {
     const position = positionCalc ? positionCalc() || {} : {};
     const placement = newProps.position ||
       {
-        my: positionMy || 'left top',
-        at: positionAt || 'right bottom',
-        of: null,
+        my:        positionMy || 'left top',
+        at:        positionAt || 'right bottom',
+        of:        null,
         collision: collision || 'none'
       };
 
@@ -61,14 +61,14 @@ export class Abstract extends React.Component {
     }
 
     this.setState({
-      isOpen: isOpen,
-      top: position.top,
-      left: position.left,
-      my: placement.my,
-      at: placement.at,
-      of: placement.of,
+      isOpen:    isOpen,
+      top:       position.top,
+      left:      position.left,
+      my:        placement.my,
+      at:        placement.at,
+      of:        placement.of,
       collision: placement.collision,
-      zIndex: zIndex
+      zIndex:    zIndex
     });
   }
 
@@ -84,15 +84,13 @@ export class Abstract extends React.Component {
     const { top, left, my, at, of, collision, zIndex } = this.state;
 
     if (top) {
-      $node
-        .css('top', top)
-        .css('left', left)
+      $node.css('top', top).css('left', left)
       ;
     } else {
       $node.position({
-        my: my,
-        at: at,
-        of: of,
+        my:        my,
+        at:        at,
+        of:        of,
         collision: collision
       });
     }
@@ -107,6 +105,6 @@ export class Abstract extends React.Component {
    * @return {XML} The rendered element
    */
   render() {
-    return <div/>;
+    return <div />;
   }
 }
