@@ -30,8 +30,6 @@ return [
     'portal.tickets.add-reply'                         => 'Reply',
     'portal.tickets.cancel-ticket-edit'                => 'Cancel edit and show me the ticket again',
     'portal.tickets.feedback_message_leave_comment'    => 'Optionally leave a comment',
-    'portal.tickets.file_size_bytes'                   => 'bytes',
-    'portal.tickets.file_size_unit'                    => 'B',
     'portal.tickets.form-changed-notice'               => 'New relevant fields have been added to the form. Please review these new fields and then re-submit the form.',
     'portal.tickets.guest-thanks-section-title'        => 'Thank You',
     'portal.tickets.guest_thank_you_desc'              => 'Thank you for contacting us. We have sent you an email with instructions on how to manage your ticket with us.',

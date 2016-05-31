@@ -508,14 +508,6 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         return $this->_label_manager;
     }
 
-    public function getHumanFileSize($precision = 2)
-    {
-        $base     = log($this->filesize, 1024);
-        $suffixes = ['', 'K', 'M', 'G', 'T', 'P'];
-
-        return round(pow(1024, $base - floor($base)), $precision).' '.$suffixes[(int) floor($base)];
-    }
-
     public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $is_image = $this->isImage();
