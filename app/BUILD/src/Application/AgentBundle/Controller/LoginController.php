@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -195,17 +196,12 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
         $this->container->get('anti_abuse')->check($check);
         if ($check->isCaptchaRecommended()) {
             $captcha = $this->container->getSystemObject('form_captcha', ['type' => 'user_login']);
-        } elseif ($check->isLockoutRecommended() && $check->getLockoutTime()) {
-            $this->session->setFlash('failed_login_rate', $check->getLockoutTime());
         }
-        $lockout = $this->session->hasFlash('failed_login_rate')
-            ? $this->session->getFlash('failed_login_rate')['value']
-            : false;
 
         return $this->render(
             'AgentBundle:Login:index.html.twig',
             [
-                'lockout'           => $lockout,
+                'lockout'           => $check->isLockoutRecommended() ? $check->getLockoutTime() : false,
                 'return'            => $return,
                 'route_prefix'      => $this->route_prefix,
                 'logo_blob'         => $logo_blob,

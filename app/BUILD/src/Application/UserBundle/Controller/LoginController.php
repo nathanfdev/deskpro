@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -406,11 +407,6 @@ HTML;
         }
 
         if ($check->isLockoutRecommended()) {
-            if ($check->getLockoutTime()) {
-                $this->session->setFlash('failed_login_rate', $check->getLockoutTime());
-                $this->session->save();
-            }
-
             return $this->redirectRoute($this->route_prefix.'_login', ['return' => $return]);
         }
 
