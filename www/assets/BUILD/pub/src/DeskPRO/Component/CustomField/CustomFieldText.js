@@ -5,11 +5,11 @@ import { Field, Input } from 'react-forms';
 export class CustomFieldText extends AbstractCustomField {
 
   render() {
-    const { name } = this.props;
+    const { name, config } = this.props;
 
     return (
       <Field select={name}>
-        <Input type="text" />
+        <Input key={config.get('id')} type="text" />
       </Field>
     );
   }

@@ -5,11 +5,11 @@ import { Field, Input } from 'react-forms';
 export class CustomFieldTextarea extends AbstractCustomField {
 
   render() {
-    const { name } = this.props;
+    const { name, config } = this.props;
 
     return (
       <Field select={name}>
-        <Input Component="textarea" />
+        <Input key={config.get('id')} Component="textarea" />
       </Field>
     );
   }

@@ -5,11 +5,11 @@ import { Field, Input } from 'react-forms';
 export class CustomFieldHidden extends AbstractCustomField {
 
   render() {
-    const { name } = this.props;
+    const { name, config } = this.props;
 
     return (
       <Field select={name}>
-        <Input type="hidden" />
+        <Input key={config.get('id')} type="hidden" />
       </Field>
     );
   }

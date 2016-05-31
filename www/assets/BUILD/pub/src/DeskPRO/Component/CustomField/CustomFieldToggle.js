@@ -7,11 +7,11 @@ import { noFocusBorder } from './noFocusBorderDecorator';
 export class CustomFieldToggle extends AbstractCustomField {
 
   render() {
-    const { name } = this.props;
+    const { name, config } = this.props;
 
     return (
       <Field select={name}>
-        <Checkbox />
+        <Checkbox key={config.get('id')} />
       </Field>
     );
   }

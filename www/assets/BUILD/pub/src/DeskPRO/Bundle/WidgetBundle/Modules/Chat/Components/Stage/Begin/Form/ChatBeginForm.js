@@ -44,7 +44,9 @@ export class ChatBeginForm extends React.Component {
               config={customField}
               formErrors={errors}
               widgetOptions={{
-                context: [parent.document, window.widgetFrame.document]
+                context:       [parent.document, window.widgetFrame.document],
+                contentWindow: window.widgetFrame,
+                ownerDocument: window.widgetFrame.document
               }}
             >
               <CustomFieldTemplate />

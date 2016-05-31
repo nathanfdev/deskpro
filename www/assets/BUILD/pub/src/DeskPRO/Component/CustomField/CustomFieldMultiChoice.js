@@ -11,6 +11,7 @@ export class CustomFieldMultiChoice extends AbstractCustomField {
     return (
       <Field select={name}>
         <PortalSimpleSelectBoxWrapper
+          key={config.get('id')}
           multiple level={1}
           choices={config.get('choices')}
           widgetOptions={widgetOptions}

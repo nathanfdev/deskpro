@@ -10,7 +10,11 @@ export class CustomFieldSingleChoice extends AbstractCustomField {
 
     return (
       <Field select={name}>
-        <DeepSelectBox choices={config.get('choices')} widgetOptions={widgetOptions} />
+        <DeepSelectBox
+          key={config.get('id')}
+          choices={config.get('choices')}
+          widgetOptions={widgetOptions}
+        />
       </Field>
     );
   }
