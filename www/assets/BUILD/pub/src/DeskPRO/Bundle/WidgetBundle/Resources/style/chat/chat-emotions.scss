@@ -5,6 +5,10 @@
   padding: 5px;
   width: 160px;
 
+  & > div {
+    width: inherit;
+  }
+
   a.emoticon-link {
     display: inline-block;
     padding: 5px;
