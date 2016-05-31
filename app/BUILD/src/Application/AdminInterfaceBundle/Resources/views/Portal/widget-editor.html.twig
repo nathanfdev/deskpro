@@ -242,19 +242,12 @@
             </div>
 
             <div class="editor-row" ng-if="!!code">
-                <div class="editor-wrap">
-                    <div
-                         style="height: 500px;"
-                         ng-model="code"
-                         ui-ace="{
-                             mode: 'html',
-                             useWrapMode: false,
-                             showGutter: false,
-                             theme: 'textmate',
-                             onLoad: embedEditorLoaded
-                         }">
-                    </div>
+                <div class="dp-controls">
+                    <button class="btn btn-xs" clip-copy="code" clip-click="Growl.success('The code snippet was copied to your clipboard')">
+                        <i class="fa fa-clipboard"></i> Copy to clipboard
+                    </button>
                 </div>
+                <textarea ng-model="code" disabled="disabled" style="width: 100%"></textarea>
             </div>
 
             <div class="form-footer">
