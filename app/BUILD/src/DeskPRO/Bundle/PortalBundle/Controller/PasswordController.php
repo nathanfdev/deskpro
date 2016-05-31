@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\PasswordHistory;
@@ -110,6 +111,10 @@ class PasswordController extends AbstractController
             'Theme:Password:password-reset-request.html.twig' :
             'Theme:Password:set-password-request.html.twig';
 
+        $check = new PasswordResetAbuseCheck($this->getCurrentPerson(), $request->getClientIp());
+        $check->markAsCheckOnly();
+        $this->get('anti_abuse')->check($check);
+
         return $this->renderThemeView(
             $tpl,
             array(
@@ -118,7 +123,7 @@ class PasswordController extends AbstractController
                 'render_error' => $render_error,
                 'breadcrumbs'  => $this->getBreadcrumbGenerator()->buildPasswordReset($isResetting),
                 'page_title'   => $this->createPageTitle()->passwordReset($isResetting),
-                'lockout'      => $request->get('lockout', false),
+                'lockout'      => $check->isLockoutRecommended(),
             )
         );
     }

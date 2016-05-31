@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
@@ -52,12 +53,13 @@ class PasswordResetRequestType extends AbstractType
 
     /**
      * PasswordResetRequestType constructor.
-     * @param CaptchaDecider $captcha_decider
+     *
+     * @param CaptchaDecider  $captcha_decider
      * @param LanguageManager $language_manager
      */
     public function __construct(CaptchaDecider $captcha_decider, LanguageManager $language_manager)
     {
-        $this->captcha_decider = $captcha_decider;
+        $this->captcha_decider  = $captcha_decider;
         $this->language_manager = $language_manager;
     }
 
@@ -72,7 +74,7 @@ class PasswordResetRequestType extends AbstractType
             function (FormEvent $event) {
                 $form = $event->getForm();
 
-                if ($this->captcha_decider->shouldRequireCommentCaptchaForCurrentPerson()) {
+                if ($this->captcha_decider->shouldRequireForgotPasswordCaptchaForCurrentPerson()) {
                     $form->add('captcha', 'deskpro_captcha');
                 }
             }
