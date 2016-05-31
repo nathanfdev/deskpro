@@ -3,7 +3,7 @@
 <div class="content-wrapper">
     <section class="content setup widget-editor">
         <h1><i class="fa fa-cog"></i> {{ phrase('admin.widget.settings_heading') }}</h1>
-        <form class="widget-editor-form">
+        <form class="widget-editor-form dp-form">
             <div class="content-section">
                 <h2 class="with-divider form-header"><span>{{ phrase('admin.widget.button_settings') }}</span></h2>
                 <ul class="options">
@@ -196,38 +196,38 @@
 
             <div class="content-section">
                 <h2 class="with-divider form-header"><span>{{ phrase('admin.widget.ticket_settings') }}</span></h2>
-                <ul class="options">
-                    <li>
-                        <ul class="option-group no-label option-group-inline float-left">
-                            <li>
-                                <input type="radio" ng-model="brand_settings.ticket.select_department" value="default" />
-                                <label>{{ phrase('admin.widget.ticket_default_department') }}</label>
+                <div class="form-group">
+                    <div class="labels-group">
+                        <label>
+                            <input type="radio" ng-model="brand_settings.ticket.select_department" value="default" />
+                            <h4>{{ phrase('admin.widget.ticket_default_department') }}</h4>
+                            <span class="help-block">{{ phrase('admin.widget.ticket_default_department_help') }}</span>
 
-                                <div class="sub-options">
-                                    <select ng-model="brand_settings.ticket.default_department">
-                                        <option ng-repeat="option in departments" ng-value="option.id" ng-selected="brand_settings.ticket.default_department == option.id">
-                                            {{ ng_var('option.title') }}
-                                        </option>
-                                    </select>
-                                    <ul class="errors">
-                                        <li ng-repeat="error in formErrors.brand.fields.ticket.fields.default_department.errors">
-                                            {{ ng_var('error.message') }}
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li>
-                                <input type="radio" ng-model="brand_settings.ticket.select_department" value="custom" />
-                                <label>{{ phrase('admin.widget.ticket_user_select_department') }}</label>
-                            </li>
-                        </ul>
+                            <div>
+                                <select ng-model="brand_settings.ticket.default_department">
+                                    <option ng-repeat="option in departments" ng-value="option.id" ng-selected="brand_settings.ticket.default_department == option.id">
+                                        {{ ng_var('option.title') }}
+                                    </option>
+                                </select>
+                                <ul class="errors">
+                                    <li ng-repeat="error in formErrors.brand.fields.ticket.fields.default_department.errors">
+                                        {{ ng_var('error.message') }}
+                                    </li>
+                                </ul>
+                            </div>
+                        </label>
+                        <label>
+                            <input type="radio" ng-model="brand_settings.ticket.select_department" value="custom" />
+                            <h4>{{ phrase('admin.widget.ticket_user_select_department') }}</h4>
+                        </label>
+
                         <ul class="errors">
                             <li ng-repeat="error in formErrors.brand.fields.ticket.fields.select_department.errors">
                                 {{ ng_var('error.message') }}
                             </li>
                         </ul>
-                    </li>
-                </ul>
+                    </div>
+                </div>
             </div>
 
             <div class="form-footer">
