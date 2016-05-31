@@ -26,15 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Theme;
 
 use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
+use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandTheme;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use DeskPRO\Component\Util\EntityUtils;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -51,37 +49,44 @@ class TagRequestFactory
     /**
      * @var LanguageManager
      */
-    private $language_manager;
+    private $languageManager;
 
     /**
      * @var ContainerInterface
      */
     private $container;
 
-    public function __construct(RequestStack $stack, LanguageManager $language_manager, ContainerInterface $container)
+    public function __construct(RequestStack $stack, LanguageManager $languageManager, ContainerInterface $container)
     {
-        $this->stack            = $stack;
-        $this->language_manager = $language_manager;
-        $this->container        = $container;
+        $this->stack           = $stack;
+        $this->languageManager = $languageManager;
+        $this->container       = $container;
     }
 
-    public function create(Tag $tag, array $arguments = array())
+    /**
+     * @param Tag   $tag
+     * @param array $arguments
+     *
+     * @return TagRequest
+     */
+    public function create(Tag $tag, array $arguments = [])
     {
-        $current_request = $this->stack->getCurrentRequest();
+        $currentRequest = $this->stack->getCurrentRequest();
 
+        /** @var TagRequest $tr */
         $tr = TagRequest::create(
             '',
             'GET',
             $this->makeQuery($tag, $arguments),
             [],
             [],
-            $current_request->server->all()
+            $currentRequest->server->all()
         );
         $tr->attributes->add($this->makeAttributes($tag, $arguments));
 
         $tr->setOptionsResolver(new OptionsResolver());
-        $tr->setSession($current_request->getSession());
-        $tr->headers->replace($current_request->headers->all());
+        $tr->setSession($currentRequest->getSession());
+        $tr->headers->replace($currentRequest->headers->all());
 
         return $tr;
     }
@@ -94,7 +99,7 @@ class TagRequestFactory
      */
     private function makeQuery(Tag $tag, array $arguments)
     {
-        $new_args = array();
+        $new_args = [];
         foreach ($arguments as $key => $value) {
             if ($value instanceof DomainObject || $value instanceof EntityInterface) {
                 $value = EntityUtils::getIdentifier($value);
@@ -107,24 +112,26 @@ class TagRequestFactory
             $new_args[$key] = $value;
         }
 
-        $tag_options = array_merge($tag->getDefaultOptions(), $new_args, array(
+        $tagOptions = array_merge($tag->getDefaultOptions(), $new_args, [
             '_tag_name' => $tag->getName(),
-        ));
+        ]);
 
-        $language_stack = $this->language_manager->getLanguageStack();
-        if (!$lang = $language_stack->getActive()) {
-            $lang = $language_stack->getDefaultLanguage();
+        $languageStack = $this->languageManager->getLanguageStack();
+        if (!$lang = $languageStack->getActive()) {
+            $lang = $languageStack->getDefaultLanguage();
         }
 
-        $brand_container    = $this->container->get('brand_stack')->getActive();
-        $portal_brand_theme = $this->container->get('portal_brand_theme_loader')->getPortalBrandTheme($brand_container->getBrand());
+        /** @var BrandContainer $brandContainer */
+        $brandContainer = $this->container->get('brand_stack')->getActive();
+        /** @var PortalBrandTheme $portalBrandTheme */
+        $portalBrandTheme = $this->container->get('portal_brand_theme_loader')->getPortalBrandTheme($brandContainer->getBrand());
 
-        return array(
-            'tag_options'   => $tag_options,
+        return [
+            'tag_options'   => $tagOptions,
             'lang_url_code' => $lang->getUrlCode(),
-            'brand_id'      => $brand_container->getBrand()->getId(),
-            'theme_set_id'  => $portal_brand_theme->getActiveTheme()->getId(),
-        );
+            'brand_id'      => $brandContainer->getBrand()->getId(),
+            'theme_set_id'  => $portalBrandTheme->getActiveTheme()->getId(),
+        ];
     }
 
     /**
@@ -135,17 +142,17 @@ class TagRequestFactory
      */
     private function makeAttributes(Tag $tag, array $arguments)
     {
-        $current_request    = $this->stack->getCurrentRequest();
-        $current_attributes = $current_request->attributes->all();
+        $currentRequest    = $this->stack->getCurrentRequest();
+        $currentAttributes = $currentRequest->attributes->all();
 
-        $new_attributes = array();
+        $newAttributes = [];
 
-        $tag_params = ['_tag_name' => $tag->getName()];
+        $tagParams = ['_tag_name' => $tag->getName()];
         if ($tag->allowRouteParams()) {
-            $tag_params['_route']        = isset($current_attributes['_route']) ? $current_attributes['_route'] : null;
-            $tag_params['_route_params'] = isset($current_attributes['_route_params']) ? $current_attributes['_route_params'] : null;
+            $tagParams['_route']        = isset($currentAttributes['_route']) ? $currentAttributes['_route'] : null;
+            $tagParams['_route_params'] = isset($currentAttributes['_route_params']) ? $currentAttributes['_route_params'] : null;
         }
 
-        return array_merge($new_attributes, $arguments, $tag_params);
+        return array_merge($newAttributes, $arguments, $tagParams);
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -24,10 +24,6 @@
  * looking for great developers to join us: http://www.deskpro.com/jobs/
  *
  * ~ Thanks, Everyone at Team DeskPRO
- */
-
-/**
- * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\HttpCache\EventListener;
@@ -58,37 +54,39 @@ class PortalHttpCacheListener implements EventSubscriberInterface
     /**
      * @var BrandStack
      */
-    protected $brand_stack;
+    protected $brandStack;
 
     /**
      * @var PortalCacheHelper
      */
-    private $cache_helper;
+    private $cacheHelper;
 
-    public function __construct(BrandStack $brand_stack, PortalCacheHelper $cache_helper)
+    public function __construct(BrandStack $brandStack, PortalCacheHelper $cacheHelper)
     {
         $this->lastModifiedDates = new \SplObjectStorage();
         $this->etags             = new \SplObjectStorage();
-        $this->brand_stack       = $brand_stack;
-        $this->cache_helper      = $cache_helper;
+        $this->brandStack        = $brandStack;
+        $this->cacheHelper       = $cacheHelper;
     }
 
     /**
      * Handles HTTP validation headers.
+     *
+     * @param FilterControllerEvent $event
      */
     public function onKernelController(FilterControllerEvent $event)
     {
         $request = $event->getRequest();
 
-        $page_cache_config = $request->attributes->get('_portal_page_cache');
-        $tag_cache_config  = $request->attributes->get('_portal_tag_cache');
+        $pageCacheConfig = $request->attributes->get('_portal_page_cache');
+        $tagCacheConfig  = $request->attributes->get('_portal_tag_cache');
 
-        if (!$tag_cache_config && !$page_cache_config) {
+        if (!$tagCacheConfig && !$pageCacheConfig) {
             return;
         }
 
         /** @var \DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PortalHttpCache $config */
-        $config = $page_cache_config ?: $tag_cache_config;
+        $config = $pageCacheConfig ?: $tagCacheConfig;
 
         $content = null;
         if ($content_name = $config->getContent()) {
@@ -99,19 +97,19 @@ class PortalHttpCacheListener implements EventSubscriberInterface
 
         $response = new Response();
 
-        $use_last_modified = $this->getBrandSetting('portal.http_cache_last_modified');
-        $use_etags         = $this->getBrandSetting('portal.http_cache_etags');
+        $useLastModified = $this->getBrandSetting('portal.http_cache_last_modified');
+        $useEtags        = $this->getBrandSetting('portal.http_cache_etags');
 
         $lastModifiedDate = '';
-        if ($use_last_modified && $content) {
+        if ($useLastModified && $content) {
             $lastModifiedDate = $this->generateLastModified($content);
             $response->setLastModified($lastModifiedDate);
         }
 
-        $etag = '';
-        if ($use_etags && $content) {
-            $etag = $this->generateEtag($content);
-            $response->setETag($etag);
+        $eTag = '';
+        if ($useEtags && $content) {
+            $eTag = $this->generateEtag($content);
+            $response->setEtag($eTag);
         }
 
         if ($response->isNotModified($request)) {
@@ -119,10 +117,10 @@ class PortalHttpCacheListener implements EventSubscriberInterface
                 return $response;
             });
         } else {
-            if ($use_etags && $etag) {
-                $this->etags[$request] = $etag;
+            if ($useEtags && $eTag) {
+                $this->etags[$request] = $eTag;
             }
-            if ($use_last_modified && $lastModifiedDate) {
+            if ($useLastModified && $lastModifiedDate) {
                 $this->lastModifiedDates[$request] = $lastModifiedDate;
             }
         }
@@ -130,6 +128,8 @@ class PortalHttpCacheListener implements EventSubscriberInterface
 
     /**
      * Modifies the response to apply HTTP cache headers when needed.
+     *
+     * @param FilterResponseEvent $event
      */
     public function onKernelResponse(FilterResponseEvent $event)
     {
@@ -142,37 +142,37 @@ class PortalHttpCacheListener implements EventSubscriberInterface
             return;
         }
 
-        $page_cache_config = $request->attributes->get('_portal_page_cache');
-        $tag_cache_config  = $request->attributes->get('_portal_tag_cache');
+        $pageCacheConfig = $request->attributes->get('_portal_page_cache');
+        $tagCacheConfig  = $request->attributes->get('_portal_tag_cache');
 
-        if (!$tag_cache_config && !$page_cache_config) {
+        if (!$tagCacheConfig && !$pageCacheConfig) {
             return;
         }
 
         // http://tools.ietf.org/html/draft-ietf-httpbis-p4-conditional-12#section-3.1
-        if (!in_array($response->getStatusCode(), array(200, 203, 300, 301, 302, 304, 404, 410))) {
+        if (!in_array($response->getStatusCode(), [200, 203, 300, 301, 302, 304, 404, 410])) {
             return;
         }
 
         // get smaxage from settings
-        $is_guest = $this->cache_helper->isGuestRequest();
-        if ($page_cache_config) {
-            if ($is_guest) {
-                $smaxage = (int) $this->getBrandSetting('portal.smaxage_guest_page');
+        $isGuest = $this->cacheHelper->isGuestRequest();
+        if ($pageCacheConfig) {
+            if ($isGuest) {
+                $sMaxAge = (int) $this->getBrandSetting('portal.smaxage_guest_page');
             } else {
-                $smaxage = (int) $this->getBrandSetting('portal.smaxage_user_page');
+                $sMaxAge = (int) $this->getBrandSetting('portal.smaxage_user_page');
             }
         } else {
-            if ($is_guest) {
-                $smaxage = (int) $this->getBrandSetting('portal.smaxage_guest_tag');
+            if ($isGuest) {
+                $sMaxAge = (int) $this->getBrandSetting('portal.smaxage_guest_tag');
             } else {
-                $smaxage = (int) $this->getBrandSetting('portal.smaxage_user_tag');
+                $sMaxAge = (int) $this->getBrandSetting('portal.smaxage_user_tag');
             }
         }
 
-        if ($smaxage > 0) {
-            $response->setSharedMaxAge($smaxage);
-            if ($this->cache_helper->isGuestRequest()) {
+        if ($sMaxAge > 0) {
+            $response->setSharedMaxAge($sMaxAge);
+            if ($this->cacheHelper->isGuestRequest()) {
                 // we never want to send cookies in this situation, because this page is about to be cached
                 // for a user without a session
                 foreach ($response->headers->getCookies() as $cookie) {
@@ -189,7 +189,7 @@ class PortalHttpCacheListener implements EventSubscriberInterface
         }
 
         if (isset($this->etags[$request])) {
-            $response->setETag($this->etags[$request]);
+            $response->setEtag($this->etags[$request]);
 
             unset($this->etags[$request]);
         }
@@ -202,15 +202,15 @@ class PortalHttpCacheListener implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             KernelEvents::CONTROLLER => 'onKernelController',
             KernelEvents::RESPONSE   => 'onKernelResponse',
-        );
+        ];
     }
 
     protected function getBrandSetting($setting, $default = null)
     {
-        return $this->brand_stack->getActive()->getSetting($setting, $default);
+        return $this->brandStack->getActive()->getSetting($setting, $default);
     }
 
     /**
@@ -234,13 +234,13 @@ class PortalHttpCacheListener implements EventSubscriberInterface
      */
     protected function generateEtag(ContentAbstract $content)
     {
-        $global_timestamp = $this->getBrandSetting('portal.global_cache_timestamp');
-        $type             = $content->getContentType();
-        $id               = $content->getId();
-        $last_modified    = $this->generateLastModified($content);
+        $globalTimestamp = $this->getBrandSetting('portal.global_cache_timestamp');
+        $type            = $content->getContentType();
+        $id              = $content->getId();
+        $lastModified    = $this->generateLastModified($content);
 
-        $etag = hash('sha256', $global_timestamp.$type.$id.$last_modified->getTimestamp());
+        $eTag = hash('sha256', $globalTimestamp.$type.$id.$lastModified->getTimestamp());
 
-        return $etag;
+        return $eTag;
     }
 }

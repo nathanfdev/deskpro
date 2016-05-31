@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -24,10 +24,6 @@
  * looking for great developers to join us: http://www.deskpro.com/jobs/
  *
  * ~ Thanks, Everyone at Team DeskPRO
- */
-
-/**
- * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Theme;
@@ -57,8 +53,8 @@ class Tag implements \Serializable
     public function __construct(
         $name,
         $controller_name,
-        $defined_options = array(),
-        $default_options = array(),
+        $defined_options = [],
+        $default_options = [],
         $esi = false,
         $always_guest_inline = true,
         $allow_route_params = false
@@ -75,7 +71,7 @@ class Tag implements \Serializable
     public function serialize()
     {
         return serialize(
-            array(
+            [
                 'name'                => $this->name,
                 'controller_name'     => $this->controller_name,
                 'defined_options'     => $this->defined_options,
@@ -83,7 +79,7 @@ class Tag implements \Serializable
                 'esi'                 => $this->esi,
                 'always_guest_inline' => $this->always_guest_inline,
                 'allow_route_params'  => $this->allow_route_params,
-            )
+            ]
         );
     }
 
@@ -133,9 +129,11 @@ class Tag implements \Serializable
     }
 
     /**
+     * @param bool $isGuest
+     *
      * @return bool
      */
-    public function isEsi($is_guest = false)
+    public function isEsi($isGuest = false)
     {
         // not an esi tag, no more processing needed
         if (!$this->esi) {
@@ -143,7 +141,7 @@ class Tag implements \Serializable
         }
 
         // is an esi... if not a guest request, then yes
-        if (!$is_guest) {
+        if (!$isGuest) {
             return true;
         }
 

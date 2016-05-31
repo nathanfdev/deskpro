@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\PortalBundle\HttpCache;
 
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -75,11 +72,11 @@ class PortalCacheHelper
     {
         $current_request = $this->request_stack->getMasterRequest();
 
-        if (!$current_request->headers->has(\DeskPRO\Bundle\PortalBundle\HttpCache\PortalHttpCache::USER_CONTEXT_HASH_HEADER)) {
+        if (!$current_request->headers->has(PortalHttpCache::USER_CONTEXT_HASH_HEADER)) {
             return;
         }
 
-        return $current_request->headers->get(\DeskPRO\Bundle\PortalBundle\HttpCache\PortalHttpCache::USER_CONTEXT_HASH_HEADER);
+        return $current_request->headers->get(PortalHttpCache::USER_CONTEXT_HASH_HEADER);
     }
 
     /**
@@ -99,6 +96,6 @@ class PortalCacheHelper
 
     public function isGuestHash($hash)
     {
-        return in_array($hash, array(PortalHttpCache::ANON_NO_SESSION_HASH));
+        return in_array($hash, [PortalHttpCache::ANON_NO_SESSION_HASH]);
     }
 }
