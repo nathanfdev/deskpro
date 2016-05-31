@@ -3,21 +3,21 @@ import { NestedList as BaseNestedList, ListItem } from 'DeskPRO/Bundle/AgentBund
 import { ListItemContainer } from './ListItemContainer';
 
 export class NestedList extends BaseNestedList {
-  renderListItem(item, depth) {
-    const {content} = this.props;
+  renderListItem = (item, depth) => {
+    const { content } = this.props;
     this.ensureValidDepth(depth);
     const { title, count, id, type } = item;
-    const label = title[0].toUpperCase() + title.slice(1);
-    const listOptions = { content: content, navItem: { [type]: id } };
+    const label       = title[0].toUpperCase() + title.slice(1);
+    const listOptions = { content, navItem: { [type]: id } };
 
     return (
-      <ListItemContainer key={title}
-                         label={label}
-                         group={content}
-                         listOptions={listOptions}>
-
-        <ListItem label={label}
-                  count={count}>
+      <ListItemContainer
+        key={title}
+        label={label}
+        group={content}
+        listOptions={listOptions}
+      >
+        <ListItem label={label} count={count}>
           {this.renderNested(item, depth)}
         </ListItem>
       </ListItemContainer>

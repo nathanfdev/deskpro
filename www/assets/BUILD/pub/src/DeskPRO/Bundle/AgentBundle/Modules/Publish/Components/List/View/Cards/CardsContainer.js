@@ -1,68 +1,73 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { ContentCard } from './ContentCard';
 import { ContentCommentCard } from './ContentCommentCard';
 import { ArticlePendingCreateCard } from './ArticlePendingCreateCard';
 import { toggleSelectedAction } from '../../../../../Application/Actions/massActions';
 import { selectedSelector } from '../../../../../Application/Selectors/massActions';
-import { contentSelector, elementsSelector }
-from '../../../../Selectors/list';
-import { articlesSelector, newsSelector, downloadsSelector,
-articlesCommentsSelector, newsCommentsSelector, downloadsCommentsSelector, articlePendingCreatesSelector }
-from '../../../../Selectors/recordStores';
+import { contentSelector, elementsSelector } from '../../../../Selectors/list';
+import {
+  articlesSelector, newsSelector, downloadsSelector,
+  articlesCommentsSelector, newsCommentsSelector, downloadsCommentsSelector, articlePendingCreatesSelector
+}
+  from '../../../../Selectors/recordStores';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 @connect(state => ({
-  content: contentSelector(state),
-  elements: elementsSelector(state),
-  people: collectionSelectorFactory('Person', 'publish')(state),
-  articles: articlesSelector(state),
-  news: newsSelector(state),
-  downloads: downloadsSelector(state),
+  content:                 contentSelector(state),
+  elements:                elementsSelector(state),
+  people:                  collectionSelectorFactory('Person', 'publish')(state),
+  articles:                articlesSelector(state),
+  news:                    newsSelector(state),
+  downloads:               downloadsSelector(state),
   article_pending_creates: articlePendingCreatesSelector(state),
-  article_comments: articlesCommentsSelector(state),
-  news_comments: newsCommentsSelector(state),
-  download_comments: downloadsCommentsSelector(state),
-  selected: selectedSelector(state)
+  article_comments:        articlesCommentsSelector(state),
+  news_comments:           newsCommentsSelector(state),
+  download_comments:       downloadsCommentsSelector(state),
+  selected:                selectedSelector(state)
 }))
 export class CardsContainer extends Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    content: PropTypes.string.isRequired,
-    elements: PropTypes.array.isRequired,
-    people: PropTypes.object.isRequired,
-    articles: PropTypes.array,
-    news: PropTypes.array,
-    downloads: PropTypes.array,
-    article_comments: PropTypes.object,
-    news_comments: PropTypes.object,
+    dispatch:          PropTypes.func.isRequired,
+    content:           PropTypes.string.isRequired,
+    elements:          PropTypes.array.isRequired,
+    people:            PropTypes.object.isRequired,
+    articles:          PropTypes.array,
+    news:              PropTypes.array,
+    downloads:         PropTypes.array,
+    article_comments:  PropTypes.object,
+    news_comments:     PropTypes.object,
     download_comments: PropTypes.object,
-    selected: PropTypes.object.isRequired
+    selected:          PropTypes.object.isRequired
   };
 
-  toggleSelected(id, e) {
+  toggleSelected = (id, e) => {
     e.stopPropagation();
     const { dispatch } = this.props;
     dispatch(toggleSelectedAction(id));
-  }
+  };
 
-  renderContentCard(id) {
+  renderContentCard = id => {
     const { content, people, selected } = this.props;
     const element = this.props[content].get(id);
+    const toggle    = this.toggleSelected.bind(this, id);
 
     return (
-      <ContentCard key={id}
-                   element={element}
-                   toggleSelected={this.toggleSelected.bind(this, id)}
-                   selected={selected.indexOf(id) > -1}
-                   author={people.get(element.get('person'))}
-                   lastRevisionAuthor={people.get(element.get('last_author_id'))}/>
+      <ContentCard
+        key={id}
+        element={element}
+        toggleSelected={toggle}
+        selected={selected.indexOf(id) > -1}
+        author={people.get(element.get('person'))}
+        lastRevisionAuthor={people.get(element.get('last_author_id'))}
+      />
     );
-  }
+  };
 
-  renderCommentCard(id) {
+  renderCommentCard = id => {
     const { content, people, selected, articles, news, downloads } = this.props;
-    const element = this.props[content].get(id);
+    const element   = this.props[content].get(id);
+    const toggle    = this.toggleSelected.bind(this, id);
     const getParent = () => {
       switch (content) {
         case 'article_comments':
@@ -73,32 +78,39 @@ export class CardsContainer extends Component {
           return news.get(element.get('news'));
         default:
       }
+      return null;
     };
 
     return (
-      <ContentCommentCard key={id}
-                          element={element}
-                          parent={getParent()}
-                          toggleSelected={this.toggleSelected.bind(this, id)}
-                          selected={selected.includes(element.get('id'))}
-                          author={people.get(element.get('person'))}/>
+      <ContentCommentCard
+        key={id}
+        element={element}
+        parent={getParent()}
+        toggleSelected={toggle}
+        selected={selected.includes(element.get('id'))}
+        author={people.get(element.get('person'))}
+      />
     );
-  }
+  };
 
-  renderArticlePendingCreate(id) {
+  renderArticlePendingCreate = id => {
     const { content, people, selected } = this.props;
     const element = this.props[content].get(id);
-    return (
-      <ArticlePendingCreateCard key={id}
-                                element={element}
-                                toggleSelected={this.toggleSelected.bind(this, id)}
-                                selected={selected.includes(element.get('id'))}
-                                author={people.get(element.get('person'))}
-                                assigned={people.get(element.get('assigned_person'))}/>
-    );
-  }
+    const toggle    = this.toggleSelected.bind(this, id);
 
-  render() {
+    return (
+      <ArticlePendingCreateCard
+        key={id}
+        element={element}
+        toggleSelected={toggle}
+        selected={selected.includes(element.get('id'))}
+        author={people.get(element.get('person'))}
+        assigned={people.get(element.get('assigned_person'))}
+      />
+    );
+  };
+
+  render = () => {
     const { content, elements } = this.props;
 
     return (

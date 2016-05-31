@@ -49,6 +49,8 @@ abstract class AbstractContentController extends CrudController
         'date_created' => 'date_created',
         'date_updated' => 'date_updated',
         'person'       => 'person',
+        'status'       => 'status',
+        'title'        => 'title',
     ];
 
     /**
@@ -79,8 +81,7 @@ abstract class AbstractContentController extends CrudController
                     ->addSelect('p.id as group_name')
                     ->addSelect('p.name as title')
                     ->leftJoin("$alias.person", 'p')
-                    ->groupBy('group_name')
-                ;
+                    ->groupBy('group_name');
 
                 break;
             case 'period_created':

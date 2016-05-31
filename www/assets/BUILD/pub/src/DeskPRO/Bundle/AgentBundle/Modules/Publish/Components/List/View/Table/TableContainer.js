@@ -1,55 +1,55 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { elementsSelector, contentSelector, currentListSortSelector, currentListOrderSelector }
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import {
+  elementsSelector, contentSelector, currentListOrderBySelector, currentListOrderDirSelector
+}
   from '../../../../Selectors/list';
-import { articlesSelector, newsSelector, downloadsSelector,
-articlesCommentsSelector, newsCommentsSelector, downloadsCommentsSelector, articlePendingCreatesSelector }
+import {
+  articlesSelector, newsSelector, downloadsSelector,
+  articlesCommentsSelector, newsCommentsSelector, downloadsCommentsSelector, articlePendingCreatesSelector
+}
   from '../../../../Selectors/recordStores';
 import { applyParams } from '../../../../Actions/publishListActions';
 import { ContentTable } from './ContentTable';
 import { CommentTable } from './CommentTable';
 import { APCTable } from './APCTable';
-import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
-
 
 @connect(state => ({
-  elements: elementsSelector(state),
-  people: collectionSelectorFactory('Person', 'publish')(state),
-  content: contentSelector(state),
-  articles: articlesSelector(state),
-  news: newsSelector(state),
-  downloads: downloadsSelector(state),
+  elements:                elementsSelector(state),
+  people:                  collectionSelectorFactory('Person', 'publish')(state),
+  content:                 contentSelector(state),
+  articles:                articlesSelector(state),
+  news:                    newsSelector(state),
+  downloads:               downloadsSelector(state),
   article_pending_creates: articlePendingCreatesSelector(state),
-  article_comments: articlesCommentsSelector(state),
-  news_comments: newsCommentsSelector(state),
-  download_comments: downloadsCommentsSelector(state),
-  currentSort: currentListSortSelector(state),
-  currentOrder: currentListOrderSelector(state)
+  article_comments:        articlesCommentsSelector(state),
+  news_comments:           newsCommentsSelector(state),
+  download_comments:       downloadsCommentsSelector(state),
+  orderBy:                 currentListOrderBySelector(state),
+  orderDir:                currentListOrderDirSelector(state)
 }))
+
 export class TableContainer extends Component {
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    elements: PropTypes.array.isRequired,
-    content: PropTypes.string.isRequired,
-    articles: PropTypes.object,
+    dispatch:  PropTypes.func.isRequired,
+    elements:  PropTypes.array.isRequired,
+    content:   PropTypes.string.isRequired,
+    articles:  PropTypes.object,
     downloads: PropTypes.object,
-    news: PropTypes.object,
-    people: PropTypes.object.isRequired,
-    currentSort: PropTypes.string.isRequired,
-    currentOrder: PropTypes.string.isRequired
+    news:      PropTypes.object,
+    people:    PropTypes.object.isRequired,
+    orderBy:   PropTypes.string.isRequired,
+    orderDir:  PropTypes.string.isRequired
   };
 
-  sortTable(param, order) {
-    this.props.dispatch(applyParams({ sort: param, order }));
-  }
+  sortTable = (param, dir) => {
+    this.props.dispatch(applyParams({ order_by: param, order_dir: dir }));
+  };
 
-  renderContentTable(config) {
-    return (
-      <ContentTable {...config} />
-    );
-  }
+  renderContentTable = config => (<ContentTable {...config} />);
 
-  renderCommentTable(config) {
+  renderCommentTable = config => {
     const getParents = () => {
       switch (this.props.content) {
         case 'article_comments':
@@ -60,37 +60,39 @@ export class TableContainer extends Component {
           return this.props.news;
         default:
       }
+      return null;
     };
-    return (
-      <CommentTable {...config} parents={getParents()}/>
-    );
-  }
 
-  renderAPCTable(config) {
     return (
-      <APCTable {...config} />
+      <CommentTable {...config} parents={getParents()} />
     );
-  }
+  };
 
-  render() {
-    const { content, elements, people, currentSort, currentOrder } = this.props;
+  renderAPCTable = config => (<APCTable {...config} />);
+
+  render = () => {
+    const { content, elements, people, orderBy, orderDir } = this.props;
     const config = {
-      content: content,
-      ids: elements,
-      elements: this.props[content],
-      people: people,
-      currentSort: currentSort,
-      currentOrder: currentOrder,
-      sortTable: this.sortTable.bind(this)
+      content,
+      people,
+      orderBy,
+      orderDir,
+
+      ids:       elements,
+      elements:  this.props[content],
+      sortTable: this.sortTable
     };
 
     return (
       <div>
-        {elements && ['articles', 'news', 'downloads'].indexOf(content) > -1 && this.renderContentTable(config)}
+        {elements && ['articles', 'news', 'downloads'].indexOf(content) > -1
+        && this.renderContentTable(config)}
 
-        {elements && ['article_comments', 'news_comments', 'download_comments'].indexOf(content) > -1 && this.renderCommentTable(config)}
+        {elements && ['article_comments', 'news_comments', 'download_comments'].indexOf(content) > -1
+        && this.renderCommentTable(config)}
 
-        {elements && content === 'article_pending_creates' && this.renderAPCTable(config)}
+        {elements && content === 'article_pending_creates'
+        && this.renderAPCTable(config)}
       </div>
     );
   }

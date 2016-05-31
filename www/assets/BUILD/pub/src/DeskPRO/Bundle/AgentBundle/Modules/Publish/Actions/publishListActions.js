@@ -6,13 +6,14 @@ import { toggleMassAction } from '../../Application/Actions/massActions';
 
 const recordStoresId = 'publish';
 
-const prepareLinkedData = (linked) => {
+const prepareLinkedData = linked => {
   const result = [];
-  for (const key in linked) {
-    if (linked.hasOwnProperty(key)) {
+  if (linked) {
+    Object.keys(linked).forEach(key => {
       result.push(linked[key]);
-    }
+    });
   }
+
   return result;
 };
 
@@ -31,8 +32,8 @@ export const load = createAction(
       params = { ...dateFilter, ...params };
     }
 
-    return repository('Content').load(params)
-      .then(promise => {
+    return repository('Content').load(params).then(
+      promise => {
         const res = promise.getData();
 
         switch (params.content) {
@@ -65,9 +66,9 @@ export const load = createAction(
         dispatch(setCollection('Person', recordStoresId, prepareLinkedData(res.linked.person)));
         dispatch(toggleMassAction());
 
-        const ids = res.data.map(item=>item.id);
+        const ids = res.data.map(item => item.id);
 
-        return { ids: ids, pagination: res.meta.pagination };
+        return { ids, pagination: res.meta.pagination };
       }
     );
   }
@@ -79,7 +80,7 @@ export const applyParams = createAction(
   'PUBLISH_APPLY_LIST_PARAMS',
   (overwrite = {}) => (dispatch, getState) => {
     const current = currentListParamsSelector(getState()).toJS();
-    const params = { ...current, ...overwrite };
+    const params  = { ...current, ...overwrite };
     if (!overwrite.hasOwnProperty('page') && current.hasOwnProperty('page')) {
       delete params.page;
     }
@@ -88,14 +89,4 @@ export const applyParams = createAction(
       dispatch(load(params));
     }
   }
-);
-
-export const setOrderBy = createAction(
-  'PUBLISH_LIST_SET_ORDER_BY',
-    orderBy => dispatch => dispatch(applyParams({ order_by: orderBy }))
-);
-
-export const setOrderDir = createAction(
-  'PUBLISH_LIST_SET_ORDER_DIR',
-    orderDir => dispatch => dispatch(applyParams({ order_dir: orderDir }))
 );

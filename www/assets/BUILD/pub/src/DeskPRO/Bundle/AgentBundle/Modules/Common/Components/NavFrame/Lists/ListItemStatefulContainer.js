@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
+import { pureRender } from 'Ampliflux';
 import { connect } from 'react-redux';
 import { updateRoutingState } from '../../../../Application/Actions/routingActions';
-import { pureRender } from 'Ampliflux';
 
 @connect(state => ({
   state: state.Application.routing.get('hash')
@@ -21,9 +21,9 @@ export class ListItemStatefulContainer extends React.Component {
     children: PropTypes.node.isRequired
   };
 
-  render() {
+  render = () => {
     const { state, groupId, itemId, dispatch, onClick, active = 'active' } = this.props;
-    const child = this.props.children;
+    const child      = this.props.children;
     const childProps = child.props;
 
     return React.cloneElement(child, {
