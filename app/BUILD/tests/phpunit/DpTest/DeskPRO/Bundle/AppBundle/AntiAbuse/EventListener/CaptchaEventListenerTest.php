@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\AntiAbuse\EventListener;
 
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
@@ -84,17 +85,18 @@ class CaptchaEventListenerTest extends PortalTestCase
         $person = $this->get('test_factory.person')
                        ->createNewInvalidUser('foo@bar.com', 'Foo Bar', 'password123');
 
-        $lessThanMaxAttempts = $this->getRateLimitMaxAttempts($type) - 1;
+        $lessThanMaxAttempts = $this->getRateLimitMaxAttempts($type);
         for ($i = 0; $i < $lessThanMaxAttempts; ++$i) {
             // should not be recommending anything
             $this->get('anti_abuse')->check($event);
 
-            // no recommendations should be made (we are always under limit here)
+            // no recommendations should be made (we are always under or equal limit here)
             $this->assertFalse($event->isCaptchaRecommended());
         }
 
-        // on the next check, we will hit the limit, and there should be a captcha recommended
+        // on the next check (check only), we will know we hit the limit, and there should be a captcha recommended
         $this->get('anti_abuse')->check($event);
+        $event->markAsCheckOnly();
         $this->assertTrue($event->isCaptchaRecommended(), 'rate limit applies if IP is NOT whitelisted');
     }
 
