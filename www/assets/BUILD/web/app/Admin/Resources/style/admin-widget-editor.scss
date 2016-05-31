@@ -108,17 +108,17 @@
 
   .widget-editor-live-demo-container {
     position: absolute;
-    top: 50px;
-    right: -300px;
+    top: 80px;
+    left: 440px;
     z-index: 1000;
-    width: 600px;
-    height: 800px;
+    width: 390px;
+    height: 520px;
     background-color: #ffffff;
     border: 1px solid #000000;
 
     .widget-editor-live-demo-loader {
-      width: 600px;
-      height: 800px;
+      width: inherit;
+      height: inherit;
       position: absolute;
       top: 0;
       left: 0;
@@ -132,8 +132,8 @@
     }
 
     iframe {
-      width: 600px;
-      height: 800px;
+      width: inherit;
+      height: inherit;
       border: 0;
       position: absolute;
       top: 0;
