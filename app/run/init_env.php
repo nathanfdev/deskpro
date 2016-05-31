@@ -109,6 +109,7 @@ define('DP_ENV_ID', $DP_ENV->getEnvId());
  * @deprecated
  */
 define('DP_ROOT', $DP_ENV->getAppDir());
+define('PCLZIP_TEMPORARY_DIR', $DP_ENV->getUserTmpDir().DIRECTORY_SEPARATOR);
 
 /*
  * This is the path to the currently active build within the www dir.
