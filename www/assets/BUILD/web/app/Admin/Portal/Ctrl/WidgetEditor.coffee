@@ -58,8 +58,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
       return options
 
     loadCode: ->
-      @Api2.sendGet('widget/code').then (response) =>
-        @$scope.code = response.data
+      @Api2.sendGet('widget/code')
 
     getLanguage: (translation) ->
       for language in @$scope.languages
@@ -139,7 +138,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
       @Api2.sendPostJson('/widget/setup', @getSaveData(), null, headers: {
         'X-Agent-Request': 'true'
       }).then(
-        () => @loadCode().then =>
+        () => @loadCode().then (codeResponse) =>
+          @$scope.code = codeResponse.data
           @$scope.saving_code = false
         ,
         (response) =>
@@ -153,8 +153,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
           @$scope.$apply( => @$scope.widgetLoaded = true)
       , false);
 
-      @loadCode().then(() =>
-          code = @$scope.code.replace(/widget": {/, "widget\": {\n\"live_demo\": true,")
+      @loadCode().then((codeResponse) =>
+          code = codeResponse.data.replace(/widget": {/, "widget\": {\n\"live_demo\": true,")
           demoDocument = @getLiveDemoDocument();
           demoDocument.write('<body>' + code + '</body>');
           demoDocument.close();
