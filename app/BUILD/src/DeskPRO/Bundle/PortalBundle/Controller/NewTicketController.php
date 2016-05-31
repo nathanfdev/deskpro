@@ -29,10 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonGuest;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitTicketAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebFullType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebType;
@@ -185,6 +187,10 @@ class NewTicketController extends AbstractController
             $formFullView->children['captcha_captcha_auto_added'] = $formView->children['captcha_captcha_auto_added'];
         }
 
+        $abuseCheck = new SubmitTicketAbuseCheck($person, $request->getClientIp());
+        $abuseCheck->markAsCheckOnly();
+        $this->getAntiAbuseService()->check($abuseCheck);
+
         return $this->renderThemeView(
             'Theme:NewTicket:new_ticket.html.twig',
             [
@@ -197,7 +203,7 @@ class NewTicketController extends AbstractController
                 'page_title'              => $this->createPageTitle()->newticket(),
                 'form_errors'             => $form->isSubmitted() ? $form->getErrors() : [],
                 'show_ticket_suggestions' => $show_ticket_suggestions,
-                'lockout'                 => $request->get('lockout', false),
+                'lockout'                 => $abuseCheck->isLockoutRecommended(),
             ]
         );
     }
