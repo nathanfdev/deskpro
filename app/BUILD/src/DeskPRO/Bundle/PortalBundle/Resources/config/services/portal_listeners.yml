@@ -47,6 +47,12 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
+  iframe_resizer.listener:
+      class: DeskPRO\Bundle\PortalBundle\EventListener\IframeResizerListener
+      arguments: ["@portal_mode_storage"]
+      tags:
+        - { name: kernel.event_subscriber }
+
   portal_mode.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\PortalModeListener
     arguments: ["@portal_mode_factory", "@portal_mode_storage", "@logger"]

@@ -1,29 +1,23 @@
-import 'babel-polyfill';
-import factory from 'iframe-resizer';
+(function (window, document) {
+  // #include deskpro_loader_utils.js
 
-((helpdeskUrl, options = {}, window, document) => {
-  const { language = 'en', width = 500, department = 0, hide_department = 0 } = options;
-  const node = document.createElement('iframe');
+  const options = window.DESKPRO_EMBED_OPTIONS;
 
-  // embed type (full portal or new-ticket)
-  node.src = helpdeskUrl + `focus-win/${language}/new-ticket`;
-  if (department) {
-    node.src += `?department_id=${department}`;
-    if (hide_department) {
-      node.src += `&hide_department=1`
-    }
-  }
+  getInstInfo(options.helpdeskUrl, window, document, options.instId || 'default').then(function (instInfo, window, document) {
 
-  // iframe styles
-  node.width = width;
-  (node.frameElement || node).style.cssText = 'border: 0';
+    const appSrc = instInfo.assetUrl + '/pub/build/' + (options.type === 'form' ? 'DeskPRO_EmbedFormBundle.js' : 'DeskPRO_EmbedHelpdeskBundle.js');
 
-  window.onload = () => {
-    document.body.appendChild(node);
-    factory.iframeResizer({
-      log: true,
-      checkOrigin: false,
-      sizeHeight: true
-    }, node);
-  };
-})(__DP_URL__, __DP_OPTIONS__, window, document);
+    const loadFn = function () {
+
+      const appNode = document.createElement('script');
+      appNode.charset = 'UTF8';
+      appNode.type = 'application/javascript';
+      appNode.src = appSrc;
+      (document.getElementsByTagName('head')[0] || document.body).appendChild(appNode);
+    };
+
+    onReadyState(loadFn, window, document);
+  });
+
+})(window, document);
+

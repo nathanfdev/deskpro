@@ -96,8 +96,15 @@ class HttpJsBootTask implements BootTaskInterface
      */
     private function getDynAsset($path)
     {
+        if ($path === '/dyn-assets/inst_info.js') {
+            return 'inst_info.js';
+        }
+
         if (substr($path, 0, 12) === '/dyn-assets/') {
-            if (strpos($path, 'DeskPRO_WidgetBundle.js') || strpos($path, 'DeskPRO_TicketFormWidgetBundle.js')) {
+            if (
+                strpos($path, 'widget_loader.js') || strpos($path, 'widget_loader.min.js')
+                || strpos($path, 'embed_loader.js') || strpos($path, 'embed_loader.min.js')
+            ) {
                 return preg_replace('#^/dyn\-assets/#', '', $path);
             }
         }
@@ -116,11 +123,11 @@ class HttpJsBootTask implements BootTaskInterface
                 $code = $this->getChatWidget();
                 break;
             case 'TicketFormWidget/TicketFormWidget.js':
-                $code = '//TODO';
+                $code = $this->getFormWidget();
                 break;
             case 'WebsiteWidget/Overlay.js':
             case 'HelpdeskWidget/HelpdeskWidget.js':
-                $code = '// This feature no longer exists';
+                $code = $this->getHdWidget();
                 break;
             default:
                 $code = '';
@@ -138,18 +145,12 @@ class HttpJsBootTask implements BootTaskInterface
 
     private function getChatWidget()
     {
-        $loaderPath      = $this->env->getAppWwwAssetDir().'/pub/build/widget_loader.min.js';
-        $baseUrl         = $this->request->getUriForPath('/');
-        $widgetScriptUrl = $baseUrl.$this->env->getAppName().'/pub/build/DeskPRO_WidgetBundle.js';
-
-        if (!file_exists($loaderPath)) {
-            return '// loader not compiled -- dev mode?';
-        }
-
-        $script = file_get_contents($loaderPath);
+        $baseUrl   = $this->request->getUriForPath('/');
+        $loaderSrc = $this->request->getUriForPath('/assets/'.$this->env->getAppName().'/pub/build/widget_loader.min.js');
 
         $options = array(
-            'widget' => array(
+            'helpdeskUrl' => $baseUrl,
+            'widget'      => array(
                 'type'     => 'column',
                 'position' => 'right',
             ),
@@ -182,11 +183,60 @@ class HttpJsBootTask implements BootTaskInterface
         );
 
         // override options
-        $script = str_replace('__DP_APP_SRC__', '"'.$widgetScriptUrl.'"', $script);
-        $script = str_replace('__DP_URL__', '"'.$baseUrl.'"', $script);
-        $script = str_replace('__DP_OPTIONS__', json_encode($options), $script);
+        $options = json_encode($options);
 
-        return $script;
+        return "<!--DESKPRO_WIDGET_LOADER::BEGIN-->\n<script type=\"text/javascript\">\nwindow.DESKPRO_WIDGET_OPTIONS = $options;\n</script>\n<script type=\"text/javascript\" src=\"$loaderSrc\"></script>\n<!--DESKPRO_WIDGET_LOADER::END-->";
+    }
+
+    private function getFormWidget()
+    {
+        $loaderSrc = $this->request->getUriForPath('/assets/'.$this->env->getAppName().'/pub/build/embed_loader.min.js');
+
+        return <<<CODE
+(function() {
+window.DESKPRO_EMBED_OPTIONS = {
+    "helpdeskUrl": DpHelpdesk_Options.deskproUrl.replace(/\/$/, ''),
+    "containerId": DpHelpdesk_Options.containerId,
+    "department": DpHelpdesk_Options.departmentId,
+    "type": "form",
+    "language": "",
+    "width": 0
+};
+
+document.getElementById(DpHelpdesk_Options.containerId).style.display = 'block';
+
+var scr   = document.createElement('script');
+scr.type  = 'text/javascript';
+scr.async = true;
+scr.src   = '$loaderSrc';
+(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(scr);
+})();
+CODE;
+    }
+
+    private function getHdWidget()
+    {
+        $loaderSrc = $this->request->getUriForPath('/assets/'.$this->env->getAppName().'/pub/build/embed_loader.min.js');
+
+        return <<<CODE
+(function() {
+window.DESKPRO_EMBED_OPTIONS = {
+    "helpdeskUrl": DpHelpdesk_Options.deskproUrl.replace(/\/$/, ''),
+    "containerId": DpHelpdesk_Options.containerId,
+    "type": "helpdesk",
+    "language": "",
+    "width": 0
+};
+
+document.getElementById(DpHelpdesk_Options.containerId).style.display = 'block';
+
+var scr   = document.createElement('script');
+scr.type  = 'text/javascript';
+scr.async = true;
+scr.src   = '$loaderSrc';
+(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(scr);
+})();
+CODE;
     }
 
     ####################################################################################################################
@@ -195,6 +245,31 @@ class HttpJsBootTask implements BootTaskInterface
 
     private function serveDynAsset($asset)
     {
+        if ($asset === 'inst_info.js') {
+            $cb = !empty($_GET['callback']) ? $_GET['callback'] : 'dp_load_version_cb';
+
+            $res = new Response('', 200, ['Content-Type' => 'application/javascript']);
+            $res->setTtl(3600);
+            $res->setEtag(sha1('inst_info.js'.$this->env->getAppName().$cb));
+            $res->setPublic();
+            $res->isNotModified($this->request);
+
+            if (!$res->isNotModified($this->request)) {
+                $info = [
+                    'helpdeskUrl' => rtrim($this->request->getUriForPath('/'), '/'),
+                    'assetUrl'    => rtrim($this->request->getUriForPath('/assets/'.$this->env->getAppName()), '/'),
+                    'buildId'     => $this->env->getAppName(),
+                ];
+                $cb   = preg_replace('#[^a-zA-Z0-9_\.\-]#', '', $cb);
+                $code = "$cb(".json_encode($info).')';
+                $res->setContent($code);
+            }
+
+            $res->sendHeaders();
+            $res->sendContent();
+            exit;
+        }
+
         $assetPath = realpath($this->env->getAppWwwAssetDir().'/'.$asset);
 
         // Invalid path, not in the dir we expected (maybe user supplied ..'s in the url)

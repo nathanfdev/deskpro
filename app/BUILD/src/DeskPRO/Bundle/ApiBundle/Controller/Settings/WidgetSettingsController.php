@@ -93,7 +93,7 @@ class WidgetSettingsController extends BaseController
      */
     public function getWidgetCodeAction()
     {
-        return new Response($this->get('widget_loader_code_renderer')->getWidgetCode(true));
+        return new Response($this->get('widget_loader_code_renderer')->getWidgetCode());
     }
 
     /**

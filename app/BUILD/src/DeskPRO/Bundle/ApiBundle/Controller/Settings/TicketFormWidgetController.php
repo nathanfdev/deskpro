@@ -29,12 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\Settings;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
+use DeskPRO\Component\Util\MapUtils;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -59,51 +60,41 @@ class TicketFormWidgetController extends BaseController
      */
     public function getJsAction(Request $request)
     {
-        /** @var AppEnvInterface $env */
-        $env    = $this->get('deskpro.app_env');
-        $assets = $env->getAppWwwAssetDir();
-        $file   = "$assets/pub/build/embed_loader.js";
-        $js     = file_get_contents($file);
-        $js     = strtr($js, [
-            '__DP_URL__'     => $this->getDpUrl(),
-            '__DP_OPTIONS__' => $this->getDpOptions($request),
-        ]);
-        $js     = str_replace("\n", "\n  ", $js); // JS 2 space padding
-        $script = <<<CODE
-<!--DESKPRO_TICKET_FORM_WIDGET::BEGIN-->
-<script type="text/javascript">
-  $js
-</script>
-<!--DESKPRO_TICKET_FORM_WIDGET::END-->
-CODE;
-
-        return new Response($script);
-    }
-
-    /**
-     * Get __DP_URL__ JS placeholder value.
-     *
-     * @return string
-     */
-    private function getDpUrl()
-    {
-        return '"'.$this->generateUrl('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL).'"';
-    }
-
-    /**
-     * Get __DP_OPTIONS__ JS placeholder value.
-     *
-     * @param Request $request
-     *
-     * @return string
-     */
-    private function getDpOptions(Request $request)
-    {
         $language       = $request->get('language') ?: 'en';
         $department     = (int) $request->get('department') ?: 0;
         $hideDepartment = (int) $request->get('hide_department') ?: 0;
         $width          = $request->get('width', '500');
 
-        return "{language: '$language', department: $department, hide_department: $hideDepartment, width: '$width'}";
+        $options = [
+            'language'        => $language,
+            'department'      => $department,
+            'hide_department' => $hideDepartment,
+            'width'           => $width,
+        ];
+
+        return new Response($this->getCode($options));
+    }
+
+    private function getCode(array $options)
+    {
+        $helpdeskUrl = rtrim($this->generateUrl('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL), '/');
+
+        $loaderSrc = $this->get('assets.packages')->getUrl('embed_loader.js', 'app_assets');
+        $loaderSrc = preg_replace('#/assets/.*?/pub/#', '/dyn-assets/pub/', $loaderSrc);
+        $loaderSrc = preg_replace('#\?.*?$#', '', $loaderSrc);
+
+        if (!preg_match('#^https?://#i', $loaderSrc)) {
+            $loaderSrc = $helpdeskUrl.$loaderSrc;
+        }
+
+        $options = MapUtils::prependItem($options, 'type', 'form');
+        $options = MapUtils::prependItem($options, 'containerId', 'deskpro_embed_form_container');
+        $options = MapUtils::prependItem($options, 'helpdeskUrl', $helpdeskUrl);
+
+        $options = json_encode($options, \JSON_PRETTY_PRINT);
+
+        $html = '<div id="deskpro_embed_form_container"></div>';
+
+        return "<!--DESKPRO_EMBED_LOADER::BEGIN-->\n$html\n<script type=\"text/javascript\">\nwindow.DESKPRO_EMBED_OPTIONS = $options;\n</script>\n<script type=\"text/javascript\" src=\"$loaderSrc\"></script>\n<!--DESKPRO_EMBED_LOADER::END-->";
     }
 }

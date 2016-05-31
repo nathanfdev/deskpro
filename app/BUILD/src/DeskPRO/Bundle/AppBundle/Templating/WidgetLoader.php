@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Templating;
 
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
+use DeskPRO\Component\Util\MapUtils;
 use JMS\Serializer\Serializer;
 
 /**
@@ -67,37 +68,22 @@ class WidgetLoader
     }
 
     /**
-     * @param bool $dynamicVersion True to make the app source file a dynamic path
-     *
      * @return string
      */
-    public function getWidgetCode($dynamicVersion = false)
+    public function getWidgetCode()
     {
-        $assetDir    = $this->appEnv->getAppWwwAssetDir();
         $urlSettings = $this->settingsResolver->getWidgetUrlSettings();
-        $loaderPath  = $assetDir.'/pub/build/widget_loader.min.js';
 
-        $appSrc = $urlSettings->getWidgetBundle();
-        if ($dynamicVersion) {
-            // A request that is routed through HttpJsBootTask to make the backend JS use
-            // the proper build
-            $appSrc = preg_replace('#/assets/.*?/pub/#', '/dyn-assets/pub/', $appSrc);
-        }
-
-        if (!file_exists($loaderPath)) {
-            $loaderPath = $assetDir.'/pub/build/widget_loader.js';
-        }
-        if (!file_exists($loaderPath)) {
-            throw new \RuntimeException('widget_loader.js does not exist');
-        }
-
-        $script = file_get_contents($loaderPath);
+        $loaderSrc = $urlSettings->getWidgetLoader();
+        $loaderSrc = preg_replace('#/assets/.*?/pub/#', '/dyn-assets/pub/', $loaderSrc);
+        $loaderSrc = preg_replace('#\?.*?$#', '', $loaderSrc);
 
         // override options
-        $script = str_replace('__DP_APP_SRC__', '"'.$appSrc.'"', $script);
-        $script = str_replace('__DP_URL__', '"'.$urlSettings->getHelpdesk().'"', $script);
-        $script = str_replace('__DP_OPTIONS__', $this->serializer->serialize($this->settingsResolver->getWidgetBrandOptions(), 'json'), $script);
+        $options = $this->serializer->toArray($this->settingsResolver->getWidgetBrandOptions());
+        $options = MapUtils::prependItem($options, 'helpdeskUrl', $urlSettings->getHelpdesk());
 
-        return "<!--DESKPRO_WIDGET_LOADER::BEGIN-->\n<script type=\"text/javascript\">$script</script>\n<!--DESKPRO_WIDGET_LOADER::END-->";
+        $options = json_encode($options, \JSON_PRETTY_PRINT);
+
+        return "<!--DESKPRO_WIDGET_LOADER::BEGIN-->\n<script type=\"text/javascript\">\nwindow.DESKPRO_WIDGET_OPTIONS = $options;\n</script>\n<script type=\"text/javascript\" src=\"$loaderSrc\"></script>\n<!--DESKPRO_WIDGET_LOADER::END-->";
     }
 }
