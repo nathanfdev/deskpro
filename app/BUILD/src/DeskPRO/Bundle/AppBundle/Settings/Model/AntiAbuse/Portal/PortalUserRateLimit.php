@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal;
 
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup;
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class PortalUserRateLimit.
@@ -39,45 +40,55 @@ class PortalUserRateLimit
     /**
      * Limits for ticket submitting.
      *
-     * @var RateLimitGroup
+     * @Assert\Valid
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
+     *
+     * @var RateLimitGroup
      */
     private $submitTicket;
 
     /**
      * Limits for feedback submitting.
      *
-     * @var RateLimitGroup
+     * @Assert\Valid
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
+     *
+     * @var RateLimitGroup
      */
     private $submitFeedback;
 
     /**
      * Limits for comments submitting.
      *
-     * @var RateLimitGroup
+     * @Assert\Valid
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
+     *
+     * @var RateLimitGroup
      */
     private $submitComment;
 
     /**
      * Limits for attachment submitting.
      *
-     * @var RateLimitGroup
+     * @Assert\Valid
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
+     *
+     * @var RateLimitGroup
      */
     private $uploadAttachment;
 
     /**
      * Limits for sharing content.
      *
-     * @var RateLimitGroup
+     * @Assert\Valid
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
+     *
+     * @var RateLimitGroup
      */
     private $shareContent;
 

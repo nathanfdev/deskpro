@@ -30,11 +30,15 @@ namespace DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse;
 
 use DeskPRO\Bundle\AppBundle\Settings\Model\EnabledOptionTrait;
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\GroupSequenceProviderInterface;
 
 /**
  * Class RateLimitGroup.
+ *
+ * @Assert\GroupSequenceProvider
  */
-class RateLimitGroup
+class RateLimitGroup implements GroupSequenceProviderInterface
 {
     use EnabledOptionTrait;
 
@@ -46,6 +50,9 @@ class RateLimitGroup
      *
      * @var int
      *
+     * @Assert\NotBlank(groups={"Common"})
+     * @Assert\GreaterThan(value=0, groups={"Common"})
+     *
      * @JMS\Type("integer")
      */
     private $limit = 0;
@@ -55,7 +62,10 @@ class RateLimitGroup
      *
      * @var int
      *
-     * @JMS\Exclude()
+     * @Assert\NotBlank(groups={"Common"})
+     * @Assert\GreaterThan(value=0, groups={"Common"})
+     *
+     * @JMS\Type("integer")
      */
     private $time = 0;
 
@@ -71,9 +81,12 @@ class RateLimitGroup
     /**
      * @var int
      *
-     * @JMS\Exclude()
+     * @Assert\NotBlank(groups={"Lockout"})
+     * @Assert\GreaterThan(value=0, groups={"Lockout"})
+     *
+     * @JMS\Type("integer")
      */
-    private $lockout_time = 0;
+    private $lockoutTime = 0;
 
     /**
      * @return int
@@ -96,14 +109,11 @@ class RateLimitGroup
     }
 
     /**
-     * @JMS\VirtualProperty()
-     * @JMS\Type("integer")
-     *
      * @return int
      */
     public function getTime()
     {
-        return $this->time / 60;
+        return $this->time;
     }
 
     /**
@@ -113,30 +123,27 @@ class RateLimitGroup
      */
     public function setTime($time)
     {
-        $this->time = $time;
+        $this->time = $time / 60;
 
         return $this;
     }
 
     /**
-     * @JMS\VirtualProperty()
-     * @JMS\Type("integer")
-     *
      * @return int
      */
     public function getLockoutTime()
     {
-        return $this->lockout_time / 60;
+        return $this->lockoutTime;
     }
 
     /**
-     * @param int $lockout_time
+     * @param int $lockoutTime
      *
      * @return $this
      */
-    public function setLockoutTime($lockout_time)
+    public function setLockoutTime($lockoutTime)
     {
-        $this->lockout_time = $lockout_time;
+        $this->lockoutTime = $lockoutTime / 60;
 
         return $this;
     }
@@ -159,5 +166,18 @@ class RateLimitGroup
         $this->response = $response;
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getGroupSequence()
+    {
+        $groups = ['Common', 'Default'];
+        if ($this->response === self::RESPONSE_LOCKOUT) {
+            $groups[] = 'Lockout';
+        }
+
+        return $groups;
     }
 }

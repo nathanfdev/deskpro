@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal;
 
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class PortalAntiAbuseSettings.
@@ -38,27 +39,33 @@ class PortalAntiAbuseSettings
     /**
      * Account rate limit object.
      *
-     * @var PortalAccountRateLimit
+     * @Assert\Valid
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalAccountRateLimit")
+     *
+     * @var PortalAccountRateLimit
      */
     private $accountRateLimit;
 
     /**
      * Rate limits for user.
      *
-     * @var PortalUserRateLimit
+     * @Assert\Valid
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalUserRateLimit")
+     *
+     * @var PortalUserRateLimit
      */
     private $userRateLimit;
 
     /**
      * Rate limits for guests.
      *
-     * @var PortalUserRateLimit
+     * @Assert\Valid
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalUserRateLimit")
+     *
+     * @var PortalUserRateLimit
      */
     private $guestRateLimit;
 
