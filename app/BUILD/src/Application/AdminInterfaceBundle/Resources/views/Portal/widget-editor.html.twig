@@ -132,12 +132,6 @@
                                     </select>
                                 </div>
                             </li>
-                            <li style="display: none">
-                                <label class="option-label">{{ phrase('admin.widget.chat_email_validation') }}:</label>
-                                <div class="option-group">
-                                    {#<input type="checkbox" ng-model="global_settings.chat.email_validation" />#}
-                                </div>
-                            </li>
                         </ul>
                     </div>
 
@@ -199,18 +193,6 @@
                     </div>
                     <div>
                         <ul class="options">
-                            <li>
-                                <label class="option-label">{{ phrase('admin.widget.chat_waiting_timeout') }}:</label>
-                                <div class="option-group">
-                                    <input type="text" ng-model="brand_settings.chat.waiting_timeout" />
-                                    <span class="help-block">{{ phrase('admin.widget.chat_waiting_timeout_help') }}</span>
-                                    <ul class="errors">
-                                        <li ng-repeat="error in formErrors.brand.fields.chat.fields.waiting_timeout.errors">
-                                            {{ ng_var('error.message') }}
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
                             <li>
                                 <label class="option-label">{{ phrase('admin.widget.chat_agent_polling_timeout') }}:</label>
                                 <div class="option-group">

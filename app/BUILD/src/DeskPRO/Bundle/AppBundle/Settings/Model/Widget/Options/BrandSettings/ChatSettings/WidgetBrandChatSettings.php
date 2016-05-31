@@ -76,7 +76,7 @@ class WidgetBrandChatSettings
      * @JMS\Type("integer")
      * @Assert\GreaterThanOrEqual(30)
      */
-    private $waitingTimeout = 30;
+    private $waitingTimeout = 150;
 
     /**
      * Constructor.
