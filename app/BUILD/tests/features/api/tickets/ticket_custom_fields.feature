@@ -1,86 +1,123 @@
-Feature: /person_custom_fields endpoint
-  To retrieve DeskPRO person custom fields
-  As an API user
-  I want an API endpoint
+Feature: Ticket custom fields
+  To customize DeskPRO to fit my needs
+  As a DeskPRO user
+  I want to be able to create custom ticket fields
 
   Background:
-    Given I install the api data set
-    And my request is authenticated
+    Given I'm authenticated as admin
+    And only the following custom ticket fields exist:
+      | #                      | Type          | Title               | Parent                |
+      | text_field             | text          | Text field          |                       |
+      | textarea_field         | textarea      | Textarea field      |                       |
+      | date_field             | date          | Date field          |                       |
+      | datetime_field         | datetime      | Datetime field      |                       |
+      | single_choice_field    | single_choice | Single Choice field |                       |
+      | single_choice_v1_field |               | Single Choice v1    | {single_choice_field} |
+      | single_choice_v2_field |               | Single Choice v2    | {single_choice_field} |
+      | single_choice_v3_field |               | Single Choice v3    | {single_choice_field} |
+      | multi_choice_field     | multi_choice  | Multi Choice field  |                       |
+      | multi_choice_v1_field  |               | Multi Choice v1     | {multi_choice_field}  |
+      | multi_choice_v2_field  |               | Multi Choice v2     | {multi_choice_field}  |
+      | multi_choice_v3_field  |               | Multi Choice v3     | {multi_choice_field}  |
 
   Scenario: I retrieve a list of custom fields
     When I send a GET request to "/api/v2/ticket_custom_fields"
-    Then the response should be in JSON
     And the response status code should be 200
-
     And the JSON node "data" should have 6 elements
-    And the JSON node "data[0].id" should be equal to 1
-    And the JSON node "data[0].title" should be equal to "Desired Sizes"
-    And the JSON node "data[0].description" should be equal to "A custom  field"
-    And the JSON node "data[0].parent" should be equal to 0
-    And the JSON node "data[0].widget_type" should be equal to "choice"
-    And the JSON node "data[0].children" should not exist
-    And the JSON node "data[0].default_value" should contain 2
-    And the JSON node "data[0].choices" should have 3 elements
-    And the JSON node "data[0].choices[0].id" should be equal to 2
-    And the JSON node "data[0].choices[0].title" should be equal to "Small"
-    And the JSON node "data[0].choices[0].is_selectable" should be equal to 1
-    And the JSON node "data[0].choices[1].id" should be equal to 3
-    And the JSON node "data[0].choices[1].title" should be equal to "Medium"
-    And the JSON node "data[0].choices[1].is_selectable" should be equal to 1
-    And the JSON node "data[0].choices[2].id" should be equal to 4
-    And the JSON node "data[0].choices[2].title" should be equal to "Large"
-    And the JSON node "data[0].choices[2].is_selectable" should be equal to 1
-
-    And the JSON node "data[1].id" should be equal to 5
-    And the JSON node "data[1].title" should be equal to "Delivery Time"
-    And the JSON node "data[1].description" should be equal to "A custom  field"
-    And the JSON node "data[1].parent" should be equal to 0
-    And the JSON node "data[1].widget_type" should be equal to "datetime"
-    And the JSON node "data[1].choices" should have 0 elements
-
-    And the JSON node "data[2].id" should be equal to 6
-    And the JSON node "data[2].title" should be equal to "Widget Type"
-    And the JSON node "data[2].description" should be equal to "A custom  field"
-    And the JSON node "data[2].parent" should be equal to 0
-    And the JSON node "data[2].widget_type" should be equal to "text"
-    And the JSON node "data[2].choices" should have 0 elements
-
-    And the JSON node "data[3].id" should be equal to 7
-    And the JSON node "data[3].title" should be equal to "Widget Description"
-    And the JSON node "data[3].description" should be equal to "A custom  field"
-    And the JSON node "data[3].parent" should be equal to 0
-    And the JSON node "data[3].widget_type" should be equal to "textarea"
-    And the JSON node "data[3].choices" should have 0 elements
-    And the JSON node "data[3].default_value" should contain "default value"
-
-    And the JSON node "data[4].id" should be equal to 8
-    And the JSON node "data[4].title" should be equal to "Multiple choice"
-    And the JSON node "data[4].description" should be equal to "A custom  field"
-    And the JSON node "data[4].options.multiple" should be equal to 1
-    And the JSON node "data[4].options.expanded" should be equal to 1
-    And the JSON node "data[4].parent" should be equal to 0
-    And the JSON node "data[4].widget_type" should be equal to "checkbox"
+    And the JSON node "data[0].title" should be equal to "Text field"
+    And the JSON node "data[1].title" should be equal to "Textarea field"
+    And the JSON node "data[2].title" should be equal to "Date field"
+    And the JSON node "data[3].title" should be equal to "Datetime field"
+    And the JSON node "data[4].title" should be equal to "Single Choice field"
     And the JSON node "data[4].choices" should have 3 elements
-    And the JSON node "data[4].choices[0].id" should be equal to 9
-    And the JSON node "data[4].choices[1].id" should be equal to 10
-    And the JSON node "data[4].choices[2].id" should be equal to 11
-    And the JSON node "data[4].default_value[0]" should contain 9
-    And the JSON node "data[4].default_value[1]" should contain 10
+    And the JSON node "data[5].title" should be equal to "Multi Choice field"
+    And the JSON node "data[5].choices" should have 3 elements
 
-    And the JSON node "data[5].id" should be equal to 12
-    And the JSON node "data[5].widget_type" should be equal to "date"
-    And the JSON node "data[5].title" should be equal to "Delivery Date"
-    And the JSON node "data[5].description" should be equal to "A custom  field"
-    And the JSON node "data[5].parent" should be equal to 0
-    And the JSON node "data[5].choices" should have 0 elements
-
-  Scenario: I get child field
-    When I send a GET request to "/api/v2/ticket_custom_fields/2"
-    Then the response should be in JSON
+  Scenario: I get a custom field
+    When I send a GET request to "/api/v2/ticket_custom_fields/{text_field}"
     And the response status code should be 200
-
-    And the JSON node "data.id" should be equal to 2
-    And the JSON node "data.title" should be equal to "Small"
-    And the JSON node "data.description" should be equal to 0
-    And the JSON node "data.parent" should be equal to 1
+    And the JSON node "data.title" should be equal to "Text field"
+    And the JSON node "data.parent" should be null
     And the JSON node "data.choices" should have 0 elements
+
+  Scenario: I create a ticket with custom fields
+    When I send a POST request to "/api/v2/tickets" with body:
+    """
+{
+  "subject": "Test Ticket w/ custom fields",
+  "fields": {
+    "~text_field~": "text field value",
+    "~textarea_field~": "textarea field value",
+    "~date_field~": "2015-10-11",
+    "~datetime_field~": "2016-01-02 15:30:42",
+    "~single_choice_field~": ["~single_choice_v2_field~"],
+    "~multi_choice_field~": ["~multi_choice_v1_field~", "~multi_choice_v3_field~"]
+  }
+}
+    """
+    Then the response status code should be 201
+    And the JSON node "data.fields.{text_field}.value" should be equal to "text field value"
+    And the JSON node "data.fields.{textarea_field}.value" should be equal to "textarea field value"
+    And the JSON node "data.fields.{date_field}.value" should be equal to "2015-10-11T00:00:00+0000"
+    And the JSON node "data.fields.{datetime_field}.value" should be equal to "2016-01-02T15:30:42+0000"
+    And the JSON node "data.fields.{single_choice_field}.detail.{single_choice_v2_field}.title" should be equal to "Single Choice v2"
+    And the JSON node "data.fields.{single_choice_field}.detail.{single_choice_v1_field}.title" should not exist
+    And the JSON node "data.fields.{single_choice_field}.detail.{single_choice_v3_field}.title" should not exist
+    And the JSON node "data.fields.{multi_choice_field}.detail.{multi_choice_v1_field}.title" should be equal to "Multi Choice v1"
+    And the JSON node "data.fields.{multi_choice_field}.detail.{multi_choice_v3_field}.title" should be equal to "Multi Choice v3"
+    And the JSON node "data.fields.{multi_choice_field}.detail.{multi_choice_v2_field}" should not exist
+
+  Scenario: I modify a ticket with custom fields
+    Given I send a POST request to "/api/v2/tickets" with body:
+    """
+{
+  "subject": "Test Ticket w/ custom fields",
+  "fields": {
+    "~text_field~": "text field value",
+    "~textarea_field~": "textarea field value",
+    "~date_field~": "2015-10-11",
+    "~datetime_field~": "2016-01-02 15:30:42",
+    "~single_choice_field~": ["~single_choice_v2_field~"],
+    "~multi_choice_field~": ["~multi_choice_v1_field~", "~multi_choice_v3_field~"]
+  }
+}
+    """
+    And the response status code should be 201
+    When I send a POST request to "/api/v2/tickets" with body:
+    """
+{
+  "subject": "Modified subject",
+  "fields": {
+    "~text_field~": "modified text",
+    "~textarea_field~": "modified textarea",
+    "~date_field~": "2015-12-11",
+    "~datetime_field~": "2016-02-01 15:30:42",
+    "~single_choice_field~": ["~single_choice_v1_field~"],
+    "~multi_choice_field~": ["~multi_choice_v1_field~", "~multi_choice_v2_field~"]
+  }
+}
+    """
+    And the response status code should be 201
+    And the JSON node "data.subject" should be equal to "Modified subject"
+    And the JSON node "data.fields.{text_field}.value" should be equal to "modified text"
+    And the JSON node "data.fields.{textarea_field}.value" should be equal to "modified textarea"
+    And the JSON node "data.fields.{date_field}.value" should be equal to "2015-12-11T00:00:00+0000"
+    And the JSON node "data.fields.{datetime_field}.value" should be equal to "2016-02-01T15:30:42+0000"
+    And the JSON node "data.fields.{single_choice_field}.detail.{single_choice_v1_field}.title" should be equal to "Single Choice v1"
+    And the JSON node "data.fields.{single_choice_field}.detail.{single_choice_v2_field}.title" should not exist
+    And the JSON node "data.fields.{single_choice_field}.detail.{single_choice_v3_field}.title" should not exist
+    And the JSON node "data.fields.{multi_choice_field}.detail.{multi_choice_v1_field}.title" should be equal to "Multi Choice v1"
+    And the JSON node "data.fields.{multi_choice_field}.detail.{multi_choice_v2_field}.title" should be equal to "Multi Choice v2"
+    And the JSON node "data.fields.{multi_choice_field}.detail.{multi_choice_v3_field}" should not exist
+
+  Scenario: I try to create a custom field via API
+    Given I send a POST request to "/api/v2/ticket_custom_fields"
+    Then the response status code should be 405
+
+  Scenario: I try to modify a custom field via API
+    Given I send a PUT request to "/api/v2/ticket_custom_fields/{text_field}"
+    Then the response status code should be 405
+
+  Scenario: I try to delete a custom field via API
+    Given I send a DELETE request to "/api/v2/ticket_custom_fields/{text_field}"
+    Then the response status code should be 405
