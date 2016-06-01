@@ -56,8 +56,8 @@ class DateTimeWidget extends React.Component {
       ...this.getRangeOptions(),
       ...this.getWeekdaysOptions(),
 
-      ownerDocument: widgetOptions.ownerDocument,
-      contentWindow: widgetOptions.contentWindow,
+      ownerDocument: widgetOptions.ownerDocument || window,
+      contentWindow: widgetOptions.contentWindow || document,
       parentID:      $wrapper,
       timepicker:    timePicker,
 

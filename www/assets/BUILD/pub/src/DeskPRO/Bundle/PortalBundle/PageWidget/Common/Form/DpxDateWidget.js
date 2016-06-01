@@ -63,6 +63,9 @@ export class DpxDateWidget extends PageWidget {
       parentID:   $el.parent(),
       timepicker: isTimeIncluded,
 
+      ownerDocument: this.options.ownerDocument || document,
+      contentWindow: this.options.contentWindow || window,
+
       format,
       formatTime: 'LT',
       formatDate: 'L',
