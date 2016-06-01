@@ -107,7 +107,7 @@ class AntiAbuseContext extends BaseContext implements KernelAwareContext
      */
     private function getSetting($name)
     {
-        $repository          = $this->getRepository(Setting::class);
+        $repository          = $this->repository(Setting::class);
         $setting             = $repository->findOneBy(['name' => $name]);
         $setting or $setting = new Setting();
         $setting->name       = $name;
