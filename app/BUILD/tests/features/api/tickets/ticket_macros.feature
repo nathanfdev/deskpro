@@ -105,7 +105,6 @@ Feature: /ticket_macros endpoint
     And the JSON node "linked.person.1.primary_email" should be equal to "admin@deskpro.dev"
     And the JSON node "linked.organization.1.name" should be equal to "Organization 1"
 
-
   Scenario: I get a macro w/o sideloading
     When I send a GET request to "/api/v2/ticket_macros/1"
     Then the response status code should be 200
@@ -144,7 +143,7 @@ Feature: /ticket_macros endpoint
     And the JSON node "errors.fields.organization.fields.custom_data.fields.custom_data_6.errors[0].message" should be equal to "This value should not be blank."
 
   Scenario: I apply a macro
-    Given I reset ticket with id="1" logs
+    Given I reset the "1" ticket logs
     When I send a GET request to "/api/v2/tickets/1"
     Then the response status code should be 200
     And the JSON node "data.language" should be equal to 0
@@ -160,14 +159,14 @@ Feature: /ticket_macros endpoint
     And the JSON node "data.labels[0]" should be equal to the string "label1"
     And the JSON node "data.labels[1]" should be equal to the string "label2"
     And the JSON node "data.labels[2]" should be equal to the string "label3"
-    And ticket with id="1" has logs:
+    And the "1" ticket should have the following logs:
       | type               |
       | changed_labels     |
       | changed_language   |
       | changed_department |
 
   Scenario: I apply a macro with reply action
-    Given I reset ticket with id="1" logs
+    Given I reset the "1" ticket logs
     When I send a POST request to "/api/v2/ticket_macros/6/apply/1"
     Then the response status code should be 204
 
@@ -183,4 +182,4 @@ Feature: /ticket_macros endpoint
     And the JSON node "data" should have 2 elements
     And the JSON node "data[0].message" should be equal to "My reply text."
     And the JSON node "data[1].message" should be equal to "My reply text."
-    And ticket with id="1" has "message_created" log
+    And the "1" ticket should have "message_created" log

@@ -32,14 +32,6 @@ Feature: /ticket_forms endpoint
     And the JSON node "data.priority" should be equal to 0
     And the JSON node "data.cc" should have 0 elements
     And the JSON node "data.followers" should have 0 elements
-    And ticket with id="{lastCreatedId}" has logs:
-      | type               |
-      | action_starter     |
-      | ticket_created     |
-      | message_created    |
-      | changed_subject    |
-      | changed_department |
-      | changed_person     |
 
     When I send a GET request to "/api/v2/tickets/{lastCreatedId}/messages"
     Then the response status code should be 200
@@ -53,7 +45,6 @@ Feature: /ticket_forms endpoint
     And the JSON node "data.primary_email" should be equal to "admin@deskpro.dev"
 
   Scenario: I modify and retrieve a ticket
-    Given I reset ticket with id="{lastCreatedId}" logs
     When I send a PUT request to "/api/v2/ticket_forms/agent/{lastCreatedId}" with body:
     """
 {
@@ -105,19 +96,6 @@ Feature: /ticket_forms endpoint
 }
     """
     Then the response status code should be 204
-    And ticket with id="{lastCreatedId}" has logs:
-      | type                       |
-      | changed_department         |
-      | changed_subject            |
-      | changed_labels             |
-      | changed_product            |
-      | changed_priority           |
-      | changed_category           |
-      | changed_category           |
-      | changed_workflow           |
-      | changed_user_participants  |
-      | changed_agent_participants |
-      | changed_custom_field       |
 
     When I send a GET request to "/api/v2/tickets/{lastCreatedId}"
     Then the response status code should be 200

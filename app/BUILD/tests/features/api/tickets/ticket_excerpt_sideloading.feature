@@ -7,9 +7,9 @@ Feature: /tickets endpoint
     And my request is authenticated
 
   Scenario: I create a ticket with agent note
-    Given I create a ticket and reference its' ID as ticketId
+    Given I create a Ticket and reference it as ticket
 
-    When I send a POST request to "/api/v2/tickets/{ticketId}/messages" with body:
+    When I send a POST request to "/api/v2/tickets/{ticket}/messages" with body:
     """
 {
   "message": "Message"
@@ -17,7 +17,7 @@ Feature: /tickets endpoint
     """
     Then the response status code should be 201
 
-    When I send a POST request to "/api/v2/tickets/{ticketId}/messages" with body:
+    When I send a POST request to "/api/v2/tickets/{ticket}/messages" with body:
     """
 {
   "message": "Note",

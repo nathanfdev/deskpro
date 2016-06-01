@@ -545,8 +545,8 @@ Feature: /ticket_forms endpoint
     And the JSON node "linked.ticket_user_errors.6.fields.subject.errors[0].message" should contain "This value should not be blank."
 
   Scenario: I test validation on resolved
-    Given I create a ticket and reference its' ID as ticketId
-    When I send a PUT request to "/api/v2/tickets/{ticketId}" with body:
+    Given I create a Ticket and reference it as ticket
+    When I send a PUT request to "/api/v2/tickets/{ticket}" with body:
     """
 {
   "department": 2
@@ -554,7 +554,7 @@ Feature: /ticket_forms endpoint
     """
     Then the response status code should be 204
 
-    When I send a PUT request to "/api/v2/tickets/{ticketId}" with body:
+    When I send a PUT request to "/api/v2/tickets/{ticket}" with body:
     """
 {
   "fields": {
@@ -563,10 +563,10 @@ Feature: /ticket_forms endpoint
 }
     """
     Then the response status code should be 204
-    When I send a GET request to "/api/v2/tickets/{ticketId}"
+    When I send a GET request to "/api/v2/tickets/{ticket}"
     Then the JSON node "data.fields.7.value" should be equal to "too long text"
 
-    When I send a PUT request to "/api/v2/ticket_forms/agent/{ticketId}" with body:
+    When I send a PUT request to "/api/v2/ticket_forms/agent/{ticket}" with body:
     """
 {
   "fields": {
@@ -575,10 +575,10 @@ Feature: /ticket_forms endpoint
 }
     """
     Then the response status code should be 204
-    When I send a GET request to "/api/v2/tickets/{ticketId}"
+    When I send a GET request to "/api/v2/tickets/{ticket}"
     Then the JSON node "data.fields.7.value" should be equal to "too long text2"
 
-    When I send a PUT request to "/api/v2/tickets/{ticketId}" with body:
+    When I send a PUT request to "/api/v2/tickets/{ticket}" with body:
     """
 {
   "status": "resolved"
@@ -586,7 +586,7 @@ Feature: /ticket_forms endpoint
     """
     Then the response status code should be 204
 
-    When I send a PUT request to "/api/v2/tickets/{ticketId}" with body:
+    When I send a PUT request to "/api/v2/tickets/{ticket}" with body:
     """
 {
   "fields": {
@@ -598,7 +598,7 @@ Feature: /ticket_forms endpoint
     And the JSON node "errors.fields.fields.fields.fields_7.errors[0].code" should be equal to "length_too_long"
     And the JSON node "errors.fields.fields.fields.fields_7.errors[0].message" should contain "This value is too long. It should have 10 characters or less."
 
-    When I send a PUT request to "/api/v2/ticket_forms/agent/{ticketId}" with body:
+    When I send a PUT request to "/api/v2/ticket_forms/agent/{ticket}" with body:
     """
 {
   "fields": {
