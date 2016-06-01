@@ -9,12 +9,12 @@ export const listFiltersSelector = createSelector(
     collectionSelectorFactory('Department', 'all_chat')
   ],
   (departments) => {
-    const typeOptions = departments.toArray()
-      .map(department => ({ value: department.get('title'), label: department.get('title') }));
+    const departmentOptions = departments.toArray()
+      .map(department => ({ value: department.get('id'), label: department.get('title') }));
 
     const filterSelector = [
       { label: 'Date Created', type: 'datePeriod', param: 'date_filter', property: 'date_created' },
-      { label: 'Department', type: 'select', options: typeOptions }
+      { label: 'Department', type: 'select', param: 'department', options: departmentOptions }
     ];
     return filterSelector;
   }
