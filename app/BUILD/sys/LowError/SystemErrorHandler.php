@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DpSys\LowError;
 
 use Psr\Log\LoggerInterface;
@@ -197,8 +193,7 @@ class SystemErrorHandler
         return true;
     }
 
-    public static function logExceptionIfUniqueBacktrace(/*Throwable*/
-        $e, $send = false)
+    public static function logExceptionIfUniqueBacktrace(/*Throwable*/ $e, $send = false)
     {
         $hashable_trace      = '';
         $formatted_backtrace = debug_backtrace();
@@ -225,8 +220,7 @@ class SystemErrorHandler
      *
      * @return array
      */
-    public static function getExceptionInfo(/*Throwable*/
-        $exception)
+    public static function getExceptionInfo(/*Throwable*/ $exception)
     {
         $errno   = $exception->getCode();
         $errstr  = self::stripPathPrefix($exception->getMessage());
