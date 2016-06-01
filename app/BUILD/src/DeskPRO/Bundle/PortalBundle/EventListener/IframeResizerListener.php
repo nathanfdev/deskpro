@@ -57,11 +57,13 @@ class IframeResizerListener implements EventSubscriberInterface
 
     public function onResponse(FilterResponseEvent $event)
     {
+        $portalMode = $this->portalModeStorage->getMode();
         if (!(
-            $event->isMasterRequest()
+            $portalMode
+            && $event->isMasterRequest()
             && !$event->getResponse()->isEmpty()
             && !$event->getRequest()->isXmlHttpRequest()
-            && ($this->portalModeStorage->getMode()->isFocusWindow() || $this->portalModeStorage->getMode()->isFrameEmbed())
+            && ($portalMode->isFocusWindow() || $portalMode->isFrameEmbed())
         )) {
             return;
         }

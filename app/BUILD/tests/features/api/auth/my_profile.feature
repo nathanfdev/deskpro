@@ -61,3 +61,19 @@ Feature: Person profile
     And the JSON node "data.language_id" should be equal to 2
     And the JSON node "data.timezone" should be equal to "UTC"
     And the JSON node "data.avatar" should be equal to 0
+
+  Scenario: I update person profile with invalid emails
+    When I send a PUT request to "/api/v2/me/profile" with body:
+    """
+{
+  "name": "New Name",
+  "display_name": "Display Name",
+  "language_id": 2,
+  "primary_email": "my_new_email@deskpro.dev",
+  "emails": [
+    "invalid",
+    "!@£903284::"
+  ]
+}
+    """
+    Then the response status code should be 401
