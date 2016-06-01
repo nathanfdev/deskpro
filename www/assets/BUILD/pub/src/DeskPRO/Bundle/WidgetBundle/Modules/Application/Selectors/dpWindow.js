@@ -48,6 +48,11 @@ export const widgetHeightSelector = createSelector(
   widgetDimensions => widgetDimensions.get('height')
 );
 
+export const widgetBodyHeightSelector = createSelector(
+  widgetHeightSelector,
+  widgetHeight => (widgetHeight > 92 ? widgetHeight - 92 : 0)
+);
+
 // Options selectors
 export const widgetOptionsSelector = createSelector(
   stateSelector,
