@@ -1,10 +1,10 @@
 Feature: Client devices
 
   Background:
-    Given I install the api data set
-    And my request is authenticated
+    Given I'm authenticated as admin
 
   Scenario: I start with no devices
+    Given there are no ClientDevice records
     When I send a GET request to "/api/v2/client_devices/mobile"
     Then the response should be in JSON
     And the response status code should be 200
