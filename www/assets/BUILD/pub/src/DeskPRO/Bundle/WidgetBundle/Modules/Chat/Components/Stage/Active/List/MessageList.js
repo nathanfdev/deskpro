@@ -75,9 +75,9 @@ export class MessageList extends React.Component {
     return (
       <div className="dpdesignportal-content">
         <audio ref="sound" preload="preload">
-          <source src={`${DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/WidgetBundle/Resources/sounds/pop.mp3`} />
-          <source src={`${DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/WidgetBundle/Resources/sounds/pop.ogg`} />
-          <source src={`${DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/WidgetBundle/Resources/sounds/pop.wav`} />
+          <source src={`${DESKPRO_APP_ASSETS_URL}/pub/build/DeskPRO/Bundle/WidgetBundle/Resources/sounds/pop.mp3`} />
+          <source src={`${DESKPRO_APP_ASSETS_URL}/pub/build/DeskPRO/Bundle/WidgetBundle/Resources/sounds/pop.ogg`} />
+          <source src={`${DESKPRO_APP_ASSETS_URL}/pub/build/DeskPRO/Bundle/WidgetBundle/Resources/sounds/pop.wav`} />
         </audio>
         <ScrollArea ref="scrollArea" ownerDocument={window.widgetFrame.document} vertical>
           <div className="bottom-aligner"></div>
