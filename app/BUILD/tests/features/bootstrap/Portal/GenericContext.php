@@ -111,7 +111,24 @@ class GenericContext extends BasePortalContext
      */
     public function iShouldSeeAFormErrorWithPhrase($phrase)
     {
-        $this->assertSession()->elementTextContains('css', '.error-large', $this->phrase($phrase));
+        $container = $this->getSession()->getPage();
+        $regex     = '/'.preg_quote($this->phrase($phrase), '/').'/ui';
+
+        /** @var \Behat\Mink\Element\NodeElement[] $nodes */
+        $nodes = $container->findAll('css', '.error-large');
+
+        foreach ($nodes as $n) {
+            if (preg_match($regex, $n->getText())) {
+                return true;
+            }
+        }
+
+        $message = sprintf(
+            'The phrase "%s" was not found in the text of any .error-large elements.',
+            $phrase
+        );
+
+        throw new \Exception($message);
     }
 
     /**

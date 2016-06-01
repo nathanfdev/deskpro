@@ -76,9 +76,14 @@ function refreshWidgetLoader(loaderFilename) {
   const loaderFilePath = '/' + loaderFilename + '.js';
   const minLoaderFilePath = '/' + loaderFilename + '.min.js';
 
-  console.log('Writing widget_loader');
-  var loaderCode = babel.transformFileSync(
-    path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle') + loaderFilePath,
+  var loaderCode = fs.readFileSync(path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle') + loaderFilePath).toString();
+  var utilCode   = fs.readFileSync(path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle') + '/deskpro_loader_util.js').toString();
+
+  loaderCode = loaderCode.replace('// #include deskpro_loader_utils.js', utilCode);
+
+  console.log('Writing ' + loaderFilePath);
+  loaderCode = babel.transform(
+    loaderCode,
     { 'presets': ['es2015', 'react', 'stage-0'] }
   ).code;
 
@@ -365,6 +370,8 @@ function getWebpackConfig(mode, isProd) {
   if (mode === 'all' || mode === 'widget') {
     config.entry['DeskPRO_WidgetBundle'] = ['./src/DeskPRO/Bundle/WidgetBundle/DeskPRO_WidgetBundle'];
     config.entry['DeskPRO_WidgetBundle_style'] = ['./src/DeskPRO/Bundle/WidgetBundle/Resources/style/widget-style.scss'];
+    config.entry['DeskPRO_EmbedFormBundle'] = ['./src/DeskPRO/Bundle/WidgetBundle/DeskPRO_EmbedFormBundle'];
+    config.entry['DeskPRO_EmbedHelpdeskBundle'] = ['./src/DeskPRO/Bundle/WidgetBundle/DeskPRO_EmbedHelpdeskBundle'];
   }
   if (mode === 'all' || mode === 'agent') {
     config.entry['phonenumber_utils'] = ['./node_modules/intl-tel-input/lib/libphonenumber/build/utils'];

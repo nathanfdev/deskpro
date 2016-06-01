@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use DeskPRO\Component\Util\ListUtils;
@@ -74,7 +75,7 @@ class SecurityHeadersResponseListener implements EventSubscriberInterface
             'referrer'    => 'no-referrer-when-downgrade',
         ];
 
-        if (strpos($path, '/frame-embed') === 0 || strpos($path, '/focus-window') === 0) {
+        if (strpos($path, '/frame-embed') === 0 || strpos($path, '/focus-win') === 0) {
             // these portal modes can be framed,
             // so no X-Frame-Options header and use wildcard frame frame-ancestors
             $csp['frame-ancestors'] = '*';

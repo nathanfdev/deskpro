@@ -29,14 +29,16 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\PersonEmail;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints\FreeEmail;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\FreeEmail as FreeEmailConstraint;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\Email as EmailConstraint;
 
 /**
  * Class PersonEmailType.
@@ -63,7 +65,8 @@ class PersonEmailType extends AbstractType
             'data_class'  => PersonEmail::class,
             'email_label' => false,
             'constraints' => [
-                new FreeEmail(),
+                new EmailConstraint(),
+                new FreeEmailConstraint(),
             ],
         ]);
     }

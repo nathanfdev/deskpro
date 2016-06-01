@@ -3,7 +3,7 @@
 # ----------------------------------------------------------------------------------------------------------------------
 #
 # 1) To pass the base_url option to mink you can use BEHAT_PARAMS environment variable:
-#    export BEHAT_PARAMS='{"extensions":{"Behat\\MinkExtension":{"base_url":"http://localhost/"}}}'
+#    export BEHAT_PARAMS='{"extensions":{"Behat\\MinkExtension":{"base_url":"http://dev.dpnew.devput.com:8080/"}}}'
 #
 # ----------------------------------------------------------------------------------------------------------------------
 

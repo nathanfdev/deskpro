@@ -80,6 +80,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
       if not languageId
         return
 
+      if not @$scope.brand_settings.button.translations
+        @$scope.brand_settings.button.translations = []
+
       @$scope.brand_settings.button.translations.push({
         language: parseInt(languageId),
         name: ''

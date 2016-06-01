@@ -43,7 +43,7 @@ Feature: Widget Setup
     And the response status code should be 200
     And the response should contain "DESKPRO_WIDGET_LOADER::BEGIN"
     And the response should contain "DESKPRO_WIDGET_LOADER::END"
-    And the response should contain "DP_HELPDESK_URL"
+    And the response should contain "helpdeskUrl"
     And the response should contain "request_user_info"
 
   Scenario: I update global widget configuration
@@ -213,5 +213,5 @@ Feature: Widget Setup
     And the response status code should be 200
     And the response should contain "DESKPRO_WIDGET_LOADER::BEGIN"
     And the response should contain "DESKPRO_WIDGET_LOADER::END"
-    And the response should contain "DP_HELPDESK_URL"
+    And the response should contain "request_user_info"
     And the response should contain "agent_polling_timeout"

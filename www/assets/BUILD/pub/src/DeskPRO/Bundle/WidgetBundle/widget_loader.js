@@ -1,61 +1,78 @@
-((appSrc, helpdeskUrl, options = {}) => {
-  // Create the iframe loader
-  const node = document.createElement('iframe');
-  node.src = 'javascript:false';
-  node.title = '';
-  node.role = 'presentation';
-  node.name = 'dp_loader';
-  (node.frameElement || node).style.cssText = 'visibility: hidden; position: absolute; left: -999; width: 0; height: 0';
+(function (window, document) {
+  // #include deskpro_loader_utils.js
 
-  window.onload = () => {
-    // Insert it into the DOM
-    document.body.appendChild(node);
+  const options = window.DESKPRO_WIDGET_OPTIONS;
 
-    // This try/catch process is requried for proper crossdomain functioning
-    // http://calendar.perfplanet.com/2012/the-non-blocking-script-loader-pattern/#crossdomain_issues
-    const frameWin = node.contentWindow;
-    const frameDoc = frameWin.document;
+  getInstInfo(options.helpdeskUrl, window, document, options.instId || 'default').then(function (instInfo, window, document) {
 
-    frameWin.DP_HELPDESK_URL = helpdeskUrl.replace(/\/$/, '') + '/';
-    frameWin.DP_OPTIONS = options;
+    const helpdeskUrl = instInfo.helpdeskUrl;
+    const appSrc = instInfo.assetUrl + '/pub/build/DeskPRO_WidgetBundle.js';
 
-    // Portal page widget config
-    frameWin.DESKPRO_BASE_URL = helpdeskUrl.replace(/\/$/, '') + '/portal/api/';
+    const loadFn = function () {
 
-    // Asset URLs
-    frameWin.DESKPRO_APP_ASSETS_URL = appSrc.replace(/\/DeskPRO_WidgetBundle\.js.*?$/, '');
+      // Create the iframe loader
+      const node = document.createElement('iframe');
+      node.src = 'javascript:false';
+      node.title = '';
+      node.role = 'presentation';
+      node.name = 'dp_loader';
+      (node.frameElement || node).style.cssText = 'visibility: hidden; position: absolute; left: -999; width: 0; height: 0';
 
-    let doc;
-    let docDomain;
+      // Insert it into the DOM
+      document.body.appendChild(node);
 
-    try {
-      doc = frameDoc;
-    } catch (c) {
-      docDomain = document.domain;
-      node.src = 'javascript:var d=document.open();d.domain="' + docDomain + '";void(0);';
-      doc = frameDoc;
-    }
+      // This try/catch process is requried for proper crossdomain functioning
+      // http://calendar.perfplanet.com/2012/the-non-blocking-script-loader-pattern/#crossdomain_issues
+      const frameWin = node.contentWindow;
+      const frameDoc = frameWin.document;
 
-    // After onload, we load the script source for real
-    doc.open()._load = () => {
-      const linkNode = document.createElement('link');
-      linkNode.type = 'text/css';
-      linkNode.rel  = 'stylesheet';
-      linkNode.href = frameWin.DESKPRO_APP_ASSETS_URL + '/DeskPRO_WidgetBundle_style.css';
+      frameWin.DP_HELPDESK_URL = helpdeskUrl.replace(/\/$/, '') + '/';
+      frameWin.DP_OPTIONS = options;
 
-      doc.body.appendChild(linkNode);
+      // Portal page widget config
+      frameWin.DESKPRO_BASE_URL = helpdeskUrl.replace(/\/$/, '') + '/portal/api/';
 
-      const appNode = doc.createElement('script');
-      appNode.charset = 'UTF8';
-      if (docDomain) {
-        doc.domain = docDomain;
+      // Asset URLs
+      frameWin.DESKPRO_APP_ASSETS_URL = instInfo.assetUrl;
+
+      let doc;
+      let docDomain;
+
+      try {
+        doc = frameDoc;
+      } catch (c) {
+        docDomain = document.domain;
+        node.src = 'javascript:var d=document.open();d.domain="' + docDomain + '";void(0);';
+        doc = frameDoc;
       }
-      appNode.src = appSrc;
 
-      doc.body.appendChild(appNode);
+      // After onload, we load the script source for real
+      doc.open()._load = () => {
+        const linkNode = document.createElement('link');
+        linkNode.type = 'text/css';
+        linkNode.rel = 'stylesheet';
+        linkNode.href = frameWin.DESKPRO_APP_ASSETS_URL + '/pub/build/DeskPRO_WidgetBundle_style.css';
+
+        doc.body.appendChild(linkNode);
+
+        const appNode = doc.createElement('script');
+        appNode.charset = 'UTF8';
+        appNode.type = 'application/javascript';
+        appNode.src = appSrc;
+
+        if (docDomain) {
+          doc.domain = docDomain;
+        }
+
+        doc.body.appendChild(appNode);
+      };
+
+      doc.write('<body onload="document._load();"><div id="dp_loader_element"></div>');
+      doc.close();
     };
 
-    doc.write('<body onload="document._load();"><div id="dp_loader_element"></div>');
-    doc.close();
-  };
-})(__DP_APP_SRC__, __DP_URL__, __DP_OPTIONS__);
+    onReadyState(loadFn, window, document);
+  });
+
+})(window, document);
+
