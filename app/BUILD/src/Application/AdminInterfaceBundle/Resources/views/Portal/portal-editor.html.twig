@@ -138,10 +138,14 @@
                             These temlpates let you put HTML code at the very top or very bottom of the page.
                         </p>
                         <div style="text-align: center; padding-top: 8px;">
-                            <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-header.html.twig')">Edit Header Template</button>
+                            <div>
+                                <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-header.html.twig')">Edit Header</button>
+
+                                <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-footer.html.twig')">Edit Footer</button>
+                            </div>
                             <br />
                             <div style="margin-top: 4px;">
-                                <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-footer.html.twig')">Edit Footer Template</button>
+                                <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-head-include.html.twig')">Edit Head Include</button>
                             </div>
                         </div>
                     </div>
