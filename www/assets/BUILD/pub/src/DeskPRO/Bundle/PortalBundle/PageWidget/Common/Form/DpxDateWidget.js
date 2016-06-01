@@ -54,8 +54,8 @@ export class DpxDateWidget extends PageWidget {
       isTimeIncluded = false;
     }
 
-    const minDate = ($el.data('min-date').length === 0) ? null : moment($el.data('min-date'), 'L');
-    const maxDate = ($el.data('max-date').length === 0) ? null : moment($el.data('max-date'), 'L');
+    const minDate = ($el.data('min-date').length === 0) ? null : moment($el.data('min-date'));
+    const maxDate = ($el.data('max-date').length === 0) ? null : moment($el.data('max-date'));
 
     const $textBox = $('<input type="text">');
     const format  = isTimeIncluded ? 'L LT' : 'L';
@@ -121,8 +121,8 @@ export class DpxDateWidget extends PageWidget {
 
     // min and max date
     if (minDate && maxDate) {
-      options.minDate = minDate.format('L');
-      options.maxDate = maxDate.format('L');
+      options.minDate = minDate.format(format);
+      options.maxDate = maxDate.format(format);
     }
 
     $textBox.datetimepicker(options);
