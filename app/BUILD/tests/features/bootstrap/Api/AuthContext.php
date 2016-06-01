@@ -31,6 +31,7 @@ namespace DpBehat\Api;
 use Application\DeskPRO\Entity\ApiKey;
 use Application\DeskPRO\Entity\ApiToken;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\Entity\TmpData;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
@@ -38,6 +39,8 @@ use DeskPRO\Bundle\AppBundle\Entity\ApiKeyAction;
 use DeskPRO\Bundle\AppBundle\Entity\ApiKeyLimit;
 use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
 use DpBehat\BaseContext;
+use DpBehat\Data\DataContext;
+use DpBehat\Data\Factory\PersonFactories;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 
 /**
@@ -48,17 +51,92 @@ class AuthContext extends BaseContext
     /**
      * @var RestContext
      */
-    private $rest_context;
+    private $restContext;
 
     /**
-     * @var ApiKey|null
+     * @var bool DB will be cleaned up before feature if this is set to true
      */
-    public static $apiKey = null;
+    private static $needCleanup = false;
 
     /**
-     * @var Person|null
+     * @var bool
      */
-    public static $user = null;
+    private static $isFirstFeatureScenario = false;
+
+    /**
+     * Schedule DB cleanup before next login.
+     *
+     * @BeforeSuite
+     */
+    public static function scheduleCleanup()
+    {
+        self::$needCleanup = true;
+    }
+
+    /**
+     * @BeforeFeature
+     */
+    public static function initFirstFeatureScenarioFlag()
+    {
+        self::$isFirstFeatureScenario = true;
+    }
+
+    /**
+     * Clean up DB.
+     */
+    public function cleanup()
+    {
+        $this->em()->getConnection()->executeQuery('
+            DELETE FROM permissions_cache;
+            DELETE FROM permissions;
+            DELETE FROM task_attachments;
+            DELETE FROM custom_def_ticket;
+            DELETE FROM department_permissions;
+            DELETE FROM people;
+            DELETE FROM usergroups;
+        ');
+        $this->em()->clear();
+        DataContext::clear();
+    }
+
+    /**
+     * @Given I'm authenticated as :role
+     */
+    public function iAmAuthenticatedAs($role)
+    {
+        if (self::$needCleanup && self::$isFirstFeatureScenario) {
+            $this->cleanup();
+            self::$needCleanup = false;
+        }
+        self::$isFirstFeatureScenario = false;
+
+        $email = "$role@deskpro.com";
+
+        if (DataContext::getPlaceholder('myEmail', false) === $email) {
+            $person = DataContext::getReference('me');
+        } else {
+            $person            = DataContext::getReference($role, false);
+            $person or $person = $this->findPersonByEmail($email);
+            $person or $person = PersonFactories::create($role, compact('email'));
+            $this->persistAndFlush($person);
+
+            DataContext::setReference($role, $person);
+            DataContext::setReference('me', $person);
+            DataContext::setPlaceholder('myEmail', $email);
+        }
+
+        $this->authenticateAs($person);
+    }
+
+    /**
+     * @BeforeScenario
+     */
+    public function gatherContexts(BeforeScenarioScope $scope)
+    {
+        $environment = $scope->getEnvironment();
+
+        $this->restContext = $environment->getContext('DpBehat\Api\RestContext');
+    }
 
     /**
      * @Given a valid api token exists with the code :token and id :id for :who
@@ -83,30 +161,7 @@ class AuthContext extends BaseContext
     public function aValidApiKeyExistsWithTheCodeForUser($code, $who)
     {
         $person = $this->getUserDetails()->getWho($who);
-        if (!self::$apiKey || self::$apiKey->person !== $person) {
-            $key         = new ApiKey();
-            $key->code   = $code;
-            $key->person = $person;
-
-            $key_action = new ApiKeyAction();
-            $key_action->setAction('*');
-            $key->addApiKeyAction($key_action);
-
-            $key_limit = new ApiKeyLimit();
-            $key_limit
-                ->setType(AbstractLimit::TYPE_KEY)
-                ->setStartTime(new \DateTime())
-                ->setInterval(AbstractLimit::INTERVAL_HOUR)
-                ->setApiKey($key)
-                ->setLimit(5000)
-                ->setCurrent(5000);
-
-            $this->persistAndFlush($key);
-            $this->persistAndFlush($key_limit);
-            $this->persistAndFlush($key_action);
-
-            self::$apiKey = $key;
-        }
+        $this->ensureApiKey($person, $code);
     }
 
     /**
@@ -150,16 +205,10 @@ class AuthContext extends BaseContext
         expect($has_role)->toBe(true);
     }
 
-    /** @BeforeScenario */
-    public function gatherContexts(BeforeScenarioScope $scope)
-    {
-        $environment = $scope->getEnvironment();
-
-        $this->rest_context = $environment->getContext('DpBehat\Api\RestContext');
-    }
-
     /**
      * @Given my request is authenticated
+     *
+     * @deprecated
      */
     public function myRequestIsAuthenticated()
     {
@@ -169,27 +218,18 @@ class AuthContext extends BaseContext
     /**
      * @Given my request is authenticated to :who
      *
+     * @deprecated
+     *
      * @param string $who
+     *
+     * @throws \Exception
      */
     public function myRequestIsAuthenticatedTo($who)
     {
-        self::$user = $person = $this->getUserDetails()->getWho($who);
-
-        $repository = $this->em()->getRepository(ApiKey::class);
-
-        $keys = $repository->findAll();
-        if (count($keys)) {
-            $key = $keys[0];
-            if ($key->person !== $person) {
-                $key->person = $person;
-                $this->persistAndFlush($key);
-            }
-        } else {
-            $this->aValidApiKeyExistsWithTheCodeForUser('MyCode', $who);
-            $key = $repository->findAll()[0];
+        if (!$person = $this->getUserDetails()->getWho($who)) {
+            throw new \Exception("$who user is missing");
         }
-
-        $this->rest_context->iAddHeaderEqualTo('Authorization', 'key '.$key->getKeyString());
+        $this->authenticateAs($person);
     }
 
     /**
@@ -218,6 +258,67 @@ class AuthContext extends BaseContext
      */
     private function getUserDetails()
     {
-        return $this->getContainer()->get('user_details');
+        return $this->get('user_details');
+    }
+
+    /**
+     * @param Person $person
+     */
+    private function authenticateAs(Person $person)
+    {
+        $key = $this->ensureApiKey($person, 'Testing');
+        $this->restContext->iAddHeaderEqualTo('Authorization', 'key '.$key->getKeyString());
+    }
+
+    /**
+     * @param Person $person
+     * @param string $code
+     *
+     * @return ApiKey
+     */
+    private function ensureApiKey(Person $person, $code)
+    {
+        $key = $this->repository(ApiKey::class)->findOneBy(compact('code'));
+        if (!$key) {
+            $key         = new ApiKey();
+            $key->code   = $code;
+            $key->person = $person;
+
+            $key_action = new ApiKeyAction();
+            $key_action->setAction('*');
+            $key->addApiKeyAction($key_action);
+
+            $key_limit = new ApiKeyLimit();
+            $key_limit
+                ->setType(AbstractLimit::TYPE_KEY)
+                ->setStartTime(new \DateTime())
+                ->setInterval(AbstractLimit::INTERVAL_HOUR)
+                ->setApiKey($key)
+                ->setLimit(5000)
+                ->setCurrent(5000);
+
+            $this->persistAndFlush($key);
+            $this->persistAndFlush($key_limit);
+            $this->persistAndFlush($key_action);
+        } elseif ($key->person !== $person) {
+            $key->person = $person;
+            $this->persistAndFlush($key);
+        }
+
+        DataContext::setReference('apiKey', $key);
+
+        return $key;
+    }
+
+    /**
+     * @param string $email
+     *
+     * @return Person|null
+     */
+    private function findPersonByEmail($email)
+    {
+        $email = $this->repository(PersonEmail::class)->findOneBy(compact('email'));
+
+        return $email ? $email->getPerson() : null;
     }
 }
