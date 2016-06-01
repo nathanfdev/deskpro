@@ -10,7 +10,7 @@ Feature: Login anti-abuse feature
       | default |
 
   Scenario: Checking lockout response for guest
-    Given I set "login" rate limit to 2 attempt within 1 minute with "lockout" response and 15 minutes lockout time for guest
+    Given I set "login" rate limit to 1 attempt within 1 minute with "lockout" response and 15 minutes lockout time for guest
     Given I set "login" rate limit to 5 attempts within 1 minute with "lockout" response and 15 minutes lockout time for agent
     Given I set "login" rate limit to 5 attempts within 1 minute with "lockout" response and 15 minutes lockout time
     When I use bad credentials for login

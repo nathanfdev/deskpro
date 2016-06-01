@@ -48,6 +48,17 @@ class PortalAntiAbuseSettings
     private $accountRateLimit;
 
     /**
+     * Agent rate limit object.
+     *
+     * @Assert\Valid
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalAgentRateLimit")
+     *
+     * @var PortalAgentRateLimit
+     */
+    private $agentRateLimit;
+
+    /**
      * Rate limits for user.
      *
      * @Assert\Valid
@@ -76,6 +87,7 @@ class PortalAntiAbuseSettings
     {
         $this->accountRateLimit = new PortalAccountRateLimit();
         $this->userRateLimit    = new PortalUserRateLimit();
+        $this->agentRateLimit   = new PortalAgentRateLimit();
         $this->guestRateLimit   = new PortalUserRateLimit();
     }
 
@@ -85,6 +97,14 @@ class PortalAntiAbuseSettings
     public function getAccountRateLimit()
     {
         return $this->accountRateLimit;
+    }
+
+    /**
+     * @return PortalAgentRateLimit
+     */
+    public function getAgentRateLimit()
+    {
+        return $this->agentRateLimit;
     }
 
     /**

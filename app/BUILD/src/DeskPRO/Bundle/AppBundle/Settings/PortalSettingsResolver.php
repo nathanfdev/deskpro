@@ -47,9 +47,10 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
         $model = new PortalAntiAbuseSettings();
 
         $accountRateLimit = $model->getAccountRateLimit();
-        $this->setRateLimitGroup($accountRateLimit->getLoginSettings(), 'rate_limit.login');
+        $agentRateLimit   = $model->getAgentRateLimit();
         $this->setRateLimitGroup($accountRateLimit->getRegistrationSettings(), 'rate_limit.registration');
         $this->setRateLimitGroup($accountRateLimit->getResetPasswordSettings(), 'rate_limit.reset_password');
+        $this->setRateLimitGroup($agentRateLimit->getLoginSettings(), 'rate_limit.login.agent');
 
         $this->setUserRateLimit($model->getUserRateLimit());
         $this->setUserRateLimit($model->getGuestRateLimit(), 'guest');
@@ -82,6 +83,7 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
             $userType = '.'.$userType;
         }
 
+        $this->setRateLimitGroup($userRateLimit->getLoginSettings(), 'rate_limit.login'.$userType);
         $this->setRateLimitGroup($userRateLimit->getSubmitTicket(), 'rate_limit.submit_ticket'.$userType);
         $this->setRateLimitGroup($userRateLimit->getSubmitFeedback(), 'rate_limit.submit_feedback'.$userType);
         $this->setRateLimitGroup($userRateLimit->getSubmitComment(), 'rate_limit.submit_comment'.$userType);

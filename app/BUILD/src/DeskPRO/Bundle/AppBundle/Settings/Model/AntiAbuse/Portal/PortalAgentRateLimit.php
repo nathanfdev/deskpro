@@ -26,38 +26,41 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\Portal;
+namespace DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal;
 
-use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalAntiAbuseSettings;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup;
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class PortalAntiAbuseSettingsType.
+ * Class PortalAgentRateLimit.
  */
-class PortalAntiAbuseSettingsType extends AbstractType
+class PortalAgentRateLimit
 {
     /**
-     * {@inheritdoc}
+     * Settings for login.
+     *
+     * @Assert\Valid
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
+     *
+     * @var RateLimitGroup
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    private $loginSettings;
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
     {
-        $builder
-            ->add('account_rate_limit', PortalAccountRateLimitType::class)
-            ->add('agent_rate_limit', PortalAgentRateLimitType::class)
-            ->add('user_rate_limit', PortalUserRateLimitType::class)
-            ->add('guest_rate_limit', PortalUserRateLimitType::class)
-        ;
+        $this->loginSettings = new RateLimitGroup();
     }
 
     /**
-     * {@inheritdoc}
+     * @return RateLimitGroup
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function getLoginSettings()
     {
-        $resolver->setDefaults([
-            'data_class' => PortalAntiAbuseSettings::class,
-        ]);
+        return $this->loginSettings;
     }
 }

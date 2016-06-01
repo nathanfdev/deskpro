@@ -28,15 +28,16 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\Portal;
 
-use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalAntiAbuseSettings;
+use DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\RateLimitGroupType;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalUserRateLimit;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class PortalAntiAbuseSettingsType.
+ * Class PortalUserRateLimitType.
  */
-class PortalAntiAbuseSettingsType extends AbstractType
+class PortalUserRateLimitType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -44,10 +45,12 @@ class PortalAntiAbuseSettingsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('account_rate_limit', PortalAccountRateLimitType::class)
-            ->add('agent_rate_limit', PortalAgentRateLimitType::class)
-            ->add('user_rate_limit', PortalUserRateLimitType::class)
-            ->add('guest_rate_limit', PortalUserRateLimitType::class)
+            ->add('login_settings', RateLimitGroupType::class)
+            ->add('submit_ticket', RateLimitGroupType::class)
+            ->add('submit_feedback', RateLimitGroupType::class)
+            ->add('submit_comment', RateLimitGroupType::class)
+            ->add('upload_attachment', RateLimitGroupType::class)
+            ->add('share_content', RateLimitGroupType::class)
         ;
     }
 
@@ -57,7 +60,7 @@ class PortalAntiAbuseSettingsType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => PortalAntiAbuseSettings::class,
+            'data_class' => PortalUserRateLimit::class,
         ]);
     }
 }

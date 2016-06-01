@@ -980,11 +980,11 @@ return [
     'rate_limit.login.agent.lockout_time' => 15 * 60, // 15 min
     'rate_limit.login.agent.response'     => 'lockout',
 
-    'rate_limit.login.user.enabled'      => true,
-    'rate_limit.login.user.limit'        => 10,
-    'rate_limit.login.user.time'         => 15 * 60, // 15 min
-    'rate_limit.login.user.lockout_time' => 15 * 60, // 15 min
-    'rate_limit.login.user.response'     => 'lockout',
+    'rate_limit.login.enabled'      => true,
+    'rate_limit.login.limit'        => 10,
+    'rate_limit.login.time'         => 15 * 60, // 15 min
+    'rate_limit.login.lockout_time' => 15 * 60, // 15 min
+    'rate_limit.login.response'     => 'lockout',
 
     'rate_limit.login.guest.enabled'      => true,
     'rate_limit.login.guest.limit'        => 3,
