@@ -1,31 +1,34 @@
-var gulp       = require('gulp'),
-    gutil      = require('gulp-util'),
-    cache      = require('gulp-cached'),
-    coffee     = require('gulp-coffee'),
-    less       = require('gulp-less'),
-    sass       = require('gulp-sass'),
-    sourcemaps = require('gulp-sourcemaps'),
-    watch      = require('gulp-watch'),
-    finclude   = require('gulp-file-include'),
-    path       = require('path'),
-    rename     = require('gulp-rename'),
-    rjs        = require('gulp-requirejs'),
-    plumber    = require('gulp-plumber'),
-    debug      = require('gulp-debug'),
-    using      = require('gulp-using'),
-    gulpif     = require('gulp-if'),
-    lazypipe   = require('lazypipe'),
-    clean      = require('gulp-clean'),
-    sassdoc    = require('sassdoc'),
-    fs         = require('fs'),
-    deskpro    = {util: {}, taskGen: {}};
+var gulp         = require('gulp'),
+    gutil        = require('gulp-util'),
+    cache        = require('gulp-cached'),
+    coffee       = require('gulp-coffee'),
+    less         = require('gulp-less'),
+    sass         = require('gulp-sass'),
+    sourcemaps   = require('gulp-sourcemaps'),
+    watch        = require('gulp-watch'),
+    finclude     = require('gulp-file-include'),
+    path         = require('path'),
+    rename       = require('gulp-rename'),
+    rjs          = require('gulp-requirejs'),
+    plumber      = require('gulp-plumber'),
+    debug        = require('gulp-debug'),
+    using        = require('gulp-using'),
+    gulpif       = require('gulp-if'),
+    lazypipe     = require('lazypipe'),
+    clean        = require('gulp-clean'),
+    sassdoc      = require('sassdoc'),
+    fs           = require('fs'),
+    postcss      = require('gulp-postcss'),
+    autoprefixer = require('autoprefixer'),
+    comments     = require('postcss-discard-comments'),
+    deskpro      = {util: {}, taskGen: {}};
 
 
 //######################################################################################################################
 //# Task Runners
 //######################################################################################################################
 
-gulp.task('default', ['less', 'sass', 'sassdoc', 'cpjs', 'loader'], function() {
+gulp.task('default', ['less', 'sass', 'semantic-copy', 'sassdoc', 'cpjs', 'loader'], function() {
     // hacking coffee here to run after all others
     // because something in the other tasks corrupts
     // the stream and causes coffee compile to fail
@@ -37,7 +40,7 @@ gulp.task('default', ['less', 'sass', 'sassdoc', 'cpjs', 'loader'], function() {
         './app/DeskPRO*/**/*.coffee'
     ]);
 });
-gulp.task('prod', ['coffee', 'less', 'sass', 'sassdoc', 'cpjs', 'loader', 'rjs', 'rjs-agent']);
+gulp.task('prod', ['coffee', 'less', 'sass', 'sassdoc', 'cpjs', 'semantic-copy', 'loader', 'rjs', 'rjs-agent']);
 
 
 //######################################################################################################################
@@ -58,7 +61,8 @@ deskpro.watches = [
   ['./app/**/Resources/style/*.less', ['less-app']],
   ['./app/**/Resources/style/*.scss', ['sass-app']],
   ['./app/**/*.js', ['cpjs-all']],
-  ['./loader/*', ['loader-requirejs']]
+  ['./loader/*', ['loader-requirejs']],
+  ['./stylesheets-less/semantic-ui/**', ['semantic-watch']]
 ];
 
 //------------------------------
@@ -240,12 +244,56 @@ gulp.task('cpjs', ['clean'], function() {
 //------------------------------
 
 gulp.task('less-app', function () {
+  deskpro.taskGen.copyThemeConfig();
   return deskpro.taskGen.lessCss('./app/**/Resources/style/*-style.less');
 });
 
 gulp.task('less', ['clean'], function () {
+  deskpro.taskGen.copyThemeConfig();
   return deskpro.taskGen.lessCss('./app/**/Resources/style/*-style.less');
 });
+
+//------------------------------
+// Semantic UI
+//------------------------------
+
+gulp.task('semantic', function () {
+  deskpro.taskGen.copyThemeConfig();
+  return deskpro.taskGen.semantic();
+});
+
+gulp.task('semantic-watch', function () {
+  return deskpro.taskGen.semantic('./app-build/Admin/Resources/style/');
+});
+
+gulp.task('semantic-copy', ['clean'], function () {
+  return gulp.src('./stylesheets-less/semantic-ui/semantic.*')
+    .pipe(gulp.dest('./app-build/Admin/Resources/style/'));
+});
+
+deskpro.taskGen.semantic = function(target_dir) {
+  if (!target_dir) {
+    target_dir = './stylesheets-less/semantic-ui/';
+  }
+
+  return gulp.src('./node_modules/semantic-ui-less/semantic.less')
+    .pipe(sourcemaps.init())
+    .pipe(gulpif(deskpro.isWatching, using({prefix: '<< Build --'})))
+    .pipe(less())
+    .pipe(postcss([
+      autoprefixer({ remove: false, browsers: ['last 2 versions'] }),
+      comments({})
+    ]))
+    .pipe(sourcemaps.write('/', {includeContent: false, sourceRoot: './node_modules/semantic-ui-less/'}))
+    .pipe(gulp.dest(target_dir))
+    .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
+};
+
+deskpro.taskGen.copyThemeConfig = function() {
+  // Semantic looks for a hardcoded theme.config file, so use this hack.
+  return gulp.src('./stylesheets-less/semantic-ui/theme.config')
+    .pipe(gulp.dest('./node_modules/semantic-ui-less/'));
+};
 
 //------------------------------
 // Sass
