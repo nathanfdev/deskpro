@@ -381,4 +381,12 @@ class DataContext extends BaseContext
     {
         $this->onlyTheFollowingRecordsExist('CustomDefTicket', $table);
     }
+
+    /**
+     * @Given only the following custom organization fields exist:
+     */
+    public function onlyTheFollowingCustomOrganizationFieldsExist($table)
+    {
+        $this->onlyTheFollowingRecordsExist('CustomDefOrganization', $table);
+    }
 }

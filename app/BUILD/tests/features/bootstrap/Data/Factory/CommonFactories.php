@@ -28,6 +28,8 @@
 
 namespace DpBehat\Data\Factory;
 
+use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
@@ -75,13 +77,18 @@ class CommonFactories
     }
 
     /**
+     * @param string $type
      * @param array $data
      *
-     * @return CustomDefTicket
+     * @return CustomDefAbstract
      */
-    public static function customDefTicket(array $data = [])
+    public static function customDef($type, array $data = [])
     {
-        $def = new CustomDefTicket();
+        $type = [
+            'ticket' => CustomDefTicket::class,
+            'organization' => CustomDefOrganization::class,
+        ][$type];
+        $def = new $type;
 
         // Type to handler class
         array_key_exists('type', $data) or $data['type'] = '';
