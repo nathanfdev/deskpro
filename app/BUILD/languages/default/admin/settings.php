@@ -103,7 +103,7 @@ return array(
     'admin.settings.portal_rate_limit_times_within' => 'times within',
     'admin.settings.portal_rate_limit_within'       => 'within',
     'admin.settings.portal_rate_limit_show_captcha' => 'show a CAPTCHA to the user',
-    'admin.settings.portal_rate_limit_reject_form'  => 'reject the form',
+    'admin.settings.portal_rate_limit_reject_form'  => 'disable the form',
 
     'admin.settings.portal_rate_limit_login_rate_limit'           => 'Login Rate Limiting',
     'admin.settings.portal_rate_limit_login_attempted'            => 'After a user has attempted to login',
