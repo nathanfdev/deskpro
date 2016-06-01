@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse;
 
-use DeskPRO\Bundle\AppBundle\Form\DataTransformer\MinutesTransformer;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup;
 use Symfony\Component\Form\AbstractType;
@@ -62,9 +61,6 @@ class RateLimitGroupType extends AbstractType
                 ],
             ])
         ;
-
-        $builder->get('lockout_time')->addModelTransformer(new MinutesTransformer());
-        $builder->get('time')->addModelTransformer(new MinutesTransformer());
     }
 
     /**

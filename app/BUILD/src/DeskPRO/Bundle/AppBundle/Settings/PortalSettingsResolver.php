@@ -67,8 +67,8 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
         $group
             ->setEnabled($this->getSetting($settingPrefix.'.enabled'))
             ->setLimit($this->getSetting($settingPrefix.'.limit'))
-            ->setTime($this->getSetting($settingPrefix.'.time'))
-            ->setLockoutTime($this->getSetting($settingPrefix.'.lockout_time'))
+            ->setTime($this->getSetting($settingPrefix.'.time') / 60)
+            ->setLockoutTime($this->getSetting($settingPrefix.'.lockout_time') / 60)
             ->setResponse($this->getSetting($settingPrefix.'.response'))
         ;
     }
