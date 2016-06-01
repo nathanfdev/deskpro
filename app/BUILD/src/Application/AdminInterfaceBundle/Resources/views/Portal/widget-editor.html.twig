@@ -170,7 +170,7 @@
                                     <label  class="inline-block-label">
                                         <h4><span>{{ phrase('admin.widget.proactive_chat_agent_message') }} ({{ ng_var('language.title') }})</span></h4>
                                     </label>
-                                    <textarea ng-model="translation.message"></textarea>
+                                    <textarea ng-model="translation.message" style="width: 240px; height: 130px;"></textarea>
                                     <ul class="errors">
                                         <li ng-repeat="error in formErrors.brand.fields.chat.fields.popup.fields.translations.fields['translations_' + $index].fields.message.errors">
                                             {{ ng_var('error.message') }}
