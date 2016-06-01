@@ -24,9 +24,10 @@ export class WidgetBody extends React.Component {
     }
 
     return (
-      <div style={bodyStyles}
-           className={classNames('dpdesignportal-widget-body', { 'chat-bubble-content': isBubble })}>
-
+      <div
+        style={bodyStyles}
+        className={classNames('dpdesignportal-widget-body', { 'chat-bubble-content': isBubble })}
+      >
         {children}
       </div>
     );

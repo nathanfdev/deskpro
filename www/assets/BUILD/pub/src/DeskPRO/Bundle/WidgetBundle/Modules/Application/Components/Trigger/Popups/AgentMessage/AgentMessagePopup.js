@@ -6,10 +6,10 @@ import { ChatPopup } from '../ChatPopup';
 export class AgentMessagePopup extends React.Component {
 
   static propTypes = {
-    primaryAgent: PropTypes.object,
-    onClick: PropTypes.func,
-    children: PropTypes.node,
-    helpPopupTitle: PropTypes.string,
+    primaryAgent:     PropTypes.object,
+    onClick:          PropTypes.func,
+    children:         PropTypes.node,
+    helpPopupTitle:   PropTypes.string,
     helpPopupMessage: PropTypes.string
   };
 

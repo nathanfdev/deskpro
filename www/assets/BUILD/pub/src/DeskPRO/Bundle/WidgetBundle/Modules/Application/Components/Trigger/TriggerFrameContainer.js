@@ -51,12 +51,13 @@ export class TriggerFrameContainer extends React.Component {
     };
 
     return (
-      <Frame ref="frame"
-             name="widget_trigger_iframe"
-             frameStyles={style}
-             isVisible={widgetLoaded && (!widgetOpened || isBubble)}
-             positionMode={widgetPosition}>
-
+      <Frame
+        ref="frame"
+        name="widget_trigger_iframe"
+        frameStyles={style}
+        isVisible={widgetLoaded && (!widgetOpened || isBubble)}
+        positionMode={widgetPosition}
+      >
         <Provider store={store}>
           {React.cloneElement(children, {
             ...childProps,

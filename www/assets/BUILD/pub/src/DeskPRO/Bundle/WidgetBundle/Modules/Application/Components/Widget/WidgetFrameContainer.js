@@ -28,7 +28,8 @@ export class WidgetFrameContainer extends React.Component {
     widgetLoaded:   PropTypes.bool,
     widgetPosition: PropTypes.string,
     isBubble:       PropTypes.bool,
-    children:       PropTypes.any
+    children:       PropTypes.any,
+    size:           PropTypes.string
   };
 
   componentDidMount() {
@@ -70,13 +71,14 @@ export class WidgetFrameContainer extends React.Component {
     }
 
     return (
-      <Frame ref="frame"
-             name="widget_iframe"
-             frameStyles={frameStyles}
-             containerStyles={containerStyles}
-             isVisible={widgetLoaded && widgetOpened}
-             positionMode={widgetPosition}>
-
+      <Frame
+        ref="frame"
+        name="widget_iframe"
+        frameStyles={frameStyles}
+        containerStyles={containerStyles}
+        isVisible={widgetLoaded && widgetOpened}
+        positionMode={widgetPosition}
+      >
         <Provider store={store}>
           {React.cloneElement(children, {
             ...childProps,

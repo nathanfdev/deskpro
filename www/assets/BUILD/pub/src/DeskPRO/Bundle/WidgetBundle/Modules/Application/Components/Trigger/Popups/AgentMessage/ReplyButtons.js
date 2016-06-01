@@ -29,18 +29,19 @@ export class ReplyButtons extends React.Component {
     return (
       <div className="preemtive-chat-footer">
         <div className="preemtive-chat-footer-button">
-          <a href="#"
-             onClick={this.onClick}
-             style={{
-               backgroundColor,
-               color: textColor
-             }}>
-
+          <a
+            href="#"
+            onClick={this.onClick}
+            style={{
+              backgroundColor,
+              color: textColor
+            }}
+          >
             <i className="fa fa-mail-reply-all" />
-            &nbsp;{portalPhrases.get('portal.chat.reply_to', {'{firstName}': firstName})}
+            &nbsp;{portalPhrases.get('portal.chat.reply_to', { '{firstName}': firstName })}
           </a>
           <a href="#" className="blank" onClick={this.onClose}>
-              <i className="fa fa-times" /> {portalPhrases.get('portal.chat.dismiss_message')}
+            <i className="fa fa-times" /> {portalPhrases.get('portal.chat.dismiss_message')}
           </a>
         </div>
       </div>
