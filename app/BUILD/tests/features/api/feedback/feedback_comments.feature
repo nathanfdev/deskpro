@@ -58,11 +58,9 @@ Feature: /feedback_comments/counts endpoint
     Then the response should be in JSON
     And the response status code should be 200
 
-  Scenario: I DELETE feedback comment with id=10000 (non-existent)
-    When I send a DELETE request to "/api/v2/feedback_comments/1000"
+  Scenario: I DELETE feedback comment with id=404404 (non-existent)
+    When I send a DELETE request to "/api/v2/feedback_comments/404404"
     Then the response should be in JSON
     And the response status code should be 404
-    And the JSON node "status" should exist
     And the JSON node "status" should be equal to 404
-    And the JSON node "code" should exist
-    And the JSON node "code" should be equal to "Not found"
+    And the JSON node "message" should be equal to "#404404 Not Found"
