@@ -78,12 +78,25 @@ class WidgetLoader
         $loaderSrc = preg_replace('#/assets/.*?/pub/#', '/dyn-assets/pub/', $loaderSrc);
         $loaderSrc = preg_replace('#\?.*?$#', '', $loaderSrc);
 
+        $assetsUrl = str_replace('/pub/build/widget_loader.min.js', '', $loaderSrc);
+        $assetsUrl = rtrim($assetsUrl, '/');
+
         // override options
         $options = $this->serializer->toArray($this->settingsResolver->getWidgetBrandOptions());
         $options = MapUtils::prependItem($options, 'helpdeskUrl', $urlSettings->getHelpdesk());
-
         $options = json_encode($options, \JSON_PRETTY_PRINT);
 
-        return "<!--DESKPRO_WIDGET_LOADER::BEGIN-->\n<script type=\"text/javascript\">\nwindow.DESKPRO_WIDGET_OPTIONS = $options;\n</script>\n<script type=\"text/javascript\" src=\"$loaderSrc\"></script>\n<!--DESKPRO_WIDGET_LOADER::END-->";
+        $code   = [];
+        $code[] = '<!--DESKPRO_WIDGET_LOADER::BEGIN-->';
+        $code[] = "<script type=\"text/javascript\">\nwindow.DESKPRO_WIDGET_OPTIONS = $options;\n</script>";
+
+        if ($this->appEnv->getEnvId() === 'dev') {
+            $code[] = "<script type=\"text/javascript\">\nwindow.DESKPRO_ASSETS_URL = '$assetsUrl';\n</script>";
+        }
+
+        $code[] = "<script type=\"text/javascript\" src=\"$loaderSrc\"></script>";
+        $code[] = '<!--DESKPRO_WIDGET_LOADER::END-->';
+
+        return implode("\n", $code);
     }
 }
