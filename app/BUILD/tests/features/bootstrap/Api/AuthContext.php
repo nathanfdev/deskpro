@@ -67,6 +67,7 @@ class AuthContext extends BaseContext
      * Schedule DB cleanup before next login.
      *
      * @BeforeSuite
+     * @Given I schedule a DB cleanup after this feature
      */
     public static function scheduleCleanup()
     {
