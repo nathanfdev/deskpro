@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Theme;
 
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
@@ -43,12 +39,12 @@ class TagProcessor
     /**
      * @var TagRequestFactory
      */
-    private $tag_request_factory;
+    private $tagRequestFactory;
 
     /**
      * @var TagHandlerInterface[]
      */
-    private $tag_handlers;
+    private $tagHandlers;
 
     /**
      * @var EventLogger
@@ -56,15 +52,15 @@ class TagProcessor
     private $logger;
 
     /**
-     * @param TagRequestFactory $tag_request_factory
-     * @param array             $tag_handlers
+     * @param TagRequestFactory $tagRequestFactory
+     * @param array             $tagHandlers
      * @param EventLogger       $logger
      */
-    public function __construct(TagRequestFactory $tag_request_factory, array $tag_handlers, EventLogger $logger)
+    public function __construct(TagRequestFactory $tagRequestFactory, array $tagHandlers, EventLogger $logger)
     {
-        $this->tag_request_factory = $tag_request_factory;
-        $this->tag_handlers        = $tag_handlers;
-        $this->logger              = $logger;
+        $this->tagRequestFactory = $tagRequestFactory;
+        $this->tagHandlers       = $tagHandlers;
+        $this->logger            = $logger;
     }
 
     /**
@@ -75,13 +71,13 @@ class TagProcessor
      */
     public function process(Tag $tag, array $arguments = [])
     {
-        $tag_request = $this->tag_request_factory->create($tag, $arguments);
+        $tagRequest = $this->tagRequestFactory->create($tag, $arguments);
 
-        if (!$handler = $this->findHandler($tag, $tag_request)) {
+        if (!$handler = $this->findHandler($tag, $tagRequest)) {
             throw new \RuntimeException('no handler found for "'.$tag->getName().'"');
         }
 
-        $response = $handler->handle($tag, $tag_request);
+        $response = $handler->handle($tag, $tagRequest);
 
         if (!$response) {
             return ''; // be passive and default to blank
@@ -96,14 +92,14 @@ class TagProcessor
 
     /**
      * @param Tag        $tag
-     * @param TagRequest $tag_request
+     * @param TagRequest $tagRequest
      *
      * @return TagHandlerInterface
      */
-    private function findHandler(Tag $tag, TagRequest $tag_request)
+    private function findHandler(Tag $tag, TagRequest $tagRequest)
     {
-        foreach ($this->tag_handlers as $handler) {
-            if ($handler->supports($tag, $tag_request)) {
+        foreach ($this->tagHandlers as $handler) {
+            if ($handler->supports($tag, $tagRequest)) {
                 return $handler;
             }
         }

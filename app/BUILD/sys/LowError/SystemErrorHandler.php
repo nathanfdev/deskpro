@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DpSys\LowError;
 
 use Psr\Log\LoggerInterface;
@@ -59,9 +55,9 @@ class SystemErrorHandler
      * @var string|null
      */
     private static $bugsnagConfig = [
-        'api_key'     => null,
-        'app_version' => null,
-        'metadata'    => [],
+        'backend_api_key' => null,
+        'app_version'     => null,
+        'metadata'        => [],
     ];
 
     /**
@@ -114,7 +110,8 @@ class SystemErrorHandler
      *
      * @param \Exception $exception
      */
-    public static function handleException(/*Throwable*/ $exception)
+    public static function handleException(/*Throwable*/
+        $exception)
     {
         if (self::$isHandlingException || !self::shouldLog($exception)) {
             return;
@@ -142,7 +139,7 @@ class SystemErrorHandler
             return;
         }
 
-        static $got_unique_ids = array();
+        static $got_unique_ids = [];
 
         /* @var \DpRun\DpEnv */
         global $DP_ENV;
@@ -181,11 +178,12 @@ class SystemErrorHandler
         self::logErrorInfo($einfo);
     }
 
-    private static function shouldLog(/* Throwable */ $exception)
+    private static function shouldLog(/* Throwable */
+        $exception)
     {
         if (($exception instanceof HttpException
-             && $exception->getStatusCode() >= 400
-             && $exception->getStatusCode() < 500)
+                && $exception->getStatusCode() >= 400
+                && $exception->getStatusCode() < 500)
             || $exception instanceof MethodNotAllowedException
             || $exception instanceof AccessDeniedException
         ) {
@@ -257,7 +255,7 @@ class SystemErrorHandler
             $trace .= "\n\n(Alt Exception)\n{$previnfo['summary']}\n".$previnfo['trace'];
         }
 
-        $errinfo = array(
+        $errinfo = [
             'type'              => 'exception',
             'session_name'      => isset($exception->_dp_sn) ? $exception->_dp_sn : self::genSessionName(),
             'exception'         => $exception,
@@ -276,7 +274,7 @@ class SystemErrorHandler
             'error_time'        => microtime(true),
             'time_to_error'     => defined('DP_START_TIME') ? sprintf('%0.4f', microtime(true) - DP_START_TIME) : 0,
             'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
-        );
+        ];
 
         $url = '';
         if (defined('DP_REQUEST_URL')) {
@@ -324,7 +322,7 @@ class SystemErrorHandler
      */
     public static function enableFatalErrorHandler()
     {
-        register_shutdown_function(array(self::class, 'handleFatalError'));
+        register_shutdown_function([self::class, 'handleFatalError']);
         self::$hasFatalHandler = true;
     }
 
@@ -491,7 +489,7 @@ class SystemErrorHandler
             $url = 'Command: '.implode(' ', $_SERVER['argv']);
         }
 
-        return array(
+        return [
             'type'              => 'error',
             'session_name'      => self::genSessionName(),
             'pri'               => $pri,
@@ -510,7 +508,7 @@ class SystemErrorHandler
             'no_send_error'     => $no_send_error,
             'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
             'url'               => $url,
-        );
+        ];
     }
 
     /**
@@ -558,7 +556,7 @@ class SystemErrorHandler
      */
     public static function processErrorInfo(array $errinfo)
     {
-        $str = array();
+        $str = [];
         if ($errinfo['type'] == 'exception') {
             $e     = $errinfo['exception'];
             $line  = sprintf('DeskPRO Exception: %s:%s (%s line %s): %s', $errinfo['exception_type'], $e->getCode(), $errinfo['errfile'], $errinfo['errline'], $e->getMessage());
@@ -652,11 +650,11 @@ class SystemErrorHandler
                     self::$errorLogger->log(
                         LogLevel::ERROR,
                         sprintf('Uncaught Exception %s: "%s" at %s line %s', get_class($e), $e->getMessage(), $e->getFile(), $e->getLine()),
-                        array('exception' => $e)
+                        ['exception' => $e]
                     );
                 } else {
                     $level = isset(self::$errorLevelMap[$errinfo['errno']]) ? self::$errorLevelMap[$errinfo['errno']] : LogLevel::CRITICAL;
-                    self::$errorLogger->log($level, $errinfo['errname'].': '.$errinfo['errstr'], array('code' => $errinfo['errno'], 'message' => $errinfo['errstr'], 'file' => $errinfo['errfile'], 'line' => $errinfo['errline']));
+                    self::$errorLogger->log($level, $errinfo['errname'].': '.$errinfo['errstr'], ['code' => $errinfo['errno'], 'message' => $errinfo['errstr'], 'file' => $errinfo['errfile'], 'line' => $errinfo['errline']]);
                 }
             }
 
@@ -718,7 +716,7 @@ class SystemErrorHandler
      */
     public static function clearProcessLog()
     {
-        self::$processLog = array();
+        self::$processLog = [];
     }
 
     ####################################################################################################################
@@ -734,15 +732,15 @@ class SystemErrorHandler
             return self::$bugsnagClient;
         }
 
-        if (self::$bugsnagConfig['api_key']) {
+        if (self::$bugsnagConfig['backend_api_key']) {
             if (!class_exists('Bugsnag_Client', true)) {
                 // failed to autoload the class, so ignore
-                self::$bugsnagConfig['api_key'] = null;
+                self::$bugsnagConfig['backend_api_key'] = null;
 
                 return;
             }
 
-            self::$bugsnagClient = new \Bugsnag_Client(self::$bugsnagConfig['api_key']);
+            self::$bugsnagClient = new \Bugsnag_Client(self::$bugsnagConfig['backend_api_key']);
             self::$bugsnagClient->setProjectRoot(self::getDpEnv()->getDpRoot());
             self::$bugsnagClient->setAutoNotify(false);
             if (isset(self::$bugsnagConfig['metadata']) && is_array(self::$bugsnagConfig['metadata'])) {
@@ -765,7 +763,7 @@ class SystemErrorHandler
     /**
      * @param array $bugsnagConfig
      */
-    public static function setBugsnagConfig(array $bugsnagConfig = ['api_key' => null])
+    public static function setBugsnagConfig(array $bugsnagConfig = ['backend_api_key' => null])
     {
         self::$bugsnagConfig = array_replace(self::$bugsnagConfig, $bugsnagConfig);
         self::$bugsnagClient = null;
@@ -807,13 +805,14 @@ class SystemErrorHandler
      *
      * @return bool
      */
-    public static function isNoReportException(/*Throwable*/ $exception)
+    public static function isNoReportException(/*Throwable*/
+        $exception)
     {
-        static $ignore = array(
+        static $ignore = [
             'Swift_TransportException',
             'Swift_IoException',
             'Zend\\Mail\\Protocol\\Exception\\RuntimeException',
-        );
+        ];
 
         foreach ($ignore as $cls) {
             if ($exception instanceof $cls) {
@@ -988,7 +987,7 @@ class SystemErrorHandler
             return sprintf('<%s>', get_class($var));
         }
         if (is_array($var)) {
-            $a        = array();
+            $a        = [];
             $len      = count($var);
             $is_array = true;
 

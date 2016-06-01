@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Theme\TagHandler;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -50,12 +46,12 @@ class EsiTagHandler implements TagHandlerInterface
     /**
      * @var PortalCacheHelper
      */
-    private $portal_cache_helper;
+    private $portalCacheHelper;
 
     /**
      * @var EsiFragmentRenderer
      */
-    private $esi_renderer;
+    private $esiRenderer;
 
     /**
      * @var ContainerInterface
@@ -65,21 +61,21 @@ class EsiTagHandler implements TagHandlerInterface
     /**
      * @var PortalModeStorage
      */
-    private $mode_storage;
+    private $modeStorage;
 
     public function __construct(
         ContainerInterface $container,
         PortalCacheHelper $portal_cache_helper,
         PortalModeStorage $mode_storage
     ) {
-        $this->portal_cache_helper = $portal_cache_helper;
-        $this->container           = $container;
-        $this->mode_storage        = $mode_storage;
+        $this->portalCacheHelper = $portal_cache_helper;
+        $this->container         = $container;
+        $this->modeStorage       = $mode_storage;
     }
 
     public function supports(Tag $tag, TagRequest $tag_request)
     {
-        return $tag->isEsi($this->portal_cache_helper->isGuestRequest());
+        return $tag->isEsi($this->portalCacheHelper->isGuestRequest());
     }
 
     public function handle(Tag $tag, TagRequest $tag_request)
@@ -93,7 +89,7 @@ class EsiTagHandler implements TagHandlerInterface
                 $tag_request->query->all()
             ),
             $tag_request,
-            array('ignore_errors' => false)
+            ['ignore_errors' => false]
         );
     }
 
@@ -114,7 +110,7 @@ class EsiTagHandler implements TagHandlerInterface
 
     private function filterOutObjects(ParameterBag $bag)
     {
-        $new_params = array();
+        $new_params = [];
         foreach ($bag->all() as $key => $val) {
             if ('visitor_id' === $key) {
                 continue; // ignore visitor_id in ESI urls

@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\HttpCache;
 
 use FOS\HttpCache\SymfonyCache\UserContextSubscriber;
@@ -44,7 +40,7 @@ class PortalHttpCache extends EventDispatchingHttpCache
 
     /**
      * This used to be "guest", but I made it the same as the generated response from a guest with session (below). This is
-     * because "Vary" will be different if these are different, and there's no need for that. If we need to distingush
+     * because "Vary" will be different if these are different, and there's no need for that. If we need to distinguish
      * between an "anonymous" and "guest with session" in the app, we can change this value. (NEVER change the GUEST_HASH tho).
      */
     const ANON_NO_SESSION_HASH = 'anon_no_session';
@@ -72,18 +68,18 @@ class PortalHttpCache extends EventDispatchingHttpCache
 
     protected function getDefaultSubscribers()
     {
-        $user_context_subscriber = new UserContextSubscriber(
-            array(
+        $userContextSubscriber = new UserContextSubscriber(
+            [
                 'anonymous_hash'          => self::ANON_NO_SESSION_HASH,
                 'user_hash_accept_header' => self::USER_CONTEXT_HASH_ACCEPT_HEADER,
                 'user_hash_header'        => self::USER_CONTEXT_HASH_HEADER,
                 'user_hash_uri'           => $this->basePath.'/_portal_user_hash',
                 'user_hash_method'        => 'GET',
                 'session_name_prefix'     => 'dpsid',
-            )
+            ]
         );
 
-        return array($user_context_subscriber);
+        return [$userContextSubscriber];
     }
 
     public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
@@ -95,14 +91,14 @@ class PortalHttpCache extends EventDispatchingHttpCache
             return parent::handle($request, $type, $catch);
         }
 
-        $cache_disabled = $DP_ENV->getConfig('settings.disable_portal_http_cache');
+        $cacheDisabled = $DP_ENV->getConfig('settings.disable_portal_http_cache');
 
-        // Cache is disabled for agents, they need to see content asap
-        if (!$cache_disabled && ($request->cookies->has('dpsid-agent'))) {
-            $cache_disabled = true;
+        // Cache is disabled for agents or users, they need to see content asap
+        if (!$cacheDisabled && ($request->cookies->has('dpsid-agent'))) {
+            $cacheDisabled = true;
         }
 
-        if ($cache_disabled) {
+        if ($cacheDisabled) {
             return $this->kernel->handle($request, $type, $catch);
         }
 
@@ -126,6 +122,6 @@ class PortalHttpCache extends EventDispatchingHttpCache
      */
     protected function getOptions()
     {
-        return array('debug' => true);
+        return ['debug' => true];
     }
 }

@@ -2757,8 +2757,8 @@ header {
   &:before, &:after {
     position: absolute;
     top: 10px;
-    color: $text-color-lighter;
-
+    font-size: $font-size-base * 2;
+    color: lighten($text-color-lighter, 30%);
   }
 
   &:before {

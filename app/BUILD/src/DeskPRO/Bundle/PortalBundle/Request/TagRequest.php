@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\PortalBundle\Request;
 
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
@@ -39,36 +36,36 @@ class TagRequest extends SymfonyRequest
     /**
      * @var \Symfony\Component\OptionsResolver\OptionsResolver
      */
-    protected $options_resolver;
+    protected $optionsResolver;
 
     /**
      * @return \Symfony\Component\OptionsResolver\OptionsResolver
      */
     public function getOptionsResolver()
     {
-        return $this->options_resolver;
+        return $this->optionsResolver;
     }
 
     /**
-     * @param \Symfony\Component\OptionsResolver\OptionsResolver $options_resolver
+     * @param \Symfony\Component\OptionsResolver\OptionsResolver $optionsResolver
      */
-    public function setOptionsResolver(OptionsResolver $options_resolver)
+    public function setOptionsResolver(OptionsResolver $optionsResolver)
     {
-        $options_resolver->setDefined('_tag_name');
-        $this->options_resolver = $options_resolver;
+        $optionsResolver->setDefined('_tag_name');
+        $this->optionsResolver = $optionsResolver;
     }
 
     /**
-     * @param array $collect_attr Array of attributes to fetch options from a parent request.
+     * @param array $collectAttr Array of attributes to fetch options from a parent request.
      *
      * @return array
      */
-    public function getTagOptions(array $collect_attr = array())
+    public function getTagOptions(array $collectAttr = [])
     {
-        $opts = $this->query->get('tag_options', array());
+        $opts = $this->query->get('tag_options', []);
 
-        if ($collect_attr) {
-            foreach ($collect_attr as $attr) {
+        if ($collectAttr) {
+            foreach ($collectAttr as $attr) {
                 if ($this->attributes->has($attr)) {
                     $v = $this->attributes->get($attr);
                     if (is_array($v)) {
