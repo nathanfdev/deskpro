@@ -5,6 +5,7 @@ import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { CustomField } from 'DeskPRO/Component/CustomField/CustomField';
 import { Field, Input } from 'react-forms';
 import { ChatBeginLoadingSpinner } from '../ChatBeginLoadingSpinner';
+import { WidgetBodyScrollAreaContainer } from '../../../../../Application/Components/Widget/Parts/Body/WidgetBodyScrollAreaContainer';
 
 export class ChatBeginForm extends React.Component {
 
@@ -25,46 +26,48 @@ export class ChatBeginForm extends React.Component {
     }
 
     return (
-      <div className="dpdesignportal-open-new-chat">
-        <form className="dpdesignportal-form" onSubmit={onSubmit}>
-          <FormItem label={portalPhrases.get('portal.chat.label-details')} field="name" errors={errors}>
-            <Field select="name" placeholder={portalPhrases.get('portal.chat.details-placeholder')}>
-              <Input type="text" />
-            </Field>
-          </FormItem>
-          <FormItem label={portalPhrases.get('portal.chat.label-email')} field="email" errors={errors}>
-            <Field select="email" placeholder="email@example.com">
-              <Input type="email" />
-            </Field>
-          </FormItem>
+      <WidgetBodyScrollAreaContainer>
+        <div className="dpdesignportal-open-new-chat">
+          <form className="dpdesignportal-form" onSubmit={onSubmit}>
+            <FormItem label={portalPhrases.get('portal.chat.label-details')} field="name" errors={errors}>
+              <Field select="name" placeholder={portalPhrases.get('portal.chat.details-placeholder')}>
+                <Input type="text" />
+              </Field>
+            </FormItem>
+            <FormItem label={portalPhrases.get('portal.chat.label-email')} field="email" errors={errors}>
+              <Field select="email" placeholder="email@example.com">
+                <Input type="email" />
+              </Field>
+            </FormItem>
 
-          {customFields.valueSeq().map((customField, index) =>
-            <CustomField
-              key={index}
-              config={customField}
-              formErrors={errors}
-              widgetOptions={{
-                context:       [parent.document, window.widgetFrame.document],
-                contentWindow: window.widgetFrame,
-                ownerDocument: window.widgetFrame.document
-              }}
-            >
-              <CustomFieldTemplate />
-            </CustomField>
-          )}
+            {customFields.valueSeq().map((customField, index) =>
+              <CustomField
+                key={index}
+                config={customField}
+                formErrors={errors}
+                widgetOptions={{
+                  context:       [parent.document, window.widgetFrame.document],
+                  contentWindow: window.widgetFrame,
+                  ownerDocument: window.widgetFrame.document
+                }}
+              >
+                <CustomFieldTemplate />
+              </CustomField>
+            )}
 
-          <div className="button-label">
-            {submit
-              ? <div className="spinner"><i /></div>
-              : <input
-                type="submit"
-                value={portalPhrases.get('portal.chat.start')}
-                className="dpdesignportal-button dpdesignportal-button-wide"
-              />
-            }
-          </div>
-        </form>
-      </div>
+            <div className="button-label">
+              {submit
+                ? <div className="spinner"><i /></div>
+                : <input
+                  type="submit"
+                  value={portalPhrases.get('portal.chat.start')}
+                  className="dpdesignportal-button dpdesignportal-button-wide"
+                />
+              }
+            </div>
+          </form>
+        </div>
+      </WidgetBodyScrollAreaContainer>
     );
   }
 }

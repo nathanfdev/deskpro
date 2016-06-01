@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { isEndedSelector } from '../../../../../Chat/Selectors/chat';
 
 @connect(state => ({
-  chatEnded:   isEndedSelector(state)
+  chatEnded: isEndedSelector(state)
 }))
 export class WidgetHeader extends React.Component {
 
@@ -38,13 +38,16 @@ export class WidgetHeader extends React.Component {
     return (
       <div className="dpdesignportal-header">
         {false /* disabled for now */ &&
-        <a href="#" className="dpdesignportal-header-controls left" onClick={this.onOpenMenu}>
-          <i className="fa fa-navicon" />
-        </a>
+          <a href="#" className="dpdesignportal-header-controls left" onClick={this.onOpenMenu}>
+            <i className="fa fa-navicon" />
+          </a>
         }
 
-        <a href="#" className="dpdesignportal-header-controls dpdesignportal-mobile-nav-control right"
-           onClick={this.onClose}>
+        <a
+          href="#"
+          className="dpdesignportal-header-controls dpdesignportal-mobile-nav-control right"
+          onClick={this.onClose}
+        >
           <span className="dpdesignportal-control-hide">
             {minimizeButton}
           </span>

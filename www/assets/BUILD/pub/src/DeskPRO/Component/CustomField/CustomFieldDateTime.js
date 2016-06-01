@@ -56,8 +56,8 @@ class DateTimeWidget extends React.Component {
       ...this.getRangeOptions(),
       ...this.getWeekdaysOptions(),
 
-      ownerDocument: widgetOptions.ownerDocument,
-      contentWindow: widgetOptions.contentWindow,
+      ownerDocument: widgetOptions.ownerDocument || window,
+      contentWindow: widgetOptions.contentWindow || document,
       parentID:      $wrapper,
       timepicker:    timePicker,
 
@@ -78,7 +78,8 @@ class DateTimeWidget extends React.Component {
   }
 
   getRangeOptions() {
-    const { options } = this.props;
+    const { options, timePicker } = this.props;
+    const format  = timePicker ? 'L LT' : 'L';
     const rangeType = options.get('date_valid_type');
 
     let minRangeFormat;
@@ -96,10 +97,10 @@ class DateTimeWidget extends React.Component {
 
     const rangeOptions = {};
     if (minRangeFormat) {
-      rangeOptions.minDate = moment(minRangeFormat).format('L');
+      rangeOptions.minDate = moment(minRangeFormat).format(format);
     }
     if (maxRangeFormat) {
-      rangeOptions.maxDate = moment(maxRangeFormat).format('L');
+      rangeOptions.maxDate = moment(maxRangeFormat).format(format);
     }
 
     return rangeOptions;

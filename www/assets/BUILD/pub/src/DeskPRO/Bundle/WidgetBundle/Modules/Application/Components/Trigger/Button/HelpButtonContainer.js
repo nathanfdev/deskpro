@@ -57,6 +57,7 @@ export class HelpButtonContainer extends React.Component {
     helpPopupMessage:    PropTypes.string,
     helpPopupReplyType:  PropTypes.string,
     backgroundColor:     PropTypes.string,
+    borderColor:         PropTypes.string,
     textColor:           PropTypes.string,
     agentsCount:         PropTypes.number,
     agentPollingTimeout: PropTypes.oneOfType([

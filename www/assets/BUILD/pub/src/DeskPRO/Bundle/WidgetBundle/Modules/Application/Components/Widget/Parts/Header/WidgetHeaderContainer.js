@@ -37,9 +37,6 @@ export class WidgetHeaderContainer extends React.Component {
   };
 
   render() {
-    return (
-      <WidgetHeader onOpenMenu={this.onOpenMenu}
-                    onClose={this.onClose} {...this.props} />
-    );
+    return <WidgetHeader onOpenMenu={this.onOpenMenu} onClose={this.onClose} {...this.props} />;
   }
 }

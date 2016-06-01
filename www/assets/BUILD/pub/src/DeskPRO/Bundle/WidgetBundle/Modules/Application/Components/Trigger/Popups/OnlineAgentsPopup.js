@@ -45,14 +45,15 @@ export class OnlineAgentsPopup extends React.Component {
         <div className="preemtive-chat-content">
           <div className="preemtive-chat-footer">
             <div className="preemtive-chat-footer-button">
-              <a href="#"
-                 onClick={this.onClick}
-                 className="wide"
-                 style={{
-                   backgroundColor,
-                   color: textColor
-                 }}>
-
+              <a
+                href="#"
+                onClick={this.onClick}
+                className="wide"
+                style={{
+                  backgroundColor,
+                  color: textColor
+                }}
+              >
                 Start a conversation
               </a>
             </div>

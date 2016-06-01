@@ -1,13 +1,16 @@
 import React from 'react';
 import { TicketFormContentContainer } from './TicketFormContentContainer';
+import { WidgetBodyScrollAreaContainer } from '../../../Application/Components/Widget/Parts/Body/WidgetBodyScrollAreaContainer';
 
 export class TicketForm extends React.Component {
 
   render() {
     return (
-      <div className="dpdesignportal-content dpdesignportal-open-new-ticket">
-        <TicketFormContentContainer />
-      </div>
+      <WidgetBodyScrollAreaContainer>
+        <div className="dpdesignportal-content dpdesignportal-open-new-ticket">
+          <TicketFormContentContainer />
+        </div>
+      </WidgetBodyScrollAreaContainer>
     );
   }
 }

@@ -9,9 +9,10 @@ $text-opacue: 0.5;
 
 $form-border-color: #c0c0c0;
 $form-padding-vertical: 8px;
-$form-padding-horizontal: 1em;
+$form-padding-horizontal: 6px;
 $form-input: lighten($page-background, 5%);
 
+$input-height-base: 32px;
 $button-text: $page-background;
 $button-color: $main-color;
 
@@ -35,17 +36,19 @@ $grey: #e6e6e6;
     display: block;
     background: #ffffff;
     line-height: normal;
+    height: $input-height-base;
     position: relative;
 
     span {
       padding: $form-padding-vertical $form-padding-horizontal;
+      display: block;
     }
 
     .filter-box {
       width: 60%;
       input {
         width: 100%;
-        padding: 0;
+        padding: $form-padding-vertical $form-padding-horizontal;
         margin: 0;
         line-height: 100%;
         border: none !important;

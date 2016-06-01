@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import $ from 'jquery';
 
 export class ChatPopup extends React.Component {
 
@@ -17,15 +18,17 @@ export class ChatPopup extends React.Component {
     const hiddenPopup = !liveDemo && parentWidth < 760;
 
     return (
-      <div className={classNames('dpdesignportal-state-buttons', {
-        'dpdesignportal-agent-message': !small,
-        'dpdesignportal-online-agents': small,
-        'hidden-popup': hiddenPopup
-      })}>
+      <div
+        className={classNames('dpdesignportal-state-buttons', {
+          'dpdesignportal-agent-message': !small,
+          'dpdesignportal-online-agents': small,
+          'hidden-popup':                 hiddenPopup
+        })}
+      >
         <div
           className={classNames('preemtive-chat', { small, 'position-left': widgetPosition === 'bottom.left' })}
-          style={{ borderColor: backgroundColor }}>
-
+          style={{ borderColor: backgroundColor }}
+        >
           {children}
           <div className="pointer" style={{ borderTopColor: backgroundColor }}></div>
         </div>
