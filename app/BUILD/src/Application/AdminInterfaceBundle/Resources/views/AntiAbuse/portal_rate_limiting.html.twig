@@ -1,7 +1,51 @@
 {% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
 
 {% block fullpane_content %}
-    <section class="dp-paneblock dp-listpane" ng-if="usersourceSettings.reg_enabled || usersourceSettings.has_user_login_form">
+
+    <section class="dp-paneblock dp-listpane">
+        <header>
+            <h3>
+                <span>Rate Limiting</span>
+            </h3>
+        </header>
+
+        <article class="form-horizontal dp-form">
+            <div class="panel panel-innertable">
+                <div class="form-group">
+                    <div class="col-lg-12">
+
+                        <div class="inner-group">
+                            <label>
+                                <h4>
+                                    <input type="checkbox" class="form-control" ng-model="general_settings.rate_limit_disabled" style="width: auto;vertical-align: middle;margin-top: 1px;" />
+                                    Disable rate-limiting
+                                </h4>
+                            </label>
+                        </div>
+
+                        <div class="inner-group" ng-hide="general_settings.rate_limit_disabled">
+                            <label>
+                                <h4>
+                                    Whitelist IP addresses
+                                    <i class="fa fa-question-circle qmark-icon" tooltip="If many agents/users are coming from a shared IP address and are seeing CAPTCHAs all the time, whitelist the address. Separate multiple addresses with commas." tooltip-placement="right"></i>
+                                </h4>
+                            </label>
+                            <div>
+                                <input type="text" class="form-control"
+                                       ng-model="general_settings.rate_limit_ips"
+                                       style="width: 40%;"
+                                       ng-list
+                                />
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <section class="dp-paneblock dp-listpane" ng-if="usersourceSettings.reg_enabled || usersourceSettings.has_user_login_form" ng-hide="general_settings.rate_limit_disabled">
         <header>
             <h3>{{ phrase('admin.settings.portal_rate_limit_account') }}</h3>
         </header>
@@ -115,7 +159,7 @@
         </article>
     </section>
 
-    <section class="dp-paneblock dp-listpane">
+    <section class="dp-paneblock dp-listpane" ng-hide="general_settings.rate_limit_disabled">
         <header>
             <h3>{{ phrase('admin.settings.portal_rate_limit_logged_in') }}</h3>
         </header>
@@ -301,7 +345,7 @@
         </article>
     </section>
 
-    <section class="dp-paneblock dp-listpane">
+    <section class="dp-paneblock dp-listpane" ng-hide="general_settings.rate_limit_disabled">
         <header>
             <h3>{{ phrase('admin.settings.portal_rate_limit_guests') }}</h3>
         </header>

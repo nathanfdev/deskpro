@@ -33,6 +33,7 @@
 namespace Application\DeskPRO\Settings;
 
 use Application\DeskPRO\App;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
 use Orb\Util\Arrays;
 
 class GeneralSettings
@@ -89,6 +90,12 @@ class GeneralSettings
     public $attach_agent_not_exts = [];
     /** @var int */
     public $attach_agent_maxsize;
+
+    /** @var bool */
+    protected $rate_limit_disabled;
+
+    /** @var array */
+    protected $rate_limit_ips;
 
     /** @var bool */
     protected $isCloud;
@@ -170,6 +177,9 @@ class GeneralSettings
         if (!$this->attach_agent_not_exts) {
             $this->attach_agent_not_exts = [];
         }
+
+        $this->rate_limit_disabled = (bool) $this->settings->get(AntiAbuse::SETTING_RATE_LIMIT_IS_DISABLED);
+        $this->rate_limit_ips      = json_decode($this->settings->get(AntiAbuse::SETTING_IP_WHITELIST, 1) ?: []);
     }
 
     /**
@@ -215,6 +225,8 @@ class GeneralSettings
             'attach_agent_must_exts'    => $this->attach_agent_must_exts,
             'attach_agent_not_exts'     => $this->attach_agent_not_exts,
             'attach_agent_maxsize'      => $this->attach_agent_maxsize,
+            'rate_limit_disabled'       => $this->rate_limit_disabled,
+            'rate_limit_ips'            => $this->rate_limit_ips,
         ];
 
         return $export_settings;
@@ -286,5 +298,11 @@ class GeneralSettings
         $this->settings->setSetting('core.attach_agent_maxsize', (int) $this->attach_agent_maxsize);
         $this->settings->setSetting('core.attach_agent_must_exts', $this->attach_agent_must_exts ? implode(',', $this->attach_agent_must_exts) : null);
         $this->settings->setSetting('core.attach_agent_not_exts', $this->attach_agent_not_exts ? implode(',', $this->attach_agent_not_exts) : null);
+
+        $this->settings->setSetting(AntiAbuse::SETTING_RATE_LIMIT_IS_DISABLED, (bool) $this->rate_limit_disabled);
+        if (!is_array($this->rate_limit_ips)) {
+            $this->rate_limit_ips = [];
+        }
+        $this->settings->setSetting(AntiAbuse::SETTING_IP_WHITELIST, json_encode($this->rate_limit_ips));
     }
 }

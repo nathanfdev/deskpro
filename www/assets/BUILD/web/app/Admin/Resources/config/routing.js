@@ -254,15 +254,8 @@ define(function() {
 	//# Anti-Abuse
 	//###
 	routes.push({
-		id: 'setup.login_lockout_settings',
-		url: '/login_lockout_settings',
-		templateName: 'AntiAbuse/login_lockout_settings.html',
-		controller: 'Admin_AntiAbuse_Ctrl_LoginLockoutSettings'
-	});
-
-	routes.push({
-		id: 'setup.portal_rate_limiting',
-		url: '/portal_rate_limiting',
+		id: 'setup.rate_limiting',
+		url: '/rate_limiting',
 		templateName: 'AntiAbuse/portal_rate_limiting.html',
 		controller: 'Admin_AntiAbuse_Ctrl_PortalRateLimiting'
 	});
