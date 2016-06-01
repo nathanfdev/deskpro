@@ -59,8 +59,8 @@ class AntiAbuseContext extends BaseContext implements KernelAwareContext
     }
 
     /**
-     * @Given I set :which rate limit to :limit attempts within :time minute(s) with :response response and :lockoutTime minute(s) lockout time
-     * @Given I set :which rate limit to :limit attempts within :time minute(s) with :response response
+     * @Given I set :which rate limit to :limit attempt(s) within :time minute(s) with :response response and :lockoutTime minute(s) lockout time
+     * @Given I set :which rate limit to :limit attempt(s) within :time minute(s) with :response response
      *
      * @param string $which
      * @param int    $limit
@@ -86,8 +86,8 @@ class AntiAbuseContext extends BaseContext implements KernelAwareContext
         $this->em()->flush();
     }
     /**
-     * @Given I set :which rate limit to :limit attempts within :time minute(s) with :response response and :lockoutTime minute(s) lockout time for guest
-     * @Given I set :which rate limit to :limit attempts within :time minute(s) with :response response for guest
+     * @Given I set :which rate limit to :limit attempt(s) within :time minute(s) with :response response and :lockoutTime minute(s) lockout time for guest
+     * @Given I set :which rate limit to :limit attempt(s) within :time minute(s) with :response response for guest
      *
      * @param string $which
      * @param int    $limit

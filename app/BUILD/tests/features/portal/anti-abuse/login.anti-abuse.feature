@@ -10,7 +10,7 @@ Feature: Login anti-abuse feature
       | default |
 
   Scenario: Checking lockout response
-    Given I set "login" rate limit to 1 attempts within 1 minute with "lockout" response and 15 minutes lockout time
+    Given I set "login" rate limit to 1 attempt within 1 minute with "lockout" response and 15 minutes lockout time
 
     When I use bad "admin" credentials for login
     Then I should be on "/login"
@@ -19,21 +19,25 @@ Feature: Login anti-abuse feature
     And I should see "You have failed login too many times" in the ".inline-form-alert" element
 
   Scenario: Checking lockout response for unknown user
-    Given I set "login" rate limit to 1 attempts within 1 minute with "lockout" response and 15 minutes lockout time
+    Given I set "login" rate limit to 1 attempt within 1 minute with "lockout" response and 15 minutes lockout time for guest
+    Given I set "login" rate limit to 2 attempts within 1 minute with "lockout" response and 15 minutes lockout time for guest
     When I use bad credentials for login
     Then I should be on "/login"
+    When I use bad credentials for login
+    Then I should be on "/login"
+    And I should not see "You have failed login too many times" in the ".inline-form-alert" element
     When I use bad credentials for login
     Then I should be on "/login"
     And I should see "You have failed login too many times" in the ".inline-form-alert" element
 
   Scenario: Checking captcha response
-    Given I set "login" rate limit to 1 attempts within 1 minute with "captcha" response
+    Given I set "login" rate limit to 1 attempt within 1 minute with "captcha" response
     When I use bad "admin" credentials for login
     Then I should be on "/login"
     And I should see an "#deskpro_captcha_captcha" element
 
   Scenario: Checking captcha response for unknown user
-    Given I set "login" rate limit to 1 attempts within 1 minute with "captcha" response
+    Given I set "login" rate limit to 1 attempt within 1 minute with "captcha" response for guest
     When I use bad credentials for login
     Then I should be on "/login"
     And I should see an "#deskpro_captcha_captcha" element

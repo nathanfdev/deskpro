@@ -8,7 +8,7 @@ Feature: To prevent password resetting abuse
       | default |
 
   Scenario: Checking lockout response
-    Given I set "reset_password" rate limit to 1 attempts within 15 minutes with "lockout" response and 15 minutes lockout time
+    Given I set "reset_password" rate limit to 1 attempt within 15 minutes with "lockout" response and 15 minutes lockout time
     Given I am on "/login/reset-password"
     When I fill in "request_password_reset_email" with "111"
     And I press "Reset Password"
@@ -16,7 +16,7 @@ Feature: To prevent password resetting abuse
     Then I should see "You are trying to reset password too often and were locked out." in the ".inline-form-alert" element
 
   Scenario: Checking captcha response
-    Given I set "reset_password" rate limit to 1 attempts within 15 minutes with "captcha" response
+    Given I set "reset_password" rate limit to 1 attempt within 15 minutes with "captcha" response
     And I am on "/login/reset-password"
     When I fill in "request_password_reset_email" with "111"
     And I press "Reset Password"

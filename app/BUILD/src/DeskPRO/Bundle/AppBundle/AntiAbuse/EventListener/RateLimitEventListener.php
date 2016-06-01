@@ -172,13 +172,20 @@ class RateLimitEventListener implements EventSubscriberInterface
 
         /** @var RateLimitLogRepository $rep */
         $rep = $this->em->getRepository(RateLimitLog::class);
-        $res = $rep->count($action, $config->getTime(), $person, $event->getIp());
+        $res = $rep->count($config, $event->getIp());
 
         return $res >= (int) $config->getLimit()
             ? $config->getResponse() === AntiAbuseConfig::RESPONSE_CAPTCHA
             : false;
     }
 
+    /**
+     * @param AntiAbuseEvent $event
+     *
+     * @throws \Exception
+     *
+     * @return bool
+     */
     private function isLockoutRequired(AntiAbuseEvent $event)
     {
         $action = $event->getType();
@@ -197,12 +204,12 @@ class RateLimitEventListener implements EventSubscriberInterface
         $rep = $this->em->getRepository(RateLimitLog::class);
 
         // at first let's decide if we are in lockout
-        $lastLockoutAttempt = $rep->getLastLockedOutAttempt($action, $event->getPerson(), $event->getIp());
+        $lastLockoutAttempt = $rep->getLastLockedOutAttempt($event->getConfig(), $event->getIp());
         if ($lastLockoutAttempt && $lastLockoutAttempt + $config->getLockoutTime() > time()) {
             return true; // we are in lockout already so it's required
         }
 
-        $res = $rep->count($action, $config->getTime(), $person, $event->getIp());
+        $res = $rep->count($config, $event->getIp());
 
         return $res >= $config->getLimit()
             ? $config->getResponse() === AntiAbuseConfig::RESPONSE_LOCKOUT
@@ -242,7 +249,7 @@ class RateLimitEventListener implements EventSubscriberInterface
      */
     protected function getConfig($action, Person $person)
     {
-        $config = new AntiAbuseConfig();
+        $config = new AntiAbuseConfig($person, $action);
         foreach (['limit', 'time', 'response', 'enabled', 'lockout_time'] as $key) {
             $method = StringUtils::toCamelCase(sprintf('set_%s', $key));
             // try guest first
@@ -316,16 +323,18 @@ class RateLimitEventListener implements EventSubscriberInterface
         return false;
     }
 
+    /**
+     * @param AntiAbuseEvent $event
+     *
+     * @return int
+     */
     protected function getLockoutTime(AntiAbuseEvent $event)
     {
-        $antiAbuseConfig = $event->getConfig();
         /** @var RateLimitLogRepository $rep */
         $rep = $this->em->getRepository(RateLimitLog::class);
 
         return $rep->getLockoutTime(
-            $event->getPerson(),
-            $event->getType(),
-            $antiAbuseConfig->getLockoutTime(),
+            $event->getConfig(),
             $event->getIp()
         );
     }

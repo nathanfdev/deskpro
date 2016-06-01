@@ -9,7 +9,7 @@ Feature: To prevent ticket submitting abuse
 
   Scenario: Checking lockout response for user
     Given I am authenticated as "user"
-    And I set "submit_ticket" rate limit to 1 attempts within 15 minutes with "lockout" response and 15 minutes lockout time
+    And I set "submit_ticket" rate limit to 1 attempt within 15 minutes with "lockout" response and 15 minutes lockout time
     And I am on "/new-ticket"
     And I press "Submit"
     Then I should be on "/new-ticket"
@@ -17,7 +17,7 @@ Feature: To prevent ticket submitting abuse
 
   Scenario: Checking captcha response for user
     Given I am authenticated as "user"
-    And I set "submit_ticket" rate limit to 1 attempts within 15 minutes with "captcha" response
+    And I set "submit_ticket" rate limit to 1 attempt within 15 minutes with "captcha" response
     And I am on "/new-ticket"
     And I press "Submit"
     Then I should be on "/new-ticket"
@@ -27,7 +27,7 @@ Feature: To prevent ticket submitting abuse
 
   Scenario: Checking lockout response for guest
     Given I am not logged in
-    And I set "submit_ticket" rate limit to 1 attempts within 15 minutes with "lockout" response and 15 minutes lockout time for guest
+    And I set "submit_ticket" rate limit to 1 attempt within 15 minutes with "lockout" response and 15 minutes lockout time for guest
     And I am on "/new-ticket"
     And I press "Submit"
     Then I should be on "/new-ticket"
@@ -35,7 +35,7 @@ Feature: To prevent ticket submitting abuse
 
   Scenario: Checking lockout captcha for guest
     Given I am not logged in
-    And I set "submit_ticket" rate limit to 1 attempts within 15 minutes with "captcha" response for guest
+    And I set "submit_ticket" rate limit to 1 attempt within 15 minutes with "captcha" response for guest
     And I am on "/new-ticket"
     And I press "Submit"
     Then I should be on "/new-ticket"
