@@ -5,17 +5,25 @@ import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/Reco
 const navStateSelector = state => state.Feedback.nav;
 
 export const listFiltersSelector = createSelector(
-  [
-    collectionSelectorFactory('Department', 'all_chat')
-  ],
-  (departments) => {
-    const departmentOptions = departments.toArray()
-      .map(department => ({ value: department.get('id'), label: department.get('title') }));
+  [currentListParamsSelector, collectionSelectorFactory('Department', 'all_chat')],
+  (currentListParams, departments) => {
+    const filterSelector = [];
 
-    const filterSelector = [
-      { label: 'Date Created', type: 'datePeriod', param: 'date_created', property: 'date_created' },
-      { label: 'Department', type: 'select', param: 'department', options: departmentOptions }
-    ];
+    if (!currentListParams.get('navItem') || !currentListParams.get('navItem').get('date_period')) {
+      filterSelector.push(
+        {
+          label:    'Date Created',
+          type:     'datePeriod',
+          param:    'date_created',
+          property: 'date_created'
+        });
+    }
+    if (!currentListParams.get('navItem') || !currentListParams.get('navItem').get('department')) {
+      const departmentOptions = departments.toArray()
+        .map(department => ({ value: department.get('id'), label: department.get('title') }));
+
+      filterSelector.push({ label: 'Department', type: 'select', param: 'department', options: departmentOptions });
+    }
     return filterSelector;
   }
 );
