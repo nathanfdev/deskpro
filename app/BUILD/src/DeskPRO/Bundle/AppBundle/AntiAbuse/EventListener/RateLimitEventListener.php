@@ -325,7 +325,6 @@ class RateLimitEventListener implements EventSubscriberInterface
         return $rep->getLockoutTime(
             $event->getPerson(),
             $event->getType(),
-            $antiAbuseConfig->getTime(),
             $antiAbuseConfig->getLockoutTime(),
             $event->getIp()
         );

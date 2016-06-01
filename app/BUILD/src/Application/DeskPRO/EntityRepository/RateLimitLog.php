@@ -35,20 +35,44 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity\Person as PersonEntity;
+use Application\DeskPRO\Entity\RateLimitLog as RateLimitLogEntity;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\QueryBuilder;
 
+/**
+ * Class RateLimitLog.
+ */
 class RateLimitLog extends AbstractEntityRepository
 {
+    /**
+     * @param string       $action
+     * @param PersonEntity $person
+     * @param string       $ip
+     * @param bool         $lockout
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     */
     public function save($action, PersonEntity $person, $ip = null, $lockout = false)
     {
-        $ip = $ip ? ip2long($ip) : 0;
-        $this->getEntityManager()->getConnection()->executeQuery(sprintf(
-            'insert into %s (action, ip, person_id, date_created, is_lockout) values (:action, %d, %d, NOW(), %d)',
-            $this->getTableName(), $ip, $person['id'], (int) $lockout
-        ), array('action' => $action));
+        $log = new RateLimitLogEntity();
+        $log
+            ->setAction($action)
+            ->setIp($ip ?: 0)
+            ->setPersonId($person->getId())
+            ->setDateCreated(new \DateTime())
+            ->setIsLockout($lockout);
+        $this->_em->persist($log);
+        $this->_em->flush($log);
     }
 
+    /**
+     * @param string       $action
+     * @param int          $time
+     * @param PersonEntity $person
+     * @param string       $ip
+     *
+     * @return int
+     */
     public function count($action, $time, PersonEntity $person, $ip = null)
     {
         $date = new \DateTime('-'.(int) $time.' second');
@@ -73,15 +97,14 @@ class RateLimitLog extends AbstractEntityRepository
     /**
      * @param PersonEntity $person
      * @param string       $action
-     * @param int          $time
      * @param int          $maxLockTime
-     * @param string|null  $ip
+     * @param string       $ip
      *
      * @throws \Doctrine\DBAL\DBALException
      *
      * @return int
      */
-    public function getLockoutTime(PersonEntity $person, $action, $time, $maxLockTime, $ip)
+    public function getLockoutTime(PersonEntity $person, $action, $maxLockTime, $ip)
     {
         // All we need is just to find latest action attempt, it's written every time,
         // so trying to perform an action while you were locked out will refresh lockout timer
@@ -93,11 +116,28 @@ class RateLimitLog extends AbstractEntityRepository
         return max(0, $maxLockTime - $lockTime);
     }
 
+    /**
+     * @param string       $action
+     * @param PersonEntity $person
+     * @param string       $ip
+     *
+     * @return bool
+     */
     public function getLastLockedOutAttempt($action, PersonEntity $person, $ip = null)
     {
         return $this->getLastAttempt($action, $person, $ip, true);
     }
 
+    /**
+     * @param string       $action
+     * @param PersonEntity $person
+     * @param string       $ip
+     * @param bool         $lockout
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     *
+     * @return bool
+     */
     public function getLastAttempt($action, PersonEntity $person, $ip, $lockout = null)
     {
         $qb = $this->createQueryBuilder('rll');
@@ -119,6 +159,11 @@ class RateLimitLog extends AbstractEntityRepository
         return is_array($res) ? strtotime($res['date_created']) : false;
     }
 
+    /**
+     * @param QueryBuilder $qb
+     * @param PersonEntity $person
+     * @param string       $ip
+     */
     private function applyPersonCondition(QueryBuilder $qb, PersonEntity $person, $ip)
     {
         $personIsNotGuest = $person && !$person->isGuest();

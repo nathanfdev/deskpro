@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -64,19 +65,80 @@ class RateLimitLog extends DomainObject
      */
     protected $date_created;
 
-    /** @var  bool */
+    /** @var bool */
     protected $is_lockout = false;
 
+    /**
+     * RateLimitLog constructor.
+     */
     public function __construct()
     {
         $this->date_created = new \DateTime();
     }
 
+    /**
+     * @param string $ip
+     *
+     * @return $this
+     */
     public function setIp($ip)
     {
         $this->setModelField('ip', ip2long($ip));
+
+        return $this;
     }
 
+    /**
+     * @param string $action
+     *
+     * @return $this
+     */
+    public function setAction($action)
+    {
+        $this->setModelField('action', $action);
+
+        return $this;
+    }
+
+    /**
+     * @param $lockout
+     *
+     * @return $this
+     */
+    public function setIsLockout($lockout)
+    {
+        $this->setModelField('lockout', $lockout);
+
+        return $this;
+    }
+
+    /**
+     * @param int $person_id
+     *
+     * @return $this
+     */
+    public function setPersonId($person_id)
+    {
+        $this->setModelField('person_id', (int) $person_id);
+
+        return $this;
+    }
+
+    /**
+     * @param \DateTime $date_created
+     *
+     * @return $this
+     */
+    public function setDateCreated(\DateTime $date_created)
+    {
+        $this->setModelField('date_created', $date_created);
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getIp()
     {
         return long2ip($this->ip);
@@ -86,6 +148,9 @@ class RateLimitLog extends DomainObject
     # Doctrine Metadata
     ############################################################################
 
+    /**
+     * @param ClassMetadata $metadata
+     */
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
