@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Feedback;
@@ -218,6 +219,7 @@ class FeedbackController extends AbstractController
         $filter->setTypes($allowedTypesParsed);
         $filterJs = $this->generateFilterJs($filter, $feedbackTypes, $page);
 
+        $lockout = $this->submitNewFeedbackAbuseCheck($person, $request->getClientIp(), false)->isLockoutRecommended();
         //
         // RENDER THEME
         //
@@ -242,6 +244,7 @@ class FeedbackController extends AbstractController
                 'rss_link'           => $rssLink,
                 'filter_js'          => $filterJs,
                 'is_subscribed'      => $isSubscribed,
+                'lockout'            => $lockout,
             ]
         );
     }
@@ -278,11 +281,20 @@ class FeedbackController extends AbstractController
     /**
      * @param mixed  $person
      * @param string $ip
+     *
+     * @return SubmitFeedbackAbuseCheck
      */
-    public function submitNewFeedbackAbuseCheck($person, $ip)
+    public function submitNewFeedbackAbuseCheck($person, $ip, $withResponse = true)
     {
         $check = new SubmitFeedbackAbuseCheck($person, $ip);
+        if ($withResponse) {
+            $check->setResponse($this->redirectToRoute('portal_feedback', ['lockout' => 'feedback']));
+        } else {
+            $check->markAsCheckOnly();
+        }
         $this->getAntiAbuseService()->check($check);
+
+        return $check;
     }
 
     /**
@@ -367,6 +379,7 @@ class FeedbackController extends AbstractController
             'filter_js'         => $filterJs,
             'rerendering_saved' => false, // wont happen here because we always rerender on index
             'is_subscribed'     => $isSubscribed,
+            'lockout'           => $request->get('lockout', false),
         ];
 
         if ($request->isXmlHttpRequest()) {
@@ -479,6 +492,7 @@ class FeedbackController extends AbstractController
                 'rating'             => $rating,
                 'show_rating_counts' => $showRatingCounts,
                 'rating_counts'      => $ratingCounts,
+                'lockout'            => $request->get('lockout', false),
             ]
         );
     }

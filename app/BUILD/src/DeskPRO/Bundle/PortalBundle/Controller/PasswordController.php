@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\PasswordHistory;
@@ -110,6 +111,10 @@ class PasswordController extends AbstractController
             'Theme:Password:password-reset-request.html.twig' :
             'Theme:Password:set-password-request.html.twig';
 
+        $check = new PasswordResetAbuseCheck($this->getCurrentPerson(), $request->getClientIp());
+        $check->markAsCheckOnly();
+        $this->get('anti_abuse')->check($check);
+
         return $this->renderThemeView(
             $tpl,
             array(
@@ -118,6 +123,7 @@ class PasswordController extends AbstractController
                 'render_error' => $render_error,
                 'breadcrumbs'  => $this->getBreadcrumbGenerator()->buildPasswordReset($isResetting),
                 'page_title'   => $this->createPageTitle()->passwordReset($isResetting),
+                'lockout'      => $check->isLockoutRecommended(),
             )
         );
     }
@@ -226,6 +232,7 @@ class PasswordController extends AbstractController
     protected function runAntiAbuseCheck(Request $request)
     {
         $check = new PasswordResetAbuseCheck($this->getCurrentPerson(), $request->getClientIp());
+        $check->setResponse($this->redirectToRoute('portal_reset_password', ['lockout' => 'reset']));
         $this->get('anti_abuse')->check($check);
     }
 }

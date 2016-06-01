@@ -1249,12 +1249,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/mongodb-odm.git",
-                "reference": "a4d5226bd7594d09db4dc2741895c185c021dffd"
+                "reference": "f88851d2269c4b79b34271dedf4f8a0b7f72edfe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/mongodb-odm/zipball/a4d5226bd7594d09db4dc2741895c185c021dffd",
-                "reference": "a4d5226bd7594d09db4dc2741895c185c021dffd",
+                "url": "https://api.github.com/repos/doctrine/mongodb-odm/zipball/f88851d2269c4b79b34271dedf4f8a0b7f72edfe",
+                "reference": "f88851d2269c4b79b34271dedf4f8a0b7f72edfe",
                 "shasum": ""
             },
             "require": {
@@ -1278,7 +1278,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0.x-dev"
+                    "dev-master": "1.1.x-dev"
                 }
             },
             "autoload": {
@@ -1324,7 +1324,7 @@
                 "odm",
                 "persistence"
             ],
-            "time": "2016-05-13 08:41:06"
+            "time": "2016-05-30 06:57:50"
         },
         {
             "name": "doctrine/mongodb-odm-bundle",
@@ -4809,16 +4809,16 @@
         },
         {
             "name": "pusher/pusher-php-server",
-            "version": "v2.3.0",
+            "version": "v2.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pusher/pusher-http-php.git",
-                "reference": "c03f5702d774d2c68785d4b61cd4701ed10759c5"
+                "reference": "b3984a9f6fd65e39b7d6de9bb7d67656ff286f0f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pusher/pusher-http-php/zipball/c03f5702d774d2c68785d4b61cd4701ed10759c5",
-                "reference": "c03f5702d774d2c68785d4b61cd4701ed10759c5",
+                "url": "https://api.github.com/repos/pusher/pusher-http-php/zipball/b3984a9f6fd65e39b7d6de9bb7d67656ff286f0f",
+                "reference": "b3984a9f6fd65e39b7d6de9bb7d67656ff286f0f",
                 "shasum": ""
             },
             "require": {
@@ -4849,7 +4849,7 @@
                 "rest",
                 "trigger"
             ],
-            "time": "2016-02-22 15:43:51"
+            "time": "2016-05-27 08:42:18"
         },
         {
             "name": "react/child-process",
@@ -6604,16 +6604,16 @@
         },
         {
             "name": "true/punycode",
-            "version": "v2.0.2",
+            "version": "v2.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/true/php-punycode.git",
-                "reference": "74fa01d4de396c40e239794123b3874cb594a30c"
+                "reference": "6853ce218b6115ec749607e14ac51338920c9d81"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/true/php-punycode/zipball/74fa01d4de396c40e239794123b3874cb594a30c",
-                "reference": "74fa01d4de396c40e239794123b3874cb594a30c",
+                "url": "https://api.github.com/repos/true/php-punycode/zipball/6853ce218b6115ec749607e14ac51338920c9d81",
+                "reference": "6853ce218b6115ec749607e14ac51338920c9d81",
                 "shasum": ""
             },
             "require": {
@@ -6646,7 +6646,7 @@
                 "idna",
                 "punycode"
             ],
-            "time": "2016-01-07 17:12:58"
+            "time": "2016-05-23 08:20:50"
         },
         {
             "name": "twig/twig",
@@ -6910,12 +6910,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendesk/zendesk_api_client_php.git",
-                "reference": "4da2e7e3de93ccdd4157ae023f6b91cacd943c47"
+                "reference": "07f30ecfa77f2277b0fecf2d9b25c61a9b77f8da"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/4da2e7e3de93ccdd4157ae023f6b91cacd943c47",
-                "reference": "4da2e7e3de93ccdd4157ae023f6b91cacd943c47",
+                "url": "https://api.github.com/repos/zendesk/zendesk_api_client_php/zipball/07f30ecfa77f2277b0fecf2d9b25c61a9b77f8da",
+                "reference": "07f30ecfa77f2277b0fecf2d9b25c61a9b77f8da",
                 "shasum": ""
             },
             "require": {
@@ -6941,7 +6941,7 @@
             ],
             "description": "PHP Client for Zendesk REST API. See http://developer.zendesk.com/api-docs",
             "homepage": "https://github.com/zendesk/zendesk_api_client_php",
-            "time": "2016-04-29 08:17:54"
+            "time": "2016-05-25 05:16:27"
         },
         {
             "name": "zendframework/zend-authentication",
@@ -10643,16 +10643,16 @@
         },
         {
             "name": "fabpot/php-cs-fixer",
-            "version": "v1.11.2",
+            "version": "v1.11.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfPHP/PHP-CS-Fixer.git",
-                "reference": "41f70154642ec0f9ea9ea9c290943f3b5dfa76fc"
+                "reference": "b0a383d856d884d6b16e15892f507ecf89f8dbd2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfPHP/PHP-CS-Fixer/zipball/41f70154642ec0f9ea9ea9c290943f3b5dfa76fc",
-                "reference": "41f70154642ec0f9ea9ea9c290943f3b5dfa76fc",
+                "url": "https://api.github.com/repos/FriendsOfPHP/PHP-CS-Fixer/zipball/b0a383d856d884d6b16e15892f507ecf89f8dbd2",
+                "reference": "b0a383d856d884d6b16e15892f507ecf89f8dbd2",
                 "shasum": ""
             },
             "require": {
@@ -10693,7 +10693,8 @@
                 }
             ],
             "description": "A tool to automatically fix PHP code style",
-            "time": "2016-02-26 07:37:29"
+            "abandoned": "friendsofphp/php-cs-fixer",
+            "time": "2016-05-26 23:49:24"
         },
         {
             "name": "henrikbjorn/phpspec-code-coverage",

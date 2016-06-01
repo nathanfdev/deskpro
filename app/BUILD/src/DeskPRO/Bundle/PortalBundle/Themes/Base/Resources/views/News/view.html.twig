@@ -1,16 +1,19 @@
 {% extends 'Theme::layout.html.twig' %}
+{% import 'Theme:Portal:User/macros.html.twig' as macros %}
+
 {% block inner_content %}
   <div class="breadcrumbs">
     {% show breadcrumbs %}
   </div>
   <article class="news kb-article">
+    {% if lockout %}
+      {{ macros.user_notice('auth', phrase('portal.account.comment-lockout')) }}
+    {% endif %}
     <header>
       <div class="news-header main-list">
 
         <div class="header-buttons">
           {% show news_subscription_link %}
-          {#<a href="#">{{ phrase('portal.general.btn-email') }} <i class="fa fa-envelope"></i></a>#}
-          {#<a href="#">{{ phrase('portal.general.btn-print') }} <i class="fa fa-print"></i></a>#}
           <a href="{{ path('portal_news_pdf', {slug: post.slug}) }}" id="pdf_download">{{ phrase('portal.general.btn-download-pdf') }} <i class="fa fa-file-pdf-o"></i></a>
         </div>
         <div class="deskpro-calendar-decoration-flat">

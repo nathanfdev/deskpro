@@ -1,4 +1,6 @@
 {% extends 'Theme::layout.html.twig' %}
+{% import 'Theme:Portal:User/macros.html.twig' as macros %}
+
 {% block inner_content %}
 
   <div class="breadcrumbs">
@@ -6,8 +8,10 @@
   </div>
 
   <article class="news kb-article">
+    {% if lockout %}
+      {{ macros.user_notice('auth', phrase('portal.account.comment-lockout')) }}
+    {% endif %}
     <header>
-
       <div class="header-button-container">
         <div class="header-buttons">
           {% show kb_subscription_link %}

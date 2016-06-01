@@ -32,6 +32,7 @@
 namespace DeskPRO\Bundle\AppBundle\AntiAbuse\Event;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuseConfig;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Exception\AntiAbuseException;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\Response;
@@ -59,42 +60,56 @@ abstract class AntiAbuseEvent extends Event
     /**
      * @var bool
      */
-    protected $recommend_captcha;
+    protected $recommendCaptcha = false;
 
     /**
      * @var bool
      */
-    protected $recommend_lockout;
+    protected $recommendLockout = false;
 
     /**
      * @var Response|null
      */
-    protected $recommend_response;
+    protected $recommendResponse;
 
     /**
      * @var bool
      */
-    protected $require_response;
+    protected $requireResponse;
 
     /**
      * @var bool
      */
-    protected $check_only;
+    protected $limited = false;
 
-    public function __construct($person_or_email, $ip = null)
+    /**
+     * @var bool
+     */
+    protected $checkOnly = false;
+
+    /**
+     * @var int
+     */
+    protected $lockoutTime = 0;
+
+    /** @var AntiAbuseConfig */
+    protected $config;
+
+    /**
+     * AntiAbuseEvent constructor.
+     *
+     * @param      $personOrEmail
+     * @param null $ip
+     */
+    public function __construct($personOrEmail, $ip = null)
     {
-        if ($person_or_email instanceof Person) {
-            $this->person = $person_or_email;
+        if ($personOrEmail instanceof Person) {
+            $this->person = $personOrEmail;
         } else {
-            $this->email = $person_or_email;
+            $this->email = $personOrEmail;
         }
 
-        $this->ip                 = $ip;
-        $this->recommend_captcha  = false;
-        $this->recommend_lockout  = false;
-        $this->recommend_response = null;
-        $this->require_response   = false;
-        $this->check_only         = false;
+        $this->ip = $ip;
     }
 
     /**
@@ -113,11 +128,15 @@ abstract class AntiAbuseEvent extends Event
     }
 
     /**
-     * @param Person|null $person
+     * @param Person $person
+     *
+     * @return $this
      */
     public function setPerson(Person $person)
     {
         $this->person = $person;
+
+        return $this;
     }
 
     /**
@@ -137,11 +156,15 @@ abstract class AntiAbuseEvent extends Event
     }
 
     /**
-     * @param string|null $ip
+     * @param string $ip
+     *
+     * @return $this
      */
     public function setIp($ip)
     {
         $this->ip = $ip;
+
+        return $this;
     }
 
     /**
@@ -149,7 +172,7 @@ abstract class AntiAbuseEvent extends Event
      */
     public function isCaptchaRecommended()
     {
-        return $this->recommend_captcha;
+        return $this->recommendCaptcha;
     }
 
     /**
@@ -157,9 +180,28 @@ abstract class AntiAbuseEvent extends Event
      */
     public function isLockoutRecommended()
     {
-        return $this->recommend_lockout;
+        return $this->recommendLockout;
     }
 
+    /**
+     * @return int
+     */
+    public function getLockoutTime()
+    {
+        return $this->lockoutTime;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLimited()
+    {
+        return $this->limited;
+    }
+
+    /**
+     * @return bool
+     */
     public function isResponseRecommended()
     {
         return null !== $this->getRecommendedResponse();
@@ -170,7 +212,7 @@ abstract class AntiAbuseEvent extends Event
      */
     public function isResponseRequired()
     {
-        return $this->require_response;
+        return $this->requireResponse;
     }
 
     /**
@@ -178,30 +220,56 @@ abstract class AntiAbuseEvent extends Event
      */
     public function getRecommendedResponse()
     {
-        return $this->recommend_response;
+        return $this->recommendResponse;
     }
 
     /**
-     * @param null|Response $recommend_response
+     * @param Response $recommendResponse
+     *
+     * @return $this
      */
-    public function setResponse(Response $recommend_response)
+    public function setResponse(Response $recommendResponse)
     {
-        $this->recommend_response = $recommend_response;
+        $this->recommendResponse = $recommendResponse;
+
+        return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function markResponseRequired()
     {
-        $this->require_response = true;
+        $this->requireResponse = true;
+
+        return $this;
     }
 
-    public function markLockoutRecommended()
+    /**
+     * @param int $lockoutTime
+     *
+     * @return $this
+     */
+    public function markLockoutRecommended($lockoutTime = 0)
     {
-        $this->recommend_lockout = true;
+        if ($lockoutTime > 0) {
+            $this->lockoutTime = $lockoutTime;
+        }
+        $this->recommendLockout = true;
+        $this->limited          = true;
+
+        return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function markCaptchaRecommended()
     {
-        $this->recommend_captcha = true;
+        $this->recommendCaptcha = true;
+        $this->limited          = true;
+
+        return $this;
     }
 
     /**
@@ -217,7 +285,7 @@ abstract class AntiAbuseEvent extends Event
      */
     public function isCheckOnly()
     {
-        return $this->check_only;
+        return $this->checkOnly;
     }
 
     /**
@@ -228,10 +296,32 @@ abstract class AntiAbuseEvent extends Event
      * used to calculate whether or not there is abuse. For this reason, tests will use an event that is
      * "check only" so that it can verify the state of the anti-abuse system.
      *
-     * @return bool
+     * @return $this
      */
     public function markAsCheckOnly()
     {
-        $this->check_only = true;
+        $this->checkOnly = true;
+
+        return $this;
+    }
+
+    /**
+     * @return AntiAbuseConfig
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
+     * @param AntiAbuseConfig $config
+     *
+     * @return $this
+     */
+    public function setConfig(AntiAbuseConfig $config)
+    {
+        $this->config = $config;
+
+        return $this;
     }
 }

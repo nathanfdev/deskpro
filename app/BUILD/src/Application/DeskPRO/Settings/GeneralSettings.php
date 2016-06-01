@@ -33,7 +33,7 @@
 namespace Application\DeskPRO\Settings;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Service\RateLimit;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
 use Orb\Util\Arrays;
 
 class GeneralSettings
@@ -92,13 +92,13 @@ class GeneralSettings
     public $attach_agent_maxsize;
 
     /** @var bool */
-    protected $isCloud;
-
-    /** @var bool */
     protected $rate_limit_disabled;
 
     /** @var array */
     protected $rate_limit_ips;
+
+    /** @var bool */
+    protected $isCloud;
 
     /**
      * @param Settings $settings
@@ -177,8 +177,9 @@ class GeneralSettings
         if (!$this->attach_agent_not_exts) {
             $this->attach_agent_not_exts = [];
         }
-        $this->rate_limit_disabled = (bool) $this->settings->get(RateLimit::DISABLED);
-        $this->rate_limit_ips      = json_decode($this->settings->get(RateLimit::IPS, 1) ?: []);
+
+        $this->rate_limit_disabled = (bool) $this->settings->get(AntiAbuse::SETTING_RATE_LIMIT_IS_DISABLED);
+        $this->rate_limit_ips      = json_decode($this->settings->get(AntiAbuse::SETTING_IP_WHITELIST, 1) ?: []);
     }
 
     /**
@@ -298,10 +299,10 @@ class GeneralSettings
         $this->settings->setSetting('core.attach_agent_must_exts', $this->attach_agent_must_exts ? implode(',', $this->attach_agent_must_exts) : null);
         $this->settings->setSetting('core.attach_agent_not_exts', $this->attach_agent_not_exts ? implode(',', $this->attach_agent_not_exts) : null);
 
-        $this->settings->setSetting(RateLimit::DISABLED, (bool) $this->rate_limit_disabled);
+        $this->settings->setSetting(AntiAbuse::SETTING_RATE_LIMIT_IS_DISABLED, (bool) $this->rate_limit_disabled);
         if (!is_array($this->rate_limit_ips)) {
             $this->rate_limit_ips = [];
         }
-        $this->settings->setSetting(RateLimit::IPS, json_encode($this->rate_limit_ips));
+        $this->settings->setSetting(AntiAbuse::SETTING_IP_WHITELIST, json_encode($this->rate_limit_ips));
     }
 }

@@ -101,11 +101,11 @@ return array(
     'admin.settings.portal_rate_limit_guests'       => 'Rate Limiting for Guests',
     'admin.settings.portal_rate_limit_minutes'      => 'minutes,',
     'admin.settings.portal_rate_limit_times_within' => 'times within',
+    'admin.settings.portal_rate_limit_within'       => 'within',
     'admin.settings.portal_rate_limit_show_captcha' => 'show a CAPTCHA to the user',
-    'admin.settings.portal_rate_limit_reject_form'  => 'reject the form',
+    'admin.settings.portal_rate_limit_reject_form'  => 'disable the form',
 
     'admin.settings.portal_rate_limit_login_rate_limit'           => 'Login Rate Limiting',
-    'admin.settings.portal_rate_limit_login_rate_limit_also'      => 'see also Login Lockout',
     'admin.settings.portal_rate_limit_login_attempted'            => 'After a user has attempted to login',
     'admin.settings.portal_rate_limit_registration_rate_limit'    => 'Registration Rate Limiting',
     'admin.settings.portal_rate_limit_registration_attempted'     => 'After a user has attempted to register',

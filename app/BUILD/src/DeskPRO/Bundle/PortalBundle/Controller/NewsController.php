@@ -261,6 +261,7 @@ class NewsController extends AbstractController
                 'breadcrumbs'        => $breadcrumbs,
                 'show_rating_counts' => $showRatingCounts,
                 'rating_counts'      => $ratingCounts,
+                'lockout'            => $request->get('lockout', false),
             ]
         );
     }

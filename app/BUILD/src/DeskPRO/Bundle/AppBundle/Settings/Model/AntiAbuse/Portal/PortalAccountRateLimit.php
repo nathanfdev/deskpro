@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal;
 
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup;
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class PortalAccountRateLimit.
@@ -39,9 +40,11 @@ class PortalAccountRateLimit
     /**
      * Settings for login.
      *
-     * @var RateLimitGroup
+     * @Assert\Valid
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
+     *
+     * @var RateLimitGroup
      */
     private $loginSettings;
 
@@ -50,6 +53,8 @@ class PortalAccountRateLimit
      *
      * @var RateLimitGroup
      *
+     * @Assert\Valid
+     *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
      */
     private $registrationSettings;
@@ -57,9 +62,11 @@ class PortalAccountRateLimit
     /**
      * Limits for password resetting.
      *
-     * @var RateLimitGroup
+     * @Assert\Valid
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
+     *
+     * @var RateLimitGroup
      */
     private $resetPasswordSettings;
 

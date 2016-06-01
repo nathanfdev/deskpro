@@ -148,8 +148,12 @@ class PortalController extends AbstractController
         $abuse_check   = new LoginAbuseCheck($last_username, $request->getClientIp());
         $abuse_check->markAsCheckOnly();
         $this->getAntiAbuseService()->check($abuse_check);
+        $lockout = $lockoutTime = false;
         if ($abuse_check->isCaptchaRecommended()) {
             $captcha_form = $this->createForm('deskpro_captcha');
+        } elseif ($abuse_check->isLockoutRecommended()) {
+            $lockout     = true;
+            $lockoutTime = $abuse_check->getLockoutTime();
         }
         $usersources_view = $this->get('usersources_view_helper')->createUsersourceViewList();
 
@@ -170,7 +174,8 @@ class PortalController extends AbstractController
                 'auth_manager'         => $this->get('dp_authentication_manager.user'),
                 'login_captcha_failed' => $request->get('retry') == 'captcha',
                 'login_error'          => $request->get('retry') == 'auth',
-                'lockout_error'        => $request->get('lockout') == 'auth',
+                'lockout_error'        => $lockout,
+                'lockout_time'         => $lockoutTime,
                 'saved_form'           => $saved_form,
                 'saved_form_message'   => $saved_form_message,
                 'captcha_form'         => $captcha_form ? $captcha_form->createView() : null,
@@ -448,7 +453,7 @@ class PortalController extends AbstractController
         // rate limit first
         $check = new UploadAbuseCheck($this->getUser(), $request->getClientIp());
         $this->getAntiAbuseService()->check($check);
-        if ($check->isCaptchaRecommended()) {
+        if ($check->isLimited()) {
             return new JsonResponse([
                 'success' => false,
                 'error'   => [

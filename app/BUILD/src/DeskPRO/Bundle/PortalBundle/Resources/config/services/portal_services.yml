@@ -37,3 +37,4 @@ services:
       - "@language_manager"
       - "@person_factory"
       - "@anti_abuse"
+      - "@router"

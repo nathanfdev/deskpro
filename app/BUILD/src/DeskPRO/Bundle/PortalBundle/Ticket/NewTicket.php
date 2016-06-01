@@ -29,7 +29,6 @@
 /**
  * DeskPRO.
  */
-
 namespace DeskPRO\Bundle\PortalBundle\Ticket;
 
 use Application\DeskPRO\Entity\Person;
@@ -45,7 +44,9 @@ use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\PortalBundle\Person\PersonFactory;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class NewTicket.
@@ -83,6 +84,11 @@ class NewTicket
     private $anti_abuse;
 
     /**
+     * @var UrlGeneratorInterface
+     */
+    private $urlGenerator;
+
+    /**
      * Constructor.
      *
      * @param EntityManager         $em
@@ -91,6 +97,7 @@ class NewTicket
      * @param LanguageManager       $language_manager
      * @param PersonFactory         $person_factory
      * @param AntiAbuse             $anti_abuse
+     * @param UrlGeneratorInterface $urlGenerator
      */
     public function __construct(
         EntityManager         $em,
@@ -98,7 +105,8 @@ class NewTicket
         CustomPerFieldManager $custom_per_field_manager,
         LanguageManager       $language_manager,
         PersonFactory         $person_factory,
-        AntiAbuse             $anti_abuse
+        AntiAbuse             $anti_abuse,
+        UrlGeneratorInterface $urlGenerator
     ) {
         $this->em                       = $em;
         $this->ticket_manager           = $ticket_manager;
@@ -106,6 +114,7 @@ class NewTicket
         $this->language_manager         = $language_manager;
         $this->person_factory           = $person_factory;
         $this->anti_abuse               = $anti_abuse;
+        $this->urlGenerator             = $urlGenerator;
     }
 
     /**
@@ -184,6 +193,7 @@ class NewTicket
     public function submitNewTicketAbuseCheck($person, $ip)
     {
         $check = new SubmitTicketAbuseCheck($person, $ip);
+        $check->setResponse(new RedirectResponse($this->urlGenerator->generate('portal_new_ticket', ['lockout' => 'tickets'])));
         $this->anti_abuse->check($check);
     }
 

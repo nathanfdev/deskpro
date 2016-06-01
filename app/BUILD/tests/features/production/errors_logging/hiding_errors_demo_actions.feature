@@ -5,6 +5,7 @@ Feature: Hiding internal actions
 
   Background:
     Given I install the fresh data set
+    And I disable anti-abuse rate limiting
 
   Scenario Outline: I access an API internal action as guest
     When I go to "<internal_action>"

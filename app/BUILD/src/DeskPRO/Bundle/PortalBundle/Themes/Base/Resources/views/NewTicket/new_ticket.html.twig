@@ -1,9 +1,14 @@
 {% extends 'Theme::layout.html.twig' %}
+{% import 'Theme:Portal:User/macros.html.twig' as macros %}
+
 {% block inner_content %}
     <div class="breadcrumbs">
         {% show breadcrumbs %}
     </div>
     <div>
+        {% if lockout %}
+            {{ macros.user_notice('auth', phrase('portal.account.tickets-lockout')) }}
+        {% endif %}
         <header class="large-title">
             <h1>{{ phrase('portal.tickets.new-section-title') }}</h1>
             <p>{{ phrase('portal.tickets.new-intro') }}</p>

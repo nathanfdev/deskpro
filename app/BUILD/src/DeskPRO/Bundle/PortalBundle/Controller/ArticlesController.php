@@ -33,6 +33,7 @@ use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\ShareContentAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ShareContentVoter;
@@ -259,6 +260,7 @@ class ArticlesController extends AbstractController
                 'show_rating_counts' => $showRatingCounts,
                 'rating_counts'      => $ratingCounts,
                 'can_share'          => $canShare,
+                'lockout'            => $request->get('lockout', false),
             ]
         );
     }
@@ -444,9 +446,12 @@ class ArticlesController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            //            $this->runAntiAbuseCheck($request);
+        if ($form->isSubmitted()) {
+            $this->runAntiAbuseCheck($request, $article);
+        }
 
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->runAntiAbuseCheck($request, $article);
             $emails = [];
             $email  = $form->getViewData()['email'];
             /** @var Person $person */
@@ -473,7 +478,24 @@ class ArticlesController extends AbstractController
                 'article'     => $article,
                 'form'        => $form->createView(),
                 'form_errors' => $form->isSubmitted() ? $form->getErrors() : [],
+                'lockout'     => $request->get('lockout', false),
             ]
         );
+    }
+
+    private function runAntiAbuseCheck(Request $request, Article $article)
+    {
+        $check = new ShareContentAbuseCheck($this->getCurrentPerson(), $request->getClientIp());
+        $check
+            ->setResponse(
+                $this->redirectToRoute(
+                    'portal_articles_share',
+                    [
+                        'slug'    => $article->getSlug(),
+                        'lockout' => 'share',
+                    ]
+                )
+            );
+        $this->get('anti_abuse')->check($check);
     }
 }

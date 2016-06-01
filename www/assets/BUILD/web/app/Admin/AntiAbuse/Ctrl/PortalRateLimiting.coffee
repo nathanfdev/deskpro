@@ -9,6 +9,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @$scope.settings = null
       @$scope.feedbackSettings = null
       @$scope.usersourceSettings = null
+      @$scope.general_settings = null
 
     initialLoad: ->
       promise = @Api2.sendGet(_url).then (res) =>
@@ -17,15 +18,23 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         @$scope.feedbackSettings = res.data.settings
       usersourcePromise = @Api2.sendGet('/settings/user_source').then (res) =>
         @$scope.usersourceSettings = res.data.data
+      generalPromise = @Api.sendGet('/general_settings').then (res) =>
+        @$scope.general_settings = res.data.general_settings
 
-      return @$q.all([promise, feedbackPromise, usersourcePromise])
+      return @$q.all([promise, feedbackPromise, usersourcePromise, generalPromise])
 
     save: ->
+      promise = @Api2.sendPutJson(_url, @$scope.settings)
+      generalPromise = @Api.sendPostJson('/general_settings', {
+        general_settings: @$scope.general_settings
+      })
+
       @startSpinner('saving')
-      @Api2.sendPutJson(_url, @$scope.settings).success( =>
+
+      @$q.all([promise, generalPromise]).then( =>
         @stopSpinner('saving')
         @Growl.success @getRegisteredMessage('saved_settings')
-      ).error( (info) =>
+      , (info) =>
         @stopSpinner('saving', true)
         @applyErrorResponseToView(info)
       )

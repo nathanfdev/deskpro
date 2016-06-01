@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem;
 
 use Application\DeskPRO\Entity\Article;
@@ -58,7 +57,7 @@ class TaskLinkedArticle extends TaskLinkedItem
      * @JMS\Type("entity<Application\DeskPRO\Entity\Article>")
      *
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Article")
-     * @ORM\JoinColumn(name="article_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="article_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      *
      * @Assert\NotBlank()
      *

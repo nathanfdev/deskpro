@@ -69,24 +69,4 @@ $CONFIG['env'] = [
     'debug_mode'  => true,
 ];
 
-$CONFIG['settings']                                             = [];
-$CONFIG['settings']['core.license']                             = file_get_contents(__DIR__.'/../../../../dev/dev-lic-key.txt');
-$CONFIG['settings']['agent.login_rate_limit.enabled']           = false;
-$CONFIG['settings']['rate_limit.login.limit']                   = 9999;
-$CONFIG['settings']['rate_limit.submit_ticket.limit']           = 9999;
-$CONFIG['settings']['rate_limit.submit_ticket.guest.limit']     = 9999;
-$CONFIG['settings']['rate_limit.registration.limit']            = 9999;
-$CONFIG['settings']['rate_limit.reset_password.limit']          = 9999;
-$CONFIG['settings']['rate_limit.token_exchange.limit']          = 9999;
-$CONFIG['settings']['rate_limit.submit_comment.limit']          = 9999;
-$CONFIG['settings']['rate_limit.submit_feedback.limit']         = 9999;
-$CONFIG['settings']['rate_limit.share_content.limit']           = 9999;
-$CONFIG['settings']['rate_limit.upload_attachment.guest.limit'] = 9999;
-$CONFIG['settings']['rate_limit.submit_comment.guest.limit']    = 9999;
-$CONFIG['settings']['rate_limit.submit_feedback.guest.limit']   = 9999;
-$CONFIG['settings']['rate_limit.submit_ticket.guest.limit']     = 9999;
-$CONFIG['settings']['rate_limit.share_content.guest.limit']     = 9999;
-
-$CONFIG['settings'] = [
-    'disable_outgoing_email' => true,
-];
+$CONFIG['settings']['disable_outgoing_email'] = true;

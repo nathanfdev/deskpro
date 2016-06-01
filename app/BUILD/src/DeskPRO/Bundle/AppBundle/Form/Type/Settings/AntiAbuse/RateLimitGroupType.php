@@ -28,16 +28,14 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse;
 
+use DeskPRO\Bundle\AppBundle\Form\DataTransformer\MinutesTransformer;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class RateLimitGroupType.
@@ -51,17 +49,10 @@ class RateLimitGroupType extends AbstractType
     {
         $builder
             ->add('enabled', ApiBooleanType::class)
-            ->add('limit', NumberType::class, [
-                'constraints' => [
-                    new Assert\NotBlank(),
-                    new Assert\GreaterThan(0),
-                ],
-            ])
-            ->add('time', NumberType::class, [
-                'constraints' => [
-                    new Assert\NotBlank(),
-                    new Assert\GreaterThan(0),
-                ],
+            ->add('limit', NumberType::class)
+            ->add('time', NumberType::class)
+            ->add('lockout_time', NumberType::class, [
+                'property_path' => 'lockoutTime',
             ])
             ->add('response', ChoiceType::class, [
                 'choices_as_values' => true,
@@ -71,16 +62,9 @@ class RateLimitGroupType extends AbstractType
                 ],
             ])
         ;
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'preSubmit']);
-    }
 
-    public function preSubmit(FormEvent $event)
-    {
-        $data = $event->getData();
-        if (isset($data['time'])) {
-            $data['time'] *= 60;
-            $event->setData($data);
-        }
+        $builder->get('lockout_time')->addModelTransformer(new MinutesTransformer());
+        $builder->get('time')->addModelTransformer(new MinutesTransformer());
     }
 
     /**

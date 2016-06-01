@@ -88,6 +88,7 @@ class ProfileController extends AbstractController
 
         if ($form->isSubmitted()) {
             $event = new RegistrationAbuseCheck($this->getCurrentPerson(), $request->getClientIp());
+            $event->setResponse($this->redirectToRoute('portal_user_registration', ['lockout' => 'register']));
             $this->getAntiAbuseService()->check($event);
             // check if the person already has an account (or is a contact)
             if ($email = $person->getEmailAddress()) {
@@ -140,10 +141,15 @@ class ProfileController extends AbstractController
         // BREADCRUMBS
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildRegistration();
 
+        $event = new RegistrationAbuseCheck($this->getCurrentPerson(), $request->getClientIp());
+        $event->markAsCheckOnly();
+        $this->getAntiAbuseService()->check($event);
+
         return $this->renderThemeView(
             'Theme:Portal:User/register.html.twig',
             [
                 'form'        => $form->createView(),
+                'lockout'     => $event->isLockoutRecommended(),
                 'breadcrumbs' => $breadcrumbs,
                 'page_title'  => $this->createPageTitle()->register(),
             ]

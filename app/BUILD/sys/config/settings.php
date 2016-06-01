@@ -960,90 +960,91 @@ return [
     'agent.ip_security.whitelist_lifetime' => 1814400,
 
     ####################################################################################################################
-    # login account lockout
-    ####################################################################################################################
-
-    'user.login_rate_limit.enabled'        => true,
-    'user.login_rate_limit.attempts'       => 20,
-    'user.login_rate_limit.attempts_time'  => 900,
-    'user.login_rate_limit.lock_time'      => 900,
-    'agent.login_rate_limit.enabled'       => true,
-    'agent.login_rate_limit.attempts'      => 20,
-    'agent.login_rate_limit.attempts_time' => 900,
-    'agent.login_rate_limit.lock_time'     => 900,
-
-    ####################################################################################################################
     # rate limit
     ####################################################################################################################
-    'rate_limit.share_content.enabled'  => true,
-    'rate_limit.share_content.limit'    => 3,
-    'rate_limit.share_content.time'     => 15 * 60, // 15 min
-    'rate_limit.share_content.response' => 'captcha',
+    'rate_limit.share_content.enabled'      => true,
+    'rate_limit.share_content.limit'        => 3,
+    'rate_limit.share_content.time'         => 15 * 60, // 15 min
+    'rate_limit.share_content.lockout_time' => 15 * 60, // 15 min
+    'rate_limit.share_content.response'     => 'captcha',
 
-    'rate_limit.upload_attachment.enabled'  => true,
-    'rate_limit.upload_attachment.limit'    => 50,
-    'rate_limit.upload_attachment.time'     => 15 * 60, // 15 min
-    'rate_limit.upload_attachment.response' => 'lockout',
+    'rate_limit.upload_attachment.enabled'      => true,
+    'rate_limit.upload_attachment.limit'        => 50,
+    'rate_limit.upload_attachment.time'         => 15 * 60, // 15 min
+    'rate_limit.upload_attachment.lockout_time' => 15 * 60, // 15 min
+    'rate_limit.upload_attachment.response'     => 'lockout',
 
-    'rate_limit.login.enabled'  => true,
-    'rate_limit.login.limit'    => 3,
-    'rate_limit.login.time'     => 15 * 60, // 15 min
-    'rate_limit.login.response' => 'captcha',
+    'rate_limit.login.enabled'      => true,
+    'rate_limit.login.limit'        => 3,
+    'rate_limit.login.time'         => 15 * 60, // 15 min
+    'rate_limit.login.lockout_time' => 15 * 60, // 15 min
+    'rate_limit.login.response'     => 'captcha',
 
-    'rate_limit.registration.enabled'  => true,
-    'rate_limit.registration.limit'    => 3,
-    'rate_limit.registration.time'     => 15 * 60, // 15 min
-    'rate_limit.registration.response' => 'captcha',
+    'rate_limit.registration.enabled'      => true,
+    'rate_limit.registration.limit'        => 3,
+    'rate_limit.registration.time'         => 15 * 60, // 15 min
+    'rate_limit.registration.lockout_time' => 15 * 60, // 15 min
+    'rate_limit.registration.response'     => 'captcha',
 
-    'rate_limit.reset_password.enabled'  => true,
-    'rate_limit.reset_password.limit'    => 3,
-    'rate_limit.reset_password.time'     => 15 * 60, // 15 min
-    'rate_limit.reset_password.response' => 'captcha',
+    'rate_limit.reset_password.enabled'      => true,
+    'rate_limit.reset_password.limit'        => 3,
+    'rate_limit.reset_password.time'         => 15 * 60, // 15 min
+    'rate_limit.reset_password.lockout_time' => 15 * 60, // 15 min
+    'rate_limit.reset_password.response'     => 'captcha',
 
-    'rate_limit.token_exchange.enabled'  => true,
-    'rate_limit.token_exchange.limit'    => 50,
-    'rate_limit.token_exchange.time'     => 15 * 60, // 15 min
-    'rate_limit.token_exchange.response' => 'captcha',
+    'rate_limit.token_exchange.enabled'      => true,
+    'rate_limit.token_exchange.limit'        => 50,
+    'rate_limit.token_exchange.time'         => 15 * 60, // 15 min
+    'rate_limit.token_exchange.lockout_time' => 15 * 60, // 15 min
+    'rate_limit.token_exchange.response'     => 'captcha',
 
-    'rate_limit.submit_comment.enabled'  => true,
-    'rate_limit.submit_comment.limit'    => 3,
-    'rate_limit.submit_comment.time'     => 15 * 60, // 15 min
-    'rate_limit.submit_comment.response' => 'captcha',
+    'rate_limit.submit_comment.enabled'      => true,
+    'rate_limit.submit_comment.limit'        => 3,
+    'rate_limit.submit_comment.time'         => 15 * 60, // 15 min
+    'rate_limit.submit_comment.lockout_time' => 15 * 60, // 15 min
+    'rate_limit.submit_comment.response'     => 'captcha',
 
-    'rate_limit.submit_feedback.enabled'  => true,
-    'rate_limit.submit_feedback.limit'    => 3,
-    'rate_limit.submit_feedback.time'     => 15 * 60, // 15 min
-    'rate_limit.submit_feedback.response' => 'captcha',
+    'rate_limit.submit_feedback.enabled'      => true,
+    'rate_limit.submit_feedback.limit'        => 3,
+    'rate_limit.submit_feedback.time'         => 15 * 60, // 15 min
+    'rate_limit.submit_feedback.lockout_time' => 15 * 60, // 15 min
+    'rate_limit.submit_feedback.response'     => 'captcha',
 
-    'rate_limit.submit_ticket.enabled'  => true,
-    'rate_limit.submit_ticket.limit'    => 3,
-    'rate_limit.submit_ticket.time'     => 15 * 60, // 15 min
-    'rate_limit.submit_ticket.response' => 'captcha',
+    'rate_limit.submit_ticket.enabled'      => true,
+    'rate_limit.submit_ticket.limit'        => 3,
+    'rate_limit.submit_ticket.time'         => 15 * 60, // 15 min
+    'rate_limit.submit_ticket.lockout_time' => 15 * 60, // 15 min
+    'rate_limit.submit_ticket.response'     => 'captcha',
 
-    'rate_limit.share_content.guest.enabled'  => true,
-    'rate_limit.share_content.guest.limit'    => 3,
-    'rate_limit.share_content.guest.time'     => 15 * 60, // 15 min
-    'rate_limit.share_content.guest.response' => 'captcha',
+    'rate_limit.share_content.guest.enabled'      => true,
+    'rate_limit.share_content.guest.limit'        => 3,
+    'rate_limit.share_content.guest.time'         => 15 * 60, // 15 min
+    'rate_limit.share_content.guest.lockout_time' => 15 * 60, // 15 min
+    'rate_limit.share_content.guest.response'     => 'captcha',
 
-    'rate_limit.upload_attachment.guest.enabled'  => true,
-    'rate_limit.upload_attachment.guest.limit'    => 50,
-    'rate_limit.upload_attachment.guest.time'     => 15 * 60, // 15 min
-    'rate_limit.upload_attachment.guest.response' => 'lockout',
+    'rate_limit.upload_attachment.guest.enabled'      => true,
+    'rate_limit.upload_attachment.guest.limit'        => 50,
+    'rate_limit.upload_attachment.guest.time'         => 15 * 60, // 15 min
+    'rate_limit.upload_attachment.guest.lockout_time' => 15 * 60, // 15 min
+    'rate_limit.upload_attachment.guest.response'     => 'lockout',
 
-    'rate_limit.submit_comment.guest.enabled'  => true,
-    'rate_limit.submit_comment.guest.limit'    => 3,
-    'rate_limit.submit_comment.guest.time'     => 15 * 60, // 15 min
-    'rate_limit.submit_comment.guest.response' => 'captcha',
+    'rate_limit.submit_comment.guest.enabled'      => true,
+    'rate_limit.submit_comment.guest.limit'        => 3,
+    'rate_limit.submit_comment.guest.time'         => 15 * 60, // 15 min
+    'rate_limit.submit_comment.guest.lockout_time' => 15 * 60, // 15 min
+    'rate_limit.submit_comment.guest.response'     => 'captcha',
 
-    'rate_limit.submit_feedback.guest.enabled'  => true,
-    'rate_limit.submit_feedback.guest.limit'    => 3,
-    'rate_limit.submit_feedback.guest.time'     => 15 * 60, // 15 min
-    'rate_limit.submit_feedback.guest.response' => 'captcha',
+    'rate_limit.submit_feedback.guest.enabled'      => true,
+    'rate_limit.submit_feedback.guest.limit'        => 3,
+    'rate_limit.submit_feedback.guest.time'         => 15 * 60, // 15 min
+    'rate_limit.submit_feedback.guest.lockout_time' => 15 * 60, // 15 min
+    'rate_limit.submit_feedback.guest.response'     => 'captcha',
 
-    'rate_limit.submit_ticket.guest.enabled'  => true,
-    'rate_limit.submit_ticket.guest.limit'    => 3,
-    'rate_limit.submit_ticket.guest.time'     => 15 * 60, // 15 min
-    'rate_limit.submit_ticket.guest.response' => 'captcha',
+    'rate_limit.submit_ticket.guest.enabled'      => true,
+    'rate_limit.submit_ticket.guest.limit'        => 3,
+    'rate_limit.submit_ticket.guest.time'         => 15 * 60, // 15 min
+    'rate_limit.submit_ticket.guest.lockout_time' => 15 * 60, // 15 min
+    'rate_limit.submit_ticket.guest.response'     => 'captcha',
 
     ####################################################################################################################
     # notification.settings

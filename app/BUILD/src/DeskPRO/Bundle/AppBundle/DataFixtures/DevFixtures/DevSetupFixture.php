@@ -31,7 +31,10 @@
  */
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
+use Application\DeskPRO\Entity\ApiKey;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
+use DeskPRO\Bundle\AppBundle\Entity\ApiKeyAction;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -123,5 +126,17 @@ class DevSetupFixture extends DeskProAbstractFixture implements OrderedFixtureIn
                 'is_read_active'     => 0,
             ]
         );
+
+        // default api key for administrator
+        $person      = $manager->find(Person::class, 1);
+        $key         = new ApiKey();
+        $key->person = $person;
+        $key->code   = 'dev-admin-code';
+        $key->note   = 'dev-admin-code';
+        $keyAction   = new ApiKeyAction();
+        $keyAction->setKey($key)->setAction('*');
+        $manager->persist($key);
+        $manager->persist($keyAction);
+        $manager->flush();
     }
 }

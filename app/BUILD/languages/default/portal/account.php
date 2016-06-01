@@ -97,4 +97,10 @@ return array(
     'portal.account.welcome-back'                   => 'Welcome back',
     'portal.account.your-emails'                    => 'Your Email Addresses',
     'portal.account.your-pending-email-addresses'   => 'Your Pending Email Addresses',
+    'portal.account.register-lockout'               => 'You have registered too many times. For a small period of time registration is locked for you. Please try again later.',
+    'portal.account.feedback-lockout'               => 'You have submitted feedback too many times. You should wait a little bit, before submit new feedback item.',
+    'portal.account.comment-lockout'                => 'You have submitted too many commentaries. You should wait a little bit, before submit new commentaries.',
+    'portal.account.tickets-lockout'                => 'You have submitted too many tickets to this moment and were locked out. Please wait a little before you may submit more.',
+    'portal.account.reset-password-lockout'         => 'You are trying to reset password too often and were locked out. For a small period of time resetting password is unavailable. Please try again later.',
+    'portal.account.share-lockout'                  => 'You have shared content too many times. For a small period of time this form is locked for you. Please try again later.',
 );
