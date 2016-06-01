@@ -80,7 +80,6 @@ export class ControlBar extends Component {
     const newParams         = this.state.params;
     newParams[params.param] = params.value;
     this.setState({ changed: true, params: newParams });
-    console.log('State', this.state);
   };
 
   unsetParam = (param) => {

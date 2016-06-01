@@ -78,7 +78,7 @@ class UserChatsController extends CrudController
         $context = new RequestQueryContext($qb, $alias, $request);
 
         DateHelper::applyDateRangeFilter($context, 'date_created', 'created_from', 'created_to');
-        DateHelper::applyDatePeriodFilter($context, 'date_created', 'date_period');
+        DateHelper::applyDatePeriodFilter($context, 'date_created', 'date_created');
         ListHelper::applyInListFilter($context, 'department');
 
         $agent = $request->get('agent');

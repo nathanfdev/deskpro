@@ -13,7 +13,7 @@ export const listFiltersSelector = createSelector(
       .map(department => ({ value: department.get('id'), label: department.get('title') }));
 
     const filterSelector = [
-      { label: 'Date Created', type: 'datePeriod', param: 'date_filter', property: 'date_created' },
+      { label: 'Date Created', type: 'datePeriod', param: 'date_created', property: 'date_created' },
       { label: 'Department', type: 'select', param: 'department', options: departmentOptions }
     ];
     return filterSelector;

@@ -18,7 +18,6 @@ export class DatePeriodFilter extends Component {
     const { setParam, filter } = this.props;
     const value = this.refs.filterValue.value;
     if (filter.property) {
-      console.log('HERE WE GO');
       setParam({ param: filter.property, value });
     } else if (this.refs.filter) {
       const filterProperty = this.refs.filter.value;
@@ -55,7 +54,7 @@ export class DatePeriodFilter extends Component {
 
   renderPeriods = () => {
     const periods = DatePeriods.all;
-    const options = {};
+    const options = { placeholder: <option key={0} value="">Select period</option> };
     Object.keys(periods).forEach(period => {
       options[period] = <option key={period} value={period}>{periods[period]}</option>;
     });
@@ -66,14 +65,20 @@ export class DatePeriodFilter extends Component {
   render = () => {
     const { filter, setActiveItem, activeItem, currentParams } = this.props;
     const { icon, label } = filter;
+    const periods = DatePeriods.all;
     let filterType  = 'Select option';
-    let filterValue = 'Today';
+    let filterValue = 'Select period';
     const value     = currentParams[filter.param];
     if (value) {
-      Object.keys(value).forEach(property => {
-        filterType  = property;
-        filterValue = value[property];
-      });
+      if (typeof value === 'string') {
+        filterType  = '';
+        filterValue = value;
+      } else {
+        Object.keys(value).forEach(property => {
+          filterType  = property;
+          filterValue = value[property];
+        });
+      }
     }
     const isActive = Boolean(value);
 
@@ -88,7 +93,7 @@ export class DatePeriodFilter extends Component {
       >
         {isActive
         && <span className="dpw-navigation-dropdown-item-inline-info">
-          {filterType} {filterValue}
+          {filterType} {periods[filterValue]}
         </span>}
         <Menu>
           <div className="dpw-navigation-dropdown-panel dpw-navigation-dropdown-panel-corner-left">
