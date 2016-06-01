@@ -13,6 +13,18 @@ import { FeedbackCards } from './FeedbackCards';
 }))
 
 export class FeedbackCardsContainer extends Component {
+
+  static propTypes = {
+    feedback:                 PropTypes.object.isRequired,
+    fields:                   PropTypes.object.isRequired,
+    selected:                 PropTypes.object.isRequired,
+    people:                   PropTypes.object.isRequired,
+    feedbackTypes:            PropTypes.object.isRequired,
+    feedbackStatusCategories: PropTypes.object,
+    toggleSelected:           PropTypes.func.isRequired,
+    elements:                 PropTypes.object.isRequired
+  };
+
   render() {
     return <FeedbackCards {...this.props} />;
   }
