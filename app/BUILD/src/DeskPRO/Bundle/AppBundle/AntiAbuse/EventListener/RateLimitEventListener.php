@@ -36,7 +36,6 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\RateLimitLog;
 use Application\DeskPRO\EntityRepository\RateLimitLog as RateLimitLogRepository;
 use Application\DeskPRO\NewSettings\SettingsResolver;
-use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuseConfig;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\AntiAbuseEvent;
@@ -252,9 +251,19 @@ class RateLimitEventListener implements EventSubscriberInterface
         $config = new AntiAbuseConfig($person, $action);
         foreach (['limit', 'time', 'response', 'enabled', 'lockout_time'] as $key) {
             $method = StringUtils::toCamelCase(sprintf('set_%s', $key));
-            // try guest first
-            if ($person instanceof PersonGuest) {
-                if (null !== $value = $this->getSetting(AntiAbuse::KEY.'.'.$action.'.guest.'.$key)) {
+            //we need to check an agent/user/guest(unknown) settings
+
+            if ($person->isGuest()) {
+                $keyAddition = 'guest';
+            } elseif ($person->isAgent()) {
+                $keyAddition = 'agent';
+            } else {
+                $keyAddition = false;
+            }
+
+            if ($keyAddition) {
+                $keyParts = [AntiAbuse::KEY, $action, $keyAddition, $key];
+                if (null !== $value = $this->getSetting(implode('.', $keyParts))) {
                     $config->$method($value);
                     continue;
                 }

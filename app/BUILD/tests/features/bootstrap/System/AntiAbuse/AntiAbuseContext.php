@@ -61,19 +61,21 @@ class AntiAbuseContext extends BaseContext implements KernelAwareContext
     /**
      * @Given I set :which rate limit to :limit attempt(s) within :time minute(s) with :response response and :lockoutTime minute(s) lockout time
      * @Given I set :which rate limit to :limit attempt(s) within :time minute(s) with :response response
+     * @Given I set :which rate limit to :limit attempt(s) within :time minute(s) with :response response and :lockoutTime minute(s) lockout time for :role
+     * @Given I set :which rate limit to :limit attempt(s) within :time minute(s) with :response response for :role
      *
      * @param string $which
      * @param int    $limit
      * @param int    $time
      * @param string $response
      * @param int    $lockoutTime
-     * @param bool   $guest
+     * @param string $role
      */
-    public function setRateLimits($which, $limit, $time, $response, $lockoutTime = 0, $guest = false)
+    public function setRateLimits($which, $limit, $time, $response, $lockoutTime = 0, $role = '')
     {
         $settingPrefix = 'rate_limit.'.$which;
-        if ($guest) {
-            $settingPrefix .= '.guest';
+        if ($role) {
+            $settingPrefix .= '.'.$role;
         }
         $this->persistSetting($settingPrefix.'.enabled', true);
         $this->persistSetting($settingPrefix.'.limit', $limit);
@@ -84,20 +86,6 @@ class AntiAbuseContext extends BaseContext implements KernelAwareContext
         }
 
         $this->em()->flush();
-    }
-    /**
-     * @Given I set :which rate limit to :limit attempt(s) within :time minute(s) with :response response and :lockoutTime minute(s) lockout time for guest
-     * @Given I set :which rate limit to :limit attempt(s) within :time minute(s) with :response response for guest
-     *
-     * @param string $which
-     * @param int    $limit
-     * @param int    $time
-     * @param string $response
-     * @param int    $lockoutTime
-     */
-    public function setRateLimitsForGuest($which, $limit, $time, $response, $lockoutTime = 0)
-    {
-        $this->setRateLimits($which, $limit, $time, $response, $lockoutTime, true);
     }
 
     /**
