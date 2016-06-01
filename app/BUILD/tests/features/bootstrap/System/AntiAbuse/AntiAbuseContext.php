@@ -53,9 +53,7 @@ class AntiAbuseContext extends BaseContext implements KernelAwareContext
     {
         $setting        = $this->getSetting(AntiAbuse::SETTING_RATE_LIMIT_IS_DISABLED);
         $setting->value = true;
-        $em             = $this->get('doctrine.orm.entity_manager');
-        $em->persist($setting);
-        $em->flush();
+        $this->persistAndFlush($setting);
     }
 
     /**

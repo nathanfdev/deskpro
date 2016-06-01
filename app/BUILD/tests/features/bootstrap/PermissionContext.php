@@ -29,9 +29,13 @@
 /**
  * DeskPRO.
  */
+
 namespace DpBehat;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usergroup;
+use DpBehat\Api\AuthContext;
+use DpBehat\Data\DataContext;
 
 /**
  * Class PermissionContext.
@@ -46,10 +50,9 @@ class PermissionContext extends BaseContext
      */
     public function iRemoveUserGroup($who, $sysName)
     {
-        $person = $this->getContainer()->get('user_details')->getWho($who);
-        if (!$person) {
-            throw new \RuntimeException('Unable to get person '.$who);
-        }
+        AuthContext::scheduleCleanup();
+
+        $person = $this->getPerson($who);
 
         foreach ($person->getUsergroups() as $usergroup) {
             if ($usergroup->getSysName() === $sysName) {
@@ -69,12 +72,11 @@ class PermissionContext extends BaseContext
      */
     public function iAddUserGroup($who, $sysName)
     {
-        $person = $this->getContainer()->get('user_details')->getWho($who);
-        if (!$person) {
-            throw new \RuntimeException('Unable to get person '.$who);
-        }
+        AuthContext::scheduleCleanup();
 
-        $usergroup = $this->em()->getRepository(Usergroup::class)->findOneBy(['sys_name' => $sysName]);
+        $person = $this->getPerson($who);
+
+        $usergroup = $this->repository(Usergroup::class)->findOneBy(['sys_name' => $sysName]);
         if (!$person) {
             throw new \RuntimeException('Unable to get usergroup '.$sysName);
         }
@@ -93,6 +95,8 @@ class PermissionContext extends BaseContext
      */
     public function iSetUserGroupPermission($permissionName, $value, $sysName)
     {
+        AuthContext::scheduleCleanup();
+
         $connection = $this->em()->getConnection();
         $group_ids  = $connection->fetchAllCol('SELECT id FROM usergroups WHERE sys_name = ?', [$sysName]);
 
@@ -111,7 +115,7 @@ class PermissionContext extends BaseContext
     }
 
     /**
-     * @Given I grant department :departmentId permission of :app app for :who
+     * @Given I grant the :departmentId department permission of :app app for :who
      *
      * @param string $who
      * @param string $departmentId
@@ -119,15 +123,33 @@ class PermissionContext extends BaseContext
      */
     public function iGrantDepartmentPermission($departmentId, $who, $app)
     {
-        $person = $this->getContainer()->get('user_details')->getWho($who);
-        if (!$person) {
-            throw new \RuntimeException('Unable to get person '.$who);
-        }
+        AuthContext::scheduleCleanup();
+
+        $departmentId = DataContext::replace($departmentId);
+        $person       = $this->getPerson($who);
 
         $connection = $this->em()->getConnection();
         $connection->executeUpdate(
             'INSERT IGNORE INTO department_permissions SET department_id = ?, person_id = ?, app = ?, name="full", value=1, is_active=1',
             [$departmentId, $person->getId(), $app]
         );
+    }
+
+    /**
+     * @param string $who
+     *
+     * @throws \Exception
+     *
+     * @return Person
+     */
+    private function getPerson($who)
+    {
+        $person = $this->get('user_details')->getWho($who);
+        if (!$person) {
+            $person = DataContext::getReference($who);
+        }
+        $this->em()->refresh($person);
+
+        return $person;
     }
 }

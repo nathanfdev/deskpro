@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpBehat\TermEngine;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -128,7 +129,7 @@ class TermEngineBehatContext extends BaseContext
             $expected_ids[] = current($vals);
         }
 
-        $ticket_repo = $this->getEntityRepo('DeskPRO:Ticket');
+        $ticket_repo = $this->repository('DeskPRO:Ticket');
 
         $this->engine_result = array();
         foreach ($expected_ids as $id) {
@@ -162,7 +163,7 @@ class TermEngineBehatContext extends BaseContext
      */
     public function iEvaluateTheFilter($filter_name)
     {
-        $filter = $this->getEntityRepo('DeskPRO\Bundle\AppBundle\Entity\TicketFilter')->findOneBy(
+        $filter = $this->repository('DeskPRO\Bundle\AppBundle\Entity\TicketFilter')->findOneBy(
             array('title' => $filter_name)
         );
 
@@ -248,7 +249,7 @@ class TermEngineBehatContext extends BaseContext
     public function iShouldBeGivenTheCountOfAllTicketsInTheDb($status)
     {
         $status = constant(sprintf('Application\DeskPRO\Entity\Ticket::%s', $status));
-        $count  = count($this->getEntityRepo('DeskPRO:Ticket')->findBy(array('status' => $status)));
+        $count  = count($this->repository('DeskPRO:Ticket')->findBy(array('status' => $status)));
         expect($this->engine_result)->toBe($count);
     }
 
@@ -451,7 +452,7 @@ class TermEngineBehatContext extends BaseContext
      */
     public function iRefillTicketSearchTable()
     {
-        $this->getRepository(Ticket::class)->fillSearchTable();
+        $this->repository(Ticket::class)->fillSearchTable();
     }
 
     /**

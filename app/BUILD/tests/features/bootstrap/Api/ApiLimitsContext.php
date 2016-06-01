@@ -31,6 +31,7 @@ namespace DpBehat\Api;
 use DeskPRO\Bundle\AppBundle\Entity\ApiKeyLimit;
 use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
 use DpBehat\BaseContext;
+use DpBehat\Data\DataContext;
 
 /**
  * Class ApiLimitsContext.
@@ -42,7 +43,7 @@ class ApiLimitsContext extends BaseContext
      */
     public function myKeyLimitAlmostExhausted()
     {
-        $limit = $this->getApiKeyLimitRepository()->findOneBy(['api_key' => AuthContext::$apiKey->getId()]);
+        $limit = $this->getApiKeyLimitRepository()->findOneBy(['api_key' => DataContext::getReference('apiKey')]);
         $limit->setCurrent(1);
         $this->persistAndFlush($limit);
     }
@@ -52,7 +53,7 @@ class ApiLimitsContext extends BaseContext
      */
     public function myKeyLimitWillBeReplenished()
     {
-        $limit = $this->getApiKeyLimitRepository()->findOneBy(['api_key' => AuthContext::$apiKey->getId()]);
+        $limit = $this->getApiKeyLimitRepository()->findOneBy(['api_key' => DataContext::getReference('apiKey')]);
         $date  = clone $limit->getStartTime();
         $date->modify('-'.($limit->getInterval() + 1).' second');
         $limit->setStartTime($date);
@@ -77,6 +78,6 @@ class ApiLimitsContext extends BaseContext
      */
     protected function getApiKeyLimitRepository()
     {
-        return $this->getRepository(ApiKeyLimit::class);
+        return $this->repository(ApiKeyLimit::class);
     }
 }

@@ -29,10 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DpBehat;
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
+use DpBehat\Data\DataContext;
 use DpTestSrc\TestBundle\DataSetManager;
 
 class DataSetContext extends BaseContext
@@ -117,6 +119,8 @@ class DataSetContext extends BaseContext
         } else {
             echo 'successfully installed data set (took '.(time() - $install_start).' seconds)';
         }
+
+        DataContext::clear();
 
         self::$reinstall = false;
     }

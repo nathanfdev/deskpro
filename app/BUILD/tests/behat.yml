@@ -17,12 +17,10 @@ api:
                 - DpBehat\DataSetContext:
                     dataset_manager: @dataset_manager
                 - Behat\MinkExtension\Context\MinkContext
-                - behatch:json
-                - DpBehat\HooksContext
-                - DpBehat\Api\RestContext
                 - DpBehat\Api\JsonContext
-                - DpBehat\Api\TasksContext
-                - DpBehat\Api\TicketsContext
+                - DpBehat\HooksContext
+                - DpBehat\PeopleContext
+                - DpBehat\Api\RestContext
                 - DpBehat\Api\AuthContext
                 - DpBehat\TermEngine\TermEngineBehatContext
                 - DpBehat\Api\PeopleContext
@@ -35,7 +33,8 @@ api:
                 - DpBehat\Portal\GenericContext
                 - DpBehat\BlobContext
                 - DpBehat\System\Alerts\IncidentsContext
-                - DpBehat\TicketContext
+                - DpBehat\TicketLogsContext
+                - DpBehat\Data\DataContext
     extensions:
         Sanpi\Behatch\Extension: ~
         Behat\MinkExtension:
@@ -59,9 +58,11 @@ system-api:
                 - DpBehat\DataSetContext:
                     dataset_manager: @dataset_manager
                 - Behat\MinkExtension\Context\MinkContext
-                - behatch:json
+                - DpBehat\HooksContext
+                - DpBehat\Api\JsonContext
                 - DpBehat\Api\RestContext
                 - DpBehat\Api\AuthContext
+                - DpBehat\PeopleContext
                 - DpBehat\System\Alerts\IncidentsContext
     extensions:
         Sanpi\Behatch\Extension: ~
@@ -111,7 +112,7 @@ portal:
                 - DpBehat\HooksContext
                 - DpBehat\Portal\TestsContext
                 - DpBehat\Portal\RefsContext
-                - behatch:json
+                - DpBehat\Api\JsonContext
                 - DpBehat\Api\RestContext
                 - DpBehat\LanguageContext
                 - DpBehat\Portal\PortalModeContext
@@ -129,6 +130,7 @@ portal:
                 - DpBehat\Portal\Api\ChatContext
                 - DpBehat\Portal\PortalDesigner\AssetsContext
                 - DpBehat\System\AntiAbuse\AntiAbuseContext
+                - DpBehat\Data\DataContext
     extensions:
         Sanpi\Behatch\Extension: ~
         Behat\MinkExtension:
@@ -161,7 +163,7 @@ production:
                 - %paths.base%/features/production
             contexts:
                 - Behat\MinkExtension\Context\MinkContext
-                - behatch:json
+                - DpBehat\Api\JsonContext
                 - DpBehat\Api\RestContext
                 - DpBehat\Portal\AuthContext
                 - DpBehat\Http\HttpContext

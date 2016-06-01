@@ -49,7 +49,7 @@ class ApiLogContext extends BaseContext
      */
     public function enableApiLog()
     {
-        $this->getContainer()->get('settings_resolver')->setSetting('api_log.enabled', true);
+        $this->get('settings_resolver')->setSetting('api_log.enabled', true);
     }
 
     /**
@@ -57,7 +57,7 @@ class ApiLogContext extends BaseContext
      */
     public function checkLog()
     {
-        $api_log = $this->getEntityRepo('DeskPRO\Bundle\AppBundle\Entity\ApiLog')->find(1);
+        $api_log = $this->repository('DeskPRO\Bundle\AppBundle\Entity\ApiLog')->find(1);
         if (!$api_log) {
             throw new \RuntimeException(
                 'Api Log was not added!'
@@ -72,7 +72,7 @@ class ApiLogContext extends BaseContext
      */
     public function checkLogById($id)
     {
-        $api_log = $this->getEntityRepo('DeskPRO\Bundle\AppBundle\Entity\ApiLog')->findOneBy(['request_id' => $id]);
+        $api_log = $this->repository('DeskPRO\Bundle\AppBundle\Entity\ApiLog')->findOneBy(['request_id' => $id]);
         if (!$api_log) {
             throw new \RuntimeException(
                 'Api Log was not added!'

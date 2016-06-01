@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpBehat;
 
 /**
@@ -43,7 +44,7 @@ class BlobContext extends BaseContext
      */
     public function iCreateStringBlobWithAuthCode($auth_code)
     {
-        $blob_storage = $this->getContainer()->get('blob.storage');
+        $blob_storage = $this->get('blob.storage');
 
         $blob           = $blob_storage->createBlobRecordFromString('blob content', 'file.txt', 'text/plain');
         $blob->authcode = $auth_code;
@@ -60,7 +61,7 @@ class BlobContext extends BaseContext
      */
     public function iCreateImageBlobWithAuthCode($auth_code)
     {
-        $blob_storage = $this->getContainer()->get('blob.storage');
+        $blob_storage = $this->get('blob.storage');
 
         $blob           = $blob_storage->createBlobRecordFromFile(__DIR__.'/../../../src/DeskPRO/Bundle/AppBundle/DataFixtures/res/avatars/superman_.jpg', 'image.jpg', 'image/jpeg');
         $blob->authcode = $auth_code;

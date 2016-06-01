@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpBehat\Portal;
 
 use Application\DeskPRO\Entity\Brand;
@@ -60,9 +61,9 @@ class PortalBrandThemeContext extends BasePortalContext implements RebootableCon
 
     public function resetPortalBrandThemeContext()
     {
-        $this->brand_stack      = $this->getKernel()->getContainer()->get('brand_stack');
-        $this->theme_repository = $this->getKernel()->getContainer()->get('theme_repository');
-        $this->em               = $this->getKernel()->getContainer()->get('doctrine.orm.default_entity_manager');
+        $this->brand_stack      = $this->get('brand_stack');
+        $this->theme_repository = $this->get('theme_repository');
+        $this->em               = $this->get('doctrine.orm.default_entity_manager');
     }
 
     /**

@@ -259,7 +259,7 @@ fi
 behat_production_failed=0
 if [[ ${behat_production} =~ "failed" ]] || [[ ! ${behat_production} =~ "passed" ]] ; then
     behat_production_failed=1
-    mv "$LOGS_DIR/behat-production.txt" "$LOGS_DIR/FAILED-production-install.txt"
+    mv "$LOGS_DIR/behat-production.txt" "$LOGS_DIR/FAILED-production.txt"
     echo "- Behat production failed"
 fi
 

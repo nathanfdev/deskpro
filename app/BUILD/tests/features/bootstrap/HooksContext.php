@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpBehat;
 
 use Behat\Behat\Hook\Scope\AfterFeatureScope;
@@ -43,17 +44,6 @@ class HooksContext extends BaseContext
      * @var array Feature file to time map
      */
     private static $timers = [];
-
-    /**
-     * @BeforeScenario
-     */
-    public function speedUpDoctrine()
-    {
-        if ($this->getContainer()->has('doctrine.orm.default_entity_manager')) {
-            $this->em()->getConnection()->getConfiguration()->setSQLLogger(null);
-            $this->em()->clear();
-        }
-    }
 
     /**
      * @BeforeFeature
@@ -82,6 +72,17 @@ class HooksContext extends BaseContext
         foreach (self::$timers as $file => $time) {
             $file = explode('app/BUILD/tests', $file)[1];
             echo $file, ': ', $time, " sec\n";
+        }
+    }
+
+    /**
+     * @BeforeScenario
+     */
+    public function speedUpDoctrine()
+    {
+        if ($this->container()->has('doctrine.orm.default_entity_manager')) {
+            $this->em()->getConnection()->getConfiguration()->setSQLLogger(null);
+            $this->em()->clear();
         }
     }
 }

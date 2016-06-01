@@ -29,10 +29,12 @@
 /**
  * DeskPRO.
  */
+
 namespace DpBehat\Portal\Api;
 
 use Application\DeskPRO\Entity\Session;
 use DpBehat\BaseContext;
+use DpBehat\Data\DataContext;
 
 /**
  * Class AuthContext.
@@ -42,7 +44,7 @@ class AuthContext extends BaseContext
     /**
      * @var array Code indexed array of Session objects
      */
-    public static $sessions = [];
+    private static $sessions = [];
 
     /**
      * @Given I have guest portal api session with code :code
@@ -58,6 +60,7 @@ class AuthContext extends BaseContext
         $this->em()->flush();
 
         self::$sessions[$code] = $session;
+        DataContext::setPlaceholder("sid_{$code}", $session->getSessionCode());
     }
 
     /**
@@ -76,6 +79,7 @@ class AuthContext extends BaseContext
         $this->em()->flush();
 
         self::$sessions[$code] = $session;
+        DataContext::setPlaceholder("sid_{$code}", $session->getSessionCode());
     }
 
     /**
@@ -86,7 +90,7 @@ class AuthContext extends BaseContext
     public function findPerson($email)
     {
         /** @var \Application\DeskPRO\EntityRepository\Person $repository */
-        $repository = $this->em()->getRepository('DeskPRO:Person');
+        $repository = $this->repository('DeskPRO:Person');
         $person     = $repository->findOneByEmail($email);
 
         if (!$person) {

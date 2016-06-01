@@ -130,7 +130,7 @@ class AuthContext extends BasePortalContext implements RebootableContextInterfac
     public function iHaveAVerifiedEmail($email_address)
     {
         $email    = new \Application\DeskPRO\Entity\PersonEmail();
-        $this->me = $this->em()->getRepository(Person::class)->find($this->me->getId());
+        $this->me = $this->repository(Person::class)->find($this->me->getId());
         $email->setPerson($this->me);
         $email->setEmail($email_address);
         $email->setIsValidated(true);
@@ -146,7 +146,7 @@ class AuthContext extends BasePortalContext implements RebootableContextInterfac
      */
     public function iShouldBeAuthenticatedAs($who)
     {
-        if (!$token = $this->getContainer()->get('security.token_storage')->getToken()) {
+        if (!$token = $this->get('security.token_storage')->getToken()) {
             throw new \Exception('no token found');
         }
 
@@ -155,7 +155,7 @@ class AuthContext extends BasePortalContext implements RebootableContextInterfac
         }
 
         if (!$user instanceof Person) {
-            $user = $this->getContainer()->get('doctrine.orm.default_entity_manager')->getRepository('DeskPRO:Person')->find($user);
+            $user = $this->get('doctrine.orm.default_entity_manager')->getRepository('DeskPRO:Person')->find($user);
         }
 
         expect($user->getPrimaryEmailAddress())->toBeEqualTo($this->getUserDetails()->getEmail($who));
@@ -168,7 +168,7 @@ class AuthContext extends BasePortalContext implements RebootableContextInterfac
      */
     public function shouldBeMyPrimaryEmailAddress($email_address)
     {
-        $this->me = $this->em()->getRepository(Person::class)->find($this->me->getId());
+        $this->me = $this->repository(Person::class)->find($this->me->getId());
 
         expect($this->me->getPrimaryEmailAddress())->toBe($email_address);
     }
@@ -222,7 +222,7 @@ class AuthContext extends BasePortalContext implements RebootableContextInterfac
      */
     public function myNameShouldBe($name)
     {
-        $this->me = $this->em()->getRepository(Person::class)->find($this->me->getId());
+        $this->me = $this->repository(Person::class)->find($this->me->getId());
         expect($this->me->name)->toBe($name);
     }
 
@@ -233,7 +233,7 @@ class AuthContext extends BasePortalContext implements RebootableContextInterfac
      */
     protected function getOrganization($org)
     {
-        return $this->em()->getRepository(Organization::class)->findOneBy(['name' => $org]);
+        return $this->repository(Organization::class)->findOneBy(['name' => $org]);
     }
 
     /**
@@ -241,6 +241,6 @@ class AuthContext extends BasePortalContext implements RebootableContextInterfac
      */
     private function getUserDetails()
     {
-        return $this->getContainer()->get('user_details');
+        return $this->get('user_details');
     }
 }

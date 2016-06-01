@@ -48,7 +48,7 @@ class TicketContext extends BasePortalContext
      */
     public function noTickets()
     {
-        $tickets = $this->getRepository(Ticket::class)->findAll();
+        $tickets = $this->repository(Ticket::class)->findAll();
         foreach ($tickets as $ticket) {
             $this->em()->remove($ticket);
         }
@@ -192,7 +192,7 @@ class TicketContext extends BasePortalContext
      */
     protected function getOrganization($org)
     {
-        return $this->em()->getRepository(Organization::class)->findOneBy(['name' => $org]);
+        return $this->repository(Organization::class)->findOneBy(['name' => $org]);
     }
 
     /**
@@ -202,7 +202,7 @@ class TicketContext extends BasePortalContext
      */
     protected function getTicket($id)
     {
-        return $this->em()->getRepository(Ticket::class)->find($id);
+        return $this->repository(Ticket::class)->find($id);
     }
 
     /**
