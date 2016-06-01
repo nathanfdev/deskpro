@@ -117,8 +117,11 @@ class AuthContext extends BaseContext
         } else {
             $person            = DataContext::getReference($role, false);
             $person or $person = $this->findPersonByEmail($email);
-            $person or $person = PersonFactories::create($role, compact('email'));
-            $this->persistAndFlush($person);
+            if (!$person) {
+                PersonFactories::initUsergroups($this->em());
+                $person = PersonFactories::create($role, compact('email'));
+                $this->persistAndFlush($person);
+            }
 
             DataContext::setReference($role, $person);
             DataContext::setReference('me', $person);

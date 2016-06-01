@@ -30,6 +30,7 @@ namespace DpBehat\Data\Factory;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usergroup;
+use Doctrine\ORM\EntityManager;
 use DpBehat\Data\DataContext;
 
 /**
@@ -49,8 +50,6 @@ class PersonFactories
     {
         $email = array_key_exists('email', $data) ? $data['email'] : uniqid().'@deskpro.com';
 
-        self::initUsergroups();
-
         switch ($role) {
             case 'admin':
                 $person = self::createAdmin($email);
@@ -66,6 +65,32 @@ class PersonFactories
         }
 
         return $person;
+    }
+
+    /**
+     * Init user groups (DB and references).
+     */
+    public static function initUsergroups(EntityManager $em)
+    {
+        $groupsData = [
+            ['sys_name' => Usergroup::EVERYONE, 'is_agent_group' => 0],
+            ['sys_name' => Usergroup::REGISTERED, 'is_agent_group' => 0],
+            ['sys_name' => Usergroup::AGENT_ALL_SAFE_PERM, 'is_agent_group' => 1],
+            ['sys_name' => Usergroup::AGENT_ALL_PERM, 'is_agent_group' => 1],
+        ];
+        foreach ($groupsData as $data) {
+            $group = SimpleFactory::create(Usergroup::class, [
+                'title'          => $data['sys_name'],
+                'note'           => $data['sys_name'],
+                'sys_name'       => $data['sys_name'],
+                'is_agent_group' => $data['is_agent_group'],
+                'is_enabled'     => 1,
+            ]);
+
+            $em->persist($group);
+            DataContext::setReference("{$data['sys_name']}_group", $group);
+        }
+        $em->flush();
     }
 
     /**
@@ -138,34 +163,6 @@ class PersonFactories
         $user->addUsergroup(self::getUsergroup(Usergroup::REGISTERED));
 
         return $user;
-    }
-
-    /**
-     * Init user groups (DB and references).
-     */
-    private static function initUsergroups()
-    {
-        if (DataContext::hasReference('everyone_group')) {
-            return;
-        }
-
-        $groupsData = [
-            ['sys_name' => Usergroup::EVERYONE, 'is_agent_group' => 0],
-            ['sys_name' => Usergroup::REGISTERED, 'is_agent_group' => 0],
-            ['sys_name' => Usergroup::AGENT_ALL_SAFE_PERM, 'is_agent_group' => 1],
-            ['sys_name' => Usergroup::AGENT_ALL_PERM, 'is_agent_group' => 1],
-        ];
-        foreach ($groupsData as $data) {
-            $group = SimpleFactory::create(Usergroup::class, [
-                'title'          => $data['sys_name'],
-                'note'           => $data['sys_name'],
-                'sys_name'       => $data['sys_name'],
-                'is_agent_group' => $data['is_agent_group'],
-                'is_enabled'     => 1,
-            ]);
-
-            DataContext::setReference("{$data['sys_name']}_group", $group);
-        }
     }
 
     /**
