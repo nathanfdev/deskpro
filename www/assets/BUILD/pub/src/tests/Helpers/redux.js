@@ -1,5 +1,6 @@
 import React from 'react';
 import TestUtils from 'react-addons-test-utils';
+import { IntlProvider } from 'react-intl';
 
 export function renderInRedux(state, jsx, dispatch = null) {
   const { Provider } = require('react-redux');
@@ -12,7 +13,9 @@ export function renderInRedux(state, jsx, dispatch = null) {
 
   return TestUtils.renderIntoDocument(
     <Provider store={store}>
-      {jsx}
+      <IntlProvider locale="en">
+        {jsx}
+      </IntlProvider>
     </Provider>
   );
 }
