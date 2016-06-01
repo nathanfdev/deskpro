@@ -152,27 +152,27 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
 
     initLiveDemo: ->
       window.addEventListener('message', (event) =>
-        if (event.data?.type == 'widgetLoaded')
+        if (event.data?.type == 'widgetStatus')
           @$scope.$apply( => @$scope.widgetLoaded = true)
       , false);
 
       @loadCode().then((codeResponse) =>
-          code = codeResponse.data.replace(/widget": {/, "widget\": {\n\"live_demo\": true,")
-          demoDocument = @getLiveDemoDocument();
-          demoDocument.write('<body>' + code + '</body>');
-          demoDocument.close();
+        code = codeResponse.data.replace(/widget": {/, "widget\": {\n\"live_demo\": true,")
+        demoDocument = @getLiveDemoDocument();
+        demoDocument.write('<body>' + code + '</body>');
+        demoDocument.close();
 
-          @getFrameNode().contentWindow.addEventListener('message', (event) =>
-            parent.window.postMessage(event.data, '*')
-          , false);
+        @getFrameNode().contentWindow.addEventListener('message', (event) =>
+          parent.window.postMessage(event.data, '*')
+        , false);
       )
 
       return;
 
     updateLiveDemo: ->
-      frameWindow = @getLiveDemoDocument().dp_loader;
-      if (frameWindow)
-        frameWindow.postMessage({type: 'reloadOptions', options: @getOptions(true)}, '*');
-        frameWindow.postMessage({type: 'reloadSettings', options: @$scope.global_settings}, '*');
+      DpWidget = @getFrameNode().contentWindow.DpWidget;
+      if (DpWidget)
+        DpWidget.dispatchCustomEvent('reloadOptions', @getOptions(true));
+        DpWidget.dispatchCustomEvent('reloadSettings', @$scope.global_settings);
 
   Admin_Portal_Ctrl_WidgetEditor.EXPORT_CTRL()

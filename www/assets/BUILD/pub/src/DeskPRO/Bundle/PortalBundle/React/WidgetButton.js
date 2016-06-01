@@ -9,64 +9,56 @@ export class WidgetButton extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      widgetLoaded: false,
+      status: {
+        loaded:        false,
+        chatAvailable: false
+      },
       onlineAgents: Immutable.fromJS([])
     };
   }
 
   componentDidMount() {
-    window.addEventListener('message', this.onWidgetEvent);
-    this.getOnlineAgents();
+    if (window.DpWidget) {
+      window.DpWidget.addWidgetListener('widgetStatus', this.onWidgetStatus);
+      window.DpWidget.addWidgetListener('widgetOnlineAgents', this.onWidgetOnlineAgents);
+
+      window.DpWidget.getWidgetStatus();
+      window.DpWidget.getOnlineAgents();
+    }
   }
 
   componentWillUnmount() {
-    window.removeEventListener('message', this.onWidgetEvent);
+    if (window.DpWidget) {
+      window.DpWidget.removeWidgetListener('widgetStatus', this.onWidgetStatus);
+      window.DpWidget.removeWidgetListener('widgetOnlineAgents', this.onWidgetOnlineAgents);
+    }
   }
 
-  onWidgetEvent = event => {
-    const { data = {} } = event;
-    const immutableOptions = Immutable.fromJS(data.options);
+  onWidgetStatus = event => {
+    this.setState({
+      status: event.detail
+    });
+  };
 
-    if (data.type === 'widgetLoaded') {
-      this.getOnlineAgents();
-      this.setState({
-        widgetLoaded: true
-      });
-    } else if (data.type === 'widgetOnlineAgents') {
-      this.setState({
-        onlineAgents: immutableOptions
-      });
-    }
+  onWidgetOnlineAgents = event => {
+    this.setState({
+      onlineAgents: Immutable.fromJS(event.detail)
+    });
   };
 
   onOpenWidget = event => {
     event.preventDefault();
-    if (!this.state.onlineAgents.size) {
-      return;
+    if (window.DpWidget) {
+      window.DpWidget.openWidget();
     }
-
-    this.postMessage('openWidget');
   };
-
-  getOnlineAgents() {
-    this.postMessage('getOnlineAgents');
-  }
-
-  postMessage(type, options = {}) {
-    const widget = window.dp_loader;
-    if (!widget) {
-      return;
-    }
-
-    widget.postMessage({ type, options }, '*');
-  }
 
   render() {
     const onlineAgents = this.state.onlineAgents;
 
-    if (onlineAgents.size) {
+    if (this.state.status.loaded) {
       return (
-        <a href="#" onClick={this.onOpenWidget} className={classNames({ disabled: !onlineAgents.size })}>
+        <a href="#" onClick={this.onOpenWidget} className={classNames({ disabled: !this.state.status.chatAvailable })}>
           <i className="fa fa-comments-o" />
           <h1>{portalPhrases.get('portal.general.start-chat')}</h1>
           <p>
