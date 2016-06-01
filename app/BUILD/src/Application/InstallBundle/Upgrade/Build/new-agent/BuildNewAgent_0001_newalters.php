@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 class BuildNewAgent_0001_newalters extends AbstractBuild
@@ -74,7 +75,6 @@ class BuildNewAgent_0001_newalters extends AbstractBuild
         $this->execMutateSql('ALTER TABLE ticket_filter_sets ADD CONSTRAINT FK_902724D7217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE');
         $this->execMutateSql('ALTER TABLE filter_set_agents ADD CONSTRAINT FK_EFBEEBF63DD05366 FOREIGN KEY (filter_set_id) REFERENCES ticket_filter_sets (id) ON DELETE CASCADE, ADD CONSTRAINT FK_EFBEEBF6217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE');
         $this->execMutateSql('ALTER TABLE ticket_filter_views ADD CONSTRAINT FK_F89793D3D395B25E FOREIGN KEY (filter_id) REFERENCES custom_ticket_filters (id), ADD CONSTRAINT FK_F89793D3217BBB47 FOREIGN KEY (person_id) REFERENCES people (id)');
-        $this->execMutateSql('ALTER TABLE rate_limit_log ADD `is_lockout` TINYINT(1) NOT NULL DEFAULT 0;');
 
         $this->execDbQuery('system', 'ALTER TABLE system_alerts_incident_events ADD CONSTRAINT FK_AA906E6D59E53FB9 FOREIGN KEY (incident_id) REFERENCES system_alerts_incidents (id) ON DELETE CASCADE, ADD CONSTRAINT FK_AA906E6D71F7E88B FOREIGN KEY (event_id) REFERENCES system_alerts_events (id) ON DELETE CASCADE');
     }
