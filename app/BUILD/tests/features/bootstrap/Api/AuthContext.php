@@ -129,6 +129,8 @@ class AuthContext extends BaseContext
         }
 
         $this->authenticateAs($person);
+
+        self::initOm();
     }
 
     /**

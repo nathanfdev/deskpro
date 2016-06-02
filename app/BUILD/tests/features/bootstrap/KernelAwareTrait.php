@@ -76,13 +76,24 @@ trait KernelAwareTrait
     }
 
     /**
-     * @throws \Exception
-     *
-     * @return ObjectsManager
+     * Init ObjectManager
      */
-    protected static function createOm()
+    protected static function initOm()
     {
-        return new ObjectsManager(self::getEm());
+        self::$objectsManager = self::createOm();
+    }
+
+    /**
+     * @return ObjectsManager
+     * @throws \Exception
+     */
+    protected static function getOm()
+    {
+        if (!self::$objectsManager) {
+            throw new \Exception('ObjectManager has not yet been initialized');
+        }
+
+        return self::$objectsManager;
     }
 
     /**
@@ -161,5 +172,24 @@ trait KernelAwareTrait
     {
         $this->em()->persist($entity);
         $this->em()->flush($entity);
+    }
+
+    /**
+     * @return ObjectsManager
+     * @throws \Exception
+     */
+    protected function om()
+    {
+        return self::getOm();
+    }
+
+    /**
+     * @throws \Exception
+     *
+     * @return ObjectsManager
+     */
+    private static function createOm()
+    {
+        return new ObjectsManager(self::getEm());
     }
 }

@@ -52,16 +52,15 @@ class DataContext extends BaseContext
     private static $placeholders = [];
 
     /**
-     * @var ObjectsManager
-     */
-    private $om;
-
-    /**
      * @BeforeScenario
      */
-    public function initOm()
+    public function ensureOm()
     {
-        $this->om = self::createOm();
+        try {
+            $this->om();
+        } catch (\Exception $e) {
+            self::initOm();
+        }
     }
 
     /**
@@ -174,7 +173,7 @@ class DataContext extends BaseContext
      */
     public function noRecordsExist($type)
     {
-        $records = $this->om->locate($type);
+        $records = $this->om()->locate($type);
         foreach ($records as $record) {
             $this->em()->remove($record);
         }
@@ -190,7 +189,7 @@ class DataContext extends BaseContext
      */
     public function iCreateAnObjectAndReferenceItAs($type, $ref)
     {
-        $record = $this->om->create($type, []);
+        $record = $this->om()->create($type, []);
         $this->persistAndFlush($record);
 
         self::setReference($ref, $record);
@@ -238,7 +237,7 @@ class DataContext extends BaseContext
                 $value = self::isReference($value) ? self::resolveReference($value) : $value;
             }
 
-            $record = $this->om->create($type, $data);
+            $record = $this->om()->create($type, $data);
 
             // Track the record reference
             if ($reference) {
