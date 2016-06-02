@@ -45,7 +45,6 @@ class PortalAccountRateLimitType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('login_settings', RateLimitGroupType::class)
             ->add('registration_settings', RateLimitGroupType::class)
             ->add('reset_password_settings', RateLimitGroupType::class)
         ;

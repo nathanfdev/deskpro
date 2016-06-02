@@ -9,7 +9,7 @@ Feature: To prevent feedback submitting abuse
 
   Scenario: Checking lockout response for user
     Given I am authenticated as "user"
-    And I set "submit_feedback" rate limit to 1 attempts within 15 minutes with "lockout" response and 15 minutes lockout time
+    And I set "submit_feedback" rate limit to 1 attempt within 15 minutes with "lockout" response and 15 minutes lockout time
     And I am on "/feedback"
     When I select "Suggestion" from "new_feedback_category"
     And I press "Add your feedback"
@@ -18,7 +18,7 @@ Feature: To prevent feedback submitting abuse
 
   Scenario: Checking captcha response for user
     Given I am authenticated as "user"
-    And I set "submit_feedback" rate limit to 1 attempts within 15 minutes with "captcha" response
+    And I set "submit_feedback" rate limit to 1 attempt within 15 minutes with "captcha" response
     When I select "Suggestion" from "new_feedback_category"
     And I press "Add your feedback"
     Then I should be on "/feedback"
@@ -28,7 +28,7 @@ Feature: To prevent feedback submitting abuse
 
   Scenario: Checking lockout response for guest
     Given I am not logged in
-    And I set "submit_feedback" rate limit to 1 attempts within 15 minutes with "lockout" response and 15 minutes lockout time for guest
+    And I set "submit_feedback" rate limit to 1 attempt within 15 minutes with "lockout" response and 15 minutes lockout time for guest
     And I am on "/feedback"
     When I select "Suggestion" from "new_feedback_category"
     And I press "Add your feedback"
@@ -38,7 +38,7 @@ Feature: To prevent feedback submitting abuse
 
   Scenario: Checking lockout captcha for guest
     Given I am not logged in
-    And I set "submit_feedback" rate limit to 1 attempts within 15 minutes with "captcha" response for guest
+    And I set "submit_feedback" rate limit to 1 attempt within 15 minutes with "captcha" response for guest
     And I am on "/feedback"
     When I select "Suggestion" from "new_feedback_category"
     And I press "Add your feedback"

@@ -123,7 +123,7 @@ class RateLimitGroup implements GroupSequenceProviderInterface
      */
     public function setTime($time)
     {
-        $this->time = $time / 60;
+        $this->time = $time;
 
         return $this;
     }
@@ -143,7 +143,7 @@ class RateLimitGroup implements GroupSequenceProviderInterface
      */
     public function setLockoutTime($lockoutTime)
     {
-        $this->lockoutTime = $lockoutTime / 60;
+        $this->lockoutTime = $lockoutTime;
 
         return $this;
     }

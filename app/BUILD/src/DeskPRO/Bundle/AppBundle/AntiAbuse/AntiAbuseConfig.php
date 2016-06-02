@@ -28,10 +28,25 @@
 
 namespace DeskPRO\Bundle\AppBundle\AntiAbuse;
 
+use Application\DeskPRO\Entity\Person;
+
+/**
+ * Class AntiAbuseConfig.
+ */
 class AntiAbuseConfig
 {
     const RESPONSE_LOCKOUT = 'lockout';
     const RESPONSE_CAPTCHA = 'captcha';
+
+    /**
+     * @var Person
+     */
+    private $person;
+
+    /**
+     * @var string
+     */
+    private $action;
 
     /**
      * @var string
@@ -57,6 +72,34 @@ class AntiAbuseConfig
      * @var bool
      */
     private $enabled = false;
+
+    /**
+     * AntiAbuseConfig constructor.
+     *
+     * @param Person $person
+     * @param string $action
+     */
+    public function __construct(Person $person, $action)
+    {
+        $this->person = $person;
+        $this->action = $action;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAction()
+    {
+        return $this->action;
+    }
 
     /**
      * @return string
@@ -158,8 +201,16 @@ class AntiAbuseConfig
         return $this;
     }
 
+    /**
+     * @return bool
+     */
     public function isValid()
     {
         return $this->time && $this->limit && $this->response;
+    }
+
+    public function accountOnlySettings()
+    {
+        return $this->action === AntiAbuse::ACTION_LOGIN && !$this->person->isGuest();
     }
 }

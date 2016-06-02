@@ -974,11 +974,23 @@ return [
     'rate_limit.upload_attachment.lockout_time' => 15 * 60, // 15 min
     'rate_limit.upload_attachment.response'     => 'lockout',
 
+    'rate_limit.login.agent.enabled'      => true,
+    'rate_limit.login.agent.limit'        => 3,
+    'rate_limit.login.agent.time'         => 15 * 60, // 15 min
+    'rate_limit.login.agent.lockout_time' => 15 * 60, // 15 min
+    'rate_limit.login.agent.response'     => 'lockout',
+
     'rate_limit.login.enabled'      => true,
-    'rate_limit.login.limit'        => 3,
+    'rate_limit.login.limit'        => 6,
     'rate_limit.login.time'         => 15 * 60, // 15 min
     'rate_limit.login.lockout_time' => 15 * 60, // 15 min
-    'rate_limit.login.response'     => 'captcha',
+    'rate_limit.login.response'     => 'lockout',
+
+    'rate_limit.login.guest.enabled'      => true,
+    'rate_limit.login.guest.limit'        => 3,
+    'rate_limit.login.guest.time'         => 60 * 60, // 15 min
+    'rate_limit.login.guest.lockout_time' => 15 * 60, // 15 min
+    'rate_limit.login.guest.response'     => 'captcha',
 
     'rate_limit.registration.enabled'      => true,
     'rate_limit.registration.limit'        => 3,

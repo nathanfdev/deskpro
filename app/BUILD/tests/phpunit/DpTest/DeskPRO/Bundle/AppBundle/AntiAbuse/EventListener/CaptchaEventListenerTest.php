@@ -41,8 +41,8 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitFeedbackAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitTicketAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\TokenExchangeAbuseCheck;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup;
 use DpTest\PortalTestCase;
-use Symfony\Component\HttpFoundation\Response;
 
 class CaptchaEventListenerTest extends PortalTestCase
 {
@@ -82,9 +82,10 @@ class CaptchaEventListenerTest extends PortalTestCase
     public function testCaptchaRecommendationForAllCheckEvents($type, AntiAbuseEvent $event)
     {
         $this->installDataSet('fresh', true);
-        $person = $this->get('test_factory.person')
-                       ->createNewInvalidUser('foo@bar.com', 'Foo Bar', 'password123');
+        $this->get('test_factory.person')->createNewInvalidUser('foo@bar.com', 'Foo Bar', 'password123');
 
+        $settingName = AntiAbuse::KEY.'.'.$type.'.response';
+        $this->get('settings_resolver')->setSetting($settingName, RateLimitGroup::RESPONSE_CAPTCHA);
         $lessThanMaxAttempts = $this->getRateLimitMaxAttempts($type);
         for ($i = 0; $i < $lessThanMaxAttempts; ++$i) {
             // should not be recommending anything
@@ -103,12 +104,12 @@ class CaptchaEventListenerTest extends PortalTestCase
     public function testRateLimitWhitelistWontShowCaptcha()
     {
         $this->installDataSet('fresh', true);
-        $person = $this->get('test_factory.person')
-                       ->createNewInvalidUser('foo@bar.com', 'Foo Bar', 'password123');
 
         $ip           = '255.50.70.10';
         $person_email = 'foo@bar.com';
         $event        = new LoginAbuseCheck($person_email, $ip);
+
+        $this->get('test_factory.person')->createNewInvalidUser($person_email, 'Foo Bar', 'password123');
 
         // this IP will be whitelisted in settings
         $this->get('settings_resolver')->setSetting(AntiAbuse::SETTING_IP_WHITELIST, json_encode([

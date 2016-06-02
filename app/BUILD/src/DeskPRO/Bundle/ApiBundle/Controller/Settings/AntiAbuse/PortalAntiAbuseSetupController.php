@@ -56,7 +56,8 @@ class PortalAntiAbuseSetupController extends AbstractAntiAbuseSetupController
     protected function persistModel($model)
     {
         $accountRateLimit = $model->getAccountRateLimit();
-        $this->updateRateLimitGroup($accountRateLimit->getLoginSettings(), 'rate_limit.login');
+        $agentRateLimit   = $model->getAgentRateLimit();
+        $this->updateRateLimitGroup($agentRateLimit->getLoginSettings(), 'rate_limit.login.agent');
         $this->updateRateLimitGroup($accountRateLimit->getRegistrationSettings(), 'rate_limit.registration');
         $this->updateRateLimitGroup($accountRateLimit->getResetPasswordSettings(), 'rate_limit.reset_password');
 
@@ -90,6 +91,7 @@ class PortalAntiAbuseSetupController extends AbstractAntiAbuseSetupController
             $userType = '.'.$userType;
         }
 
+        $this->updateRateLimitGroup($userRateLimit->getLoginSettings(), 'rate_limit.login'.$userType);
         $this->updateRateLimitGroup($userRateLimit->getSubmitTicket(), 'rate_limit.submit_ticket'.$userType);
         $this->updateRateLimitGroup($userRateLimit->getSubmitFeedback(), 'rate_limit.submit_feedback'.$userType);
         $this->updateRateLimitGroup($userRateLimit->getSubmitComment(), 'rate_limit.submit_comment'.$userType);

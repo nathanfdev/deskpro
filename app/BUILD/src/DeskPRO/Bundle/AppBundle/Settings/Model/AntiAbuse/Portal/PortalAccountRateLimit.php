@@ -38,17 +38,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 class PortalAccountRateLimit
 {
     /**
-     * Settings for login.
-     *
-     * @Assert\Valid
-     *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
-     *
-     * @var RateLimitGroup
-     */
-    private $loginSettings;
-
-    /**
      * Limits for registration.
      *
      * @var RateLimitGroup
@@ -75,17 +64,8 @@ class PortalAccountRateLimit
      */
     public function __construct()
     {
-        $this->loginSettings         = new RateLimitGroup();
         $this->registrationSettings  = new RateLimitGroup();
         $this->resetPasswordSettings = new RateLimitGroup();
-    }
-
-    /**
-     * @return RateLimitGroup
-     */
-    public function getLoginSettings()
-    {
-        return $this->loginSettings;
     }
 
     /**

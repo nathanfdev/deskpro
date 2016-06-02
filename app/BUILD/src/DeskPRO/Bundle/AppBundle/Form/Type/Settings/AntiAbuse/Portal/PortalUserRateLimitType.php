@@ -26,29 +26,41 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\Portal;
+
+use DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\RateLimitGroupType;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalUserRateLimit;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+
 /**
- * DeskPRO.
+ * Class PortalUserRateLimitType.
  */
-
-namespace DeskPRO\Bundle\AppBundle\Form\DataTransformer;
-
-use Symfony\Component\Form\DataTransformerInterface;
-
-class MinutesTransformer implements DataTransformerInterface
+class PortalUserRateLimitType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
-    public function transform($value)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        return (int) $value / 60;
+        $builder
+            ->add('login_settings', RateLimitGroupType::class)
+            ->add('submit_ticket', RateLimitGroupType::class)
+            ->add('submit_feedback', RateLimitGroupType::class)
+            ->add('submit_comment', RateLimitGroupType::class)
+            ->add('upload_attachment', RateLimitGroupType::class)
+            ->add('share_content', RateLimitGroupType::class)
+        ;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function reverseTransform($value)
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        return (int) $value * 60;
+        $resolver->setDefaults([
+            'data_class' => PortalUserRateLimit::class,
+        ]);
     }
 }

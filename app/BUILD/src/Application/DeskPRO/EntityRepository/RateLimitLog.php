@@ -35,23 +35,46 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity\Person as PersonEntity;
+use Application\DeskPRO\Entity\RateLimitLog as RateLimitLogEntity;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuseConfig;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\QueryBuilder;
 
+/**
+ * Class RateLimitLog.
+ */
 class RateLimitLog extends AbstractEntityRepository
 {
+    /**
+     * @param string       $action
+     * @param PersonEntity $person
+     * @param string       $ip
+     * @param bool         $lockout
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     */
     public function save($action, PersonEntity $person, $ip = null, $lockout = false)
     {
-        $ip = $ip ? ip2long($ip) : 0;
-        $this->getEntityManager()->getConnection()->executeQuery(sprintf(
-            'insert into %s (action, ip, person_id, date_created, is_lockout) values (:action, %d, %d, NOW(), %d)',
-            $this->getTableName(), $ip, $person['id'], (int) $lockout
-        ), array('action' => $action));
+        $log = new RateLimitLogEntity();
+        $log
+            ->setAction($action)
+            ->setIp($ip ?: 0)
+            ->setPersonId($person->getId())
+            ->setDateCreated(new \DateTime())
+            ->setIsLockout($lockout);
+        $this->_em->persist($log);
+        $this->_em->flush($log);
     }
 
-    public function count($action, $time, PersonEntity $person, $ip = null)
+    /**
+     * @param AntiAbuseConfig $config
+     * @param string          $ip
+     *
+     * @return int
+     */
+    public function count(AntiAbuseConfig $config, $ip = null)
     {
-        $date = new \DateTime('-'.(int) $time.' second');
+        $date = new \DateTime('-'.(int) $config->getTime().' second');
         $qb   = $this->createQueryBuilder('rll');
         $qb
             ->select('COUNT(rll.id)')
@@ -60,51 +83,63 @@ class RateLimitLog extends AbstractEntityRepository
             ->andWhere($qb->expr()->gte('rll.is_lockout', 0))
             ->setParameters(
                 [
-                    'action' => $action,
+                    'action' => $config->getAction(),
                     'date'   => $date->format('Y-m-d H:i:s'),
                 ]
             );
 
-        $this->applyPersonCondition($qb, $person, $ip);
+        $this->applyPersonCondition($qb, $config, $ip);
 
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
     /**
-     * @param PersonEntity $person
-     * @param string       $action
-     * @param int          $time
-     * @param int          $maxLockTime
-     * @param string|null  $ip
+     * @param AntiAbuseConfig $config
+     * @param string          $ip
      *
      * @throws \Doctrine\DBAL\DBALException
      *
      * @return int
      */
-    public function getLockoutTime(PersonEntity $person, $action, $time, $maxLockTime, $ip)
+    public function getLockoutTime(AntiAbuseConfig $config, $ip)
     {
         // All we need is just to find latest action attempt, it's written every time,
         // so trying to perform an action while you were locked out will refresh lockout timer
         // therefore user should keep calm and stop hit a button or them will be locked out forever
         $currentAttemptTime = time();
-        $lastAttemptTime    = $this->getLastAttempt($action, $person, $ip);
+        $lastAttemptTime    = $this->getLastAttempt($config, $ip);
         $lockTime           = $currentAttemptTime - $lastAttemptTime;
 
-        return max(0, $maxLockTime - $lockTime);
+        return max(0, $config->getLockoutTime() - $lockTime);
     }
 
-    public function getLastLockedOutAttempt($action, PersonEntity $person, $ip = null)
+    /**
+     * @param AntiAbuseConfig $config
+     * @param string          $ip
+     *
+     * @return bool
+     */
+    public function getLastLockedOutAttempt(AntiAbuseConfig $config, $ip = null)
     {
-        return $this->getLastAttempt($action, $person, $ip, true);
+        return $this->getLastAttempt($config, $ip, true);
     }
 
-    public function getLastAttempt($action, PersonEntity $person, $ip, $lockout = null)
+    /**
+     * @param AntiAbuseConfig $config
+     * @param string          $ip
+     * @param bool            $lockout
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     *
+     * @return bool
+     */
+    public function getLastAttempt(AntiAbuseConfig $config, $ip, $lockout = null)
     {
         $qb = $this->createQueryBuilder('rll');
         $qb
             ->select('rll.date_created')
             ->andWhere($qb->expr()->eq('rll.action', ':action'))
-            ->setParameter('action', $action)
+            ->setParameter('action', $config->getAction())
             ->addOrderBy('rll.date_created', 'DESC')
             ->setMaxResults(1)
         ;
@@ -113,16 +148,20 @@ class RateLimitLog extends AbstractEntityRepository
             $qb->andWhere($qb->expr()->eq('rll.is_lockout', (bool) $lockout));
         }
 
-        $this->applyPersonCondition($qb, $person, $ip);
+        $this->applyPersonCondition($qb, $config, $ip);
         $res = $qb->getQuery()->getOneOrNullResult(AbstractQuery::HYDRATE_SCALAR);
 
         return is_array($res) ? strtotime($res['date_created']) : false;
     }
 
-    private function applyPersonCondition(QueryBuilder $qb, PersonEntity $person, $ip)
+    /**
+     * @param QueryBuilder    $qb
+     * @param AntiAbuseConfig $config
+     * @param string          $ip
+     */
+    private function applyPersonCondition(QueryBuilder $qb, AntiAbuseConfig $config, $ip)
     {
-        $personIsNotGuest = $person && !$person->isGuest();
-        if ($personIsNotGuest && $ip) {
+        if (!$config->accountOnlySettings() && $ip) {
             $qb
                 ->andWhere(
                     $qb->expr()->orX(
@@ -130,11 +169,11 @@ class RateLimitLog extends AbstractEntityRepository
                         $qb->expr()->eq('rll.person_id', ':person')
                     )
                 )
-                ->setParameter('person', $person)
+                ->setParameter('person', $config->getPerson())
                 ->setParameter('ip', ip2long($ip))
             ;
-        } elseif ($personIsNotGuest) {
-            $qb->andWhere($qb->expr()->eq('rll.person_id', ':person'))->setParameter('person', $person);
+        } elseif (!$config->getPerson()->isGuest()) {
+            $qb->andWhere($qb->expr()->eq('rll.person_id', ':person'))->setParameter('person', $config->getPerson());
         } elseif ($ip) {
             $qb->andWhere($qb->expr()->eq('rll.ip', ':ip'))->setParameter('ip', ip2long($ip));
         } else {
