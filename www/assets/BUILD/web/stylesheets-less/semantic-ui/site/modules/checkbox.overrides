@@ -1,8 +1,15 @@
 /*******************************
          Site Overrides
 *******************************/
-
 .ui.toggle.checkbox .box:hover::before,
-.ui.toggle.checkbox label:hover::before {
+.ui.toggle.checkbox label:hover::before,
+.ui.toggle.checkbox input:focus ~ .box:hover::before,
+.ui.toggle.checkbox input:focus ~ label:hover::before {
   border: 1px solid @dp-greyscale-500;
+}
+.ui.toggle.checkbox input:checked ~ .box:hover::before,
+.ui.toggle.checkbox input:checked ~ label:hover::before,
+.ui.toggle.checkbox input:checked:focus ~ .box:hover::before,
+.ui.toggle.checkbox input:checked:focus ~ label:hover::before {
+  border: 1px solid @dp-emerald-midnight;
 }

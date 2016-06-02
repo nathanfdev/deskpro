@@ -69,7 +69,7 @@
 @fontSize: 16px;
 @emSize: 16px;
 
-@small: 0.750rem;
+@small: 0.75rem;
 @tiny: 0.625rem;
 
 @h1: 2rem;

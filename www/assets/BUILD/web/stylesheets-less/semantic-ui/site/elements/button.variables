@@ -1,3 +1,28 @@
 /*******************************
     User Variable Overrides
 *******************************/
+
+/*******************************
+            Button
+*******************************/
+
+@background: @dp-sonic-primary;
+@hoverBackgroundColor: @dp-sonic-secondary;
+@downBackgroundColor: @dp-sonic-tertiary;
+
+@boxShadow:  0px 2px 0px @dp-sonic-midnight;
+@downBoxShadow: 0 2px 0 @dp-sonic-midnight;
+@activeBoxShadow: @downBoxShadow;
+@textColor: @dp-greyscale-50;
+@hoverColor: @textColor;
+@focusColor: @textColor;
+@downColor: @textColor;
+@activeColor: @textColor;
+@activeHoverColor: @textColor;
+
+@fontWeight: 600;
+
+@large: 1.25rem;
+@medium: 1rem;
+@small: 0.875rem;
+@tiny: 0.75rem;
