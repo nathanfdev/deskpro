@@ -93,7 +93,7 @@ export class ChatEmailValidationContainer extends React.Component {
             anotherEmailSent: false
           });
 
-          history.replace('/chat/waiting');
+          history.replace('/chat/active');
         }
       },
       result => {

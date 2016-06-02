@@ -3,19 +3,21 @@ import { connect } from 'react-redux';
 import { AgentDisconnected } from './AgentDisconnected';
 import { FindAnotherAgent } from './FindAnotherAgent';
 import { WaitingLoader } from './WaitingLoader';
-import { agentNameSelector, agentAvatarSelector, agentIdSelector } from '../../../../Selectors/chat';
+import { agentNameSelector, agentAvatarSelector, agentIdSelector, hasAssignedMessageSelector } from '../../../../Selectors/chat';
 
 @connect(state => ({
-  agentId:     agentIdSelector(state),
-  agentName:   agentNameSelector(state),
-  agentAvatar: agentAvatarSelector(state)
+  agentId:            agentIdSelector(state),
+  agentName:          agentNameSelector(state),
+  agentAvatar:        agentAvatarSelector(state),
+  hasAssignedMessage: hasAssignedMessageSelector(state)
 }))
 export class AgentDisconnectedContainer extends React.Component {
 
   static propTypes = {
-    agentId:     PropTypes.number,
-    agentName:   PropTypes.string,
-    agentAvatar: PropTypes.object
+    agentId:            PropTypes.number,
+    agentName:          PropTypes.string,
+    agentAvatar:        PropTypes.object,
+    hasAssignedMessage: PropTypes.bool
   };
 
   constructor(props) {
@@ -45,9 +47,9 @@ export class AgentDisconnectedContainer extends React.Component {
   };
 
   render() {
-    const { agentId, agentName, agentAvatar } = this.props;
+    const { agentId, agentName, agentAvatar, hasAssignedMessage } = this.props;
 
-    if (agentId) {
+    if (agentId || !hasAssignedMessage) {
       return null;
     }
 

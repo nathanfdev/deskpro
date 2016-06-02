@@ -1,8 +1,7 @@
 import { createAction } from 'Ampliflux';
 import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
-import { ajaxOptions } from '../../Application/Actions/bootstrapActions';
-import { addSessionCode } from '../../Application/Actions/bootstrapActions';
+import { ajaxOptions, addSessionCode } from '../../Application/Actions/bootstrapActions';
 import { loadBatch } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import { generate } from 'randomstring';
@@ -115,6 +114,7 @@ export const createChat = createAction(
         const chatId = data.id;
 
         if (chatId) {
+          localStorage.removeItem('dpWidget.chat.lastAgentId');
           dispatch(setChatId(chatId));
         }
       });

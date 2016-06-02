@@ -35,15 +35,22 @@ export class MessageListContainer extends React.Component {
   }
 
   reCalcHeight() {
-    const { widgetHeight, isBubble } = this.props;
+    const { widgetHeight } = this.props;
     const node = ReactDOM.findDOMNode(this);
+    const $document = $(window.widgetFrame.document);
 
-    let height = widgetHeight - (isBubble ? 242 : 230); // header height
+    let height = widgetHeight;
+
+    height -= $document.find('.dpdesignportal-chat-header-wrapper').outerHeight();
+    height -= $document.find('.dpdesignportal-header').outerHeight();
+    height -= $document.find('.dpdesignportal-powered-by-deskpro').outerHeight();
+
     $(node).parent().children().each((i, child) => {
       if (child !== node) {
-        height = height - $(child).outerHeight();
+        height -= $(child).outerHeight();
       }
     });
+
     if (height < 100) {
       height = 100;
     }
