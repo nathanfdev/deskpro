@@ -23,18 +23,10 @@ import {
 } from '../Selectors/chat';
 
 // Chat setup actions
-export const setChatId = createAction(
-  'WIDGET_CHAT_SET_ID',
-  chatId => {
-    localStorage.setItem('dpWidget.chat.chatId', chatId);
-    return chatId;
-  }
-);
-
+export const setChatId = createAction('WIDGET_CHAT_SET_ID');
 export const unsetChatId = createAction(
   'WIDGET_CHAT_UNSET_ID',
   () => {
-    localStorage.removeItem('dpWidget.chat.chatId');
     localStorage.removeItem('dpWidget.chat.partial');
     localStorage.removeItem('dpWidget.chat.lastAgentId');
   }
@@ -411,7 +403,6 @@ export const endChat = createAction(
     const promise = widgetApi.sendPost(`DP_API/chats/${chatId}/end?${queryParams}`, null, { ...ajaxOptions });
     promise.success(() => {
       dispatch(unlockPollingResponse());
-      localStorage.removeItem('dpWidget.chat.chatId');
     });
     promise.catch(() => dispatch(unlockPollingResponse()));
 
@@ -434,7 +425,6 @@ export const reopenChat = createAction(
     const promise = widgetApi.sendPost(`DP_API/chats/${chatId}/reopen?${queryParams}`, null, { ...ajaxOptions });
     promise.success(() => {
       dispatch(unlockPollingResponse());
-      localStorage.setItem('dpWidget.chat.chatId', chatId);
     });
     promise.catch(() => dispatch(unlockPollingResponse()));
 

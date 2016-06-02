@@ -8,7 +8,8 @@ import {
   requireChatLoginSelector,
   requireChatEmailValidationSelector,
   widgetHasChatSelector,
-  widgetLanguageSelector
+  widgetLanguageSelector,
+  widgetSessionChatIdSelector
 } from '../Selectors/bootstrap';
 
 import { liveDemoSelector } from '../Selectors/dpWindow';
@@ -94,7 +95,7 @@ export const chatResume = createAction(
   'WIDGET_CHAT_RESUME',
   () => (dispatch, getState) => {
     const state = getState();
-    const storedChatId = Number(localStorage.getItem('dpWidget.chat.chatId'));
+    const storedChatId = widgetSessionChatIdSelector(state);
     const storedLastAgentId = Number(localStorage.getItem('dpWidget.chat.lastAgentId'));
     const widgetHasChat = widgetHasChatSelector(state);
     const agentsCounts = onlineAgentsCountSelector(state);

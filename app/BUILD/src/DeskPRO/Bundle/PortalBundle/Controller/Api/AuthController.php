@@ -88,7 +88,8 @@ class AuthController extends AbstractApiController
             $session,
             $this->container->get('widget_settings_resolver')->getWidgetGlobalOptions(),
             $this->isGranted(UseSectionVoter::USE_CHAT),
-            $this->container->get('language_stack')->getActiveOrDefault()
+            $this->container->get('language_stack')->getActiveOrDefault(),
+            $this->getWidgetOption('chat_id')
         )));
     }
 }

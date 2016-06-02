@@ -102,6 +102,8 @@ class ChatController extends AbstractApiController
             $this->dispatch(UserChatEvent::STARTED, new UserChatEvent($conversation));
         }
 
+        $this->setWidgetOption('chat_id', $conversation->getId());
+
         return View::create($this->wrap($conversation));
     }
 

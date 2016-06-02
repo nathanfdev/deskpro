@@ -119,12 +119,11 @@ class DpsidListener implements EventSubscriberInterface
 
         /** @var \Application\DeskPRO\EntityRepository\Session $repo */
         $repo = $this->em->getRepository(Session::class);
-
         if (!$session = $repo->getSessionFromCode($token)) {
             throw new AccessDeniedHttpException('Invalid token');
-        } else {
-            self::setPortalApiToken($this->tokenStorage, $session, $request);
         }
+
+        self::setPortalApiToken($this->tokenStorage, $session, $request);
     }
 
     /**

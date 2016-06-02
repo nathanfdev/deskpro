@@ -23,6 +23,11 @@ export const widgetSessionPersonSelector = createSelector(
   session => session.get('person')
 );
 
+export const widgetSessionChatIdSelector = createSelector(
+  widgetSessionSelector,
+  session => Number(session.get('chat_id'))
+);
+
 export const widgetSessionIsLoginSelector = createSelector(
   widgetSessionPersonSelector,
   person => !!person
