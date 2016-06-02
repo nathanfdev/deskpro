@@ -30,7 +30,7 @@ Feature: Portal Anti-Abuse Setup
     And the JSON node "data.user_rate_limit.submit_ticket.response" should be equal to "captcha"
 
     And the JSON node "data.user_rate_limit.login_settings.enabled" should be equal to 1
-    And the JSON node "data.user_rate_limit.login_settings.limit" should be equal to 10
+    And the JSON node "data.user_rate_limit.login_settings.limit" should be equal to 6
     And the JSON node "data.user_rate_limit.login_settings.time" should be equal to 15
     And the JSON node "data.user_rate_limit.login_settings.response" should be equal to "lockout"
     And the JSON node "data.user_rate_limit.login_settings.lockout_time" should be equal to 15
@@ -82,7 +82,7 @@ Feature: Portal Anti-Abuse Setup
 
     And the JSON node "data.guest_rate_limit.login_settings.enabled" should be equal to 1
     And the JSON node "data.guest_rate_limit.login_settings.limit" should be equal to 3
-    And the JSON node "data.guest_rate_limit.login_settings.time" should be equal to 15
+    And the JSON node "data.guest_rate_limit.login_settings.time" should be equal to 60g
     And the JSON node "data.guest_rate_limit.login_settings.response" should be equal to "captcha"
 
   Scenario: I update configuration
