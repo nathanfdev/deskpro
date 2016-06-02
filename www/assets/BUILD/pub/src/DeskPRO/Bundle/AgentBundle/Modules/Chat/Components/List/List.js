@@ -14,7 +14,6 @@ export class List extends React.Component {
     pagination:      PropTypes.object,
     toggleSelected:  PropTypes.func.isRequired,
     handlePageClick: PropTypes.func.isRequired,
-    elements:        PropTypes.array.isRequired,
     viewMode:        PropTypes.string.isRequired
   };
 
@@ -29,11 +28,13 @@ export class List extends React.Component {
         <ListFrameContents isLoaded={isLoaded}>
           {viewMode === constants.VIEW_MODE_CARD ? <ChatsCardsContainer toggleSelected={toggleSelected} /> :
             <ChatsTableContainer />}
-          {pagination && pagination.total_pages > 1 &&
-          <PaginationBoxView breakLabel={<li><span className="pagination-dots">&hellip;</span></li>}
-                             pageNum={pagination.total_pages}
-                             currentPage={pagination.current_page}
-                             clickCallback={handlePageClick} />}
+          {pagination && pagination.total_pages > 1
+          && <PaginationBoxView
+            breakLabel={<li><span className="pagination-dots">&hellip;</span></li>}
+            pageNum={pagination.total_pages}
+            currentPage={pagination.current_page}
+            clickCallback={handlePageClick}
+          />}
         </ListFrameContents>
       </ListFrameContainer>
     );

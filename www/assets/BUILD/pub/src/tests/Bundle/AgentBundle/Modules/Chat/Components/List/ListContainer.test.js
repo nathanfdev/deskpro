@@ -8,8 +8,8 @@ import { renderChatsInRedux } from '../../chats.test-helper';
 
 describe('ListContainer', () => {
   const ListContainer = require('~Components/ListContainer').ListContainer;
-  const List = require('~Components/List').List;
-  const Selectors = require('~Selectors/list');
+  const List          = require('~Components/List').List;
+  const Selectors     = require('~Selectors/list');
 
   it('should select viewMode and pagination from Chat.list state', () => {
     spyOn(Selectors, 'viewModeSelector');

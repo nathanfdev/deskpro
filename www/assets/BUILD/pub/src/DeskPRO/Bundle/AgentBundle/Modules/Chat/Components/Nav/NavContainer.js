@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { pureRender } from 'Ampliflux';
+import { pureRender } from 'DeskPRO/Component/Ampliflux';
 import * as actions from '../../Actions/chatNavActions';
 import { isLoadedSelector, myChatsSelector, allChatsSelector } from '../../Selectors/nav';
 import { Nav } from './Nav';
@@ -17,22 +17,20 @@ export class NavContainer extends Component {
     dispatch: PropTypes.func.isRequired
   };
 
-  componentDidMount() {
+  componentDidMount = () => {
     this.props.dispatch(actions.initialLoad());
-  }
+  };
 
-  componentWillUnmount() {
+  componentWillUnmount = () => {
     this.props.dispatch(actions.unmount());
-  }
+  };
 
   toggleGroupingVisibility = listName => e => {
     e.preventDefault();
-    console.log('toggleGroupingVisibility');
     this.props.dispatch(actions.toggleListGroupingVisibility(listName));
   };
 
   changeGrouping = listName => e => {
-    console.log('changeGrouping');
     const options = e.target.options;
     for (let i = 0; i < options.length; i++) {
       if (options[i].selected) {
@@ -41,12 +39,13 @@ export class NavContainer extends Component {
     }
   };
 
-  render() {
+  render = () => {
     const changeGrouping           = (listName) => this.changeGrouping(listName);
     const toggleGroupingVisibility = (listName) => this.toggleGroupingVisibility(listName);
 
     return (
-      <Nav {...this.props}
+      <Nav
+        {...this.props}
         changeGrouping={changeGrouping}
         toggleGroupingVisibility={toggleGroupingVisibility}
       />

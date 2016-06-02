@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React from 'react';
 import {
   Section, SectionHeader
 }
@@ -6,10 +6,15 @@ import {
 import { ListItemContainer } from '../ListItemContainer';
 import { NavGroupingPopup } from '../NavGroupingPopup';
 
+const { Component, PropTypes } = React;
+
 export class MyChats extends Component {
   static propTypes = {
     my: PropTypes.object.isRequired
   };
+
+  /** @namespace this.refs */
+  /** @namespace this.refs.mySection */
 
   componentWillMount() {
     this.state = { expanded: false };
@@ -28,7 +33,7 @@ export class MyChats extends Component {
     const groupBy = item.get('type');
     const group   = item.get('id');
     const count   = item.get('count');
-    const label   = item.get('title');
+    const label   = item.get('title') || '-';
 
     return (
       <ListItemContainer
@@ -41,7 +46,7 @@ export class MyChats extends Component {
     );
   };
 
-  render() {
+  render = () => {
     const { my } = this.props;
 
     return (

@@ -15,11 +15,15 @@ export class DatePeriodFilter extends Component {
   };
 
   handleChange = () => {
-    const { setParam } = this.props;
-    const filter = this.refs.filter.value;
-    if (filter) {
-      const value = this.refs.filterValue.value;
-      setParam({ param: 'date_filter', value: { [filter]: value } });
+    const { setParam, filter } = this.props;
+    const value = this.refs.filterValue.value;
+    if (filter.property) {
+      setParam({ param: filter.property, value });
+    } else if (this.refs.filter) {
+      const filterProperty = this.refs.filter.value;
+      if (filter) {
+        setParam({ param: 'date_filter', value: { [filterProperty]: value } });
+      }
     }
   };
 
@@ -28,27 +32,52 @@ export class DatePeriodFilter extends Component {
     unsetParam('date_filter');
   };
 
+  renderFilterProperties = (filterType) => {
+    const { filter } = this.props;
+    return (
+      <div className="dpw-navigation-dropdown-panel-content-line">
+        <div className="dpw-navigation-dropdown-panel-content-full">
+          <select
+            ref="filter"
+            value={filterType}
+            onChange={this.handleChange}
+          >
+            <option value="">Select option</option>
+            {filter.filterProperties.map(
+              (property, index) => <option key={index} value={property.value}>{property.label}</option>)
+            }
+          </select>
+        </div>
+      </div>
+    );
+  };
+
   renderPeriods = () => {
     const periods = DatePeriods.all;
-    const options = {};
-    for (const property in periods) {
-      if (periods.hasOwnProperty(property)) {
-        options[property] = <option key={property} value={property}>{periods[property]}</option>;
-      }
-    }
+    const options = { placeholder: <option key={0} value="">Select period</option> };
+    Object.keys(periods).forEach(period => {
+      options[period] = <option key={period} value={period}>{periods[period]}</option>;
+    });
+
     return options;
   };
 
-  render() {
+  render = () => {
     const { filter, setActiveItem, activeItem, currentParams } = this.props;
     const { icon, label } = filter;
-    const value     = currentParams[filter.param];
+    const periods = DatePeriods.all;
     let filterType  = 'Select option';
-    let filterValue = 'Today';
-    for (const property in value) {
-      if (value.hasOwnProperty(property)) {
-        filterType  = property;
-        filterValue = value[property];
+    let filterValue = 'Select period';
+    const value     = currentParams[filter.param];
+    if (value) {
+      if (typeof value === 'string') {
+        filterType  = '';
+        filterValue = value;
+      } else {
+        Object.keys(value).forEach(property => {
+          filterType  = property;
+          filterValue = value[property];
+        });
       }
     }
     const isActive = Boolean(value);
@@ -62,27 +91,14 @@ export class DatePeriodFilter extends Component {
         setActiveItem={setActiveItem}
         resetFilter={this.reset}
       >
-        {isActive && <span className="dpw-navigation-dropdown-item-inline-info">
-          {filterType} {filterValue}
-        </span> }
+        {isActive
+        && <span className="dpw-navigation-dropdown-item-inline-info">
+          {filterType} {periods[filterValue]}
+        </span>}
         <Menu>
           <div className="dpw-navigation-dropdown-panel dpw-navigation-dropdown-panel-corner-left">
             <div className="dpw-navigation-dropdown-panel-content">
-              <div className="dpw-navigation-dropdown-panel-content-line">
-                <div className="dpw-navigation-dropdown-panel-content-full">
-                  <select
-                    ref="filter"
-                    value={filterType}
-                    onChange={this.handleChange}
-                  >
-                    <option value="">Select option</option>
-                    <option value="period_created">Created</option>
-                    <option value="period_updated">Updated</option>
-                    <option value="period_published">Published</option>
-                    <option value="period_last_comment">Last comment</option>
-                  </select>
-                </div>
-              </div>
+              {filter.filterProperties && this.renderFilterProperties(filterType)}
               <div className="dpw-navigation-dropdown-panel-content-line">
                 <div className="dpw-navigation-dropdown-panel-content-full">
                   <select

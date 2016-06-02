@@ -24,3 +24,8 @@ export const paginationSelector = createSelector(
 );
 
 export const viewModeSelector = hashStateSelectorFactory(['list', 'view'], 'card');
+
+export const isLoadedSelector = createSelector(
+  stateSelector,
+  list => list.getIn(['async', 'done'])
+);
