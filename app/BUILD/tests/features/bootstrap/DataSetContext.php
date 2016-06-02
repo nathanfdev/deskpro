@@ -32,7 +32,6 @@
 
 namespace DpBehat;
 
-use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use DpBehat\Data\DataContext;
 use DpTestSrc\TestBundle\DataSetManager;

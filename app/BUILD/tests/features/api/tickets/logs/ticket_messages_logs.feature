@@ -1,3 +1,4 @@
+@new
 Feature: Ticket messages logs
 
   Background:

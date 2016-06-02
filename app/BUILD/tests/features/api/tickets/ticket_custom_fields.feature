@@ -1,3 +1,4 @@
+@new
 Feature: Ticket custom fields
   To customize DeskPRO to fit my needs
   As a DeskPRO user

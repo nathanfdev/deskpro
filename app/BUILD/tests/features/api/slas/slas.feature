@@ -1,3 +1,4 @@
+@new
 Feature: /slas endpoint
   To retrieve DeskPRO SLAs
   As an API user

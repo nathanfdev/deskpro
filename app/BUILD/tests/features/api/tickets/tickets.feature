@@ -1,3 +1,4 @@
+@new
 Feature: /tickets endpoint
   To CRUD DeskPRO tickets
   As an API user

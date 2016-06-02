@@ -1,15 +1,16 @@
 #!/bin/bash
 
-##############################################
+#################################################
 # DETERMINE THREADS NUMBER
-##############################################
+#################################################
 
 API_THREADS_NUM=$1
+API_NEW_THREADS_NUM=4
 PORTAL_THREADS_NUM=$2
 
-##############################################
+#################################################
 # ESTABLISH CONTEXT
-##############################################
+#################################################
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $SCRIPT_DIR
@@ -18,9 +19,16 @@ LOGS_DIR="$SCRIPT_DIR/../../../../var/logs/parallel-tests"
 rm -rf $LOGS_DIR/*
 mkdir -p $LOGS_DIR
 
-##############################################
-# RUN 6 SMALL TEST SUITES IN PARALLEL
-##############################################
+#################################################
+# Tag behat features
+#################################################
+jenkins/tag-features --tag=parallel --num=$API_THREADS_NUM --path=../features/api
+jenkins/tag-features --tag=parallel --num=$PORTAL_THREADS_NUM --path=../features/portal
+jenkins/tag-features --tag=new-parallel --num=$API_NEW_THREADS_NUM --path=../features/api
+
+#################################################
+# RUN 6 SMALL TEST SUITES IN PARALLEL + API @new
+#################################################
 
 # Hack: see https://trello.com/c/xv8IRWTo/382-test-is-failing-when-running-for-the-first-time
 bin/phpunit phpunit/DpTest/Application/EmailBundle/Templating/EngineTest.php > /dev/null
@@ -34,28 +42,31 @@ echo "Running small test suites in parallel (phpunit, phpspec, jest, beaht insta
 (export DP_PARALLEL_TESTING_PROCESS_NUM=2 && bin/behat --profile=install --tags="~@skip-ci" --verbose &> "$LOGS_DIR/behat-install.txt") &
 (export DP_PARALLEL_TESTING_PROCESS_NUM=3 && bin/behat --profile=system-api --tags="~@skip-ci" --verbose &> "$LOGS_DIR/behat-system-api.txt") &
 (bin/behat --verbose --profile=production &> "$LOGS_DIR/behat-production.txt") &
+
+echo "Running @new API behat tests in $API_NEW_THREADS_NUM parallel threads"
+for ((i=1;i<=$API_NEW_THREADS_NUM;i++)); do
+    num=$((i + 3))
+    (export DP_PARALLEL_TESTING_PROCESS_NUM=$num && bin/behat --profile=api --tags="@new-parallel-$i&&@new&&~@skip-ci" --verbose &> "$LOGS_DIR/behat-api-new-$i.txt") &
+done
+
 wait
 echo "--> Done in $SECONDS seconds"
 
-##############################################
+#################################################
 # BEHAT API IN PARALLEL THREADS
-##############################################
-
-jenkins/tag-features --tag=parallel --num=$API_THREADS_NUM --path=../features/api
+#################################################
 
 SECONDS=0
 echo "Running behat api suite in $API_THREADS_NUM parallel threads"
 for ((i=1;i<=$API_THREADS_NUM;i++)); do
-    (export DP_PARALLEL_TESTING_PROCESS_NUM=$i && bin/behat --profile=api --tags="@parallel-$i&&~@skip-ci" --verbose &> "$LOGS_DIR/behat-api-$i.txt") &
+    (export DP_PARALLEL_TESTING_PROCESS_NUM=$i && bin/behat --profile=api --tags="@parallel-$i&&~@new&&~@skip-ci" --verbose &> "$LOGS_DIR/behat-api-$i.txt") &
 done
 wait
 echo "--> Done in $SECONDS seconds"
 
-##############################################
+#################################################
 # BEHAT PORTAL IN PARALLEL THREADS
-##############################################
-
-jenkins/tag-features --tag=parallel --num=$PORTAL_THREADS_NUM --path=../features/portal
+#################################################
 
 SECONDS=0
 echo "Running behat portal suite in $PORTAL_THREADS_NUM parallel threads"
@@ -65,15 +76,15 @@ done
 wait
 echo "--> Done in $SECONDS seconds"
 
-##############################################
+#################################################
 # WAIT FOR THREADS TO FINISH GUARANTEED
-##############################################
+#################################################
 
 sleep 2
 
-##############################################
+#################################################
 # PRINT RESULTS
-##############################################
+#################################################
 
 echo ""
 echo ""
@@ -127,6 +138,9 @@ echo "--------------------------------------------------------------------------
 for ((i=1;i<=$API_THREADS_NUM;i++)); do
     printf "\n\n--- api thread $i ---\n\n"; tail -n 50 "$LOGS_DIR/behat-api-$i.txt"; sleep .1
 done
+for ((i=1;i<=$API_NEW_THREADS_NUM;i++)); do
+    printf "\n\n--- api new thread $i ---\n\n"; tail -n 25 "$LOGS_DIR/behat-api-new-$i.txt"; sleep .1
+done
 
 echo ""
 echo "-----------------------------------------------------------------------------------------------------------------"
@@ -136,9 +150,9 @@ for ((i=1;i<=$PORTAL_THREADS_NUM;i++)); do
     printf "\n\n--- portal thread $i ---\n\n"; tail -n 50 "$LOGS_DIR/behat-portal-$i.txt"; sleep .1
 done
 
-##############################################
+#################################################
 # SUMMARIZE RESULTS
-##############################################
+#################################################
 
 echo ""
 echo "-----------------------------------------------------------------------------------------------------------------"
@@ -156,6 +170,10 @@ behat_production=$(tail -n 3 "$LOGS_DIR/behat-production.txt" | tr '\n' ' ')
 for ((i=1;i<=$API_THREADS_NUM;i++)); do
     behat_api[$i]=$(tail -n 3 "$LOGS_DIR/behat-api-$i.txt" | tr '\n' ' ')
 done
+for ((i=1;i<=$API_NEW_THREADS_NUM;i++)); do
+    behat_api_new[$i]=$(tail -n 3 "$LOGS_DIR/behat-api-new-$i.txt" | tr '\n' ' ')
+done
+
 for ((i=1;i<=$PORTAL_THREADS_NUM;i++)); do
     behat_portal[$i]=$(tail -n 3 "$LOGS_DIR/behat-portal-$i.txt" | tr '\n' ' ')
 done
@@ -188,6 +206,10 @@ Behat api:
 for ((i=1;i<=$API_THREADS_NUM;i++)); do
     echo "($i) ${behat_api[i]}"
 done
+for ((i=1;i<=$API_NEW_THREADS_NUM;i++)); do
+    echo "($i new) ${behat_api_new[i]}"
+done
+
 
 echo "
 ---------------
@@ -270,6 +292,12 @@ for ((i=1;i<=$API_THREADS_NUM;i++)); do
         mv "$LOGS_DIR/behat-api-${i}.txt" "$LOGS_DIR/FAILED-behat-api-${i}.txt"
     fi
 done
+for ((i=1;i<=$API_NEW_THREADS_NUM;i++)); do
+    if [[ ${behat_api_new[i]} =~ "failed" ]] || [[ ! ${behat_api_new[i]} =~ "passed" ]] ; then
+        behat_api_failed=1
+        mv "$LOGS_DIR/behat-api-new-${i}.txt" "$LOGS_DIR/FAILED-behat-api-new-${i}.txt"
+    fi
+done
 if [[ "$behat_api_failed" -ne "0" ]]; then
     echo "- Behat api failed"
 fi
@@ -286,9 +314,9 @@ if [[ "$behat_portal_failed" -ne "0" ]]; then
     echo "- Behat portal failed"
 fi
 
-##############################################
+#################################################
 # EXIT 0/1
-##############################################
+#################################################
 
 echo ""
 status=$((phpunit_failed + phpspec_failed + jest_failed + behat_install_failed + behat_system_api_failed + behat_production_failed + behat_api_failed + behat_portal_failed))

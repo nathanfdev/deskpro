@@ -1,3 +1,4 @@
+@new
 Feature: /downloads endpoint
   I want to check permission groups
 

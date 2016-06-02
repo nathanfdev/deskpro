@@ -1,3 +1,4 @@
+@new
 Feature: /tickets/{id}/ticket_slas endpoint
   To CRUD DeskPRO ticket's SLAs
   As an API user

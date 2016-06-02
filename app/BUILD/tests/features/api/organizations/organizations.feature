@@ -1,3 +1,4 @@
+@new
 Feature: /organizations endpoint
   To CRUD DeskPRO organizations
   As an API user

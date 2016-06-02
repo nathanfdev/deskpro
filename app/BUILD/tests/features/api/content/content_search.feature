@@ -1,3 +1,4 @@
+@new
 Feature: /articles, /news, /downloads endpoints
   To retrieve various sets of DeskPRO Articles/News/Downloads
   As an API user

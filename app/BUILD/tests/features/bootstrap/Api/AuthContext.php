@@ -41,6 +41,7 @@ use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
 use DpBehat\BaseContext;
 use DpBehat\Data\DataContext;
 use DpBehat\Data\Factory\PersonFactories;
+use DpBehat\DataSetContext;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 
 /**
@@ -54,6 +55,11 @@ class AuthContext extends BaseContext
     private $restContext;
 
     /**
+     * @var DataSetContext
+     */
+    private $dataSetContext;
+
+    /**
      * @var bool DB will be cleaned up before feature if this is set to true
      */
     private static $needCleanup = false;
@@ -62,6 +68,11 @@ class AuthContext extends BaseContext
      * @var bool
      */
     private static $isFirstFeatureScenario = false;
+
+    /**
+     * @var bool
+     */
+    private static $isTheFirstSuiteScenario = true;
 
     /**
      * Schedule DB cleanup before next login.
@@ -105,14 +116,21 @@ class AuthContext extends BaseContext
      */
     public function iAmAuthenticatedAs($role)
     {
+        // Install DB on @BeforeSuite ----------------------------------------------------------------------------------
+        if (self::$isTheFirstSuiteScenario) {
+            $this->dataSetContext->iInstallDataSet('api');
+            self::$isTheFirstSuiteScenario = false;
+        }
+
+        // Cleanup on @BeforeFeature if needed -------------------------------------------------------------------------
         if (self::$needCleanup && self::$isFirstFeatureScenario) {
             $this->cleanup();
             self::$needCleanup = false;
         }
         self::$isFirstFeatureScenario = false;
 
+        // Log in ------------------------------------------------------------------------------------------------------
         $email = "$role@deskpro.com";
-
         if (DataContext::getPlaceholder('myEmail', false) === $email) {
             $person = DataContext::getReference('me');
         } else {
@@ -128,7 +146,6 @@ class AuthContext extends BaseContext
             DataContext::setReference('me', $person);
             DataContext::setPlaceholder('myEmail', $email);
         }
-
         $this->authenticateAs($person);
 
         self::initOm();
@@ -141,7 +158,8 @@ class AuthContext extends BaseContext
     {
         $environment = $scope->getEnvironment();
 
-        $this->restContext = $environment->getContext('DpBehat\Api\RestContext');
+        $this->restContext    = $environment->getContext('DpBehat\Api\RestContext');
+        $this->dataSetContext = $environment->getContext('DpBehat\DataSetContext');
     }
 
     /**

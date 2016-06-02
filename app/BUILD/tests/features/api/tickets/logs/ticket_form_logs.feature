@@ -1,3 +1,4 @@
+@new
 Feature: Ticket logs when using /api/v2/ticket_forms endpoint
 
   Background:

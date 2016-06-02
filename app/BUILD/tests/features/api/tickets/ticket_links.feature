@@ -1,3 +1,4 @@
+@new
 Feature: Ticket link endpoint
   As an API user
   I want to check link/unlink tickets and fetch linked tickets list

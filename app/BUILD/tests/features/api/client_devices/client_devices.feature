@@ -1,3 +1,4 @@
+@new
 Feature: Client devices
 
   Background:

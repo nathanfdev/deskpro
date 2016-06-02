@@ -1,3 +1,4 @@
+@new
 Feature: /tasks endpoint
   I want to check permission groups
 

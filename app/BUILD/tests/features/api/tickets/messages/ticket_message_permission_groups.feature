@@ -1,3 +1,4 @@
+@new
 Feature: /tickets/{id}/messages endpoint
   I want to check ticket permission groups
 

@@ -1,3 +1,4 @@
+@new
 Feature: Ticket logs
   To observe ticket history
   As a DeskPRO user

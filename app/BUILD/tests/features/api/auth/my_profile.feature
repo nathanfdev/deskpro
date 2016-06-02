@@ -1,3 +1,4 @@
+@new
 Feature: Person profile
 
   Background:

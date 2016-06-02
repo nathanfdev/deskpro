@@ -1,3 +1,4 @@
+@new
 Feature: /tasks/{id}/attachments endpoint
   To CRUD DeskPRO task attachments
   As an API user

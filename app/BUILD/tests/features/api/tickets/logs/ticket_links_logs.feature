@@ -1,3 +1,4 @@
+@new
 Feature: Ticket logs when manipulating ticket relations
 
   Background:
