@@ -1,6 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Mixins
+// Mixins and Resources
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+@import url(https://fonts.googleapis.com/css?family=Lato:400,700,700italic,400italic);
 
 // Button text color based on how dark the button color is
 @function set-button-text-color($color) {
@@ -118,19 +120,19 @@ p {
 
 ul {
   h1 {
-    font-weight: 400;
+    font-weight: normal;
   }
 }
 
 strong {
-  font-weight: 600;
+  font-weight: bold;
 }
 
 // All the headers
 h1, h2, h3, h4, h5 {
   margin: 0;
   padding: 0;
-  color: $text-color;
+  color: lighten($text-color, 5%);
   font-family: $headings-font-family;
 }
 
@@ -146,13 +148,13 @@ h2 {
 
 header {
   h1 {
-    font-weight: 300;
+    font-weight: normal;
     font-size: 1.75em;
   }
 }
 
 h2 {
-  font-weight: 400;
+  font-weight: normal;
 }
 
 hr {
@@ -184,7 +186,7 @@ hr {
     @include padding-left(1em);
     color: $text-color;
     background: $page-bg;
-    font-weight: 400;
+    font-weight: normal;
     font-size: 1.1em;
   }
 
@@ -370,7 +372,7 @@ section {
   color: $text-color;
   text-align: $text-left;
   text-decoration: none;
-  font-weight: 300;
+  font-weight: normal;
   line-height: 1em;
   line-height: 1em;
 
@@ -394,7 +396,7 @@ button, .button, input[type="submit"] {
   border-radius: 2px;
   color: set-button-text-color($btn-primary-bg);
   text-decoration: none;
-  font-weight: 400;
+  font-weight: normal;
   line-height: 1em;
   text-align: center;
   @include margin-right(10px);
@@ -547,7 +549,7 @@ button, .button, input[type="submit"] {
       padding: 0 1.2em;
       @media screen and (max-width: 760px) { @include padding-left(10px); }
 
-      font-weight: 400;
+      font-weight: normal;
       line-height: 1.3em;
 
       i {
@@ -656,7 +658,7 @@ button, .button, input[type="submit"] {
   .year {
     display: block;
     margin-bottom: 2px;
-    font-weight: 500;
+    font-weight: bold;
     font-size: 1.1em;
   }
 
@@ -664,7 +666,7 @@ button, .button, input[type="submit"] {
     display: block;
     color: $text-color-lighter;
     text-transform: uppercase;
-    font-weight: 500;
+    font-weight: bold;
     font-size: 0.7em;
   }
   // End year list
@@ -676,7 +678,7 @@ button, .button, input[type="submit"] {
     display: inline-block;
     @include border-left(2px solid $hr-border);
     text-transform: uppercase;
-    font-weight: 500;
+    font-weight: bold;
     font-size: $font-size-base;
 
     li {
@@ -726,7 +728,7 @@ button, .button, input[type="submit"] {
   h1 {
     margin-bottom: 12px;
     color: $text-color;
-    font-weight: 500;
+    font-weight: bold;
     font-size: 1.05em;
 
     &:after {
@@ -744,7 +746,7 @@ button, .button, input[type="submit"] {
   }
 
   h2 {
-    font-weight: 500;
+    font-weight: bold;
   }
 
   p {
@@ -1008,7 +1010,7 @@ button, .button, input[type="submit"] {
 // Number of satisfied folk
 .satisfaction-meta {
   margin-top: 5px;
-  font-weight: 500;
+  font-weight: bold;
   span {
     color: darken($btn-primary-bg, 25%);
   }
@@ -1056,7 +1058,7 @@ button, .button, input[type="submit"] {
     margin: 0;
     @include margin-left(10px);
     padding: 0;
-    font-weight: 400;
+    font-weight: normal;
 
     li {
       i[class*=" fa-file-"] {
@@ -1073,6 +1075,7 @@ button, .button, input[type="submit"] {
       a {
         color: $text-color;
         text-decoration: none;
+        vertical-align: middle;
 
         &:hover {
           color: $text-color;
@@ -1120,7 +1123,7 @@ button, .button, input[type="submit"] {
       }
       h1 {
         font-size: 1.75em;
-        font-weight: 500;
+        font-weight: bold;
       }
 
 
@@ -1128,7 +1131,6 @@ button, .button, input[type="submit"] {
   }
 
   .register-or-signup {
-    font-weight: bold;
     font-size: inherit;
     text-transform: uppercase;
 
@@ -1137,8 +1139,6 @@ button, .button, input[type="submit"] {
     }
 
     span {
-      @include padding-left(4px);
-
       hr {
         display: inline-block;
         width: 5px;
@@ -1215,7 +1215,11 @@ button, .button, input[type="submit"] {
       border-radius: 10px;
       position: relative;
       top: -2px;
-      margin: 0 4px;
+      margin: 0 6px;
+    }
+
+    .item-logout {
+      margin-left: 6px;
     }
 
     li {
@@ -1227,10 +1231,8 @@ button, .button, input[type="submit"] {
     }
 
     li.welcome {
-      text-transform: uppercase;
-      font-size: 0.85em;
-      font-weight: 500;
-      @include margin-right(10px);
+      font-size: 0.9em;
+      font-weight: bold;
 
       .agent-avatar {
         position: relative;
@@ -1297,11 +1299,11 @@ button, .button, input[type="submit"] {
       @media all and (-ms-high-contrast: none) {// align top button text alignment
         padding-top: 5px;
       }
-      text-transform: uppercase;
-      font-size: inherit;
-      font-weight: 500;
+      font-size: 0.85em;
+      font-weight: bold;
       cursor: pointer;
-      @include margin-left(4px);
+      margin-left: 4px;
+      margin-right: 4px;
 
       @media screen and (max-width: 760px) {
         display: block;
@@ -1335,10 +1337,10 @@ button, .button, input[type="submit"] {
     }
 
     .language-changer-widget {
-      font-size: 0.85em;
       .button-small.button-language {
         @include padding-left(35px);
         white-space: nowrap;
+        border: none;
 
         img {
           position: absolute;
@@ -1377,7 +1379,7 @@ button, .button, input[type="submit"] {
           line-height: 1em;
           padding: 7px 14px;
           text-transform: uppercase;
-          font-weight: 500;
+          font-weight: bold;
           cursor: pointer;
           text-align: $text-left;
           @include padding-left(35px);
@@ -1401,7 +1403,7 @@ button, .button, input[type="submit"] {
     .button-small.button-marked {
       background: $page-bg;
       border: 1px solid $hr-border;
-      color: $text-color;
+      color: $text-color-lighter;
       font-size: inherit;
       &:hover {
         background: darken($page-bg, 5%);
@@ -1455,8 +1457,8 @@ button, .button, input[type="submit"] {
   .text-tag {
     top: -1px;
     @include margin-right(4px);
-    background: darken($btn-primary-bg, 25%);
-    font-weight: 500;
+    background: darken($brand-success, 25%);
+    font-weight: bold;
   }
 
   .pagination {
@@ -1499,7 +1501,7 @@ button, .button, input[type="submit"] {
   display: inline-block;
   float: $float-right;
   text-transform: uppercase;
-  font-weight: 500;
+  font-weight: bold;
   font-size: $font-size-base;
 
   a {
@@ -1528,7 +1530,7 @@ button, .button, input[type="submit"] {
 .result-list {
   .focus {
     color: $text-color;
-    font-weight: 500;
+    font-weight: bold;
   }
 
   ul {
@@ -1767,7 +1769,7 @@ $search-btn-height: $search-height - 24;
 
       a {
         display: inline-block;
-        font-weight: 500;
+        font-weight: bold;
         text-align: center;
         border: 1px solid $hr-border;
         border-radius: 2px;
@@ -1890,7 +1892,7 @@ $search-btn-height: $search-height - 24;
       color: $text-color;
       font-size: 0.75em;
       text-transform: uppercase;
-      font-weight: 500;
+      font-weight: bold;
       text-decoration: none;
       line-height: 1em;
       padding: 4px 10px;
@@ -2096,7 +2098,7 @@ $search-btn-height: $search-height - 24;
               font-size: $font-size-base;
               color: $text-color;
               text-transform: uppercase;
-              font-weight: 500;
+              font-weight: bold;
               display: block;
               margin-bottom: 4px;
             }
@@ -2164,7 +2166,7 @@ $search-btn-height: $search-height - 24;
           }
 
           strong {
-            font-weight: 500;
+            font-weight: bold;
             color: $text-color;
           }
         }
@@ -2288,7 +2290,7 @@ $tab-border: $hr-border;
 
   .title {
     margin-bottom: 5px;
-    font-weight: 500;
+    font-weight: bold;
     font-size: 1.1em;
   }
 
@@ -2408,7 +2410,7 @@ $tab-border: $hr-border;
         top: 0;
         padding: 5px;
         @include margin-left(4px);
-        font-weight: 500;
+        font-weight: bold;
         font-size: 0.75em;
       }
     }
@@ -2552,7 +2554,7 @@ header {
 
   h1 {
     margin-bottom: 5px;
-    font-weight: 500;
+    font-weight: bold;
     font-size: 1.1em;
   }
 
@@ -2709,7 +2711,7 @@ header {
 
   h1 {
     font-size: 1.35em;
-    font-weight: 400;
+    font-weight: normal;
   }
 
   .article-meta { padding-top: 5px; }
@@ -2740,7 +2742,7 @@ header {
 
   h1 {
     font-size: 1.75em;
-    font-weight: 400;
+    font-weight: normal;
   }
 
   .article-meta {
@@ -2778,7 +2780,7 @@ header {
   color: $text-color;
   font-size: $font-size-base;
   line-height: 1.2em;
-  // font-weight: 400;
+  // font-weight: normal;
 
   a {
     text-decoration: none;
@@ -2886,9 +2888,9 @@ header {
     display: inline-block;
     padding: 0;
     margin: 0;
-    color: $text-color;
-    font-weight: 300;
-    font-size: 1.6em;
+    color: lighten($text-color, 8%);
+    font-weight: normal;
+    font-size: 1.4em;
     a {
       color: inherit;
     }
@@ -3010,7 +3012,7 @@ header {
 
     span {
       color: #a2a2a2;
-      font-weight: 500;
+      font-weight: bold;
     }
 
     &:hover {
@@ -3040,7 +3042,7 @@ header {
   background: #3d3d3d;
   color: #d2d2d2;
   text-align: $text-right;
-  font-weight: 300;
+  font-weight: normal;
 
   a {
     position: relative;
@@ -3079,7 +3081,7 @@ header {
   background: darken($page-bg, 3%);
   h1 {
     margin-bottom: 10px;
-    font-weight: 300;
+    font-weight: normal;
     font-size: $font-size-large;
   }
 
@@ -3099,10 +3101,10 @@ header {
   position: relative;
   padding: 3px 6px;
   border-radius: 2px;
-  background: darken($btn-primary-bg, 25%);
-  color: text-color-inverted();
+  background: $btn-default-bg;
+  color: $btn-default-color;
   text-transform: uppercase;
-  font-weight: 600;
+  font-weight: bold;
   font-size: 0.7em;
   line-height: 1em;
   cursor: default;
@@ -3144,7 +3146,8 @@ h1 {
 
   padding-top: 1px;
   padding-bottom: 1px;
-  background: darken($btn-primary-bg, 25%);
+  background: $btn-success-bg;
+  color: $btn-success-color;
 }
 
 // Tag with comment icon
@@ -3192,7 +3195,7 @@ h1 {
 
     span {
       color: $text-color-lighter;
-      font-weight: 500;
+      font-weight: bold;
     }
   }
 }
@@ -3242,10 +3245,11 @@ table {
 
   display: inline-block;
   @include margin-right(10px);
-  min-width: 40px;
+  min-width: 58px;
   background: darken($page-bg, 3%);
   color: $text-color-lighter;
   text-align: center;
+  vertical-align: middle;
   border: 1px solid darken($page-bg, 11%);
 
   span {
@@ -3343,7 +3347,7 @@ table {
   }
 
   h1, h2 {
-    font-weight: 400;
+    font-weight: normal;
     padding: 0;
     margin: 0;
     font-size: 1.8em;
@@ -3667,7 +3671,7 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
   // Overall user container
   display: inline-block;
   @include margin-right(10px);
-  font-weight: 400;
+  font-weight: normal;
   line-height: 1.2em;
 
   &:hover {
@@ -3816,7 +3820,7 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
     padding: 5px;
     position: absolute;
     font-size: 0.85em;
-    font-weight: 500;
+    font-weight: bold;
     top: -12px;
     @include left(5px);
     background: $page-bg;
@@ -3837,7 +3841,7 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
   }
 
   .kb-checkbox-wrapper {
-    font-weight: 500;
+    font-weight: bold;
     text-transform: uppercase;
     font-size: $font-size-base;
   }
@@ -3860,7 +3864,7 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
 
 .search-result-count {
   color: #b3b3b3;
-  font-weight: 300;
+  font-weight: normal;
   font-size: 1.2em;
   margin-top: 5px;
 }
@@ -4058,7 +4062,7 @@ li.related-article-item:hover .expanded-content.intro .show-more-content-contain
     }
 
     a.pagination-link, .page {
-      font-weight: 500;
+      font-weight: bold;
       font-size: 0.75em;
       text-decoration: none;
       display: inline-block;
@@ -4323,7 +4327,7 @@ ul.kb-checkbox-extra {
 
   strong {
     color: $text-color;
-    font-weight: 500;
+    font-weight: bold;
   }
 
   .author {
@@ -4333,7 +4337,7 @@ ul.kb-checkbox-extra {
       vertical-align: middle;
       position: relative;
       top: 1px;
-      font-weight: 500;
+      font-weight: bold;
       font-size: 1.1em;
     }
   }
@@ -4366,7 +4370,7 @@ ul.kb-checkbox-extra {
       background: darken($page-bg, 2%);
 
       span {
-        font-weight: 400;
+        font-weight: normal;
         font-size: 1.15em;
       }
     }
@@ -4416,7 +4420,7 @@ ul.kb-checkbox-extra {
     span {
       display: block;
       color: $text-color;
-      font-weight: 500;
+      font-weight: bold;
       font-size: 1.2em;
     }
 
@@ -4493,7 +4497,7 @@ ul.kb-checkbox-extra {
     display: block;
     margin-top: 5px;
     margin-bottom: 10px;
-    font-weight: 400;
+    font-weight: normal;
     font-size: 1.25em;
     color: #595959;
   }
@@ -4501,7 +4505,7 @@ ul.kb-checkbox-extra {
   h2 {
     margin-bottom: 25px;
     color: $text-color-lighter;
-    font-weight: 500;
+    font-weight: bold;
     font-size: $font-size-base;
   }
 
@@ -4541,7 +4545,7 @@ ul.kb-checkbox-extra {
       color: $text-color-lighter;
       font-size: 0.85em;
       text-decoration: none;
-      font-weight: 500;
+      font-weight: bold;
       opacity: 0.5;
 
       &:hover { opacity: 1; }
@@ -4608,7 +4612,7 @@ ul.kb-checkbox-extra {
 
     h2 {
       color: $text-color-lighter;
-      font-weight: 500;
+      font-weight: bold;
       margin-bottom: 25px;
       font-size: $font-size-base;
     }
@@ -4631,7 +4635,7 @@ ul.kb-checkbox-extra {
 
     .button {
       padding: 10px 20px;
-      font-weight: 400;
+      font-weight: normal;
       text-shadow: none;
     }
 
@@ -4751,11 +4755,11 @@ ul.kb-checkbox-extra {
   border: 2px solid $text-color;
   border-radius: 4px;
   background: #ffffff;
-  font-weight: 300;
+  font-weight: normal;
   z-index: 110;
 
   h1 {
-    font-weight: 300;
+    font-weight: normal;
     font-size: 1.2em;
   }
 
@@ -4782,7 +4786,7 @@ ul.kb-checkbox-extra {
 
 .alerts {
   margin-top: 10px;
-  font-weight: 400;
+  font-weight: normal;
   max-width: 1080px;
   margin: 0 auto;
 
@@ -4794,7 +4798,7 @@ ul.kb-checkbox-extra {
 
   .ticket-title {
     text-decoration: underline;
-    font-weight: 600;
+    font-weight: bold;
   }
 
   .post-content {
@@ -4895,7 +4899,7 @@ ul.kb-checkbox-extra {
     text-overflow: ellipsis;
     white-space: nowrap;
     font-size: $font-size-base;
-    font-weight: 400;
+    font-weight: normal;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
     strong {
@@ -5019,7 +5023,7 @@ h1.fancy-header {
   @include padding-right(2em);
   @include padding-left(2em);
   background: $page-bg;
-  font-weight: 600;
+  font-weight: bold;
   font-size: 1.15em;
 }
 
@@ -5061,7 +5065,7 @@ h1.fancy-header {
 
       h1 {
         display: inline;
-        font-weight: 400;
+        font-weight: normal;
         font-size: 1.1em;
 
         a {
@@ -5073,7 +5077,7 @@ h1.fancy-header {
 
       h2 {
         display: inline;
-        font-weight: 400;
+        font-weight: normal;
         font-size: $font-size-base;
 
         .fa-user, .fa-folder {
@@ -5118,6 +5122,7 @@ h1.fancy-header {
   ul {
     li {
       a {
+        vertical-align: middle;
         color: $link-color;
       }
     }
@@ -5170,8 +5175,8 @@ h1.fancy-header {
     @include padding-left(2px);
     height: 18px;
     border-radius: 2px;
-    background: darken($btn-primary-bg, 25%);
-    color: text-color-inverted();
+    background: $btn-success-bg;
+    color: $btn-success-color;
     text-decoration: none;
 
     &.off {
@@ -5205,8 +5210,8 @@ h1.fancy-header {
       width: 14px;
       height: 14px;
       border-radius: 2px;
-      background: $page-bg;
-      color: darken($btn-primary-bg, 25%);
+      background: $btn-success-color;
+      color: darken($btn-success-color, 5%);
       text-align: center;
       font-size: 0.7em;
 
@@ -5349,7 +5354,7 @@ h1.fancy-header {
           display: block;
           width: 100%;
           line-height: 1.2em;
-          font-weight: 400;
+          font-weight: normal;
 
           &:hover {
             background-color: darken($page-bg, 3%);
@@ -5534,7 +5539,7 @@ h1.fancy-header {
   }
 
   p {
-    font-weight: 400;
+    font-weight: normal;
     font-size: 0.95em;
   }
 
@@ -5544,10 +5549,10 @@ h1.fancy-header {
     float: $float-right;
     padding: 1px 10px;
     border-radius: 2px;
-    background: $state-success-bg;
-    color: text-color-inverted();
+    background: $btn-success-bg;
+    color: $btn-success-color;
     text-transform: uppercase;
-    font-weight: 500;
+    font-weight: bold;
     font-size: $font-size-base;
     a {
       text-decoration: none;
@@ -5586,7 +5591,7 @@ h1.fancy-header {
       text-align: center;
       text-decoration: none;
       text-transform: uppercase;
-      font-weight: 500;
+      font-weight: bold;
 
       @media screen and (max-width: 760px) {
         position: absolute;
@@ -5745,7 +5750,7 @@ h1.fancy-header {
     @include border-left(1px solid $hr-border);
 
     h1 {
-      font-weight: 400;
+      font-weight: normal;
       font-size: 1.25em;
       margin-bottom: 10px;
 
@@ -5769,7 +5774,6 @@ h1.fancy-header {
         }
       }
       a {
-        text-decoration: none;
         color: $text-color;
       }
     }
@@ -5851,17 +5855,24 @@ h1.fancy-header {
           display: none;
         }
 
+        a {
+          vertical-align: middle;
+        }
+
         span {
           position: relative;
+          vertical-align: middle;
+          top: -2px;
           display: inline-block;
-          padding: 4px;
-          min-width: 45px;
+          padding: 3px 4px;
+          min-width: 46px;
+          text-align: center;
           border: 1px solid $hr-border;
-          border-radius: 4px;
+          border-radius: 2px;
           color: $text-color-lighter;
-          font-weight: 500;
+          font-weight: bold;
           font-size: 0.75em;
-          line-height: 11px;
+          line-height: 1em;
           cursor: default;
           @include padding-left(20px);
 
@@ -5872,10 +5883,9 @@ h1.fancy-header {
 
           i {
             position: absolute;
-            top: 3px;
             @include left(5px);
-            /* @include padding-right(3px); */
             color: $btn-primary-bg;
+            vertical-align: middle;
           }
         }
       }
@@ -5908,7 +5918,7 @@ h1.fancy-header {
       p {
         margin-bottom: 10px;
         color: $text-color;
-        font-weight: 300;
+        font-weight: normal;
       }
 
       h1 {
@@ -5939,7 +5949,7 @@ h1.fancy-header {
 
   .controls {
     float: $float-right;
-    font-weight: 400;
+    font-weight: normal;
 
     ul {
       @include blank-list;
@@ -6019,7 +6029,7 @@ h1.fancy-header {
         vertical-align: middle;
         text-align: center;
         text-transform: uppercase;
-        font-weight: 500;
+        font-weight: bold;
         font-size: $font-size-base;
 
         &.file-download {
@@ -6091,7 +6101,7 @@ h1.fancy-header {
 
   h1, h2 {
     display: block;
-    font-weight: 400;
+    font-weight: normal;
   }
 
   h1 {
@@ -6118,7 +6128,7 @@ h1.fancy-header {
       color: $btn-primary-bg;
       text-decoration: underline;
       text-transform: uppercase;
-      font-weight: 600;
+      font-weight: bold;
       font-size: $font-size-base;
       opacity: 1;
 
@@ -6189,7 +6199,7 @@ h1.fancy-header {
   background: #ffffff;
   color: $text-color-lighter;
   text-transform: uppercase;
-  font-weight: 600;
+  font-weight: bold;
   font-size: 0.7em;
   line-height: 1em;
 
@@ -6280,7 +6290,7 @@ h1.fancy-header {
     @include padding-left(19px);
     background: $page-bg;
     color: $text-color-lighter;
-    font-weight: 400;
+    font-weight: normal;
     font-size: 1.1em;
 
     &.with-icon {
@@ -6463,7 +6473,7 @@ ul.categories-article-list {
     h1 {
       color: #5A5A5A;
       font-size: 1.5em;
-      font-weight: 400;
+      font-weight: normal;
       margin-bottom: 6px;
       a {
         text-decoration: none;
@@ -6491,7 +6501,7 @@ ul.categories-article-list {
 
   p {
     margin-bottom: 10px;
-    font-weight: 300;
+    font-weight: normal;
     line-height: 1.7em;
   }
 
@@ -6600,7 +6610,7 @@ ul.categories-article-list {
     }
 
     strong {
-      font-weight: 500;
+      font-weight: bold;
     }
 
     ul {
@@ -7108,14 +7118,14 @@ ul.categories-article-list {
     }
 
     strong {
-      font-weight: 400;
+      font-weight: normal;
     }
   }
 
   .comment {
     margin-top: 10px;
     padding: 20px;
-    font-weight: 300;
+    font-weight: normal;
     h3 {
       margin: 7px 0;
     }
@@ -7134,7 +7144,7 @@ ul.categories-article-list {
   .event-happened-at {
     display: block;
     color: $text-color-lighter;
-    font-weight: 400;
+    font-weight: normal;
     font-size: $font-size-base;
     line-height: 1em;
   }
@@ -7146,7 +7156,7 @@ ul.categories-article-list {
     line-height: 1em;
 
     span {
-      font-weight: 400;
+      font-weight: normal;
 
       .face {
         display: inline-block;
@@ -7158,7 +7168,7 @@ ul.categories-article-list {
         color: text-color-inverted();
         color: text-color-inverted();
         text-align: center;
-        font-weight: 600;
+        font-weight: bold;
         font-size: 0.75em;
         line-height: 0.9em;
       }
@@ -7202,7 +7212,7 @@ ul.categories-article-list {
     border-radius: 2px;
     color: $text-color;
     text-decoration: none;
-    font-weight: 400;
+    font-weight: normal;
     font-size: $font-size-base;
 
     &:hover {
@@ -7273,7 +7283,7 @@ ul.categories-article-list {
 
   h1 {
     margin-bottom: 0;
-    font-weight: 300;
+    font-weight: normal;
     font-size: $font-size-base;
   }
 
@@ -7291,7 +7301,7 @@ ul.categories-article-list {
       @include margin-right(3%);
       color: inherit;
       text-decoration: none;
-      font-weight: 300;
+      font-weight: normal;
 
       span {
         display: inline-block;
@@ -7438,7 +7448,7 @@ ul.categories-article-list {
 
   a {
     color: inherit;
-    font-weight: 400;
+    font-weight: normal;
   }
 }
 
@@ -7612,7 +7622,7 @@ ul.categories-article-list {
     color: text-color-inverted();
     vertical-align: middle;
     text-align: center;
-    font-weight: 500;
+    font-weight: bold;
     font-size: 0.7em;
     line-height: 1.6em;
   }
@@ -7670,7 +7680,7 @@ ul.categories-article-list {
 
   .person, .date {
     display: block;
-    font-weight: 500;
+    font-weight: bold;
     font-size: $font-size-base;
   }
 
@@ -7704,7 +7714,7 @@ ul.categories-article-list {
 
 .welcome-header {
   h1 {
-    font-weight: 300;
+    font-weight: normal;
     font-size: 1.7em;
     color: $text-color;
     margin-bottom: 2px;
@@ -7712,7 +7722,7 @@ ul.categories-article-list {
 
   h2 {
     font-size: 1em;
-    font-weight: 300;
+    font-weight: normal;
     color: $text-color;
   }
 }
@@ -7755,14 +7765,14 @@ ul.categories-article-list {
   }
 
   h1 {
-    font-weight: 300;
+    font-weight: normal;
     font-size: 1.6em;;
     margin-bottom: 10px;
   }
 
   h3 {
     font-size: 1.1em;
-    font-weight: 400;
+    font-weight: normal;
     opacity: 0.7;
     margin-top: 20px;
   }
@@ -7896,8 +7906,8 @@ ul.big-button-collection {
     display: block;
     width: 170px;
     height: 130px;
-    border: 1px solid $hr-border;
-    border-bottom: 2px solid $hr-border;
+    border: 1px solid $input-border;
+    border-bottom: 2px solid $input-border;
     border-radius: 2px;
     text-align: center;
     color: $text-color;
@@ -7925,7 +7935,7 @@ ul.big-button-collection {
 
   .fa {
     font-size: 3em;
-    color: $text-color-lighter;
+    color: $gray-light;
   }
 
   .title {
@@ -7938,7 +7948,7 @@ ul.big-button-collection {
     display: block;
     color: $text-color-lighter;
     font-size: 0.85em;
-    font-weight: 400;
+    font-weight: normal;
   }
 
   &.small {
@@ -8007,7 +8017,7 @@ ul.big-button-collection {
       height: auto;
       width: 100%;
       margin: 5px 0;
-      font-weight: 400;
+      font-weight: normal;
     }
 
     li a, &.small li a {
@@ -8024,7 +8034,7 @@ ul.big-button-collection {
         margin: 0;
         padding: 0;
         font-size: 1.25em;
-        font-weight: 400;
+        font-weight: normal;
       }
 
       .fa {
@@ -8111,7 +8121,7 @@ ul.big-button-collection {
 
     h1 {
       color: $text-color;
-      font-weight: 400;
+      font-weight: normal;
       font-size: 1.3em;
       margin-bottom: 15px;
     }
@@ -8158,7 +8168,7 @@ ul.big-button-collection {
     @include left(10px);
     z-index: 300;
     cursor: pointer;
-    font-weight: 500;
+    font-weight: bold;
 
     .fa-navicon {
       position: relative;
@@ -8344,9 +8354,8 @@ body.with-agent-bar {
   margin: 0 auto;
   height: 40px;
   color: text-color-inverted();
-  // font-family: $font-family-sans-serif;
-  font-size: 0.75em;
-  font-weight: 500;
+  font-size: 0.85em;
+  font-weight: bold;
   a {
     text-decoration: none;
   }
@@ -8522,7 +8531,6 @@ body.with-agent-bar {
     i {
       display: inline-block;
       vertical-align: middle;
-      font-size: 1em;
       @include margin-right(10px);
       position: relative;
       top: 4px;
@@ -8721,7 +8729,7 @@ body.with-agent-bar {
 
   span {
     color: $btn-primary-bg;
-    font-weight: 500;
+    font-weight: bold;
   }
 
   div {
@@ -9027,7 +9035,7 @@ table.dp-formtable-tablerow {
   h1 {
     display: block;
     margin-bottom: 5px;
-    font-weight: 400;
+    font-weight: normal;
     font-size: 1em;
   }
 
@@ -9078,12 +9086,13 @@ table .form-help {
     width: 100%;
     display: block;
     background: $page-bg;
-    line-height: $line-height-base;
+    line-height: $input-height-base;
     height: $input-height-base;
     position: relative;
 
     span {
-      padding: $padding-base-vertical $padding-base-horizontal;
+      padding: 0 $padding-base-horizontal;
+      line-height: $input-height-base - 1px;
       display: block;
     }
 
@@ -9130,9 +9139,9 @@ table .form-help {
 
     i[class^='fa-caret'], i[class*=' fa-caret'] {
       position: absolute;
-      top: 8px;
+      top: 9px;
       color: $text-color-lighter;
-      @include right(15px);
+      @include right(12px);
     }
 
     i[class^='fa-times'], i[class*=' fa-times'] {
@@ -9212,7 +9221,7 @@ table .form-help {
           }
         }
         &.active {
-          background: darken($page-bg, 3%);
+          background: darken($page-bg, 11%);
           color: $text-color;
           .checkbox {
             color: $text-color;
@@ -9405,7 +9414,7 @@ textarea {
 }
 
 .multiselect {
-  font-weight: 400;
+  font-weight: normal;
 }
 
 input[type="text"], input[type="email"], input[type="password"], textarea, .dp-medium-rte {
@@ -9429,7 +9438,7 @@ input[type="text"], input[type="email"], input[type="password"], textarea, .dp-m
 
   &.email {
     color: $btn-primary-bg;
-    font-weight: 400;
+    font-weight: normal;
   }
 
   &.shorter {
@@ -9756,7 +9765,7 @@ form {
   header {
     // @include padding-left(5px);
     h1 {
-      font-weight: 300;
+      font-weight: normal;
       font-size: 1.3em;
     }
   }
@@ -9873,7 +9882,7 @@ form {
   line-height: 1.2em;
 
   h1 {
-    font-weight: 400;
+    font-weight: normal;
     font-size: 1.1em;
   }
 
@@ -10067,7 +10076,7 @@ form {
       @include padding-left(4px);
       background: lighten($brand-danger, 30%);
       color: text-color-inverted();
-      font-weight: 500;
+      font-weight: bold;
       font-size: $font-size-base;
       line-height: 1.5em;
     }
@@ -10160,7 +10169,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
     margin-top: 10px;
     margin-bottom: 15px;
     h1 {
-      font-weight: 400;
+      font-weight: normal;
       font-size: 1.5em;
       color: $text-color;
     }
@@ -10209,7 +10218,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
   .ticket-reply-header {
     padding: 12px 10px;
     font-size: 1em;
-    font-weight: 500;
+    font-weight: bold;
 
     a {
       border-bottom: 2px solid $hr-border;
@@ -10307,7 +10316,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
   }
 
   h1 {
-    font-weight: 300;
+    font-weight: normal;
     font-size: 1.5em;
     margin-top: 20px;
     margin-bottom: 7px;
@@ -10345,7 +10354,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
 .ticket-action-date {
   float: $float-right;
   font-size: 10.5px;
-  font-weight: 500;
+  font-weight: bold;
   margin-top: 1px;
   color: rgba(0, 0, 0, 0.2);
 }
@@ -10379,7 +10388,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
 .ticket-actual-date {
   display: inline-block;
   color: $text-color-lighter;
-  font-weight: 600;
+  font-weight: bold;
   @include margin-left(2px);
   font-size: 0.75em;
 }
@@ -10392,12 +10401,12 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
 }
 
 .mark-resolved {
-  font-weight: 500;
+  font-weight: bold;
   color: $state-success-text;
 }
 
 .mark-awaiting-user {
-  font-weight: 500;
+  font-weight: bold;
   color: $state-warning-text;
 }
 
@@ -10413,7 +10422,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
 
   h1 {
     font-size: inherit;
-    font-weight: 500;
+    font-weight: bold;
     color: $text-color-lighter;
   }
 
@@ -10448,7 +10457,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
 
   h1 {
     font-size: $font-size-base;
-    font-weight: 400;
+    font-weight: normal;
     color: $text-color;
     margin-bottom: 5px;
   }
@@ -10470,15 +10479,14 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
   a.ticket-sidebar-button {
     display: block;
     margin: 5px;
-    background: $text-color;
+    background: $btn-success-bg;
+    color: $btn-success-color;
     line-height: 1.2em;
-    color: rgba(255, 255, 255, 0.75);
     border-radius: 2px;
     padding: 12px 0;
     text-align: center;
     &:hover {
-      background: $brand-primary;
-      color: text-color-inverted();
+      background: darken($btn-success-bg, 5%);
     }
   }
 
@@ -10687,11 +10695,11 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
 
   &.agent-has-replied {
     background: $state-success-bg;
-    border: 1px solid $state-success-bg;
-    color: text-color-inverted();
+    border: 1px solid $state-success-border;
+    color: $state-success-text;
 
     a {
-      color: text-color-inverted();
+      color: $state-success-text;
       text-decoration: underline;
     }
   }
@@ -10736,7 +10744,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
 
   form .title {
     font-size: $font-size-base;
-    font-weight: 400;
+    font-weight: normal;
     line-height: 1.2em;
   }
 
@@ -10761,7 +10769,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
   .meta {
     font-size: $font-size-base;
     color: $text-color-lighter;
-    font-weight: 400;
+    font-weight: normal;
     position: relative;
     @include left(-22px);
     margin-bottom: 7px;
@@ -10769,7 +10777,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
 
   li {
     position: relative;
-    font-weight: 400;
+    font-weight: normal;
 
     &:before {
       content: " ";
@@ -10846,7 +10854,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
 .chat-list {
   width: 100%;
   margin-bottom: 60px;
-  font-weight: 400;
+  font-weight: normal;
 
   td, td:first-child {
     text-align: $text-left;
@@ -10886,7 +10894,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
     display: block;
     padding: $padding-base-vertical * 1.5 $padding-base-horizontal * 1.5;
     @include padding-left($padding-base-horizontal);
-    font-weight: 300;
+    font-weight: normal;
 
     .focus {
       font-weight: 800;
@@ -10931,7 +10939,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
     color: $text-color-lighter;
 
     a {
-      font-weight: 400;
+      font-weight: normal;
       color: $text-color-lighter;
     }
 
@@ -10978,7 +10986,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
 
   table {
     font-size: $font-size-base;
-    font-weight: 400;
+    font-weight: normal;
     td {
       padding: 0 10px 0 5px;
     }
@@ -11262,7 +11270,7 @@ body.portal-mode-focus-window {
   }
 
   h1 {
-    font-weight: 400;
+    font-weight: normal;
     font-size: 1.5em;
     padding: 0;
     margin: 0;
@@ -11311,7 +11319,7 @@ body.portal-mode-focus-window {
   }
 
   h1 {
-    font-weight: 300;
+    font-weight: normal;
     font-size: 1.9em;
     color: $text-color;
     margin-top: 20px;
@@ -11363,7 +11371,7 @@ body.portal-mode-focus-window {
   padding: 7px 10px;
   color: $badge-color;
   font-size: $font-size-base;
-  font-weight: 500;
+  font-weight: bold;
   cursor: default;
   i {
     position: relative;
@@ -11394,7 +11402,7 @@ body.portal-mode-focus-window {
   h1 {
     font-size: 1.1em;
     display: inline-block;
-    font-weight: 400;
+    font-weight: normal;
     @include margin-right(10px);
     opacity: 0.5;
   }
@@ -11527,7 +11535,7 @@ body.portal-mode-focus-window {
 
     .item-title {
       color: $link-color;
-      font-weight: 400;
+      font-weight: normal;
       font-size: 1em;
 
       .download-icon {
@@ -11559,7 +11567,7 @@ body.portal-mode-focus-window {
 
       .date-posted {
         text-transform: uppercase;
-        font-weight: 600;
+        font-weight: bold;
         display: inline-block;
         color: $badge-color;
         font-size: 0.7em;

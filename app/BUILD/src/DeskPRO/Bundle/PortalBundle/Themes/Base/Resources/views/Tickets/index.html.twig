@@ -153,9 +153,11 @@
                         {% endif %}
                     {% elseif col.id == 'date_activity' %}
                         {% set last_message = ticket.messages|last %}
-                        <img src="{{ avatar_url(last_message.person) }}" class="avatar">
-                        <span class="person">{{ last_message.person.display_name_user }}</span>
-                        <span class="date">{{ ticket.last_activity_date|date("m/d/Y, g:i a") }}</span>
+                        {% if last_message %}
+                            <img src="{{ avatar_url(last_message.person) }}" class="avatar">
+                            <span class="person">{{ last_message.person.display_name_user }}</span>
+                            <span class="date">{{ ticket.last_activity_date|date("m/d/Y, g:i a") }}</span>
+                        {% endif %}
                     {% elseif col.id == 'date_created' %}
                         <span class="date">{{ ticket.date_created|date }}</span>
                     {% elseif col.id == 'date_user' %}

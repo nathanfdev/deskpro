@@ -24,7 +24,23 @@ $brand-primary: #337ab7;
 
 /// @group colors
 /// @type color
-$text-color: #303030;
+$brand-success:         #5cb85c;
+
+/// @group colors
+/// @type color
+$brand-info:            #5bc0de;
+
+/// @group colors
+/// @type color
+$brand-warning:         #f0ad4e;
+
+/// @group colors
+/// @type color
+$brand-danger:          #d9534f;
+
+/// @group colors
+/// @type color
+$text-color: #333;
 
 /// @group colors
 /// @type color
@@ -60,7 +76,7 @@ $padding-base-horizontal: 12px;
 
 /// @group fonts
 /// @type font
-$font-family-sans-serif: "Helvetica Neue", Helvetica, Arial, sans-serif;
+$font-family-sans-serif: Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
 
 /// @group fonts
 /// @type font
@@ -83,7 +99,7 @@ $gray-base:              #000 !default;
 $gray-darker:            lighten($gray-base, 13.5%) !default;
 $gray-dark:              lighten($gray-base, 19%) !default;
 $gray:                   lighten($gray-base, 33.5%) !default;
-$gray-light:             lighten($gray-base, 46.7%) !default;
+$gray-light:             lighten($gray-base, 48%) !default;
 $gray-lighter:           lighten($gray-base, 90%) !default;
 
 $brand-primary:         darken(#428bca, 6.5%) !default;
@@ -109,7 +125,7 @@ $max-width: 1080px;
 $with-page-framed: $body-bg != $page-bg;
 
 //** Global text color on `<body>`.
-$text-color:            $gray-dark !default;
+$text-color:            #333 !default;
 
 //** Light text color (e.g. de-emphasised)
 $text-color-lighter:    lighten($text-color, 29%) !default;
@@ -128,7 +144,7 @@ $link-hover-decoration: underline !default;
 //
 //## Font, line-height, and color for body text, headings, and more.
 
-$font-family-sans-serif:  "Helvetica Neue", Helvetica, Arial, sans-serif !default;
+$font-family-sans-serif:  Lato, "Helvetica Neue", Arial, Helvetica, sans-serif !default;
 $font-family-serif:       Georgia, "Times New Roman", Times, serif !default;
 
 //** Default monospace fonts for `<code>`, `<kbd>`, and `<pre>`.
@@ -219,8 +235,8 @@ $table-border-color:            #ddd !default;
 $btn-font-weight:                normal !default;
 
 $btn-default-color:              #333 !default;
-$btn-default-bg:                 #fff !default;
-$btn-default-border:             #ccc !default;
+$btn-default-bg:                 #ccc !default;
+$btn-default-border:             #999 !default;
 
 $btn-primary-color:              #fff !default;
 $btn-primary-bg:                 $brand-primary !default;
@@ -262,7 +278,7 @@ $input-bg-disabled:              darken($page-bg, 5%) !default;
 //** Text color for `<input>`s
 $input-color:                    $text-color !default;
 //** `<input>` border color
-$input-border:                   darken($page-bg, 25%) !default;
+$input-border:                   darken($page-bg, 18%) !default;
 
 // TODO: Rename `$input-border-radius` to `$input-border-radius-base` in v4
 //** Default `.form-control` border radius
