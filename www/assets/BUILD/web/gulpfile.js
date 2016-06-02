@@ -267,7 +267,13 @@ gulp.task('semantic-watch', function () {
 });
 
 gulp.task('semantic-copy', ['clean'], function () {
-  return gulp.src('./stylesheets-less/semantic-ui/semantic.*')
+  gulp.src('./stylesheets-less/semantic-ui/semantic.css')
+    .pipe(postcss([
+      autoprefixer({ browsers: ['last 2 versions'] }),
+      comments({})
+    ]))
+    .pipe(gulp.dest('./app-build/Admin/Resources/style/'));
+  gulp.src('./stylesheets-less/semantic-ui/semantic.css.map')
     .pipe(gulp.dest('./app-build/Admin/Resources/style/'));
 });
 
@@ -280,10 +286,6 @@ deskpro.taskGen.semantic = function(target_dir) {
     .pipe(sourcemaps.init())
     .pipe(gulpif(deskpro.isWatching, using({prefix: '<< Build --'})))
     .pipe(less())
-    .pipe(postcss([
-      autoprefixer({ remove: false, browsers: ['last 2 versions'] }),
-      comments({})
-    ]))
     .pipe(sourcemaps.write('/', {includeContent: false, sourceRoot: './node_modules/semantic-ui-less/'}))
     .pipe(gulp.dest(target_dir))
     .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));

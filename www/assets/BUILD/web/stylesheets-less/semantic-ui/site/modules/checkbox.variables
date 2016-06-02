@@ -1,3 +1,14 @@
 /*******************************
     User Variable Overrides
 *******************************/
+
+@checkboxSize: 16px;
+@checkboxBorderRadius: 0;
+@checkboxBorder: 1px solid @dp-greyscale-450;
+@checkboxActiveCheckColor: @dp-sonic-primary;
+@checkboxActiveFocusCheckColor: @dp-sonic-primary;
+
+@toggleLaneBackground: @dp-greyscale-450;
+@toggleHoverColor: @dp-greyscale-450;
+@toggleOnLaneColor: @dp-emerald-primary;
+@toggleOnFocusLaneColor: @dp-emerald-midnight;
