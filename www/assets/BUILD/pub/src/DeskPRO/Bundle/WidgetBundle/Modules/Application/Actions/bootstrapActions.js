@@ -15,7 +15,6 @@ import { liveDemoSelector } from '../Selectors/dpWindow';
 import { onlineAgentsCountSelector } from '../Selectors/peopleSelectors';
 import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
-import * as windowApiActions from '../../../Services/WindowApi';
 import $ from 'jquery';
 import lscache from 'lscache';
 
@@ -141,7 +140,6 @@ export const bootstrapWidget = createAction(
 
       // try to resume chat
       const onFinish = () => {
-        windowApiActions.widgetLoaded();
         resolve(response);
       };
 

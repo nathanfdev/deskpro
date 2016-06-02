@@ -1,6 +1,7 @@
 import { createReducer } from 'Ampliflux';
 import * as actions from '../Actions/bootstrapActions';
-import { setValue, setFullPayload, async } from 'Ampliflux/reducers/handlers';
+import { setValue, setFullPayload, async, composeHandlers } from 'Ampliflux/reducers/handlers';
+import { dispatchWidgetStatus } from '../../../Services/WindowApi';
 
 const initialState = {
   session:  {},
@@ -17,6 +18,12 @@ export default createReducer(initialState, {
   }),
   [actions.setSettings]:     setFullPayload('settings'),
   [actions.bootstrapWidget]: async({
-    done: setValue('loaded', true)
+    done: composeHandlers(
+      setValue('loaded', true),
+      state => {
+        setTimeout(() => dispatchWidgetStatus(), 1);
+        return state;
+      }
+    )
   })
 });

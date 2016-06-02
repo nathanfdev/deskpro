@@ -3,7 +3,7 @@ import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { ajaxOptions } from './bootstrapActions';
 import { setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { onlineAgentsSelector } from '../Selectors/peopleSelectors';
-import * as windowApiActions from '../../../Services/WindowApi';
+import { dispatchOnlineAgents } from '../../../Services/WindowApi';
 import Immutable from 'immutable';
 import lscache from 'lscache';
 
@@ -16,7 +16,7 @@ export const loadOnlineAgents = createAction(
     const updateAgents = (newAgents) => {
       if (!oldAgents.equals(Immutable.fromJS(newAgents))) {
         dispatch(setCollection('Person', 'onlineAgents', newAgents));
-        windowApiActions.getOnlineAgents();
+        dispatchOnlineAgents();
       }
 
       resolve();

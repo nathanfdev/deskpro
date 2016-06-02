@@ -1,15 +1,79 @@
-(function (window, document) {
+((window, document) => {
   // #include deskpro_loader_utils.js
 
   const options = window.DESKPRO_WIDGET_OPTIONS;
 
-  getInstInfo(options.helpdeskUrl, window, document, options.instId || 'default').then(function (instInfo, window, document) {
+  // DpWidget api
+  window.addEventListener('message', event => {
+    window.dispatchEvent(new CustomEvent(getEventName(event.data.type), { detail: event.data.options }));
+  }, false);
 
+  const getEventName = type => `dpwidget${type}`;
+  const dispatchCustomEvent = (type, eventOptions = {}) => {
+    if (window.dp_loader) {
+      window.dp_loader.postMessage({ type, options: eventOptions }, '*');
+    }
+  };
+
+  const addWidgetListener = (type, callback) => window.addEventListener(getEventName(type), callback, false);
+  const removeWidgetListener = (type, callback) => window.removeEventListener(getEventName(type), callback, false);
+  const getWidgetStatus = () => dispatchCustomEvent('getWidgetStatus');
+  const getOnlineAgents = () => dispatchCustomEvent('getOnlineAgents');
+  const openWidget = event => {
+    if (event) {
+      event.preventDefault();
+    }
+
+    dispatchCustomEvent('openWidget');
+  };
+
+  window.DpWidget = {
+    addWidgetListener,
+    removeWidgetListener,
+    getWidgetStatus,
+    getOnlineAgents,
+    openWidget,
+    dispatchCustomEvent
+  };
+
+  const each = (className, fn) => {
+    const elements = document.getElementsByClassName(className);
+    for (let i = 0; i < elements.length; i++) {
+      fn(elements[i]);
+    }
+  };
+
+  addWidgetListener('widgetStatus', event => {
+    const response = event.detail;
+    const updateStyle = (className, attr, value) => {
+      each(className, el => {
+        el.style[attr] = value;
+      });
+    };
+
+    if (response.loaded) {
+      updateStyle('dpwidget-show-on-loaded', 'display', 'block');
+      updateStyle('dpwidget-hide-on-loaded', 'display', 'none');
+    }
+    if (response.chatAvailable) {
+      updateStyle('dpwidget-show-on-available', 'display', 'block');
+      updateStyle('dpwidget-hide-on-available', 'display', 'none');
+    } else {
+      updateStyle('dpwidget-show-on-unavailable', 'display', 'block');
+      updateStyle('dpwidget-hide-on-unavailable', 'display', 'none');
+    }
+
+    each('dpwidget-open', el => {
+      el.onclick = openWidget;
+    });
+  });
+
+  // Widget app loader
+  getInstInfo(options.helpdeskUrl, window, document, options.instId || 'default').then(instInfo => {
     const helpdeskUrl = instInfo.helpdeskUrl;
     const appSrc = instInfo.assetUrl + '/pub/build/DeskPRO_WidgetBundle.js';
 
-    const loadFn = function () {
-
+    const loadFn = () => {
       // Create the iframe loader
       const node = document.createElement('iframe');
       node.src = 'javascript:false';
@@ -75,4 +139,3 @@
   });
 
 })(window, document);
-
