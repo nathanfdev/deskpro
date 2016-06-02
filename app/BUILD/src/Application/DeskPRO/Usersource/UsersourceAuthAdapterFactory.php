@@ -80,7 +80,8 @@ class UsersourceAuthAdapterFactory
      * Logic around preparing an auth adapter for use.
      *
      * @param Usersource $usersource
-     * @param null       $displayContext
+     * @param string     $displayContext
+     * @param string     $useInterface
      *
      * @return \Orb\Auth\Adapter\AdapterInterface
      */

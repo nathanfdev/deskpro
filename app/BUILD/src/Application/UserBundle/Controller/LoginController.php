@@ -432,8 +432,8 @@ HTML;
                         return $this->render(
                             'UserBundle:Legacy:error.html.twig',
                             [
-                                'error_message' => 'LDAP Extension Required',
-                                'error_title'   => 'Your server does not have the LDAP extension enabled so your login could not be processed. See: http://www.php.net/manual/en/ldap.installation.php',
+                                'error_title'   => 'LDAP Extension Required',
+                                'error_message' => 'Your server does not have the LDAP extension enabled so your login could not be processed. See: http://www.php.net/manual/en/ldap.installation.php',
                             ]
                         );
                     }
@@ -512,7 +512,7 @@ HTML;
 
                     $this->em()->getConnection()->commit();
                 } catch (\Exception $e) {
-                    $this->em()->getConnection()->rollback();
+                    $this->em()->getConnection()->rollBack();
                     throw $e;
                 }
             }        // Form wasnt inputted (eg direct url)
@@ -675,24 +675,6 @@ HTML;
     public function _doLoginSuccess()
     {
         return;
-    }
-
-    /**
-     * A generic landing page after the user has logged in which has JS to alert
-     * its parent that the user is now logged in.
-     *
-     * This is used when the auth happens in a popup, and then the page that spawned
-     * the popup needs to know the user is finished.
-     */
-    public function jstellLoginAction($security_token)
-    {
-        if (!$this->session->getEntity()->checkSecurityToken('jstell', $security_token)) {
-            return $this->createResponse('');
-        }
-
-        return $this->render('UserBundle:Login:jstell.html.twig', [
-            'route_prefix' => $this->route_prefix,
-        ]);
     }
 
     /**
@@ -956,7 +938,8 @@ HTML;
 
     /**
      * @param Usersource $usersource
-     * @param null       $displayContext
+     * @param string     $displayContext
+     * @param string     $useInterface
      *
      * @return AdapterInterface
      */
@@ -1170,56 +1153,6 @@ HTML;
         return $this->render($this->tpl_prefix.':reset-password-sent.html.twig', [
             'route_prefix' => $this->route_prefix,
             'did_send'     => true,
-        ]);
-    }
-
-    ############################################################################
-    # Inline login
-    ############################################################################
-
-    /**
-     * @return Response
-     */
-    public function inlineLoginAction()
-    {
-        if (!$lockTime = $this->getLoginLockoutTime($this->in->getString('email'))) {
-            $result = $this->authLocalInput();
-            $this->ensureStandardRequestToken();
-        }
-
-        if ($lockTime || !$result->isValid()) {
-            $html = $this->renderView('UserBundle:Common:form-email-login-row.html.twig', ['login_error' => true, 'mode' => $this->in->getString('mode')]);
-
-            return $this->createJsonResponse([
-                'html' => $html,
-            ]);
-        }
-
-        $identity = $result->getIdentity();
-
-        $this->session->set('auth_person_id', $identity->getIdentity());
-
-        $person = $identity['person'];
-        $person->setLastLoginAt();
-        $person->loadHelper('FeedbackVotes', []);
-        $person->loadHelper('HelpdeskUser', ['session' => $this->session]);
-
-        $this->person = $person;
-
-        App::setCurrentPerson($person);
-
-        $this->em()->persist($person);
-        $this->em()->flush();
-
-        $this->deleteCookies();
-
-        $html = $this->renderView('UserBundle:Common:form-email-login-row.html.twig', ['person' => $person, 'mode' => $this->in->getString('mode')]);
-
-        return $this->createJsonResponse([
-            'html'             => $html,
-            'sections_replace' => [],
-            'person_id'        => $person['id'],
-            'name'             => $person['name'],
         ]);
     }
 
