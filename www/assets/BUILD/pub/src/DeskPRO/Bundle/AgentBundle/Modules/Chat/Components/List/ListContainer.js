@@ -14,18 +14,6 @@ export class ListContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired
   };
-  /*
-
-   componentDidMount() {
-   this.props.dispatch(setCollection('UserChat', 'chats', []));
-   this.props.dispatch(setCollection('Department', 'all_chat', []));
-   }
-
-   componentWillUnmount() {
-   this.props.dispatch(releaseCollection('UserChat', 'chats'));
-   this.props.dispatch(releaseCollection('Department', 'all_chat'));
-   }
-   */
 
   render = () => {
     const toggleSelected  = id => () => this.props.dispatch(toggleSelectedAction(id));

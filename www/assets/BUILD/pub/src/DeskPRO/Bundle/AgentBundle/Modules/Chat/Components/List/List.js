@@ -14,11 +14,10 @@ export class List extends React.Component {
     pagination:      PropTypes.object,
     toggleSelected:  PropTypes.func.isRequired,
     handlePageClick: PropTypes.func.isRequired,
-    elements:        PropTypes.array,
     viewMode:        PropTypes.string.isRequired
   };
 
-  render = () => {
+  render() {
     const { isLoaded, pagination, viewMode, toggleSelected, handlePageClick } = this.props;
 
     return (
