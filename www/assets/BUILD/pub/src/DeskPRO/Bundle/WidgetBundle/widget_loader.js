@@ -3,6 +3,7 @@
 
   const options = window.DESKPRO_WIDGET_OPTIONS;
 
+  // DpWidget api
   window.addEventListener('message', event => {
     window.dispatchEvent(new CustomEvent(getEventName(event.data.type), { detail: event.data.options }));
   }, false);
@@ -18,7 +19,13 @@
   const removeWidgetListener = (type, callback) => window.removeEventListener(getEventName(type), callback, false);
   const getWidgetStatus = () => dispatchCustomEvent('getWidgetStatus');
   const getOnlineAgents = () => dispatchCustomEvent('getOnlineAgents');
-  const openWidget = () => dispatchCustomEvent('openWidget');
+  const openWidget = event => {
+    if (event) {
+      event.preventDefault();
+    }
+
+    dispatchCustomEvent('openWidget');
+  };
 
   window.DpWidget = {
     addWidgetListener,
@@ -29,6 +36,39 @@
     dispatchCustomEvent
   };
 
+  const each = (className, fn) => {
+    const elements = document.getElementsByClassName(className);
+    for (let i = 0; i < elements.length; i++) {
+      fn(elements[i]);
+    }
+  };
+
+  addWidgetListener('widgetStatus', event => {
+    const response = event.detail;
+    const updateStyle = (className, attr, value) => {
+      each(className, el => {
+        el.style[attr] = value;
+      });
+    };
+
+    if (response.loaded) {
+      updateStyle('dpwidget-show-on-loaded', 'display', 'block');
+      updateStyle('dpwidget-hide-on-loaded', 'display', 'none');
+    }
+    if (response.chatAvailable) {
+      updateStyle('dpwidget-show-on-available', 'display', 'block');
+      updateStyle('dpwidget-hide-on-available', 'display', 'none');
+    } else {
+      updateStyle('dpwidget-show-on-unavailable', 'display', 'block');
+      updateStyle('dpwidget-hide-on-unavailable', 'display', 'none');
+    }
+
+    each('dpwidget-open', el => {
+      el.onclick = openWidget;
+    });
+  });
+
+  // Widget app loader
   getInstInfo(options.helpdeskUrl, window, document, options.instId || 'default').then(instInfo => {
     const helpdeskUrl = instInfo.helpdeskUrl;
     const appSrc = instInfo.assetUrl + '/pub/build/DeskPRO_WidgetBundle.js';
