@@ -421,14 +421,6 @@ $CONFIG['agent_misc'] = array(
     ),
 );
 
-$CONFIG['user_helpdeskwin'] = array(
-    'out'          => 'js/HelpdeskWin.min.js',
-    'post_filters' => array('yui_simple'),
-    'files'        => array(
-        'javascripts/DeskPRO/User/HelpdeskWidget/HelpdeskWin.js',
-    ),
-);
-
 $CONFIG['user'] = array(
     'out'          => 'js/user-all.js',
     'post_filters' => array('yui_simple'),
@@ -470,23 +462,8 @@ $CONFIG['user_common'] = array(
         'javascripts/DeskPRO/UI/TwoLevelSelect.js',
         'javascripts/DeskPRO/UI/MultiLevelSelect.js',
         'javascripts/DeskPRO/UI/Overlay.js',
-        'javascripts/DeskPRO/User/Window.js',
         'javascripts/DeskPRO/TouchCaller.js',
         'javascripts/DeskPRO/Translate.js',
-        'javascripts/DeskPRO/User/ElementHandler/ElementHandlerAbstract.js',
-        'javascripts/DeskPRO/User/ElementHandler/MoreLoader.js',
-        'javascripts/DeskPRO/User/ElementHandler/LoginBox.js',
-        'javascripts/DeskPRO/User/ElementHandler/NewTicket.js',
-        'javascripts/DeskPRO/User/ElementHandler/FormUploadHandler.js',
-        'javascripts/DeskPRO/User/ElementHandler/TicketList.js',
-        'javascripts/DeskPRO/User/ElementHandler/TicketView.js',
-        'javascripts/DeskPRO/User/ElementHandler/InlineEmailManage.js',
-        'javascripts/DeskPRO/User/ElementHandler/CommentFormLogin.js',
-        'javascripts/DeskPRO/User/ElementHandler/FeedbackAgreeBtn.js',
-        'javascripts/DeskPRO/User/ElementHandler/OmniSearch.js',
-        'javascripts/DeskPRO/User/SuggestedContentOverlay.js',
-        'javascripts/DeskPRO/User/InlineSuggestions.js',
-        'javascripts/DeskPRO/User/InlineLoginForm.js',
         'javascripts/DeskPRO/FormValidator/FormValidator.js',
         'javascripts/DeskPRO/FormValidator/FieldValidator.js',
         'javascripts/DeskPRO/FormValidator/LengthValidator.js',

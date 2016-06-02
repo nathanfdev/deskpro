@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -43,19 +43,9 @@ $collection->create('user', array(
     'defaults'   => array('_locale' => 'en'),
 ));
 
-$collection->create('user_jstell_login', array(
-    'path'       => '/login/jstell/{jstell}/{security_token}/{usersource_id}',
-    'controller' => 'UserBundle:Login:jstellLogin',
-));
-
 $collection->create('user_login', array(
     'path'       => '/login',
     'controller' => 'UserBundle:Login:index',
-));
-
-$collection->create('user_login_inline', array(
-    'path'       => '/login/inline-login',
-    'controller' => 'UserBundle:Login:inlineLogin',
 ));
 
 $collection->create('portal_login_usersource_sso', array(
