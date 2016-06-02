@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -270,7 +271,7 @@ class TicketSla extends DomainObject
                     'status_completed_warn_date_idx' => ['columns' => ['sla_status', 'is_completed', 'warn_date']],
                     'status_completed_fail_date_idx' => ['columns' => ['sla_status', 'is_completed', 'fail_date']],
                 ],
-                'uniqueConstraints' => ['unique_idx' => ['columns' => ['ticket_id', 'sla_id']]],
+                'uniqueConstraints' => ['unique_ticket_sla_idx' => ['columns' => ['ticket_id', 'sla_id']]],
             ]
         );
 

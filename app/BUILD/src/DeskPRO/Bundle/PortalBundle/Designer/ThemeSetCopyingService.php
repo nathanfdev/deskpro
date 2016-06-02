@@ -67,6 +67,7 @@ class ThemeSetCopyingService
     {
         $destination->setThemeId($source->getThemeId());
         $destination->setOptions($source->getOptions());
+        $this->em->persist($destination);
 
         $this->dropThemeSetAssets($destination);
         $this->cloneThemeSetAssets($source, $destination);

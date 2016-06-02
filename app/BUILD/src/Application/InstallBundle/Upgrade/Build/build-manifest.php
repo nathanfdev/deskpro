@@ -1696,11 +1696,19 @@ return array(
         'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0063_ticketalter4',
     ),
     1460678423 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0100_theme.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0100_theme',
+    ),
+    1460678424 => array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/new-agent/BuildNewAgent_0200_oldtables2.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\BuildNewAgent_0200_oldtables2',
     ),
     1464777281 => array(
         'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/06/Build1464777281.php',
         'classname' => 'Application\InstallBundle\Upgrade\Build\Build1464777281',
+    ),
+    1464867568 => array(
+        'file'      => '/src/Application/InstallBundle/Upgrade/Build/2016/06/Build1464867568.php',
+        'classname' => 'Application\InstallBundle\Upgrade\Build\Build1464867568',
     ),
 );

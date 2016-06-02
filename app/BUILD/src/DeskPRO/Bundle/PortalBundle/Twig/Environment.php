@@ -170,15 +170,6 @@ class Environment extends \Twig_Environment
 
     private function fallback($name, \Exception $previous)
     {
-        if (!isset($GLOBALS['DP_NOLOG_TPL_CACHE_ERR']) || !$GLOBALS['DP_NOLOG_TPL_CACHE_ERR']) {
-            if (preg_match('#^(UserBundle|AgentBundle|DeskPRO|InstallBundle|ReportInterfaceBundle|EmailBundle|CloudAdminBundle|Theme|PortalBundle):#', (string) $name)) {
-                if (defined('DP_BUILD_NUM') && !defined('DP_BUILDING')) {
-                    $e = new \Exception("IMPORTANT: Could not write twig template file for template $name. You should re-download the DeskPRO source files. Contact support@deskpro.com for assistance.", 0, $previous);
-                    $this->getLogger()->log($e);
-                }
-            }
-        }
-
         $source = $this->compileSource($this->loader->getSource($name), $name);
         eval('?>'.$source);
     }

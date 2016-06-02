@@ -233,6 +233,16 @@ abstract class AbstractBuild
     }
 
     /**
+     * @param string $connName
+     *
+     * @return \Application\DeskPRO\DBAL\Connection
+     */
+    public function getDbConnection($connName = 'default')
+    {
+        return $this->container->get('doctrine')->getConnection($connName);
+    }
+
+    /**
      * Execute a DB query but catch and return any exceptions.
      * Returns exception on error, null on success.
      *
@@ -405,6 +415,7 @@ abstract class AbstractBuild
         $twig = $this->container->get('twig');
 
         foreach ($templates as $tpl) {
+            $this->out("Recompile template #{$tpl['id']}: {$tpl['name']}");
             $name         = $tpl['name'];
             $compile_code = $tpl['template_code'];
 
@@ -421,8 +432,14 @@ abstract class AbstractBuild
                     'template_compiled' => $compiled,
                 ), array('id' => $tpl['id']));
             } catch (\Exception $e) {
+                $dir = $this->getBackupDir().DIRECTORY_SEPARATOR.'tpl-backups'.DIRECTORY_SEPARATOR.date('Y-m-d');
+                if (!is_dir($dir)) {
+                    if (!mkdir($dir, 0777, true)) {
+                        throw new \Exception('Could not create backup directory at '.$dir);
+                    }
+                }
                 @file_put_contents(
-                    dp_get_backup_dir().DIRECTORY_SEPARATOR.'tpl-backup-'.str_replace(':', '_', $tpl['name']),
+                    $dir.$tpl['id'].'--'.str_replace(':', '_', $tpl['name']),
                     $tpl['template_code']
                 );
                 $this->container->getDb()->delete('templates', array('id' => $tpl['id']));
@@ -455,6 +472,14 @@ abstract class AbstractBuild
         $build_id = str_replace('Build', '', $base);
 
         return $build_id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBackupDir()
+    {
+        return $this->container->get('deskpro.app_env')->getUserBackupsDir();
     }
 
     /**
