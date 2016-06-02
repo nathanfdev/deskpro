@@ -369,12 +369,20 @@ class DpEnv
             return $this->www_root_dir;
         }
 
-        $dir = $this->getDatManager()->readTxtFile('www_dir', null);
-        if (!$dir) {
-            $dir = $this->getDpRoot() . DIRECTORY_SEPARATOR . 'www';
+        $dir = null;
+        if (defined('DESKPRO_WWW_PATH')) {
+            $dir = realpath(DESKPRO_WWW_PATH);
         }
 
-        $dir = realpath($dir) ?: $dir;
+        if (!$dir) {
+            $dir = realpath($this->getDatManager()->readTxtFile('www_dir', null));
+        }
+
+        if (!$dir) {
+            // Fallback on the www dir within the deskpro root dir
+            $dir = $this->getDpRoot() . DIRECTORY_SEPARATOR . 'www';
+            $dir = realpath($dir) ?: $dir;
+        }
 
         return $this->www_root_dir = $dir;
     }
