@@ -83,19 +83,28 @@ class WidgetSession
     private $language;
 
     /**
+     * @var int
+     *
+     * @JMS\Type("string")
+     */
+    private $chatId;
+
+    /**
      * Constructor.
      *
      * @param Session              $session
      * @param WidgetGlobalSettings $globalSettings
      * @param bool                 $isChatGranted
      * @param Language             $defaultLanguage
+     * @param int                  $chatId
      */
-    public function __construct(Session $session, WidgetGlobalSettings $globalSettings, $isChatGranted, Language $defaultLanguage)
+    public function __construct(Session $session, WidgetGlobalSettings $globalSettings, $isChatGranted, Language $defaultLanguage, $chatId)
     {
         $this->sessionCode    = $session->getSessionCode();
         $this->person         = $session->getPerson();
         $this->globalSettings = $globalSettings;
         $this->isChatGranted  = $isChatGranted;
+        $this->chatId         = $chatId;
 
         if ($this->person && $this->person->getLanguage()) {
             $this->language = $this->person->getLanguage();

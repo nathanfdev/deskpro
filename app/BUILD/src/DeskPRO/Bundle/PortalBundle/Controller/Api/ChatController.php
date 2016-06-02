@@ -102,6 +102,8 @@ class ChatController extends AbstractApiController
             $this->dispatch(UserChatEvent::STARTED, new UserChatEvent($conversation));
         }
 
+        $this->setWidgetOption('chat_id', $conversation->getId());
+
         return View::create($this->wrap($conversation));
     }
 
@@ -407,6 +409,7 @@ class ChatController extends AbstractApiController
 
         $this->saveConversation($conversation);
         $this->dispatch(UserChatEvent::END_BY_USER, new UserChatEvent($conversation, [], ['chat_ended']));
+        $this->setWidgetOption('chat_id', null);
 
         return View::create();
     }
@@ -433,6 +436,7 @@ class ChatController extends AbstractApiController
 
         $this->saveConversation($conversation);
         $this->dispatch(UserChatEvent::USER_RETURNED, new UserChatEvent($conversation));
+        $this->setWidgetOption('chat_id', $conversation->getId());
 
         return View::create();
     }

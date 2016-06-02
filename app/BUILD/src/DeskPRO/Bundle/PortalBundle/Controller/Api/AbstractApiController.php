@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorMessageFactory;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
@@ -79,16 +80,29 @@ abstract class AbstractApiController extends FOSRestController
     }
 
     /**
-     * @return Session|null
+     * @return null|\Symfony\Component\Security\Core\Authentication\Token\TokenInterface
      */
-    protected function getApiSession()
+    protected function getToken()
     {
         $token = $this->get('security.token_storage')->getToken();
         if (!$token instanceof UsernamePasswordToken || $token->getProviderKey() !== 'portal_api') {
             throw new AccessDeniedHttpException('Invalid token');
         }
 
-        return $this->getDoctrine()->getRepository(Session::class)->find($token->getCredentials());
+        return $token;
+    }
+
+    /**
+     * @return Session|null
+     */
+    protected function getApiSession()
+    {
+        $session = $this->getDoctrine()->getRepository(Session::class)->find($this->getToken()->getCredentials());
+        if (!$session) {
+            throw new AccessDeniedHttpException('Invalid token');
+        }
+
+        return $session;
     }
 
     /**
@@ -113,5 +127,47 @@ abstract class AbstractApiController extends FOSRestController
     protected function getManager()
     {
         return $this->get('doctrine.orm.default_entity_manager');
+    }
+
+    /**
+     * @param string $key
+     *
+     * @return mixed
+     */
+    protected function getWidgetOption($key)
+    {
+        $dataStore = $this->getDoctrine()->getRepository(DataStore::class)->findOneBy([
+            'name' => $this->getWidgetOptionDataStoreName(),
+        ]);
+
+        return $dataStore ? $dataStore->getData($key) : null;
+    }
+
+    /**
+     * @param string $key
+     * @param mixed  $value
+     */
+    protected function setWidgetOption($key, $value)
+    {
+        $dataStore = $this->getDoctrine()->getRepository(DataStore::class)->findOneBy([
+            'name' => $this->getWidgetOptionDataStoreName(),
+        ]);
+
+        if (!$dataStore) {
+            $dataStore = new DataStore();
+            $dataStore->setName($this->getWidgetOptionDataStoreName());
+        }
+
+        $dataStore->setData($key, $value);
+        $this->getManager()->persist($dataStore);
+        $this->getManager()->flush($dataStore);
+    }
+
+    /**
+     * @return string
+     */
+    protected function getWidgetOptionDataStoreName()
+    {
+        return 'dpWidgetOptions.'.$this->getToken()->getCredentials();
     }
 }
