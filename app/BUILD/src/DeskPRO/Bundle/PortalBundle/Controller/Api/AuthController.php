@@ -31,7 +31,6 @@ namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\UseSectionVoter;
-use DeskPRO\Bundle\PortalBundle\EventListener\DpsidListener;
 use DeskPRO\Bundle\PortalBundle\Model\WidgetSession;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -82,7 +81,7 @@ class AuthController extends AbstractApiController
             $em->flush();
         }
 
-        DpsidListener::setPortalApiToken($this->get('security.token_storage'), $session, $request);
+        $this->get('dpsid.listener')->setPortalApiToken($session, $request);
 
         return new View($this->wrap(new WidgetSession(
             $session,
