@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
+use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -35,6 +36,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
+use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -81,6 +83,28 @@ class AgentsController extends CrudController
     public function getAgentsOnlineAction()
     {
         return View::create($this->wrap($this->get('data.agent')->getOnlineAgentIds()));
+    }
+
+    /**
+     * @ApiDoc(
+     *     section="Agents",
+     *     description="get a list of agents, assigned to chats",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     output="array<Person>"
+     * )
+     * @Rest\Get("/assigned_to_chat")
+     *
+     * @return View
+     */
+    public function getAgentsOnChatsAction()
+    {
+        $qb = $this->getManager()->createQueryBuilder();
+        $qb->select('person')->from(Person::class, 'person')
+            ->join(ChatConversation::class, 'chat', Expr\Join::WITH, 'chat.agent = person');
+
+        return View::create($this->wrap($qb->getQuery()->getResult()));
     }
 
     protected function denyAccessUnlessGranted($attributes, $object = null, $message = 'Access Denied.')

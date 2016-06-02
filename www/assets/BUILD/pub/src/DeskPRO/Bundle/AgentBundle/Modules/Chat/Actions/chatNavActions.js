@@ -1,7 +1,7 @@
-import { createAction } from 'Ampliflux';
+import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import { repository, api } from 'DeskPRO/Bundle/AppBundle/DAL';
-import { releaseCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { releaseCollection, setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 /**
  * Used to identify requests within record stores
@@ -11,14 +11,18 @@ const recordStoresId = 'chatNav';
 
 export const initialLoad = createAction(
   'CHAT_INITIAL_LOAD',
-  () => new Promise(
+  () => (dispatch) => new Promise(
     (resolve) => {
       const batch = 'DP_API/batch'
               + '?get[my]=DP_API/user_chats/counts?group_by%3Ddate_period'
               + '&get[all]=DP_API/user_chats/counts?group_by%3Dagent'
+              + '&get[agents]=DP_API/agents/assigned_to_chat'
         ;
       api.sendGet(batch).success(({ responses }) => {
         const payload = flattenBatchResponses(responses);
+        dispatch(setCollection('Agent', 'all_chat', payload.agents));
+        delete payload.agents;
+
         resolve(payload);
       });
     }

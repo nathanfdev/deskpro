@@ -1,8 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import {
-  Section, SectionHeader
-}
-  from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
+import { Section, SectionHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { ListItemContainer } from '../ListItemContainer';
 import { NavGroupingPopup } from '../NavGroupingPopup';
 
@@ -28,7 +25,7 @@ export class AllChats extends Component {
     const groupBy = item.get('type');
     const group   = item.get('id');
     const count   = item.get('count');
-    const label   = item.get('title');
+    const label   = item.get('title') || '-';
 
     return (
       <ListItemContainer
@@ -41,7 +38,7 @@ export class AllChats extends Component {
     );
   };
 
-  render() {
+  render = () => {
     const { all } = this.props;
 
     return (

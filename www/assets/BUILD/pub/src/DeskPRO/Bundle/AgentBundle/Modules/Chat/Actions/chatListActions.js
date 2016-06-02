@@ -49,8 +49,6 @@ export const load = createAction(
 export const applyParams = createAction(
   'CHAT_APPLY_LIST_PARAMS',
   (overwrite = {}) => (dispatch, getState) => {
-    console.log('List options', overwrite);
-
     const current = currentListParamsSelector(getState()).toJS();
     const params  = { ...current, ...overwrite };
     if (!overwrite.hasOwnProperty('page') && current.hasOwnProperty('page')) {
