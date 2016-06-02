@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Monolog\Logger;
+use Application\InstallBundle\Upgrade\Build\PostBuild;
 use Monolog\Handler\StreamHandler;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Component\Console\Input\InputInterface;
@@ -151,7 +152,8 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
         if ($input->getOption('runsync')) {
             $output->writeln('<info>Running post scripts</info>');
-            $manager->postUpgrade();
+            $build = new PostBuild($manager->getContainer(), $manager->getLogger());
+            $build->run();
             $output->writeln('<info>Done All</info>');
 
             return 0;
@@ -203,7 +205,16 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         #------------------------------
 
         $logger->info('Running post scripts');
-        $manager->postUpgrade();
+        $cmd = dp_get_php_command('bin/console', 'dp:upgrade --runsync');
+        $logger->debug("Command: $cmd");
+        $ret = null;
+        passthru($cmd, $ret);
+
+        if ($ret) {
+            $logger->notice("--> Error status: $ret");
+
+            return $ret;
+        }
 
         if (defined('DP_BUILD_TIME')) {
             $logger->info('Setting deskpro_build = '.DP_BUILD_TIME);

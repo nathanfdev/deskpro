@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\EmailBundle\Twig;
 
 use Application\EmailBundle\Twig\Extension\TemplatingExtension;
@@ -163,12 +164,6 @@ class Environment extends \Twig_Environment
                                 }
 
                                 $name_str = (string) $name;
-                                if (preg_match('#^(UserBundle|AgentBundle|DeskPRO|InstallBundle|ReportInterfaceBundle|EmailBundle|CloudAdminBundle):#', $name_str)) {
-                                    if (defined('DP_BUILD_NUM') && !defined('DP_BUILDING')) {
-                                        $e = new \Exception("IMPORTANT: Could not write twig template file for template $name. You should re-download the DeskPRO source files. Contact support@deskpro.com for assistance.", 0, $prev);
-                                        SystemErrorHandler::logException($e, false, 'twig_write_failed');
-                                    }
-                                }
                             }
 
                             $source = $this->compileSource($this->loader->getSource($name), $name);

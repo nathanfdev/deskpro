@@ -82,7 +82,7 @@ class BuildNewAgent_0100_theme extends AbstractBuild
         #----------------------------------------
 
         $blobId  = $this->readSetting('core.deskpro_logo_blob');
-        $blobRow = $db->fetchAssoc('SELECT * FROM blobs WHERE id = ?', $blobId);
+        $blobRow = $db->fetchAssoc('SELECT * FROM blobs WHERE id = ?', [$blobId]);
 
         if ($blobRow) {
             $themeSetId = $db->fetchColumn('SELECT theme_set_id FROM brands LIMIT 1');

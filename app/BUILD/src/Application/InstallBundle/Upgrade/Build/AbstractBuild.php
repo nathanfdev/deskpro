@@ -415,6 +415,7 @@ abstract class AbstractBuild
         $twig = $this->container->get('twig');
 
         foreach ($templates as $tpl) {
+            $this->out("Recompile template #{$tpl['id']}: {$tpl['name']}");
             $name         = $tpl['name'];
             $compile_code = $tpl['template_code'];
 

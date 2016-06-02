@@ -28,18 +28,8 @@
 
 namespace Application\InstallBundle\Upgrade;
 
-use Application\DeskPRO\App\Native\NativeAppsSync;
-use Application\DeskPRO\App\Package\PackageInstaller;
-use Application\DeskPRO\DataSync\AbstractDataSync;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Entity\Language;
-use Application\DeskPRO\Languages\LangPackInfo;
-use Application\InstallBundle\Data\DefaultDataProcessor;
 use Application\InstallBundle\Upgrade\Build\AbstractBuild;
-use DeskPRO\Bundle\PortalBundle\Designer\AdvancedEditsManager;
-use DeskPRO\Bundle\PortalBundle\Designer\BrandThemeManager;
-use DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler;
-use DeskPRO\Bundle\PortalBundle\Designer\SassDocParser;
 use DeskPRO\Component\Util\TypeUtils;
 use DpSys\LowError\SystemErrorHandler;
 use Monolog\Logger;
@@ -166,142 +156,6 @@ class Manager
     }
 
     /**
-     * Any code to be run after all upgrade scripts are complete (and we're on the latest DB).
-     */
-    public function postUpgrade()
-    {
-        if ($this->logger) {
-            $this->logger->debug('Post upgrade begin');
-        }
-
-        AbstractDataSync::syncAllBaseToLive();
-
-        // Update lang titles and has_agent flags
-        $langPacks = new LangPackInfo();
-
-        foreach ($langPacks->getLangTitles(true) as $id => $title) {
-            if ($this->logger) {
-                $this->logger->debug(sprintf('lang(%s).title = %s', $title, $id));
-            }
-            $this->container->getDb()->executeUpdate("UPDATE languages SET title = ? WHERE sys_name = ? AND title = ''", [$title, $id]);
-
-            $info = $langPacks->getLangInfo($id);
-            $this->container->getDb()->executeUpdate('UPDATE languages SET has_user = ?, has_agent = ?, has_admin = ? WHERE sys_name = ?', [$info['has_user'], $info['has_agent'], $info['has_admin'], $id]);
-        }
-
-        // Update flags if theyre blank
-        $blankFlags = $this->container->getDb()->fetchAllCol("SELECT sys_name FROM languages WHERE flag_image = ''");
-        foreach ($blankFlags as $sysName) {
-            if (!$langPacks->hasLang($sysName)) {
-                continue;
-            }
-
-            $flag = $langPacks->getLangInfo($sysName, 'flag_image');
-            if ($flag) {
-                if ($this->logger) {
-                    $this->logger->debug(sprintf('lang(%s).flag = %s', $flag, $sysName));
-                }
-                $this->container->getDb()->executeUpdate('UPDATE languages SET flag_image = ? WHERE sys_name = ?', [$flag, $sysName]);
-            }
-        }
-
-        // Auto-install any new langs
-        $autoInstall = $this->container->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.lang_auto_install'");
-        if ($autoInstall) {
-            if ($this->logger) {
-                $this->logger->debug('running lang auto-install');
-            }
-            $this->container->getEm()->getRepository(Language::class)->installAll($langPacks);
-        }
-
-        if ($this->logger) {
-            $this->logger->debug('invalidate lang cache');
-        }
-
-        if ($this->logger) {
-            $this->logger->debug('invalidate lang js cache');
-        }
-
-        #------------------------------
-        # Data
-        #------------------------------
-
-        $dataProcessor = new DefaultDataProcessor($this->container);
-        if ($this->logger) {
-            $dataProcessor->setLogger($this->logger);
-        }
-        $dataProcessor->runSync();
-
-        #------------------------------
-        # Apps
-        #------------------------------
-
-        $appSyncer = new NativeAppsSync(
-            $this->container,
-            $this->container->getAppManager(),
-            new PackageInstaller($this->container->getEm(), $this->container->getBlobStorage(), $this->container->getImagine()),
-            $this->logger ?: null
-        );
-
-        // Dont fail the upgrade at this point
-        // but log the error so we can know something went wrong with an app
-        $appSyncer->setExceptionHandler(function ($e) {
-            SystemErrorHandler::logException($e);
-        });
-
-        $appSyncer->runUpdates();
-        $appSyncer->runSync();
-
-        #------------------------------
-        # Clear error logs
-        #------------------------------
-
-        foreach (['cli-phperr.log', 'server-phperr-web.log', 'error.log'] as $l) {
-            $path = dp_get_log_dir().DIRECTORY_SEPARATOR.$l;
-            if (file_exists($path)) {
-                if ($this->logger) {
-                    $this->logger->debug('resetting '.$l);
-                }
-                @file_put_contents($path, '');
-            }
-        }
-
-        #------------------------------
-        # Compile Custom Scss
-        #------------------------------
-
-        /** @var AdvancedEditsManager $advancedEditManager */
-        $advancedEditManager = $this->container->get('dp.portal.designer.advanced_edits_manager');
-
-        /** @var BrandThemeManager $brandThemeManager */
-        $brandThemeManager = $this->container->get('dp.portal.designer.brand_theme_manager');
-
-        /** @var SassDocParser $sassDocParser */
-        $sassDocParser = $this->container->get('dp.portal.designer.sass_doc_parser');
-
-        $variables = $sassDocParser->getVariableValues();
-
-        /** @var PortalStylesCompiler $styleCompiler */
-        $styleCompiler = $this->container->get('dp.portal.designer.portal_styles_compiler');
-
-        $editThemeSet = $brandThemeManager->getCurrentEditThemeSet();
-        if ($advancedEditManager->findBlobStorage(AdvancedEditsManager::CUSTOM_SCSS_ASSET_NAME, $editThemeSet)) {
-            $styleCompiler->recompile($variables, $editThemeSet);
-            $this->logger->info('Compile Custom Edit Scss script');
-        }
-
-        $themeSet = $brandThemeManager->getCurrentThemeSet();
-        if ($advancedEditManager->findBlobStorage(AdvancedEditsManager::CUSTOM_SCSS_ASSET_NAME, $themeSet)) {
-            $styleCompiler->recompile($variables, $themeSet);
-            $this->logger->info('Compile Custom Live Scss script');
-        }
-
-        if ($this->logger) {
-            $this->logger->debug('Post upgrade done');
-        }
-    }
-
-    /**
      * Is there another build script to run?
      *
      * @return bool
@@ -415,5 +269,21 @@ class Manager
     public function formatBuildId($buildId)
     {
         return date('Y-m-d H:i:s', $buildId);
+    }
+
+    /**
+     * @return DeskproContainer
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
+
+    /**
+     * @return Logger
+     */
+    public function getLogger()
+    {
+        return $this->logger;
     }
 }
