@@ -35,12 +35,18 @@ bin/phpunit phpunit/DpTest/Application/EmailBundle/Templating/EngineTest.php > /
 # ---
 
 SECONDS=0
-echo "Running small test suites in parallel (phpunit, phpspec, jest, beaht install/production/system-api)"
-(export DP_PARALLEL_TESTING_PROCESS_NUM=1; bin/phpunit --testsuite DeskPRO &> "$LOGS_DIR/phpunit.txt"; bin/phpunit --testsuite DeskPRO-TermEngine &> "$LOGS_DIR/phpunit-term-engine.txt"; bin/phpunit --testsuite DeskPRO-Portal &> "$LOGS_DIR/phpunit-portal.txt") &
+echo "---"
+echo "Running a single system-api behat thread to generate caches w/o concurrency"
+(export DP_PARALLEL_TESTING_PROCESS_NUM=1 && bin/behat --profile=system-api --tags="~@skip-ci" --verbose &> "$LOGS_DIR/behat-system-api.txt") &
+wait
+echo "--> Done in $SECONDS seconds"
+
+SECONDS=0
+echo "Running small test suites in parallel (phpunit, phpspec, jest, beaht install/production)"
+(export DP_PARALLEL_TESTING_PROCESS_NUM=2; bin/phpunit --testsuite DeskPRO &> "$LOGS_DIR/phpunit.txt"; bin/phpunit --testsuite DeskPRO-TermEngine &> "$LOGS_DIR/phpunit-term-engine.txt"; bin/phpunit --testsuite DeskPRO-Portal &> "$LOGS_DIR/phpunit-portal.txt") &
 (bin/phpspec run --format=dot &> "$LOGS_DIR/phpspec.txt") &
 (cd ../../../www/assets/BUILD/pub/ && npm test &> "$LOGS_DIR/jest.txt") &
-(export DP_PARALLEL_TESTING_PROCESS_NUM=2 && bin/behat --profile=install --tags="~@skip-ci" --verbose &> "$LOGS_DIR/behat-install.txt") &
-(export DP_PARALLEL_TESTING_PROCESS_NUM=3 && bin/behat --profile=system-api --tags="~@skip-ci" --verbose &> "$LOGS_DIR/behat-system-api.txt") &
+(export DP_PARALLEL_TESTING_PROCESS_NUM=3 && bin/behat --profile=install --tags="~@skip-ci" --verbose &> "$LOGS_DIR/behat-install.txt") &
 (bin/behat --verbose --profile=production &> "$LOGS_DIR/behat-production.txt") &
 
 echo "Running @new API behat tests in $API_NEW_THREADS_NUM parallel threads"
