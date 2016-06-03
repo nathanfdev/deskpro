@@ -375,7 +375,10 @@ class DpEnv
         }
 
         if (!$dir) {
-            $dir = realpath($this->getDatManager()->readTxtFile('www_dir', null));
+            $content = $this->getDatManager()->readTxtFile('www_dir', null);
+            if ($content) {
+                $dir = realpath($content);
+            }
         }
 
         if (!$dir) {
