@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity;
@@ -497,15 +498,14 @@ class LabelDef extends AbstractEntityRepository
                     );
                 }
 
-                if ($def_old && $def_new) {
+                if ($def_old) {
                     $this->getEntityManager()->remove($def_old);
-                } elseif ($def_old && !$def_new || !$def_old && !$def_new) {
+                }
+                if (!$def_new) {
                     $def_new             = new Entity\LabelDef();
                     $def_new->label_type = $type;
                     $def_new->color      = $color ?: '';
                     $def_new->label      = $new_label;
-                } elseif (!$def_old && $def_new) {
-                    // nothing to do
                 }
 
                 $def_new->total = $this->getEntityManager()->getConnection()->fetchColumn("
