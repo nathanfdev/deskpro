@@ -29,9 +29,9 @@
 /**
  * DeskPRO.
  */
+
 namespace deskpro_us_joomla\Usersource\Adapter;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Orb\Auth\Identity;
 
@@ -54,9 +54,7 @@ class Joomla extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
      */
     protected function _createAuthAdapterObject()
     {
-        $options                  = $this->usersource->options;
-        $options['joomla_url']    = App::getSetting('Joomla.joomla_url');
-        $options['joomla_secret'] = App::getSetting('Joomla.joomla_secret');
+        $options = $this->usersource->options;
 
         return new \deskpro_us_joomla\Usersource\Auth\Joomla($options);
     }
