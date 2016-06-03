@@ -12,9 +12,10 @@ describe('Tickets Navigation: FilterEditPopupContainer component', () => {
   const { FilterEditPopupContainer } = require('~nav/FilterEditPopupContainer');
   const actions  = require('~root/Actions/navActions');
   const dispatch = jasmine.createSpy('dispatch');
+  const attach = () => {};
 
   function render() {
-    return renderInTicketsApp({}, <FilterEditPopupContainer filterId={42} />, dispatch);
+    return renderInTicketsApp({}, <FilterEditPopupContainer filterId={42} attachTo={attach} />, dispatch);
   }
 
   it('should render select box with grouping options', () => {
