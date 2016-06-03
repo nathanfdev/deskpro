@@ -38,6 +38,8 @@ use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
+use Application\DeskPRO\Entity\GlossaryWord;
+use Application\DeskPRO\Entity\GlossaryWordDefinition;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Organization;
@@ -176,29 +178,31 @@ class ObjectsManager
     private function initTypeFactories()
     {
         $this->typeFactories = [
-            'Ticket'                => [Factory\CommonFactories::class, 'ticket'],
-            'TicketPriority'        => [Factory\SimpleFactory::class, 'create', TicketPriority::class],
-            'TicketCategory'        => [Factory\SimpleFactory::class, 'create', TicketCategory::class],
-            'TicketWorkflow'        => [Factory\SimpleFactory::class, 'create', TicketWorkflow::class],
-            'TicketParticipant'     => [Factory\SimpleFactory::class, 'create', TicketParticipant::class],
-            'Organization'          => [Factory\SimpleFactory::class, 'create', Organization::class],
-            'Chat'                  => [Factory\SimpleFactory::class, 'create', ChatConversation::class],
-            'AgentTeam'             => [Factory\SimpleFactory::class, 'create', AgentTeam::class],
-            'Article'               => [Factory\SimpleFactory::class, 'create', Article::class],
-            'News'                  => [Factory\SimpleFactory::class, 'create', News::class],
-            'Download'              => [Factory\SimpleFactory::class, 'create', Download::class],
-            'ArticleCategory'       => [Factory\SimpleFactory::class, 'create', ArticleCategory::class],
-            'NewsCategory'          => [Factory\SimpleFactory::class, 'create', NewsCategory::class],
-            'DownloadCategory'      => [Factory\SimpleFactory::class, 'create', DownloadCategory::class],
-            'Usergroup'             => [Factory\SimpleFactory::class, 'create', Usergroup::class],
-            'Department'            => [Factory\CommonFactories::class, 'department'],
-            'CustomDefTicket'       => [Factory\CommonFactories::class, 'customDef', 'ticket'],
-            'CustomDefOrganization' => [Factory\CommonFactories::class, 'customDef', 'organization'],
-            'Task'                  => [Factory\CommonFactories::class, 'task'],
-            'Product'               => [Factory\CommonFactories::class, 'product'],
-            'Sla'                   => [Factory\CommonFactories::class, 'sla'],
-            'SLA'                   => [Factory\CommonFactories::class, 'sla'],
-            'User'                  => [Factory\PersonFactories::class, 'create', 'user'],
+            'Ticket'                 => [Factory\CommonFactories::class, 'ticket'],
+            'TicketPriority'         => [Factory\SimpleFactory::class, 'create', TicketPriority::class],
+            'TicketCategory'         => [Factory\SimpleFactory::class, 'create', TicketCategory::class],
+            'TicketWorkflow'         => [Factory\SimpleFactory::class, 'create', TicketWorkflow::class],
+            'TicketParticipant'      => [Factory\SimpleFactory::class, 'create', TicketParticipant::class],
+            'Organization'           => [Factory\SimpleFactory::class, 'create', Organization::class],
+            'Chat'                   => [Factory\SimpleFactory::class, 'create', ChatConversation::class],
+            'AgentTeam'              => [Factory\SimpleFactory::class, 'create', AgentTeam::class],
+            'Article'                => [Factory\SimpleFactory::class, 'create', Article::class],
+            'News'                   => [Factory\SimpleFactory::class, 'create', News::class],
+            'Download'               => [Factory\SimpleFactory::class, 'create', Download::class],
+            'ArticleCategory'        => [Factory\SimpleFactory::class, 'create', ArticleCategory::class],
+            'NewsCategory'           => [Factory\SimpleFactory::class, 'create', NewsCategory::class],
+            'DownloadCategory'       => [Factory\SimpleFactory::class, 'create', DownloadCategory::class],
+            'Usergroup'              => [Factory\SimpleFactory::class, 'create', Usergroup::class],
+            'GlossaryWordDefinition' => [Factory\SimpleFactory::class, 'create', GlossaryWordDefinition::class],
+            'GlossaryWord'           => [Factory\SimpleFactory::class, 'create', GlossaryWord::class],
+            'Department'             => [Factory\CommonFactories::class, 'department'],
+            'CustomDefTicket'        => [Factory\CommonFactories::class, 'customDef', 'ticket'],
+            'CustomDefOrganization'  => [Factory\CommonFactories::class, 'customDef', 'organization'],
+            'Task'                   => [Factory\CommonFactories::class, 'task'],
+            'Product'                => [Factory\CommonFactories::class, 'product'],
+            'Sla'                    => [Factory\CommonFactories::class, 'sla'],
+            'SLA'                    => [Factory\CommonFactories::class, 'sla'],
+            'User'                   => [Factory\PersonFactories::class, 'create', 'user'],
         ];
     }
 
@@ -208,27 +212,29 @@ class ObjectsManager
     private function initTypeLocators()
     {
         $this->typeLocators = [
-            'Ticket'                => [$this, 'find', Ticket::class],
-            'SLA'                   => [$this, 'find', Sla::class],
-            'Organization'          => [$this, 'find', Organization::class],
-            'Chat'                  => [$this, 'find', ChatConversation::class],
-            'Department'            => [$this, 'find', Department::class],
-            'CustomDefTicket'       => [$this, 'find', CustomDefTicket::class],
-            'CustomDefOrganization' => [$this, 'find', CustomDefOrganization::class],
-            'Task'                  => [$this, 'find', Task::class],
-            'Person'                => [$this, 'find', Person::class],
-            'Article'               => [$this, 'find', Article::class],
-            'News'                  => [$this, 'find', News::class],
-            'Download'              => [$this, 'find', Download::class],
-            'ArticleCategory'       => [$this, 'find', ArticleCategory::class],
-            'NewsCategory'          => [$this, 'find', NewsCategory::class],
-            'DownloadCategory'      => [$this, 'find', DownloadCategory::class],
-            'ClientDevice'          => [$this, 'find', ClientDevice::class],
-            'User'                  => [$this, 'find', Person::class, ['is_agent' => false, 'is_admin' => false]],
-            'Agent'                 => [$this, 'find', Person::class, ['is_agent' => true, 'is_admin' => false]],
-            'Admin'                 => [$this, 'find', Person::class, ['is_agent' => false, 'is_admin' => true]],
-            'Blob'                  => [$this, 'find', Blob::class],
-            'TaskAttachment'        => [$this, 'find', TaskAttachment::class],
+            'Ticket'                 => [$this, 'find', Ticket::class],
+            'SLA'                    => [$this, 'find', Sla::class],
+            'Organization'           => [$this, 'find', Organization::class],
+            'Chat'                   => [$this, 'find', ChatConversation::class],
+            'Department'             => [$this, 'find', Department::class],
+            'CustomDefTicket'        => [$this, 'find', CustomDefTicket::class],
+            'CustomDefOrganization'  => [$this, 'find', CustomDefOrganization::class],
+            'Task'                   => [$this, 'find', Task::class],
+            'Person'                 => [$this, 'find', Person::class],
+            'Article'                => [$this, 'find', Article::class],
+            'News'                   => [$this, 'find', News::class],
+            'Download'               => [$this, 'find', Download::class],
+            'ArticleCategory'        => [$this, 'find', ArticleCategory::class],
+            'NewsCategory'           => [$this, 'find', NewsCategory::class],
+            'DownloadCategory'       => [$this, 'find', DownloadCategory::class],
+            'ClientDevice'           => [$this, 'find', ClientDevice::class],
+            'User'                   => [$this, 'find', Person::class, ['is_agent' => false, 'is_admin' => false]],
+            'Agent'                  => [$this, 'find', Person::class, ['is_agent' => true, 'is_admin' => false]],
+            'Admin'                  => [$this, 'find', Person::class, ['is_agent' => false, 'is_admin' => true]],
+            'Blob'                   => [$this, 'find', Blob::class],
+            'TaskAttachment'         => [$this, 'find', TaskAttachment::class],
+            'GlossaryWordDefinition' => [$this, 'find', GlossaryWordDefinition::class],
+            'GlossaryWord'           => [$this, 'find', GlossaryWord::class],
         ];
     }
 }
