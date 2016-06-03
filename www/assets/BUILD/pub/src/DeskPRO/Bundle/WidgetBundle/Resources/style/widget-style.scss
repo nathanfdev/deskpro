@@ -1,3 +1,5 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,700italic);
+
 $border-color: #e7e7e7;
 
 $pub-path: "../../../../../../../pub";
@@ -49,6 +51,7 @@ html, body {
   border: none;
   margin: 0;
   padding: 0;
+  font-family: 'Open Sans', "Helvetica Neue", Arial, Helvetica, sans-serif;
 }
 
 .widget-container {
