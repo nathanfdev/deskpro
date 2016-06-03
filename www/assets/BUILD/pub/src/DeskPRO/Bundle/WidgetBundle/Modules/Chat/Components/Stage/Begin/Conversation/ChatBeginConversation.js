@@ -63,7 +63,7 @@ export class ChatBeginConversation extends React.Component {
     const fields = [];
     fields.push(
       <UserInfoForm
-        title={portalPhrases.get('portal.chat.label-details')}
+        title={portalPhrases.get('portal.chat.label-name')}
         isSubmit={submit}
         onSubmit={this.onSubmit}
         field="name"
