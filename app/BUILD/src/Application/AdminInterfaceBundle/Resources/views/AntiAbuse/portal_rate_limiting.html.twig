@@ -5,7 +5,7 @@
     <section class="dp-paneblock dp-listpane">
         <header>
             <h3>
-                <span>Rate Limiting</span>
+                <span>{{ phrase('admin.settings.portal_rate_limit_header') }}</span>
             </h3>
         </header>
 
@@ -18,7 +18,7 @@
                             <label>
                                 <h4>
                                     <input type="checkbox" class="form-control" ng-model="general_settings.rate_limit_disabled" style="width: auto;vertical-align: middle;margin-top: 1px;" />
-                                    {{ phrase('admin.settings.portal_rate_limit_header') }}
+                                    {{ phrase('admin.settings.portal_disable_rate_limit') }}
                                 </h4>
                             </label>
                         </div>

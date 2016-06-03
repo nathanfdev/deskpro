@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
     'admin.settings.add_label'                              => 'Add Label',
     'admin.settings.advanced_settings'                      => 'Advanced Settings',
     'admin.settings.advanced_settings_view'                 => 'Advanced settings view',
@@ -97,7 +97,7 @@ return array(
     'admin.settings.your_website_url'                       => 'Your website URL',
 
     'admin.settings.portal_rate_limit_header'         => 'Rate limiting',
-    'admin.settings.portal_disable_rate_limit'        => 'Disable rate limiting',
+    'admin.settings.portal_disable_rate_limit'        => 'Disable rate-limiting',
     'admin.settings.portal_rate_limit_ip_whitelist'   => 'Whitelist IP addresses',
     'admin.settings.portal_rate_limit_whitelist_text' => 'If many agents/users are coming from a shared IP address and are seeing CAPTCHAs all the time, whitelist the address. Separate multiple addresses with commas.',
     'admin.settings.portal_rate_limit_account'        => 'Account Rate Limiting',
@@ -128,4 +128,33 @@ return array(
     'admin.settings.portal_rate_limit_upload_attempted'           => 'After a user has submitted attachment',
     'admin.settings.portal_rate_limit_share_rate_limit'           => 'Share Content Rate Limiting',
     'admin.settings.portal_rate_limit_share_attempted'            => 'After a user has shared content',
-);
+
+    'admin.settings.captcha_header'                 => 'CAPTCHA System',
+    'admin.settings.use_built_in_captcha'           => 'Use DeskPRO\'s built-in CAPTCHA system',
+    'admin.settings.use_built_in_captcha_help'      => 'DeskPRO comes with an image-based CAPTCHA system that is suitable for most helpdesks.',
+    'admin.settings.use_re_captcha'                 => 'Use reCAPTCHA (from Google)',
+    'admin.settings.use_re_captcha_help'            => 'reCAPTCHA is a service operated by Google. reCAPTCHA uses advanced techniques to detect abusive users and it may be more effective than DeskPRO\'s built-in system.',
+    'admin.settings.use_re_captcha_register'        => 'To use reCAPTCHA, you must register for a free API key <a href="{{url}}" target="_blank">here</a>.',
+    'admin.settings.re_captcha_site_key'            => 'Site Key',
+    'admin.settings.re_captcha_secret_key'          => 'Secret Key',
+    'admin.settings.captcha_settings'               => 'CAPTCHA Settings',
+    'admin.settings.captcha_settings_help1'         => 'Normally CAPTCHA is only displayed in response to an user going over your defined <a href="{{url}}">rate limits</a>.',
+    'admin.settings.captcha_settings_help2'         => 'However, to reduce abuse/spam, you can choose to always enable CAPTCHA on certain features.',
+    'admin.settings.enable_new_tickets_captcha'     => 'Enable captcha on new tickets',
+    'admin.settings.enable_new_comments_captcha'    => 'Enable captcha on new comments',
+    'admin.settings.enable_new_feedback_captcha'    => 'Enable captcha on new feedback',
+    'admin.settings.enable_registration_captcha'    => 'Enable captcha on registration',
+    'admin.settings.enable_sharing_content_captcha' => 'Enable captcha on sharing content',
+    'admin.settings.captcha_based_on_rate_limits'   => 'based on rate limits',
+    'admin.settings.captcha_for_guests'             => 'for guests',
+    'admin.settings.captcha_for_everyone'           => 'for everyone',
+    'admin.settings.captcha_always'                 => 'always',
+
+    'admin.settings.email_rate_limiting'        => 'Email rate limiting',
+    'admin.settings.email_rate_limiting_help1'  => 'Prevent abuse by limiting the maximum number of emails a person can send before they are rejected. The user will be warned when they reach the limit.',
+    'admin.settings.email_rate_limiting_help2'  => 'All emails caught in this rate-limiting filter will be saved in a rejected state to the <a href="{{url}}">Incoming Email Log</a> where you can review and optionally re-process them.',
+    'admin.settings.email_rate_limiting_help3'  => 'Note that email replies from agents are exempt from this limit.',
+    'admin.settings.email_rate_limiting_after'  => 'After',
+    'admin.settings.email_rate_limiting_within' => 'emails within',
+    'admin.settings.email_rate_limiting_reject' => 'reject messages for',
+];
