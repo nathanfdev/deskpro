@@ -28,7 +28,7 @@ export class List extends Component {
           {selected.size && <MassActionContainer key="2" />}
         </ListFrameMenu>
         <ListFrameContents isLoaded={isLoaded}>
-          <div onClick={saveAsCsv}>Save as CSV</div>
+          <a href="#" className="dpw--panel-button" onClick={saveAsCsv}>Save as CSV</a>
           {viewMode === constants.VIEW_MODE_TABLE ? <ListTableViewContainer /> : <ListCardViewContainer />}
           {pagination && pagination.get('total_pages') > 1 &&
           <PaginationBoxView breakLabel={<li><span className="pagination-dots">&hellip;</span></li>}

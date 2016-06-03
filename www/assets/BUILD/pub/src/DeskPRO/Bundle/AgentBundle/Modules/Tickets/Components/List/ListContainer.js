@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { saveAs } from 'file-saver';
 import json2csv from 'json2csv';
-import { repository, api } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { List } from './List';
 import { currentViewModeSelector, paginationSelector, listParamsSelector } from '../../Selectors/list';
 import {
@@ -37,15 +37,15 @@ export class ListContainer extends Component {
 
   saveAsCsv = (event) => {
     event.preventDefault();
-    repository('Ticket').search(this.props.currentListParams.toJS()).then(response => {
-      const fields = ['id', 'language'];
-      console.log('Data', response.getData().data);
-      json2csv({ data: response.getData().data, fields }, (err, csv) => {
-        if (err) console.log(err);
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
-        saveAs(blob);
+    repository('Ticket').search(Object.assign({}, this.props.currentListParams.toJS(), { count: 1000 }))
+      .then(response => {
+        const fields = ['id', 'language'];
+        json2csv({ data: response.getData().data, fields }, (err, csv) => {
+          if (err) console.log(err);
+          const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+          saveAs(blob, 'ticket_list.csv');
+        });
       });
-    });
   };
 
   render() {

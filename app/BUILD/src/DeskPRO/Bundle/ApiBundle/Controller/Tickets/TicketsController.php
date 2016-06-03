@@ -70,9 +70,11 @@ class TicketsController extends AbstractTicketsController
      */
     public static function subRequestSearch(HttpKernelInterface $kernel, Request $masterRequest, array $params)
     {
-        $request = $masterRequest->duplicate(array_merge($params, $masterRequest->query->all()), null, [
-            '_controller' => 'ApiBundle:Tickets\Tickets:list',
-        ]);
+        $request = $masterRequest->duplicate(
+            array_merge($params, $masterRequest->query->all()),
+            null,
+            ['_controller' => 'ApiBundle:Tickets\Tickets:list']
+        );
         $request->query->add($params);
 
         return $kernel->handle($request, HttpKernelInterface::SUB_REQUEST);
@@ -144,13 +146,17 @@ class TicketsController extends AbstractTicketsController
             $maxPerPage  = $request->query->getInt('count', min(count($ids), self::$listMaxResults));
             $ids         = !empty($ids) ? explode(',', $ids) : [];
             $total       = count($ids);
-        }
-
-        // otherwise search for IDs using term engine and return Pagerfanta instance
+        } // otherwise search for IDs using term engine and return Pagerfanta instance
         else {
             // todo refactor
             $params = $request->query->all();
-            $reset  = ['include', 'count', 'page', 'ids_only', JsonHeadersResponseListener::INCLUDE_HEADERS_PARAM];
+            $reset  = [
+                'include',
+                'count',
+                'page',
+                'ids_only',
+                JsonHeadersResponseListener::INCLUDE_HEADERS_PARAM,
+            ];
 
             foreach ($reset as $param) {
                 if (array_key_exists($param, $params)) {
@@ -161,8 +167,16 @@ class TicketsController extends AbstractTicketsController
             // sort and order params
             if (array_key_exists('order_by', $params)) {
                 $allowed = [
-                    'id', 'urgency', 'date_created', 'date_last_agent_reply', 'date_last_user_reply',
-                    'date_last_reply', 'date_user_waiting', 'total_user_waiting', 'subject', 'status',
+                    'id',
+                    'urgency',
+                    'date_created',
+                    'date_last_agent_reply',
+                    'date_last_user_reply',
+                    'date_last_reply',
+                    'date_user_waiting',
+                    'total_user_waiting',
+                    'subject',
+                    'status',
                 ];
                 $orderBy = $params['order_by'];
                 if (!in_array($orderBy, $allowed)) {
@@ -215,9 +229,10 @@ class TicketsController extends AbstractTicketsController
      */
     protected function handleForm($model, Request $request, array $options = [])
     {
-        $options = array_merge($options, [
-            'agent_interface' => true,
-        ]);
+        $options = array_merge($options,
+            [
+                'agent_interface' => true,
+            ]);
 
         return parent::handleForm($model, $request, $options);
     }
