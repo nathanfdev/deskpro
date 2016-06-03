@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\CustomFields\Handler\Choice;
@@ -706,18 +707,13 @@ class FieldManager
         }
 
         $prop = $this->options->get('custom_data_property');
-        if ($field_def->getParentId()) {
-            foreach ($object->$prop as $v) {
-                if ($v->field->getId() == $field_def->getParentId()) {
-                    $this->em->remove($v);
-                    $object->removeCustomDataForField($field_def);
-                }
-            }
-        }
+
+        // Remove just def data (not all its parent data) because we update custom data now (to prevent unique key duplicate errors)
+        // For multi values if $field_def is 'choice value' def then we remove just its data not all 'parent' choice values
 
         foreach ($object->$prop as $v) {
             if ($v->field->getId() == $field_def->getId() || ($v->field->parent && $v->field->parent->getId() == $field_def->getId())) {
-                $object->removeCustomDataForField($v->field);
+                $object->custom_data->removeElement($v);
             }
         }
     }
