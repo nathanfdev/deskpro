@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Error;
 
 use Application\DeskPRO\Translate\Translate;
@@ -40,54 +36,48 @@ use Symfony\Component\Form\FormError;
  */
 class ErrorMessageFactory
 {
-    const PREFIX_API          = 'api.error_codes.';
-    const PREFIX_PORTAL_FORMS = 'portal.forms.error_';
-
     /**
      * @var Translate
      */
     private $translate;
 
     /**
+     * @var string
+     */
+    private $prefix;
+
+    /**
      * Constructor.
      *
      * @param Translate $translate
+     * @param string    $prefix
      */
-    public function __construct(Translate $translate)
+    public function __construct(Translate $translate, $prefix)
     {
         $this->translate = $translate;
+        $this->prefix    = $prefix;
     }
 
     /**
-     * @param string $codePrefix
      * @param string $errorCode
      * @param array  $params
      *
      * @return string
      */
-    public function createMessage($codePrefix, $errorCode, array $params = [])
+    public function createMessage($errorCode, array $params = [])
     {
-        $message = $this->translate->phrase($codePrefix.$errorCode, $params);
-
-        return $message ?: $errorCode;
+        return $this->translate->phrase($this->prefix.$errorCode, $params) ?: $errorCode;
     }
 
     /**
-     * @param string    $codePrefix
      * @param string    $errorCode
      * @param FormError $formError
      *
      * @return string
      */
-    public function createFormErrorMessage($codePrefix, $errorCode, FormError $formError)
+    public function createFormErrorMessage($errorCode, FormError $formError)
     {
-        $params = $this->parseParams($formError->getMessageParameters());
-
-        if ($formError->getMessage() === 'This form should not contain extra fields.') {
-            $errorCode = ErrorsCodes::EXTRA_FIELDS;
-        }
-
-        return $this->createMessage($codePrefix, $errorCode, $params);
+        return $this->createMessage($errorCode, $this->parseParams($formError->getMessageParameters()));
     }
 
     /**
