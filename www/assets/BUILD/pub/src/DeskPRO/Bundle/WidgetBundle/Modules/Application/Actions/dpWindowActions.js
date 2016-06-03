@@ -14,13 +14,7 @@ import {
   agentAcceptTimeoutSelector,
   agentPollingTimeoutSelector
 } from '../Selectors/dpWindow';
-import {
-  chatIdSelector,
-  agentIdSelector,
-  dateEndedSelector,
-  needValidateEmailSelector,
-  hasAssignedMessageSelector
-} from '../../Chat/Selectors/chat';
+import { chatIdSelector, needValidateEmailSelector } from '../../Chat/Selectors/chat';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { addSessionCode } from './bootstrapActions';
 import { history } from '../../../Services/history';
@@ -94,19 +88,14 @@ export const openWidget = createAction(
     const agentsCounts = onlineAgentsCountSelector(state);
     const liveDemo = liveDemoSelector(state);
     const chatId = chatIdSelector(state);
-    const agentId = agentIdSelector(state);
-    const dateEnded = dateEndedSelector(state);
     const needValidateEmail = needValidateEmailSelector(state);
-    const hasAssignedMessage = hasAssignedMessageSelector(state);
 
     if (widgetHasChat && (liveDemo || agentsCounts > 0)) {
       if (chatId && !liveDemo) {
-        if (agentId || dateEnded || hasAssignedMessage) {
-          history.replace('/chat/active');
-        } else if (needValidateEmail) {
+        if (needValidateEmail) {
           history.replace('/chat/validation/email');
         } else {
-          history.replace('/chat/waiting');
+          history.replace('/chat/active');
         }
       } else if (requireChatLogin) {
         history.replace('/chat/validation/login');

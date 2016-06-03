@@ -6,37 +6,31 @@ import { pollingChat, unsetLoaded, unsetChatId } from '../../Actions/chatActions
 import {
   chatIdSelector,
   hasChatInfoSelector,
-  agentIdSelector,
   lastMessageIdSelector,
   authorEmailSelector,
   isEndedSelector,
-  needValidateEmailSelector,
-  hasAssignedMessageSelector
+  needValidateEmailSelector
 } from '../../Selectors/chat';
 
 @connect(state => ({
-  chatId:             chatIdSelector(state),
-  hasChatInfo:        hasChatInfoSelector(state),
-  agentId:            agentIdSelector(state),
-  lastMessageId:      lastMessageIdSelector(state),
-  authorEmail:        authorEmailSelector(state),
-  isEnded:            isEndedSelector(state),
-  needValidateEmail:  needValidateEmailSelector(state),
-  hasAssignedMessage: hasAssignedMessageSelector(state)
+  chatId:            chatIdSelector(state),
+  hasChatInfo:       hasChatInfoSelector(state),
+  lastMessageId:     lastMessageIdSelector(state),
+  authorEmail:       authorEmailSelector(state),
+  isEnded:           isEndedSelector(state),
+  needValidateEmail: needValidateEmailSelector(state)
 }))
 export class ChatPollingContainer extends React.Component {
 
   static propTypes = {
-    dispatch:           PropTypes.func.isRequired,
-    chatId:             PropTypes.number,
-    hasChatInfo:        PropTypes.bool,
-    agentId:            PropTypes.number,
-    lastMessageId:      PropTypes.any,
-    children:           PropTypes.node,
-    authorEmail:        PropTypes.string,
-    isEnded:            PropTypes.bool,
-    needValidateEmail:  PropTypes.bool,
-    hasAssignedMessage: PropTypes.bool
+    dispatch:          PropTypes.func.isRequired,
+    chatId:            PropTypes.number,
+    hasChatInfo:       PropTypes.bool,
+    lastMessageId:     PropTypes.any,
+    children:          PropTypes.node,
+    authorEmail:       PropTypes.string,
+    isEnded:           PropTypes.bool,
+    needValidateEmail: PropTypes.bool
   };
 
   componentDidMount() {
@@ -49,7 +43,7 @@ export class ChatPollingContainer extends React.Component {
   }
 
   pollingRequest = () => {
-    const { dispatch, chatId, hasChatInfo, agentId, lastMessageId, needValidateEmail, hasAssignedMessage } = this.props;
+    const { dispatch, chatId, hasChatInfo, lastMessageId, needValidateEmail } = this.props;
     if (!chatId || !this.mounted) {
       return;
     }
@@ -66,19 +60,11 @@ export class ChatPollingContainer extends React.Component {
           history.replace('/chat/validation/email');
         }
       } else {
-        // if agent is assigned or chat has agent assigned message (chat was started but agent is unassigned)
-        if (agentId || hasAssignedMessage) {
-          if (location.pathname !== '/chat/active') {
-            // If agent id is defined auto redirect to active stage
-            history.replace('/chat/active');
-            // Mark chat unloaded to show spinner until get messages in the next polling request
-            dispatch(unsetLoaded());
-          }
-        } else {
-          // Auto redirect to waiting stage
-          if (location.pathname !== '/chat/waiting') {
-            history.replace('/chat/waiting');
-          }
+        if (location.pathname !== '/chat/active') {
+          // If agent id is defined auto redirect to active stage
+          history.replace('/chat/active');
+          // Mark chat unloaded to show spinner until get messages in the next polling request
+          dispatch(unsetLoaded());
         }
       }
     });

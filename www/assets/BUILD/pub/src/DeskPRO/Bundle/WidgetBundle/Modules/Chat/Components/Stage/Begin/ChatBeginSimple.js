@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import { WaitingPreview } from '../Waiting/WaitingPreview';
 
 export class ChatBeginSimple extends React.Component {
 
@@ -12,6 +11,12 @@ export class ChatBeginSimple extends React.Component {
   }
 
   render() {
-    return <WaitingPreview />;
+    return (
+      <div className="dpdesignportal-collect-user-info-waiting">
+        <div className="spinner">
+          <i />
+        </div>
+      </div>
+    );
   }
 }

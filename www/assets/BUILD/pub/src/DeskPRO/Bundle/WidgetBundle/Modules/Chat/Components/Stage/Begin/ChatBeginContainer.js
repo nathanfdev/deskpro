@@ -92,7 +92,7 @@ export class ChatBeginContainer extends React.Component {
         if (requireEmailValidation && !requireLogin) {
           history.replace('/chat/validation/email');
         } else {
-          history.replace('/chat/waiting');
+          history.replace('/chat/active');
         }
 
         if (this.mounted) {

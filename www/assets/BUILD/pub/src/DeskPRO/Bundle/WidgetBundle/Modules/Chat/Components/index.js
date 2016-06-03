@@ -7,5 +7,4 @@ export { ChatValidation } from './Stage/Validation/ChatValidation';
 export { ChatEmailValidationContainer } from './Stage/Validation/ChatEmailValidationContainer';
 export { ChatLoginContainer } from './Stage/Validation/ChatLoginContainer';
 export { ChatPollingContainer } from './Stage/ChatPollingContainer';
-export { ChatWaiting } from './Stage/Waiting/ChatWaiting';
 export { ChatActive } from './Stage/Active/ChatActive';

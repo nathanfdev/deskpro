@@ -1,17 +1,10 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
-import { WaitingPreview } from './WaitingPreview';
-import { endChat, unsetChatId } from '../../../Actions/chatActions';
-import { chatIdSelector } from '../../../Selectors/chat';
-import { agentAcceptTimeoutSelector } from '../../../../Application/Selectors/dpWindow';
-import { history } from '../../../../../Services/history';
+import { windowResize } from '../../../../../../Application/Actions/dpWindowActions';
+import { endChat, unsetChatId } from '../../../../../Actions/chatActions';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import { history } from '../../../../../../../Services/history';
 
-@connect(state => ({
-  chatId:        chatIdSelector(state),
-  acceptTimeout: agentAcceptTimeoutSelector(state)
-}))
-export class ChatWaitingContainer extends React.Component {
+export class WaitingAgent extends React.Component {
 
   static propTypes = {
     dispatch:      PropTypes.func,
@@ -35,6 +28,7 @@ export class ChatWaitingContainer extends React.Component {
   }
 
   onShowButton = () => {
+    this.props.dispatch(windowResize());
     this.setState({
       buttonShown: true
     });
@@ -52,12 +46,18 @@ export class ChatWaitingContainer extends React.Component {
 
   render() {
     return (
-      <div>
-        <WaitingPreview />
+      <div className="dpdesignportal-collect-user-info-header">
+        <span className="img" />
+        <span className="text">{portalPhrases.get('portal.chat.message_wait-pending')}</span>
+
         {this.state.buttonShown &&
           <div className="dpdesignportal-chat-message-long">
             <p>{portalPhrases.get('portal.chat.message_wait-long')}</p>
-            <p><a href="#" onClick={this.onOpenTicketForm}>{portalPhrases.get('portal.chat.message_wait-ticket')}</a></p>
+            <p>
+              <a href="#" onClick={this.onOpenTicketForm}>
+                {portalPhrases.get('portal.chat.message_wait-ticket')}
+              </a>
+            </p>
           </div>
         }
       </div>
