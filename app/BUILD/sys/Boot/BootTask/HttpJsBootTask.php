@@ -185,7 +185,17 @@ class HttpJsBootTask implements BootTaskInterface
         // override options
         $options = json_encode($options);
 
-        return "<!--DESKPRO_WIDGET_LOADER::BEGIN-->\n<script type=\"text/javascript\">\nwindow.DESKPRO_WIDGET_OPTIONS = $options;\n</script>\n<script type=\"text/javascript\" src=\"$loaderSrc\"></script>\n<!--DESKPRO_WIDGET_LOADER::END-->";
+        return <<<CODE
+(function() {
+window.DESKPRO_WIDGET_OPTIONS = $options;
+
+var scr   = document.createElement('script');
+scr.type  = 'text/javascript';
+scr.async = true;
+scr.src   = '$loaderSrc';
+(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(scr);
+})();
+CODE;
     }
 
     private function getFormWidget()
