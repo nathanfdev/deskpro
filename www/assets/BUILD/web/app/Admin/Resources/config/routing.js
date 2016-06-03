@@ -1713,7 +1713,7 @@ define(function() {
     url: '/{label:.*}/',
     templateName: 'Labels/Kb/edit.html',
     controller: 'Admin_Labels_Ctrl_Edit',
-    data: {type: 'kb'}
+    data: {type: 'articles'}
   });
 
   //###
