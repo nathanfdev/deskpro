@@ -29,7 +29,7 @@ export class ChatBeginForm extends React.Component {
       <WidgetBodyScrollAreaContainer>
         <div className="dpdesignportal-open-new-chat">
           <form className="dpdesignportal-form" onSubmit={onSubmit}>
-            <FormItem label={portalPhrases.get('portal.chat.label-details')} field="name" errors={errors}>
+            <FormItem label={portalPhrases.get('portal.chat.label-name')} field="name" errors={errors}>
               <Field select="name" placeholder={portalPhrases.get('portal.chat.details-placeholder')}>
                 <Input type="text" />
               </Field>

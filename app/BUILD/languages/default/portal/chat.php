@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-return array(
+return [
     'portal.chat.chat_logs_header'            => 'Your Chat Logs',
     'portal.chat.chat_logs_desc'              => '',
     'portal.chat.chat_logs_header_org'        => 'Organization Chat Logs',
@@ -110,7 +110,7 @@ return array(
     'portal.chat.reply_to'                   => 'Reply to {{firstName}}',
     'portal.chat.support_powered_by'         => 'Support powered by {{DeskPRO}}',
     'portal.chat.start'                      => 'Start a new chat',
-    'portal.chat.label-details'              => 'Your Details',
+    'portal.chat.label-name'                 => 'Your Name',
     'portal.chat.details-placeholder'        => 'First name, Last name',
     'portal.chat.screen_share'               => 'Screen Share',
     'portal.chat.take_chat'                  => 'Take Chat',
@@ -125,4 +125,4 @@ return array(
     'portal.chat.user_is_blocked'            => 'User is blocked',
     'portal.chat.visitor_info'               => 'Visitor Information',
     'portal.chat.you_have_been_invited'      => 'You have been invited to join a chat',
-);
+];
