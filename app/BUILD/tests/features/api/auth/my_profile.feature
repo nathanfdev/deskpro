@@ -2,7 +2,6 @@
 Feature: Person profile
 
   Background:
-    Given I schedule a DB cleanup after this feature
     And I'm authenticated as admin
 
   Scenario: I get profile
