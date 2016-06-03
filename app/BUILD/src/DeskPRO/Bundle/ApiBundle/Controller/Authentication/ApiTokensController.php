@@ -38,6 +38,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiAuthenticator;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Exception\UsersourceNoEmailException;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\BadCredentialsFormException;
@@ -60,6 +61,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *
  * @ApiModes("all")
  * @Rest\Route("/api_tokens")
+ * @ApiUserContext("open")
  */
 class ApiTokensController extends BaseController
 {

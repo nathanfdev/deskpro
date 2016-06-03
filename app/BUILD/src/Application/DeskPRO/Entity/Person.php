@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -4331,15 +4332,14 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function getRoles()
     {
-        $roles = ['ROLE_USER'];
         if ($this->isAdmin()) {
-            $roles[] = 'ROLE_ADMIN';
+            return ['ROLE_ADMIN'];
         }
         if ($this->isAgent()) {
-            $roles[] = 'ROLE_AGENT';
+            return ['ROLE_AGENT'];
         }
 
-        return $roles;
+        return ['ROLE_USER'];
     }
 
     /**

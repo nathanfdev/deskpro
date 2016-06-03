@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Authentication;
 use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Notification\Event\People\UpdateOnlineEvent;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -48,6 +49,8 @@ class SessionController extends BaseController
 {
     /**
      * @Rest\Post("/get_session", name="api_post_get_session")
+     *
+     * @ApiUserContext("open")
      *
      * @param Request $request
      *
