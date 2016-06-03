@@ -964,7 +964,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 		editSnippetEl.find('input, textarea').val('');
 		editSnippetEl.find('input.snippet_id').val(snippet.id);
 		editSnippetEl.find('input.shortcut_code').val(snippet.shortcut_code);
-		editSnippetEl.find('.is_draft_check').prop('checked', snippet.is_draft).off().on('change', function(){
+		editSnippetEl.find('.is_draft_check').prop('checked', snippet.is_draft).off('change').on('change', function(){
 			$(this).prop('checked')
 				? editSnippetEl.find('.snippet-shortcode-block').hide()
 				: editSnippetEl.find('.snippet-shortcode-block').show();
