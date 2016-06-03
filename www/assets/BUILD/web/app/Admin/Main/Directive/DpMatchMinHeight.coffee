@@ -28,7 +28,7 @@ define ['DeskPRO/Util/Functions'], (Functions) ->
           watchId = regId + "_" + attrs.watch
           resize = ->
             return if not registry[watchId]?
-            h = registry[watchId].height()
+            h = registry[watchId].outerHeight()
             element.css('min-height', h).addClass('with-dp-min-height')
 
           resizeDebounce = Functions.debounce(resize, 100, true)

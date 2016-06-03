@@ -5,7 +5,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
     @DEPS    = ['$http', '$scope', '$timeout', '$upload', '$modal', 'Growl']
 
     init: ->
-      @open_panels = []
+      @open_panels = ['theme', 'colors', 'advanced', 'expert']
 
 
       @recompiling = false
