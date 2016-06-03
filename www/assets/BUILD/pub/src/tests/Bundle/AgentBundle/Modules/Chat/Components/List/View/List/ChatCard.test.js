@@ -12,7 +12,8 @@ describe('ChatCard', () => {
     const props = {
       chat:           toImmutable({ subject: 'Test chat subject' }),
       department:     toImmutable({}),
-      toggleSelected: () => null
+      toggleSelected: () => null,
+      fields:         toImmutable([])
     };
     const html  = renderToStaticMarkup(<ChatCard {...props} />);
     expect(html).toContain('Test chat subject');
