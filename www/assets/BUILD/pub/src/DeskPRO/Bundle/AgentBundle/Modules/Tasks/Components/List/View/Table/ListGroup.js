@@ -22,7 +22,7 @@ export class ListGroup extends BaseListGroup {
     return connectDropTarget(
       <tbody className={classNames({ 'list-group-hover': isOver })}>
         {title && <TableGroupDivider title={title} columns={6} />}
-        {elements.map((task, key) =>
+        {elements.entrySeq().map(([key, task]) =>
           <TaskCardEditContainer key={key} task={task} updateData={updateData}>
             <TaskCard />
           </TaskCardEditContainer>

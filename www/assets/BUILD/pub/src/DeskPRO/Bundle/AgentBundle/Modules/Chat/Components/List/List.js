@@ -14,11 +14,14 @@ export class List extends React.Component {
     pagination:      PropTypes.object,
     toggleSelected:  PropTypes.func.isRequired,
     handlePageClick: PropTypes.func.isRequired,
-    viewMode:        PropTypes.string.isRequired
+    elements:        PropTypes.object.isRequired,
+    viewMode:        PropTypes.string.isRequired,
+    cardFields:      PropTypes.object.isRequired,
+    tableFields:     PropTypes.object.isRequired
   };
 
   render() {
-    const { isLoaded, pagination, viewMode, toggleSelected, handlePageClick } = this.props;
+    const { isLoaded, pagination, viewMode, toggleSelected, handlePageClick, cardFields, tableFields } = this.props;
 
     return (
       <ListFrameContainer>
@@ -26,15 +29,19 @@ export class List extends React.Component {
           <ControlBarContainer />
         </ListFrameMenu>
         <ListFrameContents isLoaded={isLoaded}>
-          {viewMode === constants.VIEW_MODE_CARD ? <ChatsCardsContainer toggleSelected={toggleSelected} /> :
-            <ChatsTableContainer />}
+          {viewMode === constants.VIEW_MODE_CARD
+            ? <ChatsCardsContainer toggleSelected={toggleSelected} fields={cardFields} />
+            : <ChatsTableContainer fields={tableFields} />
+          }
           {pagination && pagination.total_pages > 1
-          && <PaginationBoxView
-            breakLabel={<li><span className="pagination-dots">&hellip;</span></li>}
-            pageNum={pagination.total_pages}
-            currentPage={pagination.current_page}
-            clickCallback={handlePageClick}
-          />}
+            ? <PaginationBoxView
+                breakLabel={<li><span className="pagination-dots">&hellip;</span></li>}
+                pageNum={pagination.total_pages}
+                currentPage={pagination.current_page}
+                clickCallback={handlePageClick}
+              />
+            : null
+          }
         </ListFrameContents>
       </ListFrameContainer>
     );

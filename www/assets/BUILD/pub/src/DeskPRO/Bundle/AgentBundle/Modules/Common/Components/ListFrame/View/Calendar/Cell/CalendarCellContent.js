@@ -33,11 +33,7 @@ export class CalendarCellContent extends React.Component {
     });
   };
 
-  renderItem(item) {
-    return (
-      <CalendarCellContentItem key={item.get('id')} item={item} {...this.props} />
-    );
-  }
+  renderItem = ([id, item]) => <CalendarCellContentItem key={item.get('id')} item={item} {...this.props} />;
 
   render() {
     const { elements = [], dateField, dayDate } = this.props;
@@ -49,29 +45,25 @@ export class CalendarCellContent extends React.Component {
     return (
       <div>
         <ul>
-          {shortList.map(item => this.renderItem(item))}
+          {shortList.entrySeq().map(this.renderItem)}
           {additionalList.count() > 0 &&
             <li>
-              <a href="#"
-                 ref="button"
-                 className="dpwd-calendar-tasks-show-more"
-                 onClick={this.onOpenAdditionalDropdown}>
-
+              <a href="#" ref="button" className="dpwd-calendar-tasks-show-more" onClick={this.onOpenAdditionalDropdown}>
                 + {additionalList.count()} tasks <i className="fa fa-sort" />
               </a>
             </li>
           }
         </ul>
 
-        <Detached isOpen={this.state.dropdownOpened}
-                  positionTarget={this.refs.button}
-                  positionAt="left bottom+10">
+        <Detached isOpen={this.state.dropdownOpened} positionTarget={this.refs.button} positionAt="left bottom+10">
 
-          <ClickOut onClickOut={this.onCloseAdditionalDropdown}
-                    additionalNodes={['.calendar-task-card', '.assign-form']}>
+          <ClickOut
+            onClickOut={this.onCloseAdditionalDropdown}
+            additionalNodes={['.calendar-task-card', '.assign-form']}
+          >
 
             <CalendarCellDropdown dayDate={dayDate} {...this.props}>
-              {additionalList.map(item => this.renderItem(item))}
+              {additionalList.entrySeq().map(this.renderItem)}
             </CalendarCellDropdown>
           </ClickOut>
         </Detached>

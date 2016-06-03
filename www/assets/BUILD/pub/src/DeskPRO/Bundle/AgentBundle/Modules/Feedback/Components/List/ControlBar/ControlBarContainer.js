@@ -4,13 +4,14 @@ import {
   currentListParamsSelector,
   currentViewModeSelector,
   isCommentsSelector,
-  visibleFieldsSelector
+  tableFieldsSelector,
+  cardFieldsSelector
 } from '../../../Selectors/list';
 import { listFiltersSelector } from '../../../Selectors/filters';
 import {
   applyParams,
-  toggleTableFieldVisibility,
-  toggleCardFieldVisibility,
+  toggleFieldVisibility,
+  changeFieldOrder,
   storeDisplayFieldsToPersonSetting,
   updateDisplayFieldsToPersonSetting
 }
@@ -24,25 +25,46 @@ import { ControlBar } from '../../../../Common/Components/ListFrame/ControlBar/C
   filters:       listFiltersSelector(state),
   isComments:    isCommentsSelector(state),
   viewMode:      currentViewModeSelector(state),
-  visibleFields: visibleFieldsSelector(state)
-}))
+  cardFields:    cardFieldsSelector(state),
+  tableFields:   tableFieldsSelector(state)
+}), {
+  applyParams,
+  toggleFieldVisibility,
+  changeFieldOrder
+})
 export class ControlBarContainer extends Component {
   static propTypes = {
-    currentParams: PropTypes.object.isRequired,
-    filters:       PropTypes.array.isRequired,
-    isComments:    PropTypes.bool,
-    viewMode:      PropTypes.string.isRequired,
-    visibleFields: PropTypes.object
+    currentParams:         PropTypes.object.isRequired,
+    filters:               PropTypes.array.isRequired,
+    isComments:            PropTypes.bool,
+    viewMode:              PropTypes.string.isRequired,
+    cardFields:            PropTypes.object.isRequired,
+    tableFields:           PropTypes.object.isRequired,
+    applyParams:           PropTypes.func.isRequired,
+    toggleFieldVisibility: PropTypes.func.isRequired,
+    changeFieldOrder:      PropTypes.func.isRequired
   };
 
   render() {
-    const sorting = { date_created: { label: 'Date', icon: 'calendar' } };
-    const { filters, currentParams } = this.props;
+    const sorting = {
+      date_created: {
+        label: 'Date',
+        icon:  'calendar'
+      }
+    };
+    const { filters, currentParams, applyParams, toggleFieldVisibility, changeFieldOrder, cardFields, tableFields }
+            = this.props;
 
     if (!this.props.isComments) {
       Object.assign(sorting, {
-        num_ratings:  { label: 'Votes', icon: 'calendar' },
-        total_rating: { label: 'Rating', icon: 'calendar-o' }
+        num_ratings:  {
+          label: 'Votes',
+          icon:  'calendar'
+        },
+        total_rating: {
+          label: 'Rating',
+          icon:  'calendar-o'
+        }
       });
     }
 
@@ -55,43 +77,22 @@ export class ControlBarContainer extends Component {
       view: {
         options: {
           [constants.VIEW_MODE_CARD]: {
-            label: 'Card View',
-            icon:  'list',
-
-            configurableFields: {
-              id:           'ID',
-              category:     'Category',
-              date_created: 'Date created',
-              labels:       'Labels'
-            },
-
-            visibleFields:         this.props.visibleFields.get(constants.VIEW_MODE_CARD),
-            toggleFieldVisibility: toggleCardFieldVisibility
+            label:  'Card View',
+            icon:   'list',
+            fields: cardFields
           },
 
           [constants.VIEW_MODE_TABLE]: {
-            label: 'Table View',
-            icon:  'table',
-
-            configurableFields: {
-              id:           'ID',
-              title:        'Title',
-              person:       'Author',
-              content:      'Content',
-              status:       'Status',
-              date_created: 'Date created',
-              labels:       'Labels'
-            },
-
-            visibleFields:         this.props.visibleFields.get(constants.VIEW_MODE_TABLE),
-            toggleFieldVisibility: toggleTableFieldVisibility
+            label:  'Table View',
+            icon:   'table',
+            fields: tableFields
           }
         },
 
-        viewMode:                this.props.viewMode,
-        viewModeAction:          (mode) => updateRoutingState('list', 'view', mode),
-        onViewFieldsMenuUnmount: this.props.visibleFields.get('fromDb') ?
-                                   updateDisplayFieldsToPersonSetting : storeDisplayFieldsToPersonSetting
+        viewMode:       this.props.viewMode,
+        viewModeAction: (mode) => updateRoutingState('list', 'view', mode),
+                        toggleFieldVisibility,
+                        changeFieldOrder
       }
     };
 

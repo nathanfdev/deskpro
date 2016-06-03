@@ -12,10 +12,7 @@ export class Agents extends Component {
 
     return (
       <div className="sidebar-list">
-        <NestedList items={[agents.toJS()]}
-                    isAgent={1}
-                    group="agents"
-                    alwaysExpanded />
+        <NestedList items={[agents.toJS()]} isAgent={1} group="agents" alwaysExpanded />
       </div>
     );
   }

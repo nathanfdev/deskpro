@@ -23,7 +23,7 @@ export class ListGroup extends BaseListGroup {
       <div className={classNames({ 'list-group-hover': isOver })}>
         <CardGroupDivider title={title} />
 
-        {elements.map((task, key) =>
+        {elements.entrySeq().map(([key, task]) =>
           <TaskCardEditContainer key={key} task={task} updateData={updateData}>
             <TaskDragCard />
           </TaskCardEditContainer>

@@ -3,7 +3,7 @@ import Immutable from 'immutable';
 import { ListGroup } from './ListGroup';
 import { TaskCardPreviewContainer } from '../../TaskCard/TaskCardPreviewContainer';
 import { TaskCardPreview } from './TaskCard/TaskCardPreview';
-import { CustomCardDragLayer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
+import { CustomCardDragLayer } from '../../CustomCardDragLayer';
 
 export class KanbanView extends React.Component {
 
@@ -46,10 +46,12 @@ export class KanbanView extends React.Component {
     return (
       <div className="kanban kanban-columns">
         {groups.map((taskGroup, index) =>
-          <ListGroup key={index}
-                     group={taskGroup}
-                     onChangeGroup={onChangeGroup}
-                     onUpdate={this.onUpdate.bind(this, index)} />
+          <ListGroup
+            key={index}
+            group={taskGroup}
+            onChangeGroup={onChangeGroup}
+            onUpdate={this.onUpdate.bind(this, index)}
+          />
         )}
 
         <CustomCardDragLayer>

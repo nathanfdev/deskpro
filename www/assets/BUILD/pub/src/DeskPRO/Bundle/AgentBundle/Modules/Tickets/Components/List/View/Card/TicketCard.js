@@ -1,10 +1,7 @@
 import React, { Component, PropTypes } from 'react';
-import {
-  Card, CardLine, CardLineLeft, CardLineRight, CardLineItem, CardCheckbox,
-  CardDisc, CardTitle, CardLabel, CardStatusBar
-}
-  from '../../../../../Common/Components/ListFrame/View/Card';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
+import { Card, CardLine, CardLineLeft, CardLineRight, CardLineItem, CardCheckbox, CardDisc, CardTitle, CardLabel,
+  CardStatusBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/View/Card';
 
 @injectIntl
 export class TicketCard extends Component {
@@ -29,11 +26,6 @@ export class TicketCard extends Component {
     );
   };
 
-  renderAgent = () =>
-    <div className="dpwd--card-line-item">
-      <i className="fa fa-user" /> {this.props.agent.get('name')}
-    </div>;
-
   renderPerson = ticket => {
     if (this.props.fields.includes('person')) {
       const email = ticket.get('person_email');
@@ -48,43 +40,77 @@ export class TicketCard extends Component {
     return null;
   };
 
-  renderId = id =>
-    <span>
-      <CardDisc />
-      <CardLineItem>ID: {id}</CardLineItem>
-    </span>;
-
-  renderDateCreated = date =>
-    <CardLineItem>
-      <CardDisc />
-      Created: <FormattedRelative value={date} />
-    </CardLineItem>;
-
-  renderUrgency = urgency =>
-    <span>
-      <CardDisc />
-      <CardLineItem icon="fa-book">Urgency: {urgency}</CardLineItem>
-    </span>;
-
-  renderLabels = labels => {
-    if (labels) {
-      return (
-        <CardLine>
-          <CardLineItem>
-            <i className="fa fa-tags" />
-            {labels.map((label, index) => <CardLabel key={index} label={label} />)}
-          </CardLineItem>
-        </CardLine>
-      );
+  renderField(field) {
+    if (!field || !field.get('visible')) {
+      return null;
     }
-    return null;
-  };
+
+    const { ticket } = this.props;
+
+    switch (field.get('id')) {
+
+      case 'id':
+        return (
+          <span key={field.get('id')}>
+            <CardDisc />
+            <CardLineItem>ID: {ticket.get('id')}</CardLineItem>
+          </span>
+        );
+
+      case 'date_created':
+        return (
+          <CardLineItem key={field.get('id')}>
+            <CardDisc />
+            Created: <FormattedRelative value={ticket.get('date_created')} />
+          </CardLineItem>
+        );
+
+      case 'urgency':
+        return (
+          <span key={field.get('id')}>
+            <CardDisc />
+            <CardLineItem icon="fa-book">Urgency: {ticket.get('urgency')}</CardLineItem>
+          </span>
+        );
+
+      case 'labels':
+        const labels = ticket.get('labels');
+        return labels ? (
+          <CardLine>
+            <CardLineItem>
+              <i className="fa fa-tags"></i>
+              {labels.map((label, index) => <CardLabel key={index} label={label} />)}
+            </CardLineItem>
+          </CardLine>
+        ) : null;
+
+      case 'agent':
+        return (
+          <div className="dpwd--card-line-item">
+            <i className="fa fa-user" /> {this.props.agent.get('name')}
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  }
 
   render() {
-    const { selected, ticket, toggleSelected, agent, fields } = this.props;
+    const { selected, ticket, toggleSelected, fields } = this.props;
     const handleClick = () => {
       toggleSelected(ticket.get('id'));
     };
+
+    this._fields = [];
+    let labels;
+    fields.map(field => {
+      if (field.get('id') === 'labels') {
+        labels = field;
+      } else {
+        this._fields.push(field);
+      }
+    });
 
     return (
       <Card type="feedback" width={450}>
@@ -104,13 +130,12 @@ export class TicketCard extends Component {
         </CardLine>
 
         {this.renderPerson(ticket)}
+
         <CardLine>
-          {agent && this.renderAgent()}
-          {fields.includes('id') && this.renderId(ticket.get('id'))}
-          {fields.includes('urgency') && this.renderUrgency(ticket.get('urgency'))}
-          {fields.includes('date_created') && this.renderDateCreated(ticket.get('date_created'))}
+          {this._fields.map(field => this.renderField(field))}
         </CardLine>
-        {fields.includes('labels') && this.renderLabels(ticket.get('labels'))}
+
+        {this.renderField(labels)}
       </Card>
     );
   }

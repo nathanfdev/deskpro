@@ -33,10 +33,7 @@ export class KBTab extends Component {
               count={articles.get('count')}
               callback={toggle}
             />
-            <NestedList
-              content="articles"
-              items={articles.get('nested').toJS()}
-            />
+            <NestedList content="articles" items={articles.get('nested').toJS()} />
             <NavGroupingPopup
               attachTo={this.refs.articles}
               content="articles"

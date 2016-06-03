@@ -1,19 +1,30 @@
 import { createReducer } from 'Ampliflux';
 import Immutable from 'immutable';
-import {
-  async, setValue, setFullPayload, togglePayloadInCollection, mergeFullPayload
-}
-  from 'DeskPRO/Component/Ampliflux/reducers/handlers';
+import { async, setValue, setFullPayload, mergeFullPayload }
+  from '../../../../../Component/Ampliflux/reducers/handlers';
 import * as actions from '../Actions/FeedbackListActions';
 import * as commentsActions from '../Actions/FeedbackCommentsActions';
-import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
+import { constants } from '../../../../AgentBundle/Constants/Constants';
 
 export const feedbackListInitialState = {
   async:         { done: true },
   elements:      [], // array of filtered elements IDs (feedback or comments)
-  visibleFields: {
-    card:  [],
-    table: []
+
+  fields: {
+    [constants.VIEW_MODE_CARD]: [
+      { id: 'category', title: 'Category', visible: true },
+      { id: 'date_created', title: 'Date Created', visible: true },
+      { id: 'labels', title: 'Labels', visible: true }
+    ],
+    [constants.VIEW_MODE_TABLE]: [
+      { id: 'id', title: 'Id', visible: true },
+      { id: 'title', title: 'Title', visible: true },
+      { id: 'person', title: 'Author', visible: true },
+      { id: 'content', title: 'Content', visible: true },
+      { id: 'status', title: 'Status', visible: true },
+      { id: 'date_created', title: 'Date Created', visible: true },
+      { id: 'labels', title: 'Labels', visible: true }
+    ]
   },
 
   currentListParams: { // currently viewed list GET parameters map
@@ -40,8 +51,9 @@ export default createReducer(feedbackListInitialState, {
 
   [actions.loadFeedbackList]: async(
     {
-      success: (state, payload) =>
-                 state.set('elements', payload.ids).set('pagination', Immutable.fromJS(payload.pagination)),
+      success: (state, payload) => state
+        .set('elements', payload.ids)
+        .set('pagination', Immutable.fromJS(payload.pagination)),
 
       start: setValue('async.done', false),
       done:  setValue('async.done', true)
@@ -49,10 +61,21 @@ export default createReducer(feedbackListInitialState, {
 
   [actions.setDisplayFields]: mergeFullPayload(),
 
-  [actions.toggleTableFieldVisibility]: togglePayloadInCollection(['visibleFields', 'table']),
-  [actions.toggleCardFieldVisibility]:  togglePayloadInCollection(['visibleFields', 'card']),
-
   [actions.setViewFieldsSettingStoredFlag]: (state, payload) => state.setIn(['visibleFields', 'fromDb'], payload),
 
-  [actions.getDisplayFieldsFromPersonSetting]: async({ success: mergeFullPayload() })
+  [actions.getDisplayFieldsFromPersonSetting]: async({ success: mergeFullPayload() }),
+
+  [actions.toggleFieldVisibility]: (state, { type, index }) => {
+    const old = state.getIn(['fields', type, index, 'visible']);
+    if (undefined === old) return state;
+    return state.setIn(['fields', type, index, 'visible'], !old);
+  },
+  [actions.changeFieldOrder]: (state, { type, from, to }) => {
+    const fromField = state.getIn(['fields', type, from]);
+    const toField = state.getIn(['fields', type, to]);
+    if (undefined === fromField || undefined === toField) return state;
+    return state
+    .setIn(['fields', type, from], toField)
+    .setIn(['fields', type, to], fromField);
+  }
 });

@@ -13,10 +13,9 @@ export class ListGroupingControlContainer extends Component {
     changeListGrouping:      PropTypes.func.isRequired,
     closeGroupingVisibility: PropTypes.func.isRequired,
     options:                 PropTypes.array.isRequired,
-    close:                   PropTypes.func.isRequired,
     selected:                PropTypes.string,
     onClose:                 PropTypes.func,
-    attachTo:                PropTypes.any.isRequired
+    attachTo:                PropTypes.func.isRequired
   };
 
   shouldComponentUpdate(nextProps) {
@@ -43,7 +42,7 @@ export class ListGroupingControlContainer extends Component {
       <Detached
         isOpen={visible}
         positionAt="right top"
-        positionTarget={attachTo}
+        positionTarget={attachTo()}
         style={{ marginTop: '-7px', marginLeft: '7px' }}
       >
         <ClickOut onClickOut={closeGroupingVisibility}>

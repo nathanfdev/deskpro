@@ -13,7 +13,8 @@ export class PersonCard extends Component {
     usergroups:     PropTypes.object.isRequired,
     language:       PropTypes.object.isRequired,
     toggleSelected: PropTypes.func.isRequired,
-    selected:       PropTypes.bool
+    selected:       PropTypes.bool,
+    fields:         PropTypes.object.isRequired
   };
 
   handleClick = () => {
@@ -69,8 +70,39 @@ export class PersonCard extends Component {
     return null;
   }
 
+  renderField(field) {
+    if (!field || !field.get('visible')) {
+      return null;
+    }
+
+    const fieldId = field.get('id');
+    const { person } = this.props;
+    switch (fieldId) {
+
+      case 'date_created':
+        return (
+          <CardLineItem key={fieldId}>
+            <CardDisc />
+            <FormattedRelative value={person.get(fieldId)} />
+          </CardLineItem>
+        );
+
+      case 'language':
+        if (!this.props.language) return null;
+        return (
+          <CardLineItem key={fieldId}>
+            <CardDisc />
+            {this.props.language.get('title')} ({this.props.language.get('locale')})
+          </CardLineItem>
+        );
+
+      default:
+        return null;
+    }
+  }
+
   render() {
-    const { person, selected } = this.props;
+    const { person, selected, fields } = this.props;
 
     return (
       <Card type="crm">
@@ -79,13 +111,20 @@ export class PersonCard extends Component {
 
         <CardLine>
           <CardLineLeft>
-            <CardLineItem>[#{person.get('id')}] {person.get('name')}</CardLineItem>
-            <CardLineItem><CardDisc />{person.get('primary_email')}</CardLineItem>
+            <CardLineItem>
+              [#{person.get('id')}] {person.get('name')}
+            </CardLineItem>
+            <CardLineItem>
+              <CardDisc />{person.get('primary_email')}
+            </CardLineItem>
           </CardLineLeft>
           <CardLineRight>
             {this.renderOrganization()}
             {person.get('organization_position') &&
-            <CardLineItem><CardDisc />{person.get('organization_position')}</CardLineItem>}
+            <CardLineItem>
+              <CardDisc />
+              {person.get('organization_position')}
+            </CardLineItem>}
           </CardLineRight>
         </CardLine>
 
@@ -100,12 +139,15 @@ export class PersonCard extends Component {
 
         <CardLine>
           <CardLineLeft>
-            <CardLineItem><FormattedRelative value={person.get('date_created')} /></CardLineItem>
-            {this.renderLanguage()}
+            {fields.map(field => this.renderField(field))}
           </CardLineLeft>
           <CardLineRight>
-            <CardLineItem icon="fa-envelope">{person.get('tickets_count')}</CardLineItem>
-            <CardLineItem icon="fa-comment">{person.get('chats_count')}</CardLineItem>
+            <CardLineItem icon="fa-envelope">
+              {person.get('tickets_count')}
+            </CardLineItem>
+            <CardLineItem icon="fa-comment">
+              {person.get('chats_count')}
+            </CardLineItem>
           </CardLineRight>
         </CardLine>
 

@@ -1,16 +1,16 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { collectionSelectorFactory } from '../../../../../../../AppBundle/Modules/RecordsStore';
 import { toggleSelectedAction } from '../../../../../Application/Actions/massActions';
-import { cardVisibleFieldsSelector } from '../../../../Selectors/list';
-import { selectedSelector } from '../../../../../Application/Selectors/massActions';
+import { cardFieldsSelector } from '../../../../Selectors/list';
 import { TicketCard } from './TicketCard';
+import { collectionSelectorFactory } from '../../../../../../../AppBundle/Modules/RecordsStore';
+import { selectedSelector } from '../../../../../Application/Selectors/massActions';
 
 @connect(state => ({
   tickets:  collectionSelectorFactory('Ticket', 'list')(state),
   agents:   collectionSelectorFactory('Person', 'agents')(state),
   selected: selectedSelector(state),
-  fields:   cardVisibleFieldsSelector(state)
+  fields:   cardFieldsSelector(state)
 }))
 
 export class ListCardViewContainer extends Component {
@@ -46,7 +46,7 @@ export class ListCardViewContainer extends Component {
   render() {
     return (
       <div>
-        {this.props.tickets.map(ticket => this.renderCard(ticket))}
+        {this.props.tickets.entrySeq().map(([id, ticket]) => this.renderCard(ticket))}
       </div>
     );
   }

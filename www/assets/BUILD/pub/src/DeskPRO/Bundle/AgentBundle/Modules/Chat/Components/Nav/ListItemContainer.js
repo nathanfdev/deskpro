@@ -14,12 +14,9 @@ export class ListItemContainer extends Component {
   static propTypes = {
     dispatch:    PropTypes.func.isRequired,
     count:       PropTypes.number.isRequired,
-    group:       PropTypes.string.isRequired,
-    groupBy:     PropTypes.string.isRequired,
     label:       PropTypes.string.isRequired,
     listOptions: PropTypes.object.isRequired,
-    hash:        PropTypes.object,
-    onClick:     PropTypes.func.isRequired
+    hash:        PropTypes.object
   };
 
   constructor(props) {

@@ -23,7 +23,7 @@ describe('Tickets List: TicketCard', () => {
   it('should render ticket labels when configured to display labels', () => {
     const props = {
       ticket:         toImmutable({ subject: 'Test ticket', status: 'test', labels: ['Test ticket label'] }),
-      fields:         toImmutable(['labels']),
+      fields:         toImmutable([{id: 'labels', title: 'Labels', visible: true}]),
       toggleSelected: () => null
     };
     const html  = renderToStaticMarkup(<TicketCard {...props} />);

@@ -29,7 +29,6 @@ export class AllChats extends Component {
 
     return (
       <ListItemContainer
-        groupBy={groupBy}
         count={count}
         label={label}
         key={index}
@@ -38,7 +37,9 @@ export class AllChats extends Component {
     );
   };
 
-  render = () => {
+  getAttachTarget = () => this.refs.allSection;
+
+  render() {
     const { all } = this.props;
 
     return (
@@ -58,7 +59,7 @@ export class AllChats extends Component {
           {all.get('nested').map((item, index) => this.renderItem(item, index))}
         </ul>
         <NavGroupingPopup
-          attachTo={this.refs.allSection}
+          attachTo={this.getAttachTarget}
           content="all"
           visible={this.state.expanded}
           closeGroupingVisibility={this.close}

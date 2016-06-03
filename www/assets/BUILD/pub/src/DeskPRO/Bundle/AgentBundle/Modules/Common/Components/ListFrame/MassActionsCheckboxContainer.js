@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { currentAppStateSelector } from '../../../Application/Selectors/dpWindow';
 import { selectedSelector } from '../../../Application/Selectors/massActions';
 import { toggleMassAction } from '../../../Application/Actions/massActions';
+import Immutable from 'immutable';
 
 @connect(state => {
   const currentAppState = currentAppStateSelector(state);
@@ -17,7 +18,7 @@ import { toggleMassAction } from '../../../Application/Actions/massActions';
 export class MassActionsCheckboxContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    elements: PropTypes.array,
+    elements: PropTypes.object,
     selected: PropTypes.object
   };
 
@@ -36,13 +37,13 @@ export class MassActionsCheckboxContainer extends Component {
   handleClick = (e) => {
     e.preventDefault();
     const { dispatch, elements } = this.props;
-    dispatch(toggleMassAction({ select: !this.state.enabled, elements: elements }));
+    dispatch(toggleMassAction({ select: !this.state.enabled, elements }));
   };
 
   render() {
     const { selected } = this.props;
     const count = selected.count();
-    const divClasses = classNames('dpwd-navigation-top-row-mass-action-checkbox', { 'active': this.state.enabled });
+    const divClasses = classNames('dpwd-navigation-top-row-mass-action-checkbox', { active: this.state.enabled });
     const checkboxClasses = classNames('fa', { 'fa-check': this.state.enabled });
 
     return (

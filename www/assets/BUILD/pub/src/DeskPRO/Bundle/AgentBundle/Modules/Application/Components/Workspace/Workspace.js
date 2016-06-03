@@ -5,14 +5,14 @@ import { SidebarMode } from './SidebarMode';
 export class Workspace extends React.Component {
 
   static propTypes = {
-    dpWindow: PropTypes.object.isRequired,
-    close: PropTypes.func.isRequired,
-    closeWorkspace: PropTypes.func.isRequired,
-    resetAll: PropTypes.func.isRequired,
+    dpWindow:            PropTypes.object.isRequired,
+    close:               PropTypes.func.isRequired,
+    closeWorkspace:      PropTypes.func.isRequired,
+    resetAll:            PropTypes.func.isRequired,
     setColumnDimensions: PropTypes.func.isRequired,
-    saveWorkspace: PropTypes.func.isRequired,
-    setColumnMode: PropTypes.func.isRequired,
-    setSidebarMode: PropTypes.func.isRequired
+    saveWorkspace:       PropTypes.func.isRequired,
+    setColumnMode:       PropTypes.func.isRequired,
+    setSidebarMode:      PropTypes.func.isRequired
   };
 
   render() {
@@ -29,12 +29,13 @@ export class Workspace extends React.Component {
           </div>
         </header>
 
-        <ColumnMode currentMode={dpWindow.get('columnMode')}
-                    onChangeMode={setColumnMode}
-                    columnDimensions={dpWindow.get('columnDimensions')}
-                    onChangeDimensions={setColumnDimensions}/>
-        <SidebarMode currentMode={dpWindow.get('sidebarMode')}
-                     onChangeMode={setSidebarMode}/>
+        <ColumnMode
+          currentMode={dpWindow.get('columnMode')}
+          onChangeMode={setColumnMode}
+          columnDimensions={dpWindow.get('columnDimensions')}
+          onChangeDimensions={setColumnDimensions}
+        />
+        <SidebarMode currentMode={dpWindow.get('sidebarMode')} onChangeMode={setSidebarMode}/>
 
         <div className="dpw-top-bar-dropdown-footer">
           <a href="#" className="dpw-top-bar-dropdown-button" onClick={saveWorkspace}>Save Workspace</a>

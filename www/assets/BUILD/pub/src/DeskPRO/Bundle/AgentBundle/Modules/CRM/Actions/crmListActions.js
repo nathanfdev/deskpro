@@ -87,8 +87,8 @@ export const setOrderDir = createAction(
     orderDir => dispatch => dispatch(applyParams({ order_dir: orderDir }))
 );
 
-export const togglePeopleTableFieldVisibility = createAction('CRM_LIST_TOGGLE_PEOPLE_TABLE_FIELD_VISIBILITY');
-export const togglePeopleCardFieldVisibility = createAction('CRM_LIST_TOGGLE_PEOPLE_CARD_FIELD_VISIBILITY');
+export const togglePeopleFieldVisibility = createAction('CRM_LIST_TOGGLE_PEOPLE_FIELD_VISIBILITY');
+export const changePeopleFieldOrder = createAction('CRM_LIST_CHANGE_PEOPLE_FIELD_ORDER');
 
-export const toggleOrgTableFieldVisibility = createAction('CRM_LIST_TOGGLE_ORG_TABLE_FIELD_VISIBILITY');
-export const toggleOrgCardFieldVisibility = createAction('CRM_LIST_TOGGLE_ORG_CARD_FIELD_VISIBILITY');
+export const toggleOrgFieldVisibility = createAction('CRM_LIST_TOGGLE_ORG_FIELD_VISIBILITY');
+export const changeOrgFieldOrder = createAction('CRM_LIST_CHANGE_ORG_FIELD_ORDER');

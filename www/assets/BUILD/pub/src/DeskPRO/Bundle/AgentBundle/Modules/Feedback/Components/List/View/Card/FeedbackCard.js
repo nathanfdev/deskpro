@@ -21,22 +21,50 @@ export class FeedbackCard extends Component {
     toggleSelected:         PropTypes.func.isRequired,
     author:                 PropTypes.object.isRequired,
     type:                   PropTypes.object.isRequired,
-    feedbackLabels:         PropTypes.object,
-    feedbackStatusCategory: PropTypes.object
+    feedbackLabels:         PropTypes.object.isRequired,
+    feedbackStatusCategory: PropTypes.object,
+    fields:                 PropTypes.object.isRequired
   };
 
-  renderLabels(labels) {
-    const { viewFields } = this.props;
-    if (labels.size && viewFields && viewFields.includes('labels')) {
-      return (
-        <CardLineItem>
-          <CardDisc />
-          <i className="fa fa-tags" /> {labels.map((label, index) => <CardLabel key={index} label={label} />)}
-          <CardDisc />
-        </CardLineItem>
-      );
+  renderField(field) {
+    if (!field || !field.get('visible')) {
+      return null;
     }
-    return null;
+
+    const { feedback, feedbackLabels } = this.props;
+    const fieldId = field.get('id');
+
+    switch (fieldId) {
+
+      case 'date_created':
+        return (
+          <CardLineItem key={fieldId}>
+            <CardDisc />
+            <FormattedRelative value={feedback.get(fieldId)} />
+          </CardLineItem>
+        );
+
+      case 'category':
+        if (!feedback.get(fieldId)) {
+          return null;
+        }
+        return <CardLineItem key={fieldId}><CardDisc />{feedback.get(fieldId)}</CardLineItem>;
+
+      case 'labels':
+        if (!feedbackLabels.size) {
+          return null;
+        }
+        return (
+          <CardLineItem key={fieldId}>
+            <CardDisc />
+            <i className="fa fa-tags" /> {feedbackLabels.map((label, index) => <CardLabel key={index} label={label} />)}
+            <CardDisc />
+          </CardLineItem>
+        );
+
+      default:
+        return null;
+    }
   }
 
   renderStatus() {
@@ -54,54 +82,22 @@ export class FeedbackCard extends Component {
     );
   }
 
-  renderId = (id) => <CardLineItem>ID: { id }</CardLineItem>;
-
-  renderDate = (date) => <CardLineItem><CardDisc /><FormattedRelative value={date} /></CardLineItem>;
-
-  renderCategory = () => {
-    const { feedback } = this.props;
-    const category = feedback.get('custom_data');
-    if (category) {
-      return (
-        <CardLineItem><CardDisc />{ category }</CardLineItem>
-      );
-    }
-    return null;
-  };
-
-  renderOptionalFields = () => {
-    const { feedback, viewFields } = this.props;
-    const output = {};
-    let index    = 0;
-    if (undefined !== viewFields) {
-      if (viewFields.includes('id')) {
-        output[`key${index}`] = this.renderId(feedback.get('id'));
-        index++;
-      }
-      if (viewFields.includes('date_created')) {
-        output[`key${index}`] = this.renderDate(feedback.get('date_created'));
-        index++;
-      }
-      if (viewFields.includes('category')) {
-        output[`key${index}`] = this.renderCategory();
-      }
-    }
-    return (
-      <CardLine>
-        <CardLineLeft>
-          { createFragment(output) }
-        </CardLineLeft>
-      </CardLine>
-    );
-  };
-
   render() {
-    const { feedback, author, selected, toggleSelected } = this.props;
+    const { feedback, author, selected, toggleSelected, fields } = this.props;
     const type              = this.props.type || Immutable.fromJS({});
-    const labels            = this.props.feedbackLabels || Immutable.fromJS({});
     const containerWidth    = jQuery('.dp-list-frame-contents').innerWidth();
     const feedbackMarkWidth = jQuery('.dpw--feedback-card-mark').innerWidth();
     const cardWidth         = containerWidth - feedbackMarkWidth - 20;
+
+    let labelsField;
+    this.fields = [];
+    fields.forEach(field => {
+      if (field.get('id') === 'labels') {
+        labelsField = field;
+      } else {
+        this.fields.push(field);
+      }
+    });
 
     return (
       <Card type="feedback" width={cardWidth}>
@@ -134,13 +130,13 @@ export class FeedbackCard extends Component {
             <CardDisc />
             <CardLineItem icon="fa-book">{type.get('title')}</CardLineItem>
           </CardLineLeft>
-          { this.renderLabels(labels) }
+          {this.renderField(labelsField)}
           <CardLineRight>
             <CardComments commentsCounter={feedback.get('num_comments')} />
           </CardLineRight>
         </CardLine>
 
-        { this.renderOptionalFields() }
+        {this.fields.map(field => this.renderField(field))}
       </Card>
     );
   }

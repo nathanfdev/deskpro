@@ -49,7 +49,7 @@ export class Projects extends React.Component {
     return project && project.get('id') && projectsCountMap[project.get('id')] || 0;
   }
 
-  renderProject = (project, index) => {
+  renderProject = ([index, project]) => {
     const urlHash = `project-${project.get('id')}-${project.get('title')}`;
 
     return (
@@ -80,14 +80,14 @@ export class Projects extends React.Component {
         </SectionHeader>
 
         <ul>
-          {projects.map(this.renderProject)}
+          {projects.entrySeq().map(this.renderProject)}
         </ul>
 
         <Detached>
           {this.state.project
             ? <div className="dpw-site-cover with-popup" onClick={this.onCoverClick}>
-            <ProjectForm project={project} tasksCount={this.getCount(project)} onSubmit={this.onSubmit} />
-          </div>
+                <ProjectForm project={project} tasksCount={this.getCount(project)} onSubmit={this.onSubmit} />
+              </div>
             : null
           }
         </Detached>

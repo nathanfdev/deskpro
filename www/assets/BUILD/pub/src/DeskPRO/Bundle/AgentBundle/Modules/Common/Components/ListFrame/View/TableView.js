@@ -132,12 +132,17 @@ export class TdTitle extends Component {
 export class PersonInTable extends Component {
 
   static propTypes = {
-    person: PropTypes.object.isRequired,
+    person: PropTypes.object,
     email:  PropTypes.string
   };
 
   render() {
     const { person } = this.props;
+
+    if (!person) {
+      return null;
+    }
+
     return (
       <div className="user">
         <span className="dpw--avatar-face" style={{ backgroundImage: 'url(../img/avatars/avatar1.png)' }} />

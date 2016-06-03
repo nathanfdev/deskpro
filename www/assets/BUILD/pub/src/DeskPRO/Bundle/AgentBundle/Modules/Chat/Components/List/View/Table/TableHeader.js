@@ -1,19 +1,33 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
+import { Th } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 
-export class TableHeader extends React.Component {
+export class TableHeader extends Component {
+
+  static propTypes = {
+    fields: PropTypes.object.isRequired
+  };
+
+  renderFieldHeader(field) {
+    if (!field || !field.get('visible')) {
+      return null;
+    }
+
+    const fieldId = field.get('id');
+
+    switch (fieldId) {
+      default:
+        return <Th key={fieldId}>{field.get(fieldId)}</Th>;
+    }
+  }
 
   render() {
+    const { fields } = this.props;
+
     return (
       <thead>
-      <tr>
-        <th className="id-col sortable">ID</th>
-        <th className="user-col sortable">User</th>
-        <th className="agent-col sortable">Agent</th>
-        <th>Labels</th>
-        <th>Chat</th>
-        <th>Department</th>
-        <th></th>
-      </tr>
+        <tr>
+          {fields.map(field => this.renderFieldHeader(field))}
+        </tr>
       </thead>
     );
   }

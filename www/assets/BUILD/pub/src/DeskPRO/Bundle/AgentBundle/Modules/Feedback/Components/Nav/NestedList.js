@@ -12,7 +12,7 @@ export class NestedList extends BaseNestedList {
     return { navItem: { status_category: item.id } };
   };
 
-  renderListItem = (item, depth) => {
+  renderListItem = (item, depth, key) => {
     this.ensureValidDepth(depth);
     const { title, count } = item;
     const label = title[0].toUpperCase() + title.slice(1);
@@ -20,12 +20,8 @@ export class NestedList extends BaseNestedList {
     listOptions.isComments = false;
 
     return (
-      <ListItemContainer key={title}
-                         label={label}
-                         listOptions={listOptions}>
-
-        <ListItem label={label}
-                  count={count}>
+      <ListItemContainer key={`${depth}-${key}`} label={label} listOptions={listOptions}>
+        <ListItem label={label} count={count}>
           {this.renderNested(item, depth)}
         </ListItem>
       </ListItemContainer>

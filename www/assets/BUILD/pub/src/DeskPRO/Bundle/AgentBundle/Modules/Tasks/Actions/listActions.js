@@ -39,10 +39,8 @@ export const setListParamsFilters = createAction(
   }
 );
 
-export const toggleTableFieldVisibility = createAction('TASKS_LIST_TOGGLE_TABLE_FIELD_VISIBILITY');
-export const toggleCardFieldVisibility = createAction('TASKS_LIST_TOGGLE_CARD_FIELD_VISIBILITY');
-export const toggleKanbanFieldVisibility = createAction('TASKS_LIST_TOGGLE_KANBAN_FIELD_VISIBILITY');
-export const toggleCalendarFieldVisibility = createAction('TASKS_LIST_TOGGLE_CALENDAR_FIELD_VISIBILITY');
+export const toggleFieldVisibility = createAction('TASKS_LIST_TOGGLE_FIELD_VISIBILITY');
+export const changeFieldOrder = createAction('TASKS_LIST_CHANGE_FIELD_ORDER');
 
 export const toggleSelected = createAction('TASKS_LIST_TOGGLE_SELECTED');
 export const toggleAll = createAction('TASKS_LIST_TOGGLE_ALL_ACTION');

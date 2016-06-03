@@ -13,13 +13,44 @@ export class ChatCard extends Component {
     chat:           PropTypes.object.isRequired,
     author:         PropTypes.object.isRequired,
     agent:          PropTypes.object.isRequired,
-    department:     PropTypes.object.isRequired,
-    selected:       PropTypes.object.isRequired,
-    toggleSelected: PropTypes.func.isRequired
+    department:     PropTypes.object,
+    selected:       PropTypes.bool.isRequired,
+    toggleSelected: PropTypes.func.isRequired,
+    fields:         PropTypes.object.isRequired
   };
 
+  renderField(field) {
+    if (!field || !field.get('visible')) {
+      return null;
+    }
+
+    const fieldId = field.get('id');
+    const { agent, author, department } = this.props;
+
+    switch (fieldId) {
+
+      case 'person':
+        return <CardLineLeft key={fieldId}><CardUser user={author} /></CardLineLeft>;
+
+      case 'agent':
+        return <CardLineLeft key={fieldId}><CardUser user={agent} /></CardLineLeft>;
+
+      case 'department':
+        return (
+          <CardLineLeft key={fieldId}>
+            <CardLineItem>
+              {department && department.get('title')}
+            </CardLineItem>
+          </CardLineLeft>
+        );
+
+      default:
+        return null;
+    }
+  }
+
   render() {
-    const { chat, selected, toggleSelected, author, agent, department } = this.props;
+    const { chat, selected, toggleSelected, fields } = this.props;
 
     return (
       <Card type="chat">
@@ -49,13 +80,7 @@ export class ChatCard extends Component {
         </CardLine>
 
         <CardLine>
-          <CardLineLeft>
-            <CardUser user={author} />
-            <CardDisc />
-            <CardUser user={agent} />
-            {department && <CardDisc />}
-            {department && <CardLineItem>{department.get('title')}</CardLineItem>}
-          </CardLineLeft>
+          {fields.map(field => this.renderField(field))}
         </CardLine>
       </Card>
     );

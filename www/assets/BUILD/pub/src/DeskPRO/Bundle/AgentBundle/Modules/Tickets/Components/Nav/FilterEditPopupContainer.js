@@ -17,7 +17,7 @@ export class FilterEditPopupContainer extends Component {
     filterId: PropTypes.number.isRequired,
     filter:   PropTypes.object,
     grouping: PropTypes.object.isRequired,
-    attachTo: PropTypes.any.isRequired
+    attachTo: PropTypes.func.isRequired
   };
 
   static groupingOptions = [

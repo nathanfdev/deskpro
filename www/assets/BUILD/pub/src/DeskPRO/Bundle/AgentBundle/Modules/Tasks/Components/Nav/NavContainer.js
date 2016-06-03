@@ -8,21 +8,23 @@ import { isLoadedSelector } from '../../Selectors/nav';
 @connect(state => ({
   dpWindow: state.Application.dpWindow,
   isLoaded: isLoadedSelector(state)
-}))
+}), {
+  loadAll,
+  initialLoad
+})
 export class NavContainer extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func.isRequired
+    loadAll:     PropTypes.func.isRequired,
+    initialLoad: PropTypes.func.isRequired
   };
 
-  constructor(props) {
-    super(props);
-
-    props.dispatch(loadAll('Project'));
-    props.dispatch(loadAll('TaskLabel'));
-    props.dispatch(loadAll('TaskList'));
-
-    props.dispatch(initialLoad());
+  componentDidMount() {
+    const { loadAll, initialLoad } = this.props;
+    loadAll('Project');
+    loadAll('TaskLabel');
+    loadAll('TaskList');
+    initialLoad();
   }
 
   render() {

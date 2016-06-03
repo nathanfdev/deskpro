@@ -61,6 +61,8 @@ export class ListItemContainer extends Component {
     return () => this.props.dispatch(startFilterEditing(filterId));
   }
 
+  getAttachTarget = () => this.refs.item;
+
   render() {
     const { dispatch, count, id, type, notDoneFilters, isTopLevel, listFilters, children } = this.props;
     const props = {
@@ -91,7 +93,7 @@ export class ListItemContainer extends Component {
           <div part="label">{label}</div>
           <div part="nested">
             {children}
-            {isTopLevel && <FilterEditPopupContainer attachTo={this.refs.item} filterId={id} />}
+            {isTopLevel && <FilterEditPopupContainer attachTo={this.getAttachTarget} filterId={id} />}
           </div>
         </ListItem>
       </ListItemStatefulContainer>

@@ -85,17 +85,15 @@ class OrderByDropdownContainer extends Component {
     const { options, currentParams } = this.props;
 
     return (
-      Object.entries(options).map(kv => {
-        const [type, option] = kv;
-
-        return (<Item key={type}
+      Object.entries(options).map(([type, option]) =>
+        <Item key={type}
           label={option.label}
           isActive={currentParams.order_by === type}
           checked={currentParams.order_by === type}
           onClick={() => this.setOrder(type)}
           icon={option.icon}
-        />);
-      })
+        />
+      )
     );
   }
 

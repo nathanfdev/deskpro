@@ -5,41 +5,52 @@ import {
   listFiltersSelector,
   currentViewModeSelector,
   currentContentSelector,
-  peopleVisibleFieldsSelector,
-  organizationVisibleFieldsSelector
+  peopleFieldsSelector,
+  orgFieldsSelector,
 } from '../../../Selectors/list';
 import {
   applyParams,
-  togglePeopleCardFieldVisibility,
-  togglePeopleTableFieldVisibility,
-  toggleOrgCardFieldVisibility,
-  toggleOrgTableFieldVisibility
+  togglePeopleFieldVisibility,
+  toggleOrgFieldVisibility,
+  changePeopleFieldOrder,
+  changeOrgFieldOrder
 } from '../../../Actions/crmListActions';
-import { updateRoutingState } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/routingActions';
-import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-import { ControlBar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ControlBar/ControlBar';
+import { updateRoutingState } from '../../../../Application/Actions/routingActions';
+import { constants } from '../../../../../Constants/Constants';
+import { ControlBar } from '../../../../../Modules/Common/Components/ListFrame/ControlBar/ControlBar';
 
 @connect(state => ({
-  content:                   currentContentSelector(state),
-  filters:                   listFiltersSelector(state),
-  currentParams:             currentListParamsSelector(state),
-  viewMode:                  currentViewModeSelector(state),
-  peopleVisibleFields:       peopleVisibleFieldsSelector(state),
-  organizationVisibleFields: organizationVisibleFieldsSelector(state)
-}))
+    content:       currentContentSelector(state),
+    filters:       listFiltersSelector(state),
+    currentParams: currentListParamsSelector(state),
+    viewMode:      currentViewModeSelector(state),
+    peopleFields:  peopleFieldsSelector(state),
+    orgFields:     orgFieldsSelector(state)
+}), {
+  togglePeopleFieldVisibility,
+  toggleOrgFieldVisibility,
+  changePeopleFieldOrder,
+  changeOrgFieldOrder,
+  applyParams
+})
 export class ControlBarContainer extends Component {
 
   static propTypes = {
-    content:                   PropTypes.string.isRequired,
-    filters:                   PropTypes.array.isRequired,
-    currentParams:             PropTypes.object.isRequired,
-    viewMode:                  PropTypes.string.isRequired,
-    peopleVisibleFields:       PropTypes.object,
-    organizationVisibleFields: PropTypes.object
+    content:                     PropTypes.string.isRequired,
+    filters:                     PropTypes.array.isRequired,
+    currentParams:               PropTypes.object.isRequired,
+    viewMode:                    PropTypes.string.isRequired,
+    peopleFields:                PropTypes.object.isRequired,
+    orgFields:                   PropTypes.object.isRequired,
+    togglePeopleFieldVisibility: PropTypes.func.isRequired,
+    toggleOrgFieldVisibility:    PropTypes.func.isRequired,
+    changePeopleFieldOrder:      PropTypes.func.isRequired,
+    changeOrgFieldOrder:         PropTypes.func.isRequired,
+    applyParams:                 PropTypes.func.isRequired
   };
 
   getPeopleConfig() {
-    const { filters, currentParams, peopleVisibleFields } = this.props;
+    const { filters, currentParams, peopleFields, applyParams } = this.props;
 
     return {
       applyParams,
@@ -47,55 +58,49 @@ export class ControlBarContainer extends Component {
       filters,
 
       sorting: {
-        date_created:    { label: 'Created', icon: 'calendar' },
-        name:            { label: 'Name', icon: 'sort-alpha-asc' },
-        date_last_login: { label: 'Last login', icon: 'calendar' },
-        organization:    { label: 'Organization', icon: 'building-o' }
+        date_created:    {
+          label: 'Created',
+          icon:  'calendar'
+        },
+        name:            {
+          label: 'Name',
+          icon:  'sort-alpha-asc'
+        },
+        date_last_login: {
+          label: 'Last login',
+          icon:  'calendar'
+        },
+        organization:    {
+          label: 'Organization',
+          icon:  'building-o'
+        }
       },
 
       view: {
         options: {
           [constants.VIEW_MODE_CARD]: {
-            label: 'Card View',
-            icon:  'list',
-
-            configurableFields: {
-              id:           'ID',
-              date_created: 'Date created'
-            },
-
-            visibleFields:         peopleVisibleFields.get(constants.VIEW_MODE_CARD),
-            toggleFieldVisibility: togglePeopleCardFieldVisibility
+            label:  'Card View',
+            icon:   'list',
+            fields: peopleFields.get(constants.VIEW_MODE_CARD)
           },
 
           [constants.VIEW_MODE_TABLE]: {
-            label: 'Table View',
-            icon:  'table',
-
-            configurableFields: {
-              id:              'ID',
-              timezone:        'TZ',
-              organization:    'Organization',
-              first_name:      'First name',
-              last_name:       'Last name',
-              primary_email:   'Email',
-              date_created:    'Date created',
-              date_last_login: 'Last login'
-            },
-
-            visibleFields:         peopleVisibleFields.get(constants.VIEW_MODE_TABLE),
-            toggleFieldVisibility: togglePeopleTableFieldVisibility
+            label:  'Table View',
+            icon:   'table',
+            fields: peopleFields.get(constants.VIEW_MODE_TABLE)
           }
         },
 
-        viewMode:       this.props.viewMode,
-        viewModeAction: (mode) => updateRoutingState('list', 'view', mode)
+        viewMode:              this.props.viewMode,
+        viewModeAction:        (mode) => updateRoutingState('list', 'view', mode),
+        toggleFieldVisibility: this.props.togglePeopleFieldVisibility,
+        changeFieldOrder:      this.props.changePeopleFieldOrder
       }
     };
   }
 
   getOrganizationConfig() {
-    const { filters, currentParams, organizationVisibleFields } = this.props;
+    const { filters, currentParams, orgFields } = this.props;
 
     return {
       applyParams,
@@ -103,44 +108,35 @@ export class ControlBarContainer extends Component {
       filters,
 
       sorting: {
-        date_created: { label: 'Created', icon: 'calendar' },
-        name:         { label: 'Name', icon: 'sort-alpha-asc' }
+        date_created: {
+          label: 'Created',
+          icon:  'calendar'
+        },
+        name:         {
+          label: 'Name',
+          icon:  'sort-alpha-asc'
+        }
       },
 
       view: {
         options: {
           [constants.VIEW_MODE_CARD]: {
-            label: 'Card View',
-            icon:  'list',
-
-            configurableFields: {
-              id:           'ID',
-              date_created: 'Date created'
-            },
-
-            visibleFields:         organizationVisibleFields.get(constants.VIEW_MODE_CARD),
-            toggleFieldVisibility: toggleOrgCardFieldVisibility
+            label:  'Card View',
+            icon:   'list',
+            fields: orgFields.get(constants.VIEW_MODE_CARD)
           },
 
           [constants.VIEW_MODE_TABLE]: {
-            label: 'Table View',
-            icon:  'table',
-
-            configurableFields: {
-              id:           'ID',
-              date_created: 'Date created',
-              importance:   'Importance',
-              name:         'Name',
-              summary:      'Summary'
-            },
-
-            visibleFields:         organizationVisibleFields.get(constants.VIEW_MODE_TABLE),
-            toggleFieldVisibility: toggleOrgTableFieldVisibility
+            label:  'Table View',
+            icon:   'table',
+            fields: orgFields.get(constants.VIEW_MODE_TABLE)
           }
         },
 
-        viewMode:       this.props.viewMode,
-        viewModeAction: (mode) => updateRoutingState('list', 'view', mode)
+        viewMode:              this.props.viewMode,
+        viewModeAction:        (mode) => updateRoutingState('list', 'view', mode),
+        toggleFieldVisibility: this.props.toggleOrgFieldVisibility,
+        changeFieldOrder:      this.props.changeOrgFieldOrder
       }
     };
   }

@@ -35,7 +35,6 @@ const options = {
 export class Groups extends React.Component {
 
   static propTypes = {
-    options:        PropTypes.object.isRequired,
     groupsCountMap: PropTypes.object.isRequired
   };
 
@@ -46,14 +45,11 @@ export class Groups extends React.Component {
       <Section>
         <SectionHeader>Tasks</SectionHeader>
         <ul>
-          {Object.entries(options).map(kv => {
-            const [type, params] = kv;
-            return (
+          {Object.entries(options).map(([type, params]) =>
             <ListItemContainer key={type} urlHash={params.label} listOptions={params.filter}>
               <ListItem count={groupsCountMap[type]} label={params.label} />
             </ListItemContainer>
-            );
-          })}
+          )}
         </ul>
       </Section>
     );
