@@ -106,6 +106,7 @@
     "gulp-slate": "^1.0.3",
     "gulp-util": "3.0.7",
     "gulp-watch": "4.3.5",
+    "intl": "^1.2.4",
     "invariant": "2.2.1",
     "jest-cli": "12.1.1",
     "json-loader": "0.5.4",
