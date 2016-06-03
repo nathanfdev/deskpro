@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -73,7 +74,7 @@ class PersonNote extends DomainObject
      * The agent that added the note.
      *
      * @Assert\NotNull()
-     * @AppAssert\User(type="agent")
+     * @AppAssert\Person\PersonType(type="agent")
      *
      * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")

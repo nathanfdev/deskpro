@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
@@ -70,7 +71,7 @@ class OrganizationNote extends \Application\DeskPRO\Domain\DomainObject
      * @var \Application\DeskPRO\Entity\Person
      *
      * @Assert\NotNull()
-     * @AppAssert\User(type="agent")
+     * @AppAssert\Person\PersonType(type="agent")
      *
      * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
      */

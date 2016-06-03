@@ -298,13 +298,13 @@ Feature: /ticket_forms endpoint
 {
   "department": 2,
   "cc": [
-    {"id": 1}
+    {"cc": 1}
   ]
 }
     """
     Then the response status code should be 400
-    And the JSON node "errors.fields.cc.errors[0].code" should be equal to "invalid_data_type"
-    And the JSON node "errors.fields.cc.errors[0].message" should be equal to "This data type is not is data type that was expected."
+    And the JSON node "errors.fields.cc.fields.cc_0.errors[1].code" should be equal to "extra_fields"
+    And the JSON node "errors.fields.cc.fields.cc_0.errors[1].message" should be equal to "Unexpected field names: cc"
 
   Scenario: I sent not valid cc email
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:
@@ -315,9 +315,9 @@ Feature: /ticket_forms endpoint
 }
     """
     Then the response status code should be 400
-    And the JSON node "errors.fields.cc.errors[0].code" should be equal to "person_not_found"
-    And the JSON node "errors.fields.cc.errors[0].message" should contain "Person with identifier"
-    And the JSON node "errors.fields.cc.errors[0].message" should contain "not_valid_email"
+    And the JSON node "errors.fields.cc.fields.cc_0.errors[0].code" should be equal to "person_not_found"
+    And the JSON node "errors.fields.cc.fields.cc_0.errors[0].message" should contain "Person with identifier"
+    And the JSON node "errors.fields.cc.fields.cc_0.errors[0].message" should contain "not_valid_email"
 
   Scenario: I confused participant fields
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:
@@ -329,14 +329,14 @@ Feature: /ticket_forms endpoint
 }
     """
     Then the response status code should be 400
-    And the JSON node "errors.fields.cc.errors[0].code" should be equal to "person_not_user"
-    And the JSON node "errors.fields.cc.errors[0].message" should contain "Person with identifier"
-    And the JSON node "errors.fields.cc.errors[0].message" should contain "agent@deskpro.dev"
-    And the JSON node "errors.fields.cc.errors[0].message" should contain "is not user"
-    And the JSON node "errors.fields.followers.errors[0].code" should be equal to "person_not_agent"
-    And the JSON node "errors.fields.followers.errors[0].message" should contain "Person with identifier"
-    And the JSON node "errors.fields.followers.errors[0].message" should contain "user@deskpro.dev"
-    And the JSON node "errors.fields.followers.errors[0].message" should contain "is not agent"
+    And the JSON node "errors.fields.cc.fields.cc_0.errors[0].code" should be equal to "person_not_user"
+    And the JSON node "errors.fields.cc.fields.cc_0.errors[0].message" should contain "Person with identifier"
+    And the JSON node "errors.fields.cc.fields.cc_0.errors[0].message" should contain "agent@deskpro.dev"
+    And the JSON node "errors.fields.cc.fields.cc_0.errors[0].message" should contain "is not user"
+    And the JSON node "errors.fields.followers.fields.followers_0.errors[0].code" should be equal to "person_not_agent"
+    And the JSON node "errors.fields.followers.fields.followers_0.errors[0].message" should contain "Person with identifier"
+    And the JSON node "errors.fields.followers.fields.followers_0.errors[0].message" should contain "user@deskpro.dev"
+    And the JSON node "errors.fields.followers.fields.followers_0.errors[0].message" should contain "is not agent"
 
   Scenario: I sent not valid data for custom data
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:

@@ -26,15 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
@@ -69,15 +68,15 @@ class PersonAssignType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('id', 'text', [
+            ->add('id', TextType::class, [
                 'required' => false,
                 'mapped'   => false,
             ])
-            ->add('name', 'text', [
+            ->add('name', TextType::class, [
                 'label'    => $options['label_name'],
                 'required' => false,
             ])
-            ->add('email', 'email', [
+            ->add('email', EmailType::class, [
                 'label'       => $options['label_email'],
                 'required'    => false,
                 'mapped'      => false,
@@ -177,7 +176,7 @@ class PersonAssignType extends AbstractType
                 'label_name'         => '',
                 'label_email'        => '',
                 'data_class'         => Person::class,
-                'available_fields'   => ['name', 'email'],
+                'available_fields'   => ['id', 'name', 'email'],
                 'allow_extra_fields' => false,
                 'allow_create'       => false,
                 'error_bubbling'     => false,

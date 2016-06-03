@@ -32,6 +32,7 @@
 
 namespace DpBehat\Api;
 
+use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
@@ -123,6 +124,19 @@ class PeopleContext extends BaseContext
         $person->setName($name);
         $this->persistAndFlush($person);
         $this->lastPerson = $person;
+    }
+
+    /**
+     * @Given I've just created a new email account :email
+     *
+     * @param $email
+     */
+    public function iVeJustCreatedEmailAccount($email)
+    {
+        $emailAccount          = new EmailAccount('tickets');
+        $emailAccount->address = $email;
+
+        $this->persistAndFlush($emailAccount);
     }
 
     /**

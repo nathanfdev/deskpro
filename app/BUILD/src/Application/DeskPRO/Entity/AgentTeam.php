@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -77,7 +78,7 @@ class AgentTeam extends DomainObject implements PersonList, AvatarOwner
 
     /**
      * @Assert\All({
-     *     @AppAssert\User(type="agent")
+     *     @AppAssert\Person\PersonType(type="agent")
      * })
      *
      * @var ArrayCollection

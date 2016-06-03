@@ -190,8 +190,8 @@ Feature: /ticket_forms endpoint
 
     And the JSON node "data.cc" should have 0 elements
     And the JSON node "data.followers" should have 2 element
-    And the JSON node "data.followers[0]" should be equal to 4
-    And the JSON node "data.followers[1]" should be equal to 1
+    And the JSON node "data.followers[0]" should be equal to 1
+    And the JSON node "data.followers[1]" should be equal to 4
 
   Scenario: I modify custom checkbox group
     When I send a PUT request to "/api/v2/ticket_forms/agent/{lastCreatedId}" with body:

@@ -26,39 +26,41 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email;
+
+use Application\DeskPRO\Entity\BanEmail;
+use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\EntityRepository;
+use Doctrine\ORM\EntityManager;
+
 /**
- * DeskPRO.
+ * Class NotBannedEmailValidator.
  */
-
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
-
-use Symfony\Component\Validator\Constraint;
-
-/**
- * Class User.
- *
- * @Annotation
- * @Target({"PROPERTY", "METHOD", "ANNOTATION"})
- */
-class User extends Constraint
+class NotBannedEmailValidator extends AbstractEmailValidator
 {
-    const PERSON_NOT_USER  = 'person_not_user';
-    const PERSON_NOT_AGENT = 'person_not_agent';
+    /**
+     * @var EntityManager
+     */
+    protected $em;
 
     /**
-     * Could be agent or user.
+     * Constructor.
      *
-     * @var string
+     * @param EntityManager $em
      */
-    public $type;
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
 
     /**
-     * @var string
+     * {@inheritdoc}
      */
-    public $notUserMessage = 'Person with identifier "{{ value }}" is not agent.';
+    protected function isValidEmail(PersonEmail $value)
+    {
+        /** @var EntityRepository\BanEmail $repository */
+        $repository = $this->em->getRepository(BanEmail::class);
 
-    /**
-     * @var string
-     */
-    public $notAgentMessage = 'Person with identifier "{{ value }}" is not user.';
+        return !$repository->isEmailBanned($value->getEmail());
+    }
 }

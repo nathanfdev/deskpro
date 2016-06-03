@@ -37,6 +37,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
@@ -50,13 +51,22 @@ class TicketParticipantType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('person', PersonAssignType::class, [
-            'constraints' => [
-                new AppAssert\User(['type' => $options['is_agent'] ? 'agent' : 'user']),
+            'error_bubbling' => $options['inline'],
+            'constraints'    => [
+                new AppAssert\Person\PersonType([
+                    'type' => $options['is_agent'] ? 'agent' : 'user',
+                ]),
             ],
         ]);
 
         $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations']);
+
+        if ($options['inline']) {
+            $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetInlineData']);
+        }
+        if ($options['set_owner']) {
+            $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations']);
+        }
     }
 
     /**
@@ -66,20 +76,45 @@ class TicketParticipantType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class'    => TicketParticipant::class,
-                'error_mapping' => [
-                    'person_email' => 'person',
-                ],
+                'inline'         => false,
+                'set_owner'      => true,
+                'data_class'     => TicketParticipant::class,
+                'error_bubbling' => false,
+                'error_mapping'  => function (Options $options) {
+                    if ($options['inline']) {
+                        return [];
+                    }
+
+                    return [
+                        '.' => 'person',
+                    ];
+                },
             ])
             ->setRequired(['is_agent', 'owner'])
             ->setAllowedTypes([
-                'is_agent' => 'boolean',
-                'owner'    => Ticket::class,
+                'is_agent'  => 'boolean',
+                'inline'    => 'boolean',
+                'set_owner' => 'boolean',
+                'owner'     => Ticket::class,
             ])
         ;
     }
 
     /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onSetInlineData(FormEvent $event)
+    {
+        $event->setData([
+            'person' => $event->getData(),
+        ]);
+    }
+
+    /**
+     * @internal
+     *
      * @param FormEvent $event
      */
     public function onSetRelations(FormEvent $event)
@@ -87,7 +122,7 @@ class TicketParticipantType extends AbstractType
         $form = $event->getForm();
         $data = $event->getData();
 
-        if (!$data->getId() && $data instanceof TicketParticipant) {
+        if ($data instanceof TicketParticipant && !$data->getId()) {
             $form->getConfig()->getOption('owner')->addParticipant($data);
         }
     }

@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -56,7 +57,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @property \DateTime $date_created
  * @property \DateTime $date_validated
  *
- * @AppAssert\FreeEmail()
+ * @AppAssert\Person\Email\FreeEmail()
+ * @AppAssert\Person\Email\NotSystemEmail()
+ * @AppAssert\Person\Email\NotBannedEmail()
  *
  * @JMS\ExclusionPolicy("all")
  */
@@ -93,8 +96,6 @@ class PersonEmail extends DomainObject
      *
      * @Assert\NotBlank()
      * @Assert\Email()
-     * @AppAssert\NotSystemEmail()
-     * @AppAssert\NotBannedEmail()
      *
      * @JMS\Expose()
      * @JMS\Type("string")

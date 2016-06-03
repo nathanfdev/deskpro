@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -256,7 +257,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * @var \Application\DeskPRO\Entity\Person
      *
-     * @AppAssert\User(type="agent")
+     * @AppAssert\Person\PersonType(type="agent")
      */
     protected $agent = null;
 
@@ -496,8 +497,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
-     *
-     * @Assert\Valid()
      */
     protected $participants;
 

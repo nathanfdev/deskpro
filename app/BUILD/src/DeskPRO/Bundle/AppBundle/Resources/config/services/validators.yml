@@ -8,7 +8,7 @@ services:
       - { name: validator.constraint_validator, alias: 'primary_key_exists_validator' }
 
   validator.free_email:
-    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\FreeEmailValidator
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email\FreeEmailValidator
     arguments:
       - "@doctrine.orm.default_entity_manager"
     tags:
@@ -22,16 +22,16 @@ services:
       - { name: validator.constraint_validator, alias: 'leaf_department_validator' }
 
   validator.not_system_email:
-    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\NotSystemEmailValidator
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email\NotSystemEmailValidator
     arguments:
       - "@email.email_account_manager"
     tags:
       - { name: validator.constraint_validator, alias: 'not_system_email_validator' }
 
   validator.not_banned_email:
-    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\NotBannedEmailValidator
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email\NotBannedEmailValidator
     arguments:
-      - "@=service('doctrine.orm.default_entity_manager').getRepository('DeskPRO:BanEmail')"
+      - "@doctrine.orm.default_entity_manager"
     tags:
       - { name: validator.constraint_validator, alias: 'not_banned_email_validator' }
 
