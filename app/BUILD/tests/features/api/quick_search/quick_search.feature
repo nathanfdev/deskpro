@@ -462,7 +462,8 @@ Feature: Quick Search
 
   Scenario Outline: I search ticket by id with view restriction
     Given I set permission "agent_people.use" = <ticket_use> for "registered" usergroup
-    Given I set permission "agent_tickets.use" = <view_unassigned> for "registered" usergroup
+    And I set permission "agent_tickets.use" = <view_unassigned> for "registered" usergroup
+    And my request is authenticated to "agent"
     When I send a GET request to "/api/v2/search?q=1"
     Then the response should be in JSON
     And the response status code should be 200

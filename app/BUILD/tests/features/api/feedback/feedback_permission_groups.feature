@@ -37,7 +37,7 @@ Feature: /feedback endpoint
       When I send a GET request to "/api/v2/feedback_comments/1"
       Then the response status code should be 200
 
-  Scenario: Admin is allmighty and them doesn't care about permission groups
+  Scenario: Admin is allmighty and they doesn't care about permission groups
     Given my request is authenticated to "admin"
     And I remove "admin" usergroup relation "agent_all_perms"
     And I remove "admin" usergroup relation "agent_all_safe_perms"

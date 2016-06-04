@@ -3,9 +3,9 @@ Feature: /ticket_forms endpoint
 
   Background:
     Given I install the api data set
-    And my request is authenticated
-    And I remove "admin" usergroup relation "agent_all_perms"
-    And I remove "admin" usergroup relation "agent_all_safe_perms"
+    And my request is authenticated to "agent"
+    And I remove "agent" usergroup relation "agent_all_perms"
+    And I remove "agent" usergroup relation "agent_all_safe_perms"
 
   Scenario: I have no ticket permissions
     When I send a POST request to "/api/v2/ticket_forms/agent"
@@ -17,7 +17,7 @@ Feature: /ticket_forms endpoint
   Scenario: Scenario: I grant tickets create permission
     Given I set permission "agent_tickets.use" = 1 for "registered" usergroup
     Given I set permission "agent_tickets.create" = 1 for "registered" usergroup
-    Given I grant department 1 permission of "tickets" app for "admin"
+    Given I grant department 1 permission of "tickets" app for "agent"
 
     When I send a POST request to "/api/v2/ticket_forms/agent"
     Then the response status code should be 201
@@ -27,5 +27,5 @@ Feature: /ticket_forms endpoint
 
   Scenario: Scenario: I grant tickets edit permission
     Given I set permission "agent_tickets.modify_own" = 1 for "registered" usergroup
-    When I send a PUT request to "/api/v2/ticket_forms/agent/2"
+    When I send a PUT request to "/api/v2/ticket_forms/agent/3"
     Then the response status code should be 204
