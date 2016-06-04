@@ -31,7 +31,7 @@ return array(
     'agent.feedback.any_status'                  => 'Hocijaký status',
     'agent.feedback.count_votes'                 => '{{display_count}} hlas|{{display_count}} hlasov',
     'agent.feedback.feedback_deleted'            => 'Táto spätná väzba bola odstránená',
-    'agent.feedback.feedback_to_validate'        => 'Spätná väzba na potvrdenie',
+    'agent.feedback.feedback_to_review'          => 'Spätná väzba na preskúmanie',
     'agent.feedback.least_voted_on_top'          => 'Najmenej hodnotené na vrchu',
     'agent.feedback.list_title'                  => '1 podanie|{{count}} podaní',
     'agent.feedback.merge_feedback'              => 'Spojiť spätnú väzbu',
