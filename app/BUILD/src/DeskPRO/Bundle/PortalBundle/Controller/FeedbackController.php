@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackComment;
+use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
@@ -117,8 +118,8 @@ class FeedbackController extends AbstractController
             $newFeedback->setStatus(Feedback::STATUS_HIDDEN);
         } else {
             $newFeedback->setStatus(Feedback::STATUS_ACTIVE);
+            $newFeedback->setStatusCategory($this->getDefaultStatusCategory());
         }
-        $newFeedback->setStatusCategory($this->getDefaultStatusCategory());
         $newFeedback->setPerson($person);
         $form = $this->createForm('new_feedback', $newFeedback, [
             'person'                => $person,
@@ -630,8 +631,10 @@ class FeedbackController extends AbstractController
      */
     protected function getDefaultStatusCategory()
     {
-        $defaultStatusCategoryId = $this->getBrandSetting('portal.default_feedback_status_category_id');
-        $defaultStatusCategory   = $this->getFeedbackDataService()->getFeedbackStatusCategory($defaultStatusCategoryId);
+        $feedbackDataService   = $this->getFeedbackDataService();
+        $defaultStatusCategory = $feedbackDataService->getFeedbackFirstStatusCategoryByType(
+            FeedbackStatusCategory::STATUS_ACTIVE
+        );
 
         return $defaultStatusCategory;
     }

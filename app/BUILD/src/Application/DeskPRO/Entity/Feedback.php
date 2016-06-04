@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -305,11 +306,6 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
 
         $this->_onPropertyChanged('status', $this->status, $status);
         $this->status = $status;
-
-        // there is no STATUS_NEW anymore
-        //if ($status == 'approve') {
-        //    $status = self::STATUS_NEW;
-        //}
 
         switch ($status) {
             case self::STATUS_ACTIVE:
