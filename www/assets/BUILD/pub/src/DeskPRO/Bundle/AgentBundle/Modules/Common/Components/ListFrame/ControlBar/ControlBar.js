@@ -48,7 +48,7 @@ export class ControlBar extends Component {
       })).isRequired,
       viewMode:                PropTypes.string.isRequired,
       viewModeAction:          PropTypes.func.isRequired,
-      onViewFieldsMenuUnmount: PropTypes.func.isRequired,
+      onViewFieldsMenuUnmount: PropTypes.func,
       toggleFieldVisibility:   PropTypes.func.isRequired,
       changeFieldOrder:        PropTypes.func.isRequired
     })
