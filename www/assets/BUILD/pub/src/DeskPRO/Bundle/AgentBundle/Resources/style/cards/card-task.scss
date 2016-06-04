@@ -55,6 +55,13 @@
   }
 }
 
+.dpmw--single-task-card.minimized {
+  min-height: 28px;
+  .title-line {
+    margin-bottom: 4px;
+  }
+}
+
 .dpw--single-card-mark-done.dpw--single-card-mark-done-selected {
   i { color: #62ad8c; }
 }
