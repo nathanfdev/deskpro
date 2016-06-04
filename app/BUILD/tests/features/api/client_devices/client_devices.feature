@@ -42,7 +42,7 @@ Feature: Client devices
       "device_agent": "my NEW device agent string"
     }
     """
-    Then the response should be in JSON
+    Then the response should be empty
     And the response status code should be 204
 
   Scenario: I get the device I just updated
@@ -65,7 +65,7 @@ Feature: Client devices
       "device_agent": "my OTHER NEW device agent string"
     }
     """
-    Then the response should be in JSON
+    Then the response should be empty
     And the response status code should be 204
 
   Scenario: I get the device I just updated
