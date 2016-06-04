@@ -184,6 +184,14 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
         /**
          * @return string
          */
+        public function getTitle()
+        {
+            return $this->title;
+        }
+
+        /**
+         * @return string
+         */
         public function getLocale()
         {
             return $this->locale;

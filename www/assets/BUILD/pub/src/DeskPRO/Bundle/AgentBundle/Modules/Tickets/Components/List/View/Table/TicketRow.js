@@ -1,16 +1,11 @@
 import React, { Component, PropTypes } from 'react';
-import {
-  Table,
-  Th,
-  Td,
-  TdId,
-  TdTitle,
-  TableCheckbox
-} from '../../../../../Common/Components/ListFrame';
+import { Td, TdId, TdTitle, TableCheckbox } from '../../../../../Common/Components/ListFrame';
 
 export class TicketRow extends Component {
   static propTypes = {
     ticket:     PropTypes.object.isRequired,
+    agent:      PropTypes.object.isRequired,
+    person:     PropTypes.object.isRequired,
     onClick:    PropTypes.func.isRequired,
     isVisible:  PropTypes.func.isRequired,
     isSelected: PropTypes.bool.isRequired,
@@ -31,13 +26,18 @@ export class TicketRow extends Component {
       return null;
     }
 
-    const { ticket } = this.props;
+    const { ticket, agent, person } = this.props;
     const fieldId = field.get('id');
 
     switch (fieldId) {
 
       case 'id':
         return <TdId key={fieldId}>{ticket.get('id')}</TdId>;
+
+      case 'agent':
+        return <Td key={fieldId}>{agent.get('name')}</Td>;
+      case 'person':
+        return <Td key={fieldId}>{person.get('name')}</Td>;
 
       case 'subject':
       case 'status':
@@ -46,7 +46,7 @@ export class TicketRow extends Component {
         return <TdTitle key={fieldId}>{ticket.get(fieldId)}</TdTitle>;
 
       default:
-        return <Td key={fieldId}>{ticket.get(fieldId)}</Td>
+        return <Td key={fieldId}>{ticket.get(fieldId)}</Td>;
     }
   }
 

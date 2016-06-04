@@ -13,7 +13,7 @@ import { applyListParams } from '../../Actions/listActions';
 
 import { connect } from 'react-redux';
 @connect(state => ({
-  isLoaded:          isLoadedCollectionSelectorFactory('Ticket', 'list')(state),
+  isLoaded:          isLoadedCollectionSelectorFactory('Person', 'tickets')(state),
   currentListParams: listParamsSelector(state),
   selected:          selectedSelector(state),
   pagination:        paginationSelector(state),
@@ -41,20 +41,16 @@ export class ListContainer extends Component {
   saveAsCsv = (event) => {
     event.preventDefault();
     const { currentListParams, fieldsConfig, viewMode } = this.props;
-    repository('Ticket').search(Object.assign({}, currentListParams.toJS(), { count: 1000 }))
+    repository('Ticket').loadCsv(Object.assign({}, currentListParams.toJS(), { count: 1000 }))
       .then(response => {
         const visibleFields = fieldsConfig.get(viewMode).toArray();
-        console.log('visibleFields', visibleFields);
         const fields     = [];
         const fieldNames = [];
         visibleFields.map(item => {
-          console.log('item', item.get('id'));
           fields.push(item.get('id'));
           fieldNames.push(item.get('title'));
           return null;
         });
-        console.log('Fields', fields);
-        console.log('fieldNames', fieldNames);
         json2csv({ data: response.getData().data, fields, fieldNames }, (err, csv) => {
           if (err) console.log(err);
           const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });

@@ -1,22 +1,17 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import {
-  Table,
-  Th,
-  Td,
-  TdId,
-  TdTitle,
-  TableCheckbox
-} from '../../../../../Common/Components/ListFrame';
+import { Table, Th } from '../../../../../Common/Components/ListFrame';
 import { collectionSelectorFactory } from '../../../../../../../AppBundle/Modules/RecordsStore';
 import { listOrderBySelector, listOrderDirSelector, tableFieldsSelector } from '../../../../Selectors/list';
 import { selectedSelector } from '../../../../../Application/Selectors/massActions';
 import { toggleSelectedAction } from '../../../../../Application/Actions/massActions';
 import { applyListParams } from '../../../../Actions/listActions';
-import { TicketRow } from './TIcketRow';
+import { TicketRow } from './TicketRow';
 
 @connect(state => ({
   tickets:  collectionSelectorFactory('Ticket', 'list')(state),
+  agents:   collectionSelectorFactory('Person', 'agents')(state),
+  people:   collectionSelectorFactory('Person', 'tickets')(state),
   orderBy:  listOrderBySelector(state),
   orderDir: listOrderDirSelector(state),
   selected: selectedSelector(state),
@@ -26,6 +21,8 @@ export class ListTableViewContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     tickets:  PropTypes.object.isRequired,
+    agents:   PropTypes.object.isRequired,
+    people:   PropTypes.object.isRequired,
     selected: PropTypes.object.isRequired,
     orderBy:  PropTypes.string.isRequired,
     orderDir: PropTypes.string.isRequired,
@@ -60,26 +57,28 @@ export class ListTableViewContainer extends Component {
   }
 
   render() {
-    const { tickets, selected, fields } = this.props;
+    const { tickets, agents, people, selected, fields } = this.props;
     const selectedSet = selected.toSet();
 
     return (
       <Table>
         <thead>
-          <tr>
-            <Th />
-            {fields.map(field => this.renderHeaderField(field))}
-          </tr>
+        <tr>
+          <Th />
+          {fields.map(field => this.renderHeaderField(field))}
+        </tr>
         </thead>
         <tbody>
         {tickets.entrySeq().map(([id, ticket]) =>
-          <TicketRow
-            key={ticket.get('id')}
-            ticket={ticket}
-            isSelected={selectedSet.has(ticket.get('id'))}
-            onClick={this.onClick}
-            fields={fields}
-          />
+                                  <TicketRow
+                                    key={ticket.get('id')}
+                                    ticket={ticket}
+                                    isSelected={selectedSet.has(ticket.get('id'))}
+                                    onClick={this.onClick}
+                                    agent={agents.get(ticket.get('agent'))}
+                                    person={people.get(ticket.get('person'))}
+                                    fields={fields}
+                                  />
         )}
         </tbody>
       </Table>
