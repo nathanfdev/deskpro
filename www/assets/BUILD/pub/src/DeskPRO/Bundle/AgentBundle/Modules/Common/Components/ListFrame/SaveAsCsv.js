@@ -12,14 +12,23 @@ export class SaveAsCsv extends Component {
 
   saveAsCsv = (event) => {
     event.preventDefault();
-    const { currentListParams, exportedFields, content } = this.props;
-    repository(content).loadCsv(Object.assign({}, currentListParams.toJS(), { count: 1000 }))
+    const { exportedFields, content } = this.props;
+    let params = this.props.currentListParams.toJS();
+    const { navItem } = params;
+    if (navItem) {
+      delete params.navItem;
+      params = { ...params, ...navItem };
+    }
+
+    repository(content).loadCsv(Object.assign({}, params, { count: 200 }))
       .then(response => {
         const fields     = [];
         const fieldNames = [];
         exportedFields.map(field => {
-          fields.push(field.get('id'));
-          fieldNames.push(field.get('title'));
+          if (field.get('visible')) {
+            fields.push(field.get('id'));
+            fieldNames.push(field.get('title'));
+          }
           return null;
         });
         json2csv({ data: response.getData().data, fields, fieldNames }, (err, csv) => {

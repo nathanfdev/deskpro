@@ -1,14 +1,16 @@
-import { createReducer } from 'Ampliflux';
+import { createReducer } from 'DeskPRO/Component/Ampliflux';
 import Immutable from 'immutable';
-import { async, setValue, setFullPayload, mergeFullPayload }
+import {
+  async, setValue, setFullPayload, mergeFullPayload
+}
   from '../../../../../Component/Ampliflux/reducers/handlers';
 import * as actions from '../Actions/FeedbackListActions';
 import * as commentsActions from '../Actions/FeedbackCommentsActions';
 import { constants } from '../../../../AgentBundle/Constants/Constants';
 
 export const feedbackListInitialState = {
-  async:         { done: true },
-  elements:      [], // array of filtered elements IDs (feedback or comments)
+  async:    { done: true },
+  elements: [], // array of filtered elements IDs (feedback or comments)
 
   fields: {
     [constants.VIEW_MODE_CARD]: [
@@ -16,6 +18,7 @@ export const feedbackListInitialState = {
       { id: 'date_created', title: 'Date Created', visible: true },
       { id: 'labels', title: 'Labels', visible: true }
     ],
+
     [constants.VIEW_MODE_TABLE]: [
       { id: 'id', title: 'Id', visible: true },
       { id: 'title', title: 'Title', visible: true },
@@ -70,12 +73,13 @@ export default createReducer(feedbackListInitialState, {
     if (undefined === old) return state;
     return state.setIn(['fields', type, index, 'visible'], !old);
   },
+
   [actions.changeFieldOrder]: (state, { type, from, to }) => {
     const fromField = state.getIn(['fields', type, from]);
-    const toField = state.getIn(['fields', type, to]);
+    const toField   = state.getIn(['fields', type, to]);
     if (undefined === fromField || undefined === toField) return state;
     return state
-    .setIn(['fields', type, from], toField)
-    .setIn(['fields', type, to], fromField);
+      .setIn(['fields', type, from], toField)
+      .setIn(['fields', type, to], fromField);
   }
 });

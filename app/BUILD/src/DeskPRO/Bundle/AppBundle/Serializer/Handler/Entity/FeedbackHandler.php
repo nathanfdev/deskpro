@@ -30,7 +30,8 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback as SerializedFeedback;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\Feedback as SerializedFeedback;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\FeedbackCsv;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use Doctrine\ORM\EntityManager;
 
@@ -79,6 +80,12 @@ class FeedbackHandler extends AbstractEntityHandler
      */
     protected function createModel($entity, SideloadSerializationContext $context)
     {
+        $serializerClass = $context->getMappedClass(Feedback::class);
+
+        if ($serializerClass === FeedbackCsv::class) {
+            return new FeedbackCsv($entity);
+        }
+
         $this->ids[] = $entity->getId();
 
         $entity = new SerializedFeedback($entity);
@@ -104,8 +111,7 @@ class FeedbackHandler extends AbstractEntityHandler
                 ->leftJoin('f.comments', 'c')
                 ->where('f.id IN (:ids)')
                 ->setParameter('ids', $this->ids)
-                ->groupBy('f.id')
-            ;
+                ->groupBy('f.id');
 
             $result = $qb->getQuery()->getResult();
             foreach ($result as $count) {

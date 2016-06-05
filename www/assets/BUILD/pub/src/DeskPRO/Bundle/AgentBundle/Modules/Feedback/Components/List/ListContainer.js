@@ -1,34 +1,43 @@
 import React, { Component, PropTypes } from 'react';
 import { List } from './List';
 import { selectedSelector } from '../../../Application/Selectors/massActions';
-import { isCommentsSelector, currentViewModeSelector, paginationSelector, isLoadedSelector, cardFieldsSelector,
-  tableFieldsSelector, idsSelector } from '../../Selectors/list';
+import {
+  isCommentsSelector,
+  currentListParamsSelector,
+  currentViewModeSelector,
+  paginationSelector,
+  isLoadedSelector,
+  cardFieldsSelector,
+  tableFieldsSelector,
+  idsSelector
+} from '../../Selectors/list';
 import { toggleSelectedAction } from '../../../Application/Actions/massActions';
 import { applyParams } from '../../Actions/FeedbackListActions';
 import { connect } from 'react-redux';
 
-@connect(state => ({
-  isComments:      isCommentsSelector(state),
-  selected:        selectedSelector(state),
-  pagination:      paginationSelector(state),
-  isLoaded:        isLoadedSelector(state),
-  currentApp:      state.Application.dpWindow.get('activeAppId'),
-  currentViewMode: currentViewModeSelector(state),
-  cardFields:      cardFieldsSelector(state),
-  tableFields:     tableFieldsSelector(state),
-  elements:        idsSelector(state)
-}), {
-  applyParams,
-  toggleSelectedAction
-})
+@connect(
+  state => ({
+    isComments:        isCommentsSelector(state),
+    currentListParams: currentListParamsSelector(state),
+    selected:          selectedSelector(state),
+    pagination:        paginationSelector(state),
+    isLoaded:          isLoadedSelector(state),
+    currentApp:        state.Application.dpWindow.get('activeAppId'),
+    currentViewMode:   currentViewModeSelector(state),
+    cardFields:        cardFieldsSelector(state),
+    tableFields:       tableFieldsSelector(state),
+    elements:          idsSelector(state)
+  }),
+  { applyParams, toggleSelectedAction }
+)
 
 export class ListContainer extends Component {
 
   static propTypes = {
-    dispatch:             PropTypes.func.isRequired,
     currentApp:           PropTypes.string.isRequired,
     isComments:           PropTypes.bool,
     isLoaded:             PropTypes.bool.isRequired,
+    currentListParams:    PropTypes.object.isRequired,
     currentViewMode:      PropTypes.string.isRequired,
     cardFields:           PropTypes.object.isRequired,
     tableFields:          PropTypes.object.isRequired,
@@ -38,7 +47,7 @@ export class ListContainer extends Component {
   };
 
   render() {
-    const toggleSelected = id => () => this.props.toggleSelectedAction(id);
+    const toggleSelected  = id => () => this.props.toggleSelectedAction(id);
     const handlePageClick = page => this.props.applyParams({ page });
 
     return (

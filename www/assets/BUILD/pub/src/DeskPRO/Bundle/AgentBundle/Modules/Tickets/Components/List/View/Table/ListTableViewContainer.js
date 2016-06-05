@@ -69,16 +69,17 @@ export class ListTableViewContainer extends Component {
         </tr>
         </thead>
         <tbody>
-        {tickets.entrySeq().map(([id, ticket]) =>
-                                  <TicketRow
-                                    key={ticket.get('id')}
-                                    ticket={ticket}
-                                    isSelected={selectedSet.has(ticket.get('id'))}
-                                    onClick={this.onClick}
-                                    agent={agents.get(ticket.get('agent'))}
-                                    person={people.get(ticket.get('person'))}
-                                    fields={fields}
-                                  />
+        {tickets.entrySeq().map(
+          ([id, ticket]) =>
+            <TicketRow
+              key={ticket.get('id')}
+              ticket={ticket}
+              isSelected={selectedSet.has(ticket.get('id'))}
+              onClick={this.onClick}
+              agent={agents.get(ticket.get('agent'))}
+              person={people.get(ticket.get('person'))}
+              fields={fields}
+            />
         )}
         </tbody>
       </Table>

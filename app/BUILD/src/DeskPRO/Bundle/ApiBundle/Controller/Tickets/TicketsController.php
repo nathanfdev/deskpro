@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -226,10 +223,16 @@ class TicketsController extends AbstractTicketsController
     }
 
     /**
+     * Get data for export to CSV.
+     *
      * @Rest\Get("/csv")
      * @SerializerView(mapping={
      *     "Application\DeskPRO\Entity\Ticket": "DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketCsv"
      * })
+     *
+     * @param Request $request
+     *
+     * @return View
      */
     public function csvAction(Request $request)
     {
