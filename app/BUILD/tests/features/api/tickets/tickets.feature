@@ -59,6 +59,21 @@ Feature: /tickets endpoint
     And the JSON node "errors.fields.agent.errors[0].code" should be equal to "person_not_agent"
     And the JSON node "errors.fields.agent.errors[0].message" should contain "is not agent."
 
+  Scenario: I trye to add account email as cc
+    Given I've just created a new person with name "Email account" and primary email "dev@deskprodev.com"
+    Given I've just created a new email account "dev@deskprodev.com"
+    When I send a POST request to "/api/v2/tickets" with body:
+    """
+{
+  "cc": ["dev@deskprodev.com"]
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.cc.fields.cc_0.errors[0].code" should be equal to "system_email"
+    And the JSON node "errors.fields.cc.fields.cc_0.errors[0].message" should contain "dev@deskprodev.com"
+    And the JSON node "errors.fields.cc.fields.cc_0.errors[0].message" should contain "is already being used as email account."
+
+
   Scenario: I create a ticket
     When I send a POST request to "/api/v2/tickets" with body:
     """
@@ -126,8 +141,8 @@ Feature: /tickets endpoint
     And the JSON node "data.cc" should have 1 element
     And the JSON node "data.cc[0]" should be equal to 3
     And the JSON node "data.followers" should have 2 elements
-    And the JSON node "data.followers[0]" should be equal to 1
-    And the JSON node "data.followers[1]" should be equal to 4
+    And the JSON node "data.followers[0]" should be equal to 4
+    And the JSON node "data.followers[1]" should be equal to 1
 
     And ticket with id="{lastCreatedId}" has no logs:
       | type                      |

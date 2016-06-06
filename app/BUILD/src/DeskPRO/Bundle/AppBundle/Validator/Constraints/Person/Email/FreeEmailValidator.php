@@ -26,43 +26,40 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email;
 
-use Symfony\Component\Validator\Constraint;
+use Application\DeskPRO\Entity\PersonEmail;
+use Doctrine\ORM\EntityManager;
 
 /**
- * Class FreeEmail.
- *
- * @Annotation
- * @Target({"CLASS", "PROPERTY", "METHOD", "ANNOTATION"})
+ * Class FreeEmailValidator.
  */
-class FreeEmail extends Constraint
+class FreeEmailValidator extends AbstractEmailValidator
 {
-    const DUPE_EMAIL = 'dupe_email';
+    /**
+     * @var EntityManager
+     */
+    protected $em;
 
     /**
-     * @var string
+     * Constructor.
+     *
+     * @param EntityManager $em
      */
-    public $message = 'Email "{{ email }}" is already in use by other user.';
-
-    /**
-     * @var string
-     */
-    public $property = 'email';
-
-    /**
-     * {@inheritdoc}
-     */
-    public function validatedBy()
+    public function __construct(EntityManager $em)
     {
-        return 'free_email_validator';
+        $this->em = $em;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getTargets()
+    protected function isValidEmail(PersonEmail $value)
     {
-        return [self::CLASS_CONSTRAINT, self::PROPERTY_CONSTRAINT];
+        $existEmail = $this->em->getRepository(PersonEmail::class)->findOneBy([
+            'email' => $value->getEmail(),
+        ]);
+
+        return !$existEmail || $existEmail->getId() === $value->getId();
     }
 }

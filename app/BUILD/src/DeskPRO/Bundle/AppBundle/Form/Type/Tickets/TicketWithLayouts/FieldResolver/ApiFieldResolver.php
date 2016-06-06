@@ -56,11 +56,9 @@ class ApiFieldResolver extends AbstractFieldResolver
     protected function createCc(TicketWithLayoutsContext $context)
     {
         return new FormField(TicketParticipantsType::class, [
-            'owner'         => $context->getTicket(),
-            'is_agent'      => false,
-            'property_path' => 'participants',
-            'required'      => false,
-            'view_type'     => 'array',
+            'owner'    => $context->getTicket(),
+            'is_agent' => false,
+            'required' => false,
         ]);
     }
 
@@ -70,11 +68,9 @@ class ApiFieldResolver extends AbstractFieldResolver
     protected function createFollowers(TicketWithLayoutsContext $context)
     {
         return new FormField(TicketParticipantsType::class, [
-            'owner'         => $context->getTicket(),
-            'is_agent'      => true,
-            'property_path' => 'participants',
-            'required'      => false,
-            'view_type'     => 'array',
+            'owner'    => $context->getTicket(),
+            'is_agent' => true,
+            'required' => false,
         ]);
     }
 

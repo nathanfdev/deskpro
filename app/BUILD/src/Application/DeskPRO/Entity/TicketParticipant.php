@@ -70,6 +70,8 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @var \Application\DeskPRO\Entity\PersonEmail
+     *
+     * @Assert\Valid()
      */
     protected $person_email = null;
 
@@ -168,7 +170,7 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
      *
      * @return $this
      */
-    public function setPersonEmail(PersonEmail $person_email)
+    public function setPersonEmail(PersonEmail $person_email = null)
     {
         $this->setModelField('person_email', $person_email);
 

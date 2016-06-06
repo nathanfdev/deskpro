@@ -30,7 +30,7 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Person;
 
 use Application\DeskPRO\Entity\Person;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
@@ -38,17 +38,17 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
 /**
- * Class UserValidator.
+ * Class PersonTypeValidator.
  */
-class UserValidator extends ConstraintValidator
+class PersonTypeValidator extends ConstraintValidator
 {
     /**
      * {@inheritdoc}
      */
     public function validate($value, Constraint $constraint)
     {
-        if (!$constraint instanceof User) {
-            throw new UnexpectedTypeException($constraint, User::class);
+        if (!$constraint instanceof PersonType) {
+            throw new UnexpectedTypeException($constraint, PersonType::class);
         }
 
         if (!$value) {
@@ -66,7 +66,7 @@ class UserValidator extends ConstraintValidator
                 $context
                     ->buildViolation($constraint->notAgentMessage)
                     ->setParameter('{{ value }}', $this->formatValue($value->getEmailAddress()))
-                    ->setCode(User::PERSON_NOT_AGENT)
+                    ->setCode(PersonType::PERSON_NOT_AGENT)
                     ->addViolation()
                 ;
             }
@@ -75,7 +75,7 @@ class UserValidator extends ConstraintValidator
                 $context
                     ->buildViolation($constraint->notUserMessage)
                     ->setParameter('{{ value }}', $this->formatValue($value->getEmailAddress()))
-                    ->setCode(User::PERSON_NOT_USER)
+                    ->setCode(PersonType::PERSON_NOT_USER)
                     ->addViolation()
                 ;
             }

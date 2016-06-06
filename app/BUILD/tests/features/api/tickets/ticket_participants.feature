@@ -37,6 +37,20 @@ Feature: /tickets/{id}/followers and /tickets/{id}/cc endpoints
     And the JSON node "errors.fields.person.errors[0].message" should contain "Person with identifier"
     And the JSON node "errors.fields.person.errors[0].message" should contain "agent@deskpro.dev"
 
+  Scenario: I add account email as cc
+    Given I've just created a new person with name "Email account" and primary email "dev@deskprodev.com"
+    Given I've just created a new email account "dev@deskprodev.com"
+    When I send a POST request to "/api/v2/tickets/{ticketId}/cc" with body:
+    """
+{
+  "person": "dev@deskprodev.com"
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.person.errors[0].code" should be equal to "system_email"
+    And the JSON node "errors.fields.person.errors[0].message" should contain "dev@deskprodev.com"
+    And the JSON node "errors.fields.person.errors[0].message" should contain "is already being used as email account."
+
   Scenario: I add a ticket cc
     Given I reset ticket with id="{ticketId}" logs
     When I send a POST request to "/api/v2/tickets/{ticketId}/cc" with body:

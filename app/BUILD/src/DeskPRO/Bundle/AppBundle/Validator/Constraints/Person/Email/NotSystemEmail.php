@@ -26,27 +26,36 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
-
-use Symfony\Component\Validator\Constraint;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email;
 
 /**
- * Class NotBannedEmail.
+ * Class NotSystemEmail.
  *
  * @Annotation
- * @Target({"PROPERTY", "METHOD", "ANNOTATION"})
+ * @Target({"CLASS", "PROPERTY", "METHOD", "ANNOTATION"})
  */
-class NotBannedEmail extends Constraint
+class NotSystemEmail extends AbstractEmail
 {
-    const BANNED_EMAIL = 'banned_email';
+    const SYSTEM_EMAIL = 'system_email';
 
-    public $message = 'Email "{{ email }}" is banned.';
+    /**
+     * {@inheritdoc}
+     */
+    public $message = 'Email "{{ email }}" is already being used as email account.';
 
     /**
      * {@inheritdoc}
      */
     public function validatedBy()
     {
-        return 'not_banned_email_validator';
+        return 'not_system_email_validator';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getErrorCode()
+    {
+        return self::SYSTEM_EMAIL;
     }
 }

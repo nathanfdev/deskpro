@@ -124,18 +124,14 @@ class TicketType extends AbstractType
                 'owner_property' => 'ticket',
             ])
             ->add('cc', TicketParticipantsType::class, [
-                'owner'         => $builder->getData(),
-                'is_agent'      => false,
-                'property_path' => 'participants',
-                'required'      => false,
-                'view_type'     => 'array',
+                'owner'    => $builder->getData(),
+                'is_agent' => false,
+                'required' => false,
             ])
             ->add('followers', TicketParticipantsType::class, [
-                'owner'         => $builder->getData(),
-                'is_agent'      => true,
-                'property_path' => 'participants',
-                'required'      => false,
-                'view_type'     => 'array',
+                'owner'    => $builder->getData(),
+                'is_agent' => true,
+                'required' => false,
             ])
             ->add('fields', CombinedType::class, [
                 'forms'          => $this->getCustomDataFields($builder, $options),

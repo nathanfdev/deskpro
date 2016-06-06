@@ -115,7 +115,7 @@ class PersonProfileType extends AbstractType
                 'emails' => 'emails',
             ],
             'constraints' => [
-                new AppConstraints\FreeEmail([
+                new AppConstraints\Person\Email\FreeEmail([
                     'property' => 'emailAddresses',
                 ]),
             ],

@@ -35,7 +35,6 @@ use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDescriptionType;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -75,14 +74,7 @@ class WebFieldResolver extends AbstractFieldResolver
      */
     protected function createCc(TicketWithLayoutsContext $context)
     {
-        return new FormField(TicketParticipantsType::class, [
-            'label'         => $this->phrase('portal.forms.label_cc'),
-            'owner'         => $context->getTicket(),
-            'is_agent'      => false,
-            'property_path' => 'participants',
-            'required'      => false,
-            'view_type'     => 'inline',
-        ]);
+        return false;
     }
 
     /**
@@ -90,14 +82,7 @@ class WebFieldResolver extends AbstractFieldResolver
      */
     protected function createFollowers(TicketWithLayoutsContext $context)
     {
-        return new FormField(TicketParticipantsType::class, [
-            'label'         => $this->phrase('portal.forms.label_followers'),
-            'owner'         => $context->getTicket(),
-            'is_agent'      => true,
-            'property_path' => 'participants',
-            'required'      => false,
-            'view_type'     => 'inline',
-        ]);
+        return false;
     }
 
     /**

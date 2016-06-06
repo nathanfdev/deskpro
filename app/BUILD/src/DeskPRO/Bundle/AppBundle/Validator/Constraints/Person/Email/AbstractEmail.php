@@ -26,27 +26,35 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email;
 
 use Symfony\Component\Validator\Constraint;
 
 /**
- * Class NotSystemEmail.
- *
- * @Annotation
- * @Target({"PROPERTY", "METHOD", "ANNOTATION"})
+ * Class AbstractEmail.
  */
-class NotSystemEmail extends Constraint
+abstract class AbstractEmail extends Constraint
 {
-    const SYSTEM_EMAIL = 'system_email';
+    /**
+     * @var string
+     */
+    public $property = 'email';
 
-    public $message = 'Email "{{ email }}" is already being used as email account.';
+    /**
+     * @var string
+     */
+    public $message = 'Email "{{ email }}" is not valid.';
 
     /**
      * {@inheritdoc}
      */
-    public function validatedBy()
+    public function getTargets()
     {
-        return 'not_system_email_validator';
+        return [self::CLASS_CONSTRAINT, self::PROPERTY_CONSTRAINT];
     }
+
+    /**
+     * @return string
+     */
+    abstract public function getErrorCode();
 }

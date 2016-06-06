@@ -26,22 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email;
 
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
-use Symfony\Component\Validator\Constraint;
-use Symfony\Component\Validator\ConstraintValidator;
-use Symfony\Component\Validator\Exception\UnexpectedTypeException;
+use Application\DeskPRO\Entity\PersonEmail;
 
 /**
  * Class NotSystemEmailValidator.
  */
-class NotSystemEmailValidator extends ConstraintValidator
+class NotSystemEmailValidator extends AbstractEmailValidator
 {
     /**
      * @var EmailAccountManager
      */
-    private $email_account_manager;
+    private $emailAccountManager;
 
     /**
      * Constructor.
@@ -50,32 +48,14 @@ class NotSystemEmailValidator extends ConstraintValidator
      */
     public function __construct(EmailAccountManager $email_account_manager)
     {
-        $this->email_account_manager = $email_account_manager;
+        $this->emailAccountManager = $email_account_manager;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function validate($value, Constraint $constraint)
+    protected function isValidEmail(PersonEmail $value)
     {
-        if (!$constraint instanceof NotSystemEmail) {
-            throw new UnexpectedTypeException($constraint, NotSystemEmail::class);
-        }
-
-        $emails        = (array) $value;
-        $system_emails = array_filter($emails, function ($email) {
-            return $this->email_account_manager->findAccountForEmailAddress($email);
-        });
-
-        foreach ($system_emails as $email) {
-            /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
-            $context = $this->context;
-            $context
-                ->buildViolation($constraint->message)
-                ->setParameter('{{ email }}', $this->formatValue($email))
-                ->setCode(NotSystemEmail::SYSTEM_EMAIL)
-                ->addViolation()
-            ;
-        }
+        return !$this->emailAccountManager->findAccountForEmailAddress($value->getEmail());
     }
 }

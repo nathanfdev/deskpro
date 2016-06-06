@@ -26,48 +26,36 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
-
-use Application\DeskPRO\Entity\PersonEmail;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email\FreeEmail as FreeEmailConstraint;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\Email as EmailConstraint;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email;
 
 /**
- * Class PersonEmailType.
+ * Class NotBannedEmail.
+ *
+ * @Annotation
+ * @Target({"CLASS", "PROPERTY", "METHOD", "ANNOTATION"})
  */
-class PersonEmailType extends AbstractType
+class NotBannedEmail extends AbstractEmail
 {
+    const BANNED_EMAIL = 'banned_email';
+
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public $message = 'Email "{{ email }}" is banned.';
+
+    /**
+     * {@inheritdoc}
+     */
+    public function validatedBy()
     {
-        $builder->add('email', EmailType::class, [
-            'label'    => $options['email_label'],
-            'required' => $options['required'],
-        ]);
+        return 'not_banned_email_validator';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function getErrorCode()
     {
-        $resolver->setDefaults([
-            'data_class'  => PersonEmail::class,
-            'email_label' => false,
-            'constraints' => [
-                new EmailConstraint(),
-                new FreeEmailConstraint(),
-            ],
-        ]);
+        return self::BANNED_EMAIL;
     }
 }

@@ -28,22 +28,18 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants;
 
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketParticipant;
-use DeskPRO\Bundle\AppBundle\Form\DataTransformer\ArrayOfStringsTransformer;
-use DeskPRO\Bundle\AppBundle\Form\DataTransformer\ArrayToStringTransformer;
-use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Accepts comma separated list or array of emails.
@@ -51,36 +47,20 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 class TicketParticipantsType extends AbstractType
 {
     /**
-     * @var EntityManager
+     * {@inheritdoc}
      */
-    private $em;
-
-    /**
-     * Constructor.
-     *
-     * @param EntityManager $em
-     */
-    public function __construct(EntityManager $em)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $this->em = $em;
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreSetData']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onMergeData']);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function getParent()
     {
-        $builder->addViewTransformer(new TicketParticipantsTransformer($this->em, $options['owner']));
-        $builder->addViewTransformer(new ArrayOfStringsTransformer());
-
-        if ($options['view_type'] === 'inline') {
-            $builder->addViewTransformer(new ArrayToStringTransformer());
-        }
-
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreSetData']);
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onTransformIdToEmail']);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onMergeData']);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onValidateData']);
+        return CollectionType::class;
     }
 
     /**
@@ -90,16 +70,22 @@ class TicketParticipantsType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'view_type'      => 'inline',
-                'compound'       => false,
-                'empty_data'     => null,
                 'error_bubbling' => false,
                 'mapped'         => false,
+                'allow_add'      => true,
+                'allow_delete'   => true,
+                'entry_type'     => TicketParticipantType::class,
+                'entry_options'  => function (Options $options) {
+                    return [
+                        'is_agent'    => $options['is_agent'],
+                        'owner'       => $options['owner'],
+                        'constraints' => new Assert\Valid(),
+                        'inline'      => true,
+                        'set_owner'   => false,
+                    ];
+                },
             ])
             ->setRequired(['is_agent', 'owner'])
-            ->setAllowedValues([
-                'view_type' => ['inline', 'array'],
-            ])
             ->setAllowedTypes([
                 'owner'    => Ticket::class,
                 'is_agent' => 'boolean',
@@ -108,33 +94,9 @@ class TicketParticipantsType extends AbstractType
     }
 
     /**
-     * @param FormEvent $event
-     *
-     * @return array
-     */
-    public function onTransformIdToEmail(FormEvent $event)
-    {
-        $data   = $event->getData();
-        $result = [];
-
-        if (!is_array($data)) {
-            return;
-        }
-
-        foreach ($data as $item) {
-            if (is_numeric($item)) {
-                $person   = $this->em->getRepository(Person::class)->find($item);
-                $result[] = $person ? $person->getPrimaryEmailAddress() : '';
-            } else {
-                $result[] = $item;
-            }
-        }
-
-        $event->setData($result);
-    }
-
-    /**
      * Filter participants by required person type.
+     *
+     * @internal
      *
      * @param FormEvent $event
      */
@@ -142,7 +104,7 @@ class TicketParticipantsType extends AbstractType
     {
         $allParticipants  = $this->getAllParticipants($event);
         $formParticipants = $allParticipants->filter(function (TicketParticipant $participant) use ($event) {
-            return $participant->getPerson()->isAgent() === $this->isAgent($event);
+            return $participant->getPerson() && $participant->getPerson()->isAgent() === $this->isAgent($event);
         });
 
         $event->setData($formParticipants);
@@ -150,6 +112,8 @@ class TicketParticipantsType extends AbstractType
 
     /**
      * Merge changes to full participant collection.
+     *
+     * @internal
      *
      * @param FormEvent $event
      */
@@ -176,45 +140,12 @@ class TicketParticipantsType extends AbstractType
 
     /**
      * @param FormEvent $event
-     */
-    public function onValidateData(FormEvent $event)
-    {
-        $form    = $event->getForm();
-        $isAgent = $this->isAgent($event);
-
-        /** @var TicketParticipant $participant */
-        foreach ($this->getFormParticipants($event) as $participant) {
-            $person = $participant->getPerson();
-            if (!$person) {
-                $errorCode = ErrorsCodes::NO_PERSON;
-            } elseif ($isAgent && !$person->isAgent()) {
-                $errorCode = ErrorsCodes::NOT_AGENT;
-            } elseif (!$isAgent && $person->isAgent()) {
-                $errorCode = ErrorsCodes::NOT_USER;
-            } else {
-                $errorCode = null;
-            }
-
-            if ($errorCode) {
-                $form->addError(new FormError($errorCode, null, ['value' => $participant->getEmailAddress()]));
-            }
-        }
-    }
-
-    /**
-     * @param FormEvent $event
      *
      * @return ArrayCollection
      */
     protected function getAllParticipants(FormEvent $event)
     {
-        $form   = $event->getForm();
-        $config = $form->getConfig();
-
-        $propertyPath = $config->getOption('property_path') ?: $form->getName();
-        $participants = PropertyAccess::createPropertyAccessor()->getValue($this->getTicket($event), $propertyPath);
-
-        return $participants ?: new ArrayCollection();
+        return $this->getTicket($event)->getParticipants();
     }
 
     /**
