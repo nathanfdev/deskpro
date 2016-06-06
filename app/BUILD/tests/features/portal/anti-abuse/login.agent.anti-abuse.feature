@@ -41,5 +41,5 @@ Feature: Login anti-abuse feature
     Given I set "login" rate limit to 2 attempts within 1 minute with "lockout" response and 15 minutes lockout time for agent
     When I use bad "agent" credentials for login
     Then I should be on "/login"
-    When I login with "admin" credentials from the login page
+    When I login with "agent" credentials from the login page
     Then I should be on "/"
