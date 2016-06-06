@@ -1,3 +1,46 @@
 /*******************************
         User Overrides
 *******************************/
+
+.ui.styled.accordion,
+.ui.styled.accordion .accordion {
+  border-radius: 0;
+  background: none;
+}
+
+.ui.styled.accordion .element {
+  margin: 0 20px 20px;
+}
+
+.ui.styled.accordion .content,
+.ui.styled.accordion .accordion .content,
+.ui.styled.accordion .title,
+.ui.styled.accordion .accordion .title {
+  background: @styledBackground;
+  border: @styledTitleBorder;
+  border-collapse: collapse;
+}
+
+.ui.styled.accordion .title.active,
+.ui.styled.accordion .accordion .title.active {
+  margin-bottom: 0;
+  border-bottom: 0;
+}
+
+.ui.styled.accordion > .title:first-child,
+.ui.styled.accordion .accordion .title:first-child {
+  border-top: @styledTitleBorder;
+}
+
+.ui.form .ui.accordion .content {
+  padding: 0;
+}
+.ui.form .ui.styled.accordion .content > .field {
+  border-bottom: @styledTitleBorder;
+  padding: @styledTitlePadding;
+  border-collapse: collapse;
+  margin: 0;
+}
+.ui.form .ui.styled.accordion .content > .field:last-child {
+  border-bottom: 0;
+}

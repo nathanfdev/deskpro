@@ -1,0 +1,15 @@
+{
+  "//": "The source and destination paths are relative to this file.",
+  "source": ".",
+  "destination": "styleguide",
+  "mask": "new-admin.less",
+
+  "//": "The css and js paths are URLs relative to the style guide destination.",
+  "css": [
+    "../../semantic-ui/semantic.css"
+  ],
+  "js": [],
+
+  "title": "DeskPRO New Admin Style Guide",
+  "verbose": true
+}

@@ -31,3 +31,9 @@
   border-left: 4px solid @dp-knuckles-primary;
   //box-shadow: inset 4px 0px 0px 0px @dp-knuckles-primary;
 }
+
+.ui.form .field:last-child,
+.ui.form .fields:last-child,
+.ui.form .fields:last-child .field {
+  margin-bottom: 0em;
+}

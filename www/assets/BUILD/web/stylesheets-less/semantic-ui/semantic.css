@@ -2885,6 +2885,9 @@ h6 {
     User Variable Overrides
 *******************************/
 /*******************************
+            Button
+*******************************/
+/*******************************
              Mix-ins
 *******************************/
 /*------------------
@@ -2904,20 +2907,20 @@ h6 {
   outline: none;
   border: none;
   vertical-align: baseline;
-  background: #e0e1e2 none;
-  color: rgba(0, 0, 0, 0.6);
+  background: #4696dc;
+  color: #ffffff;
   font-family: 'Open Sans', 'Helvetica Neue', Arial, Helvetica, sans-serif;
   margin: 0em 0.25em 0em 0em;
   padding: 0.6875em 1.5em 0.6875em;
   text-transform: none;
   text-shadow: none;
-  font-weight: bold;
+  font-weight: 600;
   line-height: 1em;
   font-style: normal;
   text-align: center;
   text-decoration: none;
   border-radius: 0.25rem;
-  box-shadow: 0px 0px 0px 1px transparent inset, 0px 0em 0px 0px rgba(34, 36, 38, 0.15) inset;
+  box-shadow: 0px 2px 0px #3c82b4;
   user-select: none;
   transition: opacity 0.1s ease, background-color 0.1s ease, color 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
   will-change: '';
@@ -2930,10 +2933,10 @@ h6 {
       Hover
 ---------------*/
 .ui.button:hover {
-  background-color: #cacbcd;
+  background-color: #59a8e2;
   background-image: none;
-  box-shadow: 0px 0px 0px 1px transparent inset, 0px 0em 0px 0px rgba(34, 36, 38, 0.15) inset;
-  color: rgba(0, 0, 0, 0.8);
+  box-shadow: 0px 2px 0px #3c82b4;
+  color: #ffffff;
 }
 .ui.button:hover .icon {
   opacity: 0.85;
@@ -2942,8 +2945,8 @@ h6 {
       Focus
 ---------------*/
 .ui.button:focus {
-  background-color: #cacbcd;
-  color: rgba(0, 0, 0, 0.8);
+  background-color: #59a8e2;
+  color: #ffffff;
   background-image: '' !important;
   box-shadow: '' !important;
 }
@@ -2955,10 +2958,10 @@ h6 {
 ---------------*/
 .ui.button:active,
 .ui.active.button:active {
-  background-color: #babbbc;
+  background-color: #3c90ce;
   background-image: '';
-  color: rgba(0, 0, 0, 0.9);
-  box-shadow: 0px 0px 0px 1px transparent inset, none;
+  color: #ffffff;
+  box-shadow: 0 2px 0 #3c82b4;
 }
 /*--------------
      Active
@@ -2966,13 +2969,13 @@ h6 {
 .ui.active.button {
   background-color: #c0c1c2;
   background-image: none;
-  box-shadow: 0px 0px 0px 1px transparent inset;
-  color: rgba(0, 0, 0, 0.95);
+  box-shadow: 0 2px 0 #3c82b4;
+  color: #ffffff;
 }
 .ui.active.button:hover {
   background-color: #c0c1c2;
   background-image: none;
-  color: rgba(0, 0, 0, 0.95);
+  color: #ffffff;
 }
 .ui.active.button:active {
   background-color: #c0c1c2;
@@ -3185,20 +3188,20 @@ h6 {
 .ui.inverted.button:hover {
   background: #ffffff;
   box-shadow: 0px 0px 0px 2px #ffffff inset !important;
-  color: rgba(0, 0, 0, 0.8);
+  color: #ffffff;
 }
 /* Active / Focus */
 .ui.inverted.button:focus,
 .ui.inverted.button.active {
   background: #ffffff;
   box-shadow: 0px 0px 0px 2px #ffffff inset !important;
-  color: rgba(0, 0, 0, 0.8);
+  color: #ffffff;
 }
 /* Active Focus */
 .ui.inverted.button.active:focus {
   background: #dcddde;
   box-shadow: 0px 0px 0px 2px #dcddde inset !important;
-  color: rgba(0, 0, 0, 0.8);
+  color: #ffffff;
 }
 /*-------------------
     Labeled Button
@@ -3445,12 +3448,12 @@ h6 {
 .ui.tiny.buttons .button,
 .ui.tiny.buttons .or,
 .ui.tiny.button {
-  font-size: 0.625rem;
+  font-size: 0.75rem;
 }
 .ui.small.buttons .button,
 .ui.small.buttons .or,
 .ui.small.button {
-  font-size: 0.75rem;
+  font-size: 0.875rem;
 }
 .ui.buttons .button,
 .ui.buttons .or,
@@ -3460,7 +3463,7 @@ h6 {
 .ui.large.buttons .button,
 .ui.large.buttons .or,
 .ui.large.button {
-  font-size: 1.125rem;
+  font-size: 1.25rem;
 }
 .ui.big.buttons .button,
 .ui.big.buttons .or,
@@ -3496,12 +3499,12 @@ h6 {
 .ui.basic.buttons .button,
 .ui.basic.button {
   background: transparent none !important;
-  color: rgba(0, 0, 0, 0.6) !important;
+  color: #4c4f50 !important;
   font-weight: normal;
   border-radius: 0.25rem;
   text-transform: none;
   text-shadow: none !important;
-  box-shadow: 0px 0px 0px 1px rgba(34, 36, 38, 0.15) inset;
+  box-shadow: 0px 1px 0px #e3e3e3;
 }
 .ui.basic.buttons {
   box-shadow: none;
@@ -3513,26 +3516,26 @@ h6 {
 }
 .ui.basic.buttons .button:hover,
 .ui.basic.button:hover {
-  background: #ffffff !important;
+  background: #fdfeff !important;
   color: rgba(0, 0, 0, 0.8) !important;
-  box-shadow: 0px 0px 0px 1px rgba(34, 36, 38, 0.35) inset, 0px 0px 0px 0px rgba(34, 36, 38, 0.15) inset;
+  box-shadow: 0px 1px 0px #4696dc;
 }
 .ui.basic.buttons .button:focus,
 .ui.basic.button:focus {
-  background: #ffffff !important;
+  background: #fdfeff !important;
   color: rgba(0, 0, 0, 0.8) !important;
-  box-shadow: 0px 0px 0px 1px rgba(34, 36, 38, 0.35) inset, 0px 0px 0px 0px rgba(34, 36, 38, 0.15) inset;
+  box-shadow: 0px 1px 0px #4696dc;
 }
 .ui.basic.buttons .button:active,
 .ui.basic.button:active {
-  background: #f8f8f8 !important;
+  background: #fdfeff !important;
   color: rgba(0, 0, 0, 0.9) !important;
-  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.15) inset, 0px 1px 4px 0px rgba(34, 36, 38, 0.15) inset;
+  box-shadow: 0px -1px 0px #4696dc;
 }
 .ui.basic.buttons .active.button,
 .ui.basic.active.button {
-  background: rgba(0, 0, 0, 0.05) !important;
-  box-shadow: '' !important;
+  background: #fdfeff !important;
+  box-shadow: 0px -1px 0px #4696dc !important;
   color: rgba(0, 0, 0, 0.95);
   box-shadow: rgba(34, 36, 38, 0.35);
 }
@@ -3542,10 +3545,10 @@ h6 {
 }
 /* Vertical */
 .ui.basic.buttons .button:hover {
-  box-shadow: 0px 0px 0px 1px rgba(34, 36, 38, 0.35) inset, 0px 0px 0px 0px rgba(34, 36, 38, 0.15) inset inset;
+  box-shadow: 0px 1px 0px #4696dc inset;
 }
 .ui.basic.buttons .button:active {
-  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.15) inset, 0px 1px 4px 0px rgba(34, 36, 38, 0.15) inset inset;
+  box-shadow: 0px -1px 0px #4696dc inset;
 }
 .ui.basic.buttons .active.button {
   box-shadow: rgba(34, 36, 38, 0.35) inset;
@@ -4184,7 +4187,7 @@ h6 {
 .ui.inverted.grey.buttons .button:active,
 .ui.inverted.grey.button:active {
   box-shadow: none !important;
-  color: rgba(0, 0, 0, 0.6);
+  color: #ffffff;
 }
 .ui.inverted.grey.buttons .button:hover,
 .ui.inverted.grey.button:hover {
@@ -5399,7 +5402,7 @@ h6 {
 .ui.inverted.teal.buttons .button:active,
 .ui.inverted.teal.button:active {
   box-shadow: none !important;
-  color: rgba(0, 0, 0, 0.6);
+  color: #ffffff;
 }
 .ui.inverted.teal.buttons .button:hover,
 .ui.inverted.teal.button:hover {
@@ -5534,7 +5537,7 @@ h6 {
 .ui.inverted.olive.buttons .button:active,
 .ui.inverted.olive.button:active {
   box-shadow: none !important;
-  color: rgba(0, 0, 0, 0.6);
+  color: #ffffff;
 }
 .ui.inverted.olive.buttons .button:hover,
 .ui.inverted.olive.button:hover {
@@ -5669,7 +5672,7 @@ h6 {
 .ui.inverted.yellow.buttons .button:active,
 .ui.inverted.yellow.button:active {
   box-shadow: none !important;
-  color: rgba(0, 0, 0, 0.6);
+  color: #ffffff;
 }
 .ui.inverted.yellow.buttons .button:hover,
 .ui.inverted.yellow.button:hover {
@@ -5899,7 +5902,7 @@ h6 {
 }
 .ui.buttons > .ui.button:not(.basic):not(.inverted),
 .ui.buttons:not(.basic):not(.inverted) > .button {
-  box-shadow: 0px 0px 0px 1px transparent inset, 0px 0em 0px 0px rgba(34, 36, 38, 0.15) inset;
+  box-shadow: 0px 2px 0px #3c82b4;
 }
 .ui.buttons .button:first-child {
   border-left: none;
@@ -5947,6 +5950,23 @@ h6 {
 /*******************************
          Site Overrides
 *******************************/
+.ui.active.button,
+.ui.button:active,
+.ui.active.button:active {
+  transform: translateY(2px);
+}
+.ui.basic.buttons .button,
+.ui.basic.button {
+  border: 1px solid #e3e3e3;
+}
+.ui.basic.buttons .button:hover,
+.ui.basic.button:hover,
+.ui.basic.buttons .button:active,
+.ui.basic.button:active,
+.ui.basic.buttons .active.button,
+.ui.basic.active.button {
+  border-color: #4696dc;
+}
 /*!
  * # Semantic UI - Container
  * http://github.com/semantic-org/semantic-ui/
@@ -11166,8 +11186,8 @@ a.ui.inverted.grey.header:hover {
 *******************************/
 @font-face {
   font-family: 'Icons';
-  src: url("../../themes/default/assets/fonts/icons.eot");
-  src: url("../../themes/default/assets/fonts/icons.eot?#iefix") format('embedded-opentype'), url("../../themes/default/assets/fonts/icons.woff2") format('woff2'), url("../../themes/default/assets/fonts/icons.woff") format('woff'), url("../../themes/default/assets/fonts/icons.ttf") format('truetype'), url("../../themes/default/assets/fonts/icons.svg#icons") format('svg');
+  src: url("../../../../fonts/icons.eot");
+  src: url("../../../../fonts/icons.eot?#iefix") format('embedded-opentype'), url("../../../../fonts/icons.woff2") format('woff2'), url("../../../../fonts/icons.woff") format('woff'), url("../../../../fonts/icons.ttf") format('truetype'), url("../../../../fonts/icons.svg#icons") format('svg');
   font-style: normal;
   font-weight: normal;
   font-variant: normal;
@@ -25395,6 +25415,12 @@ ol.ui.horizontal.list li:before,
     User Variable Overrides
 *******************************/
 /*******************************
+    Input
+*******************************/
+/*******************************
+    Input Validation
+*******************************/
+/*******************************
              Mix-ins
 *******************************/
 /*------------------
@@ -25440,10 +25466,10 @@ ol.ui.horizontal.list li:before,
 ---------------------*/
 .ui.form .field > label {
   display: block;
-  margin: 0em 0em 0.25rem 0em;
+  margin: 0em 0em 0.625rem 0em;
   color: #2b2f2f;
   font-size: 0.9375em;
-  font-weight: bold;
+  font-weight: 600;
   text-transform: none;
 }
 /*--------------------
@@ -25486,12 +25512,12 @@ ol.ui.horizontal.list li:before,
   -webkit-appearance: none;
   tap-highlight-color: rgba(255, 255, 255, 0);
   line-height: 1.2142em;
-  padding: 0.5804em 0.875em;
+  padding: 0.5804em 0.625rem;
   font-size: 1em;
   background: #ffffff;
-  border: 1px solid rgba(34, 36, 38, 0.15);
+  border: 1px solid #e3e3e3;
   color: #2b2f2f;
-  border-radius: 0.25rem;
+  border-radius: 0.125rem;
   box-shadow: 0em 0em 0em 0em transparent inset;
   transition: color 0.1s ease, border-color 0.1s ease;
 }
@@ -25500,12 +25526,12 @@ ol.ui.horizontal.list li:before,
   margin: 0em;
   -webkit-appearance: none;
   tap-highlight-color: rgba(255, 255, 255, 0);
-  padding: 0.6875em 0.875em;
+  padding: 0.6875em 0.625rem;
   background: #ffffff;
-  border: 1px solid rgba(34, 36, 38, 0.15);
+  border: 1px solid #e3e3e3;
   outline: none;
   color: #2b2f2f;
-  border-radius: 0.25rem;
+  border-radius: 0.125rem;
   box-shadow: 0em 0em 0em 0em transparent inset;
   transition: color 0.1s ease, border-color 0.1s ease;
   font-size: 1em;
@@ -25535,10 +25561,10 @@ ol.ui.horizontal.list li:before,
   height: auto;
   width: 100%;
   background: #ffffff;
-  border: 1px solid rgba(34, 36, 38, 0.15);
-  border-radius: 0.25rem;
+  border: 1px solid #e3e3e3;
+  border-radius: 0.125rem;
   box-shadow: 0em 0em 0em 0em transparent inset;
-  padding: 0.62em 0.875em;
+  padding: 0.62em 0.625rem;
   color: #2b2f2f;
   transition: color 0.1s ease, border-color 0.1s ease;
 }
@@ -25613,8 +25639,8 @@ ol.ui.horizontal.list li:before,
 .ui.form .field .prompt.label {
   white-space: normal;
   background: #ffffff !important;
-  border: 1px solid #e0b4b4 !important;
-  color: #9f3a38 !important;
+  border: 1px solid 1px solid #e3e3e3 !important;
+  color: #2b2f2f !important;
 }
 .ui.form .inline.fields .field .prompt,
 .ui.form .inline.field .prompt {
@@ -25654,13 +25680,13 @@ ol.ui.horizontal.list li:before,
 ---------------------*/
 /* browsers require these rules separate */
 .ui.form ::-webkit-input-placeholder {
-  color: #b6bcbc;
+  color: #e3e3e3;
 }
 .ui.form ::-ms-input-placeholder {
-  color: #b6bcbc;
+  color: #e3e3e3;
 }
 .ui.form ::-moz-placeholder {
-  color: #b6bcbc;
+  color: #e3e3e3;
 }
 .ui.form :focus::-webkit-input-placeholder {
   color: #818c8c;
@@ -25673,22 +25699,22 @@ ol.ui.horizontal.list li:before,
 }
 /* Error Placeholder */
 .ui.form .error ::-webkit-input-placeholder {
-  color: #e7bdbc;
+  color: #8e9898;
 }
 .ui.form .error ::-ms-input-placeholder {
-  color: #e7bdbc;
+  color: #8e9898;
 }
 .ui.form .error ::-moz-placeholder {
-  color: #e7bdbc;
+  color: #8e9898;
 }
 .ui.form .error :focus::-webkit-input-placeholder {
-  color: #da9796;
+  color: #747f7f;
 }
 .ui.form .error :focus::-ms-input-placeholder {
-  color: #da9796;
+  color: #747f7f;
 }
 .ui.form .error :focus::-moz-placeholder {
-  color: #da9796;
+  color: #747f7f;
 }
 /*--------------------
         Focus
@@ -25705,15 +25731,15 @@ ol.ui.horizontal.list li:before,
 .ui.form input[type="text"]:focus,
 .ui.form input[type="url"]:focus {
   color: rgba(0, 0, 0, 0.95);
-  border-color: #85b7d9;
-  border-radius: 0.25rem;
+  border-color: #4696dc;
+  border-radius: 0.125rem;
   background: #ffffff;
   box-shadow: 0px 0em 0em 0em rgba(34, 36, 38, 0.35) inset;
 }
 .ui.form textarea:focus {
   color: rgba(0, 0, 0, 0.95);
-  border-color: #85b7d9;
-  border-radius: 0.25rem;
+  border-color: #4696dc;
+  border-radius: 0.125rem;
   background: #ffffff;
   box-shadow: 0px 0em 0em 0em rgba(34, 36, 38, 0.35) inset;
   -webkit-appearance: none;
@@ -25753,11 +25779,11 @@ ol.ui.horizontal.list li:before,
 .ui.form .field.error label,
 .ui.form .fields.error .field .input,
 .ui.form .field.error .input {
-  color: #9f3a38;
+  color: #2b2f2f;
 }
 .ui.form .fields.error .field .corner.label,
 .ui.form .field.error .corner.label {
-  border-color: #9f3a38;
+  border-color: #2b2f2f;
   color: #ffffff;
 }
 .ui.form .fields.error .field textarea,
@@ -25786,9 +25812,9 @@ ol.ui.horizontal.list li:before,
 .ui.form .field.error input[type="time"],
 .ui.form .field.error input[type="text"],
 .ui.form .field.error input[type="url"] {
-  background: #fff6f6;
-  border-color: #e0b4b4;
-  color: #9f3a38;
+  background: #ffffff;
+  border-color: 1px solid #e3e3e3;
+  color: #2b2f2f;
   border-radius: '';
   box-shadow: none;
 }
@@ -25823,20 +25849,20 @@ ol.ui.horizontal.list li:before,
 .ui.form .field.error .ui.dropdown,
 .ui.form .field.error .ui.dropdown .text,
 .ui.form .field.error .ui.dropdown .item {
-  background: #fff6f6;
-  color: #9f3a38;
+  background: #ffffff;
+  color: #2b2f2f;
 }
 .ui.form .fields.error .field .ui.dropdown,
 .ui.form .field.error .ui.dropdown {
-  border-color: #e0b4b4 !important;
+  border-color: 1px solid #e3e3e3 !important;
 }
 .ui.form .fields.error .field .ui.dropdown:hover,
 .ui.form .field.error .ui.dropdown:hover {
-  border-color: #e0b4b4 !important;
+  border-color: 1px solid #e3e3e3 !important;
 }
 .ui.form .fields.error .field .ui.dropdown:hover .menu,
 .ui.form .field.error .ui.dropdown:hover .menu {
-  border-color: #e0b4b4;
+  border-color: 1px solid #e3e3e3;
 }
 .ui.form .fields.error .field .ui.multiple.selection.dropdown > .label,
 .ui.form .field.error .ui.multiple.selection.dropdown > .label {
@@ -25865,20 +25891,20 @@ ol.ui.horizontal.list li:before,
 .ui.form .field.error .checkbox:not(.toggle):not(.slider) label,
 .ui.form .fields.error .field .checkbox:not(.toggle):not(.slider) .box,
 .ui.form .field.error .checkbox:not(.toggle):not(.slider) .box {
-  color: #9f3a38;
+  color: #2b2f2f;
 }
 .ui.form .fields.error .field .checkbox:not(.toggle):not(.slider) label:before,
 .ui.form .field.error .checkbox:not(.toggle):not(.slider) label:before,
 .ui.form .fields.error .field .checkbox:not(.toggle):not(.slider) .box:before,
 .ui.form .field.error .checkbox:not(.toggle):not(.slider) .box:before {
-  background: #fff6f6;
-  border-color: #e0b4b4;
+  background: #ffffff;
+  border-color: 1px solid #e3e3e3;
 }
 .ui.form .fields.error .field .checkbox label:after,
 .ui.form .field.error .checkbox label:after,
 .ui.form .fields.error .field .checkbox .box:after,
 .ui.form .field.error .checkbox .box:after {
-  color: #9f3a38;
+  color: #2b2f2f;
 }
 /*--------------------
        Disabled
@@ -26009,10 +26035,10 @@ ol.ui.horizontal.list li:before,
   margin-bottom: 0em;
 }
 .ui.form .grouped.fields > label {
-  margin: 0em 0em 0.25rem 0em;
+  margin: 0em 0em 0.625rem 0em;
   color: #2b2f2f;
   font-size: 0.9375em;
-  font-weight: bold;
+  font-weight: 600;
   text-transform: none;
 }
 .ui.form .grouped.fields .field,
@@ -26232,7 +26258,7 @@ ol.ui.horizontal.list li:before,
   margin-bottom: 0em;
   vertical-align: baseline;
   font-size: 0.9375em;
-  font-weight: bold;
+  font-weight: 600;
   color: #2b2f2f;
   text-transform: none;
 }
@@ -26295,6 +26321,39 @@ ol.ui.horizontal.list li:before,
 /*******************************
          Site Overrides
 *******************************/
+.ui.form .fields.error .field textarea,
+.ui.form .fields.error .field select,
+.ui.form .fields.error .field input:not([type]),
+.ui.form .fields.error .field input[type="date"],
+.ui.form .fields.error .field input[type="datetime-local"],
+.ui.form .fields.error .field input[type="email"],
+.ui.form .fields.error .field input[type="number"],
+.ui.form .fields.error .field input[type="password"],
+.ui.form .fields.error .field input[type="search"],
+.ui.form .fields.error .field input[type="tel"],
+.ui.form .fields.error .field input[type="time"],
+.ui.form .fields.error .field input[type="text"],
+.ui.form .fields.error .field input[type="url"],
+.ui.form .field.error textarea,
+.ui.form .field.error select,
+.ui.form .field.error input:not([type]),
+.ui.form .field.error input[type="date"],
+.ui.form .field.error input[type="datetime-local"],
+.ui.form .field.error input[type="email"],
+.ui.form .field.error input[type="number"],
+.ui.form .field.error input[type="password"],
+.ui.form .field.error input[type="search"],
+.ui.form .field.error input[type="tel"],
+.ui.form .field.error input[type="time"],
+.ui.form .field.error input[type="text"],
+.ui.form .field.error input[type="url"] {
+  border-left: 4px solid #d4145a;
+}
+.ui.form .field:last-child,
+.ui.form .fields:last-child,
+.ui.form .fields:last-child .field {
+  margin-bottom: 0em;
+}
 /*!
  * # Semantic UI - Grid
  * http://github.com/semantic-org/semantic-ui/
@@ -40982,7 +41041,7 @@ a.ui.card:hover,
 .ui.accordion .title .dropdown.icon,
 .ui.accordion .accordion .title .dropdown.icon {
   display: inline-block;
-  float: none;
+  float: right;
   opacity: 1;
   width: 1.25em;
   height: 1em;
@@ -41034,15 +41093,15 @@ a.ui.card:hover,
 .ui.styled.accordion .accordion {
   border-radius: 0.25rem;
   background: #ffffff;
-  box-shadow: 0px 1px 2px 0 rgba(34, 36, 38, 0.15), 0px 0px 0px 1px rgba(34, 36, 38, 0.15);
+  box-shadow: none;
 }
 .ui.styled.accordion .title,
 .ui.styled.accordion .accordion .title {
   margin: 0em;
-  padding: 0.75em 1em;
+  padding: 20px 15px;
   color: rgba(0, 0, 0, 0.4);
   font-weight: bold;
-  border-top: 1px solid rgba(34, 36, 38, 0.15);
+  border-top: solid 1px #e3e3e3;
   transition: background 0.1s ease, color 0.1s ease;
 }
 .ui.styled.accordion > .title:first-child,
@@ -41064,21 +41123,21 @@ a.ui.card:hover,
 .ui.styled.accordion .active.title,
 .ui.styled.accordion .accordion .title:hover,
 .ui.styled.accordion .accordion .active.title {
-  background: transparent;
+  background: #ffffff;
   color: #2b2f2f;
 }
 .ui.styled.accordion .accordion .title:hover,
 .ui.styled.accordion .accordion .active.title {
-  background: transparent;
+  background: #ffffff;
   color: #2b2f2f;
 }
 /* Active */
 .ui.styled.accordion .active.title {
-  background: transparent;
+  background: #ffffff;
   color: rgba(0, 0, 0, 0.95);
 }
 .ui.styled.accordion .accordion .active.title {
-  background: transparent;
+  background: #ffffff;
   color: rgba(0, 0, 0, 0.95);
 }
 /*******************************
@@ -41133,6 +41192,43 @@ a.ui.card:hover,
 /*******************************
         User Overrides
 *******************************/
+.ui.styled.accordion,
+.ui.styled.accordion .accordion {
+  border-radius: 0;
+  background: none;
+}
+.ui.styled.accordion .element {
+  margin: 0 20px 20px;
+}
+.ui.styled.accordion .content,
+.ui.styled.accordion .accordion .content,
+.ui.styled.accordion .title,
+.ui.styled.accordion .accordion .title {
+  background: #ffffff;
+  border: solid 1px #e3e3e3;
+  border-collapse: collapse;
+}
+.ui.styled.accordion .title.active,
+.ui.styled.accordion .accordion .title.active {
+  margin-bottom: 0;
+  border-bottom: 0;
+}
+.ui.styled.accordion > .title:first-child,
+.ui.styled.accordion .accordion .title:first-child {
+  border-top: solid 1px #e3e3e3;
+}
+.ui.form .ui.accordion .content {
+  padding: 0;
+}
+.ui.form .ui.styled.accordion .content > .field {
+  border-bottom: solid 1px #e3e3e3;
+  padding: 20px 15px;
+  border-collapse: collapse;
+  margin: 0;
+}
+.ui.form .ui.styled.accordion .content > .field:last-child {
+  border-bottom: 0;
+}
 /*!
  * # Semantic UI - Checkbox
  * http://github.com/semantic-org/semantic-ui/
@@ -41812,6 +41908,12 @@ a.ui.card:hover,
     User Variable Overrides
 *******************************/
 /*******************************
+    Checkboxes
+*******************************/
+/*******************************
+    Toggles
+*******************************/
+/*******************************
              Mix-ins
 *******************************/
 /*------------------
@@ -41834,10 +41936,10 @@ a.ui.card:hover,
   outline: none;
   vertical-align: baseline;
   font-style: normal;
-  min-height: 1 rem;
+  min-height: 16px;
   font-size: 1rem;
-  line-height: 1 rem;
-  min-width: 1 rem;
+  line-height: 16px;
+  min-width: 16px;
 }
 /* HTML Checkbox */
 .ui.checkbox input[type="checkbox"],
@@ -41849,8 +41951,8 @@ a.ui.card:hover,
   opacity: 0 !important;
   outline: none;
   z-index: 3;
-  width: 1 rem;
-  height: 1 rem;
+  width: 16px;
+  height: 16px;
 }
 /*--------------
       Box
@@ -41869,8 +41971,8 @@ a.ui.card:hover,
   position: absolute;
   top: 0px;
   left: 0px;
-  width: 1 rem;
-  height: 1 rem;
+  width: 16px;
+  height: 16px;
   content: '';
   background: #ffffff;
   border-radius: 0;
@@ -41886,8 +41988,8 @@ a.ui.card:hover,
   font-size: 14px;
   top: 0px;
   left: 0px;
-  width: 1 rem;
-  height: 1 rem;
+  width: 16px;
+  height: 16px;
   text-align: center;
   opacity: 0;
   color: #2b2f2f;
@@ -41957,12 +42059,12 @@ a.ui.card:hover,
 .ui.checkbox input:checked ~ .box:before,
 .ui.checkbox input:checked ~ label:before {
   background: #ffffff;
-  border-color: rgba(34, 36, 38, 0.35);
+  border-color: #aab0b1;
 }
 .ui.checkbox input:checked ~ .box:after,
 .ui.checkbox input:checked ~ label:after {
   opacity: 1;
-  color: rgba(0, 0, 0, 0.95);
+  color: #4696dc;
 }
 /*--------------
   Indeterminate
@@ -41970,12 +42072,12 @@ a.ui.card:hover,
 .ui.checkbox input:indeterminate ~ .box:before,
 .ui.checkbox input:indeterminate ~ label:before {
   background: #ffffff;
-  border-color: rgba(34, 36, 38, 0.35);
+  border-color: #aab0b1;
 }
 .ui.checkbox input:indeterminate ~ .box:after,
 .ui.checkbox input:indeterminate ~ label:after {
   opacity: 1;
-  color: rgba(0, 0, 0, 0.95);
+  color: #4696dc;
 }
 /*--------------
   Active Focus
@@ -41991,7 +42093,7 @@ a.ui.card:hover,
 .ui.checkbox input:indeterminate:focus ~ label:after,
 .ui.checkbox input:checked:focus ~ .box:after,
 .ui.checkbox input:checked:focus ~ label:after {
-  color: rgba(0, 0, 0, 0.95);
+  color: #4696dc;
 }
 /*--------------
     Read-Only
@@ -42089,7 +42191,7 @@ a.ui.card:hover,
 }
 .ui.radio.checkbox input:checked ~ .box:after,
 .ui.radio.checkbox input:checked ~ label:after {
-  background-color: rgba(0, 0, 0, 0.95);
+  background-color: #4696dc;
 }
 /* Active Focus */
 .ui.radio.checkbox input:focus:checked ~ .box:before,
@@ -42098,7 +42200,7 @@ a.ui.card:hover,
 }
 .ui.radio.checkbox input:focus:checked ~ .box:after,
 .ui.radio.checkbox input:focus:checked ~ label:after {
-  background-color: rgba(0, 0, 0, 0.95);
+  background-color: #4696dc;
 }
 /*--------------
      Slider
@@ -42138,13 +42240,13 @@ a.ui.card:hover,
 /* Handle */
 .ui.slider.checkbox .box:after,
 .ui.slider.checkbox label:after {
-  background: #ffffff linear-gradient(transparent, rgba(0, 0, 0, 0.05));
+  background: #ffffff;
   position: absolute;
   content: '' !important;
   opacity: 1;
   z-index: 2;
   border: none;
-  box-shadow: 0px 1px 2px 0 rgba(34, 36, 38, 0.15), 0px 0px 0px 1px rgba(34, 36, 38, 0.15) inset;
+  box-shadow: none;
   width: 1.5rem;
   height: 1.5rem;
   top: -0.25rem;
@@ -42156,7 +42258,7 @@ a.ui.card:hover,
 /* Focus */
 .ui.slider.checkbox input:focus ~ .box:before,
 .ui.slider.checkbox input:focus ~ label:before {
-  background-color: rgba(0, 0, 0, 0.15);
+  background-color: #aab0b1;
   border: none;
 }
 /* Hover */
@@ -42194,22 +42296,22 @@ a.ui.card:hover,
      Toggle
 ---------------*/
 .ui.toggle.checkbox {
-  min-height: 1.5rem;
+  min-height: 2rem;
 }
 /* Input */
 .ui.toggle.checkbox input {
-  width: 3.5rem;
-  height: 1.5rem;
+  width: 3.75rem;
+  height: 2rem;
 }
 /* Label */
 .ui.toggle.checkbox .box,
 .ui.toggle.checkbox label {
-  min-height: 1.5rem;
-  padding-left: 4.5rem;
+  min-height: 1.75rem;
+  padding-left: 4.75rem;
   color: #2b2f2f;
 }
 .ui.toggle.checkbox label {
-  padding-top: 0.15em;
+  padding-top: 0.375rem;
 }
 /* Switch */
 .ui.toggle.checkbox .box:before,
@@ -42221,42 +42323,42 @@ a.ui.card:hover,
   transform: none;
   border: none;
   top: 0rem;
-  background: rgba(0, 0, 0, 0.05);
-  width: 3.5rem;
-  height: 1.5rem;
+  background: #aab0b1;
+  width: 3.75rem;
+  height: 2rem;
   border-radius: 500rem;
 }
 /* Handle */
 .ui.toggle.checkbox .box:after,
 .ui.toggle.checkbox label:after {
-  background: #ffffff linear-gradient(transparent, rgba(0, 0, 0, 0.05));
+  background: #ffffff;
   position: absolute;
   content: '' !important;
   opacity: 1;
   z-index: 2;
   border: none;
-  box-shadow: 0px 1px 2px 0 rgba(34, 36, 38, 0.15), 0px 0px 0px 1px rgba(34, 36, 38, 0.15) inset;
-  width: 1.5rem;
-  height: 1.5rem;
-  top: 0rem;
+  box-shadow: none;
+  width: 1.75rem;
+  height: 1.75rem;
+  top: 0.125rem;
   left: 0em;
   border-radius: 500rem;
   transition: background 0.3s ease, left 0.3s ease;
 }
 .ui.toggle.checkbox input ~ .box:after,
 .ui.toggle.checkbox input ~ label:after {
-  left: -0.05rem;
+  left: 0.125rem;
 }
 /* Focus */
 .ui.toggle.checkbox input:focus ~ .box:before,
 .ui.toggle.checkbox input:focus ~ label:before {
-  background-color: rgba(0, 0, 0, 0.15);
+  background-color: #aab0b1;
   border: none;
 }
 /* Hover */
 .ui.toggle.checkbox .box:hover::before,
 .ui.toggle.checkbox label:hover::before {
-  background-color: rgba(0, 0, 0, 0.15);
+  background-color: #aab0b1;
   border: none;
 }
 /* Active */
@@ -42266,11 +42368,11 @@ a.ui.card:hover,
 }
 .ui.toggle.checkbox input:checked ~ .box:before,
 .ui.toggle.checkbox input:checked ~ label:before {
-  background-color: #2185d0 !important;
+  background-color: #47bf61 !important;
 }
 .ui.toggle.checkbox input:checked ~ .box:after,
 .ui.toggle.checkbox input:checked ~ label:after {
-  left: 2.15rem;
+  left: 1.875rem;
 }
 /* Active Focus */
 .ui.toggle.checkbox input:focus:checked ~ .box,
@@ -42279,7 +42381,7 @@ a.ui.card:hover,
 }
 .ui.toggle.checkbox input:focus:checked ~ .box:before,
 .ui.toggle.checkbox input:focus:checked ~ label:before {
-  background-color: #0771c1 !important;
+  background-color: #459b51 !important;
 }
 /*******************************
             Variations
@@ -42293,7 +42395,7 @@ a.ui.card:hover,
 }
 .ui.fitted.toggle.checkbox,
 .ui.fitted.toggle.checkbox {
-  width: 3.5rem;
+  width: 3.75rem;
 }
 .ui.fitted.slider.checkbox,
 .ui.fitted.slider.checkbox {
@@ -42330,6 +42432,18 @@ a.ui.card:hover,
 /*******************************
          Site Overrides
 *******************************/
+.ui.toggle.checkbox .box:hover::before,
+.ui.toggle.checkbox label:hover::before,
+.ui.toggle.checkbox input:focus ~ .box:hover::before,
+.ui.toggle.checkbox input:focus ~ label:hover::before {
+  border: 1px solid #8c9295;
+}
+.ui.toggle.checkbox input:checked ~ .box:hover::before,
+.ui.toggle.checkbox input:checked ~ label:hover::before,
+.ui.toggle.checkbox input:checked:focus ~ .box:hover::before,
+.ui.toggle.checkbox input:checked:focus ~ label:hover::before {
+  border: 1px solid #459b51;
+}
 /*!
  * # Semantic UI - Dimmer
  * http://github.com/semantic-org/semantic-ui/

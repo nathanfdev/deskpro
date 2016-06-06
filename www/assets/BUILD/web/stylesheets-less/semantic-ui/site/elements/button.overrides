@@ -7,3 +7,17 @@
 .ui.active.button:active {
   transform: translateY(2px);
 }
+
+.ui.basic.buttons .button,
+.ui.basic.button {
+  border: 1px solid @dp-greyscale-250;
+}
+
+.ui.basic.buttons .button:hover,
+.ui.basic.button:hover,
+.ui.basic.buttons .button:active,
+.ui.basic.button:active,
+.ui.basic.buttons .active.button,
+.ui.basic.active.button {
+  border-color: @dp-sonic-primary;
+}
