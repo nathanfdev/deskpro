@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Designer;
 
 use Application\DeskPRO\Entity\Blob;
@@ -46,6 +42,8 @@ class AdvancedEditsManager
 {
     const CUSTOM_HEADER_TEMPLATE_NAME = 'Theme:Internal:custom-header.html.twig';
     const CUSTOM_FOOTER_TEMPLATE_NAME = 'Theme:Internal:custom-footer.html.twig';
+    const MAIN_SCSS_ASSET_NAME        = 'main.scss';
+    const MAIN_SCSS_ASSET_TAG         = 'main';
     const CUSTOM_SCSS_ASSET_NAME      = 'custom-styles.scss';
     const CUSTOM_SCSS_ASSET_TAG       = 'custom_style';
     const CUSTOM_JS_ASSET_NAME        = 'custom-javascript.js';
@@ -72,17 +70,26 @@ class AdvancedEditsManager
     private $twig;
 
     /**
+     * @var string
+     */
+    private $mainScssPath;
+
+    /**
+     * Constructor.
+     *
      * @param EntityManager     $em
      * @param ThemeSet          $theme_set
      * @param ThemeSet          $edit_theme_set
      * @param \Twig_Environment $twig
+     * @param string            $mainScssPath
      */
-    public function __construct(EntityManager $em, ThemeSet $theme_set, ThemeSet $edit_theme_set, \Twig_Environment $twig)
+    public function __construct(EntityManager $em, ThemeSet $theme_set, ThemeSet $edit_theme_set, \Twig_Environment $twig, $mainScssPath)
     {
         $this->em             = $em;
         $this->theme_set      = $theme_set;
         $this->edit_theme_set = $edit_theme_set;
         $this->twig           = $twig;
+        $this->mainScssPath   = $mainScssPath;
     }
 
     /**
@@ -96,8 +103,11 @@ class AdvancedEditsManager
         if (array_key_exists('footer', $data)) {
             $this->saveTemplate(self::CUSTOM_FOOTER_TEMPLATE_NAME, $data['footer']);
         }
-        if (array_key_exists('scss', $data)) {
-            $this->saveThemeSetAsset(self::CUSTOM_SCSS_ASSET_NAME, self::CUSTOM_SCSS_ASSET_TAG, $data['scss']);
+        if (array_key_exists('custom_scss', $data)) {
+            $this->saveThemeSetAsset(self::CUSTOM_SCSS_ASSET_NAME, self::CUSTOM_SCSS_ASSET_TAG, $data['custom_scss']);
+        }
+        if (array_key_exists('main_scss', $data)) {
+            $this->saveThemeSetAsset(self::MAIN_SCSS_ASSET_NAME, self::MAIN_SCSS_ASSET_TAG, $data['main_scss']);
         }
         if (array_key_exists('javascript', $data)) {
             $this->saveThemeSetAsset(self::CUSTOM_JS_ASSET_NAME, self::CUSTOM_JS_ASSET_TAG, $data['javascript']);
@@ -110,10 +120,11 @@ class AdvancedEditsManager
     public function get()
     {
         $data = [
-            'header'     => $this->findOrCreateTemplate(self::CUSTOM_HEADER_TEMPLATE_NAME)->getTemplateCode(),
-            'footer'     => $this->findOrCreateTemplate(self::CUSTOM_FOOTER_TEMPLATE_NAME)->getTemplateCode(),
-            'scss'       => $this->getEditThemeSetScss(),
-            'javascript' => $this->getEditThemeSetJs(),
+            'header'      => $this->findOrCreateTemplate(self::CUSTOM_HEADER_TEMPLATE_NAME)->getTemplateCode(),
+            'footer'      => $this->findOrCreateTemplate(self::CUSTOM_FOOTER_TEMPLATE_NAME)->getTemplateCode(),
+            'main_scss'   => $this->getMainScss(),
+            'custom_scss' => $this->getEditThemeSetScss(),
+            'javascript'  => $this->getEditThemeSetJs(),
         ];
 
         return $data;
@@ -122,10 +133,22 @@ class AdvancedEditsManager
     /**
      * @return string
      */
+    public function getMainScss()
+    {
+        $scss = (string) $this->findOrCreateBlobStorage(self::MAIN_SCSS_ASSET_NAME, self::MAIN_SCSS_ASSET_TAG)->getData();
+        if (empty(trim($scss))) {
+            $scss = file_get_contents($this->mainScssPath);
+        }
+
+        return $scss;
+    }
+
+    /**
+     * @return string
+     */
     public function getEditThemeSetScss()
     {
-        $scss = (string) $this->findOrCreateBlobStorage(self::CUSTOM_SCSS_ASSET_NAME, self::CUSTOM_SCSS_ASSET_TAG)
-            ->getData();
+        $scss = (string) $this->findOrCreateBlobStorage(self::CUSTOM_SCSS_ASSET_NAME, self::CUSTOM_SCSS_ASSET_TAG)->getData();
 
         if (empty(trim($scss))) {
             $scss = <<<CODE

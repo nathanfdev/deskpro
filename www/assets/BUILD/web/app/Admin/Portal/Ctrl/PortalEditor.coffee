@@ -9,7 +9,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 
       @recompiling = false
-      @advanced = {header: '', footer: '', scss: '', javascript: ''}
+      @advanced = {header: '', footer: '', main_scss: '', custom_scss: '', javascript: ''}
       @available_themes = [
         {id: "standard", title: "Standard"},
         {id: "sidebar", title: "Sidebar"}
@@ -232,23 +232,28 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @selected_template = null
       @selected_template_info_loaded = false
 
-    openCustomCssEditor: () =>
+    openCssEditor: (type) =>
       @css_template_selected = true
       @$http.get('/portal/api/style/edit-theme-set/advanced-edits').success((data) =>
         @css_template_info = {
           loaded: true,
-          code: data.scss
+          type: type,
+          code: data[type]
         }
       )
 
-    cancelCustomCss: () =>
+    cancelCssEditor: () =>
       @css_template_selected = false
+      @css_template_info = false
 
-    saveCustomCss: () =>
+    saveCssEditor: () =>
+      data = {};
+      data[@css_template_info.type] = @css_template_info.code;
+
       @$http({
         method: 'PUT',
         url: '/portal/api/style/edit-theme-set/advanced-edits',
-        data: angular.toJson({scss: @css_template_info.code})
+        data: angular.toJson(data)
       })
       .error(@serverError)
       .then(() =>

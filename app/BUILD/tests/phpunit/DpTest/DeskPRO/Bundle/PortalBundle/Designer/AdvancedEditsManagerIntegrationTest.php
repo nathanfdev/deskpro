@@ -64,10 +64,11 @@ class AdvancedEditsManagerIntegrationTest extends PortalTestCase
      * @var array Dummy advanced edits data
      */
     private $dummy_data = [
-        'header'     => '<h1>Custom header</h1>',
-        'footer'     => '<b>Custom footer</b>',
-        'scss'       => '.dp-dummy-style { border-left: 42px dotted purple; }',
-        'javascript' => 'console.log("Hello, custom JS!");',
+        'header'      => '<h1>Custom header</h1>',
+        'footer'      => '<b>Custom footer</b>',
+        'main_scss'   => 'body { background: #fff; color: #000; }',
+        'custom_scss' => '.dp-dummy-style { border-left: 42px dotted purple; }',
+        'javascript'  => 'console.log("Hello, custom JS!");',
     ];
 
     /**
@@ -83,7 +84,7 @@ class AdvancedEditsManagerIntegrationTest extends PortalTestCase
         $this->em->persist($this->edit_theme_set);
         $this->em->flush();
 
-        $this->service = new AdvancedEditsManager($this->em, new ThemeSet(), $this->edit_theme_set, $twig);
+        $this->service = new AdvancedEditsManager($this->em, new ThemeSet(), $this->edit_theme_set, $twig, __DIR__.'/scss/main.scss');
     }
 
     /**
@@ -132,6 +133,17 @@ class AdvancedEditsManagerIntegrationTest extends PortalTestCase
     /**
      * @return null|ThemeSetAsset
      */
+    private function findMainScss()
+    {
+        return $this->em->getRepository(ThemeSetAsset::class)->findOneBy([
+            'name'      => AdvancedEditsManager::MAIN_SCSS_ASSET_NAME,
+            'theme_set' => $this->edit_theme_set,
+        ]);
+    }
+
+    /**
+     * @return null|ThemeSetAsset
+     */
     private function findCustomJs()
     {
         return $this->em->getRepository(ThemeSetAsset::class)->findOneBy([
@@ -165,8 +177,11 @@ class AdvancedEditsManagerIntegrationTest extends PortalTestCase
         if ($footer = $this->findCustomFooter()) {
             $this->em->remove($footer);
         }
-        if ($scss = $this->findCustomScss()) {
-            $this->em->remove($scss);
+        if ($mainScss = $this->findMainScss()) {
+            $this->em->remove($mainScss);
+        }
+        if ($customScss = $this->findCustomScss()) {
+            $this->em->remove($customScss);
         }
         if ($js = $this->findCustomJs()) {
             $this->em->remove($js);
@@ -183,6 +198,15 @@ class AdvancedEditsManagerIntegrationTest extends PortalTestCase
     {
         $this->saveDummyData();
         $this->assertEquals($this->service->get(), $this->dummy_data);
+    }
+
+    /**
+     * @test
+     */
+    public function it_should_get_main_scss_from_filesystem()
+    {
+        $this->removeCustomEdits();
+        $this->assertEquals($this->service->getMainScss(), 'body { background: #fff; }');
     }
 
     /**
@@ -265,7 +289,7 @@ class AdvancedEditsManagerIntegrationTest extends PortalTestCase
     public function it_should_update_contents_of_the_existing_custom_SCSS_ThemeSetAsset()
     {
         $this->saveDummyData();
-        $this->dummy_data['scss'] = 'Modified SCSS';
+        $this->dummy_data['custom_scss'] = 'Modified SCSS';
         $this->saveDummyData();
 
         $this->assertNotNull($scss = $this->findCustomScss());
