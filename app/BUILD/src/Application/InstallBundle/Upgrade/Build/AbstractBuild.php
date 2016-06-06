@@ -412,8 +412,6 @@ abstract class AbstractBuild
             FROM templates
         ');
 
-        $twig = $this->container->get('twig');
-
         foreach ($templates as $tpl) {
             $this->out("Recompile template #{$tpl['id']}: {$tpl['name']}");
             $name         = $tpl['name'];
@@ -423,6 +421,13 @@ abstract class AbstractBuild
                 if (strpos($name, 'DeskPRO:emails_') !== false || strpos($name, 'DeskPRO:custom_emails_') !== false) {
                     $proc         = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
                     $compile_code = $proc->process($compile_code, $name);
+                    $twig         = $this->container->get('templating.email.twig');
+                } elseif (strpos($name, 'Theme:') !== false) {
+                    $twig = $this->container->get('twig');
+                } else {
+                    // skip, we dont know what type of template it is
+                    // so we dont know which engine to use
+                    continue;
                 }
 
                 $compile_code = preg_replace('#\{%\s*include\s+(.*?)\s*%\}#', '{% include $1 ignore missing %}', $compile_code);
