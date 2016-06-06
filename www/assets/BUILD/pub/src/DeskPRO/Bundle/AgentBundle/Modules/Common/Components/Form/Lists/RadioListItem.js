@@ -16,7 +16,7 @@ export class RadioListItem extends React.Component {
 
   componentWillReceiveProps(props) {
     this.setState({
-      checked: !!props.checked-[]
+      checked: !!props.checked
     });
   }
 
