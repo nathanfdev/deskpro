@@ -6,7 +6,9 @@
 
   "//": "The css and js paths are URLs relative to the style guide destination.",
   "css": [
-    "../../semantic-ui/semantic.css"
+    "../../semantic-ui/semantic.css",
+    "../styleguide-fix.css",
+    "./new-admin.css"
   ],
   "js": [],
 

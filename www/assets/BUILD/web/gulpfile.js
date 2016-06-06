@@ -28,7 +28,7 @@ var gulp         = require('gulp'),
 //# Task Runners
 //######################################################################################################################
 
-gulp.task('default', ['less', 'sass', 'semantic-copy', 'sassdoc', 'cpjs', 'loader'], function() {
+gulp.task('default', ['less', 'sass', 'semantic-copy', 'less-dp-semantic', 'sassdoc', 'cpjs', 'loader'], function() {
     // hacking coffee here to run after all others
     // because something in the other tasks corrupts
     // the stream and causes coffee compile to fail
@@ -40,7 +40,7 @@ gulp.task('default', ['less', 'sass', 'semantic-copy', 'sassdoc', 'cpjs', 'loade
         './app/DeskPRO*/**/*.coffee'
     ]);
 });
-gulp.task('prod', ['coffee', 'less', 'sass', 'sassdoc', 'cpjs', 'semantic-copy', 'loader', 'rjs', 'rjs-agent']);
+gulp.task('prod', ['coffee', 'less', 'sass', 'sassdoc', 'cpjs', 'semantic-copy', 'less-dp-semantic', 'loader', 'rjs', 'rjs-agent']);
 
 
 //######################################################################################################################
@@ -62,7 +62,8 @@ deskpro.watches = [
   ['./app/**/Resources/style/*.scss', ['sass-app']],
   ['./app/**/*.js', ['cpjs-all']],
   ['./loader/*', ['loader-requirejs']],
-  ['./stylesheets-less/semantic-ui/**', ['semantic-watch']]
+  ['./stylesheets-less/semantic-ui/**', ['semantic-watch']],
+  ['./stylesheets-less/admin/**', ['less-dp-semantic-app']]
 ];
 
 //------------------------------
@@ -251,6 +252,16 @@ gulp.task('less-app', function () {
 gulp.task('less', ['clean'], function () {
   deskpro.taskGen.copyThemeConfig();
   return deskpro.taskGen.lessCss('./app/**/Resources/style/*-style.less');
+});
+
+gulp.task('less-dp-semantic-app', function () {
+  deskpro.taskGen.copyThemeConfig();
+  return deskpro.taskGen.lessCss('./stylesheets-less/admin/*.less', './app-build/Admin/Resources/style');
+});
+
+gulp.task('less-dp-semantic', ['clean'], function () {
+  deskpro.taskGen.copyThemeConfig();
+  return deskpro.taskGen.lessCss('./stylesheets-less/admin/*.less', './app-build/Admin/Resources/style');
 });
 
 //------------------------------
