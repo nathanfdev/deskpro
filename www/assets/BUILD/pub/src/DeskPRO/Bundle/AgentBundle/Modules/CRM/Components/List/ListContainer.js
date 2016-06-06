@@ -1,22 +1,30 @@
 import React, { Component, PropTypes } from 'react';
 import { List } from './List';
-import { currentViewModeSelector, currentContentSelector, isLoadedSelector, paginationSelector, orgFieldsSelector,
-  peopleFieldsSelector } from '../../Selectors/list';
+import {
+  currentListParamsSelector,
+  currentViewModeSelector,
+  currentContentSelector,
+  isLoadedSelector,
+  paginationSelector,
+  orgFieldsSelector,
+  peopleFieldsSelector
+} from '../../Selectors/list';
 import { selectedSelector } from '../../../Application/Selectors/massActions';
 import { applyParams } from '../../Actions/crmListActions';
 import { connect } from 'react-redux';
 
-@connect(state => ({
-  isLoaded:        isLoadedSelector(state),
-  pagination:      paginationSelector(state),
-  selected:        selectedSelector(state),
-  currentViewMode: currentViewModeSelector(state),
-  content:         currentContentSelector(state),
-  peopleFields:    peopleFieldsSelector(state),
-  orgFields:       orgFieldsSelector(state)
-}), {
-  applyParams
-})
+@connect(
+  state => ({
+    isLoaded:          isLoadedSelector(state),
+    pagination:        paginationSelector(state),
+    selected:          selectedSelector(state),
+    currentListParams: currentListParamsSelector(state),
+    currentViewMode:   currentViewModeSelector(state),
+    content:           currentContentSelector(state),
+    peopleFields:      peopleFieldsSelector(state),
+    orgFields:         orgFieldsSelector(state)
+  }),
+  { applyParams })
 
 export class ListContainer extends Component {
 

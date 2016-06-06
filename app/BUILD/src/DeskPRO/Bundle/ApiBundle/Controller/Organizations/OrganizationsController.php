@@ -48,7 +48,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @ApiModes("all")
  * @Rest\Route("/organizations")
- * @ApiDoc(target="all", section="Organizations", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Organization")
+ * @ApiDoc(target="all", section="Organizations", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Organization\Organization")
  * @ApiDoc(
  *     target="listAction,countAction",
  *     filters={
@@ -92,6 +92,20 @@ class OrganizationsController extends CrudController
     public function getTicketsAction(Request $request, $id)
     {
         return TicketsController::subRequestSearch($this->getKernel(), $request, ['organization' => $id]);
+    }
+
+    /**
+     * Get data for export to CSV.
+     *
+     * @Rest\Get("/csv")
+     *
+     * @param Request $request
+     *
+     * @return \FOS\RestBundle\View\View
+     */
+    public function csvAction(Request $request)
+    {
+        return $this->listAction($request);
     }
 
     /**

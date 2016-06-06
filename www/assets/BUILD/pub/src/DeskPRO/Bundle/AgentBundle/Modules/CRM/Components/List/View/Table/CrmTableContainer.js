@@ -44,7 +44,7 @@ export class CrmTableContainer extends Component {
     const { content, organizations, people, orderBy, orderDir } = this.props;
     const { peopleFields, orgFields } = this.props;
 
-    if (content === 'organizations') {
+    if (content === 'Organization') {
       return (
         <OrganizationsTable
           organizations={organizations}

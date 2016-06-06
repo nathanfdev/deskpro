@@ -26,13 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
-namespace DeskPRO\Bundle\AppBundle\Serializer\Model;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Organization;
 
 use Application\DeskPRO\Entity\CustomDataAbstract;
+use Application\DeskPRO\Entity\Organization as OrganizationEntity;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -169,10 +166,10 @@ class Organization
     /**
      * Constructor.
      *
-     * @param \Application\DeskPRO\Entity\Organization $organization
-     * @param int                                      $chatsCount
+     * @param OrganizationEntity $organization
+     * @param int                $chatsCount
      */
-    public function __construct(\Application\DeskPRO\Entity\Organization $organization, $chatsCount)
+    public function __construct(OrganizationEntity $organization, $chatsCount)
     {
         $this->id             = $organization->getId();
         $this->name           = $organization->getName();

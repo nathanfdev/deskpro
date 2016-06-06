@@ -1,4 +1,4 @@
-import { createAction } from 'Ampliflux';
+import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { flattenBatchResponses } from 'DeskPRO/Component/Util/Api';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 
