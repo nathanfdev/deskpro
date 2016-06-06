@@ -61,10 +61,10 @@ class mPdfRenderer implements PdfRendererInterface
         }
 
         if (!defined('_MPDF_TTFONTDATAPATH')) {
-            $tmpDir = $tmpRootDir.'/mpdf/ttfontdata';
+            $tmpDir = $tmpRootDir.'/mpdf_ttfontdata';
             if (!is_dir($tmpDir)) {
                 if (!@mkdir($tmpDir, 0777, true)) {
-                    $tmpDir = sys_get_temp_dir().'/mpdf/ttfontdata';
+                    $tmpDir = sys_get_temp_dir().'/mpdf_ttfontdata';
                     if (!is_dir($tmpDir)) {
                         @mkdir($tmpDir, 0777, true);
                     }
