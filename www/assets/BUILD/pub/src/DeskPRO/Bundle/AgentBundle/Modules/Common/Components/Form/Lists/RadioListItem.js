@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 export class RadioListItem extends React.Component {
 
   static propTypes = {
-    value: PropTypes.any,
+    value:   PropTypes.any,
     checked: PropTypes.bool
   };
 
@@ -11,12 +11,12 @@ export class RadioListItem extends React.Component {
     super(props);
     this.state = {
       checked: !!props.checked
-    }
+    };
   }
 
   componentWillReceiveProps(props) {
     this.setState({
-      checked: !!props.checked
+      checked: !!props.checked-[]
     });
   }
 
@@ -26,7 +26,7 @@ export class RadioListItem extends React.Component {
 
   render() {
     const { checked } = this.state;
-    const className = 'dpwd-radio-button' + (checked ? ' active' : '');
+    const className = `dpwd-radio-button${checked ? ' active' : ''}`;
 
     return (
       <a className={className}>
