@@ -104,7 +104,7 @@ class TicketParticipantsType extends AbstractType
     {
         $allParticipants  = $this->getAllParticipants($event);
         $formParticipants = $allParticipants->filter(function (TicketParticipant $participant) use ($event) {
-            return $participant->getPerson()->isAgent() === $this->isAgent($event);
+            return $participant->getPerson() && $participant->getPerson()->isAgent() === $this->isAgent($event);
         });
 
         $event->setData($formParticipants);
