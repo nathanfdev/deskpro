@@ -34,7 +34,6 @@ namespace Application\DeskPRO\Feedback;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Feedback;
-use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Translate\Translate;
@@ -107,9 +106,10 @@ class FeedbackModerate implements PersonContextInterface
     {
         $feedback->setIsReviewed(true);
         if ($feedback->getStatus() === Feedback::STATUS_HIDDEN) {
+            $statusCategory = $this->feedbackDataService->getFeedbackFirstStatusCategoryByType();
             $feedback
                 ->setStatus(Feedback::STATUS_ACTIVE)
-                ->setStatusCategory($this->getDefaultStatusCategory());
+                ->setStatusCategory($statusCategory);
         }
 
         $this->em->getConnection()->beginTransaction();
@@ -143,14 +143,6 @@ class FeedbackModerate implements PersonContextInterface
     }
 
     /**
-     * @return FeedbackStatusCategory
-     */
-    private function getDefaultStatusCategory()
-    {
-        return $this->feedbackDataService->getFeedbackFirstStatusCategoryByType(FeedbackStatusCategory::STATUS_ACTIVE);
-    }
-
-    /**
      * @param Feedback $feedback
      * @param string   $reason
      *
@@ -162,13 +154,10 @@ class FeedbackModerate implements PersonContextInterface
         if (!$reason) {
             $reason = null;
         }
-        $feedback->setIsReviewed(true);
-        $feedback->setStatus(Feedback::STATUS_HIDDEN);
-        $feedback->setHiddenStatus(Feedback::HIDDEN_STATUS_UNPUBLISHED);
 
         $this->em->getConnection()->beginTransaction();
         try {
-            $this->em->persist($feedback);
+            $this->em->remove($feedback);
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
