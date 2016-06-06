@@ -11,10 +11,12 @@ Feature: /tickets endpoint
       | #         | Name                  |
       | microsoft | Microsoft Corporation |
     And only the following Ticket records exist:
-      | #         | Subject               | Agent   | Organization |
-      | ticket1   | First Demo Ticket     | {admin} | {microsoft}  |
-      | ticket2   | Second Demo Ticket    | {agent} |              |
-      | ticket3   | Third Demo Ticket     | {agent} |              |
+      | #         | Subject               | Agent   | Organization | Status         | Hidden status |
+      | ticket1   | First Demo Ticket     | {admin} | {microsoft}  | awaiting_user  |               |
+      | ticket2   | Second Demo Ticket    | {agent} |              | awaiting_agent |               |
+      | ticket3   | Third Demo Ticket     | {agent} |              | resolved       |               |
+      | ticket4   | Fourth Demo Ticket    | {agent} |              | archived       |               |
+      | ticket5   | Fifth Demo Ticket     | {agent} |              | hidden         | deleted       |
     And I have a Department record referenced as department
     And there are no custom ticket fields defined
 
@@ -83,9 +85,15 @@ Feature: /tickets endpoint
     And the JSON node "linked" should have 0 elements
 
   Scenario: I retrieve list of tickets
-    When I send a GET request to "/api/v2/tickets?order_by=id&order_dir=desc"
+    When I send a GET request to "/api/v2/tickets"
     Then the response status code should be 200
-    And the JSON node "data" should have 3 elements
+    And the JSON node "data" should have 4 elements
+    And the JSON node "linked" should have 0 elements
+
+  Scenario: I retrieve list of hidden and archived tickets
+    When I send a GET request to "/api/v2/tickets?status[]=hidden&status[]=archived"
+    Then the response status code should be 200
+    And the JSON node "data" should have 2 elements
     And the JSON node "linked" should have 0 elements
 
   Scenario: I retrieve a ticket side loading people and organizations
@@ -102,10 +110,11 @@ Feature: /tickets endpoint
     When I send a GET request to "/api/v2/tickets?order_by=id&order_dir=desc&include=person"
     And the response status code should be 200
     And the JSON node "meta" should exist
-    And the JSON node "data" should have 3 elements
-    And the JSON node "data[0].subject" should be equal to "Third Demo Ticket"
-    And the JSON node "data[1].subject" should be equal to "Second Demo Ticket"
-    And the JSON node "data[2].subject" should be equal to "First Demo Ticket"
+    And the JSON node "data" should have 4 elements
+    And the JSON node "data[0].subject" should be equal to "Fourth Demo Ticket"
+    And the JSON node "data[1].subject" should be equal to "Third Demo Ticket"
+    And the JSON node "data[2].subject" should be equal to "Second Demo Ticket"
+    And the JSON node "data[3].subject" should be equal to "First Demo Ticket"
     And the JSON node "linked" should have 1 element
     And the JSON node "linked.person" should have 2 elements
     And the JSON node "linked.person.{admin}.primary_email" should be equal to "admin@deskpro.com"

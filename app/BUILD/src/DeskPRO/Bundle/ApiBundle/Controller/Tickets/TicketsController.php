@@ -173,6 +173,11 @@ class TicketsController extends AbstractTicketsController
                 $orderDir = 'asc';
             }
 
+            // Ticket status filter
+            if (!array_key_exists('status', $params)) {
+                $params['status'] = ['awaiting_user', 'awaiting_agent', 'resolved', 'archived'];
+            }
+
             $term = $this->get('dp.app.term_engine.tickets_select_criteria')->createTerm($params);
 
             /** @var DbalTermEngine $engine */

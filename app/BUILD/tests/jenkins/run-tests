@@ -27,19 +27,24 @@ jenkins/tag-features --tag=parallel --num=$PORTAL_THREADS_NUM --path=../features
 jenkins/tag-features --tag=new-parallel --num=$API_NEW_THREADS_NUM --path=../features/api
 
 #################################################
-# RUN 6 SMALL TEST SUITES IN PARALLEL + API @new
+# RUNNING SINGLE THREADS TO WARM UP ALL CACHES
 #################################################
+
+SECONDS=0
+echo "---"
 
 # Hack: see https://trello.com/c/xv8IRWTo/382-test-is-failing-when-running-for-the-first-time
 bin/phpunit phpunit/DpTest/Application/EmailBundle/Templating/EngineTest.php > /dev/null
 # ---
 
-SECONDS=0
-echo "---"
 echo "Running a single system-api behat thread to generate caches w/o concurrency"
 (export DP_PARALLEL_TESTING_PROCESS_NUM=1 && bin/behat --profile=system-api --tags="~@skip-ci" --verbose &> "$LOGS_DIR/behat-system-api.txt") &
 wait
 echo "--> Done in $SECONDS seconds"
+
+#################################################
+# RUN 6 SMALL TEST SUITES IN PARALLEL + API @new
+#################################################
 
 SECONDS=0
 echo "Running small test suites in parallel (phpunit, phpspec, jest, beaht install/production)"
