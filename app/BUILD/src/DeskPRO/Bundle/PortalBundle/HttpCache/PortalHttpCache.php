@@ -122,6 +122,9 @@ class PortalHttpCache extends EventDispatchingHttpCache
      */
     protected function getOptions()
     {
-        return ['debug' => true];
+        /* @var \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
+
+        return ['debug' => $DP_ENV->isDebug()];
     }
 }
