@@ -727,7 +727,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
      */
     public function addComment($comment)
     {
-        if ($comment->getStatus() == CommentAbstract::STATUS_VISIBLE) {
+        if ($comment->getStatus() === CommentAbstract::STATUS_VISIBLE) {
             $this->setModelField('num_comments', $this->num_comments + 1);
             $this->setDateUpdated();
         }

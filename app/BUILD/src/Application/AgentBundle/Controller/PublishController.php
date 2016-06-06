@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -215,16 +216,16 @@ class PublishController extends AbstractController
 
         /** @var CommentAbstract $comment */
         $comment = $this->em->find($entity, $comment_id);
-        $comment->setStatus(CommentAbstract::STATUS_VISIBLE);
-
         /** @var ContentAbstract $object */
-        $object = $comment->getObject();
-        //TODO should be using object getter but it doesn't work for obscure reasons
-        $object->setNumComments($object->num_comments + 1);
-
+        $object    = $comment->getObject();
+        $oldStatus = $comment->getStatus();
+        $comment->setStatus(CommentAbstract::STATUS_VISIBLE);
+        if ($oldStatus !== CommentAbstract::STATUS_VISIBLE) {
+            $object->addComment($comment);
+        }
         $this->em->persist($comment);
         $this->em->persist($object);
-        $this->em->flush();
+        $this->em->flush([$comment, $object]);
 
         $this->_sendCommentApprovedNotification($comment);
 
