@@ -9,4 +9,10 @@ services:
     class: DeskPRO\Bundle\AppBundle\AntiAbuse\EventListener\RateLimitEventListener
     arguments: ["@doctrine.orm.default_entity_manager", "@settings_resolver", "@logger"]
     tags:
-      - { name: kernel.event_subscriber }
+      - { name: kernel.event_subscriber, priority: 8 }
+
+  anti_abuse.listener.rate_limit_bypass:
+    class: DeskPRO\Bundle\AppBundle\AntiAbuse\EventListener\RateLimitBypassEventListener
+    arguments: ["@request_stack", "@logger"]
+    tags:
+      - { name: kernel.event_subscriber, priority: 255 }
