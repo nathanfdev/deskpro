@@ -63,30 +63,33 @@ export class ChoiceList extends React.Component {
     const isChecked = !this.refs[`child-${this.selected}`].state.checked;
     const selected  = isChecked ? this.state.selected.add(index) : this.state.selected.delete(index);
     this.setState({ selected });
-    this.props.onChange && this.props.onChange(selected);
+    if (this.props.onChange) {
+      this.props.onChange(selected);
+    }
   }
 
   onChangeSingle(index) {
     const selected = Immutable.Set([index]);
     this.setState({ selected });
-    this.props.onChange && this.props.onChange(selected);
+    if (this.props.onChange) {
+      this.props.onChange(selected);
+    }
   }
 
-  renderItem(option, index) {
+  renderItem = (option, index) => {
     const checked = this.state.selected && this.state.selected.has(index);
 
     return (
       <li key={index} className="choice-list-item" onClick={this.onChange.bind(this, index)}>
         {React.createElement(this.listItem, {
           checked,
-
           onChange: this.onChange.bind(this, index),
           ref:      `child-${index}`,
           value:    option
         })}
       </li>
     );
-  }
+  };
 
   render() {
     const { values } = this.state;
@@ -95,7 +98,10 @@ export class ChoiceList extends React.Component {
 
     return (
       <ul className="m-5">
-        {values.map(render)}
+        {Immutable.Map.isMap(values)
+          ? values.entrySeq().map(([id, item]) => render(item, id))
+          : values.map(render)
+        }
       </ul>
     );
   }

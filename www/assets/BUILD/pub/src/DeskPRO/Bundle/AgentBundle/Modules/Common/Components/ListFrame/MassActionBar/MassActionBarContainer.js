@@ -35,22 +35,9 @@ export class MassActionBarContainer extends Component {
     const isActive     = params && params.size > 0;
     const renderByType = (item, index) => {
       if (item.type === 'button') {
-        return (
-          <SubmitButton
-            label={item.label}
-            key={index}
-            onClick={item.onClick}
-            />
-        );
+        return <SubmitButton label={item.label} key={index} onClick={item.onClick} />;
       }
-      return (
-        <MassActionDropdown
-          key={index}
-          id={index}
-          item={item}
-          currentParams={params}
-          />
-      );
+      return <MassActionDropdown key={index} id={index} item={item} currentParams={params} />;
     };
 
     return (
@@ -59,18 +46,13 @@ export class MassActionBarContainer extends Component {
         {isActive && <li>
           <hr />
         </li>}
-        {isActive &&
-        <SubmitButton
-          label="Go"
-          onClick={this.submit}
-          isActive={isActive}
-          />
+        {isActive
+          ? <SubmitButton label="Go" onClick={this.submit} isActive={isActive} />
+          : null
         }
-        {isActive &&
-        <SubmitButton label="Cancel"
-          onClick={this.cancel}
-          isActive={isActive}
-          />
+        {isActive
+          ? <SubmitButton label="Cancel" onClick={this.cancel} isActive={isActive} />
+          : null
         }
 
       </ul>
