@@ -164,16 +164,33 @@ export class CardCheckbox extends Component {
 export class CardReset extends Component {
 
   static propTypes = {
-    isChanged: PropTypes.bool,
-    onReset:   PropTypes.func
+    onReset: PropTypes.func.isRequired
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = { changed: false };
+  }
+
+  shouldComponentUpdate(props, state) {
+    return state.changed !== this.state.changed;
+  }
+
+  onChange = () => {
+    this.setState({ changed: true });
+  };
+
+  onReset = () => {
+    this.setState({ changed: false });
+    this.props.onReset();
   };
 
   render() {
-    const { isChanged, onReset } = this.props;
+    const { changed } = this.state;
 
     return (
-      <div className="dpm--card-reset" onClick={onReset}>
-        <i className={classNames('fa fa-trash', { active: isChanged })} />
+      <div className="dpm--card-reset" onClick={this.onReset}>
+        <i className={classNames('fa fa-trash', { active: changed })} />
       </div>
     );
   }

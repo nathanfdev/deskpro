@@ -25,10 +25,6 @@ export class NewTaskButton extends React.Component {
     });
   };
 
-  isChanged = (val) => {
-    this.cardChanged = val;
-  };
-
   renderAddTaskButton() {
     return (
       <div className="card-add">
@@ -41,7 +37,7 @@ export class NewTaskButton extends React.Component {
     return (
       <ClickOut onClickOut={this.onCloseNewTaskForm} ignoreNodes={[this.refs.button, '.popup']}>
         {this.state.newTaskExpanded
-          ? <TaskCardNew ref="card" onClose={this.onCloseNewTaskForm} isChanged={this.isChanged} />
+          ? <TaskCardNew ref="card" onClose={this.onCloseNewTaskForm} />
           : null
         }
       </ClickOut>

@@ -70,13 +70,11 @@ export class TaskCardNew extends React.Component {
     }
   };
 
-  onAssign = (assignee) => {
-    return new Promise(resolve => {
-      this.model.assignee = assignee;
-      this.refs.reset.onChange();
-      resolve();
-    });
-  };
+  onAssign = (assignee) => new Promise(resolve => {
+    this.model.assignee = assignee;
+    this.refs.reset.onChange();
+    resolve();
+  });
 
   onSave = () => {
     if (!this.model.title) return;
@@ -105,43 +103,40 @@ export class TaskCardNew extends React.Component {
   };
 
   render() {
-    const { submit, isChanged } = this.props;
+    const { submit } = this.props;
     const { assignee } = this.model;
 
     return (
       <Card type="task">
         <SaveTaskButton onClick={this.onSave} submit={submit} />
-        <CardReset ref="reset" onReset={this.onReset} isChanged={isChanged} />
-        <CardLine>
-          <CardLineLeft>
-            <div className="dpwd--card-title">
-              <TitleForm value={this.model.title} onChange={this.onChange.bind(this, 'title')} />
-            </div>
-          </CardLineLeft>
-          <CardLineRight>
-            <AssignButton ref="assignee" onSetEditing={this.onSetEditing} value={assignee} onChange={this.onAssign} />
-          </CardLineRight>
-        </CardLine>
+        <CardReset ref="reset" onReset={this.onReset} />
 
-        <CardLine>
-          <CardLineLeft>
-            <div className="dpwd--card-line-item-container">
-              <DateDue value={this.model.due}
-                onChange={val => this.onChange('due', val)}
-                onSetEditing={this.onSetEditing}
-                openBySingleClick
-              />
-            </div>
-            <div className="dpwd--card-line-item-container">
-              <CardProjectContainer value={this.model.project}
-                onChange={val => this.onChange('project', val)}
-                onSetEditing={this.onSetEditing}
-                openBySingleClick
-              />
-            </div>
-          </CardLineLeft>
-        </CardLine>
+        <div className="title-line">
+          <TitleForm value={this.model.title} onChange={val => this.onChange('title', val)} />
+          <div className="icon-block">
+            <AssignButton ref="assignee" onSetEditing={this.onSetEditing} value={assignee} onChange={this.onAssign} />
+          </div>
+        </div>
+
+        <div className="details-line">
+          <div className="dpwd--card-line-item-container">
+            <DateDue
+              value={this.model.due}
+              onChange={val => this.onChange('due', val)}
+              onSetEditing={this.onSetEditing}
+              openBySingleClick
+            />
+          </div>
+          <div className="dpwd--card-line-item-container">
+            <CardProjectContainer
+              value={this.model.project}
+              onChange={val => this.onChange('project', val)}
+              onSetEditing={this.onSetEditing}
+              openBySingleClick
+            />
+          </div>
+        </div>
       </Card>
-  );
+    );
   }
-  }
+}
