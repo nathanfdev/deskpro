@@ -28,6 +28,7 @@ export class List extends Component {
             peopleFields, orgFields
           } = this.props;
     const exportedFields = content === 'people' ? peopleFields.get(currentViewMode) : orgFields.get(currentViewMode);
+    const repositoryName = content === 'people' ? 'Person' : 'Organization';
 
     return (
       <ListFrameContainer>
@@ -39,7 +40,7 @@ export class List extends Component {
           <SaveAsCsv
             currentListParams={currentListParams}
             exportedFields={exportedFields.toArray()}
-            content={content}
+            content={repositoryName}
           />
           {currentViewMode === constants.VIEW_MODE_CARD ?
             <CrmCardContainer
