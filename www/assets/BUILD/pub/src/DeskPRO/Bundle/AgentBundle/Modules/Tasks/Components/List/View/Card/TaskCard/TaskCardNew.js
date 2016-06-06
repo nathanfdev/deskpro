@@ -56,6 +56,9 @@ export class TaskCardNew extends React.Component {
       }),
       project:  null
     };
+    if (this.props.isChanged) {
+      this.props.isChanged(false);
+    }
     this.forceUpdate();
   };
 
@@ -67,6 +70,9 @@ export class TaskCardNew extends React.Component {
     this.model[prop] = value;
     if (value) {
       this.refs.reset.onChange();
+    }
+    if (this.props.isChanged) {
+      this.props.isChanged(true);
     }
   };
 
