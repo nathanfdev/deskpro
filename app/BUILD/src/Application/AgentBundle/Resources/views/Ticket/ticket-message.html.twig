@@ -125,16 +125,6 @@
 								{{ message.email_source.header_to }}
 							</td>
 						</tr>
-						{% if message.email_source.parsed_headers.cc %}
-						<tr>
-							<th>{{ phrase('agent.general.ccs') }}:</th>
-							<td style="overflow: hidden;">
-								{% for email in message.email_source.parsed_headers.cc|split(',') %}
-									<span title="{{ email|trim }}">{{ email|trim }}</span><br />
-								{% endfor %}
-							</td>
-						</tr>
-						{% endif %}
 					{% endif %}
 					{% if message.ip_address %}
 						<tr>

@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
@@ -141,15 +142,19 @@ class ProcessEmailCommand extends ContainerAwareCommand
 
             $raw_source = Strings::standardEol($raw_source);
 
-            $header_end = strpos($raw_source, "\r\n\r\n");
+            $header_end = strpos($raw_source, "\n\n");
             if ($header_end === false) {
                 // Means an empty body (eg message with only subject)
                 // But we trimmed above so the \n\n sep would be trimmed off
-                $raw_source .= "\r\n\r\n";
-                $header_end = strpos($raw_source, "\r\n\r\n");
+                $raw_source .= "\n\n";
+                $header_end = strpos($raw_source, "\n\n");
             }
 
             $raw_headers = trim(substr($raw_source, 0, $header_end));
+
+            if (isset($raw_headers[4000])) {
+                $raw_headers = substr($raw_headers, 0, 4000);
+            }
 
             $reader = new EzcReader();
             $reader->setRawSource($raw_source);
