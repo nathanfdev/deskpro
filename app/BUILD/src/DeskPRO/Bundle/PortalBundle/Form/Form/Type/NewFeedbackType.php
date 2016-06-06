@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
@@ -70,17 +71,28 @@ class NewFeedbackType extends AbstractType
     private $fieldManager;
 
     /**
+     * @var HierarchyGenerator
+     */
+    private $hierarchyGenerator;
+
+    /**
      * Constructor.
      *
      * @param CaptchaDecider     $captchaDecider
      * @param LanguageManager    $languageManager
      * @param CustomFieldManager $fieldManager
+     * @param HierarchyGenerator $hierarchyGenerator
      */
-    public function __construct(CaptchaDecider $captchaDecider, LanguageManager $languageManager, CustomFieldManager $fieldManager)
-    {
-        $this->captchaDecider  = $captchaDecider;
-        $this->languageManager = $languageManager;
-        $this->fieldManager    = $fieldManager;
+    public function __construct(
+        CaptchaDecider     $captchaDecider,
+        LanguageManager    $languageManager,
+        CustomFieldManager $fieldManager,
+        HierarchyGenerator $hierarchyGenerator
+    ) {
+        $this->captchaDecider     = $captchaDecider;
+        $this->languageManager    = $languageManager;
+        $this->fieldManager       = $fieldManager;
+        $this->hierarchyGenerator = $hierarchyGenerator;
     }
 
     /**
@@ -101,13 +113,19 @@ class NewFeedbackType extends AbstractType
                     new NotBlank(),
                 ],
             ])
-            ->add('category', FeedbackCategoryType::class, [
+        ;
+
+        if ($this->hierarchyGenerator->generateForFeedbackCategories($options['person'])->countSelectable() > 0) {
+            $builder->add('category', FeedbackCategoryType::class, [
                 'person'      => $options['person'],
                 'empty_value' => $this->phrase('portal.forms.label_select'),
                 'constraints' => [
                     new NotNull(),
                 ],
-            ])
+            ]);
+        }
+
+        $builder
             ->add('custom_data', CombinedType::class, [
                 'forms' => $this->getCustomDataForms($options),
             ])

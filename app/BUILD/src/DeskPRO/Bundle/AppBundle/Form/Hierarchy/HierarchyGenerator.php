@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Hierarchy;
 
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
@@ -231,7 +232,7 @@ class HierarchyGenerator
      * @param Person $person
      * @param Ticket $ticket
      *
-     * @return Hierarchy|null
+     * @return Hierarchy
      */
     public function generateTicketDepartmentsHierarchy(Person $person, Ticket $ticket = null)
     {
@@ -353,7 +354,7 @@ class HierarchyGenerator
     /**
      * @param Person $person
      *
-     * @return mixed
+     * @return Hierarchy
      */
     public function generateForFeedbackCategories(Person $person)
     {
