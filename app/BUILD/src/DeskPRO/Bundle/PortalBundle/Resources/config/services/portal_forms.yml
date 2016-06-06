@@ -104,11 +104,6 @@ services:
     tags:
       - { name: form.type, alias: feedback_attachment_collection }
 
-  form.feedback_category:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\FeedbackCategoryType
-    tags:
-      - { name: form.type, alias: feedback_category }
-
   form.request_password_reset:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PasswordResetRequestType
     tags:
