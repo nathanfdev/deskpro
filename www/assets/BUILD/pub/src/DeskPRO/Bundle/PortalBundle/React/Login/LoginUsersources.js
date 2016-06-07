@@ -18,10 +18,8 @@ export class LoginUsersources extends React.Component {
       <div>
         {_.map(usersources, (us) =>
           <div key={us.id}>
-            <a
-              href={portalUrlGenerator.path('/login/authenticate/' + us.id)}
-              className={us.classes.join(' ')}>
-              { us.icon ? (<i className={us.icon}></i>) : null }
+            <a href={portalUrlGenerator.path(`/login/authenticate/${us.id}`)} className={us.classes.join(' ')}>
+              {us.icon && <i className={us.icon} />}
               <span> {us.text}</span>
             </a>
           </div>
