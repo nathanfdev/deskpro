@@ -28,9 +28,17 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
+/**
+ * Class ApiManController.
+ *
+ * @ApiUserContext("open")
+ */
 class ApiManController extends BaseController
 {
     /**
@@ -43,5 +51,17 @@ class ApiManController extends BaseController
         $response->headers->set('Content-Type', 'text/html');
 
         return $response;
+    }
+
+    /**
+     * @Rest\Get("/doc", name="api_doc")
+     */
+    public function docAction(Request $request, $view = ApiDoc::DEFAULT_VIEW)
+    {
+        $subRequest = $request->duplicate($request->query->all(), null, [
+            '_controller' => 'NelmioApiDocBundle:ApiDoc:index', 'view' => $view,
+        ]);
+
+        return $this->getKernel()->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
     }
 }

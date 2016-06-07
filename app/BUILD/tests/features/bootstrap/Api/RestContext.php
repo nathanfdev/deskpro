@@ -392,9 +392,8 @@ class RestContext extends BaseContext
                 if (!array_key_exists('id', $lastPostResponseData['data'])) {
                     throw new \Exception('Last POST response JSON data does not contain "id"');
                 }
-                if (strpos($text, "{$l}lastCreatedId{$r}") !== false) {
-                    $text = str_replace("{$l}lastCreatedId{$r}", $lastPostResponseData['data']['id'], $text);
-                }
+
+                $text = str_replace("{$l}lastCreatedId{$r}", $lastPostResponseData['data']['id'], $text);
             }
             if (strpos($text, "{$l}taskId{$r}") !== false) {
                 $text = str_replace("{$l}taskId{$r}", TasksContext::$taskId, $text);

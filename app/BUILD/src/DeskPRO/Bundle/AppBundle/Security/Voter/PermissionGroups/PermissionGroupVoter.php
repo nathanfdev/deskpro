@@ -45,6 +45,11 @@ class PermissionGroupVoter extends Voter
     const MODIFY    = 'modify';
     const DELETE    = 'delete';
 
+    private static $allowByDefault = [
+        self::VIEW_LIST,
+        self::VIEW,
+    ];
+
     /**
      * @var ContainerInterface
      */
@@ -95,10 +100,17 @@ class PermissionGroupVoter extends Voter
             return false;
         }
 
+        if ($user->isAdmin()) {
+            return true; // admin is allmighty, right?
+        }
+
         $entityClass = $subject->getChildClass() ?: $subject->getParentClass();
         if (!isset($this->entityVoters[$entityClass])) {
-            // if no entity voter then grant access
-            return true;
+            if ($user->isAgent() && in_array($attribute, self::$allowByDefault)) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         $entityVoter = $this->entityVoters[$entityClass];
