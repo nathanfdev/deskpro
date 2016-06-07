@@ -2,6 +2,7 @@ Feature: To prevent registration spam
   Anti-abuse system should work
 
   Background:
+    Given I install the "fresh" data set
     Given rate limit table is empty
     And the following languages are enabled:
       | default |

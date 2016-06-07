@@ -4,6 +4,7 @@ Feature: Login anti-abuse feature
   anti-abuse system should work
 
   Background:
+    Given I install the "fresh" data set
     Given rate limit table is empty
     And the following languages are enabled:
       | default |
