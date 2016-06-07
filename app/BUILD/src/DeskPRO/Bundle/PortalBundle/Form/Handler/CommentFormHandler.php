@@ -363,7 +363,7 @@ class CommentFormHandler
     private function informAntiAbuse($person = null, Request $request, ContentAbstract $content)
     {
         $check = new SubmitCommentAbuseCheck($person, $request->getClientIp());
-        $check->setResponse(new RedirectResponse($this->object_router->getPortalPath($content, null, ['lockout' => 'comment'])));
+        $check->setResponse(new RedirectResponse($this->object_router->getPortalPath($content)));
         $this->anti_abuse->check($check);
     }
 

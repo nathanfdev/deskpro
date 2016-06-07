@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\NewsComment;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\Form\Handler\CommentFormHandler;
@@ -244,6 +245,10 @@ class NewsController extends AbstractController
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedContent($post, $this->getUser());
         }
 
+        $check = new SubmitCommentAbuseCheck($this->getUser(), $request->getClientIp());
+        $check->markAsCheckOnly();
+        $this->get('anti_abuse')->check($check);
+
         //
         // RENDER THEME
         //
@@ -261,7 +266,8 @@ class NewsController extends AbstractController
                 'breadcrumbs'        => $breadcrumbs,
                 'show_rating_counts' => $showRatingCounts,
                 'rating_counts'      => $ratingCounts,
-                'lockout'            => $request->get('lockout', false),
+                'lockout'            => $check->isLockoutRecommended(),
+                'lockout_time'       => $check->getLockoutTime(true),
             ]
         );
     }
