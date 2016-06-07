@@ -27,17 +27,10 @@
                                 For example, if a user sends the helpdesk an email but they don't exist, their email will be completely rejected.
 							</span>
                         </label>
-                        <label ng-if="can_disable_deskpro && !settings.reg_enabled">
-                            <input type="checkbox" ng-model="Ctrl.usersource.is_enabled" class="ng-pristine ng-valid">
-                            <h4>Completely disable DeskPRO auth</h4>
-							<span class="help-block">
-								Completely disabling DeskPRO auth will
-							</span>
-                        </label>
 
                         <div class="inner-group" ng-if="can_disable_deskpro && !settings.reg_enabled" style="padding-left: 25px; padding-top: 10px;">
                             <label>
-                                <input type="checkbox" ng-model="Ctrl.usersource.is_enabled" class="ng-pristine ng-valid" ng-true-value="false" ng-false-value="true">
+                                <input type="checkbox" ng-model="Ctrl.usersource.is_disabled" class="ng-pristine ng-valid">
                                 <h4>Completely disable DeskPRO User Management</h4>
                             </label>
                             <span class="help-block">
