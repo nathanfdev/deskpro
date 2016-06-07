@@ -47,7 +47,6 @@ SQL;
         INNER JOIN `feedback_status_categories` AS `fsc` 
         ON `f`.`status_category_id` = `fsc`.`id` 
         SET `f`.`status` = `fsc`.`status_type`, `f`.`hidden_status` = null
-        WHERE `fsc`.id IS NOT NULL
 SQL;
         $connection->exec($updateSQL);
     }
