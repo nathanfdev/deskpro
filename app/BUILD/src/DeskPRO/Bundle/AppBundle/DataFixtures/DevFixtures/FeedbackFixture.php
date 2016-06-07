@@ -33,7 +33,6 @@
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\CustomFields\Handler\Choice;
-use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackComment;
@@ -186,10 +185,14 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
     private function loadStatusCategories()
     {
         foreach ($this->statusesCategories as $status => $titles) {
+            $i = 0;
             foreach ($titles as $title) {
+                $i += 10;
                 $cat = new FeedbackStatusCategory();
-                $cat->setStatusType($status);
-                $cat->setTitle($title);
+                $cat
+                    ->setStatusType($status)
+                    ->setTitle($title)
+                    ->setDisplayOrder($i);
 
                 $this->manager->persist($cat);
             }
@@ -245,13 +248,6 @@ class FeedbackFixture extends DeskProAbstractFixture implements OrderedFixtureIn
 
     private function setStatus(array $values)
     {
-        if (!$values['is_reviewed']) {
-            $values['status']             = Feedback::STATUS_HIDDEN;
-            $values['hidden_status']      = ContentAbstract::HIDDEN_STATUS_UNPUBLISHED;
-            $values['status_category_id'] = null;
-
-            return $values;
-        }
         $values['status'] = $this->faker->randomElement($this->statuses);
         switch ($values['status']) {
             case Feedback::STATUS_ACTIVE:

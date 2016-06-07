@@ -29,34 +29,50 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Feedback;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonContextInterface;
+use Application\DeskPRO\Translate\Translate;
+use Application\EmailBundle\SwiftMailer\Mailer;
+use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackDataService;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
+use Doctrine\ORM\EntityManager;
 
 class FeedbackModerate implements PersonContextInterface
 {
     /**
-     * @var \Application\EmailBundle\SwiftMailer\Mailer
+     * @var Mailer
      */
     protected $mailer;
 
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var EntityManager
      */
     protected $em;
 
     /**
-     * @var \Application\DeskPRO\Translate\Translate
+     * @var Translate
      */
     protected $translator;
 
     /**
-     * @var \Application\DeskPRO\Entity\Person
+     * @var Person
      */
-    protected $person_context;
+    protected $personContext;
+
+    /**
+     * @var FeedbackDataService
+     */
+    protected $feedbackDataService;
+
+    /**
+     * @var BrandContainer
+     */
+    protected $brandContainer;
 
     /**
      * @param DeskproContainer $container
@@ -64,9 +80,10 @@ class FeedbackModerate implements PersonContextInterface
      */
     public function __construct(DeskproContainer $container, Person $person)
     {
-        $this->mailer     = $container->getMailer();
-        $this->em         = $container->getEm();
-        $this->translator = $container->getTranslator();
+        $this->mailer              = $container->getMailer();
+        $this->em                  = $container->getEm();
+        $this->translator          = $container->getTranslator();
+        $this->feedbackDataService = $container->get('data.feedback');
 
         $this->setPersonContext($person);
     }
@@ -76,7 +93,7 @@ class FeedbackModerate implements PersonContextInterface
      */
     public function setPersonContext(Person $person)
     {
-        $this->person_context = $person;
+        $this->personContext = $person;
     }
 
     /**
@@ -88,7 +105,12 @@ class FeedbackModerate implements PersonContextInterface
     public function approveFeedback(Feedback $feedback)
     {
         $feedback->setIsReviewed(true);
-        $feedback->setStatus(Feedback::STATUS_ACTIVE);
+        if ($feedback->getStatus() === Feedback::STATUS_HIDDEN) {
+            $statusCategory = $this->feedbackDataService->getFeedbackFirstStatusCategoryByType();
+            $feedback
+                ->setStatus(Feedback::STATUS_ACTIVE)
+                ->setStatusCategory($statusCategory);
+        }
 
         $this->em->getConnection()->beginTransaction();
         try {
@@ -100,7 +122,7 @@ class FeedbackModerate implements PersonContextInterface
             throw $e;
         }
 
-        $agent  = $this->person_context;
+        $agent  = $this->personContext;
         $mailer = $this->mailer;
 
         $this->translator->setTemporaryLanguage(
@@ -143,7 +165,7 @@ class FeedbackModerate implements PersonContextInterface
             throw $e;
         }
 
-        $agent  = $this->person_context;
+        $agent  = $this->personContext;
         $mailer = $this->mailer;
 
         $this->translator->setTemporaryLanguage(

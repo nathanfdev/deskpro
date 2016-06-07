@@ -150,6 +150,18 @@ class FeedbackStatusCategory extends DomainObject implements HasPhraseName, HasV
         return $this->display_order;
     }
 
+    /**
+     * @param $order
+     *
+     * @return $this
+     */
+    public function setDisplayOrder($order)
+    {
+        $this->setModelField('display_order', (int) $order);
+
+        return $this;
+    }
+
     public function getStatusCode()
     {
         return $this->status_type.'.'.$this->id;

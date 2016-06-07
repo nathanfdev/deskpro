@@ -267,6 +267,16 @@ class FeedbackDataService extends AbstractDataService
     }
 
     /**
+     * @param string $type status category type
+     *
+     * @return FeedbackStatusCategory
+     */
+    public function getFeedbackFirstStatusCategoryByType($type = FeedbackStatusCategory::STATUS_ACTIVE)
+    {
+        return $this->getFeedbackStatusCategoryRepo()->findOneBy(['status_type' => $type], ['display_order' => 'ASC']);
+    }
+
+    /**
      * @return \Application\DeskPRO\EntityRepository\Feedback
      */
     public function getItemsRepo()

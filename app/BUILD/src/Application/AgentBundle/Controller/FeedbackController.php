@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\FeedbackResults;
@@ -78,12 +79,11 @@ class FeedbackController extends AbstractController
      */
     public function getSectionDataAction()
     {
-        /*
-         * @var FeedbackRepository
-         * @var FeedbackCategoryRepository       $feedbackCategoryRepository
-         * @var FeedbackStatusCategoryRepository $feedbackStatusCategoryRepository
-         * @var FeedbackCommentRepository        $feedbackCommentRepository
-         */
+
+        /** @var FeedbackRepository $feedbackRepository */
+        /* @var FeedbackCategoryRepository $feedbackCategoryRepository */
+        /* @var FeedbackStatusCategoryRepository $feedbackStatusCategoryRepository */
+        /* @var FeedbackCommentRepository $feedbackCommentRepository */
         $feedbackRepository               = $this->em->getRepository(Feedback::class);
         $feedbackCategoryRepository       = $this->em->getRepository(FeedbackCategory::class);
         $feedbackStatusCategoryRepository = $this->em->getRepository(FeedbackStatusCategory::class);
@@ -195,14 +195,12 @@ class FeedbackController extends AbstractController
     {
         $feedback = $this->getFeedback($feedback_id);
 
-        /*
-         * @var PublishChecker
-         * @var SearchLogRepository              $searchLogRepository
-         * @var PersonPrefRepository             $personPrefRepository
-         * @var FeedbackCategoryRepository       $feedbackCategoryRepository
-         * @var SearchStickyResultRepository     $searchStickyResultRepository
-         * @var FeedbackStatusCategoryRepository $feedbackStatusCategoryRepository
-         */
+        /** @var PublishChecker $publishChecker */
+        /* @var SearchLogRepository $searchLogRepository */
+        /* @var PersonPrefRepository $personPrefRepository */
+        /* @var FeedbackCategoryRepository $feedbackCategoryRepository */
+        /* @var SearchStickyResultRepository $searchStickyResultRepository */
+        /* @var FeedbackStatusCategoryRepository $feedbackStatusCategoryRepository */
         $publishChecker                   = $this->person->getPermissionsManager()->get('PublishChecker');
         $fieldManager                     = $this->container->getSystemService('feedback_fields_manager');
         $searchLogRepository              = $this->em->getRepository(SearchLog::class);
@@ -928,10 +926,8 @@ class FeedbackController extends AbstractController
             $template = str_replace('.html.twig', '-part.html.twig', $template);
         }
 
-        /*
-         * @var FeedbackCategoryRepository
-         * @var FeedbackStatusCategoryRepository $feedbackStatusCategoryRepository
-         */
+        /** @var FeedbackCategoryRepository $feedbackCategoryRepository */
+        /* @var FeedbackStatusCategoryRepository $feedbackStatusCategoryRepository */
         $feedbackCategoryRepository       = $this->em->getRepository(FeedbackCategory::class);
         $feedbackStatusCategoryRepository = $this->em->getRepository(FeedbackStatusCategory::class);
 
@@ -1150,11 +1146,9 @@ class FeedbackController extends AbstractController
      */
     public function newFeedbackAction()
     {
-        /*
-         * @var PersonPrefRepository
-         * @var FeedbackCategoryRepository       $feedbackCategoryRepository
-         * @var FeedbackStatusCategoryRepository $feedbackStatusCategoryRepository
-         */
+        /** @var PersonPrefRepository $personPrefRepository */
+         /* @var FeedbackCategoryRepository       $feedbackCategoryRepository */
+         /* @var FeedbackStatusCategoryRepository $feedbackStatusCategoryRepository */
         $personPrefRepository             = $this->em->getRepository(PersonPref::class);
         $feedbackCategoryRepository       = $this->em->getRepository(FeedbackCategory::class);
         $feedbackStatusCategoryRepository = $this->em->getRepository(FeedbackStatusCategory::class);

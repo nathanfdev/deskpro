@@ -31,7 +31,7 @@ return array(
     'agent.feedback.any_status'                  => 'Jakikolwiek Status',
     'agent.feedback.count_votes'                 => '{{display_count}} głos|{{display_count}} głosów',
     'agent.feedback.feedback_deleted'            => 'Ta informacja zwrotna została usunięta',
-    'agent.feedback.feedback_to_validate'        => 'Informacja zwrotna do potwierdzenia',
+    'agent.feedback.feedback_to_review'          => 'Informacja zwrotna do wglądu',
     'agent.feedback.least_voted_on_top'          => 'Ostatnio głosowane na górze',
     'agent.feedback.list_title'                  => '1 oddany|{{count}} oddane',
     'agent.feedback.merge_feedback'              => 'Scal informacje zwrotne',

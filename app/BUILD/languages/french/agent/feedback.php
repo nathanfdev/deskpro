@@ -31,7 +31,7 @@ return array(
     'agent.feedback.any_status'                  => 'Tous les statuts',
     'agent.feedback.count_votes'                 => '{{display_count}} vote|{{display_count}} votes',
     'agent.feedback.feedback_deleted'            => 'Ce feedback a été supprimé',
-    'agent.feedback.feedback_to_validate'        => 'Feedback à valider',
+    'agent.feedback.feedback_to_review'          => 'Feedback à évaluation',
     'agent.feedback.least_voted_on_top'          => 'Les moins votés d\'abord',
     'agent.feedback.list_title'                  => '1 dépôt|{{count}} dépôts',
     'agent.feedback.merge_feedback'              => 'Fusionner le Feedback',
