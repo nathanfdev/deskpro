@@ -34,7 +34,9 @@ use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\DateHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use Doctrine\ORM\QueryBuilder;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -43,7 +45,7 @@ use Symfony\Component\HttpFoundation\Request;
 abstract class AbstractContentController extends CrudController
 {
     public static $category;
-    public static $exposeOnly  = ['get', 'list', 'count', 'delete'];
+    public static $exposeOnly  = ['get', 'list', 'count', 'delete', 'csv'];
     public static $sortOptions = [
         'id'           => 'id',
         'date_created' => 'date_created',
@@ -52,6 +54,25 @@ abstract class AbstractContentController extends CrudController
         'status'       => 'status',
         'title'        => 'title',
     ];
+
+    /**
+     * Get data for export to CSV.
+     *
+     * @Rest\Get("/csv")
+     * @SerializerView(mapping={
+     *     "Application\DeskPRO\Entity\Article": "DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ContentCsv",
+     *     "Application\DeskPRO\Entity\News": "DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ContentCsv",
+     *     "Application\DeskPRO\Entity\Download": "DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ContentCsv",
+     * })
+     *
+     * @param Request $request
+     *
+     * @return \FOS\RestBundle\View\View
+     */
+    public function csvAction(Request $request)
+    {
+        return $this->listAction($request);
+    }
 
     /**
      * {@inheritdoc}

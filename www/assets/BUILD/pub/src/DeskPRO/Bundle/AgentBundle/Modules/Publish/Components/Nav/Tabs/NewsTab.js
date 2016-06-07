@@ -19,6 +19,8 @@ export class NewsTab extends Component {
     this.state = { expanded: false };
   }
 
+  getAttachTarget = () => this.refs.news;
+
   render = () => {
     const { news, toggleGroupingVisibility, closeGroupingVisibility } = this.props;
     const toggle = toggleGroupingVisibility.bind(this);
@@ -38,7 +40,7 @@ export class NewsTab extends Component {
             items={news.get('nested').toJS()}
           />
           <NavGroupingPopup
-            attachTo={this.refs.news}
+            attachTo={this.getAttachTarget}
             content="news"
             visible={this.state.expanded}
             closeGroupingVisibility={close}

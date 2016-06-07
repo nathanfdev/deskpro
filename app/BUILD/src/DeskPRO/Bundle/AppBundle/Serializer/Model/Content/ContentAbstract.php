@@ -26,14 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Model;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Content;
 
 use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class ContentAbstract.
  */
-abstract class ContentAbstract
+class ContentAbstract
 {
     /**
      * The unique ID.

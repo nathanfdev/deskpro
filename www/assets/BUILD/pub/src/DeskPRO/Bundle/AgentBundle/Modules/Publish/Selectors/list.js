@@ -9,6 +9,11 @@ export const contentSelector = createSelector(
   state => state.get('currentListParams').get('content')
 );
 
+export const fieldsSelector = createSelector(
+  stateSelector,
+  state => state.get('fields')
+);
+
 export const paginationSelector = createSelector(
   stateSelector,
   list => list.get('pagination')

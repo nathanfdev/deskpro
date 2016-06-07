@@ -29,7 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback;
 
 use Application\DeskPRO\Entity\CustomDataFeedback;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\ContentAbstract;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ContentAbstract;
 use JMS\Serializer\Annotation as JMS;
 
 /**
