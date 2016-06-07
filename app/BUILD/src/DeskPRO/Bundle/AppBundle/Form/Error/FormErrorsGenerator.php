@@ -63,19 +63,18 @@ class FormErrorsGenerator
     }
 
     /**
-     * @param string        $codePrefix
      * @param FormInterface $form
      *
      * @return array
      */
-    public function generateFormErrors(FormInterface $form, $codePrefix)
+    public function generateFormErrors(FormInterface $form)
     {
         $errors = $list = [];
         foreach ($form->getErrors() as $error) {
             $code   = $this->getFormErrorCode($error);
             $list[] = [
                 'code'    => $code,
-                'message' => $this->error_message_factory->createFormErrorMessage($codePrefix, $code, $error),
+                'message' => $this->error_message_factory->createFormErrorMessage($code, $error),
             ];
         }
 
@@ -86,7 +85,7 @@ class FormErrorsGenerator
         $children = [];
         foreach ($form->all() as $child) {
             if ($child instanceof FormInterface) {
-                $child_errors = $this->generateFormErrors($child, $codePrefix);
+                $child_errors = $this->generateFormErrors($child);
                 if ($child_errors) {
                     $children[$child->getName()] = $child_errors;
                 }

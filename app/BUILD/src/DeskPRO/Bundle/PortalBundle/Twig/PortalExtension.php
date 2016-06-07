@@ -34,7 +34,6 @@ namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\People\PersonGuest;
-use DeskPRO\Bundle\AppBundle\Form\Error\ErrorMessageFactory;
 use DeskPRO\Bundle\AppBundle\Model\TicketView;
 use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -234,12 +233,12 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
      */
     public function makeFormError(FormError $formError)
     {
-        $messageFactory = $this->container->get('form_error.message_factory');
+        $messageFactory = $this->container->get('form_error.message_factory.portal');
         $codeFactory    = $this->container->get('form_error.code_factory');
 
         $code = $codeFactory->getErrorCodeForFormError($formError);
 
-        return $messageFactory->createFormErrorMessage(ErrorMessageFactory::PREFIX_PORTAL_FORMS, $code, $formError);
+        return $messageFactory->createFormErrorMessage($code, $formError);
     }
 
     /**

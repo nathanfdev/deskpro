@@ -30,7 +30,6 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets;
 
 use Application\DeskPRO\Entity\Ticket as TicketEntity;
 use Application\DeskPRO\Entity\TicketMessage;
-use DeskPRO\Bundle\AppBundle\Form\Error\ErrorMessageFactory;
 use DeskPRO\Bundle\AppBundle\Form\Error\FormErrorsGenerator;
 use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiType;
@@ -203,7 +202,7 @@ class TicketHandler extends AbstractEntityHandler
 
         FormValidatorChecker::submitForm($form);
 
-        return $this->formErrorsGenerator->generateFormErrors($form, ErrorMessageFactory::PREFIX_API);
+        return $this->formErrorsGenerator->generateFormErrors($form);
     }
 
     /**

@@ -113,7 +113,7 @@ services:
       - "@ticket_layout_factory"
       - "@doctrine.orm.default_entity_manager"
       - "@form.factory"
-      - "@form_error.form_errors_generator"
+      - "@form_error.form_errors_generator.api"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 

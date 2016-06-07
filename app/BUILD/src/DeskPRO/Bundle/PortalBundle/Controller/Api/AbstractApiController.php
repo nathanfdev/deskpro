@@ -31,7 +31,6 @@ namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Session;
-use DeskPRO\Bundle\AppBundle\Form\Error\ErrorMessageFactory;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use Doctrine\ORM\EntityManager;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -64,8 +63,7 @@ abstract class AbstractApiController extends FOSRestController
      */
     protected function generateFormErrorsResponse(Form $form)
     {
-        $generator = $this->get('form_error.form_errors_generator');
-        $errors    = $generator->generateFormErrors($form, ErrorMessageFactory::PREFIX_API);
+        $errors = $this->get('form_error.form_errors_generator.api')->generateFormErrors($form);
 
         return new View($errors, Response::HTTP_BAD_REQUEST);
     }

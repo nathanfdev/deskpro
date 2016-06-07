@@ -67,32 +67,30 @@ class ValidatorErrorsGenerator
     }
 
     /**
-     * @param string                                                 $codePrefix
      * @param ConstraintViolationListInterface|ConstraintViolation[] $violations
      *
      * @return array
      */
-    public function generateValidatorErrors($codePrefix, ConstraintViolationListInterface $violations)
+    public function generateValidatorErrors(ConstraintViolationListInterface $violations)
     {
         $errors = ['fields' => []];
         foreach ($violations as $violation) {
             $path = preg_split('#[\[\]\.]+#', $violation->getPropertyPath());
             $path = Arrays::removeFalsey($path);
 
-            $this->addError($codePrefix, $errors, 'field', $path, $violation);
+            $this->addError($errors, 'field', $path, $violation);
         }
 
         return $errors;
     }
 
     /**
-     * @param string              $codePrefix
      * @param array               $errors
      * @param string              $numeric_prefix
      * @param array               $path
      * @param ConstraintViolation $violation
      */
-    protected function addError($codePrefix, array &$errors, $numeric_prefix, array $path, ConstraintViolation $violation)
+    protected function addError(array &$errors, $numeric_prefix, array $path, ConstraintViolation $violation)
     {
         $sub_path = array_shift($path);
         if (is_numeric($sub_path)) {
@@ -102,7 +100,7 @@ class ValidatorErrorsGenerator
         if (empty($path)) {
             $code    = $this->error_code_factory->getErrorCodeForConstraintViolation($violation);
             $params  = $this->error_message_factory->parseParams($violation->getParameters());
-            $message = $this->error_message_factory->createMessage($codePrefix, $code, $params);
+            $message = $this->error_message_factory->createMessage($code, $params);
 
             $errors['fields'][$sub_path]['errors'][] = [
                 'code'    => $code,
@@ -115,7 +113,7 @@ class ValidatorErrorsGenerator
 
             $sub_list = &$errors['fields'][$sub_path];
 
-            $this->addError($codePrefix, $sub_list, $sub_path, $path, $violation);
+            $this->addError($sub_list, $sub_path, $path, $violation);
         }
     }
 }
