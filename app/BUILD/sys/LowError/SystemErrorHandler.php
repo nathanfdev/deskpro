@@ -557,7 +557,7 @@ class SystemErrorHandler
     public static function processErrorInfo(array $errinfo)
     {
         $str       = [];
-        $extraData = self::getDpEnv()->getConfig('env.extra_errorlog_fields', []);
+        $extraData = self::getDpEnv()->getConfig('settings.extra_errorlog_fields', []);
 
         if ($errinfo['type'] == 'exception') {
             $e     = $errinfo['exception'];
@@ -641,7 +641,7 @@ class SystemErrorHandler
 
         $logFiles = [self::getLogDir().DIRECTORY_SEPARATOR.'/error.log'];
 
-        if ($secondaryLogFile = self::getDpEnv()->getConfig('env.secondary_errorlog_file')) {
+        if ($secondaryLogFile = self::getDpEnv()->getConfig('settings.secondary_errorlog_file')) {
             $logFiles[] = $secondaryLogFile;
         }
 
