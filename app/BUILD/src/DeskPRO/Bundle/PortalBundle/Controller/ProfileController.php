@@ -148,10 +148,11 @@ class ProfileController extends AbstractController
         return $this->renderThemeView(
             'Theme:Portal:User/register.html.twig',
             [
-                'form'        => $form->createView(),
-                'lockout'     => $event->isLockoutRecommended(),
-                'breadcrumbs' => $breadcrumbs,
-                'page_title'  => $this->createPageTitle()->register(),
+                'form'         => $form->createView(),
+                'lockout'      => $event->isLockoutRecommended(),
+                'lockout_time' => $event->getLockoutTime(true),
+                'breadcrumbs'  => $breadcrumbs,
+                'page_title'   => $this->createPageTitle()->register(),
             ]
         );
     }

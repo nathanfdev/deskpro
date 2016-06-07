@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\AntiAbuse\Event;
 
 use Application\DeskPRO\Entity\Person;
@@ -184,10 +185,16 @@ abstract class AntiAbuseEvent extends Event
     }
 
     /**
+     * @param bool $minutes true if you want to get rounded time in minutes
+     *
      * @return int
      */
-    public function getLockoutTime()
+    public function getLockoutTime($minutes = false)
     {
+        if ($minutes) {
+            return ceil($this->lockoutTime / 60);
+        }
+
         return $this->lockoutTime;
     }
 

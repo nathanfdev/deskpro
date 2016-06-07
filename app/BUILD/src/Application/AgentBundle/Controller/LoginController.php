@@ -178,7 +178,11 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
         }
 
         $failedLoginName = $this->session->get('failed_login_name', false);
-        $failedToLogin   = false;
+        if (!$failedLoginName) {
+            //we are going to guess they want to login with last username
+            $failedLoginName = $this->session->get('last_username', false);
+        }
+        $failedToLogin = false;
         if ($this->session->has('failed_to_login')) {
             $failedToLogin = $this->session->get('failed_to_login');
             $this->session->remove('failed_to_login');

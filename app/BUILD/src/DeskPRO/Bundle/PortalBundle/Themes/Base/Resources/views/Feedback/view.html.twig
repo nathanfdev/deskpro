@@ -7,7 +7,14 @@
     </div>
     <article class="feedback main-feedback" id="feedback_view">
         {% if lockout %}
-            {{ macros.user_notice('auth', phrase('portal.account.comment-lockout')) }}
+            {% if lockout %}
+                {{  macros.user_notice(
+                        'auth',
+                        phrase('portal.account.comment-lockout'),
+                        lockout_time ? phrase('portal.account.lockout_time', {time: lockout_time} ) : false
+                    )
+                }}
+            {% endif %}
         {% endif %}
         <div class="feedback-item">
             {%  include 'Theme:Feedback:items_controls_partial.html.twig' with {'item': item} %}

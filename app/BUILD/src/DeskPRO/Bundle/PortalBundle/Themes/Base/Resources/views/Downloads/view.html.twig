@@ -7,7 +7,12 @@
     </div>
     <article class="news kb-article">
         {% if lockout %}
-            {{ macros.user_notice('auth', phrase('portal.account.comment-lockout')) }}
+            {{  macros.user_notice(
+                    'auth',
+                    phrase('portal.account.comment-lockout'),
+                    lockout_time ? phrase('portal.account.lockout_time', {time: lockout_time} ) : false
+                )
+            }}
         {% endif %}
         <header>
             <div class="header-button-container">

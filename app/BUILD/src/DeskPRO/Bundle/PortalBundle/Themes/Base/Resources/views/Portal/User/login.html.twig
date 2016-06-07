@@ -28,7 +28,12 @@
             {% endif %}
 
             {% if lockout_error %}
-                {{ macros.user_notice('auth', phrase('portal.account.login-lockout')) }}
+                {{  macros.user_notice(
+                        'auth',
+                        phrase('portal.account.login-lockout'),
+                        lockout_time ? phrase('portal.account.lockout_time', {time: lockout_time} ) : false
+                    )
+                }}
             {% endif %}
 
             {% if login_captcha_failed %}

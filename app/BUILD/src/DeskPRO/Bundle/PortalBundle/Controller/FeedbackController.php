@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitFeedbackAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
@@ -181,8 +182,6 @@ class FeedbackController extends AbstractController
 
                 return $this->acceptNewFeedback($newFeedback, $person, $request);
             }
-        } elseif ($form->isSubmitted()) {
-            $this->submitNewFeedbackAbuseCheck($person, $request->getClientIp());
         }
 
         $formWasSubmitted = false;
@@ -220,7 +219,8 @@ class FeedbackController extends AbstractController
         $filter->setTypes($allowedTypesParsed);
         $filterJs = $this->generateFilterJs($filter, $feedbackTypes, $page);
 
-        $lockout = $this->submitNewFeedbackAbuseCheck($person, $request->getClientIp(), false)->isLockoutRecommended();
+        $check = $this->submitNewFeedbackAbuseCheck($person, $request->getClientIp(), false);
+
         //
         // RENDER THEME
         //
@@ -245,7 +245,8 @@ class FeedbackController extends AbstractController
                 'rss_link'           => $rssLink,
                 'filter_js'          => $filterJs,
                 'is_subscribed'      => $isSubscribed,
-                'lockout'            => $lockout,
+                'lockout'            => $check->isLockoutRecommended(),
+                'lockout_time'       => $check->getLockoutTime(true),
             ]
         );
     }
@@ -477,6 +478,10 @@ class FeedbackController extends AbstractController
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedContent($item, $this->getUser());
         }
 
+        $check = new SubmitCommentAbuseCheck($this->getUser(), $request->getClientIp());
+        $check->markAsCheckOnly();
+        $this->get('anti_abuse')->check($check);
+
         //
         // RENDER THEME
         //
@@ -493,7 +498,8 @@ class FeedbackController extends AbstractController
                 'rating'             => $rating,
                 'show_rating_counts' => $showRatingCounts,
                 'rating_counts'      => $ratingCounts,
-                'lockout'            => $request->get('lockout', false),
+                'lockout'            => $check->isLockoutRecommended(),
+                'lockout_time'       => $check->getLockoutTime(true),
             ]
         );
     }
