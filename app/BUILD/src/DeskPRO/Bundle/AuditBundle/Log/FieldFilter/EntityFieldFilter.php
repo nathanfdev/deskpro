@@ -67,7 +67,7 @@ class EntityFieldFilter implements FieldFilterInterface
      */
     protected function doFilter($value, $expression)
     {
-        if ($value instanceof EntityInterface || $value instanceof DomainObject) {
+        if ($value instanceof EntityInterface || ($value instanceof DomainObject && (method_exists($value, 'getId') || isset($value['id'])))) {
             $value = $this->language->evaluate(new Expression($expression), ['entity' => $value]);
         }
 
