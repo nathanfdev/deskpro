@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\ApiBundle\Controller;
 
 use Application\ApiBundle\HttpFoundation\JsonResponse;
@@ -588,6 +589,8 @@ class AgentsController extends AbstractController implements ProtectedController
         // we have a dupe email error
         // not yet
         $dupe =
+            count($existPersons) > 1
+            ||
             ($id && $agent && $agent['id'] != $id) // update an agent (or user to agent)
             ||
             (!$id && $agent && $agent['is_agent']); // insert an agent
@@ -596,6 +599,10 @@ class AgentsController extends AbstractController implements ProtectedController
             $error_info = array('existing' => array());
 
             foreach ($existPersons as $person) {
+                if ((int) $person['id'] === (int) $id) {
+                    continue;
+                }
+
                 $error_info['existing'][] = array(
                     'person_id'   => $person['id'],
                     'person_name' => $person['display_name'],
