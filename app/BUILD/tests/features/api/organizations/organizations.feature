@@ -204,7 +204,6 @@ Feature: /organizations endpoint
   }
 }
     """
-    And print last response
     Then the response status code should be 204
 
     When I send a GET request to "/api/v2/organizations/{yahoo}"

@@ -29,6 +29,7 @@
 namespace DpBehat\Data;
 
 use Application\DeskPRO\Domain\BasicDomainObject;
+use Orb\Util\Strings;
 
 /**
  * Class DataNormalizer.
@@ -42,12 +43,7 @@ class DataNormalizer
      */
     public static function underscoreToCamelCase($prop)
     {
-        $prop    = str_replace('_', ' ', $prop);
-        $prop    = ucwords($prop);
-        $prop    = str_replace(' ', '', $prop);
-        $prop[0] = strtolower($prop[0]);
-
-        return $prop;
+        return Strings::underscoreToCamelCase($prop);
     }
 
     /**
