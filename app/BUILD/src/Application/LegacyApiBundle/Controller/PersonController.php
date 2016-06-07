@@ -53,7 +53,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * 	resourcePath="/people",
  * 	description="Operations about People/Persons",
  * 	basePath="/api"
- * )
+ * ).
  *
  * @ApiModes("all")
  */
@@ -223,19 +223,18 @@ class PersonController extends AbstractController implements ProtectedController
     public function searchAction()
     {
         $search_map = array(
-            'address'            => PersonSearch::TERM_CONTACT_ADDRESS,
-            'agent_team_id'      => PersonSearch::TERM_AGENT_TEAM,
-            'alpha'              => PersonSearch::TERM_ALPHA,
-            'email'              => PersonSearch::TERM_EMAIL,
-            'email_domain'       => PersonSearch::TERM_EMAIL_DOMAIN,
-            'im'                 => PersonSearch::TERM_CONTACT_IM,
-            'is_agent_confirmed' => PersonSearch::TERM_IS_AGENT_CONFIRMED,
-            'label'              => PersonSearch::TERM_LABEL,
-            'name'               => PersonSearch::TERM_NAME,
-            'language_id'        => PersonSearch::TERM_LANGUAGE,
-            'organization_id'    => PersonSearch::TERM_ORGANIZATION,
-            'phone'              => PersonSearch::TERM_CONTACT_PHONE,
-            'usergroup_id'       => PersonSearch::TERM_USERGROUP,
+            'address'         => PersonSearch::TERM_CONTACT_ADDRESS,
+            'agent_team_id'   => PersonSearch::TERM_AGENT_TEAM,
+            'alpha'           => PersonSearch::TERM_ALPHA,
+            'email'           => PersonSearch::TERM_EMAIL,
+            'email_domain'    => PersonSearch::TERM_EMAIL_DOMAIN,
+            'im'              => PersonSearch::TERM_CONTACT_IM,
+            'label'           => PersonSearch::TERM_LABEL,
+            'name'            => PersonSearch::TERM_NAME,
+            'language_id'     => PersonSearch::TERM_LANGUAGE,
+            'organization_id' => PersonSearch::TERM_ORGANIZATION,
+            'phone'           => PersonSearch::TERM_CONTACT_PHONE,
+            'usergroup_id'    => PersonSearch::TERM_USERGROUP,
         );
 
         $terms = array();
@@ -608,7 +607,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonAction($person_id)
     {
@@ -711,7 +710,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function postPersonAction($person_id)
     {
@@ -850,7 +849,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function deletePersonAction($person_id)
     {
@@ -917,7 +916,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonPictureAction($person_id)
     {
@@ -966,7 +965,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function postPersonPictureAction($person_id)
     {
@@ -1022,7 +1021,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function deletePersonPictureAction($person_id)
     {
@@ -1052,7 +1051,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonEmailsAction($person_id)
     {
@@ -1099,7 +1098,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function postPersonEmailsAction($person_id)
     {
@@ -1171,7 +1170,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonEmailAction($person_id, $email_id)
     {
@@ -1230,7 +1229,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function postPersonEmailAction($person_id, $email_id)
     {
@@ -1291,7 +1290,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function deletePersonEmailAction($person_id, $email_id)
     {
@@ -1353,7 +1352,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonVcardAction($person_id)
     {
@@ -1463,7 +1462,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonActivityStreamAction($person_id)
     {
@@ -1526,7 +1525,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonTicketsAction($person_id)
     {
@@ -1605,7 +1604,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonChatsAction($person_id)
     {
@@ -1680,7 +1679,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function resetPasswordAction($person_id)
     {
@@ -1731,7 +1730,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function clearSessionAction($person_id)
     {
@@ -1758,7 +1757,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonNotesAction($person_id)
     {
@@ -1792,7 +1791,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function postPersonNotesAction($person_id)
     {
@@ -1835,7 +1834,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonBillingChargesAction($person_id)
     {
@@ -1880,7 +1879,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonContactDetailsAction($person_id)
     {
@@ -1927,7 +1926,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function postPersonContactDetailsAction($person_id)
     {
@@ -2005,7 +2004,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonContactDetailAction($person_id, $contact_id)
     {
@@ -2044,7 +2043,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function deletePersonContactDetailAction($person_id, $contact_id)
     {
@@ -2079,7 +2078,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonGroupsAction($person_id)
     {
@@ -2112,7 +2111,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function postPersonGroupsAction($person_id)
     {
@@ -2175,7 +2174,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonGroupAction($person_id, $usergroup_id)
     {
@@ -2214,7 +2213,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function deletePersonGroupAction($person_id, $usergroup_id)
     {
@@ -2252,7 +2251,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonLabelsAction($person_id)
     {
@@ -2285,7 +2284,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function postPersonLabelsAction($person_id)
     {
@@ -2330,7 +2329,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonLabelAction($person_id, $label)
     {
@@ -2367,7 +2366,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function deletePersonLabelAction($person_id, $label)
     {
@@ -2387,7 +2386,7 @@ class PersonController extends AbstractController implements ProtectedController
      * 		method="GET",
      * 		summary="Gets available custom person fields"
      * 	)
-     * )
+     * ).
      */
     public function getFieldsAction()
     {
@@ -2404,7 +2403,7 @@ class PersonController extends AbstractController implements ProtectedController
      * 		method="GET",
      * 		summary="Gets available usergroups"
      * 	)
-     * )
+     * ).
      */
     public function getGroupsAction()
     {
@@ -2435,7 +2434,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getLoginTokenAction($person_id)
     {
@@ -2566,7 +2565,7 @@ class PersonController extends AbstractController implements ProtectedController
      *     ),
      *     SWG\ResponseMessage(code=401, message="The credentials are invalid")
      *  )
-     * )
+     * ).
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -2616,7 +2615,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonPhoneNumbersAction($person_id)
     {
@@ -2656,7 +2655,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function postPersonPhoneNumbersAction($person_id)
     {
@@ -2702,7 +2701,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function getPersonPhoneNumberAction($person_id, $number_id)
     {
@@ -2750,7 +2749,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function postPersonPhoneNumberAction($person_id, $number_id)
     {
@@ -2797,7 +2796,7 @@ class PersonController extends AbstractController implements ProtectedController
      *		),
      *		SWG\ResponseMessage(code=404, message="Person not found")
      * 	)
-     * )
+     * ).
      */
     public function deletePersonPhoneNumberAction($person_id, $number_id)
     {
