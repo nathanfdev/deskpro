@@ -32,6 +32,9 @@ class TemplatesProcessor extends Base
 {
     const JOB_TYPE = 'reset.templates';
 
+    /**
+     * {@inheritdoc}
+     */
     protected function doProcess(array $data)
     {
         //TOOD
