@@ -28,10 +28,10 @@
 
 namespace DeskPRO\Bundle\AuditBundle\Log;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ApiKey;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\ApiKey as ApiKeyRepository;
-use Application\DeskPRO\HttpFoundation\Session;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken;
 use Doctrine\Common\Util\ClassUtils;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -75,18 +75,7 @@ class AuditLogHelper
                 /* @var Person $user */
                 $performer->setName($user->getDisplayName())->setId($user->getId());
             } elseif (is_scalar($user)) {
-                $legacyUser = null;
-
-                // Next two if-blocks are all about legacy handling, and the last one just partial
-                if (($session = $this->container->get('session')) && $session instanceof Session) {
-                    $legacyUser = $session->getPerson();
-                }
-
-                if (!$legacyUser instanceof Person && $this->container->has('deskpro.api.request_auth')) {
-                    /** @var \Application\LegacyApiBundle\Request\RequestAuth $request_auth */
-                    $request_auth = $this->container->get('deskpro.api.request_auth');
-                    $legacyUser   = $request_auth->getApiUser()->person;
-                }
+                $legacyUser = App::getCurrentPerson();
 
                 if ($legacyUser instanceof Person) {
                     $performer->setName($legacyUser->getDisplayName())->setId($legacyUser->getId());
