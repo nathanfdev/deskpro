@@ -8,16 +8,18 @@ import Moment from 'moment';
 export class DateTimePicker extends React.Component {
 
   static propTypes = {
-    label: PropTypes.string.isRequired,
-    value: PropTypes.string,
-    className: PropTypes.string.isRequired,
-    onChange: PropTypes.func
+    label:                  PropTypes.string.isRequired,
+    value:                  PropTypes.string,
+    className:              PropTypes.string.isRequired,
+    onChange:               PropTypes.func,
+    stopPropagationOnClose: PropTypes.bool,
+    onSetEditing:           PropTypes.func
   };
 
   componentWillMount() {
     this.setState({
       isOpen: false,
-      value: this.props.value
+      value:  this.props.value
     });
   }
 
@@ -28,20 +30,29 @@ export class DateTimePicker extends React.Component {
   }
 
   onChange = (val) => {
-    this.setState({value: val});
-    this.props.onChange && this.props.onChange(val);
+    this.setState({ value: val });
+    if (this.props.onChange) {
+      this.props.onChange(val);
+    }
   };
 
   onOpen = () => {
     if (this.state.isOpen) return;
-    this.setState({isOpen: true});
-    this.props.onSetEditing && this.props.onSetEditing(true);
+    this.setState({ isOpen: true });
+    if (this.props.onSetEditing) {
+      this.props.onSetEditing(true);
+    }
   };
 
   onClose = event => {
     if (!this.state.isOpen) return;
-    this.setState({isOpen: false});
-    this.props.onSetEditing && this.props.onSetEditing(false);
+    if (this.props.stopPropagationOnClose) {
+      event.stopImmediatePropagation();
+    }
+    this.setState({ isOpen: false });
+    if (this.props.onSetEditing) {
+      this.props.onSetEditing(false);
+    }
   };
 
   render() {
@@ -52,15 +63,16 @@ export class DateTimePicker extends React.Component {
     return (
       <div className={className}>
         <label>{label}</label>
-        <input type="text" ref="input" onFocus={this.onOpen} value={valueString} readOnly />
-        <Detached isOpen={this.state.isOpen}
-                  positionTarget={this}
-                  positionAt="left bottom"
-                  collision="fit"
-                  zIndex={1002}>
-
+        <input type="text" ref="input" onFocus={this.onOpen} value={valueString} readOnly/>
+        <Detached
+          isOpen={this.state.isOpen}
+          positionTarget={this}
+          positionAt="left bottom"
+          collision="fit"
+          zIndex={1002}
+        >
           <ClickOut onClickOut={this.onClose} ignoreNodes={[this.refs.input]}>
-            <HiddenDateTimePicker value={value} onDone={this.onChange} />
+            <HiddenDateTimePicker value={value} onDone={this.onChange}/>
           </ClickOut>
         </Detached>
       </div>

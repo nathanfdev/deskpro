@@ -46,8 +46,7 @@ export class DateFilter extends Component {
       >
         {this.renderDateCreatedItemContent(from, to)}
         <Menu>
-          <div
-            className="dpw-navigation-dropdown-panel dpw-navigation-date-picker-panel dpw-navigation-dropdown-panel-corner-left">
+          <div className="dpw-navigation-dropdown-panel dpw-navigation-date-picker-panel dpw-navigation-dropdown-panel-corner-left">
             <div className="dpw-date-picker">
 
               <div className="dpw-date-picker-panel-container">
@@ -57,12 +56,14 @@ export class DateFilter extends Component {
                     className="dpw-date-picker-left"
                     value={from}
                     onChange={value => setParam({ param: [fromParam], value })}
+                    stopPropagationOnClose
                   />
                   <DateTimePicker
                     label="To"
                     className="dpw-date-picker-right"
                     value={to}
                     onChange={value => setParam({ param: [toParam], value })}
+                    stopPropagationOnClose
                   />
                 </form>
               </div>

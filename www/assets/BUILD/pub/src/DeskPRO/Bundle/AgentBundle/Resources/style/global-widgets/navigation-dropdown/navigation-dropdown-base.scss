@@ -278,6 +278,8 @@ $border-color: #d4d4d4;
   .dpw-navigation-dropdown-item-clear {
     @extend .dpw-navigation-dropdown-item-expand;
     i { opacity: 0.5; }
+    margin-left: 0;
+    top: -2px;
   }
 }
 

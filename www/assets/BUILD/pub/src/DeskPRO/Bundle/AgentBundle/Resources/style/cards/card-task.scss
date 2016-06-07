@@ -6,6 +6,10 @@
     position: relative;
     padding-right: 65px;
     margin-bottom: 6px;
+
+    input {
+      width: 100%;
+    }
   }
 
   .details-line {
@@ -52,6 +56,13 @@
     font-size: 10px;
     line-height: 25px;
     margin-top: 0;
+  }
+}
+
+.dpmw--single-task-card.minimized {
+  min-height: 28px;
+  .title-line {
+    margin-bottom: 4px;
   }
 }
 

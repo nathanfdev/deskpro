@@ -167,6 +167,7 @@
   "scripts": {
     "eslint": "eslint src || true",
     "gulp": "gulp",
+    "gulp-dev-agent": "gulp dev:agent",
     "gulp-prod": "gulp prod",
     "gulp-refresh-reducers": "gulp refresh-reducers",
     "gulp-docs": "gulp slate",
