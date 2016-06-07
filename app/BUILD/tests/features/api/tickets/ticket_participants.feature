@@ -40,7 +40,7 @@ Feature: /tickets/{id}/followers and /tickets/{id}/cc endpoints
   Scenario: I add account email as cc
     Given I've just created a new person with name "Email account" and primary email "dev@deskprodev.com"
     Given I've just created a new email account "dev@deskprodev.com"
-    When I send a POST request to "/api/v2/tickets/{ticketId}/cc" with body:
+    When I send a POST request to "/api/v2/tickets/{ticket}/cc" with body:
     """
 {
   "person": "dev@deskprodev.com"
