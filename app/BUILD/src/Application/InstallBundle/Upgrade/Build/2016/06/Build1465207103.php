@@ -59,7 +59,7 @@ SQL;
         );
         $newStatusCategoryId = $connection->lastInsertId();
         $this->out('Status category \'New\' is inserted with id = '.$newStatusCategoryId);
-        $this->out('Moving feedback with old style \'new\ status into just created status category.');
+        $this->out('Moving feedback with old style \'new\' status into just created status category.');
 
         $feedbackWithNewStatus = $connection->fetchAllCol(
             'SELECT `f`.`id` FROM `feedback` AS `f` WHERE `f`.`status` = \'new\''

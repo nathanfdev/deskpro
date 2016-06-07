@@ -32,13 +32,22 @@ class Build1465209612 extends AbstractBuild
 {
     public function run()
     {
-        $this->out('Fixing feedback statuses based on status_category');
         $connection = $this->getDbConnection('default');
-        $updateSQL  = <<<SQL
+
+        $this->out('Removing old feedbacks with invalid hidden status (e.g. spam)');
+        $updateSQL = <<<SQL
+        DELETE FROM feedback
+        WHERE status = 'hidden' AND hidden_status != 'validating'
+SQL;
+        $connection->exec($updateSQL);
+
+        $this->out('Fixing feedback statuses based on status_category');
+        $updateSQL = <<<SQL
         UPDATE  `feedback` AS `f` 
         INNER JOIN `feedback_status_categories` AS `fsc` 
         ON `f`.`status_category_id` = `fsc`.`id` 
         SET `f`.`status` = `fsc`.`status_type`, `f`.`hidden_status` = null
+        WHERE `fsc`.id IS NOT NULL
 SQL;
         $connection->exec($updateSQL);
     }
