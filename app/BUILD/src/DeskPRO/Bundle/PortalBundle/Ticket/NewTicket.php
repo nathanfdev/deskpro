@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Ticket;
 
 use Application\DeskPRO\Entity\Person;
@@ -193,7 +194,7 @@ class NewTicket
     public function submitNewTicketAbuseCheck($person, $ip)
     {
         $check = new SubmitTicketAbuseCheck($person, $ip);
-        $check->setResponse(new RedirectResponse($this->urlGenerator->generate('portal_new_ticket', ['lockout' => 'tickets'])));
+        $check->setResponse(new RedirectResponse($this->urlGenerator->generate('portal_new_ticket')));
         $this->anti_abuse->check($check);
     }
 

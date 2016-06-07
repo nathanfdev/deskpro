@@ -452,10 +452,6 @@ class ArticlesController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
-            $this->runAntiAbuseCheck($request, $article);
-        }
-
         if ($form->isSubmitted() && $form->isValid()) {
             $this->runAntiAbuseCheck($request, $article);
             $emails = [];
@@ -478,13 +474,18 @@ class ArticlesController extends AbstractController
             return $this->redirectToRoute('portal_kb_view', ['slug' => $article->getSlug()]);
         }
 
+        $check = new ShareContentAbuseCheck($this->getCurrentPerson(), $request->getClientIp());
+        $check->markAsCheckOnly();
+        $this->get('anti_abuse')->check($check);
+
         return $this->renderThemeView(
             'Theme:Articles:share.html.twig',
             [
-                'article'     => $article,
-                'form'        => $form->createView(),
-                'form_errors' => $form->isSubmitted() ? $form->getErrors() : [],
-                'lockout'     => $request->get('lockout', false),
+                'article'      => $article,
+                'form'         => $form->createView(),
+                'form_errors'  => $form->isSubmitted() ? $form->getErrors() : [],
+                'lockout'      => $check->isLockoutRecommended(),
+                'lockout_time' => $check->getLockoutTime(true),
             ]
         );
     }

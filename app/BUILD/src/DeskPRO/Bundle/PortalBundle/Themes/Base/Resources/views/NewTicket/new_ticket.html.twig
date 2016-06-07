@@ -7,7 +7,12 @@
     </div>
     <div>
         {% if lockout %}
-            {{ macros.user_notice('auth', phrase('portal.account.tickets-lockout')) }}
+            {{  macros.user_notice(
+                    'auth',
+                    phrase('portal.account.tickets-lockout'),
+                    lockout_time ? phrase('portal.account.lockout_time', {time: lockout_time} ) : false
+                )
+            }}
         {% endif %}
         <header class="large-title">
             <h1>{{ phrase('portal.tickets.new-section-title') }}</h1>

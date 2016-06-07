@@ -124,6 +124,7 @@ class PasswordController extends AbstractController
                 'breadcrumbs'  => $this->getBreadcrumbGenerator()->buildPasswordReset($isResetting),
                 'page_title'   => $this->createPageTitle()->passwordReset($isResetting),
                 'lockout'      => $check->isLockoutRecommended(),
+                'lockout_time' => $check->getLockoutTime(true),
             )
         );
     }
