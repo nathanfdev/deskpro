@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,43 +26,45 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api\PortalDesigner;
 
 use DeskPRO\Bundle\PortalBundle\Controller\Api\AbstractApiController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class AdvancedEditsController.
+ *
+ * @Rest\Route("/portal/api/style/edit-theme-set/advanced-edits")
  */
 class AdvancedEditsController extends AbstractApiController
 {
     use HelperMethods;
 
     /**
-     * @Route("/portal/api/style/edit-theme-set/advanced-edits")
-     * @Method({"GET"})
+     * @Rest\Get("")
+     *
+     * @return View
      */
     public function getAdvancedEditsAction()
     {
-        return new JsonResponse($this->getAdvancedEditsManager()->get());
+        return new View($this->getAdvancedEditsManager()->get());
     }
 
     /**
-     * @Route("/portal/api/style/edit-theme-set/advanced-edits")
-     * @Method({"PUT"})
+     * @Rest\Put("")
+     *
+     * @param Request $request
+     *
+     * @return View
      */
     public function saveAdvancedEditsAction(Request $request)
     {
         $data = json_decode($request->getContent(), true);
         $this->getAdvancedEditsManager()->save($data);
 
-        return new Response(null, Response::HTTP_NO_CONTENT);
+        return new View(null, Response::HTTP_NO_CONTENT);
     }
 }

@@ -40,6 +40,7 @@ use DeskPRO\Component\SassCompiler\SassProject;
  */
 class StylesheetCompiler
 {
+    const MAIN_SCSS_FILENAME   = 'main.scss';
     const CUSTOM_VARS_FILENAME = 'custom_vars.scss';
     const CUSTOM_SCSS_FILENAME = 'custom_style.scss';
 
@@ -48,11 +49,12 @@ class StylesheetCompiler
      *
      * @param string $style_path  Path to the file to compile
      * @param array  $variables   Array of vars to set
+     * @param string $mainScss
      * @param string $custom_scss Custom stylesheet content
      *
      * @return string
      */
-    public function compile($style_path, array $variables = [], $custom_scss = '')
+    public function compile($style_path, array $variables = [], $mainScss, $custom_scss = '')
     {
         $compiler = new ScssPhpCompiler();
         $project  = new SassProject();
@@ -80,9 +82,12 @@ class StylesheetCompiler
         foreach ($variables as $variable => $value) {
             $custom_vars_scss .= '$'."$variable: $value;\n";
         }
+
         $project->addFileSource("$source_dir/".self::CUSTOM_VARS_FILENAME, $custom_vars_scss);
 
-        // Set custom_style.scss contents
+        // Set custom style contents ('custom_style.scss' and 'main.scss')
+        // they could be modified via portal editor
+        $project->addFileSource("$source_dir/".self::MAIN_SCSS_FILENAME, $mainScss);
         $project->addFileSource("$source_dir/".self::CUSTOM_SCSS_FILENAME, $custom_scss);
 
         $result = $compiler->compile($project);

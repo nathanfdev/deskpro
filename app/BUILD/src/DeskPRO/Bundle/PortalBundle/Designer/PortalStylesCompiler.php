@@ -68,6 +68,11 @@ class PortalStylesCompiler
     /**
      * @var string
      */
+    private $mainScss;
+
+    /**
+     * @var string
+     */
     private $customScss;
 
     /**
@@ -82,6 +87,7 @@ class PortalStylesCompiler
         EntityManager $em,
         $stylesLrtFilePath,
         $stylesRtlFilePath,
+        $mainScss,
         $customScss
     ) {
         $this->em = $em;
@@ -91,6 +97,8 @@ class PortalStylesCompiler
         if (!$this->stylesRtlFilePath = realpath($stylesRtlFilePath)) {
             throw new \Exception("Can't resolve a file from the given path: {$this->stylesRtlFilePath}");
         }
+
+        $this->mainScss   = $mainScss;
         $this->customScss = $customScss;
     }
 
@@ -182,6 +190,7 @@ class PortalStylesCompiler
         return $compiler->compile(
             $direction === 'RTL' ? $this->stylesRtlFilePath : $this->stylesLrtFilePath,
             $variables,
+            $this->mainScss,
             $this->customScss
         );
     }

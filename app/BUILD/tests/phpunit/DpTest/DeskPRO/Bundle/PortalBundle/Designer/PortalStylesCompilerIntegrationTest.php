@@ -63,15 +63,17 @@ class PortalStylesCompilerIntegrationTest extends PortalTestCase
     /**
      * @param string $style       Style file path
      * @param string $custom_scss
+     * @param string $mainScss
      *
      * @return PortalStylesCompiler
      */
-    private function createService($style, $custom_scss = '')
+    private function createService($style, $custom_scss = '', $mainScss = '')
     {
         return new PortalStylesCompiler(
             $this->getEntityManager(),
             __DIR__."/scss/$style",
             __DIR__."/scss-rtl/$style",
+            $mainScss,
             $custom_scss
         );
     }
