@@ -17,7 +17,7 @@ Feature: Adding custom header, footer, SCSS and javascript
     When I send a PUT request to "/portal/api/style/edit-theme-set/advanced-edits" with body:
     """
       {
-        "header": "header", "footer": "footer", "custom_scss": "custom_scss", "javascript": "javascript"
+        "header": "header", "footer": "footer", "custom_scss": "div {color: #fff;}", "javascript": "javascript"
       }
     """
     Then the response status code should be 204
