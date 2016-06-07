@@ -50,7 +50,7 @@ export class AssignDepartment extends Component {
   renderTitle() {
     return (
       <span key="title">
-        Assign to Department
+        Department
       </span>
     );
   }

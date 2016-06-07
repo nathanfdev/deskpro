@@ -58,7 +58,7 @@ export class AssignTeam extends Component {
 
   renderTitle() {
     const { team } = this.props;
-    const title = <span key="title">Assign to Team</span>;
+    const title = <span key="title">Team</span>;
 
     if (!team) {
       return title;
@@ -67,7 +67,9 @@ export class AssignTeam extends Component {
     return ([
       title,
       <span key="option" className="dpw--popup-item-collection-options" onClick={this.assignMine}>
-        <a href="#">Assign To Mine</a>
+        <a href="#">
+          Assign To Mine
+        </a>
       </span>
     ]);
   }
@@ -77,9 +79,12 @@ export class AssignTeam extends Component {
 
     return (
       <CollectionField title={this.renderTitle()}>
-        <AgentTeamsListContainer selected={selected} filter={filter} showOnlySelected={showOnlySelected}
+        <AgentTeamsListContainer
+          selected={selected}
+          filter={filter}
+          showOnlySelected={showOnlySelected}
           onChange={this.onChange}
-          />
+        />
       </CollectionField>
     );
   }

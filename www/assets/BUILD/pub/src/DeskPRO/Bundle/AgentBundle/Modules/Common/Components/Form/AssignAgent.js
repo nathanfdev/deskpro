@@ -58,10 +58,12 @@ export class AssignAgent extends Component {
     return (
       [
         <span key="title">
-          Assign to Agent
+          Agent
         </span>,
         <span key="option" className="dpw--popup-item-collection-options" onClick={this.assignMe}>
-          <a href="#">Assign To Me</a>
+          <a href="#">
+            Assign To Me
+          </a>
         </span>
       ]
     );
@@ -72,9 +74,12 @@ export class AssignAgent extends Component {
 
     return (
       <CollectionField title={this.renderTitle()}>
-        <AgentsListContainer selected={selected} filter={filter} showOnlySelected={showOnlySelected}
+        <AgentsListContainer
+          selected={selected}
+          filter={filter}
+          showOnlySelected={showOnlySelected}
           onChange={this.onChange}
-          />
+        />
       </CollectionField>
     );
   }
