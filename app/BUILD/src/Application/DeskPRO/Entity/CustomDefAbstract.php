@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\CustomFields\Handler\Date;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 use Doctrine\Common\Collections\ArrayCollection;

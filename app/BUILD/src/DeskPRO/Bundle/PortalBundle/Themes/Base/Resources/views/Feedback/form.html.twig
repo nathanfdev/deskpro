@@ -1,5 +1,7 @@
 {{ form_errors(form) }}
 {{ form_start(form) }}
+
+{% if form.category is defined %}
 <div class="feedback-form">
     {{ form_errors(form.category) }}
 
@@ -10,6 +12,7 @@
         </div>
     </div>
 </div>
+{% endif %}
 
 <div class="feedback-form-expanded as-no-dpui dpx-form"{% if form_was_submitted %} data-do-show="true"{% endif %}>
     {% if is_user() %}

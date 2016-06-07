@@ -42,6 +42,7 @@ use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -319,25 +320,34 @@ class CustomFieldManager
     }
 
     /**
-     * @param string $entity_type
+     * @param string $entityType
      *
      * @return CustomDefAbstract[]
      */
-    private function getAvailableCustomDefs($entity_type)
+    private function getAvailableCustomDefs($entityType)
     {
-        return $this->em
+        $qb = $this->em
             ->createQueryBuilder()
             ->select('f')
-            ->from($entity_type, 'f')
+            ->from($entityType, 'f')
             ->where(
                 'f.is_user_enabled = true',
                 'f.is_enabled = true',
                 'f.handler_class IS NOT NULL'
             )
             ->orderBy('f.display_order')
-            ->getQuery()
-            ->getResult()
         ;
+
+        $result = new ArrayCollection($qb->getQuery()->getResult());
+        $result = $result->filter(function (CustomDefAbstract $def) {
+            if ($def->isChoiceType() && !$def->hasChildren()) {
+                return false;
+            }
+
+            return true;
+        });
+
+        return $result;
     }
 
     /**

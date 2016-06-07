@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,42 +26,42 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Form\Type\EntityHeirarchyType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+/**
+ * Class FeedbackCategoryType.
+ */
 class FeedbackCategoryType extends AbstractType
 {
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver
             ->setRequired('person')
-            ->setAllowedTypes(
-                array(
-                    'person' => 'Application\DeskPRO\Entity\Person',
-                )
-            )
-            ->setDefaults(
-            array(
+            ->setAllowedTypes([
+                'person' => Person::class,
+            ])
+            ->setDefaults([
                 'choice_list' => function (Options $options) {
                     return $options['hierarchy_generator']->generateForFeedbackCategories($options['person'])->getChoiceList();
                 },
-            )
-        );
+            ])
+        ;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getParent()
     {
-        return 'entity_hierarchy';
-    }
-
-    public function getName()
-    {
-        return 'feedback_category';
+        return EntityHeirarchyType::class;
     }
 }

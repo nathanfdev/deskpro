@@ -26,19 +26,22 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -55,30 +58,41 @@ class NewFeedbackType extends AbstractType
     /**
      * @var CaptchaDecider
      */
-    private $captcha_decider;
+    private $captchaDecider;
 
     /**
      * @var LanguageManager
      */
-    private $language_manager;
+    private $languageManager;
 
     /**
      * @var CustomFieldManager
      */
-    private $field_manager;
+    private $fieldManager;
+
+    /**
+     * @var HierarchyGenerator
+     */
+    private $hierarchyGenerator;
 
     /**
      * Constructor.
      *
-     * @param CaptchaDecider     $captcha_decider
-     * @param LanguageManager    $language_manager
-     * @param CustomFieldManager $field_manager
+     * @param CaptchaDecider     $captchaDecider
+     * @param LanguageManager    $languageManager
+     * @param CustomFieldManager $fieldManager
+     * @param HierarchyGenerator $hierarchyGenerator
      */
-    public function __construct(CaptchaDecider $captcha_decider, LanguageManager $language_manager, CustomFieldManager $field_manager)
-    {
-        $this->captcha_decider  = $captcha_decider;
-        $this->language_manager = $language_manager;
-        $this->field_manager    = $field_manager;
+    public function __construct(
+        CaptchaDecider     $captchaDecider,
+        LanguageManager    $languageManager,
+        CustomFieldManager $fieldManager,
+        HierarchyGenerator $hierarchyGenerator
+    ) {
+        $this->captchaDecider     = $captchaDecider;
+        $this->languageManager    = $languageManager;
+        $this->fieldManager       = $fieldManager;
+        $this->hierarchyGenerator = $hierarchyGenerator;
     }
 
     /**
@@ -87,32 +101,38 @@ class NewFeedbackType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', 'text', [
+            ->add('title', TextType::class, [
                 'label'       => $this->phrase('portal.forms.label_title'),
                 'constraints' => [
                     new NotBlank(),
                 ],
             ])
-            ->add('content', 'textarea', [
+            ->add('content', TextareaType::class, [
                 'label'       => 'portal.forms.label_content',
                 'constraints' => [
                     new NotBlank(),
                 ],
             ])
-            ->add('category', 'feedback_category', [
+        ;
+
+        if ($this->hierarchyGenerator->generateForFeedbackCategories($options['person'])->countSelectable() > 0) {
+            $builder->add('category', FeedbackCategoryType::class, [
                 'person'      => $options['person'],
                 'empty_value' => $this->phrase('portal.forms.label_select'),
                 'constraints' => [
                     new NotNull(),
                 ],
-            ])
+            ]);
+        }
+
+        $builder
             ->add('custom_data', CombinedType::class, [
                 'forms' => $this->getCustomDataForms($options),
             ])
-            ->add('attachments', 'feedback_attachment_collection', [
+            ->add('attachments', FeedbackAttachmentCollectionType::class, [
                 'person' => $options['person'],
             ])
-            ->add('more_attachments', 'submit', [
+            ->add('more_attachments', SubmitType::class, [
                 'validation_groups' => false,
                 'label'             => $this->phrase('portal.forms.label_add_attachment'),
             ])
@@ -120,7 +140,7 @@ class NewFeedbackType extends AbstractType
 
         if (!$options['person'] || $options['person'] instanceof PersonGuest) {
             $builder
-                ->add('name', 'text', [
+                ->add('name', TextType::class, [
                     'constraints'   => new Length(['min' => 2]),
                     'property_path' => 'person.name',
                     'label'         => $this->phrase('portal.forms.label_name'),
@@ -134,7 +154,7 @@ class NewFeedbackType extends AbstractType
         }
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            if ($this->captcha_decider->shouldRequireFeedbackCaptchaForCurrentPerson()) {
+            if ($this->captchaDecider->shouldRequireFeedbackCaptchaForCurrentPerson()) {
                 $event->getForm()->add(
                     'captcha',
                     'deskpro_captcha',
@@ -157,10 +177,10 @@ class NewFeedbackType extends AbstractType
                 'person',
             ])
             ->setAllowedTypes([
-                'person' => 'Application\DeskPRO\Entity\Person',
+                'person' => Person::class,
             ])
             ->setDefaults([
-                'data_class'      => 'Application\DeskPRO\Entity\Feedback',
+                'data_class'      => Feedback::class,
                 'agent_interface' => false,
             ])
         ;
@@ -181,10 +201,10 @@ class NewFeedbackType extends AbstractType
      */
     protected function getCustomDataForms(array $options)
     {
-        $forms      = [];
-        $field_defs = $this->field_manager->getAvailableFeedbackDefs();
+        $forms = [];
+        $defs  = $this->fieldManager->getAvailableFeedbackDefs();
 
-        foreach ($field_defs as $field_def) {
+        foreach ($defs as $field_def) {
             $forms[] = [
                 'name'    => 'custom_feedback_def_'.$field_def->getId(),
                 'type'    => CustomDataType::class,
@@ -208,6 +228,6 @@ class NewFeedbackType extends AbstractType
      */
     protected function phrase($name, array $vars = [])
     {
-        return $this->language_manager->phrase($name, $vars);
+        return $this->languageManager->phrase($name, $vars);
     }
 }
