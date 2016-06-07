@@ -1,100 +1,109 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import _ from 'lodash';
 import $ from 'jquery';
 import { portalUrlGenerator } from '../../Http/PortalUrlGenerator';
 import { FeedbackVoteWidget } from '../../PageWidget/FeedbackVoteWidget';
 
 export class ResultsPartial extends React.Component {
 
-  render() {
-    let html = this.props.partial;
-    if (html.length === 0) {
-      return (
-        <div className="paged-results centered" ref="results">
-          <img
-            style={{display: this.props.doSpin ? 'table' : 'none', margin: '0 auto', height: '70px', width: '70px'}}
-            src={ portalUrlGenerator.getSpinnerPath() } />
-        </div>
-      );
-    }
-    return (
-      <div className="paged-results" ref="results" dangerouslySetInnerHTML={{ __html: html }} />
-    );
-  }
+  static propTypes = {
+    partial:      PropTypes.string,
+    doSpin:       PropTypes.bool,
+    filterModel:  PropTypes.object,
+    updateFilter: PropTypes.func
+  };
 
   componentDidMount() {
     this.setEvents();
-  }
-
-  updatePage(page) {
-    let new_filter = this.props.filterModel;
-    new_filter.page = page;
-    this.props.updateFilter(new_filter);
-  }
-
-  setStatusCategory(id) {
-    let new_filter = this.props.filterModel;
-    new_filter.reset();
-    new_filter.setStatusCategory(id);
-    this.props.updateFilter(new_filter);
-  }
-
-  setType(id) {
-    let new_filter = this.props.filterModel;
-    new_filter.reset();
-    new_filter.setType(id);
-    this.props.updateFilter(new_filter);
   }
 
   componentDidUpdate() {
     this.setEvents();
   }
 
+  setStatusCategory(id) {
+    const { filterModel, updateFilter } = this.props;
+
+    filterModel.setStatusCategory(id);
+    updateFilter(filterModel);
+  }
+
+  setType(id) {
+    const { filterModel, updateFilter } = this.props;
+
+    filterModel.reset();
+    filterModel.setType(id);
+
+    updateFilter(filterModel);
+  }
+
   setEvents() {
-    let self = this;
-    let results = $(ReactDOM.findDOMNode(this.refs.results));
+    const $results = $(ReactDOM.findDOMNode(this.refs.results));
 
     // process pager
-    results.find('.deskpro-pager a').each(function () {
-      $(this).click(function (e) {
-        e.preventDefault();
-        let uri = $(this).attr('href');
-        let getparam = function get(n) {
-          let half = uri.split(n + '=')[1];
-          return half !== undefined ? decodeURIComponent(half.split('&')[0]) : null;
-        };
-        self.updatePage(getparam('page'));
+    $('.deskpro-pager a', $results).each((i, item) => {
+      $(item).on('click', event => {
+        event.preventDefault();
 
-        return false;
+        const uri = $(item).attr('href');
+        const half = uri.split('page=')[1];
+        const page = half !== undefined ? decodeURIComponent(half.split('&')[0]) : null;
+
+        this.updatePage(page);
       });
     });
 
     // add events to "I Agree"
-    results.find('.feedback-item-controls a.i-agree').each(function () {
-      const $el = $(this);
-      const w = new FeedbackVoteWidget($el);
+    $('.feedback-item-controls a.i-agree', $results).each((i, item) => {
+      const w = new FeedbackVoteWidget($(item));
       w.render();
     });
 
     // add events to status category links
-    results.find('.feedback-item-content .feedback-status a').each(function () {
-      let $statusCategoryLink = $(this);
-      $statusCategoryLink.click(function (e) {
-        e.preventDefault();
-        self.setStatusCategory($statusCategoryLink.data('id'));
-        return false;
+    $('.feedback-item-content .feedback-status a', $results).each((i, item) => {
+      $(item).on('click', event => {
+        event.preventDefault();
+        this.setStatusCategory($(item).data('id'));
       });
     });
 
     // add events to type (categories) links
-    results.find('a.feedback-category').each(function () {
-      let $typeLink = $(this);
-      $typeLink.click(function (e) {
-        e.preventDefault();
-        self.setType($typeLink.data('id'));
-        return false;
+    $('a.feedback-category', $results).each((i, item) => {
+      $(item).on('click', event => {
+        event.preventDefault();
+        this.setType($(item).data('id'));
       });
     });
+  }
+
+  updatePage(page) {
+    const { filterModel, updateFilter } = this.props;
+
+    filterModel.page = page;
+    updateFilter(filterModel);
+  }
+
+  render() {
+    const { partial, doSpin } = this.props;
+
+    if (partial.length === 0) {
+      return (
+        <div className="paged-results centered" ref="results">
+          <img
+            src={portalUrlGenerator.getSpinnerPath()}
+            style={{
+              display: doSpin ? 'table' : 'none',
+              margin:  '0 auto',
+              height:  '70px',
+              width:   '70px'
+            }}
+          />
+        </div>
+      );
+    }
+
+    return (
+      <div className="paged-results" ref="results" dangerouslySetInnerHTML={{ __html: partial }}></div>
+    );
   }
 }

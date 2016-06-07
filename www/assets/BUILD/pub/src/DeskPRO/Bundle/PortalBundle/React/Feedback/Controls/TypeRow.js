@@ -9,13 +9,15 @@ export class TypeRow extends React.Component {
     return (
       <div className="types">
         <ul className="slider-list">
-          {_.map(this.props.available, (type, type_id) => {
-            return (
-              <TypeSlider key={type_id} label={type} id={type_id}
-                          active={_.includes(this.props.selected, _.parseInt(type_id))}
-                          toggleType={this.props.toggleType}/>
-            );
-          })}
+          {_.map(this.props.available, (type, type_id) =>
+            <TypeSlider
+              key={type_id}
+              label={type}
+              id={type_id}
+              active={_.includes(this.props.selected, _.parseInt(type_id))}
+              toggleType={this.props.toggleType}
+            />
+          )}
         </ul>
       </div>
     );

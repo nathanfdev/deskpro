@@ -29,11 +29,11 @@ export class FilterModel {
 
   changeSort(new_sort) {
     let parts = new_sort.split('-');
-    if (parts.length == 2) {
+    if (parts.length === 2) {
       this.sort = parts[0];
       this.sort_direction = parts[1];
     }
-    if (parts.length == 3) {
+    if (parts.length === 3) {
       this.sort = parts[0] + '-' + parts[1];
       this.sort_direction = parts[2];
     }
