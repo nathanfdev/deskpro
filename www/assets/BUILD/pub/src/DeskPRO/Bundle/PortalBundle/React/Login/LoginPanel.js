@@ -7,7 +7,7 @@ export class LoginPanel extends React.Component {
   render() {
     return (
       <div>
-        <LoginForm />
+        {window.DESKPRO_HAS_LOGIN_FORM && <LoginForm />}
         <LoginUsersources {...this.props} />
       </div>
     );

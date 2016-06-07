@@ -136,6 +136,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     {
         return [
             new \Twig_SimpleFunction('auth_usersources_js_object', [$this, 'getAuthUsersourcesJsObject'], ['is_safe' => ['html', 'javascript']]),
+            new \Twig_SimpleFunction('has_login_form', [$this, 'hasLoginForm']),
             new \Twig_SimpleFunction('ticket_status', [$this, 'getTicketStatusString']),
             new \Twig_SimpleFunction('ticket_public_id', [$this, 'getPublicTicketId']),
             new \Twig_SimpleFunction('brand_setting', [$this, 'getBrandSetting'], ['is_safe' => ['html']]),
@@ -193,9 +194,15 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
      */
     public function getAuthUsersourcesJsObject()
     {
-        $usersources = $this->container->get('usersources_view_helper')->createUsersourceViewList();
+        return json_encode($this->container->get('usersources_view_helper')->createUsersourceViewList());
+    }
 
-        return json_encode($usersources);
+    /**
+     * @return bool
+     */
+    public function hasLoginForm()
+    {
+        return $this->container->get('usersources_view_helper')->hasLoginForm();
     }
 
     /**

@@ -37,6 +37,7 @@
         window.DP_BASE_URL = '/{{ path('portal_home')|trim('/') }}';
 
         window.DESKPRO_USERSOURCES = {{ auth_usersources_js_object() }};
+        window.DESKPRO_HAS_LOGIN_FORM = {{ has_login_form() ? 'true' : 'false' }};
         window.DESKPRO_CAN_USE_TICKETS = {{ can_use_tickets() ? 'true' : 'false' }};
         window.DESKPRO_CAN_VIEW_TICKETS_LINK = {{ can_view_tickets_link() ? 'true' : 'false' }};
         window.DESKPRO_CAN_USE_FEEDBACK = {{ can_use_feedback() ? 'true' : 'false' }};

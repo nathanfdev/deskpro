@@ -9,16 +9,17 @@ export class LoginForm extends React.Component {
 
   constructor(props) {
     super(props);
+
     this.state = {
-      failed: false,
-      captcha: '',
+      failed:             false,
+      captcha:            '',
       captcha_public_key: '6LcWL8YSAAAAAJu1CrtS9RdOJyKd_NbArNgUFWV9',
-      reset_path: portalUrlGenerator.path('/login/reset-password')
+      reset_path:         portalUrlGenerator.path('/login/reset-password')
     };
   }
 
-  submitLogin(e) {
-    e.preventDefault();
+  onSubmit = event => {
+    event.preventDefault();
 
     const $username = $(this.refs.username);
     const $password = $(this.refs.password);
@@ -29,12 +30,17 @@ export class LoginForm extends React.Component {
       failed: false
     });
 
-    portalHttp.sendPost(loginUrl, {
-      username: $username.val(),
-      password: $password.val(),
-      remember_me: $rememberMe.val()
-    }, {jsonPayload: false}).then((r) => {
-      console.log('RESPONSE %o', r);
+    portalHttp.sendPost(
+      loginUrl,
+      {
+        username:    $username.val(),
+        password:    $password.val(),
+        remember_me: $rememberMe.val()
+      },
+      {
+        jsonPayload: false
+      }
+    ).then((r) => {
       if (r.data.success) {
         if ('redirect' in r.data) {
           window.location.href = r.data.redirect;
@@ -49,31 +55,27 @@ export class LoginForm extends React.Component {
         this.addCaptchaIfNecessary();
       }
     });
-  }
+  };
 
-  onEmailBlur() {
+  onEmailBlur = () => {
     const $username = $(this.refs.username);
 
     if (this.refs.username && $username.val()) {
       this.setState({
-        reset_path: portalUrlGenerator.path('/login/reset-password') + '?email=' + $username.val()
+        reset_path: `${portalUrlGenerator.path('/login/reset-password')}?email=${$username.val()}`
       });
     } else {
       this.setState({
         reset_path: portalUrlGenerator.path('/login/reset-password')
       });
     }
-  }
+  };
 
   addCaptchaIfNecessary() {
     portalHttp.sendGet(portalUrlGenerator.path('/captcha-html?action=login')).then((r) => {
-      console.log('CAPTCHA RESPONSE ', r);
       if (r.data.captcha_required) {
         // for now we are not displaying the captcha, and instead are just redirecting the user to login page
         window.location.href = portalUrlGenerator.path('/login');
-        // this.setState({
-        //   captcha: true
-        // });
       } else {
         this.setState({
           captcha: false
@@ -85,18 +87,10 @@ export class LoginForm extends React.Component {
   render() {
     const failurePath = portalUrlGenerator.path('/login?retry=auth');
 
-    // if (this.state.captcha) {
-    //   window.RecaptchaOptions = { theme: 'clean' };
-    // }
-
     return (
-      <form method="post" id="login-sidebar" onSubmit={this.submitLogin.bind(this)}>
-        <input
-          type="hidden"
-          name="_failure_path"
-          value={failurePath}
-          />
-        <label className={classNames({'error': this.state.failed})}>
+      <form method="post" id="login-sidebar" onSubmit={this.onSubmit}>
+        <input type="hidden" name="_failure_path" value={failurePath} />
+        <label className={classNames({ error: this.state.failed })}>
           <span>{portalPhrases.get('portal.account.login-email')}</span>
           <input
             ref="username"
@@ -104,11 +98,11 @@ export class LoginForm extends React.Component {
             tabIndex="2"
             placeholder="email@example.com"
             name="username"
-            onBlur={this.onEmailBlur.bind(this)}
-            />
+            onBlur={this.onEmailBlur}
+          />
         </label>
 
-        <label className={classNames({'error': this.state.failed})}>
+        <label className={classNames({ error: this.state.failed })}>
           {this.state.failed && <div className="message">{portalPhrases.get('portal.account.login-invalid')}</div>}
           <span>{portalPhrases.get('portal.account.login-password')}</span>
           <input
@@ -117,15 +111,8 @@ export class LoginForm extends React.Component {
             tabIndex="2"
             placeholder={portalPhrases.get('portal.account.login-password')}
             name="password"
-            />
+          />
         </label>
-
-        {/*<label className="error">
-        //  <div className="message">This is a password error</div>
-        //  <span>Your password</span>
-        //  <input type="password" tabIndex="2" placeholder="Your password"
-        //         name="password" />
-        //</label>*/}
 
         <div className="permanent-login">
           <label>
@@ -134,7 +121,7 @@ export class LoginForm extends React.Component {
               tabIndex="2"
               type="checkbox"
               name="remember_me"
-              />
+            />
             {portalPhrases.get('portal.account.login-stay-logged-in')}
           </label>
         </div>
