@@ -26,19 +26,17 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api\PortalDesigner;
 
 use DeskPRO\Bundle\PortalBundle\Controller\Api\AbstractApiController;
-use DeskPRO\Bundle\PortalBundle\Designer\BrandThemeManager;
+use DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler;
+use Leafo\ScssPhp\Exception\ParserException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class ScssVariablesController.
@@ -75,10 +73,14 @@ class ScssVariablesController extends AbstractApiController
      */
     public function saveVariableValuesAction(Request $request)
     {
-        $variables = json_decode($request->getContent(), true);
-        /* @var BrandThemeManager $brandThemeManager */
+        $variables    = json_decode($request->getContent(), true);
         $editThemeSet = $this->getBrandThemeManager()->getCurrentEditThemeSet();
-        $this->getPortalStylesCompiler()->recompile($variables, $editThemeSet);
+
+        try {
+            $this->getPortalStylesCompiler()->recompile($variables, $editThemeSet);
+        } catch (ParserException $e) {
+            throw new BadRequestHttpException(PortalStylesCompiler::parseExceptionMessage($e));
+        }
 
         return new Response(null, Response::HTTP_NO_CONTENT);
     }

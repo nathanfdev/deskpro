@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\App\Native\NativeAppsSync;
@@ -42,6 +38,7 @@ use Application\InstallBundle\Data\DefaultDataProcessor;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler;
 use DpSys\LowError\SystemErrorHandler;
+use Leafo\ScssPhp\Exception\ParserException;
 
 class PostBuild extends AbstractBuild
 {
@@ -165,7 +162,13 @@ class PostBuild extends AbstractBuild
                 if ($asset) {
                     $this->out(sprintf('Recompile CSS for brand %s, theme %s', $brand->getName(), $t->getId()));
                     $vars = array_merge($defaultVariables, $t->getOption(PortalStylesCompiler::$customVarsThemeSetOption, []));
-                    $styleCompiler->recompile($vars, $t);
+
+                    try {
+                        $styleCompiler->recompile($vars, $t);
+                    } catch (ParserException $e) {
+                        SystemErrorHandler::logException($e);
+                    }
+
                     $this->out('.. done');
                 }
             }
