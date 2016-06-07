@@ -215,4 +215,18 @@ class PortalStylesCompiler
 
         return;
     }
+
+    /**
+     * @param \Exception $e
+     *
+     * @return string
+     */
+    public static function parseExceptionMessage(\Exception $e)
+    {
+        if (preg_match('/^(.*): failed at/', $e->getMessage(), $matches)) {
+            return $matches[1];
+        }
+
+        return $e->getMessage();
+    }
 }

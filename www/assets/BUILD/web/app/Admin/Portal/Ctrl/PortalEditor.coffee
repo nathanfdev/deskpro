@@ -249,16 +249,15 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
     saveCssEditor: () =>
       data = {};
       data[@css_template_info.type] = @css_template_info.code;
+      @recompiling = true
 
       @$http({
         method: 'PUT',
         url: '/portal/api/style/edit-theme-set/advanced-edits',
         data: angular.toJson(data)
       })
-      .error(@serverError)
-      .then(() =>
-        @saveValues()
-      )
+      .success(=> @recompiling = false)
+      .error((message) => @recompiling = false; @serverError(message))
 
       @css_template_selected = null
       @css_template_info = false
@@ -377,6 +376,6 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
     error: (message) => @showAlert(message, 'Changes were not applied')
     success: (message) => @showAlert(message, 'Changes were applied')
-    serverError: => @error('Server error occurred. Unable to save data.')
+    serverError: (message) => @error('Server error occurred. Unable to save data (' + message.message + ').')
 
   Admin_Portal_Ctrl_PortalEditor.EXPORT_CTRL()
