@@ -49,7 +49,7 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         $this->addOption('post', null, InputOption::VALUE_NONE, 'Send a POST request (default when data is sent)');
         $this->addOption('put', null, InputOption::VALUE_NONE, 'Send a PUT request');
         $this->addOption('delete', null, InputOption::VALUE_NONE, 'Send a DELETE request');
-        $this->addOption('v2', null, InputOption::VALUE_NONE, 'Use v2 api');
+        $this->addOption('v1', null, InputOption::VALUE_NONE, 'Use v1 api');
         $this->addOption('url', null, InputOption::VALUE_REQUIRED, 'Use this API url instead of generating the URL automatically based on the current helpdesk.');
         $this->addOption('api-key', null, InputOption::VALUE_REQUIRED, 'Use this API key. When this option is not used, the command will create a key for the first admin in the database. Use the special string "NONE" to not send any key (e.g., to test open/public APIs).');
         $this->addOption('raw', null, InputOption::VALUE_NONE, 'Output the API result directly without any other info or JSON decoding');
@@ -63,7 +63,8 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $reqType = 'GET';
-        $v2      = $input->getOption('v2') ? '/v2/' : '';
+        $isV2    = !$input->getOption('v1');
+        $apiPath = $isV2 ? '/v2/' : '/';
         $asForm  = $input->getOption('as-form');
         $curl    = ['curl'];
 
@@ -120,13 +121,13 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
                 if (strpos($baseUrl, '/index.php/') === false) {
                     $baseUrl .= 'index.php/';
                 }
-                $baseUrl .= "api$v2";
+                $baseUrl .= "api$apiPath";
             }
             if (!preg_match('#^https?://#', $baseUrl)) {
                 $baseUrl = 'http://'.$baseUrl;
             }
         } else {
-            $baseUrl = trim(App::getSetting('core.deskpro_url'), '/')."/index.php/api$v2";
+            $baseUrl = trim(App::getSetting('core.deskpro_url'), '/')."/api$apiPath";
         }
         $path = trim($input->getArgument('path'), '/');
 
@@ -164,7 +165,7 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
 
             $apiKey = $key->getKeyString();
 
-            if ($v2) {
+            if ($isV2) {
                 $apiKey = 'key '.$apiKey;
             }
         }
@@ -175,12 +176,12 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
 
         $headers = array();
 
-        if ($v2) {
+        if ($isV2) {
             $headers['Authorization'] = $apiKey;
             $curl[]                   = '-H \'Authorization: '.$apiKey.'\'';
         } else {
             $headers['X-DeskPRO-API-Key'] = $apiKey;
-            $curl[]                       = '-H \''.$apiKey.'\'';
+            $curl[]                       = '-H \'X-DeskPRO-API-Key: '.$apiKey.'\'';
         }
 
         $httpClient = new \Guzzle\Http\Client($baseUrl, array(
