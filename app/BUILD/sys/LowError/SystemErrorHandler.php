@@ -556,16 +556,23 @@ class SystemErrorHandler
      */
     public static function processErrorInfo(array $errinfo)
     {
-        $str = [];
+        $str       = [];
+        $extraData = self::getDpEnv()->getConfig('env.extra_errorlog_fields', []);
+
         if ($errinfo['type'] == 'exception') {
             $e     = $errinfo['exception'];
             $line  = sprintf('DeskPRO Exception: %s:%s (%s line %s): %s', $errinfo['exception_type'], $e->getCode(), $errinfo['errfile'], $errinfo['errline'], $e->getMessage());
             $str[] = sprintf("Exception: %s %s\n", $e->getCode(), $e->getMessage());
             $str[] = sprintf("\tType: %s\n", $errinfo['exception_type']);
             $str[] = sprintf("\tDate: %s (Running time to error: %s)\n", date('Y-m-d H:i:s'), $errinfo['time_to_error']);
+            foreach ($extraData as $k => $v) {
+                $str[] = "\t$k: $v\n";
+            }
             $str[] = sprintf("\tBuild: %s\n", defined('DP_BUILD_NUM') ? DP_BUILD_NUM : defined('DP_BUILD_TIME') ? DP_BUILD_TIME : '0');
             if (!empty($errinfo['url'])) {
                 $str[] = sprintf("\tURL: %s\n", $errinfo['url']);
+            }
+            if (!empty($errinfo['client_user_agent'])) {
                 $str[] = sprintf("\tUserAgent: %s\n", $errinfo['client_user_agent']);
             }
             $str[] = sprintf("\t-> [#00] %s:%d\n", $errinfo['errfile'], $errinfo['errline']);
@@ -574,9 +581,14 @@ class SystemErrorHandler
             $str[] = sprintf("Error: %s\n", $errinfo['errstr']);
             $str[] = sprintf("\tType: %s\n", $errinfo['errname']);
             $str[] = sprintf("\tDate: %s (Running time to error: %s)\n", date('Y-m-d H:i:s'), $errinfo['time_to_error']);
+            foreach ($extraData as $k => $v) {
+                $str[] = "\t$k: $v\n";
+            }
             $str[] = sprintf("\tBuild: %s\n", defined('DP_BUILD_NUM') ? DP_BUILD_NUM : defined('DP_BUILD_TIME') ? DP_BUILD_TIME : '0');
             if (!empty($errinfo['url'])) {
                 $str[] = sprintf("\tURL: %s\n", $errinfo['url']);
+            }
+            if (!empty($errinfo['client_user_agent'])) {
                 $str[] = sprintf("\tUserAgent: %s\n", $errinfo['client_user_agent']);
             }
             $str[] = sprintf("\t-> [#00] %s:%d\n", $errinfo['errfile'], $errinfo['errline']);
@@ -627,20 +639,27 @@ class SystemErrorHandler
             echo "\n";
         }
 
-        $errorLogFile = self::getLogDir().DIRECTORY_SEPARATOR.'/error.log';
-        if ($errorLogFile && ($fh = @fopen($errorLogFile, 'a')) !== false) {
-            $written = @fwrite($fh, $str);
+        $logFiles = [self::getLogDir().DIRECTORY_SEPARATOR.'/error.log'];
 
-            if ($written) {
-                // Max 30MB
-                $stat = @fstat($fh);
-                if ($stat && $stat['size'] && $stat['size'] > 31457280) {
-                    @ftruncate($fh, 31457280);
+        if ($secondaryLogFile = self::getDpEnv()->getConfig('env.secondary_errorlog_file')) {
+            $logFiles[] = $secondaryLogFile;
+        }
+
+        foreach ($logFiles as $errorLogFile) {
+            if ($errorLogFile && ($fh = @fopen($errorLogFile, 'a')) !== false) {
+                $written = @fwrite($fh, $str);
+
+                if ($written) {
+                    // Max 30MB
+                    $stat = @fstat($fh);
+                    if ($stat && $stat['size'] && $stat['size'] > 31457280) {
+                        @ftruncate($fh, 31457280);
+                    }
                 }
-            }
 
-            @fclose($fh);
-            @chmod($errorLogFile, 0777);
+                @fclose($fh);
+                @chmod($errorLogFile, 0777);
+            }
         }
 
         try {
