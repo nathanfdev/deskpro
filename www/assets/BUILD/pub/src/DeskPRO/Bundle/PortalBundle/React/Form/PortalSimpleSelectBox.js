@@ -405,16 +405,16 @@ export class PortalSimpleSelectBox extends React.Component {
     const context = widgetOptions.context || document;
 
     return (
-      <ClickOut
-        onClickOut={this.onClickOut}
-        additionalNodes={[`.multiselect-title_${this.state.id}`]}
-        context={context}
-      >
-        <div className={classNames('multiselect', widgetOptions.widgetClassName || null, `level-${this.state.level}`)}>
-            {this.renderStaticHeader()}
-            {this.renderDropdownList()}
-        </div>
-      </ClickOut>
+      <div className={classNames('multiselect', widgetOptions.widgetClassName || null, `level-${this.state.level}`)}>
+        <ClickOut
+          onClickOut={this.onClickOut}
+          additionalNodes={[`.multiselect-title_${this.state.id}`]}
+          context={context}
+        >
+          {this.renderStaticHeader()}
+          {this.renderDropdownList()}
+        </ClickOut>
+      </div>
     );
   }
 }
