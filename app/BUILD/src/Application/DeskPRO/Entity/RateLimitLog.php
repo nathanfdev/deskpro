@@ -83,7 +83,7 @@ class RateLimitLog extends DomainObject
      */
     public function setIp($ip)
     {
-        $this->setModelField('ip', ip2long($ip));
+        $this->setModelField('ip', $ip);
 
         return $this;
     }
@@ -141,7 +141,7 @@ class RateLimitLog extends DomainObject
      */
     public function getIp()
     {
-        return long2ip($this->ip);
+        return $this->ip;
     }
 
     ############################################################################
@@ -183,7 +183,7 @@ class RateLimitLog extends DomainObject
         $metadata->mapField(array(
             'columnName' => 'ip',
             'fieldName'  => 'ip',
-            'type'       => 'integer',
+            'type'       => 'string',
             'nullable'   => false,
         ));
         $metadata->mapField(array(
