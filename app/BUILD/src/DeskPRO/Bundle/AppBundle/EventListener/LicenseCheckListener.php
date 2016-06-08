@@ -103,7 +103,9 @@ final class LicenseCheckListener implements EventSubscriberInterface
             return;
         }
 
-        $this->assetUrl = $event->getRequest()->getBasePath().'/pub';
+        /* @var \DpRun\DpEnv */
+        global $DP_ENV;
+        $this->assetUrl = $event->getRequest()->getUriForPath('/assets/'.$DP_ENV->getAppName().'/pub');
 
         if (defined('DPC_IS_CLOUD')) {
             $this->doCloudChecks($event);
@@ -185,7 +187,7 @@ final class LicenseCheckListener implements EventSubscriberInterface
         $request = $event->getRequest();
 
         // Expired demos
-        if ($lic->isPastExpireDate()) {
+        if ($lic->isDemo() && $lic->isPastExpireDate()) {
             $event->setResponse($this->getCloudErrorPageResponse('cloud-error.demo-expired.html'));
             $event->stopPropagation();
 
@@ -193,7 +195,7 @@ final class LicenseCheckListener implements EventSubscriberInterface
         }
 
         // Failed billing
-        if (defined('DPC_BILL_FAILED') && DPC_BILL_FAILED) {
+        if ($lic->isPastExpireDate()) {
             if (
                 ($this->interfaceInfo->isAgentInterface() && defined('DPC_AGENT_OFF') && DPC_AGENT_OFF)
                 || ($this->interfaceInfo->isUserInterface() && defined('DPC_USER_OFF') && DPC_USER_OFF)

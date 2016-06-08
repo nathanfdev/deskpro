@@ -315,7 +315,7 @@ final class License
                 $this->data['expire'] = \DPC_DEMO_EXPIRE;
             } else {
                 $this->data['demo']   = false;
-                $this->data['expire'] = null;
+                $this->data['expire'] = \DPC_BILL_DATE;
             }
 
             if (defined('DPC_COPYFREE') && DPC_COPYFREE) {
