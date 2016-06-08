@@ -15,7 +15,7 @@
     <strong>{{ phrase('portal.news.none') }}</strong>
   {% endif %}
 
-  {% if show_category_link %}
+  {% if show_category_link and pager|length > 0 %}
     <div class="list-meta">
       <a href="{{ category ? portal_path(category) : path('portal_news') }}">
         {{ phrase('portal.news.view-x-news', {count: pager|length}) }}<i class="fa fa-caret-right"></i>

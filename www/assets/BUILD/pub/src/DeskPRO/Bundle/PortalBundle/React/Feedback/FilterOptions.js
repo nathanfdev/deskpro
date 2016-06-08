@@ -3,7 +3,6 @@ import _ from 'lodash';
 export class FilterOptions {
 
   constructor(available) {
-    this._available = available;
     this.status = available.status;
     this.status_categories = available.status_categories;
     this.types = available.types;
@@ -13,17 +12,9 @@ export class FilterOptions {
 
   getStatusCategoryById(status_id, status_category_id) {
     let f = _.filter(this.status_categories[status_id], (cat) => {
-      return cat.id == status_category_id;
+      return cat.id === status_category_id;
     });
     return _.first(f);
-  }
-
-  getAvailableTypeIds() {
-    let result = [];
-    _.forEach(this.types, (type_name, type_id) => {
-      result.push(_.parseInt(type_id));
-    });
-    return result;
   }
 
   getStatusForStatusCategory(status_category_id) {
@@ -43,7 +34,7 @@ export class FilterOptions {
   getStatusCategoriesForStatus(status_id) {
     let result = [];
     _.forEach(this.status_categories, (st_cats, st_id) => {
-      if (st_id == status_id) {
+      if (st_id === status_id) {
         result = st_cats;
       }
     });

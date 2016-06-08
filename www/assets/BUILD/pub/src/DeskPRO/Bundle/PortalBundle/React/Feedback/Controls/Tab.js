@@ -31,7 +31,7 @@ export class Tab extends React.Component {
         <span className={this.props.active ? "link active" : "link"}>
           {this.props.label}
           {this.renderActiveCats()}
-          {canRenderDropdown ? <span><i className="fa fa-caret-down"></i></span> : null}
+          {canRenderDropdown ? <span><i className="fa fa-caret-down" /></span> : null}
         </span>
         {canRenderDropdown ? this.renderDropdown(dropdownCats) : null}
       </div>
@@ -82,17 +82,15 @@ export class Tab extends React.Component {
     return (
       <div className="dropdown-content no-touch-focus">
         <ul>
-          {_.map(dropdownCats, (cat) => {
-            return (
-              <li key={cat.id}>
-                <StatusCategory
-                  cat={cat}
-                  isActive={this.isActiveStatusCategory(cat.id)}
-                  setStatusCategory={this.props.setStatusCategory}
-                  />
-              </li>
-            );
-          })}
+          {_.map(dropdownCats, (cat) =>
+            <li key={cat.id}>
+              <StatusCategory
+                cat={cat}
+                isActive={this.isActiveStatusCategory(cat.id)}
+                setStatusCategory={this.props.setStatusCategory}
+              />
+            </li>
+          )}
         </ul>
       </div>
     );

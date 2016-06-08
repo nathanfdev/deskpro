@@ -5,9 +5,9 @@ import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 export class TypeSlider extends React.Component {
 
   static propTypes = {
-    id: PropTypes.string,
-    label: PropTypes.string,
-    active: PropTypes.bool,
+    id:         PropTypes.string,
+    label:      PropTypes.string,
+    active:     PropTypes.bool,
     toggleType: PropTypes.func
   };
 
@@ -24,10 +24,11 @@ export class TypeSlider extends React.Component {
     return (
       <li>
         <div className="slider-panel">
-          <a href={'/feedback/browse/type-' + id}
-             className={classNames('slider', {'off': !active})}
-             onClick={this.onClick}>
-
+          <a
+            href={`/feedback/browse/type-${id}`}
+            className={classNames('slider', { off: !active })}
+            onClick={this.onClick}
+          >
             <span className="slider-status">
               {active ? portalPhrases.get('portal.general.toggle_on') : portalPhrases.get('portal.general.toggle_off')}
             </span>

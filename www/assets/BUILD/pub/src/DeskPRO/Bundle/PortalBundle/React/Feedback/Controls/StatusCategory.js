@@ -1,18 +1,28 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 export class StatusCategory extends React.Component {
 
-  clicked(e) {
-    e.preventDefault();
-    this.props.setStatusCategory(this.props.cat.id);
-  }
+  static propTypes = {
+    cat:               PropTypes.object,
+    setStatusCategory: PropTypes.func,
+    isActive:          PropTypes.bool
+  };
+
+  onClick = event => {
+    event.preventDefault();
+    const { setStatusCategory, cat } = this.props;
+
+    setStatusCategory(cat.id);
+  };
 
   render() {
+    const { isActive, cat } = this.props;
+
     return (
       <div className="cat-checkbox-title">
-        <input type="checkbox" checked={this.props.isActive} onChange={this.clicked.bind(this)} onTouchStart={this.clicked.bind(this)} />
-        <a style={this.props.isActive ? {} : {}} onClick={this.clicked.bind(this)} onTouchStart={this.clicked.bind(this)}>
-          {this.props.cat.title}
+        <input type="checkbox" checked={isActive} onChange={this.onClick} onTouchStart={this.onClick} />
+        <a style={isActive ? {} : {}} onClick={this.onClick} onTouchStart={this.onClick}>
+          {cat.title}
         </a>
       </div>
     );

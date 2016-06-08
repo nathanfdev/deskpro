@@ -3,16 +3,13 @@ import _ from 'lodash';
 export class FilterModel {
 
   constructor(data, available) {
+    this.data = data;
     this.available = available;
     this.sort = data.sort;
     this.sort_direction = data.sort_direction || 'desc';
     this.status = data.status;
-    this.status_categories = _.map(data.status_categories, function (val) {
-      return _.parseInt(val);
-    });
-    this.types = _.map(data.types, function (val) {
-      return _.parseInt(val);
-    });
+    this.status_categories = _.map(data.status_categories, val => _.parseInt(val));
+    this.types = _.map(data.types, val => _.parseInt(val));
     this.page = _.parseInt(data.page || 1);
     this.checkEmptyStatusCategories();
   }
@@ -23,17 +20,17 @@ export class FilterModel {
     this.sort_direction = 'desc';
     this.status = 'all';
     this.status_categories = [];
-    this.types = [];
+    this.types = _.map(this.data.types, val => _.parseInt(val));
     this.checkEmptyStatusCategories();
   }
 
   changeSort(new_sort) {
     let parts = new_sort.split('-');
-    if (parts.length == 2) {
+    if (parts.length === 2) {
       this.sort = parts[0];
       this.sort_direction = parts[1];
     }
-    if (parts.length == 3) {
+    if (parts.length === 3) {
       this.sort = parts[0] + '-' + parts[1];
       this.sort_direction = parts[2];
     }
@@ -77,18 +74,39 @@ export class FilterModel {
     return url;
   }
 
-  setStatus(status_id) {
+  setStatus(status) {
     this.page = 1;
-    if (this.status != status_id) {
-      this.status = status_id;
+    if (this.status !== status) {
+      this.status = status;
     }
-    let avil = _.map(this.available.getStatusCategoriesForStatus(this.status), (cat) => {
-      return cat.id;
-    });
-    this.status_categories = _.filter(this.status_categories, (cat) => {
-      return _.includes(avil, cat);
-    });
+
+    const avil = _.map(this.available.getStatusCategoriesForStatus(this.status), cat => cat.id);
+    this.status_categories = _.filter(this.status_categories, (cat) => _.includes(avil, cat));
     this.checkEmptyStatusCategories();
+  }
+
+  setStatusCategory(rawCategory) {
+    const category = parseInt(rawCategory, 10);
+
+    this.page = 1;
+    this.status_categories = [category];
+
+    // force a filter on this.status_categories
+    this.setStatus(this.available.getStatusForStatusCategory(category));
+  }
+
+  toggleStatusCategory(rawCategory) {
+    const category = parseInt(rawCategory, 10);
+
+    this.page = 1;
+    if (_.includes(this.status_categories, category)) {
+      this.status_categories = _.filter(this.status_categories, n => n !== category);
+    } else {
+      this.status_categories.push(category);
+    }
+
+    // force a filter on this.status_categories
+    this.setStatus(this.available.getStatusForStatusCategory(category));
   }
 
   getStatus() {
@@ -112,28 +130,5 @@ export class FilterModel {
     type_id = _.parseInt(type_id);
     this.types = [];
     this.types.push(type_id);
-  }
-
-  toggleStatusCategory(status_category_id) {
-    this.page = 1;
-    status_category_id = _.parseInt(status_category_id);
-    if (_.includes(this.status_categories, status_category_id)) {
-      this.status_categories = _.filter(this.status_categories, (n) => {
-        return n != status_category_id;
-      });
-    } else {
-      this.status_categories.push(status_category_id);
-    }
-    // force a filter on this.status_categories
-    this.setStatus(this.available.getStatusForStatusCategory(status_category_id));
-  }
-
-  setStatusCategory(status_category_id) {
-    this.page = 1;
-    status_category_id = _.parseInt(status_category_id);
-    this.status_categories = [];
-    this.status_categories.push(status_category_id);
-    // force a filter on this.status_categories
-    this.setStatus(this.available.getStatusForStatusCategory(status_category_id));
   }
 }

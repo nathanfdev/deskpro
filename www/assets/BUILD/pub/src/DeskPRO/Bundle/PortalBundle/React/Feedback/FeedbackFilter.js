@@ -20,74 +20,78 @@ export class FeedbackFilter extends React.Component {
     const filter = new FilterModel(props.filter_data.filter, available);
 
     this.state = {
-      available: available,
-      filter: filter,
-      doSpin: true,
+      available,
+      filter,
+      doSpin:  true,
       partial: ''
     };
   }
 
   componentDidMount() {
     history.replaceState(this.state, null, window.history.location || window.location);
-    this.updateFilter(this.state.filter, true);
-    window.addEventListener('popstate', (e) => {
-      if (e.state === null) {
-        return;
-      }
-      if (e.state.partial.length === 0) {
+    this.onUpdateFilter(this.state.filter, true);
+    window.addEventListener('popstate', event => {
+      if (event.state === null || event.state.partial.length === 0) {
         return;
       }
 
       this.setState({
-        filter: new FilterModel(e.state.filter, this.state.available),
-        partial: e.state.partial,
-        doSpin: e.state.doSpin
+        filter:  new FilterModel(event.state.filter, this.state.available),
+        partial: event.state.partial,
+        doSpin:  event.state.doSpin
       });
     });
   }
 
-  updateFilter(filterModel, initial = false) {
-    this.setState({
-      filter: this.state.filter,
-      doSpin: true,
-      partial: ''
-    }, () => {
-      // we have to know the actual URL to put in the history.pushState, so
-      // we call in and use PortalUrlCorrector directly...
-      let url = filterModel.createUrl();
-      const config = {url: url};
-      portalUrlCorrector.request(config);
-      url = config.url;
+  onUpdateFilter = (filterModel, initial = false) => {
+    this.setState(
+      {
+        filter:  this.state.filter,
+        doSpin:  true,
+        partial: ''
+      },
+      () => {
+        // we have to know the actual URL to put in the history.pushState, so
+        // we call in and use PortalUrlCorrector directly...
+        let url = filterModel.createUrl();
+        const config = { url };
+        portalUrlCorrector.request(config);
+        url = config.url;
 
-      portalHttp.sendGet(url).then(r => {
-        const state = {
-          filter: filterModel,
-          partial: r.getData(),
-          doSpin: false
-        };
+        portalHttp.sendGet(url).then(r => {
+          const state = {
+            filter:  filterModel,
+            partial: r.getData(),
+            doSpin:  false
+          };
 
-        if (initial) {
-          history.replaceState(state, null, url);
-        } else {
-          history.pushState(state, null, url);
-        }
+          if (initial) {
+            history.replaceState(state, null, url);
+          } else {
+            history.pushState(state, null, url);
+          }
 
-        this.setState(state);
-      });
-    });
-  }
+          this.setState(state);
+        });
+      }
+    );
+  };
 
   render() {
     return (
       <article className="feedback-filter-interactive">
-        <FilterControls filterModel={this.state.filter}
-                        available={this.state.available}
-                        updateFilter={this.updateFilter.bind(this)}
-                        doSpin={this.state.doSpin}/>
-        <ResultsPartial filterModel={this.state.filter}
-                         partial={this.state.partial}
-                         updateFilter={this.updateFilter.bind(this)}
-                         doSpin={this.state.doSpin} />
+        <FilterControls
+          filterModel={this.state.filter}
+          available={this.state.available}
+          updateFilter={this.onUpdateFilter}
+          doSpin={this.state.doSpin}
+        />
+        <ResultsPartial
+          filterModel={this.state.filter}
+          partial={this.state.partial}
+          updateFilter={this.onUpdateFilter}
+          doSpin={this.state.doSpin}
+        />
       </article>
     );
   }

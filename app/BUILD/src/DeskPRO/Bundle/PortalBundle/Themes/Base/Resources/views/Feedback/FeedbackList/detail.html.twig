@@ -55,9 +55,9 @@
 </div>
 {% else %}
   {% if filtered %}
-    <strong>{{ phrase('portal.feedback.no_matching') }}</strong>
+    <strong class="no-data">{{ phrase('portal.feedback.no_matching') }}</strong>
   {% else %}
-    <strong>{{ phrase('portal.feedback.none') }}</strong>
+    <strong class="no-data">{{ phrase('portal.feedback.none') }}</strong>
   {% endif %}
 {% endfor %}
 
