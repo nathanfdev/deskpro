@@ -44,7 +44,7 @@ export class ResultsPartial extends React.Component {
     const $results = $(ReactDOM.findDOMNode(this.refs.results));
 
     // process pager
-    $('.deskpro-pager a', $results).each((i, item) => {
+    $results.find('.deskpro-pager a').each((i, item) => {
       $(item).on('click', event => {
         event.preventDefault();
 
@@ -57,13 +57,13 @@ export class ResultsPartial extends React.Component {
     });
 
     // add events to "I Agree"
-    $('.feedback-item-controls a.i-agree', $results).each((i, item) => {
+    $results.find('.feedback-item-controls a.i-agree').each((i, item) => {
       const w = new FeedbackVoteWidget($(item));
       w.render();
     });
 
     // add events to status category links
-    $('.feedback-item-content .feedback-status a', $results).each((i, item) => {
+    $results.find('.feedback-item-content .feedback-status a').each((i, item) => {
       $(item).on('click', event => {
         event.preventDefault();
         this.setStatusCategory($(item).data('id'));
@@ -71,7 +71,7 @@ export class ResultsPartial extends React.Component {
     });
 
     // add events to type (categories) links
-    $('a.feedback-category', $results).each((i, item) => {
+    $results.find('a.feedback-category').each((i, item) => {
       $(item).on('click', event => {
         event.preventDefault();
         this.setType($(item).data('id'));
