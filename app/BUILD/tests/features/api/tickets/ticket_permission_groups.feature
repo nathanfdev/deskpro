@@ -110,14 +110,14 @@ Feature: Ticket permission groups
     When I send a GET request to "/api/v2/tickets"
     And the response status code should be 200
 
-    When I send a GET request to "/api/v2/tickets/3"
+    When I send a GET request to "/api/v2/tickets/{t1}"
     And the response status code should be 200
 
     When I send a POST request to "/api/v2/tickets"
-    And the response status code should be 400
+    And the response status code should be 201
 
-    When I send a PUT request to "/api/v2/tickets/3"
+    When I send a PUT request to "/api/v2/tickets/{t1}"
     And the response status code should be 204
 
-    When I send a DELETE request to "/api/v2/tickets/3"
+    When I send a DELETE request to "/api/v2/tickets/{t1}"
     And the response status code should be 200

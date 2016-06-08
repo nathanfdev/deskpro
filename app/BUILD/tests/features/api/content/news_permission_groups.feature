@@ -1,10 +1,5 @@
 @new
 Feature: /news endpoint
-  I want to check permission groups
-
-  Background:
-    And I remove "admin" usergroup relation "agent_all_perms"
-    And I remove "admin" usergroup relation "agent_all_safe_perms"
 
   Scenario: I have no news permissions
     Given I'm authenticated as agent

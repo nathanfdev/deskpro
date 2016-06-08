@@ -1,10 +1,5 @@
 @new
 Feature: /downloads endpoint
-  I want to check permission groups
-
-  Background:
-    And I remove "admin" usergroup relation "agent_all_perms"
-    And I remove "admin" usergroup relation "agent_all_safe_perms"
 
   Scenario: I have no download permissions
     Given I'm authenticated as agent
