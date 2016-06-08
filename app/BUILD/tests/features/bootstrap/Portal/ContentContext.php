@@ -47,7 +47,7 @@ class ContentContext extends BasePortalContext
      */
     public function noArticlesInKb()
     {
-        $articles = $this->em()->getRepository(Article::class)->findAll();
+        $articles = $this->repository(Article::class)->findAll();
         foreach ($articles as $article) {
             $this->em()->remove($article);
         }
@@ -60,18 +60,18 @@ class ContentContext extends BasePortalContext
      */
     public function haveAnArticle($title)
     {
-        $article = $this->em()->getRepository(Article::class)->findOneBy(['title' => $title]);
+        $article = $this->repository(Article::class)->findOneBy(['title' => $title]);
         if ($article) {
             return;
         }
         $article = new Article();
         /** @var \DpTestSrc\TestBundle\UserDetailsRepo $user_details */
-        $user_details = $this->getContainer()->get('user_details');
+        $user_details = $this->get('user_details');
         $person       = $user_details->getWho('agent');
         $article->setPerson($person);
         $article->setTitle($title);
         $article->setCategories(
-            $this->em()->getRepository(ArticleCategory::class)->findAll()
+            $this->repository(ArticleCategory::class)->findAll()
         );
         $article->setStatus(Article::STATUS_PUBLISHED);
 
@@ -83,20 +83,20 @@ class ContentContext extends BasePortalContext
      */
     public function haveANews($title)
     {
-        $news = $this->em()->getRepository(News::class)->findOneBy(['title' => $title]);
+        $news = $this->repository(News::class)->findOneBy(['title' => $title]);
         if ($news) {
             return;
         }
         $news = new News();
 
         /** @var \DpTestSrc\TestBundle\UserDetailsRepo $user_details */
-        $user_details = $this->getContainer()->get('user_details');
+        $user_details = $this->get('user_details');
         $person       = $user_details->getWho('agent');
         $news
             ->setPerson($person);
         $news->setTitle($title);
         $news->setCategory(
-            $this->em()->getRepository(NewsCategory::class)->findOneBy(['slug' => 'general'])
+            $this->repository(NewsCategory::class)->findOneBy(['slug' => 'general'])
         );
         $news->setStatus(News::STATUS_PUBLISHED);
         $this->persistAndFlush($news);

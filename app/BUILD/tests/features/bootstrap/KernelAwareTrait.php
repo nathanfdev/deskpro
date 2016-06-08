@@ -34,6 +34,7 @@ namespace DpBehat;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use DpBehat\Data\ObjectsManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -45,7 +46,55 @@ trait KernelAwareTrait
     /**
      * @var KernelInterface
      */
-    protected $kernel;
+    private static $kernel;
+
+    /**
+     * @var ObjectsManager
+     */
+    private static $objectsManager;
+
+    /**
+     * @throws \Exception
+     *
+     * @return KernelInterface
+     */
+    protected static function getKernel()
+    {
+        if (!self::$kernel) {
+            throw new \Exception('Kernel has not yet been initialized');
+        }
+
+        return self::$kernel;
+    }
+
+    /**
+     * @return EntityManager
+     */
+    protected static function getEm()
+    {
+        return self::getKernel()->getContainer()->get('doctrine.orm.default_entity_manager');
+    }
+
+    /**
+     * Init ObjectManager
+     */
+    protected static function initOm()
+    {
+        self::$objectsManager = self::createOm();
+    }
+
+    /**
+     * @return ObjectsManager
+     * @throws \Exception
+     */
+    protected static function getOm()
+    {
+        if (!self::$objectsManager) {
+            throw new \Exception('ObjectManager has not yet been initialized');
+        }
+
+        return self::$objectsManager;
+    }
 
     /**
      * Sets Kernel instance.
@@ -56,7 +105,8 @@ trait KernelAwareTrait
      */
     public function setKernel(KernelInterface $kernel)
     {
-        $this->kernel = $kernel;
+        self::$kernel = $kernel;
+
         if ($this instanceof RebootableContextInterface) {
             if (!method_exists($this, 'rebootContext')) {
                 $class = get_class($this);
@@ -68,23 +118,13 @@ trait KernelAwareTrait
     }
 
     /**
-     * @param string $service
-     *
-     * @return object
-     */
-    protected function get($service)
-    {
-        return $this->getContainer()->get($service);
-    }
-
-    /**
-     * Returns HttpKernel instance.
+     * @throws \Exception
      *
      * @return KernelInterface
      */
-    protected function getKernel()
+    protected function kernel()
     {
-        return $this->kernel;
+        return self::getKernel();
     }
 
     /**
@@ -92,28 +132,19 @@ trait KernelAwareTrait
      *
      * @return ContainerInterface
      */
-    protected function getContainer()
+    protected function container()
     {
-        return $this->kernel->getContainer();
+        return $this->kernel()->getContainer();
     }
 
     /**
-     * @param string $entityName
+     * @param string $service
      *
-     * @return EntityRepository
+     * @return object
      */
-    protected function getEntityRepo($entityName)
+    protected function get($service)
     {
-        return $this->getContainer()->get('doctrine.orm.default_entity_manager')->getRepository($entityName);
-    }
-
-    /**
-     * @param object $entity
-     */
-    protected function persistAndFlush($entity)
-    {
-        $this->getContainer()->get('doctrine.orm.default_entity_manager')->persist($entity);
-        $this->getContainer()->get('doctrine.orm.default_entity_manager')->flush($entity);
+        return $this->container()->get($service);
     }
 
     /**
@@ -121,16 +152,44 @@ trait KernelAwareTrait
      */
     protected function em()
     {
-        return $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        return self::getEm();
     }
 
     /**
-     * @param string $class
+     * @param string $entityName
      *
-     * @return \Doctrine\ORM\EntityRepository
+     * @return EntityRepository
      */
-    protected function getRepository($class)
+    protected function repository($entityName)
     {
-        return $this->em()->getRepository($class);
+        return $this->em()->getRepository($entityName);
+    }
+
+    /**
+     * @param object $entity
+     */
+    protected function persistAndFlush($entity)
+    {
+        $this->em()->persist($entity);
+        $this->em()->flush($entity);
+    }
+
+    /**
+     * @return ObjectsManager
+     * @throws \Exception
+     */
+    protected function om()
+    {
+        return self::getOm();
+    }
+
+    /**
+     * @throws \Exception
+     *
+     * @return ObjectsManager
+     */
+    private static function createOm()
+    {
+        return new ObjectsManager(self::getEm());
     }
 }

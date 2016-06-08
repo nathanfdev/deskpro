@@ -1,9 +1,13 @@
-Feature: /tickets endpoint
-  I want to check permission groups
+@new
+Feature: Ticket permission groups
 
   Background:
-    Given I install the api data set
-    And my request is authenticated to "agent"
+    Given I'm authenticated as agent
+    And I have a Department record referenced as d1
+    And I have the following Ticket records:
+    | #  | Agent   | Department   |
+    | t1 | {agent} | {d1}         |
+    | t2 | NULL    | {d1}         |
     And I remove "agent" usergroup relation "agent_all_perms"
     And I remove "agent" usergroup relation "agent_all_safe_perms"
 
@@ -11,16 +15,16 @@ Feature: /tickets endpoint
     When I send a GET request to "/api/v2/tickets"
     And the response status code should be 403
 
-    When I send a GET request to "/api/v2/tickets/2"
+    When I send a GET request to "/api/v2/tickets/{t1}"
     And the response status code should be 403
 
     When I send a POST request to "/api/v2/tickets"
     And the response status code should be 403
 
-    When I send a PUT request to "/api/v2/tickets/2"
+    When I send a PUT request to "/api/v2/tickets/{t1}"
     And the response status code should be 403
 
-    When I send a DELETE request to "/api/v2/tickets/2"
+    When I send a DELETE request to "/api/v2/tickets/{t1}"
     And the response status code should be 403
 
   Scenario: I grant use tickets permission
@@ -29,92 +33,91 @@ Feature: /tickets endpoint
     When I send a GET request to "/api/v2/tickets"
     And the response status code should be 200
 
-    When I send a GET request to "/api/v2/tickets/1"
-    And the response status code should be 403
-
-    When I send a GET request to "/api/v2/tickets/3"
+    When I send a GET request to "/api/v2/tickets/{t1}"
     And the response status code should be 200
+    When I send a GET request to "/api/v2/tickets/{t2}"
+    And the response status code should be 403
 
     When I send a POST request to "/api/v2/tickets"
     And the response status code should be 403
 
-    When I send a PUT request to "/api/v2/tickets/3"
+    When I send a PUT request to "/api/v2/tickets/{t1}"
     And the response status code should be 403
 
-    When I send a DELETE request to "/api/v2/tickets/3"
+    When I send a DELETE request to "/api/v2/tickets/{t1}"
     And the response status code should be 403
 
   Scenario: I grant tickets create permission
     Given I set permission "agent_tickets.create" = 1 for "registered" usergroup
-    Given I grant department 1 permission of "tickets" app for "agent"
+    And I grant the "{d1}" department permission of "tickets" app for "agent"
 
     When I send a GET request to "/api/v2/tickets"
     And the response status code should be 200
 
-    When I send a GET request to "/api/v2/tickets/3"
+    When I send a GET request to "/api/v2/tickets/{t1}"
     And the response status code should be 200
 
     When I send a POST request to "/api/v2/tickets"
-    And the response status code should be 400
+    And the response status code should be 201
 
-    When I send a PUT request to "/api/v2/tickets/3"
+    When I send a PUT request to "/api/v2/tickets/{t1}"
     And the response status code should be 403
 
-    When I send a DELETE request to "/api/v2/tickets/3"
+    When I send a DELETE request to "/api/v2/tickets/{t1}"
     And the response status code should be 403
 
   Scenario: I grant tickets modify own permission
     Given I set permission "agent_tickets.modify_own" = 1 for "registered" usergroup
-    Given I grant department 1 permission of "tickets" app for "agent"
+    And I grant the "{d1}" department permission of "tickets" app for "agent"
 
     When I send a GET request to "/api/v2/tickets"
     And the response status code should be 200
 
-    When I send a GET request to "/api/v2/tickets/3"
+    When I send a GET request to "/api/v2/tickets/{t1}"
     And the response status code should be 200
 
     When I send a POST request to "/api/v2/tickets"
-    And the response status code should be 400
+    And the response status code should be 201
 
-    When I send a PUT request to "/api/v2/tickets/3"
+    When I send a PUT request to "/api/v2/tickets/{t1}"
     And the response status code should be 204
 
-    When I send a DELETE request to "/api/v2/tickets/3"
+    When I send a DELETE request to "/api/v2/tickets/{t1}"
     And the response status code should be 403
-
 
   Scenario: I grant ticket delete permissions
     Given I set permission "agent_tickets.delete_own" = 1 for "registered" usergroup
+    And I grant the "{d1}" department permission of "tickets" app for "agent"
 
     When I send a GET request to "/api/v2/tickets"
     And the response status code should be 200
 
-    When I send a GET request to "/api/v2/tickets/3"
+    When I send a GET request to "/api/v2/tickets/{t1}"
     And the response status code should be 200
 
     When I send a POST request to "/api/v2/tickets"
-    And the response status code should be 400
+    And the response status code should be 201
 
-    When I send a PUT request to "/api/v2/tickets/3"
+    When I send a PUT request to "/api/v2/tickets/{t1}"
     And the response status code should be 204
 
-    When I send a DELETE request to "/api/v2/tickets/3"
+    When I send a DELETE request to "/api/v2/tickets/{t1}"
     And the response status code should be 200
 
   Scenario: As admin I can do with ticket whatever I want
-    Given my request is authenticated to "admin"
+    Given I'm authenticated as admin
 
     When I send a GET request to "/api/v2/tickets"
     And the response status code should be 200
 
-    When I send a GET request to "/api/v2/tickets/3"
+    When I send a GET request to "/api/v2/tickets/{t1}"
     And the response status code should be 200
 
     When I send a POST request to "/api/v2/tickets"
-    And the response status code should be 400
+    And the response status code should be 201
 
-    When I send a PUT request to "/api/v2/tickets/3"
+    When I send a PUT request to "/api/v2/tickets/{t1}"
     And the response status code should be 204
 
-    When I send a DELETE request to "/api/v2/tickets/3"
+    When I send a DELETE request to "/api/v2/tickets/{t1}"
     And the response status code should be 200

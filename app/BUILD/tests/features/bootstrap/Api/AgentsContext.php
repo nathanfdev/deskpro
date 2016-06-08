@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpBehat\Api;
 
 use Application\DeskPRO\Entity\Person;
@@ -103,7 +104,7 @@ class AgentsContext extends BaseContext
     public function agentTicketNumShouldBeUnassigned($num)
     {
         \PHPUnit_Framework_Assert::assertArrayHasKey($num, $this->lastAgentTickets);
-        $ticket = $this->getRepository(Ticket::class)->find($this->lastAgentTickets[$num]->getId());
+        $ticket = $this->repository(Ticket::class)->find($this->lastAgentTickets[$num]->getId());
         \PHPUnit_Framework_Assert::assertNotNull($ticket, "Ticket $num not found");
         \PHPUnit_Framework_Assert::assertNull($ticket->getAgent());
     }
@@ -141,7 +142,7 @@ class AgentsContext extends BaseContext
     protected function saveTicket($ticket)
     {
         /* @var TicketManager $tm */
-        $tm      = $this->getContainer()->getTicketManager();
+        $tm      = $this->container()->getTicketManager();
         $action  = $ticket->getId() ? 'update' : 'new';
         $context = $tm->createAgentExecutorContext(null, $action, 'api');
         $tm->saveTicket($ticket, $context);

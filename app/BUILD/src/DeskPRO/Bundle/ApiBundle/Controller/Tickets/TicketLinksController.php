@@ -148,6 +148,11 @@ class TicketLinksController extends BaseController
      */
     protected function handleForm(Request $request, Ticket $ticket, $formType)
     {
+        // Verify ticket we're going to link to exists
+        if ($lt = $request->get('link_ticket')) {
+            $this->findOr404(Ticket::class, $lt, "Ticket #{$lt} not found");
+        }
+
         $form = $this->createForm($formType, $ticket);
         $form->submit($request->request->all());
         if (!$form->isValid()) {

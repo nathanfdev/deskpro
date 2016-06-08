@@ -79,6 +79,17 @@ class TicketsController extends AbstractTicketsController
     }
 
     /**
+     * @deprecated
+     * @Rest\Post("")
+     */
+    public function postAction(Request $request)
+    {
+        $this->get('logger')->warning("POST /tickets is deprecated, use /ticket_forms to create tickets");
+
+        return parent::postAction($request);
+    }
+
+    /**
      * @ApiDoc(
      *      description="Get a list of tickets (see parameters description for additional information)",
      *      filters={
@@ -171,6 +182,11 @@ class TicketsController extends AbstractTicketsController
                 unset($params['order_dir']);
             } else {
                 $orderDir = 'asc';
+            }
+
+            // Ticket status filter
+            if (!array_key_exists('status', $params)) {
+                $params['status'] = ['awaiting_user', 'awaiting_agent', 'resolved', 'archived'];
             }
 
             $term = $this->get('dp.app.term_engine.tickets_select_criteria')->createTerm($params);

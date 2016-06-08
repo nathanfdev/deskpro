@@ -8,25 +8,25 @@ Feature: /tickets/{id}/messages endpoint
     And my request is authenticated
 
   Scenario: I retrieve a ticket messages
-    Given I create a ticket and reference its' ID as ticketId
-    When I send a GET request to "/api/v2/tickets/{ticketId}/messages"
+    Given I create a Ticket and reference it as ticket
+    When I send a GET request to "/api/v2/tickets/{ticket}/messages"
     Then the response status code should be 200
     And the JSON node "data" should have 0 element
 
-    When I send a GET request to "/api/v2/tickets/{ticketId}/messages/1"
+    When I send a GET request to "/api/v2/tickets/{ticket}/messages/1"
     Then the response status code should be 404
 
   Scenario: I fail form validation
-    When I send a POST request to "/api/v2/tickets/{ticketId}/messages"
+    When I send a POST request to "/api/v2/tickets/{ticket}/messages"
     Then the response status code should be 400
     And the JSON node "errors.fields.message.errors[0].message" should be equal to "This value should not be blank."
 
-    When I send a GET request to "/api/v2/tickets/{ticketId}/messages/1"
+    When I send a GET request to "/api/v2/tickets/{ticket}/messages/1"
     Then the response status code should be 404
 
   Scenario: I add ticket messages
     Given I create an image blob with auth code "IMGAAAAAAAAAAAAAAA"
-    When I send a POST request to "/api/v2/tickets/{ticketId}/messages" with body:
+    When I send a POST request to "/api/v2/tickets/{ticket}/messages" with body:
     """
     {
       "message": "My Message [attach:image:IMGAAAAAAAAAAAAAAA:image.jpg]",
@@ -42,9 +42,8 @@ Feature: /tickets/{id}/messages endpoint
     And the JSON node "data.message" should contain 'IMGAAAAAAAAAAAAAAA/image.jpg'
     And the JSON node "data.message" should contain '<img'
     And the JSON node "data.attachments" should have 1 element
-    And ticket with id="{ticketId}" has "message_created" log
 
-    When I send a POST request to "/api/v2/tickets/{ticketId}/messages" with body:
+    When I send a POST request to "/api/v2/tickets/{ticket}/messages" with body:
     """
     {
       "message": "<span>my html message</span>"
@@ -55,7 +54,7 @@ Feature: /tickets/{id}/messages endpoint
     And the JSON node "data.is_agent_note" should be equal to 0
     And the JSON node "data.message" should be equal to "<span>my html message</span>"
 
-    When I send a POST request to "/api/v2/tickets/{ticketId}/messages" with body:
+    When I send a POST request to "/api/v2/tickets/{ticket}/messages" with body:
     """
     {
       "message": "<span>my html message</span>",
@@ -68,7 +67,7 @@ Feature: /tickets/{id}/messages endpoint
     And the JSON node "data.message" should contain '&lt;span&gt;my html message&lt;'
     And the JSON node "data.attachments" should have 0 elements
 
-    When I send a POST request to "/api/v2/tickets/{ticketId}/messages" with body:
+    When I send a POST request to "/api/v2/tickets/{ticket}/messages" with body:
     """
     {
       "message": "<span>my note</span>",
@@ -82,7 +81,7 @@ Feature: /tickets/{id}/messages endpoint
     And the JSON node "data.attachments" should have 0 elements
 
   Scenario: I retrieve a ticket messages after adding
-    When I send a GET request to "/api/v2/tickets/{ticketId}/messages?include=person"
+    When I send a GET request to "/api/v2/tickets/{ticket}/messages?include=person"
     Then the response status code should be 200
     And the JSON node "data" should have 4 element
     And the JSON node "data[0].message" should contain "my message"
@@ -91,14 +90,14 @@ Feature: /tickets/{id}/messages endpoint
     And the JSON node "linked.person.1.id" should be equal to 1
     And the JSON node "linked.person.1.primary_email" should be equal to "admin@deskpro.dev"
 
-    When I send a GET request to "/api/v2/tickets/{ticketId}/messages/{lastCreatedId}"
+    When I send a GET request to "/api/v2/tickets/{ticket}/messages/{lastCreatedId}"
     Then the response status code should be 200
     And the JSON node "data.message" should contain "my note"
 
   Scenario: I create a message with attachments
     Given I create blob with auth code "AAAAAAAAAAAAAAAAAA"
     Given I create blob with auth code "BBBBBBBBBBBBBBBBBB"
-    When I send a POST request to "/api/v2/tickets/{ticketId}/messages" with body:
+    When I send a POST request to "/api/v2/tickets/{ticket}/messages" with body:
     """
     {
       "message": "<span>my message with attachments</span>",
@@ -113,12 +112,12 @@ Feature: /tickets/{id}/messages endpoint
     And the JSON node "data.attachments" should have 2 elements
 
   Scenario: I'm checking last created message with sideloading
-    When I send a GET request to "/api/v2/tickets/{ticketId}/messages/{lastCreatedId}?include=ticket_attachment"
+    When I send a GET request to "/api/v2/tickets/{ticket}/messages/{lastCreatedId}?include=ticket_attachment"
     Then the response status code should be 200
     And the JSON node "linked.ticket_attachment" should have 2 elements
 
   Scenario: I reset ticket message attachments
-    When I send a PUT request to "/api/v2/tickets/{ticketId}/messages/{lastCreatedId}" with body:
+    When I send a PUT request to "/api/v2/tickets/{ticket}/messages/{lastCreatedId}" with body:
       """
     {
       "message": "<span>my edited message without attachments</span>",
@@ -128,13 +127,13 @@ Feature: /tickets/{id}/messages endpoint
     """
     Then the response status code should be 204
 
-    When I send a GET request to "/api/v2/tickets/{ticketId}/messages/{lastCreatedId}"
+    When I send a GET request to "/api/v2/tickets/{ticket}/messages/{lastCreatedId}"
     Then the response status code should be 200
     And the JSON node "data.message" should contain "&lt;span&gt;my edited message without attachments&lt;"
     And the JSON node "data.attachments" should have 0 elements
 
   Scenario: I create a text message with is_note = false
-    When I send a POST request to "/api/v2/tickets/{ticketId}/messages" with body:
+    When I send a POST request to "/api/v2/tickets/{ticket}/messages" with body:
     """
     {
       "message": "<p style=\" \"><font face=\".SF UI Text\"  style=\" font-size:14px; \" >Test Note<\/font><\/p>",
@@ -147,7 +146,7 @@ Feature: /tickets/{id}/messages endpoint
     And the JSON node "data.is_agent_note" should be equal to 0
 
   Scenario: I create a text message with is_note = 0
-    When I send a POST request to "/api/v2/tickets/{ticketId}/messages" with body:
+    When I send a POST request to "/api/v2/tickets/{ticket}/messages" with body:
     """
     {
       "message": "<p style=\" \"><font face=\".SF UI Text\"  style=\" font-size:14px; \" >Test Note<\/font><\/p>",
@@ -160,7 +159,7 @@ Feature: /tickets/{id}/messages endpoint
     And the JSON node "data.is_agent_note" should be equal to 0
 
   Scenario: I create a note with is_note = 1
-    When I send a POST request to "/api/v2/tickets/{ticketId}/messages" with body:
+    When I send a POST request to "/api/v2/tickets/{ticket}/messages" with body:
     """
     {
       "message": "<p style=\" \"><font face=\".SF UI Text\"  style=\" font-size:14px; \" >Test Note<\/font><\/p>",
@@ -173,12 +172,10 @@ Feature: /tickets/{id}/messages endpoint
     And the JSON node "data.is_agent_note" should be equal to 1
 
   Scenario: I delete message
-    Given I reset ticket with id="{ticketId}" logs
-    When I send a DELETE request to "/api/v2/tickets/{ticketId}/messages/{lastCreatedId}"
+    When I send a DELETE request to "/api/v2/tickets/{ticket}/messages/{lastCreatedId}"
     Then the response status code should be 200
-    And ticket with id="{ticketId}" has "message_removed" log
 
-    When I send a GET request to "/api/v2/tickets/{ticketId}/messages/{lastCreatedId}"
+    When I send a GET request to "/api/v2/tickets/{ticket}/messages/{lastCreatedId}"
     Then the response status code should be 404
 
   Scenario: I check sideloading of form errors
@@ -207,7 +204,7 @@ Feature: /tickets/{id}/messages endpoint
 
   Scenario: I check ios purify
     Given I add "x-deskpro-api-clienttype" header equal to "ios"
-    When I send a POST request to "/api/v2/tickets/{ticketId}/messages" with body:
+    When I send a POST request to "/api/v2/tickets/{ticket}/messages" with body:
     """
 {
   "message": "Test\n\nTest\n\nTest\n<p class=\"dp-signature-start\">Regards,\n\nAdmin Admin",

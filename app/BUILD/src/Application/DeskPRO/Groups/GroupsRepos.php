@@ -109,7 +109,7 @@ abstract class GroupsRepos implements \Countable, \IteratorAggregate
     public function getSysGroup($name)
     {
         if (!isset($this->groups_named[$name])) {
-            throw new \InvalidArgumentException();
+            throw new \InvalidArgumentException("Group '$name' doesn't exist");
         }
 
         return $this->groups_named[$name];

@@ -70,7 +70,7 @@ class PeopleContext extends BaseContext
     public function thereAreNoRegisteredUsersInTheDb()
     {
         /** @var Person[] $people */
-        $people = $this->getRepository(Person::class)->findAll();
+        $people = $this->repository(Person::class)->findAll();
         foreach ($people as $person) {
             if (!$person->can_admin) {
                 $this->em()->remove($person);

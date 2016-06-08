@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -58,8 +58,8 @@ class TestsContext extends BasePortalContext implements RebootableContextInterfa
     public function resetTestsContext()
     {
         $this->called  = false;
-        $this->session = $this->getKernel()->getContainer()->get('session');
-        $this->em      = $this->getKernel()->getContainer()->get('doctrine.orm.default_entity_manager');
+        $this->session = $this->get('session');
+        $this->em      = $this->get('doctrine.orm.default_entity_manager');
     }
 
     /**

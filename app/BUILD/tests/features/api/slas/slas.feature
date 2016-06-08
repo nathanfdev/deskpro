@@ -1,11 +1,16 @@
+@new
 Feature: /slas endpoint
   To retrieve DeskPRO SLAs
   As an API user
   I want an API endpoint
 
   Background:
-    Given I install the api data set
-    And my request is authenticated
+    Given I'm authenticated as admin
+    And only the following SLA records exist:
+    | #  | SLA type | Title  |
+    | s1 | warning  | First  |
+    | s2 | test     | Second |
+    | s3 | watning  | Third  |
 
   Scenario: I get paginated list of SLAs
     When I send a GET request to "/api/v2/slas"
@@ -17,8 +22,8 @@ Feature: /slas endpoint
     And the JSON node "data[0].warn_actions" should not exist
     And the JSON node "data[0].fail_actions" should not exist
 
-  Scenario: I get a single person
-    When I send a GET request to "/api/v2/slas/1"
+  Scenario: I get a single SLA
+    When I send a GET request to "/api/v2/slas/{s1}"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist

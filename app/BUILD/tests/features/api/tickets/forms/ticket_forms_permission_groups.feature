@@ -14,10 +14,10 @@ Feature: /ticket_forms endpoint
     When I send a PUT request to "/api/v2/ticket_forms/agent/1"
     Then the response status code should be 403
 
-  Scenario: Scenario: I grant tickets create permission
+  Scenario: I grant tickets create permission
     Given I set permission "agent_tickets.use" = 1 for "registered" usergroup
     Given I set permission "agent_tickets.create" = 1 for "registered" usergroup
-    Given I grant department 1 permission of "tickets" app for "agent"
+    And I grant the 1 department permission of "tickets" app for "agent"
 
     When I send a POST request to "/api/v2/ticket_forms/agent"
     Then the response status code should be 201
@@ -25,7 +25,7 @@ Feature: /ticket_forms endpoint
     When I send a PUT request to "/api/v2/ticket_forms/agent/1"
     Then the response status code should be 403
 
-  Scenario: Scenario: I grant tickets edit permission
+  Scenario: I grant tickets edit permission
     Given I set permission "agent_tickets.modify_own" = 1 for "registered" usergroup
     When I send a PUT request to "/api/v2/ticket_forms/agent/3"
     Then the response status code should be 204

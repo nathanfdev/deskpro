@@ -87,10 +87,13 @@ abstract class AbstractTicketParticipantsController extends CrudSubController
             ->select('e')
             ->from(self::$entity, 'e')
             ->join('e.person', 'p')
+            ->join('e.ticket', 't')
             ->andWhere('p.is_agent = :is_agent')
             ->andWhere('p.id = :person_id')
+            ->andWhere('t.id = :ticket_id')
             ->setParameter('is_agent', $this->isAgent())
             ->setParameter('person_id', $id)
+            ->setParameter('ticket_id', $this->findParentOr404()->getId())
         ;
 
         $entity = $qb->getQuery()->getOneOrNullResult();

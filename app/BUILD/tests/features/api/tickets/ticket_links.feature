@@ -1,36 +1,44 @@
+@new
 Feature: Ticket link endpoint
   As an API user
   I want to check link/unlink tickets and fetch linked tickets list
 
   Background:
-    Given I install the api data set
-    And my request is authenticated
+    Given I'm authenticated as admin
+    And agent@deskpro.com and user@deskpro.com exist
+    And I have an AgentTeam record with name equal to "Demo team" which is referenced as agent_team
+    And I create an Organization with name equal to "Demo organization" and reference it as organization
+    And only the following Ticket records exist:
+      | #        | Subject      | Organization   | Agent team   | Agent   |
+      | ticket_1 | Ticket One   |                |              | {agent} |
+      | ticket_2 | Ticket Two   | {organization} | {agent_team} | {admin} |
+      | ticket_3 | Ticket Three |                |              |         |
+      | ticket_4 | Ticket Four  |                |              |         |
+      | ticket_5 | Ticket Five  |                |              |         |
+      | ticket_6 | Ticket Six   |                |              |         |
 
   Scenario: I link two tickets
-    Given I create a ticket and reference its' ID as ticketId
-    And I reset ticket with id="{ticketId}" logs
-    When I send a "POST" request to "/api/v2/tickets/{ticketId}/links" with body:
+    When I send a "POST" request to "/api/v2/tickets/{ticket_1}/links" with body:
     """
 {
   "parent": false,
-  "link_ticket": 2
+  "link_ticket": ~ticket_2~
 }
     """
     Then the response status code should be 204
     And the response should be empty
-    And the header "Location" should be equal to "/api/v2/tickets/{ticketId}/links"
-    And ticket with id="2" has "parent_ticket" log
+    And the header "Location" should be equal to "/api/v2/tickets/{ticket_1}/links"
 
-    When I send a GET request to "/api/v2/tickets/{ticketId}/links"
-    Then the JSON node "data.children[0].id" should be equal to 2
+    When I send a GET request to "/api/v2/tickets/{ticket_1}/links"
+    Then the JSON node "data.children[0].id" should be equal to "{ticket_2}"
     Then the JSON node "data.count" should be equal to 1
 
   Scenario Outline: I'm trying to link ticket to itself
-    When I send a "POST" request to "/api/v2/tickets/{ticketId}/links" with body:
+    When I send a "POST" request to "/api/v2/tickets/{ticket_1}/links" with body:
     """
 {
   "parent": <parent>,
-  "link_ticket": ~ticketId~
+  "link_ticket": ~ticket_1~
 }
     """
     Then the response status code should be 400
@@ -44,69 +52,78 @@ Feature: Ticket link endpoint
       | false  |
 
   Scenario: I'm getting linked tickets list with sideloading
-    When I send a "GET" request to "/api/v2/tickets/{ticketId}/links?include=person,agent_team,organization"
+    Given I send a "POST" request to "/api/v2/tickets/{ticket_1}/links" with body:
+    """
+{
+  "parent": false,
+  "link_ticket": ~ticket_2~
+}
+    """
+    When I send a "GET" request to "/api/v2/tickets/{ticket_1}/links?include=person,agent_team,organization"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "data.parent" should exist
     And the JSON node "data.siblings" should exist
     And the JSON node "data.children" should exist
-    And the JSON node "data.children[0].id" should exist
-    And the JSON node "data.children[0].id" should be equal to 2
-    And the JSON node "linked.organization.1.id" should be equal to 1
-    And the JSON node "linked.organization.1.name" should be equal to "Organization 1"
-    And the JSON node "linked.organization.2.id" should be equal to 2
-    And the JSON node "linked.organization.2.name" should be equal to "Organization 2"
-    And the JSON node "linked.agent_team.2.id" should be equal to 2
-    And the JSON node "linked.agent_team.2.name" should be equal to "Support Managers"
-    And the JSON node "linked.person.1.id" should be equal to 1
-    And the JSON node "linked.person.1.primary_email" should be equal to "admin@deskpro.dev"
-    And the JSON node "linked.person.3.id" should be equal to 3
-    And the JSON node "linked.person.3.primary_email" should be equal to "user@deskpro.dev"
+    And the JSON node "data.children[0].id" should be equal to "{ticket_2}"
+    And the JSON node "linked.organization.{organization}.name" should be equal to "Demo organization"
+    And the JSON node "linked.agent_team.{agent_team}.name" should be equal to "Demo team"
+    And the JSON node "linked.person.{admin}.primary_email" should be equal to "admin@deskpro.com"
 
   Scenario: I'm getting linked tickets list w/o sideloading
-    When I send a "GET" request to "/api/v2/tickets/{ticketId}/links"
+    Given I send a "POST" request to "/api/v2/tickets/{ticket_1}/links" with body:
+    """
+{
+  "parent": false,
+  "link_ticket": ~ticket_2~
+}
+    """
+    When I send a "GET" request to "/api/v2/tickets/{ticket_1}/links"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "data.parent" should exist
     And the JSON node "data.siblings" should exist
     And the JSON node "data.children" should exist
-    And the JSON node "data.children[0].id" should exist
-    And the JSON node "data.children[0].id" should be equal to 2
+    And the JSON node "data.children[0].id" should be equal to "{ticket_2}"
     And the JSON node "linked" should have 0 elements
 
   Scenario: I link another two tickets
-    Given I reset ticket with id="{ticketId}" logs
-    When I send a "POST" request to "/api/v2/tickets/{ticketId}/links" with body:
+    When I send a "POST" request to "/api/v2/tickets/{ticket_1}/links" with body:
     """
 {
   "parent": true,
-  "link_ticket": 3
+  "link_ticket": ~ticket_3~
 }
     """
     Then the response status code should be 204
     And the response should be empty
-    And the header "Location" should be equal to "/api/v2/tickets/{ticketId}/links"
-    When I send a "GET" request to "/api/v2/tickets/{ticketId}/links"
+    And the header "Location" should be equal to "/api/v2/tickets/{ticket_1}/links"
+    When I send a "GET" request to "/api/v2/tickets/{ticket_1}/links"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "data.parent" should exist
     And the JSON node "data.siblings" should exist
     And the JSON node "data.children" should exist
     And the JSON node "data.parent.id" should exist
-    And ticket with id="{ticketId}" has "parent_ticket" log
 
-  Scenario: I link ticket to made it sibling to 1
-    When I send a "POST" request to "/api/v2/tickets/4/links" with body:
+  Scenario: I link two tickets to the same parent and verify they became siblings
+    When I send a "POST" request to "/api/v2/tickets/{ticket_4}/links" with body:
     """
 {
   "parent": true,
-  "link_ticket": 3
+  "link_ticket": ~ticket_6~
+}
+    """
+    And I send a "POST" request to "/api/v2/tickets/{ticket_5}/links" with body:
+    """
+{
+  "parent": true,
+  "link_ticket": ~ticket_6~
 }
     """
     Then the response status code should be 204
     And the response should be empty
-    And the header "Location" should be equal to "/api/v2/tickets/4/links"
-    When I send a "GET" request to "/api/v2/tickets/{ticketId}/links"
+    When I send a "GET" request to "/api/v2/tickets/{ticket_4}/links"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "data.parent" should exist
@@ -114,43 +131,36 @@ Feature: Ticket link endpoint
     And the JSON node "data.children" should exist
     And the JSON node "data.siblings[0].id" should exist
 
-    When I send a "GET" request to "/api/v2/tickets/3/links"
+    When I send a "GET" request to "/api/v2/tickets/{ticket_6}/links"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "data.parent" should exist
     And the JSON node "data.siblings" should exist
-    And the JSON node "data.children" should exist
-    And the JSON node "data.children[0].id" should exist
-    And the JSON node "data.children[1].id" should exist
+    And the JSON node "data.children" should have 2 elements
 
   Scenario: I unlink parent ticket
-    Given I reset ticket with id="1" logs
-    When I send a "DELETE" request to "/api/v2/tickets/{ticketId}/links" with body:
+    When I send a "DELETE" request to "/api/v2/tickets/{ticket_5}/links" with body:
     """
 {
   "link_type": "parent"
 }
     """
     Then the response status code should be 204
-    And ticket with id="{ticketId}" has "parent_ticket" log
 
-    When I send a "GET" request to "/api/v2/tickets/{ticketId}/links"
+    When I send a "GET" request to "/api/v2/tickets/{ticket_5}/links"
     Then the response status code should be 200
     And the JSON node "data.parent" should be null
 
   Scenario: I unlink child ticket
-    Given I reset ticket with id="1" logs
-    And I reset ticket with id="2" logs
-    When I send a "DELETE" request to "/api/v2/tickets/{ticketId}/links" with body:
+    When I send a "DELETE" request to "/api/v2/tickets/{ticket_6}/links" with body:
     """
 {
   "link_type": "child",
-  "link_ticket": 2
+  "link_ticket": ~ticket_4~
 }
     """
     Then the response status code should be 204
-    And ticket with id="2" has "parent_ticket" log
 
-    When I send a "GET" request to "/api/v2/tickets/{ticketId}/links"
+    When I send a "GET" request to "/api/v2/tickets/{ticket_6}/links"
     Then the response status code should be 200
     And the JSON node "data.children" should have 0 elements

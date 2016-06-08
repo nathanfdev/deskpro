@@ -37,8 +37,8 @@ Feature: Adding custom header, footer, SCSS and javascript
     Then the response status code should be 200
     And the JSON node "header" should be equal to "<h1>Header</h1>"
     And the JSON node "footer" should be equal to "<i>Footer</i>"
-    And the JSON node "main_scss" should be equal to "body {background: white;}"
-    And the JSON node "custom_scss" should be equal to "body {color: red;}"
+    And the JSON node "main_scss" should be equal to "body {background: white;}" raw value
+    And the JSON node "custom_scss" should be equal to "body {color: red;}" raw value
     And the JSON node "javascript" should be equal to "alert('hello')"
 
   Scenario: I preview a custom header

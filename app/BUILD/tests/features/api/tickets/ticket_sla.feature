@@ -1,99 +1,96 @@
+@new
 Feature: /tickets/{id}/ticket_slas endpoint
   To CRUD DeskPRO ticket's SLAs
   As an API user
   I want an API endpoint
 
   Background:
-    Given I install the api data set
-    And my request is authenticated
+    Given I'm authenticated as admin
 
   Scenario: I create a ticket SLA
-    Given I create a ticket and reference its' ID as ticketId
-    And I reset ticket with id="{ticketId}" logs
-    When I send a POST request to "/api/v2/tickets/{ticketId}/ticket_slas" with body:
+    Given I have a Ticket record referenced as ticket
+    And I have an SLA record with "SLA type" equal to "warning" referenced as sla
+    When I send a POST request to "/api/v2/tickets/{ticket}/ticket_slas" with body:
 """
 {
-  "sla": 2,
+  "sla": ~sla~,
   "sla_status": "warning"
 }
     """
     Then the response status code should be 201
-    And ticket with id="{ticketId}" has "changed_sla_status" log
 
   Scenario: I get created ticket SLA
-    When I send a GET request to "/api/v2/tickets/{ticketId}/ticket_slas?include=ticket,sla"
+    When I send a GET request to "/api/v2/tickets/{ticket}/ticket_slas?include=ticket,sla"
     Then the response status code should be 200
     And the JSON node "meta" should exist
     And the JSON node "data" should have 1 element
     And the JSON node "data[0].sla_status" should be equal to "warning"
-    And the JSON node "data[0].sla" should be equal to 2
+    And the JSON node "data[0].sla" should be equal to "{sla}"
     And the JSON node "linked.ticket" should exist
     And the JSON node "linked.sla" should exist
 
   Scenario: I try create a ticket SLA with the same SLA
-    When I send a POST request to "/api/v2/tickets/{ticketId}/ticket_slas" with body:
+    When I send a POST request to "/api/v2/tickets/{ticket}/ticket_slas" with body:
 """
 {
-  "sla": 2,
+  "sla": ~sla~,
   "sla_status": "fail"
 }
     """
     Then the response status code should be 204
 
   Scenario: I get created ticket SLA
-    When I send a GET request to "/api/v2/tickets/{ticketId}/ticket_slas?include=ticket,sla"
+    When I send a GET request to "/api/v2/tickets/{ticket}/ticket_slas?include=ticket,sla"
     Then the response status code should be 200
     And the JSON node "meta" should exist
     And the JSON node "data" should have 1 element
     And the JSON node "data[0].sla_status" should be equal to "fail"
-    And the JSON node "data[0].sla" should be equal to 2
+    And the JSON node "data[0].sla" should be equal to "{sla}"
     And the JSON node "linked.ticket" should exist
     And the JSON node "linked.sla" should exist
 
   Scenario: I try update non-existing ticket SLA
-    When I send a PUT request to "/api/v2/tickets/{ticketId}/ticket_slas" with body:
+    When I send a PUT request to "/api/v2/tickets/{ticket}/ticket_slas" with body:
 """
 {
-  "sla": 1,
+  "sla": 404404,
   "sla_status": "ok"
 }
     """
     Then the response status code should be 404
 
   Scenario: I update ticket SLA
-    When I send a PUT request to "/api/v2/tickets/{ticketId}/ticket_slas" with body:
+    When I send a PUT request to "/api/v2/tickets/{ticket}/ticket_slas" with body:
 """
 {
-  "sla": 2,
+  "sla": ~sla~,
   "sla_status": "ok"
 }
     """
     Then the response status code should be 204
 
   Scenario: I get updated ticket SLA
-    When I send a GET request to "/api/v2/tickets/{ticketId}/ticket_slas?include=ticket,sla"
+    When I send a GET request to "/api/v2/tickets/{ticket}/ticket_slas?include=ticket,sla"
     Then the response status code should be 200
     And the JSON node "meta" should exist
     And the JSON node "data" should have 1 element
     And the JSON node "data[0].sla_status" should be equal to "ok"
-    And the JSON node "data[0].sla" should be equal to 2
+    And the JSON node "data[0].sla" should be equal to "{sla}"
     And the JSON node "linked.ticket" should exist
     And the JSON node "linked.sla" should exist
 
   Scenario: I try to get SLAs for non-existing ticket
-    When I send a GET request to "/api/v2/tickets/{ticketId}000/ticket_slas"
+    When I send a GET request to "/api/v2/tickets/{ticket}404/ticket_slas"
     Then the response status code should be 404
     And the JSON node "status" should be equal to 404
-    And the JSON node "message" should be equal to "Not found"
+    And the JSON node "message" should exist
 
   Scenario: I try to get ticket SLA for non-existing parent SLA
-    When I send a GET request to "/api/v2/tickets/{ticketId}/ticket_slas/by_sla/3000"
+    When I send a GET request to "/api/v2/tickets/{ticket}/ticket_slas/by_sla/404404"
     Then the response status code should be 404
     And the JSON node "status" should be equal to 404
     And the JSON node "message" should exist
 
   Scenario: I delete ticket sla
-    Given I reset ticket with id="{ticketId}" logs
-    When I send a DELETE request to "/api/v2/tickets/{ticketId}/ticket_slas/1"
+    When I send a DELETE request to "/api/v2/tickets/{ticket}/ticket_slas/{lastCreatedId}"
     Then the response status code should be 200
-    And ticket with id="{ticketId}" has "changed_slas" log

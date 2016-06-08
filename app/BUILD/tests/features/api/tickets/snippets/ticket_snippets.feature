@@ -13,7 +13,7 @@ Feature: /ticket_snippets endpoint
     And the JSON node "data" should have 4 elements
 
     And the JSON node "data[0].id" should be equal to 1
-    And the JSON node "data[0].title" should be equal to "Ticket Snippet {{ ticket.subject }} (en) 1"
+    And the JSON node "data[0].title" should be equal to "Ticket Snippet {{ ticket.subject }} (en) 1" raw value
     And the JSON node "data[0].category" should be equal to 1
     And the JSON node "data[0].person" should be equal to 0
     And the JSON node "data[0].shortcut_code" should be equal to "ticket_snippet1"

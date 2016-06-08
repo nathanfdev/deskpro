@@ -64,7 +64,7 @@ echo "\$DB_CONFIG['password'] = 'deskpro';" >> config/config.database.php
 echo "\$DB_CONFIG['dbname']   = '${DATABASE_NAME}';" >> config/config.database.php
 echo "\$prodModeFlagFile = realpath(__DIR__ . '/../../var/tmp/behat_production_mode_flag.tmp');" >> config/advanced/config.env.php
 echo "\$ENV_CONFIG['environment'] = file_exists(\$prodModeFlagFile) ? 'prod' : 'dev';" >> config/advanced/config.env.php
-echo "-- Done"
+echo "--> Done"
 
 echo "Ensuring permissions"
 chmod -R 0777 var

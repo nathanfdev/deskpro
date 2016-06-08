@@ -29,15 +29,16 @@
 /**
  * DeskPRO.
  */
+
 namespace DpBehat\Api;
 
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
-use DpBehat\BaseContext;
+use DpBehat\Data\DataContext;
 
 /**
  * Class JsonContext.
  */
-class JsonContext extends BaseContext
+class JsonContext extends \Sanpi\Behatch\Context\JsonContext
 {
     /**
      * @var RestContext
@@ -83,5 +84,46 @@ class JsonContext extends BaseContext
                 throw new \Exception("Unknown `$order` ordering, order must be desc or asc");
             }
         }
+    }
+
+    /**
+     * @override
+     */
+    public function theJsonNodeShouldBeNull($node)
+    {
+        $node = DataContext::replace($node);
+        parent::theJsonNodeShouldBeNull($node);
+    }
+
+    /**
+     * @override
+     */
+    public function theJsonNodeShouldBeEqualTo($node, $value)
+    {
+        $node = DataContext::replace($node);
+
+        if (is_string($value)) {
+            $value = DataContext::replace($value);
+        }
+        parent::theJsonNodeShouldBeEqualTo($node, $value);
+    }
+
+    /**
+     * @override
+     */
+    public function theJsonNodeShouldExist($name)
+    {
+        $name = DataContext::replace($name);
+        parent::theJsonNodeShouldExist($name);
+    }
+
+    /**
+     * This method is used to compare value w/o placeholders processing.
+     *
+     * @Then the JSON node :node should be equal to :text raw value
+     */
+    public function theJsonNodeShouldBeEqualToRawValue($node, $value)
+    {
+        parent::theJsonNodeShouldBeEqualTo($node, $value);
     }
 }

@@ -30,6 +30,7 @@ namespace DpBehat\Api;
 
 use Behat\Behat\Context\Context;
 use DpBehat\BaseContext;
+use DpBehat\Data\DataContext;
 use DpBehat\RebootableContextInterface;
 
 /**
@@ -53,7 +54,7 @@ class ModesAndTagsContext extends BaseContext implements RebootableContextInterf
      */
     public function setModeToController($mode, $controller_fqcn)
     {
-        $factory        = $this->getContainer()->get('api_authorization.action_permissions.metadata_factory');
+        $factory        = $this->get('api_authorization.action_permissions.metadata_factory');
         $class_metadata = $factory->getMetadataForClass($controller_fqcn);
         foreach ($class_metadata->methodMetadata as $method) {
             $class_metadata->methodMetadata[$method->name]->setModes([$mode]);
@@ -68,9 +69,9 @@ class ModesAndTagsContext extends BaseContext implements RebootableContextInterf
      */
     public function setTagForMyKey($tag)
     {
-        $em               = $this->getKernel()->getContainer()->get('doctrine.orm.default_entity_manager');
+        $em               = $this->get('doctrine.orm.default_entity_manager');
         $key_actions_repo = $em->getRepository('DeskPRO\Bundle\AppBundle\Entity\ApiKeyAction');
-        $key_action       = $key_actions_repo->findOneBy(['key' => AuthContext::$apiKey->getId()]);
+        $key_action       = $key_actions_repo->findOneBy(['key' => DataContext::getReference('apiKey')]);
         $key_action->setAction($tag);
         $this->persistAndFlush($key_action);
     }

@@ -32,7 +32,7 @@ Feature: /ticket_forms endpoint
     And the JSON node "data.priority" should be equal to 0
     And the JSON node "data.cc" should have 0 elements
     And the JSON node "data.followers" should have 0 elements
-    And ticket with id="{lastCreatedId}" has logs:
+    Then the "{lastCreatedId}" ticket should have the following logs:
       | type               |
       | action_starter     |
       | ticket_created     |
@@ -53,7 +53,7 @@ Feature: /ticket_forms endpoint
     And the JSON node "data.primary_email" should be equal to "admin@deskpro.dev"
 
   Scenario: I modify and retrieve a ticket
-    Given I reset ticket with id="{lastCreatedId}" logs
+    Given I reset the "{lastCreatedId}" ticket logs
     When I send a PUT request to "/api/v2/ticket_forms/agent/{lastCreatedId}" with body:
     """
 {
@@ -105,7 +105,7 @@ Feature: /ticket_forms endpoint
 }
     """
     Then the response status code should be 204
-    And ticket with id="{lastCreatedId}" has logs:
+    Then the "{lastCreatedId}" ticket should have the following logs:
       | type                       |
       | changed_department         |
       | changed_subject            |

@@ -26,23 +26,27 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
-namespace DpBehat;
+namespace DpBehat\Data\Factory;
 
 /**
- * Class DoctrineContext.
+ * Class PersonFactories.
  */
-class DoctrineContext extends BaseContext
+class Helper
 {
     /**
-     * @BeforeScenario
+     * @param array  $data
+     * @param string $prop
+     * @param object $object
+     * @param string $setter
+     * @param mixed  $default
      */
-    public function speedUpDoctrine()
+    public static function pick(&$data, $prop, $object, $setter, $default = null)
     {
-        $this->em()->getConnection()->getConfiguration()->setSQLLogger(null);
-        $this->em()->clear();
+        if (array_key_exists($prop, $data)) {
+            $object->$setter($data[$prop]);
+            unset($data[$prop]);
+        } else {
+            $object->$setter($default);
+        }
     }
 }

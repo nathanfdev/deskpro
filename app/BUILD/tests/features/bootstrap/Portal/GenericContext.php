@@ -318,7 +318,7 @@ class GenericContext extends BasePortalContext
     protected function getLastEmail()
     {
         /** @var SendmailSourceRepository $ss_repo */
-        $ss_repo = $this->getRepository(SendmailSource::class);
+        $ss_repo = $this->repository(SendmailSource::class);
 
         return $ss_repo->getLatest();
     }
@@ -357,7 +357,7 @@ class GenericContext extends BasePortalContext
 
     protected function getCategory($type, $title)
     {
-        return $this->getRepository($this->getContentCatClass($type))->findOneBy([
+        return $this->repository($this->getContentCatClass($type))->findOneBy([
             'title' => $title,
         ]);
     }
@@ -391,7 +391,7 @@ class GenericContext extends BasePortalContext
 
     protected function getContent($type, $title)
     {
-        return $this->getRepository($this->getContentClass($type))->findOneBy([
+        return $this->repository($this->getContentClass($type))->findOneBy([
             'title' => $title,
         ]);
     }
