@@ -27,12 +27,12 @@ export class AgentsListItem extends RadioListItem {
       img = gravatar;
     }
 
-    const classes = 'dpw--popup-item-person ' + (this.state.checked ? 'active' : '');
+    const classes = `dpw--popup-item-person${this.state.checked ? ' active' : ''}`;
 
     return (
-      <div className={classes}>
+      <div className={classes} title={value.get('name')}>
         {img
-          ? <span className="dpw--avatar-face" style={{backgroundImage: `url(${img})`}}></span>
+          ? <span className="dpw--avatar-face" style={{ backgroundImage: `url(${img})` }}></span>
           : <PersonAvatar person={value} size={size} />
         }
         <span className="dpw-popup-item-collection-name">

@@ -60,24 +60,27 @@ export class AssignForm extends Component {
     const { agents, teams, departments } = this.state;
 
     return (
-      <Popup additionalClassNames="assign-form">
+      <Popup additionalClassNames="assign-form task-assign-form">
         <div className="dpw--popup-header">
           <i className="fa fa-tags" /> Assign to Task
         </div>
 
         <div className="dpw--popup-content">
           <Form>
-            <AssignAgentContainer selected={agents}
+            <AssignAgentContainer
+              selected={agents}
               onChange={(value) => this.onChange('agents', value)}
-              />
+            />
 
-            <AssignTeamContainer selected={teams}
+            <AssignTeamContainer
+              selected={teams}
               onChange={(value) => this.onChange('teams', value)}
-              />
+            />
 
-            <AssignDepartmentContainer selected={departments}
+            <AssignDepartmentContainer
+              selected={departments}
               onChange={(value) => this.onChange('departments', value)}
-              />
+            />
           </Form>
         </div>
       </Popup>

@@ -8,15 +8,13 @@ import { cardSourceSpec, cardSourceCollect } from '../../../TaskCard/TaskCardEdi
 export class TaskDragCard extends React.Component {
 
   static propTypes = {
-    task: PropTypes.object.isRequired,
-    connectDragSource: PropTypes.func.isRequired,
+    task:               PropTypes.object.isRequired,
+    connectDragSource:  PropTypes.func.isRequired,
     connectDragPreview: PropTypes.func.isRequired
   };
 
   componentDidMount() {
-    this.props.connectDragPreview(getEmptyImage(), {
-      captureDraggingState: true
-    });
+    this.props.connectDragPreview(getEmptyImage(), { captureDraggingState: true });
   }
 
   render() {

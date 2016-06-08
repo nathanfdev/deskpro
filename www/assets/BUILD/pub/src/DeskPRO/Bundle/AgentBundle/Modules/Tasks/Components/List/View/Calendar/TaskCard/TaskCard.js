@@ -20,7 +20,7 @@ export class TaskCard extends BaseTaskCard {
 
   static propTypes = {
     moving:         PropTypes.bool,
-    calendarFields: PropTypes.object
+    calendarFields: PropTypes.object.isRequired
   };
 
   renderField(field) {

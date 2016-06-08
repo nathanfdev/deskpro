@@ -54,7 +54,7 @@ export class CalendarView extends React.Component {
       additionalPrefix: 'Tasks for',
       card:             (
                           <TaskCardEditContainer>
-                            <TaskCard />
+                            <TaskCard calendarFields={Immutable.List()} />
                           </TaskCardEditContainer>
                         ),
       draggable:        {
@@ -72,7 +72,10 @@ export class CalendarView extends React.Component {
 
         <Positioned positionTarget={this.newTaskTarget} positionAt="center center" isOpen={!!this.state.task}>
           <ClickOut onClickOut={() => this.resetNewTask(false)}>
-            <TaskCardNew task={this.state.task} onSetEditing={this.onSetEditing} onClose={() => this.resetNewTask(true)}
+            <TaskCardNew
+              task={this.state.task}
+              onSetEditing={this.onSetEditing}
+              onClose={() => this.resetNewTask(true)}
             />
           </ClickOut>
         </Positioned>

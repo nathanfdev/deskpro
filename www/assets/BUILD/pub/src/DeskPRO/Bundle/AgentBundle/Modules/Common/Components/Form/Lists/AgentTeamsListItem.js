@@ -14,11 +14,11 @@ export class AgentTeamsListItem extends RadioListItem {
    */
   render() {
     const { value } = this.props;
-    const classes = 'dpw--popup-item-person ' + (this.state.checked ? 'active' : '');
+    const classes = `dpw--popup-item-person${this.state.checked ? ' active' : ''}`;
 
     return (
-      <div className={classes}>
-        <span className="dpw--avatar-face"></span>
+      <div className={classes} title={value.get('name')}>
+        <span className="dpw--avatar-face" />
         <span className="dpw-popup-item-collection-name">
           {value.get('name')}
         </span>

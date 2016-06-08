@@ -137,7 +137,7 @@
   .dpw--popup-content-of-three {// Three columns, same width
     padding: 5px 2px 0 2px;
     width: 33.333333333333333333%;
-    float: left;
+    display: inline-block;
     &:first-child { padding-left: 7px; }
     &:last-child { padding-right: 7px; }
   }
@@ -316,6 +316,14 @@
   display: inline-block;
   border-radius: 2px;
   padding: 1px;
+  overflow: hidden;
+  -ms-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dpw--popup-item-person {
+  padding-right: 18px;
 }
 
 .dpw--popup-item-person.selected, .dpw--popup-item-box.selected, .dpw--popup-item-language.selected {// When someone is selected and we need a sticky green bg
@@ -324,11 +332,9 @@
 }
 
 .dpw-popup-item-collection-name {
-  //width: 120px;// Remove this width and resize with js
-  white-space: nowrap;// Cut off too long text
+  width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 180px;
 }
 
 
@@ -571,4 +577,7 @@
   }
 }
 
+.task-assign-form {
+  min-width: 800px;
+}
 

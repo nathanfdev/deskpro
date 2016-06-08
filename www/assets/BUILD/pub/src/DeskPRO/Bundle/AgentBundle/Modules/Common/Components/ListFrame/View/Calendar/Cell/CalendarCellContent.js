@@ -8,29 +8,23 @@ import { CalendarCellContentItem } from './CalendarCellContentItem';
 export class CalendarCellContent extends React.Component {
 
   static propTypes = {
-    dayDate: PropTypes.object.isRequired,
+    dayDate:   PropTypes.object.isRequired,
     dateField: PropTypes.string.isRequired,
-    elements: PropTypes.object.isRequired
+    elements:  PropTypes.object.isRequired
   };
 
   constructor(props) {
     super(props);
-    this.state = {
-      dropdownOpened: false
-    };
+    this.state = { dropdownOpened: false };
   }
 
   onOpenAdditionalDropdown = event => {
     event.preventDefault();
-    this.setState({
-      dropdownOpened: true
-    });
+    this.setState({ dropdownOpened: true });
   };
 
   onCloseAdditionalDropdown = () => {
-    this.setState({
-      dropdownOpened: false
-    });
+    this.setState({ dropdownOpened: false });
   };
 
   renderItem = ([id, item]) => <CalendarCellContentItem key={item.get('id')} item={item} {...this.props} />;
@@ -47,11 +41,11 @@ export class CalendarCellContent extends React.Component {
         <ul>
           {shortList.entrySeq().map(this.renderItem)}
           {additionalList.count() > 0 &&
-            <li>
-              <a href="#" ref="button" className="dpwd-calendar-tasks-show-more" onClick={this.onOpenAdditionalDropdown}>
-                + {additionalList.count()} tasks <i className="fa fa-sort" />
-              </a>
-            </li>
+          <li>
+            <a href="#" ref="button" className="dpwd-calendar-tasks-show-more" onClick={this.onOpenAdditionalDropdown}>
+              + {additionalList.count()} tasks <i className="fa fa-sort" />
+            </a>
+          </li>
           }
         </ul>
 

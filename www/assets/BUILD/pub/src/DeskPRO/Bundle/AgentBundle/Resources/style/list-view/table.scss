@@ -191,9 +191,8 @@
 
   // Checkbox for bulk editing
   .bulk-edit-col {
-    width: 10px;
+    width: 20px;
     text-align: center;
-    border-right: 0px;
 
     a {
       outline: 0;
@@ -203,7 +202,6 @@
   // Ticket id
   .id-col {
     width: 40px;
-    border-right: 0px;
 
     .ticket-id {
       float: none;
