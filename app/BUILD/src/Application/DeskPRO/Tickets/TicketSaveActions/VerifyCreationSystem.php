@@ -54,7 +54,7 @@ class VerifyCreationSystem implements TicketSaveActionInterface
                 } else {
                     $creation_system .= 'person';
                 }
-            } elseif ($context->getEventMethod() == 'api') {
+            } elseif ($context->getEventMethod() == 'mobile') {
                 $creation_system = 'mobile.';
 
                 if ($context->getEventPerformer() == 'agent') {
