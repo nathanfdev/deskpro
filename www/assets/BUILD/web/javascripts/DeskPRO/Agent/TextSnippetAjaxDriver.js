@@ -103,7 +103,16 @@ DeskPRO.Agent.TextSnippetAjaxDriver = new Orb.Class({
 						snippets = snippet_data.snippets;
 
 						if (!filterString.length && !languageId && page == 1) {
-							self.localCache[categoryId] = snippets;
+
+              if (!categoryId) {
+                Array.each(snippets, function(s) {
+                  self.localCache[s.category_id] = self.localCache[s.category_id] || [];
+                  self.localCache[s.category_id].push(s);
+                });
+              } else {
+                self.localCache[categoryId] = snippets;
+              }
+
 						}
 					}
 				}

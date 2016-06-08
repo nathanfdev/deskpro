@@ -292,8 +292,8 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			var $sorted = catList.children().sort(function(a, b){
 				var _a = $.trim($(a).text()).toLowerCase(),
 					_b = $.trim($(b).text()).toLowerCase();
-				if (0 === $(a).data('category-id')) return -1;
-				if (0 === $(b).data('category-id')) return 1;
+				if (0 === parseInt($(a).data('category-id'))) return -1;
+				if (0 === parseInt($(b).data('category-id'))) return 1;
 				return _a > _b ? 1 : -1;
 			}).remove();
 			catList.append($sorted);
@@ -316,6 +316,10 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 			updateCatList(categoryId, filterString, languageId);
 		});
+
+    this.addEvent('popover-open', function(){
+      catList.children('.category-0').trigger('click');
+    });
 
 		var filterTimer = null;
 		var sendUpdate = function() {
