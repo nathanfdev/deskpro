@@ -109,11 +109,9 @@ DeskPRO.Agent.TextSnippetAjaxDriver = new Orb.Class({
                   self.localCache[s.category_id] = self.localCache[s.category_id] || [];
                   self.localCache[s.category_id].push(s);
                 });
-              } else {
-                self.localCache[categoryId] = snippets;
               }
-
-						}
+              self.localCache[categoryId] = snippets;
+            }
 					}
 				}
 
