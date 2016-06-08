@@ -27,8 +27,9 @@ if [ "$1" = "sequential-build" ] ; then
     npm install
     npm run-script gulp-refresh-reducers
 
-    # Fake sass doc file required by the Portal Designer
-    echo '{"borders":[{"type":"size","name":"border-radius-main","default_value":"4px"}],"font_sizes":[{"type":"size","name":"font-default","default_value":"0.85em"}]}' > "$ROOT_DIR/www/assets/BUILD/web/sassdoc/vars.json"
+    cd $ROOT_DIR/www/assets/BUILD/web
+    npm install
+    npm run-script sassdoc
 elif [ "$1" = "fresh-build" ] ; then
     echo "Building from the ground up"
     $ROOT_DIR/dev/bin/init-project
