@@ -41,9 +41,9 @@ use Application\DeskPRO\Entity\Ticket;
 trait TicketSaveTrait
 {
     /**
-     * @param Ticket $ticket
+     * Save the ticket via ticket manager with proper context.
      *
-     * @throws \Exception
+     * @param Ticket $ticket
      */
     protected function saveTicket(Ticket $ticket)
     {
@@ -61,7 +61,7 @@ trait TicketSaveTrait
         }
 
         $eventMethod = 'api';
-        if ($this->get('api_client_info')->isMobileClient()) {
+        if ($this->getContainer()->get('api_client_info')->isMobileClient()) {
             $eventMethod = 'mobile';
         }
 
