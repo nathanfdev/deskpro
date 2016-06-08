@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import $ from 'jquery';
 import { portalUrlGenerator } from '../../Http/PortalUrlGenerator';
 import { FeedbackVoteWidget } from '../../PageWidget/FeedbackVoteWidget';
+import classNames from 'classnames';
 
 export class ResultsPartial extends React.Component {
 
@@ -103,7 +104,11 @@ export class ResultsPartial extends React.Component {
     }
 
     return (
-      <div className="paged-results" ref="results" dangerouslySetInnerHTML={{ __html: partial }}></div>
+      <div
+        className={classNames('paged-results', { centered: partial.indexOf('no-data') !== -1 })}
+        ref="results"
+        dangerouslySetInnerHTML={{ __html: partial }}
+      ></div>
     );
   }
 }
