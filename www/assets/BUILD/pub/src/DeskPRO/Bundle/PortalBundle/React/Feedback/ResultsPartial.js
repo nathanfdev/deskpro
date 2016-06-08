@@ -25,7 +25,9 @@ export class ResultsPartial extends React.Component {
   setStatusCategory(id) {
     const { filterModel, updateFilter } = this.props;
 
+    filterModel.reset();
     filterModel.setStatusCategory(id);
+
     updateFilter(filterModel);
   }
 
