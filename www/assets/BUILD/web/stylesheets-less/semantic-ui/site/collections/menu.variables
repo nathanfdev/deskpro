@@ -1,3 +1,19 @@
 /*******************************
     User Variable Overrides
 *******************************/
+
+@itemFontWeight: 600;
+
+@tabularBorderRadius: 0;
+@borderRadius: 0;
+
+@tabularHorizontalPadding: 15px;
+@tabularVerticalPadding: 8px;
+
+@tabularActiveWeight: 600;
+@tabularActiveColor: @dp-greyscale-850;
+@tabularBorderColor: @dp-greyscale-400;
+
+@tabularTextColor: @dp-greyscale-450;
+
+@tabularHoveredTextColor: @dp-sonic-primary;

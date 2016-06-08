@@ -1,268 +1,488 @@
 {% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
 {% block fullpane_content %}
-<form class="ui form">
-    <div class="ui grid">
-        <div class="seven wide column">
-            <h3><i class="icon setting"></i>{{ phrase('admin.widget.settings_heading') }}</h3>
-            <div class="ui styled fluid accordion">
-                <div class="element">
-                    <div class="active title">
-                        <i class="dropdown icon"></i>
-                        {{ phrase('admin.widget.button_settings') }}
-                    </div>
-                    <div class="active content">
-                        <div class="field">
-                            <label for="label">Label</label>
-                            <div class="inline fields">
-                                <div class="thirteen wide field">
-                                    <input type="text" name="label" placeholder="Help">
+    <form class="ui form">
+        <div class="ui grid">
+            <div class="seven wide column">
+                <h3><i class="icon setting"></i>{{ phrase('admin.widget.settings_heading') }}</h3>
+                <div class="ui styled fluid accordion">
+                    <div class="element">
+                        <div class="active title">
+                            <i class="dropdown icon"></i>
+                            {{ phrase('admin.widget.button_settings') }}
+                        </div>
+                        <div class="active content">
+                            <div class="field">
+                                <label for="label">Label</label>
+                                <div class="inline fields">
+                                    <div class="thirteen wide field">
+                                        <input type="text" name="label" placeholder="Help">
+                                    </div>
+                                    <div class="three wide field">
+                                        <div class="ui left labeled language button">
+                                            <a class="ui basic label">
+                                                <i class="icon globe"></i>
+                                            </a>
+                                            <div class="ui button">
+                                                1/5
+                                                <div class="ui tiny progress">
+                                                    <div class="bar" style="width:20%"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="three wide field">
-                                    <div class="ui left labeled language button">
-                                        <a class="ui basic label">
-                                            <i class="icon globe"></i>
-                                        </a>
-                                        <div class="ui button">
-                                            1/5
-                                            <div class="ui tiny progress">
-                                                <div class="bar" style="width:20%"></div>
+                            </div>
+                            <div class="field">
+                                <label for="size">Size</label>
+                                <div class="inline fields">
+                                    <div class="field">
+                                        <div class="ui radio checkbox">
+                                            <input type="radio" name="size" id="button_size_small"
+                                                   ng-model="brand_settings.button.size" value="small" class="hidden">
+                                            <label for="button_size_small">Small</label>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <div class="ui radio checkbox">
+                                            <input type="radio" name="size" id="button_size_medium"
+                                                   ng-model="brand_settings.button.size" value="medium" class="hidden">
+                                            <label for="button_size_medium">Medium</label>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <div class="ui radio checkbox">
+                                            <input type="radio" name="size" id="button_size_large"
+                                                   ng-model="brand_settings.button.size" value="large" class="hidden">
+                                            <label for="button_size_large">Large</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label>Colours</label>
+                                <div class="inline field">
+                                    <spectrum-colorpicker
+                                            ng-model="brand_settings.button.colors.background"
+                                            format="'hex'"
+                                            class="color-picker"
+                                            options="{
+                                        showPalette: true,
+                                        palette: ['#62ad8c'],
+                                        showSelectionPalette: false,
+                                        showInput: true
+                                    }"
+                                    ></spectrum-colorpicker>
+                                    <label for="background_color">Background</label>
+                                </div>
+                                <div class="inline field">
+                                    <spectrum-colorpicker
+                                            ng-model="brand_settings.button.colors.text"
+                                            format="'hex'"
+                                            class="color-picker"
+                                            options="{
+                                        showPalette: true,
+                                        palette: ['#ffffff'],
+                                        showSelectionPalette: false,
+                                        showInput: true
+                                    }"
+                                    ></spectrum-colorpicker>
+                                    <label for="background_color">Text colour & icon background</label>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label>Widget type</label>
+                                <div class="inline fields">
+                                    <div class="seven wide field">
+                                        <img src="{{ asset('images/admin/widget-position-right-corner.png') }}"
+                                             alt="corner">
+                                        <div class="ui radio checkbox">
+                                            <input type="radio" name="widget_type" id="widget_type_corner"
+                                                   ng-model="brand_settings.widget.type" value="bubble" class="hidden">
+                                            <label for="widget_type_corner">{{ phrase('admin.widget.corner') }}</label>
+                                        </div>
+                                    </div>
+                                    <div class="two wide field">
+                                        - or -
+                                    </div>
+                                    <div class="seven wide field">
+                                        <img src="{{ asset('images/admin/widget-position-right-column.png') }}"
+                                             alt="column">
+                                        <div class="ui radio checkbox">
+                                            <input type="radio" name="widget_type" id="widget_type_column"
+                                                   ng-model="brand_settings.widget.type" value="column" class="hidden">
+                                            <label for="widget_type_column">{{ phrase('admin.widget.column') }}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label>Position</label>
+                                <div class="inline fields">
+                                    <div class="seven wide field">
+                                        <img src="{{ asset('images/admin/widget-position-right-corner.png') }}"
+                                             alt="right-corner">
+                                        <div class="ui radio checkbox">
+                                            <input type="radio" name="widget_position" id="widget_position_right"
+                                                   ng-model="brand_settings.widget.position" value="right"
+                                                   class="hidden">
+                                            <label for="widget_position_right">{{ phrase('general.phrases.right') }}</label>
+                                        </div>
+                                    </div>
+                                    <div class="two wide field">
+                                        - or -
+                                    </div>
+                                    <div class="seven wide field">
+                                        <img src="{{ asset('images/admin/widget-position-left-corner.png') }}"
+                                             alt="left-corner">
+                                        <div class="ui radio checkbox">
+                                            <input type="radio" name="widget_position" id="widget_position_left"
+                                                   ng-model="brand_settings.widget.position" value="left"
+                                                   class="hidden">
+                                            <label for="widget_position_left">{{ phrase('general.phrases.left') }}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="element">
+                        <div class="title">
+                            <i class="dropdown icon"></i>
+                            {{ phrase('admin.widget.chat_settings') }}
+                        </div>
+                        <div class="content">
+                            <div class="field">
+                                <div class="inline field">
+                                    <div class="ui toggle checkbox">
+                                        <input type="checkbox" id="chat_enabled" ng-model="global_settings.chat.enabled"
+                                               class="hidden right">
+                                        <label for="chat_enabled">Chat enabled <i class="icon help circle"></i></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="field" ng-if="global_settings.chat.enabled">
+                                <label>Who can use chat</label>
+                                <p>Manage which usergroups have access to chat</p>
+                                <div class="inline field">
+                                    <div class="ui checkbox">
+                                        <input type="checkbox" id="permission_everyone" class="hidden">
+                                        <label for="permission_everyone">Everyone</label>
+                                    </div>
+                                </div>
+                                <div class="inline field">
+                                    <div class="ui checkbox">
+                                        <input type="checkbox" id="permission_registered" class="hidden">
+                                        <label for="permission_registered">Registered</label>
+                                    </div>
+                                </div>
+                                <div class="inline field">
+                                    <div class="ui checkbox">
+                                        <input type="checkbox" id="permission_special" class="hidden">
+                                        <label for="permission_special">Special Users</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="inline field">
+                                    <div class="ui toggle checkbox">
+                                        <input type="checkbox" id="require_informations" class="hidden right">
+                                        <label for="require_informations">Require information before chat
+                                            commences</label>
+                                    </div>
+                                    <p>Require users to provide their name and email address as well as adding custom
+                                        fields
+                                        or require departments.</p>
+                                    <div class="inline field">
+                                        <div class="ui checkbox">
+                                            <input type="checkbox" id="information_name" class="hidden">
+                                            <label for="information_name">Name</label>
+                                        </div>
+                                    </div>
+                                    <div class="inline field">
+                                        <div class="ui checkbox">
+                                            <input type="checkbox" id="information_email" class="hidden">
+                                            <label for="information_email">Email address</label>
+                                        </div>
+                                    </div>
+                                    <div class="inline field">
+                                        <div class="ui checkbox">
+                                            <input type="checkbox" id="information_department" class="hidden">
+                                            <label for="information_department">Department</label>
+                                        </div>
+                                    </div>
+                                    <div class="inline field">
+                                        <div class="ui checkbox">
+                                            <input type="checkbox" id="information_order" class="hidden">
+                                            <label for="information_order">Order number</label>
+                                        </div>
+                                    </div>
+                                    <button class="ui basic button">
+                                        <i class="icon plus"></i> ADD CUSTOM FIELDS
+                                    </button>
+                                </div>
+                                <div class="field">
+                                    <label>Begin chat mode (automated)</label>
+                                    <div class="inline fields">
+                                        <div class="eight wide field">
+                                            <div class="ui radio checkbox">
+                                                <input type="radio" name="chat_mode" id="chat_mode_form" class="hidden">
+                                                <label for="chat_mode_form">Form Style</label>
+                                            </div>
+                                        </div>
+                                        <div class="eight wide field">
+                                            <div class="ui radio checkbox">
+                                                <input type="radio" name="chat_mode" id="chat_mode_conversation" class="hidden">
+                                                <label for="chat_mode_conversation">Conversation Style</label>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="field">
-                            <label for="size">Size</label>
-                            <div class="inline fields">
-                                <div class="field">
-                                    <div class="ui radio checkbox">
-                                        <input type="radio" name="size" checked="" class="hidden">
-                                        <label>Small</label>
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <div class="ui radio checkbox">
-                                        <input type="radio" name="size" class="hidden">
-                                        <label>Medium</label>
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <div class="ui radio checkbox">
-                                        <input type="radio" name="size" class="hidden">
-                                        <label>Large</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="field">
-                            <label>Colours</label>
-                            <div class="inline field">
-                                <spectrum-colorpicker
-                                        ng-model="brand_settings.button.colors.background"
-                                        format="'hex'"
-                                        class="color-picker"
-                                        options="{
-                                        showPalette: true,
-                                        palette: ['#62ad8c'],
-                                        showSelectionPalette: false,
-                                        showInput: true
-                                    }"
-                                ></spectrum-colorpicker>
-                                <label for="background_color">Background</label>
-                            </div>
-                            <div class="inline field">
-                                <spectrum-colorpicker
-                                        ng-model="brand_settings.button.colors.text"
-                                        format="'hex'"
-                                        class="color-picker"
-                                        options="{
-                                        showPalette: true,
-                                        palette: ['#ffffff'],
-                                        showSelectionPalette: false,
-                                        showInput: true
-                                    }"
-                                ></spectrum-colorpicker>
-                                <label for="background_color">Text colour & icon background</label>
-                            </div>
-                        </div>
-                        <div class="field">
-                            <label>Widget type</label>
-                            <div class="inline fields">
-                                <div class="seven wide field">
-                                    <img src="{{ asset('images/admin/widget-position-right-corner.png') }}"
-                                         alt="left-corner">
-                                    <div class="ui radio checkbox">
-                                        <input type="radio" name="widget_type" class="hidden">
-                                        <label>Corner</label>
-                                    </div>
-                                </div>
-                                <div class="two wide field">
-                                    - or -
-                                </div>
-                                <div class="seven wide field">
-                                    <img src="{{ asset('images/admin/widget-position-right-column.png') }}"
-                                         alt="left-corner">
-                                    <div class="ui radio checkbox">
-                                        <input type="radio" name="widget_type" class="hidden">
-                                        <label>Column</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="field">
-                            <label>Position</label>
-                            <div class="inline fields">
-                                <div class="seven wide field">
-                                    <img src="{{ asset('images/admin/widget-position-right-corner.png') }}"
-                                         alt="left-corner">
-                                    <div class="ui radio checkbox">
-                                        <input type="radio" name="widget_type" class="hidden">
-                                        <label>Right</label>
-                                    </div>
-                                </div>
-                                <div class="two wide field">
-                                    - or -
-                                </div>
-                                <div class="seven wide field">
-                                    <img src="{{ asset('images/admin/widget-position-left-corner.png') }}"
-                                         alt="left-corner">
-                                    <div class="ui radio checkbox">
-                                        <input type="radio" name="widget_type" class="hidden">
-                                        <label>Left</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
-                </div>
-                <div class="element">
-                    <div class="title">
-                        <i class="dropdown icon"></i>
-                        {{ phrase('admin.widget.chat_settings') }}
-                    </div>
-                    <div class="content">
-                        <div class="field">
-                            <div class="inline field">
-                                <div class="ui toggle checkbox">
-                                    <label>Chat enabled <i class="icon help circle"></i></label>
-                                    <input type="checkbox" class="hidden right">
-                                </div>
-                            </div>
+                    <div class="element">
+                        <div class="title">
+                            <i class="dropdown icon"></i>
+                            Proactive chat settings
                         </div>
-                        <div class="field">
-                            <label>Who can use chat</label>
-                            <p>Manage which usergroups have access to chat</p>
-                            <div class="inline field">
-                                <div class="ui checkbox">
-                                    <input type="checkbox" class="hidden">
-                                    <label>Everyone</label>
-                                </div>
-                            </div>
-                            <div class="inline field">
-                                <div class="ui checkbox">
-                                    <input type="checkbox" class="hidden">
-                                    <label>Registered</label>
-                                </div>
-                            </div>
-                            <div class="inline field">
-                                <div class="ui checkbox">
-                                    <input type="checkbox" class="hidden">
-                                    <label>Special Users</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="field">
-                            <div class="inline field">
-                                <div class="ui toggle checkbox">
-                                    <label>Require information before chat commences</label>
-                                    <input type="checkbox" class="hidden right">
-                                </div>
-                                <p>Require users to provide their name and email address as well as adding custom fields
-                                or require departments.</p>
+                        <div class="content">
+                            <div class="field">
                                 <div class="inline field">
-                                    <div class="ui checkbox">
-                                        <input type="checkbox" class="hidden">
-                                        <label>Name</label>
+                                    <div class="ui toggle checkbox">
+                                        <input type="checkbox" class="hidden right">
+                                        <label>Proactive chat enabled</label>
                                     </div>
                                 </div>
-                                <div class="inline field">
-                                    <div class="ui checkbox">
-                                        <input type="checkbox" class="hidden">
-                                        <label>Email address</label>
-                                    </div>
-                                </div>
-                                <div class="inline field">
-                                    <div class="ui checkbox">
-                                        <input type="checkbox" class="hidden">
-                                        <label>Deparment</label>
-                                    </div>
-                                </div>
-                                <div class="inline field">
-                                    <div class="ui checkbox">
-                                        <input type="checkbox" class="hidden">
-                                        <label>Order number</label>
-                                    </div>
-                                </div>
-                                <button class="ui basic button">
-                                    <i class="icon plus"></i> ADD CUSTOM FIELDS
-                                </button>
+                                <p>Having proactive chat enabled switched on enabled a popup that encourages users to
+                                    chat with you</p>
                             </div>
                             <div class="field">
-                                <label>Begin chat mode (automated)</label>
+                                <label>Proactive chat widget style</label>
+                                <div class="ui grid">
+                                    <div class="three column row">
+                                        <div class="column">
+                                            <div class="ui checkbox image field">
+                                                <input type="radio" name="widget_style" id="proactive_style_agent_text_input" class="hidden" value="agent_text_input">
+                                                <label for="proactive_style_agent_text_input">
+                                                    Agent with text and input field
+                                                    <div class="ui divider"></div>
+                                                    <img src="{{ asset('images/admin/chat-widget-style/agent-text-input.png') }}"
+                                                         alt="agent text and input"/>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="column">
+                                            <div class="ui checkbox image field">
+                                                <input type="radio" name="widget_style" id="proactive_style_text_button" class="hidden" value="text_button">
+                                                <label for="proactive_style_text_button">
+                                                    Agent with text and button
+                                                    <div class="ui divider"></div>
+                                                    <img src="{{ asset('images/admin/chat-widget-style/text-button.png') }}"
+                                                         alt="agent text and input"/>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="column">
+                                            <div class="ui checkbox image field">
+                                                <input type="radio" name="widget_style" id="proactive_style_agents_button" class="hidden" value="agents_button">
+                                                <label for="proactive_style_agents_button">
+                                                    Agent(s) images only with button
+                                                    <div class="ui divider"></div>
+                                                    <img src="{{ asset('images/admin/chat-widget-style/agents-button.png') }}"
+                                                         alt="agent text and input"/>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="three column row">
+                                        <div class="column">
+                                            <div class="ui checkbox image field">
+                                                <input type="radio" name="widget_style" id="proactive_style_agent_text_button" class="hidden" value="agent_text_button">
+                                                <label for="proactive_style_agent_text_button">
+                                                    Text only with button
+                                                    <div class="ui divider"></div>
+                                                    <img src="{{ asset('images/admin/chat-widget-style/agent-text-button.png') }}"
+                                                         alt="agent text and input"/>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="column">
+                                            <div class="ui checkbox image field">
+                                                <input type="radio" name="widget_style" id="proactive_style_text_input" class="hidden" value="text_input">
+                                                <label for="proactive_style_text_input">
+                                                    Text only with text input
+                                                    <div class="ui divider"></div>
+                                                    <img src="{{ asset('images/admin/chat-widget-style/text-input.png') }}"
+                                                         alt="agent text and input"/>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="column">
+                                            <div class="ui checkbox image field">
+                                                <input type="radio" name="widget_style" id="proactive_style_widget_button_agent" class="hidden" value="widget_button_agent">
+                                                <label for="proactive_style_widget_button_agent">
+                                                    Agent with widget button
+                                                    <div class="ui divider"></div>
+                                                    <img src="{{ asset('images/admin/chat-widget-style/widget-button-agent.png') }}"
+                                                         alt="agent text and input"/>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <label>Chat pop-up heading</label>
                                 <div class="inline fields">
-                                    <div class="eight wide field">
-                                        <div class="ui radio checkbox">
-                                            <input type="radio" name="widget_type" class="hidden">
-                                            <label>Form Style</label>
+                                    <div class="thirteen wide field">
+                                        <input type="text" name="label" placeholder="Help">
+                                    </div>
+                                    <div class="three wide field">
+                                        <div class="ui left labeled language button">
+                                            <a class="ui basic label">
+                                                <i class="icon globe"></i>
+                                            </a>
+                                            <div class="ui button">
+                                                1/5
+                                                <div class="ui tiny progress">
+                                                    <div class="bar" style="width:20%"></div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="eight wide field">
-                                        <div class="ui radio checkbox">
-                                            <input type="radio" name="widget_type" class="hidden">
-                                            <label>Conversation Style</label>
+                                </div>
+                                <label>Subheading</label>
+                                <div class="inline fields">
+                                    <div class="thirteen wide field">
+                                        <textarea rows="3"></textarea>
+                                    </div>
+                                    <div class="three wide field">
+                                        <div class="ui left labeled language button">
+                                            <a class="ui basic label">
+                                                <i class="icon globe"></i>
+                                            </a>
+                                            <div class="ui button">
+                                                1/5
+                                                <div class="ui tiny progress">
+                                                    <div class="bar" style="width:20%"></div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="element">
-                    <div class="title">
-                        <i class="dropdown icon"></i>
-                        Proactive chat settings
-                    </div>
-                    <div class="content">
-                        <div class="field">
-                            <div class="inline field">
-                                <div class="ui toggle checkbox">
-                                    <label>Proactive chat enabled <i class="icon help circle"></i></label>
-                                    <input type="checkbox" class="hidden right">
+                    <div class="element">
+                        <div class="title">
+                            <i class="dropdown icon"></i>
+                            {{ phrase('admin.widget.ticket_settings') }}
+                        </div>
+                        <div class="content">
+                            <div class="field">
+                                <div class="inline field">
+                                    <div class="ui toggle checkbox">
+                                        <input type="checkbox" id="ticket_enabled" class="hidden right">
+                                        <label for="ticket_enabled">Ticket enabled</label>
+                                    </div>
                                 </div>
-                                <p>Having proactive chat enabled switched on enabled a popup that encourages users to chat with you</p>
+                                <label>Department</label>
+                                <div class="inline field">
+                                    <div class="ui radio checkbox">
+                                        <input type="radio" name="ticket_department" id="ticket_department_select" class="hidden">
+                                        <label for="ticket_department_select">Selected by the user in the ticket form</label>
+                                    </div>
+                                </div>
+                                <div class="inline field">
+                                    <div class="ui radio checkbox">
+                                        <input type="radio" name="ticket_department" id="ticket_department_set" class="hidden">
+                                        <label for="ticket_department_set">Set department (removes from the ticket form)</label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="element">
-                    <div class="title">
-                        <i class="dropdown icon"></i>
-                        Ticket settings
-                    </div>
-                    <div class="content">
-                        <p>Three common ways for a prospective owner to acquire a dog is from pet shops, private owners, or shelters.</p>
-                        <p>A pet shop may be the most convenient way to buy a dog. Buying a dog from a private owner allows you to assess the pedigree and upbringing of your dog before choosing to take it home. Lastly, finding your dog from a shelter, helps give a good home to a dog who may not find one so readily.</p>
                     </div>
                 </div>
             </div>
+            <div class="ui vertical divider">
+            </div>
+            <div class="nine wide column">
+                <h3>Add widget &amp; chat to your site</h3>
+                Get instructions and help on how to add the widget to your website
+                <label>Embed code</label>
+                <div class="inline fields">
+                    <div class="ui twelve wide field">
+                        <input type="text" readonly="readonly"
+                               value='script type="text/javascript">"use strict";!function(e,t){var d=...'/>
+                    </div>
+                    <div class="ui four wide field">
+                        <button class="ui basic button">COPY</button>
+                    </div>
+                </div>
+                <div class="ui top attached tabular menu">
+                    <a class="active item" data-tab-id="install_manually">Manually installing the widget</a>
+                    <a class="item" data-tab-id="install_cms">Install widget in a CMS</a>
+                </div>
+                <div class="ui bottom attached active tab segment" id="install_manually">
+                    <div class="ui equal width grid">
+                        <div class="column">
+                            <i class="big icon copy"></i>
+                            <h4>Copy the code</h4>
+                            Set up your widget then copy the embed code above.
+                        </div>
+                        <div class="column">
+                            <i class="big icon code"></i>
+                            <h4>Paste on your site</h4>
+                            Place the embed code in the &lt;head&gt; section of your website.
+                        </div>
+                        <div class="column">
+                            <i class="big icon laptop"></i>
+                            <h4>Get started</h4>
+                            Save the changes and users can start using the widget!
+                        </div>
+                    </div>
+                </div>
+                <div class="ui bottom attached tab segment" id="install_cms">
+                    Second
+                </div>
+                <h3>Need more help?</h3>
+                <p>Use the form below and we'll email a member of your team who manages the technical side of things,
+                    we'll send them the code and setup instructions.</p>
+                <div class="inline fields">
+                    <div class="ui ten wide field">
+                        <input type="email" placeholder="Email address">
+                    </div>
+                    <div class="ui six wide field">
+                        <button class="ui button">Send Instructions</button>
+                    </div>
+                </div>
+                <h3>Advanced settings and overrides.</h3>
+                <p>If you'd like more control over how your widget works and it's appearance on different pages, brands
+                    etc please visit the following knowledgebase articles to get you started:</p>
+                <div class="ui list">
+                    <div class="item"><i class="browser icon"></i>
+                        <div class="content">
+                            Overriding widget and chat settings
+                        </div>
+                    </div>
+                    <div class="item"><i class="browser icon"></i>
+                        <div class="content">
+                            Advance help &amp; chat widget styles
+                        </div>
+                    </div>
+                </div>
+
+                <div class="widget-editor-live-demo-container">
+                    <div class="widget-editor-live-demo-loader" ng-hide="widgetLoaded"><i></i></div>
+                    <iframe id="live-demo" ng-show="widgetLoaded"></iframe>
+                </div>
+
+                <button class="ui button" ng-click="Ctrl.reset">Reset</button>
+                <button class="ui button">Save</button>
+
+            </div>
         </div>
-    </div>
-</form>
-<script src="/assets/BUILD/web/node_modules/semantic-ui-less/definitions/modules/accordion.js"></script>
-<script src="/assets/BUILD/web/node_modules/semantic-ui-less/definitions/modules/checkbox.js"></script>
-<script type="application/javascript">
-    $('.accordion').accordion();
-    $('.checkbox').checkbox();
-</script>
+    </form>
+    <script src="/assets/BUILD/web/node_modules/semantic-ui-less/definitions/modules/accordion.js"></script>
+    <script type="application/javascript">
+        $('.ui.accordion').accordion();
+    </script>
 {% endblock %}
