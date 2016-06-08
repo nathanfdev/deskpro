@@ -22211,7 +22211,7 @@ ol.ui.horizontal.list li:before,
   background: #ffffff;
   box-shadow: 0px 1px 2px 0 rgba(34, 36, 38, 0.15);
   margin: 1rem 0em;
-  padding: 1em 1em;
+  padding: 20px;
   border-radius: 0.25rem;
   border: 1px solid rgba(34, 36, 38, 0.15);
 }
@@ -22277,7 +22277,7 @@ ol.ui.horizontal.list li:before,
   box-shadow: 0px 1px 2px 0 rgba(34, 36, 38, 0.15);
 }
 .ui[class*="very basic"].table.segment {
-  padding: 1em 1em;
+  padding: 20px;
 }
 /*******************************
              Types
@@ -22428,7 +22428,7 @@ ol.ui.horizontal.list li:before,
   margin: 1rem 0em;
   border: 1px solid rgba(34, 36, 38, 0.15);
   box-shadow: 0px 1px 2px 0 rgba(34, 36, 38, 0.15);
-  border-radius: 0.25rem;
+  border-radius: 0;
 }
 .ui.segments:first-child {
   margin-top: 0em;
@@ -29598,7 +29598,7 @@ ol.ui.horizontal.list li:before,
   font-weight: normal;
   border: 1px solid rgba(34, 36, 38, 0.15);
   box-shadow: 0px 1px 2px 0 rgba(34, 36, 38, 0.15);
-  border-radius: 0.25rem;
+  border-radius: 0;
   min-height: 2.875em;
 }
 .ui.menu:after {
@@ -29642,11 +29642,11 @@ ol.ui.horizontal.list li:before,
   padding: 0.9375em 1.125em;
   text-transform: none;
   color: #2b2f2f;
-  font-weight: normal;
+  font-weight: 600;
   transition: background 0.1s ease, box-shadow 0.1s ease, color 0.1s ease;
 }
 .ui.menu > .item:first-child {
-  border-radius: 0.25rem 0px 0px 0.25rem;
+  border-radius: 0 0px 0px 0;
 }
 /* Border */
 .ui.menu .item:before {
@@ -29754,7 +29754,7 @@ ol.ui.horizontal.list li:before,
 .ui.menu .dropdown.item .menu {
   left: 0px;
   min-width: calc(100% - 1px);
-  border-radius: 0em 0em 0.25rem 0.25rem;
+  border-radius: 0em 0em 0 0;
   background: #ffffff;
   margin: 0em 0px 0px;
   box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.08);
@@ -29798,7 +29798,7 @@ ol.ui.horizontal.list li:before,
 /* Secondary */
 .ui.secondary.menu .dropdown.item > .menu,
 .ui.text.menu .dropdown.item > .menu {
-  border-radius: 0.25rem;
+  border-radius: 0;
   margin-top: 0.3125em;
 }
 /* Pointing */
@@ -29822,7 +29822,7 @@ ol.ui.horizontal.list li:before,
   min-width: 0;
   margin: 0em 0em 0em 0em;
   box-shadow: 0 1px 3px 0px rgba(0, 0, 0, 0.08);
-  border-radius: 0em 0.25rem 0.25rem 0.25rem;
+  border-radius: 0em 0 0 0;
 }
 .ui.vertical.menu .active.dropdown.item {
   border-top-right-radius: 0em;
@@ -29990,10 +29990,10 @@ Floated Menu / Item
   border-right: none;
 }
 .ui.vertical.menu > .item:first-child {
-  border-radius: 0.25rem 0.25rem 0px 0px;
+  border-radius: 0 0 0px 0px;
 }
 .ui.vertical.menu > .item:last-child {
-  border-radius: 0px 0px 0.25rem 0.25rem;
+  border-radius: 0px 0px 0 0;
 }
 /*--- Label ---*/
 .ui.vertical.menu .item > .label {
@@ -30047,13 +30047,13 @@ Floated Menu / Item
   box-shadow: none;
 }
 .ui.vertical.menu > .active.item:first-child {
-  border-radius: 0.25rem 0.25rem 0em 0em;
+  border-radius: 0 0 0em 0em;
 }
 .ui.vertical.menu > .active.item:last-child {
-  border-radius: 0em 0em 0.25rem 0.25rem;
+  border-radius: 0em 0em 0 0;
 }
 .ui.vertical.menu > .active.item:only-child {
-  border-radius: 0.25rem;
+  border-radius: 0;
 }
 .ui.vertical.menu .active.item .menu .active.item {
   border-left: none;
@@ -30071,7 +30071,7 @@ Floated Menu / Item
   box-shadow: none !important;
   border: none;
   background: none transparent;
-  border-bottom: 1px solid #d4d4d5;
+  border-bottom: 1px solid #c0c4c4;
 }
 .ui.tabular.fluid.menu {
   width: calc(100% +  2px ) !important;
@@ -30082,8 +30082,8 @@ Floated Menu / Item
   border-left: 1px solid transparent;
   border-right: 1px solid transparent;
   border-top: 2px solid transparent;
-  padding: 0.9375em 1.4375em;
-  color: #2b2f2f;
+  padding: 8px 15px;
+  color: #aab0b1;
 }
 .ui.tabular.menu .item:before {
   display: none;
@@ -30091,18 +30091,18 @@ Floated Menu / Item
 /* Hover */
 .ui.tabular.menu .item:hover {
   background-color: transparent;
-  color: rgba(0, 0, 0, 0.8);
+  color: #4696dc;
 }
 /* Active */
 .ui.tabular.menu .active.item {
   background: none #ffffff;
-  color: rgba(0, 0, 0, 0.95);
+  color: #4c4f50;
   border-top-width: 1px;
-  border-color: #d4d4d5;
-  font-weight: bold;
+  border-color: #c0c4c4;
+  font-weight: 600;
   margin-bottom: -1px;
   box-shadow: none;
-  border-radius: 0.25rem 0.25rem 0px 0px !important;
+  border-radius: 0 0 0px 0px !important;
 }
 /* Coupling with segment for attachment */
 .ui.tabular.menu + .attached:not(.top).segment,
@@ -30122,7 +30122,7 @@ Floated Menu / Item
   border-radius: 0em;
   box-shadow: none !important;
   border-bottom: none;
-  border-top: 1px solid #d4d4d5;
+  border-top: 1px solid #c0c4c4;
 }
 .ui.bottom.tabular.menu .item {
   background: none;
@@ -30133,10 +30133,10 @@ Floated Menu / Item
 }
 .ui.bottom.tabular.menu .active.item {
   background: none #ffffff;
-  color: rgba(0, 0, 0, 0.95);
-  border-color: #d4d4d5;
+  color: #4c4f50;
+  border-color: #c0c4c4;
   margin: -1px 0px 0px 0px;
-  border-radius: 0px 0px 0.25rem 0.25rem !important;
+  border-radius: 0px 0px 0 0 !important;
 }
 /* Vertical Tabular (Left) */
 .ui.vertical.tabular.menu {
@@ -30144,7 +30144,7 @@ Floated Menu / Item
   border-radius: 0em;
   box-shadow: none !important;
   border-bottom: none;
-  border-right: 1px solid #d4d4d5;
+  border-right: 1px solid #c0c4c4;
 }
 .ui.vertical.tabular.menu .item {
   background: none;
@@ -30155,10 +30155,10 @@ Floated Menu / Item
 }
 .ui.vertical.tabular.menu .active.item {
   background: none #ffffff;
-  color: rgba(0, 0, 0, 0.95);
-  border-color: #d4d4d5;
+  color: #4c4f50;
+  border-color: #c0c4c4;
   margin: 0px -1px 0px 0px;
-  border-radius: 0.25rem 0px 0px 0.25rem !important;
+  border-radius: 0 0px 0px 0 !important;
 }
 /* Vertical Right Tabular */
 .ui.vertical.right.tabular.menu {
@@ -30167,7 +30167,7 @@ Floated Menu / Item
   box-shadow: none !important;
   border-bottom: none;
   border-right: none;
-  border-left: 1px solid #d4d4d5;
+  border-left: 1px solid #c0c4c4;
 }
 .ui.vertical.right.tabular.menu .item {
   background: none;
@@ -30178,10 +30178,10 @@ Floated Menu / Item
 }
 .ui.vertical.right.tabular.menu .active.item {
   background: none #ffffff;
-  color: rgba(0, 0, 0, 0.95);
-  border-color: #d4d4d5;
+  color: #4c4f50;
+  border-color: #c0c4c4;
   margin: 0px 0px 0px -1px;
-  border-radius: 0px 0.25rem 0.25rem 0px !important;
+  border-radius: 0px 0 0 0px !important;
 }
 /* Dropdown */
 .ui.tabular.menu .active.dropdown.item {
@@ -30200,10 +30200,10 @@ Floated Menu / Item
   vertical-align: middle;
 }
 .ui.pagination.menu .item:last-child {
-  border-radius: 0em 0.25rem 0.25rem 0em;
+  border-radius: 0em 0 0 0em;
 }
 .ui.compact.menu .item:last-child {
-  border-radius: 0em 0.25rem 0.25rem 0em;
+  border-radius: 0em 0 0 0em;
 }
 .ui.pagination.menu .item:last-child:before {
   display: none;
@@ -30961,7 +30961,7 @@ Floated Menu / Item
   display: inline-block;
 }
 .ui.compact.menu .item:last-child {
-  border-radius: 0em 0.25rem 0.25rem 0em;
+  border-radius: 0em 0 0 0em;
 }
 .ui.compact.menu .item:last-child:before {
   display: none;
@@ -31174,7 +31174,7 @@ Floated Menu / Item
   margin-bottom: 0em;
   top: 0px;
   margin-top: 1rem;
-  border-radius: 0.25rem 0.25rem 0em 0em;
+  border-radius: 0 0 0em 0em;
 }
 .ui.menu[class*="top attached"]:first-child {
   margin-top: 0em;
@@ -31186,17 +31186,17 @@ Floated Menu / Item
   top: 0px;
   margin-bottom: 1rem;
   box-shadow: 0px 1px 2px 0 rgba(34, 36, 38, 0.15), none;
-  border-radius: 0em 0em 0.25rem 0.25rem;
+  border-radius: 0em 0em 0 0;
 }
 .ui[class*="bottom attached"].menu:last-child {
   margin-bottom: 0em;
 }
 /* Attached Menu Item */
 .ui.top.attached.menu > .item:first-child {
-  border-radius: 0.25rem 0em 0em 0em;
+  border-radius: 0 0em 0em 0em;
 }
 .ui.bottom.attached.menu > .item:first-child {
-  border-radius: 0em 0em 0em 0.25rem;
+  border-radius: 0em 0em 0em 0;
 }
 /* Tabular Attached */
 .ui.attached.menu:not(.tabular) {
@@ -31247,6 +31247,19 @@ Floated Menu / Item
 /*******************************
          Site Overrides
 *******************************/
+.ui.tabular.menu .item {
+  background: #ffffff;
+  border-top: 1px solid #e3e3e3;
+  border-left: 1px solid #e3e3e3;
+  border-right-color: transparent;
+}
+.ui.tabular.menu .item.active ~ .item {
+  border-left-color: transparent;
+  border-right: 1px solid #e3e3e3;
+}
+.ui.tabular.menu .item:hover {
+  background-color: #fdfeff;
+}
 /*!
  * # Semantic UI - Message
  * http://github.com/semantic-org/semantic-ui/
@@ -55008,7 +55021,7 @@ html.ios body {
   margin: -1.25em 0em 0em -1.25em;
   width: 2.5em;
   height: 2.5em;
-  border-radius: 500rem;
+  border-radius: 0;
   border: 0.2em solid rgba(0, 0, 0, 0.1);
 }
 .ui.tab.loading:after,
@@ -55022,7 +55035,7 @@ html.ios body {
   height: 2.5em;
   animation: button-spin 0.6s linear;
   animation-iteration-count: infinite;
-  border-radius: 500rem;
+  border-radius: 0;
   border-color: #767676 transparent transparent;
   border-style: solid;
   border-width: 0.2em;

@@ -1,3 +1,8 @@
 /*******************************
     User Variable Overrides
 *******************************/
+
+@padding: 20px;
+
+@groupedBorderRadius: 0;
+@groupedSegmentBoxShadow: none;

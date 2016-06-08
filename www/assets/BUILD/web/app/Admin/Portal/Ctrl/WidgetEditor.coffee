@@ -20,6 +20,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
 
       @$scope.saving_code = false
       @$scope.applying_to_portal = false
+      @$scope.show_embed_help = true
       @$scope.formErrors = {}
 
     initialLoad: ->
@@ -28,11 +29,24 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
 
         @$scope.url = data.url;
         @$scope.company = data.company;
-        @$scope.global_settings = data.settings.global;
-        @$scope.brand_settings = data.settings.brand;
+        savedSettings = localStorage.getItem 'widgetSettings'
+        if savedSettings
+          savedSettings = JSON.parse savedSettings
+        if savedSettings.global && !jQuery.isEmptyObject savedSettings.global
+          @$scope.global_settings = savedSettings.global
+        else
+          @$scope.global_settings = data.settings.global;
+        if savedSettings.brand && !jQuery.isEmptyObject savedSettings.brand
+          @$scope.brand_settings = savedSettings.brand
+        else
+          @$scope.brand_settings = data.settings.brand;
         @$scope.enabled_on_portal = data.enabled_on_portal;
 
         @initLiveDemo()
+        @$scope.saving_code = true
+        @loadCode().then (codeResponse) =>
+          @$scope.code = codeResponse.data
+          @$scope.saving_code = false
 
       departmentsPromise = @Api2.sendGet('/ticket_departments').then (response) =>
         @$scope.departments = response.data.data
@@ -59,6 +73,11 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
 
     loadCode: ->
       @Api2.sendGet('widget/code')
+
+    reset: ->
+      if confirm("Current edit on the settings will be overridden. Are your sure?")
+        localStorage.removeItem 'widgetSettings'
+        @initialLoad()
 
     getLanguage: (translation) ->
       for language in @$scope.languages
@@ -171,6 +190,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
 
     updateLiveDemo: ->
       DpWidget = @getFrameNode().contentWindow.DpWidget;
+      localStorage.setItem 'widgetSettings', JSON.stringify(@getSaveData())
       if (DpWidget)
         DpWidget.dispatchCustomEvent('reloadOptions', @getOptions(true));
         DpWidget.dispatchCustomEvent('reloadSettings', @$scope.global_settings);
