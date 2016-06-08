@@ -17,7 +17,7 @@ Feature: Ticket link endpoint
       | ticket_5 | Ticket Five  |                |              |         |
       | ticket_6 | Ticket Six   |                |              |         |
 
-  Scenario: I link two tickets
+  Scenario: I link two tickets (add children ticket)
     When I send a "POST" request to "/api/v2/tickets/{ticket_1}/links" with body:
     """
 {
@@ -28,6 +28,7 @@ Feature: Ticket link endpoint
     Then the response status code should be 204
     And the response should be empty
     And the header "Location" should be equal to "/api/v2/tickets/{ticket_1}/links"
+    And the "{ticket_2}" ticket should have "parent_ticket" log
 
     When I send a GET request to "/api/v2/tickets/{ticket_1}/links"
     Then the JSON node "data.children[0].id" should be equal to "{ticket_2}"
@@ -106,15 +107,8 @@ Feature: Ticket link endpoint
     And the JSON node "data.children" should exist
     And the JSON node "data.parent.id" should exist
 
-  Scenario: I link two tickets to the same parent and verify they became siblings
+  Scenario: I link two tickets to the same parent, verify they became siblings and then unlink them
     When I send a "POST" request to "/api/v2/tickets/{ticket_4}/links" with body:
-    """
-{
-  "parent": true,
-  "link_ticket": ~ticket_6~
-}
-    """
-    And I send a "POST" request to "/api/v2/tickets/{ticket_5}/links" with body:
     """
 {
   "parent": true,
@@ -123,22 +117,37 @@ Feature: Ticket link endpoint
     """
     Then the response status code should be 204
     And the response should be empty
+    And the "{ticket_4}" ticket should have "parent_ticket" log
+
+
+    When I send a "POST" request to "/api/v2/tickets/{ticket_5}/links" with body:
+    """
+{
+  "parent": true,
+  "link_ticket": ~ticket_6~
+}
+    """
+    Then the response status code should be 204
+    And the response should be empty
+    And the "{ticket_5}" ticket should have "parent_ticket" log
+
     When I send a "GET" request to "/api/v2/tickets/{ticket_4}/links"
-    Then the response status code should be 200
-    And the response should be in JSON
-    And the JSON node "data.parent" should exist
-    And the JSON node "data.siblings" should exist
-    And the JSON node "data.children" should exist
-    And the JSON node "data.siblings[0].id" should exist
+    Then the JSON node "data.parent.id" should be equal to "{ticket_6}"
+    And the JSON node "data.siblings[0].id" should be equal to "{ticket_5}"
+
+    When I send a "GET" request to "/api/v2/tickets/{ticket_5}/links"
+    Then the JSON node "data.parent.id" should be equal to "{ticket_6}"
+    And the JSON node "data.siblings[0].id" should be equal to "{ticket_4}"
 
     When I send a "GET" request to "/api/v2/tickets/{ticket_6}/links"
     Then the response status code should be 200
-    And the response should be in JSON
-    And the JSON node "data.parent" should exist
-    And the JSON node "data.siblings" should exist
+    And the JSON node "data.parent" should be null
     And the JSON node "data.children" should have 2 elements
+    And the JSON node "data.children[0].id" should be equal to "{ticket_4}"
+    And the JSON node "data.children[1].id" should be equal to "{ticket_5}"
 
-  Scenario: I unlink parent ticket
+    Given I reset the "{ticket_4}" ticket logs
+    Given I reset the "{ticket_5}" ticket logs
     When I send a "DELETE" request to "/api/v2/tickets/{ticket_5}/links" with body:
     """
 {
@@ -146,12 +155,16 @@ Feature: Ticket link endpoint
 }
     """
     Then the response status code should be 204
-
     When I send a "GET" request to "/api/v2/tickets/{ticket_5}/links"
     Then the response status code should be 200
     And the JSON node "data.parent" should be null
 
-  Scenario: I unlink child ticket
+    When I send a "GET" request to "/api/v2/tickets/{ticket_6}/links"
+    Then the response status code should be 200
+    And the JSON node "data.children" should have 1 element
+    And the JSON node "data.children[0].id" should be equal to "{ticket_4}"
+    And the "{ticket_5}" ticket should have "parent_ticket" log
+
     When I send a "DELETE" request to "/api/v2/tickets/{ticket_6}/links" with body:
     """
 {
@@ -160,7 +173,43 @@ Feature: Ticket link endpoint
 }
     """
     Then the response status code should be 204
-
     When I send a "GET" request to "/api/v2/tickets/{ticket_6}/links"
     Then the response status code should be 200
     And the JSON node "data.children" should have 0 elements
+    And the "{ticket_4}" ticket should have "parent_ticket" log
+
+  Scenario Outline: I try to link non-existing ticket
+    When I send a "POST" request to "/api/v2/tickets/{ticket_4}/links" with body:
+    """
+{
+  "parent": <parent>,
+  "link_ticket": 404
+}
+    """
+    Then the response status code should be 400
+    And the response should be in JSON
+    And the JSON node "errors.fields.link_ticket.errors[0].code" should be equal to "bad_choice"
+    And the JSON node "errors.fields.link_ticket.errors[0].message" should be equal to "One or more of the given values is invalid."
+
+    Examples:
+      | parent |
+      | true   |
+      | false  |
+
+  Scenario Outline: I try to unlink non-existing ticket
+    When I send a "DELETE" request to "/api/v2/tickets/{ticket_4}/links" with body:
+    """
+{
+  "link_type": <link_type>,
+  "link_ticket": 404
+}
+    """
+    Then the response status code should be 400
+    And the response should be in JSON
+    And the JSON node "errors.fields.link_ticket.errors[0].code" should be equal to "bad_choice"
+    And the JSON node "errors.fields.link_ticket.errors[0].message" should be equal to "One or more of the given values is invalid."
+
+    Examples:
+      | link_type   |
+      | "child"     |
+      | "sibling"   |

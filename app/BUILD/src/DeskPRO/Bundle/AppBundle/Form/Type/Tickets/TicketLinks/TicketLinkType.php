@@ -74,12 +74,14 @@ class TicketLinkType extends AbstractType
 
         /* @var Ticket $ticket */
         $linkTicket = $form->get('link_ticket')->getData();
-        $linkTicket->disableAutoTicketProcess();
+        if ($linkTicket) {
+            $linkTicket->disableAutoTicketProcess();
 
-        if ($form->get('parent')->getData()) {
-            $ticket->setParentTicket($linkTicket);
-        } else {
-            $ticket->addChildrenTicket($linkTicket);
+            if ($form->get('parent')->getData()) {
+                $ticket->setParentTicket($linkTicket);
+            } else {
+                $ticket->addChildrenTicket($linkTicket);
+            }
         }
     }
 }
