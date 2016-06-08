@@ -1,3 +1,4 @@
+@new
 Feature: /glossary endpoint
   To CRUD DeskPRO glossary word definitions
   As an API user

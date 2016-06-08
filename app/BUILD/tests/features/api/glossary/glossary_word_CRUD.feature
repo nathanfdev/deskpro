@@ -1,3 +1,4 @@
+@new
 Feature: /glossary/word endpoint
   To CRUD DeskPRO glossary words
   As an API user
@@ -37,7 +38,7 @@ Feature: /glossary/word endpoint
     """
 {
   "word": "Sample Word",
-  "definition": 1
+  "definition": ~def~
 }
     """
     Then the response status code should be 201
@@ -50,7 +51,7 @@ Feature: /glossary/word endpoint
     """
 {
   "word": "Modified",
-  "definition": 1
+  "definition": ~def~
 }
     """
     And I send a GET request to "/api/v2/glossary/words/modified"
