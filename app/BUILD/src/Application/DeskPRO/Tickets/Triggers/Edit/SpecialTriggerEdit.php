@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\Tickets\Triggers\Edit;
 
 use Application\DeskPRO\Entity\Department;
@@ -131,13 +132,13 @@ class SpecialTriggerEdit
 
         if ($this->event == TicketTrigger::EVENT_TYPE_UPDATE) {
             $trigger->event_trigger = 'update';
-            $trigger->by_agent_mode = array('api', 'email', 'web');
+            $trigger->by_agent_mode = array('api', 'email', 'web', 'mobile');
             $trigger->by_user_mode  = array('api', 'email', 'form', 'portal', 'widget');
 
             $terms_set->add(new CheckDepartment('changed_to', array('department_ids' => array($this->obj->id))));
         } else {
             $trigger->event_trigger = 'newticket';
-            $trigger->by_agent_mode = array('api', 'email', 'web');
+            $trigger->by_agent_mode = array('api', 'email', 'web', 'mobile');
             $trigger->by_user_mode  = array('form', 'portal', 'widget');
 
             $terms_set->add(new CheckDepartment('is', array('department_ids' => array($this->obj->id))));
@@ -188,7 +189,7 @@ class SpecialTriggerEdit
         $trigger->terms = $terms;
 
         $trigger->event_trigger = 'update';
-        $trigger->by_agent_mode = array('api', 'email', 'web');
+        $trigger->by_agent_mode = array('api', 'email', 'web', 'mobile');
         $trigger->by_user_mode  = array('api', 'email', 'form', 'portal', 'widget');
 
         $trigger->sys_name = self::TYPE_SATISFACTION.'_'.$this->obj;

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Install
  */
+
 namespace Application\InstallBundle\Data\DefaultData;
 
 use Application\DeskPRO\Entity\TicketTrigger;
@@ -77,7 +78,7 @@ class TriggerData extends AbstractDefaultData
             $trigger                = new TicketTrigger();
             $trigger->event_trigger = $event_trigger;
             $trigger->by_user_mode  = array('api', 'email', 'form', 'portal', 'widget');
-            $trigger->by_agent_mode = array('api', 'email', 'web');
+            $trigger->by_agent_mode = array('api', 'email', 'web', 'mobile');
             $trigger->run_order     = 1000;
             $trigger->sys_name      = "default_{$event_trigger}_agentemail";
             $trigger->title         = 'Send agent notifications';
@@ -99,7 +100,7 @@ class TriggerData extends AbstractDefaultData
         $trigger                = new TicketTrigger();
         $trigger->event_trigger = 'newticket';
         $trigger->run_order     = 1000;
-        $trigger->by_agent_mode = array('api', 'email', 'web');
+        $trigger->by_agent_mode = array('api', 'email', 'web', 'mobile');
         $trigger->is_enabled    = true;
         $trigger->sys_name      = 'default_newticket_byagent';
         $trigger->title         = 'Send user new ticket by agent';
@@ -181,7 +182,7 @@ class TriggerData extends AbstractDefaultData
         $trigger                = new TicketTrigger();
         $trigger->event_trigger = 'newreply';
         $trigger->run_order     = 1000;
-        $trigger->by_agent_mode = array('api', 'email', 'web');
+        $trigger->by_agent_mode = array('api', 'email', 'web', 'mobile');
         $trigger->is_enabled    = true;
         $trigger->sys_name      = 'default_newreply_fromagent';
         $trigger->title         = 'Send user new reply from agent';

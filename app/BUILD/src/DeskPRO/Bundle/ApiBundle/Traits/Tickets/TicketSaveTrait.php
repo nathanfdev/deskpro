@@ -60,6 +60,11 @@ trait TicketSaveTrait
             $event = 'update';
         }
 
-        $manager->saveTicket($ticket, $manager->createAgentExecutorContext($this->getUser(), $event, 'api'));
+        $eventMethod = 'api';
+        if ($this->get('api_client_info')->isMobileClient()) {
+            $eventMethod = 'mobile';
+        }
+
+        $manager->saveTicket($ticket, $manager->createAgentExecutorContext($this->getUser(), $event, $eventMethod));
     }
 }
