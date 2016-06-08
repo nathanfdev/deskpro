@@ -84,7 +84,7 @@ class TicketsController extends AbstractTicketsController
      */
     public function postAction(Request $request)
     {
-        $this->get('logger')->warning("POST /tickets is deprecated, use /ticket_layout to create tickets");
+        $this->get('logger')->warning("POST /tickets is deprecated, use /ticket_forms to create tickets");
 
         return parent::postAction($request);
     }
