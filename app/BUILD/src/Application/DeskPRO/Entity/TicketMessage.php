@@ -1010,7 +1010,7 @@ class TicketMessage extends DomainObject
                 'fieldName'    => 'ticket',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket',
                 'mappedBy'     => null,
-                'inversedBy'   => null,
+                'inversedBy'   => 'messages',
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'ticket_id',

@@ -227,7 +227,7 @@ class AgentTeam extends DomainObject implements PersonList, AvatarOwner
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToMany([
             'fieldName'    => 'members',
-            'mapedBy'      => 'teams',
+            'inversedBy'   => 'teams',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
             'joinTable'    => [
                 'name'               => 'agent_team_members',

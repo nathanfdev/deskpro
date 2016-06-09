@@ -133,7 +133,7 @@ class TwitterAccountStatusNote extends \Application\DeskPRO\Domain\DomainObject
             'fieldName'    => 'person',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
             'mappedBy'     => null,
-            'inversedBy'   => 'twitter_status_notes',
+            'inversedBy'   => null,
             'joinColumns'  => [
                 [
                     'name'                 => 'person_id',

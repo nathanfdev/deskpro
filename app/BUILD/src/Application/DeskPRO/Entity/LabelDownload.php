@@ -69,7 +69,7 @@ class LabelDownload extends LabelAssocAbstract
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Download',
             'id'           => true,
             'mappedBy'     => null,
-            'inversedBy'   => null,
+            'inversedBy'   => 'labels',
             'joinColumns'  => [
                 0 => [
                     'name'                 => 'download_id',

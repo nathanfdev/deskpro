@@ -84,7 +84,7 @@ class LabelFeedback extends LabelAssocAbstract
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Feedback',
                 'id'           => true,
                 'mappedBy'     => null,
-                'inversedBy'   => null,
+                'inversedBy'   => 'labels',
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'feedback_id',

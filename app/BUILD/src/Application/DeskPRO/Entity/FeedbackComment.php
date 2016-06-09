@@ -162,7 +162,7 @@ class FeedbackComment extends CommentAbstract
             'fieldName'    => 'feedback',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Feedback',
             'mappedBy'     => null,
-            'inversedBy'   => 'comment',
+            'inversedBy'   => 'comments',
             'joinColumns'  => [
                 [
                     'name'                 => 'feedback_id',

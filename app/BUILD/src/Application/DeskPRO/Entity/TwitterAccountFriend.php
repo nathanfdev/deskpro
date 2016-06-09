@@ -140,7 +140,7 @@ class TwitterAccountFriend extends \Application\DeskPRO\Domain\DomainObject
             'fieldName'    => 'account',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount',
             'mappedBy'     => null,
-            'inversedBy'   => null,
+            'inversedBy'   => 'friends',
             'joinColumns'  => [
                 0 => [
                     'name'                 => 'account_id',

@@ -251,7 +251,7 @@ class TwitterAccountStatus extends \Application\DeskPRO\Domain\DomainObject
             'fieldName'    => 'status',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus',
             'mappedBy'     => null,
-            'inversedBy'   => null,
+            'inversedBy'   => 'account_statuses',
             'joinColumns'  => [
                 [
                     'name'                 => 'status_id',

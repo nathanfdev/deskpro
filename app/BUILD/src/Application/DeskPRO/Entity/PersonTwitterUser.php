@@ -161,7 +161,7 @@ class PersonTwitterUser extends \Application\DeskPRO\Domain\DomainObject
             'fieldName'    => 'person',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
             'mappedBy'     => null,
-            'inversedBy'   => null,
+            'inversedBy'   => 'twitter_users',
             'joinColumns'  => [
                 0 => [
                     'name'                 => 'person_id',

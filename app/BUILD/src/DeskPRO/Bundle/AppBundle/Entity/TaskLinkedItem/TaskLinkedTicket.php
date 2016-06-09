@@ -35,6 +35,7 @@
 namespace DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem;
 
 use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\Entity\Task;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -46,8 +47,23 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @UniqueEntity(fields={"task", "ticket"}, errorPath="ticket")
  */
-class TaskLinkedTicket extends TaskLinkedItem
+class TaskLinkedTicket extends AbstractTaskLinkedItem
 {
+    /**
+     * Related task.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\Task>")
+     *
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task", inversedBy="linked_tickets")
+     * @ORM\JoinColumn(name="task_id", referencedColumnName="id", nullable=false)
+     * @Assert\NotNull()
+     * @Assert\Valid()
+     *
+     * @var Task
+     */
+    protected $task;
+
     /**
      * The ticket attached to the task.
      *

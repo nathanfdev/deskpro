@@ -245,7 +245,7 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
                 'fieldName'    => 'ticket',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket',
                 'mappedBy'     => null,
-                'inversedBy'   => null,
+                'inversedBy'   => 'participants',
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'ticket_id',

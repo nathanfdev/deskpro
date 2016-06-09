@@ -69,7 +69,7 @@ class LabelTicket extends LabelAssocAbstract
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket',
             'id'           => true,
             'mappedBy'     => null,
-            'inversedBy'   => null,
+            'inversedBy'   => 'labels',
             'joinColumns'  => [
                 0 => [
                     'name'                 => 'ticket_id',

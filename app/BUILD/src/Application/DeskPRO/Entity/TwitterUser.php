@@ -836,7 +836,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
             'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUserFollower',
             'mappedBy'     => 'user',
         ]);
-        $metadata->mapManyToOne([
+        $metadata->mapOneToOne([
             'fieldName'    => 'account',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount',
             'mappedBy'     => 'user',

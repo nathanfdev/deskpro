@@ -70,7 +70,7 @@ class TaskAttachment implements EntityInterface, NotifyPropertyChanged
      * @JMS\Expose()
      * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\Task>")
      *
-     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task", inversedBy="attachments")
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id", onDelete="CASCADE")
      *
      * @Assert\NotNull()

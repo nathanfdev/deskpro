@@ -113,6 +113,7 @@ class JiraIssue extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapManyToOne([
             'fieldName'    => 'ticket',
             'targetEntity' => 'Application\DeskPRO\Entity\Ticket',
+            'inversedBy'   => 'jira_issues',
             'joinColumns'  => [
                 [
                     'name'                 => 'ticket_id',

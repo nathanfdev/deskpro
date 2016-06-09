@@ -357,6 +357,7 @@ class TicketSla extends DomainObject
             [
                 'fieldName'    => 'ticket',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket',
+                'inversedBy'   => 'ticket_slas',
                 'joinColumns'  => [
                     [
                         'name'                 => 'ticket_id',

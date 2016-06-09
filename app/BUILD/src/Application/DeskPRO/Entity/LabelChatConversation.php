@@ -72,7 +72,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
                      'id'           => true,
                      'targetEntity' => 'Application\\DeskPRO\\Entity\\ChatConversation',
                      'mappedBy'     => null,
-                     'inversedBy'   => null,
+                     'inversedBy'   => 'labels',
                      'joinColumns'  => [
                          [
                              'name'                 => 'chat_id',

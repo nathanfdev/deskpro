@@ -162,7 +162,7 @@ class NewsComment extends CommentAbstract
             'fieldName'    => 'news',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\News',
             'mappedBy'     => null,
-            'inversedBy'   => 'comment',
+            'inversedBy'   => null,
             'joinColumns'  => [
                 [
                     'name'                 => 'news_id',

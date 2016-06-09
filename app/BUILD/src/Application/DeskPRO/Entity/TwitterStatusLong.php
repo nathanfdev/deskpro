@@ -203,11 +203,11 @@ class TwitterStatusLong extends \Application\DeskPRO\Domain\DomainObject
             'columnName' => 'date_read',
         ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne([
+        $metadata->mapOneToOne([
             'fieldName'    => 'status',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus',
             'mappedBy'     => null,
-            'inversedBy'   => null,
+            'inversedBy'   => 'long',
             'joinColumns'  => [
                 [
                     'name'                 => 'status_id',

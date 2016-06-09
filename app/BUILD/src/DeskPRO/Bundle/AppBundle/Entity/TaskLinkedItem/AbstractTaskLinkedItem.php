@@ -38,7 +38,6 @@ use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @JMS\ExclusionPolicy("all")
@@ -52,13 +51,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="string", length=30)
  * @ORM\DiscriminatorMap({
- *     "item" = "TaskLinkedItem",
+ *     "item" = "AbstractTaskLinkedItem",
  *     "ticket" = "TaskLinkedTicket",
  *     "article" = "TaskLinkedArticle",
  *     "chat" = "TaskLinkedChat"
  * })
  */
-class TaskLinkedItem implements EntityInterface
+abstract class AbstractTaskLinkedItem implements EntityInterface
 {
     /**
      * The unique ID.
@@ -76,14 +75,6 @@ class TaskLinkedItem implements EntityInterface
 
     /**
      * Related task.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\Task>")
-     *
-     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
-     * @ORM\JoinColumn(name="task_id", referencedColumnName="id", nullable=false)
-     * @Assert\NotNull()
-     * @Assert\Valid()
      *
      * @var Task
      */

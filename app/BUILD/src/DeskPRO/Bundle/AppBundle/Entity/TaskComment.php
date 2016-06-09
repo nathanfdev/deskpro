@@ -111,7 +111,7 @@ class TaskComment implements EntityInterface, NotifyPropertyChanged
      * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\Task>")
      * @JMS\Expose()
      *
-     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task", inversedBy="comments")
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotNull
      * @Assert\Valid()

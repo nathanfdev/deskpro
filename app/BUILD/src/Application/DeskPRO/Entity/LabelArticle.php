@@ -69,7 +69,7 @@ class LabelArticle extends LabelAssocAbstract
             'id'           => true,
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Article',
             'mappedBy'     => null,
-            'inversedBy'   => null,
+            'inversedBy'   => 'labels',
             'joinColumns'  => [
                 0 => [
                     'name'                 => 'article_id',

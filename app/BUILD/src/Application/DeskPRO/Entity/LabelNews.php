@@ -70,7 +70,7 @@ class LabelNews extends LabelAssocAbstract
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\News',
                 'id'           => true,
                 'mappedBy'     => null,
-                'inversedBy'   => null,
+                'inversedBy'   => 'labels',
                 'joinColumns'  => [
                     [
                         'name'                 => 'news_id',

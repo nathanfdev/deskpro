@@ -69,7 +69,7 @@ class LabelBlob extends LabelAssocAbstract
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
             'id'           => true,
             'mappedBy'     => null,
-            'inversedBy'   => null,
+            'inversedBy'   => 'labels',
             'joinColumns'  => [
                 [
                     'name'                 => 'blob_id',

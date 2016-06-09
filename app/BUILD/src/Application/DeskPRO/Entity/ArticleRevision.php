@@ -126,7 +126,7 @@ class ArticleRevision extends RevisionAbstract
             'fieldName'    => 'article',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Article',
             'mappedBy'     => null,
-            'inversedBy'   => null,
+            'inversedBy'   => 'revisions',
             'joinColumns'  => [
                 0 => [
                     'name'                 => 'article_id',

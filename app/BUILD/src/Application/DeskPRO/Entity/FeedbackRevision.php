@@ -113,7 +113,7 @@ class FeedbackRevision extends RevisionAbstract
             'fieldName'    => 'feedback',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Feedback',
             'mappedBy'     => null,
-            'inversedBy'   => null,
+            'inversedBy'   => 'revisions',
             'joinColumns'  => [
                 [
                     'name'                 => 'feedback_id',

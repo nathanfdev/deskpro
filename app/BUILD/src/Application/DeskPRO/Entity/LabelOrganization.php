@@ -89,7 +89,7 @@ class LabelOrganization extends LabelAssocAbstract
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization',
             'id'           => true,
             'mappedBy'     => null,
-            'inversedBy'   => null,
+            'inversedBy'   => 'labels',
             'joinColumns'  => [
                 [
                     'name'                 => 'organization_id',

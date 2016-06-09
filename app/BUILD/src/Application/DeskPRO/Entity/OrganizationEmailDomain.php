@@ -131,7 +131,7 @@ class OrganizationEmailDomain extends \Application\DeskPRO\Domain\DomainObject
             'fieldName'    => 'organization',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization',
             'mappedBy'     => null,
-            'inversedBy'   => null,
+            'inversedBy'   => 'email_domains',
             'joinColumns'  => [
                 0 => [
                     'name'                 => 'organization_id',

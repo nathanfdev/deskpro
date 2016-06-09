@@ -201,7 +201,7 @@ class OrganizationContactData extends ContactDataAbstract
             'fieldName'    => 'organization',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization',
             'mappedBy'     => null,
-            'inversedBy'   => null,
+            'inversedBy'   => 'contact_data',
             'joinColumns'  => [
                 0 => [
                     'name'                 => 'organization_id',

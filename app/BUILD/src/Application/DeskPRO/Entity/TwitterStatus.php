@@ -590,7 +590,7 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
                 ],
             ],
         ]);
-        $metadata->mapManyToOne([
+        $metadata->mapOneToOne([
             'fieldName'    => 'long',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatusLong',
             'mappedBy'     => 'status',

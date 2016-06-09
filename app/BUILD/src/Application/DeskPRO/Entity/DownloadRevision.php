@@ -133,7 +133,7 @@ class DownloadRevision extends RevisionAbstract
             'fieldName'    => 'download',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Download',
             'mappedBy'     => null,
-            'inversedBy'   => null,
+            'inversedBy'   => 'revisions',
             'joinColumns'  => [
                 [
                     'name'                 => 'download_id',

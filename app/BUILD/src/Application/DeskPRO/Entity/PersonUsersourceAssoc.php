@@ -280,7 +280,7 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
             'fieldName'    => 'person',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
             'mappedBy'     => null,
-            'inversedBy'   => 'emails',
+            'inversedBy'   => 'usersource_assoc',
             'joinColumns'  => [
                 0 => [
                     'name'                 => 'person_id',

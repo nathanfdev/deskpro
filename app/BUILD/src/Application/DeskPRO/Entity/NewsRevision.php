@@ -126,7 +126,7 @@ class NewsRevision extends RevisionAbstract
             'fieldName'    => 'news',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\News',
             'mappedBy'     => null,
-            'inversedBy'   => null,
+            'inversedBy'   => 'revisions',
             'joinColumns'  => [
                 [
                     'name'                 => 'news_id',

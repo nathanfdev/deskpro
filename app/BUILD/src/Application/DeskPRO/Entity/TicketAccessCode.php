@@ -176,7 +176,7 @@ class TicketAccessCode extends \Application\DeskPRO\Domain\DomainObject
             'fieldName'    => 'ticket',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket',
             'mappedBy'     => null,
-            'inversedBy'   => null,
+            'inversedBy'   => 'access_codes',
             'joinColumns'  => [
                 0 => [
                     'name'                 => 'ticket_id',

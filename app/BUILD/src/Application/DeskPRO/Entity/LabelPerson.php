@@ -69,7 +69,7 @@ class LabelPerson extends LabelAssocAbstract
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
             'id'           => true,
             'mappedBy'     => null,
-            'inversedBy'   => null,
+            'inversedBy'   => 'labels',
             'joinColumns'  => [
                 [
                     'name'                 => 'person_id',

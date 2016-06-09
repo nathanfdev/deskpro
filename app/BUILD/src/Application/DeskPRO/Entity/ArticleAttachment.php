@@ -170,7 +170,7 @@ class ArticleAttachment extends \Application\DeskPRO\Domain\DomainObject
             'fieldName'    => 'article',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Article',
             'mappedBy'     => null,
-            'inversedBy'   => null,
+            'inversedBy'   => 'attachments',
             'joinColumns'  => [
                 0 => [
                     'name'                 => 'article_id',

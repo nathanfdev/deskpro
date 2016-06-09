@@ -322,7 +322,7 @@ class TicketCategory extends DomainObject implements HasPhraseName
             'fieldName'    => 'parent',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketCategory',
             'mappedBy'     => null,
-            'inversedBy'   => null,
+            'inversedBy'   => 'children',
             'joinColumns'  => [
                 [
                     'name'                 => 'parent_id',

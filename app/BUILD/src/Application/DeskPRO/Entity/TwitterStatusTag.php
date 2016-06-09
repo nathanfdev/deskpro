@@ -156,7 +156,7 @@ class TwitterStatusTag extends \Application\DeskPRO\Domain\DomainObject
             'fieldName'    => 'status',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus',
             'mappedBy'     => null,
-            'inversedBy'   => null,
+            'inversedBy'   => 'tags',
             'joinColumns'  => [
                 [
                     'name'                 => 'status_id',

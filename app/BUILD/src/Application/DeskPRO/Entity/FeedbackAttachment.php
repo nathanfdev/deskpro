@@ -147,7 +147,7 @@ class FeedbackAttachment extends \Application\DeskPRO\Domain\DomainObject
             'fieldName'    => 'feedback',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Feedback',
             'mappedBy'     => null,
-            'inversedBy'   => null,
+            'inversedBy'   => 'attachments',
             'joinColumns'  => [
                 [
                     'name'                 => 'feedback_id',

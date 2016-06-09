@@ -104,7 +104,7 @@ class TwitterUserFriend extends \Application\DeskPRO\Domain\DomainObject
             'fieldName'    => 'user',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser',
             'mappedBy'     => null,
-            'inversedBy'   => null,
+            'inversedBy'   => 'friends',
             'joinColumns'  => [
                 [
                     'name'                 => 'user_id',

@@ -253,7 +253,7 @@ class DepartmentPermission extends \Application\DeskPRO\Domain\DomainObject
             'fieldName'    => 'person',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
             'mappedBy'     => null,
-            'inversedBy'   => 'departmentPermissions',
+            'inversedBy'   => 'department_permissions',
             'joinColumns'  => [
                 [
                     'name'                 => 'person_id',

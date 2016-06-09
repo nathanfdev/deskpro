@@ -670,7 +670,7 @@ class ChatMessage extends DomainObject
                 'fieldName'    => 'conversation',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\ChatConversation',
                 'mappedBy'     => null,
-                'inversedBy'   => null,
+                'inversedBy'   => 'messages',
                 'joinColumns'  => [
                     [
                         'name'                 => 'conversation_id',
