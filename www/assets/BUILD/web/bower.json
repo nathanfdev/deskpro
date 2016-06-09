@@ -45,6 +45,7 @@
     "normalize-css": "3.0.2",
     "angular-spectrum-colorpicker": "1.4.3",
     "angular-ui-tree": "~2.15.0",
-    "jquery-qrcode": "lrsjng/jquery-qrcode#~0.12.0"
+    "jquery-qrcode": "lrsjng/jquery-qrcode#~0.12.0",
+    "tinycon": "^0.6.5"
   }
 }
