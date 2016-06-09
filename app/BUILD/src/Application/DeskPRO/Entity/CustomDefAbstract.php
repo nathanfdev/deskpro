@@ -1101,12 +1101,13 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 //                    $child = $parent;
 //                }
 
-                $data['choices'][] = array(
+                $data['choices'][] = [
                     'id'            => $c->id,
                     'title'         => $title,
                     'parent_id'     => $c->getOption('parent_id') ?: null,
                     'display_order' => $c->display_order,
-                );
+                    'disabled'      => isset($has_children[$c->id]),
+                ];
             }
         }
 
