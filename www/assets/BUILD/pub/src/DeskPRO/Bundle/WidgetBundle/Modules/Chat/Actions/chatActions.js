@@ -346,9 +346,12 @@ export const sendChatMessage = createAction(
     const params = $.extend(true, {}, rawParams);
 
     // prepare message content
-    params.message = striptags(params.message);
-    params.message = linkifyHtml(params.message);
-    params.message = params.message.trim();
+    if (params.message) {
+      params.message = striptags(params.message);
+      params.message = linkifyHtml(params.message);
+      params.message = params.message.replace(/(&nbsp;|\s)+$/g, '');
+      params.message = params.message.replace(/^(&nbsp;|\s)+/g, '');
+    }
 
     if (params.message) {
       // Add optimistic message
