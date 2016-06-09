@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -75,6 +76,7 @@ class TicketTrigger extends DomainObject
     const MODE_FORM   = 'form';
     const MODE_EMAIL  = 'email';
     const MODE_API    = 'api';
+    const MODE_MOBILE = 'mobile';
 
     /**
      * @var int

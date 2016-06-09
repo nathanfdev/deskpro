@@ -95,6 +95,14 @@ class ApiClientInfo
     }
 
     /**
+     * @return bool
+     */
+    public function isMobileClient()
+    {
+        return $this->isIos();
+    }
+
+    /**
      * Get the client type.
      *
      * @return string

@@ -85,6 +85,8 @@ class TicketLogsContext extends BaseContext
      * @param string $actionType
      *
      * @throws \Exception
+     *
+     * @return TicketLog[]
      */
     public function ticketLogsHaveAction($ticketId, $actionType)
     {
@@ -93,6 +95,30 @@ class TicketLogsContext extends BaseContext
         if (empty($result)) {
             throw new \Exception("No $actionType ticket log found");
         }
+
+        return $result;
+    }
+
+    /**
+     * @Then the ":ticketId" ticket should have ":actionType" log with detail ":detailName" = ":expectedValue"
+     *
+     * @param int    $ticketId
+     * @param string $actionType
+     * @param string $detailName
+     * @param mixed  $expectedValue
+     *
+     * @throws \Exception
+     */
+    public function ticketLogActionHasDetail($ticketId, $actionType, $detailName, $expectedValue)
+    {
+        $ticketLogs = $this->ticketLogsHaveAction($ticketId, $actionType);
+        foreach ($ticketLogs as $ticketLog) {
+            if (isset($ticketLog->details[$detailName]) && $ticketLog->details[$detailName] == $expectedValue) {
+                return;
+            }
+        }
+
+        throw new \Exception("No $actionType ticket log found with $detailName = $expectedValue");
     }
 
     /**
