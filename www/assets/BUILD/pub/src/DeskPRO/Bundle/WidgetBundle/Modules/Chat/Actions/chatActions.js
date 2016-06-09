@@ -1,4 +1,4 @@
-import { createAction } from 'Ampliflux';
+import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { ajaxOptions, addSessionCode } from '../../Application/Actions/bootstrapActions';
@@ -20,6 +20,7 @@ import {
   canReopenSelector,
   lastAgentIdSelector
 } from '../Selectors/chat';
+import $ from 'jquery';
 
 // Chat setup actions
 export const setChatId = createAction('WIDGET_CHAT_SET_ID');
@@ -245,7 +246,7 @@ export const pollingChat = createAction(
         // Chat closed by user can be reopened for 5 minutes, chat are closed immediately otherwise
         const canReopen = canReopenSelector(state);
         if (newChatInfo.date_ended && canReopen) {
-          if (newChatInfo.ended_by == 'user') {
+          if (newChatInfo.ended_by === 'user') {
             const ended = moment(newChatInfo.date_ended).format('X');
             const now = moment().format('X');
             const delay = ended - now + 300; // can reopen in 5 minutes
@@ -322,14 +323,14 @@ export const savePartialTyping = createAction(
   'WIDGET_CHAT_SAVE_PARTIAL_TYPING',
   (params) => () => {
     if (storageAvailable('localStorage')) {
-      return localStorage.setItem('dpWidget.chat.partial', params);
+      localStorage.setItem('dpWidget.chat.partial', params);
     }
   }
 );
 
 export const sendChatMessage = createAction(
   'WIDGET_CHAT_SEND_MESSAGE',
-  (chatId, params) => (dispatch, getState) => {
+  (chatId, rawParams) => (dispatch, getState) => {
     if (!chatId) {
       return null;
     }
@@ -341,11 +342,20 @@ export const sendChatMessage = createAction(
       charset: 'alphabetic'
     });
 
-    if (params.message) {
-      params.message = linkifyHtml(params.message);
+    // prepare params
+    const params = $.extend(true, {}, rawParams);
 
+    // prepare message content
+    if (params.message) {
+      params.message = striptags(params.message);
+      params.message = linkifyHtml(params.message);
+      params.message = params.message.replace(/(&nbsp;|\s)+$/g, '');
+      params.message = params.message.replace(/^(&nbsp;|\s)+/g, '');
+    }
+
+    if (params.message) {
       // Add optimistic message
-      if (striptags(params.message)) {
+      if (params.message) {
         dispatch(addNewMessages({
           tmp_id:       tmpId,
           content:      params.message,

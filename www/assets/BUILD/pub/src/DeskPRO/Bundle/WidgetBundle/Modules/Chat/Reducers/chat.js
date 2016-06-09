@@ -1,4 +1,4 @@
-import { createReducer } from 'Ampliflux';
+import { createReducer } from 'DeskPRO/Component/Ampliflux';
 import * as actions from '../Actions/chatActions';
 import {
   async,
@@ -8,7 +8,7 @@ import {
   pushPayloadToCollection,
   deletePayloadFromCollection,
   composeHandlers
-} from 'Ampliflux/reducers/handlers';
+} from 'DeskPRO/Component/Ampliflux/reducers/handlers';
 import moment from 'moment';
 
 const initialState = {
