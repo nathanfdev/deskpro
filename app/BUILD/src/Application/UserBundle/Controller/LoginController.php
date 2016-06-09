@@ -390,16 +390,17 @@ HTML;
         }
 
         // Form wasnt inputted (eg direct url)
-        if (!$this->in->getString('email') || !$this->in->getString('password')) {
+        $inputEmail = $this->in->getString('email');
+        if (!$inputEmail || !$this->in->getString('password')) {
             if ($request->getMethod() == 'POST') {
-                $this->session->set('failed_login_name', true);
+                $this->session->set('failed_to_login', $inputEmail);
                 $this->session->save();
             }
 
             return $this->redirectRoute($this->route_prefix.'_login', ['return' => $return]);
         }
 
-        $check = new LoginAbuseCheck($this->in->getString('email'), $request->getClientIp());
+        $check = new LoginAbuseCheck($inputEmail, $request->getClientIp());
         try {
             $this->container->get('anti_abuse')->check($check);
         } catch (AntiAbuseException $e) {
@@ -407,6 +408,9 @@ HTML;
         }
 
         if ($check->isLockoutRecommended()) {
+            $this->session->set('failed_login_name', $inputEmail);
+            $this->session->save();
+
             return $this->redirectRoute($this->route_prefix.'_login', ['return' => $return]);
         }
 
@@ -414,6 +418,7 @@ HTML;
         if ($check->isCaptchaRecommended()) {
             $captcha = $this->container->getSystemObject('form_captcha', ['type' => 'user_login']);
             if (!$captcha->validate()) {
+                $this->session->set('failed_login_name', $inputEmail);
                 $this->session->setFlash('captcha_login_error', true);
                 $this->session->save();
 
@@ -441,7 +446,8 @@ HTML;
             }
 
             $this->handleLoginAttempt($request);
-            $this->session->set('failed_login_name', $this->in->getString('email'));
+            $this->session->set('failed_login_name', $inputEmail);
+            $this->session->set('failed_to_login', true);
             $this->session->save();
 
             return $this->redirectRoute($this->route_prefix.'_login', ['return' => $return]);
@@ -516,9 +522,9 @@ HTML;
                     throw $e;
                 }
             }        // Form wasnt inputted (eg direct url)
-            if (!$this->in->getString('email') || !$this->in->getString('password')) {
+            if (!$inputEmail || !$this->in->getString('password')) {
                 if ($request->getMethod() == 'POST') {
-                    $this->session->set('failed_login_name', true);
+                    $this->session->set('failed_to_login', true);
                     $this->session->save();
                 }
 

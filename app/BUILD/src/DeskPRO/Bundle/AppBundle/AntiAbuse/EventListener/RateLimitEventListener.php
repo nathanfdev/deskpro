@@ -43,9 +43,10 @@ use DeskPRO\Component\Util\StringUtils;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\IpUtils;
 
 /**
- * Rate limiting means CAPTCHA in DeskPRO at the moment. This listener contains the logic for our captcha related anti-abuse.
+ * Rate limiting means CAPTCHA or lockout in DeskPRO at the moment.
  */
 class RateLimitEventListener implements EventSubscriberInterface
 {
@@ -310,26 +311,9 @@ class RateLimitEventListener implements EventSubscriberInterface
      */
     protected function isWhitelisted($ip)
     {
-        $ip          = ip2long($ip);
         $whitelisted = json_decode($this->getSetting(AntiAbuse::SETTING_IP_WHITELIST), true) ?: [];
-        foreach ($whitelisted as $wip) {
-            @list($subnet, $bits) = explode('/', $wip);
-            $subnet               = ip2long($subnet);
 
-            if (!$bits) {
-                if ($ip === $subnet) {
-                    return true;
-                }
-            } else {
-                $mask = -1 << (32 - $bits);
-                $subnet &= $mask; # nb: in case the supplied subnet wasn't correctly aligned
-                if (($ip & $mask) === $subnet) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return IpUtils::checkIp($ip, $whitelisted);
     }
 
     /**

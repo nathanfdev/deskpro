@@ -34,9 +34,13 @@
 #
 # 1. rename this file to "config.all.php"
 # 2. ensure the database config below are correct
-# 3. remember during tests execution the DB will
-#    be purged, make sure it's not your dev DB
+# 3. ensure the DP_E2E_BASE_URL is correct (used in e2e tests)
+# 4. Remember that the test db will be deleted and
+#    reconstructed on every test run. Make sure it
+#    is NOT set to your dev database.
 #
+
+defined('DP_BYPASS_TOKEN_AUTH') || define('DP_BYPASS_TOKEN_AUTH', 'test_bypass_token');
 
 $CONFIG = [];
 

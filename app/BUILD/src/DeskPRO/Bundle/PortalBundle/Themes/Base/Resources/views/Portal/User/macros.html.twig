@@ -1,4 +1,5 @@
 {% macro user_notice(type, title, subtitle = null) %}
+
 <div class="inline-form-wrapper">
   <div class="inline-form-alert">
       <div class="form-alert-icon">
@@ -14,4 +15,11 @@
       </div>
   </div>
 </div>
+{% endmacro %}
+
+{% macro lockout_notice(title, lockout, lockout_time) %}
+    {% import _self as this %}
+    {% if lockout %}
+        {{ this.user_notice('auth', title, lockout_time ? phrase('portal.account.lockout_time', {time: lockout_time})) }}
+    {% endif %}
 {% endmacro %}

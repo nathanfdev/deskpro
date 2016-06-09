@@ -163,8 +163,6 @@ class NewTicketController extends AbstractController
                     return $this->onSavedTicket($new_ticket, $request);
                 }
             }
-        } elseif ($form->isSubmitted()) {
-            $this->getNewTicketService()->submitNewTicketAbuseCheck($person, $request->getClientIp());
         }
 
         $form_full = $this->createForm(TicketWithLayoutsWebFullType::class, $ticket, [
@@ -204,6 +202,7 @@ class NewTicketController extends AbstractController
                 'form_errors'             => $form->isSubmitted() ? $form->getErrors() : [],
                 'show_ticket_suggestions' => $show_ticket_suggestions,
                 'lockout'                 => $abuseCheck->isLockoutRecommended(),
+                'lockout_time'            => $abuseCheck->getLockoutTime(true),
             ]
         );
     }

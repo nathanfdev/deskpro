@@ -68,6 +68,11 @@ class BanIp extends DomainObject
      */
     protected $ip_end;
 
+    public function getId()
+    {
+        return $this->banned_ip;
+    }
+
     /**
      * @return BanIp
      */

@@ -170,12 +170,12 @@ class RateLimitLog extends AbstractEntityRepository
                     )
                 )
                 ->setParameter('person', $config->getPerson())
-                ->setParameter('ip', ip2long($ip))
+                ->setParameter('ip', $ip)
             ;
         } elseif (!$config->getPerson()->isGuest()) {
             $qb->andWhere($qb->expr()->eq('rll.person_id', ':person'))->setParameter('person', $config->getPerson());
         } elseif ($ip) {
-            $qb->andWhere($qb->expr()->eq('rll.ip', ':ip'))->setParameter('ip', ip2long($ip));
+            $qb->andWhere($qb->expr()->eq('rll.ip', ':ip'))->setParameter('ip', $ip);
         } else {
             throw new \InvalidArgumentException('either a person with an ID or an IP address are required to count the rate_limit_log');
         }

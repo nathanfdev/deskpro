@@ -29,12 +29,14 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\DownloadComment;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
@@ -260,6 +262,10 @@ class DownloadsController extends AbstractController
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedContent($file, $this->getUser());
         }
 
+        $check = new SubmitCommentAbuseCheck($this->getUser(), $request->getClientIp());
+        $check->markAsCheckOnly();
+        $this->get('anti_abuse')->check($check);
+
         //
         // RENDER THEME
         //
@@ -276,7 +282,8 @@ class DownloadsController extends AbstractController
                 'page_title'         => $this->createPageTitle()->downloads($file),
                 'show_rating_counts' => $showRatingCounts,
                 'rating_counts'      => $ratingCounts,
-                'lockout'            => $request->get('lockout', false),
+                'lockout'            => $check->isLockoutRecommended(),
+                'lockout_time'       => $check->getLockoutTime(true),
             ]
         );
     }

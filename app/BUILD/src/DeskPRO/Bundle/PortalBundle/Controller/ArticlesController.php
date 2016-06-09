@@ -34,6 +34,7 @@ use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\ShareContentAbuseCheck;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ShareContentVoter;
@@ -242,6 +243,10 @@ class ArticlesController extends AbstractController
 
         $canShare = $this->isGranted(ShareContentVoter::SHARE_ARTICLES);
 
+        $check = new SubmitCommentAbuseCheck($this->getUser(), $request->getClientIp());
+        $check->markAsCheckOnly();
+        $this->get('anti_abuse')->check($check);
+
         //
         // RENDER THEME
         //
@@ -260,7 +265,8 @@ class ArticlesController extends AbstractController
                 'show_rating_counts' => $showRatingCounts,
                 'rating_counts'      => $ratingCounts,
                 'can_share'          => $canShare,
-                'lockout'            => $request->get('lockout', false),
+                'lockout'            => $check->isLockoutRecommended(),
+                'lockout_time'       => $check->getLockoutTime(true),
             ]
         );
     }
@@ -446,10 +452,6 @@ class ArticlesController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
-            $this->runAntiAbuseCheck($request, $article);
-        }
-
         if ($form->isSubmitted() && $form->isValid()) {
             $this->runAntiAbuseCheck($request, $article);
             $emails = [];
@@ -472,13 +474,18 @@ class ArticlesController extends AbstractController
             return $this->redirectToRoute('portal_kb_view', ['slug' => $article->getSlug()]);
         }
 
+        $check = new ShareContentAbuseCheck($this->getCurrentPerson(), $request->getClientIp());
+        $check->markAsCheckOnly();
+        $this->get('anti_abuse')->check($check);
+
         return $this->renderThemeView(
             'Theme:Articles:share.html.twig',
             [
-                'article'     => $article,
-                'form'        => $form->createView(),
-                'form_errors' => $form->isSubmitted() ? $form->getErrors() : [],
-                'lockout'     => $request->get('lockout', false),
+                'article'      => $article,
+                'form'         => $form->createView(),
+                'form_errors'  => $form->isSubmitted() ? $form->getErrors() : [],
+                'lockout'      => $check->isLockoutRecommended(),
+                'lockout_time' => $check->getLockoutTime(true),
             ]
         );
     }

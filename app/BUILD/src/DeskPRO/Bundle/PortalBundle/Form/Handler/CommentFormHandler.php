@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Form\Handler;
 
 use Application\DeskPRO\Entity\Article;
@@ -186,9 +187,6 @@ class CommentFormHandler
             }
 
             return $this->handleLoggedInPersonSubmit($request, $content, $comment, $person);
-        } elseif ($form->isSubmitted()) {
-            // there was an error in this case, but it was submitted, so inform the anti-abuse system
-            $this->informAntiAbuse(null, $request, $content);
         }
 
         return false;
@@ -365,7 +363,7 @@ class CommentFormHandler
     private function informAntiAbuse($person = null, Request $request, ContentAbstract $content)
     {
         $check = new SubmitCommentAbuseCheck($person, $request->getClientIp());
-        $check->setResponse(new RedirectResponse($this->object_router->getPortalPath($content, null, ['lockout' => 'comment'])));
+        $check->setResponse(new RedirectResponse($this->object_router->getPortalPath($content)));
         $this->anti_abuse->check($check);
     }
 

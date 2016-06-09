@@ -87,9 +87,6 @@ class ProfileController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            $event = new RegistrationAbuseCheck($this->getCurrentPerson(), $request->getClientIp());
-            $event->setResponse($this->redirectToRoute('portal_user_registration', ['lockout' => 'register']));
-            $this->getAntiAbuseService()->check($event);
             // check if the person already has an account (or is a contact)
             if ($email = $person->getEmailAddress()) {
                 /** @var Person $personCheck */
@@ -114,6 +111,10 @@ class ProfileController extends AbstractController
         }
 
         if ($form->isValid()) {
+            $event = new RegistrationAbuseCheck($this->getCurrentPerson(), $request->getClientIp());
+            $event->setResponse($this->redirectToRoute('portal_user_registration'));
+            $this->getAntiAbuseService()->check($event);
+
             if ($this->isSavedFormSubRequest($request)) {
                 // this is coming from the validation controller, so this time we actually want to save the user
                 $request->getSession()->set(
@@ -148,10 +149,11 @@ class ProfileController extends AbstractController
         return $this->renderThemeView(
             'Theme:Portal:User/register.html.twig',
             [
-                'form'        => $form->createView(),
-                'lockout'     => $event->isLockoutRecommended(),
-                'breadcrumbs' => $breadcrumbs,
-                'page_title'  => $this->createPageTitle()->register(),
+                'form'         => $form->createView(),
+                'lockout'      => $event->isLockoutRecommended(),
+                'lockout_time' => $event->getLockoutTime(true),
+                'breadcrumbs'  => $breadcrumbs,
+                'page_title'   => $this->createPageTitle()->register(),
             ]
         );
     }

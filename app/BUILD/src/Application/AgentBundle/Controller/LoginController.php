@@ -177,10 +177,15 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             }
         }
 
-        $failed_login_name = false;
-        if ($this->session->has('failed_login_name')) {
-            $failed_login_name = $this->session->get('failed_login_name');
-            $this->session->remove('failed_login_name');
+        $failedLoginName = $this->session->get('failed_login_name', false);
+        if (!$failedLoginName) {
+            //we are going to guess they want to login with last username
+            $failedLoginName = $this->session->get('last_username', false);
+        }
+        $failedToLogin = false;
+        if ($this->session->has('failed_to_login')) {
+            $failedToLogin = $this->session->get('failed_to_login');
+            $this->session->remove('failed_to_login');
             $this->session->save();
         }
 
@@ -191,7 +196,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 
         $captcha = null;
 
-        $check = new LoginAbuseCheck($this->session->getPerson(), $request->getClientIp());
+        $check = new LoginAbuseCheck($failedLoginName, $request->getClientIp());
         $check->markAsCheckOnly();
         $this->container->get('anti_abuse')->check($check);
         if ($check->isCaptchaRecommended()) {
@@ -207,7 +212,8 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
                 'logo_blob'         => $logo_blob,
                 'has_logged_out'    => $has_logged_out,
                 'has_done_reset'    => $has_done_reset,
-                'failed_login_name' => $failed_login_name,
+                'failed_to_login'   => $failedToLogin,
+                'failed_login_name' => $failedLoginName,
                 'timeout'           => $this->in->getBool('timeout'),
                 'captcha'           => $captcha,
                 'render_forgot_pw'  => $this->in->getString('forgot') ?: false,
