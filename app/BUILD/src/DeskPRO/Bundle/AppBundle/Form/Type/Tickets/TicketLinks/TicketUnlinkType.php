@@ -103,12 +103,19 @@ class TicketUnlinkType extends AbstractType
                 $ticket->setParentTicket(null);
                 break;
             case self::LINK_TYPE_CHILD:
-                $ticket->removeChildrenTicket($this->getLinkTicket($event));
+                $linkedTicket = $this->getLinkTicket($event);
+                if ($linkedTicket) {
+                    $ticket->removeChildrenTicket($linkedTicket);
+                }
+
                 break;
             case self::LINK_TYPE_SIBLING:
-                $parent = $ticket->getParentTicket();
-                if ($parent) {
-                    $parent->removeChildrenTicket($this->getLinkTicket($event));
+                $parentTicket = $ticket->getParentTicket();
+                $linkedTicket = $this->getLinkTicket($event);
+
+                if ($parentTicket && $linkedTicket) {
+                    $parentTicket->disableAutoTicketProcess();
+                    $parentTicket->removeChildrenTicket($this->getLinkTicket($event));
                 }
 
                 break;
@@ -124,7 +131,9 @@ class TicketUnlinkType extends AbstractType
     {
         /* @var Ticket $ticket */
         $ticket = $event->getForm()->get('link_ticket')->getData();
-        $ticket->disableAutoTicketProcess();
+        if ($ticket) {
+            $ticket->disableAutoTicketProcess();
+        }
 
         return $ticket;
     }
