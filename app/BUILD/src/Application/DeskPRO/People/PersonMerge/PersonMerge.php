@@ -272,7 +272,6 @@ class PersonMerge implements PersonContextInterface
     protected function _mergeTickets()
     {
         $simple_tables = array(
-            'pretickets_content',
             'tickets',
             'tickets_attachments',
             'tickets_logs',
