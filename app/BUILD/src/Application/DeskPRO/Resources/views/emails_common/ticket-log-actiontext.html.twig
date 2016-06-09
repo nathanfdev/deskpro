@@ -458,6 +458,12 @@
 		</ul>
 	{% elseif log.action_type == 'feedback_rating' %}
 		User set feedback rating to {{ log.details.rating }}
+	{% elseif log.action_type == 'email_account' %}
+		<span style="{{ layout.actiontext_style('type') }}">{{ phrase('agent.general.email_account') }}</span>
+		{{ phrase('agent.tickets.changed_from') }}
+		<span style="{{ layout.actiontext_style('old-val') }}">{{log.details.old|default(phrase('agent.general.none'))}}</span>
+		{{ phrase('agent.tickets.changed_to') }}
+		<span style="{{ layout.actiontext_style('new-val') }}">{{log.details.new|default(phrase('agent.general.none'))}}</span>
 	{% elseif not hide_unknow%}
 		Unknown action type: {{ log.action_type }}
 	{% endif %}
