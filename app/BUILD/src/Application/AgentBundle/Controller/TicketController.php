@@ -1283,7 +1283,7 @@ class TicketController extends AbstractController
             $this->em->persist($macroLog);
         }
 
-        if ($dupe_message = $this->em->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($message, $ticket)) {
+        if ($dupe_message = $this->em->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($message, $ticket, 5 * 60)) {
             return $this->createJsonResponse([
                 'dupe_message' => true,
                 'message_id'   => $dupe_message['id'],
