@@ -48,9 +48,8 @@ use Application\DeskPRO\EmailGateway\TicketGateway\ProcessNew;
 use Application\DeskPRO\EmailGateway\TicketGateway\ProcessReply;
 use Application\DeskPRO\EmailGateway\TicketGateway\TicketIncomingEmail;
 use Application\DeskPRO\Entity\EmailSource;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TmpData;
+use Application\DeskPRO\Settings\EmailAccountsSettings;
 use Orb\Types\NoValue;
 use Orb\Util\Dates;
 
@@ -185,9 +184,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         # Rate limit
         #-------------------------
 
-        $rate_limit    = $this->container->getSetting('core.emails.rate_count');
-        $rate_time     = $this->container->getSetting('core.emails.rate_time');
-        $rate_locktime = $this->container->getSetting('core.emails.rate_locktime');
+        $rate_limit    = $this->container->getSetting('core.emails.rate_count', EmailAccountsSettings::DEFAULT_RATE_COUNT);
+        $rate_time     = $this->container->getSetting('core.emails.rate_time', EmailAccountsSettings::DEFAULT_RATE_TIME);
+        $rate_locktime = $this->container->getSetting('core.emails.rate_locktime', EmailAccountsSettings::DEFAULT_RATE_LOCK_TIME);
         $real_from     = $this->reader->getRealFromAddress()->getEmail();
         $source_repos  = $this->container->getEm()->getRepository('DeskPRO:EmailSource');
 
