@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\DependencyInjection\SystemServices\AgentDataService;
@@ -153,50 +154,52 @@ class RoundRobin extends \Application\DeskPRO\Domain\DomainObject
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
         $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->customRepositoryClassName = 'Application\\DeskPRO\\EntityRepository\\RoundRobin';
-        $metadata->setPrimaryTable(array('name' => 'round_robin'));
+        $metadata->setPrimaryTable(['name' => 'round_robin']);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'id',
             'fieldName'  => 'id',
             'type'       => 'integer',
             'nullable'   => false,
             'id'         => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'title',
             'columnName' => 'title',
             'type'       => 'string',
             'length'     => 255,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'online_only',
             'columnName' => 'online_only',
             'type'       => 'boolean',
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapManyToOne(array(
+        $metadata->mapManyToOne([
             'fieldName'    => 'last',
             'dpApi'        => true,
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
-            'joinColumns'  => array(array(
-                'name'                 => 'last_agent_id',
-                'referencedColumnName' => 'id',
-                'nullable'             => true,
-                'onDelete'             => 'set null',
-                'columnDefinition'     => null,
-            )),
-        ));
+            'joinColumns'  => [
+                [
+                    'name'                 => 'last_agent_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'set null',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
 
-        $metadata->mapOneToMany(array(
+        $metadata->mapOneToMany([
             'fieldName'     => 'agents',
             'dpApi'         => true,
             'dpApiDeep'     => true,
             'targetEntity'  => 'Application\\DeskPRO\\Entity\\RoundRobinAgent',
             'mappedBy'      => 'robin',
             'orphanRemoval' => true,
-            'orderBy'       => array('sort' => 'ASC'),
-        ));
+            'orderBy'       => ['sort' => 'ASC'],
+        ]);
     }
 }

@@ -173,7 +173,7 @@ class TicketSms extends \Application\DeskPRO\Domain\DomainObject
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('tickets_sms');
-        $builder->addIndex(array('date_created'), 'date_created_idx');
+        $builder->addIndex(['date_created'], 'date_created_idx');
         $builder->setCustomRepositoryClass('Application\DeskPRO\EntityRepository\TicketSms');
         $builder->addLifecycleEvent('incTicketCount', 'prePersist');
 

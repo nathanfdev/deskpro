@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -278,8 +279,7 @@ class Job extends DomainObject
         $builder
             ->setCustomRepositoryClass('Application\DeskPRO\EntityRepository\WorkerJob')
             ->setChangeTrackingPolicyNotify()
-            ->setTable('jobs')
-        ;
+            ->setTable('jobs');
         $builder->mapId();
 
         $builder->mapString('type', 50);
@@ -292,7 +292,7 @@ class Job extends DomainObject
         $builder->mapDateTime('date_last_try');
         $builder->mapInteger('priority', false);
         $builder->mapInteger('num_tries', false);
-        $builder->addField('data', 'json_array', array('nullable' => true));
+        $builder->addField('data', 'json_array', ['nullable' => true]);
         $builder->mapString('log_summary');
         $builder->mapText('log');
         $builder->mapBoolean('has_warning');

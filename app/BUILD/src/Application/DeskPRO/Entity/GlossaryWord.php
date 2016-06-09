@@ -127,10 +127,10 @@ class GlossaryWord extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\GlossaryWord';
-        $metadata->setPrimaryTable(array('name' => 'glossary_words'));
+        $metadata->setPrimaryTable(['name' => 'glossary_words']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'id',
                 'type'       => 'integer',
                 'precision'  => 0,
@@ -138,10 +138,10 @@ class GlossaryWord extends \Application\DeskPRO\Domain\DomainObject
                 'nullable'   => false,
                 'columnName' => 'id',
                 'id'         => true,
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'word',
                 'type'       => 'string',
                 'length'     => 255,
@@ -150,25 +150,25 @@ class GlossaryWord extends \Application\DeskPRO\Domain\DomainObject
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'word',
-            )
+            ]
         );
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'definition',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\GlossaryWordDefinition',
                 'mappedBy'     => null,
                 'inversedBy'   => null,
-                'joinColumns'  => array(
-                    0 => array(
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'definition_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => false,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
-                    ),
-                ),
+                    ],
+                ],
                 'dpApi' => true,
-            )
+            ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }

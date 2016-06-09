@@ -158,51 +158,55 @@ class RateLimitLog extends DomainObject
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
         $metadata->customRepositoryClassName = 'Application\\DeskPRO\\EntityRepository\\RateLimitLog';
 
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name'    => 'rate_limit_log',
-            'indexes' => array(
-                'search_idx' => array(
-                    'columns' => array('action', 'date_created', 'ip'),
-                ),
-            ),
-        ));
+            'indexes' => [
+                'search_idx' => [
+                    'columns' => [
+                        'action',
+                        'date_created',
+                        'ip',
+                    ],
+                ],
+            ],
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'id',
             'fieldName'  => 'id',
             'type'       => 'integer',
             'id'         => true,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'action',
             'fieldName'  => 'action',
             'type'       => 'string',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'ip',
             'fieldName'  => 'ip',
             'type'       => 'integer',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'person_id',
             'fieldName'  => 'person_id',
             'type'       => 'integer',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'date_created',
             'fieldName'  => 'date_created',
             'type'       => 'datetime',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'is_lockout',
             'fieldName'  => 'is_lockout',
             'type'       => 'boolean',
             'nullable'   => false,
-        ));
+        ]);
     }
 }

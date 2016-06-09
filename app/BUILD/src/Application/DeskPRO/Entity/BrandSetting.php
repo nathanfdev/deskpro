@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -83,32 +84,51 @@ class BrandSetting extends \Application\DeskPRO\Domain\DomainObject
         $builder->mapId();
         $builder->setTable('settings_brand');
         $builder->setCustomRepositoryClass('Application\DeskPRO\EntityRepository\SettingBrand');
-        $builder->addUniqueConstraint(array('name', 'brand_id'), 'unique_settings_per_brand');
+        $builder->addUniqueConstraint([
+            'name',
+            'brand_id',
+        ], 'unique_settings_per_brand');
 
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
-            array(
-                'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0,
-                'nullable'  => false, 'columnName' => 'name',
-            )
+            [
+                'fieldName'  => 'name',
+                'type'       => 'string',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'name',
+            ]
         );
         $metadata->mapField(
-            array(
-                'fieldName' => 'value', 'type' => 'dpblob', 'length' => -3, 'precision' => 0, 'scale' => 0,
-                'nullable'  => true, 'columnName' => 'value',
-            )
+            [
+                'fieldName'  => 'value',
+                'type'       => 'dpblob',
+                'length'     => -3,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'value',
+            ]
         );
         $metadata->mapManyToOne(
-            array(
-                'fieldName'  => 'brand', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Brand', 'mappedBy' => null,
-                'inversedBy' => null, 'joinColumns' => array(
-                0            => array(
-                    'name'     => 'brand_id', 'referencedColumnName' => 'id', 'nullable' => false,
-                    'onDelete' => 'cascade', 'columnDefinition' => null,
-                ),
-            ),
-            )
+            [
+                'fieldName'    => 'brand',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Brand',
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'brand_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => false,
+                        'onDelete'             => 'cascade',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+            ]
         );
     }
 }

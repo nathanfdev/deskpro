@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -72,12 +73,12 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
     protected $language = '';
 
     /**
-     * @var Boolean
+     * @var bool
      */
     protected $is_protected = false;
 
     /**
-     * @var Boolean
+     * @var bool
      */
     protected $is_verified = false;
 
@@ -97,7 +98,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
     protected $url = '';
 
     /**
-     * @var Boolean
+     * @var bool
      */
     protected $is_geo_enabled = false;
 
@@ -195,7 +196,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @return Boolean
+     * @return bool
      */
     public function isProtected()
     {
@@ -203,7 +204,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @return Boolean
+     * @return bool
      */
     public function isVerified()
     {
@@ -211,7 +212,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @return Boolean
+     * @return bool
      */
     public function isGeoEnabled()
     {
@@ -641,43 +642,206 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
     # Doctrine Metadata
     ############################################################################
 
-
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterUser';
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name'    => 'twitter_users',
-            'indexes' => array(
-                'last_follow_update_idx' => array('columns' => array('last_follow_update')),
-            ),
-        ));
+            'indexes' => [
+                'last_follow_update_idx' => ['columns' => ['last_follow_update']],
+            ],
+        ]);
         $metadata->addLifecycleCallback('_checkStub', 'postLoad');
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'bigint', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'name', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name'));
-        $metadata->mapField(array('fieldName' => 'screen_name', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'screen_name'));
-        $metadata->mapField(array('fieldName' => 'profile_image_url', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'profile_image_url'));
-        $metadata->mapField(array('fieldName' => 'language', 'type' => 'string', 'length' => 3, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'language'));
-        $metadata->mapField(array('fieldName' => 'url', 'type' => 'string', 'length' => 200, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'url'));
-        $metadata->mapField(array('fieldName' => 'is_protected', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_protected'));
-        $metadata->mapField(array('fieldName' => 'is_verified', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_verified'));
-        $metadata->mapField(array('fieldName' => 'location', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'location'));
-        $metadata->mapField(array('fieldName' => 'description', 'type' => 'string', 'length' => 500, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'description'));
-        $metadata->mapField(array('fieldName' => 'is_geo_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_geo_enabled'));
-        $metadata->mapField(array('fieldName' => 'is_stub', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_stub'));
-        $metadata->mapField(array('fieldName' => 'last_timeline_update', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'last_timeline_update'));
-        $metadata->mapField(array('fieldName' => 'last_profile_update', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'last_profile_update'));
-        $metadata->mapField(array('fieldName' => 'last_follow_update', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'last_follow_update'));
-        $metadata->mapField(array('fieldName' => 'followers_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'followers_count'));
-        $metadata->mapField(array('fieldName' => 'friends_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'friends_count'));
-        $metadata->mapField(array('fieldName' => 'statuses_count', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'statuses_count'));
-        $metadata->mapOneToMany(array('fieldName' => 'statuses', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => 'user'));
-        $metadata->mapOneToMany(array('fieldName' => 'replies', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => 'in_reply_to_user'));
-        $metadata->mapOneToMany(array('fieldName' => 'mentions', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatusMention', 'mappedBy' => 'user'));
-        $metadata->mapOneToMany(array('fieldName' => 'messages', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => 'recipient'));
-        $metadata->mapOneToMany(array('fieldName' => 'friends', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUserFriend', 'mappedBy' => 'user'));
-        $metadata->mapOneToMany(array('fieldName' => 'followers', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUserFollower', 'mappedBy' => 'user'));
-        $metadata->mapManyToOne(array('fieldName' => 'account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => 'user', 'inversedBy' => null, 'joinColumns' => array()));
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'bigint',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'name',
+            'type'       => 'string',
+            'length'     => 40,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'name',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'screen_name',
+            'type'       => 'string',
+            'length'     => 20,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'screen_name',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'profile_image_url',
+            'type'       => 'string',
+            'length'     => 200,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'profile_image_url',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'language',
+            'type'       => 'string',
+            'length'     => 3,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'language',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'url',
+            'type'       => 'string',
+            'length'     => 200,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'url',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'is_protected',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'is_protected',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'is_verified',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'is_verified',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'location',
+            'type'       => 'string',
+            'length'     => 255,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'location',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'description',
+            'type'       => 'string',
+            'length'     => 500,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'description',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'is_geo_enabled',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'is_geo_enabled',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'is_stub',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'is_stub',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'last_timeline_update',
+            'type'       => 'datetime',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'last_timeline_update',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'last_profile_update',
+            'type'       => 'datetime',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'last_profile_update',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'last_follow_update',
+            'type'       => 'datetime',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'last_follow_update',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'followers_count',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'followers_count',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'friends_count',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'friends_count',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'statuses_count',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'statuses_count',
+        ]);
+        $metadata->mapOneToMany([
+            'fieldName'    => 'statuses',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus',
+            'mappedBy'     => 'user',
+        ]);
+        $metadata->mapOneToMany([
+            'fieldName'    => 'replies',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus',
+            'mappedBy'     => 'in_reply_to_user',
+        ]);
+        $metadata->mapOneToMany([
+            'fieldName'    => 'mentions',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatusMention',
+            'mappedBy'     => 'user',
+        ]);
+        $metadata->mapOneToMany([
+            'fieldName'    => 'messages',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus',
+            'mappedBy'     => 'recipient',
+        ]);
+        $metadata->mapOneToMany([
+            'fieldName'    => 'friends',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUserFriend',
+            'mappedBy'     => 'user',
+        ]);
+        $metadata->mapOneToMany([
+            'fieldName'    => 'followers',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUserFollower',
+            'mappedBy'     => 'user',
+        ]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'account',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount',
+            'mappedBy'     => 'user',
+            'inversedBy'   => null,
+            'joinColumns'  => [],
+        ]);
     }
 }

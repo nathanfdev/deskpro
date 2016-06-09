@@ -193,10 +193,10 @@ class AgentTeam extends DomainObject implements PersonList, AvatarOwner
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\AgentTeam';
-        $metadata->setPrimaryTable(array('name' => 'agent_teams'));
+        $metadata->setPrimaryTable(['name' => 'agent_teams']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'id',
                 'type'       => 'integer',
                 'precision'  => 0,
@@ -204,10 +204,10 @@ class AgentTeam extends DomainObject implements PersonList, AvatarOwner
                 'nullable'   => false,
                 'columnName' => 'id',
                 'id'         => true,
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'name',
                 'type'       => 'string',
                 'length'     => 255,
@@ -215,39 +215,39 @@ class AgentTeam extends DomainObject implements PersonList, AvatarOwner
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'name',
-            )
+            ]
         );
         $metadata->mapOneToMany(
-            array(
+            [
                 'fieldName'    => 'project_members',
                 'targetEntity' => 'DeskPRO\\Bundle\\AppBundle\\Entity\\ProjectMember',
                 'mappedBy'     => 'team',
-            )
+            ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToMany(array(
+        $metadata->mapManyToMany([
             'fieldName'    => 'members',
             'mapedBy'      => 'teams',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
-            'joinTable'    => array(
+            'joinTable'    => [
                 'name'               => 'agent_team_members',
-                'joinColumns'        => array(array('name' => 'team_id', 'onDelete' => 'CASCADE')),
-                'inverseJoinColumns' => array(array('name' => 'person_id', 'onDelete' => 'CASCADE')),
-            ),
-            'orderBy' => array('name' => 'ASC'),
-        ));
-        $metadata->mapManyToOne(array(
+                'joinColumns'        => [['name' => 'team_id', 'onDelete' => 'CASCADE']],
+                'inverseJoinColumns' => [['name' => 'person_id', 'onDelete' => 'CASCADE']],
+            ],
+            'orderBy' => ['name' => 'ASC'],
+        ]);
+        $metadata->mapManyToOne([
             'fieldName'    => 'avatar',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
             'mappedBy'     => null,
             'inversedBy'   => null,
-            'joinColumns'  => array(array(
+            'joinColumns'  => [[
                 'name'                 => 'avatar_blob_id',
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'set null',
-            )),
+            ]],
             'dpApi' => true,
-        ));
+        ]);
     }
 }

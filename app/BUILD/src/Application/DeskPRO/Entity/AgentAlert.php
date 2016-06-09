@@ -167,18 +167,66 @@ class AgentAlert extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name'    => 'agent_alerts',
-            'indexes' => array(
-                'date_created_idx' => array('columns' => array('date_created')),
-                'is_dismissed_idx' => array('columns' => array('is_dismissed', 'date_created')),
-            ),
-        ));
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'typename', 'type' => 'string', 'length' => 255, 'nullable' => false, 'columnName' => 'typename'));
-        $metadata->mapField(array('fieldName' => 'data', 'type' => 'array', 'nullable' => false, 'columnName' => 'data'));
-        $metadata->mapField(array('fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_created'));
-        $metadata->mapField(array('fieldName' => 'is_dismissed', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_dismissed'));
-        $metadata->mapManyToOne(array('fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => null))));
+            'indexes' => [
+                'date_created_idx' => ['columns' => ['date_created']],
+                'is_dismissed_idx' => [
+                    'columns' => [
+                        'is_dismissed',
+                        'date_created',
+                    ],
+                ],
+            ],
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'typename',
+            'type'       => 'string',
+            'length'     => 255,
+            'nullable'   => false,
+            'columnName' => 'typename',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'data',
+            'type'       => 'array',
+            'nullable'   => false,
+            'columnName' => 'data',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'date_created',
+            'type'       => 'datetime',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'date_created',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'is_dismissed',
+            'type'       => 'boolean',
+            'nullable'   => false,
+            'columnName' => 'is_dismissed',
+        ]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'person',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+            'mappedBy'     => null,
+            'inversedBy'   => null,
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'person_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => false,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
     }
 }

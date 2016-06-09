@@ -201,10 +201,10 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
-        $metadata->setPrimaryTable(array('name' => 'glossary_word_definitions'));
+        $metadata->setPrimaryTable(['name' => 'glossary_word_definitions']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'id',
                 'type'       => 'integer',
                 'precision'  => 0,
@@ -212,26 +212,30 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
                 'nullable'   => false,
                 'columnName' => 'id',
                 'id'         => true,
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'definition',
                 'type'       => 'text',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'definition',
-            )
+            ]
         );
         $metadata->mapOneToMany(
-            array(
-                'fieldName'     => 'words',
-                'targetEntity'  => 'Application\\DeskPRO\\Entity\\GlossaryWord',
-                'cascade'       => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
+            [
+                'fieldName'    => 'words',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\GlossaryWord',
+                'cascade'      => [
+                    0 => 'remove',
+                    1 => 'persist',
+                    3 => 'merge',
+                ],
                 'mappedBy'      => 'definition',
                 'orphanRemoval' => true,
-            )
+            ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }

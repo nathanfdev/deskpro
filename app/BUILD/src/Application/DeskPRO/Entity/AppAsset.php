@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -138,64 +139,68 @@ class AppAsset extends DomainObject
         $metadata->inheritanceType      = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
         $metadata->changeTrackingPolicy = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->generatorType        = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name' => 'app_assets',
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'id',
             'fieldName'  => 'id',
             'type'       => 'integer',
             'id'         => true,
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'name',
             'fieldName'  => 'name',
             'type'       => 'string',
             'length'     => 255,
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'tag',
             'fieldName'  => 'tag',
             'type'       => 'string',
             'length'     => 50,
             'nullable'   => true,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'metadata',
             'fieldName'  => 'metadata',
             'type'       => 'json_array',
             'nullable'   => true,
-        ));
+        ]);
 
-        $metadata->mapManyToOne(array(
+        $metadata->mapManyToOne([
             'fieldName'    => 'package',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\AppPackage',
             'inversedBy'   => 'assets',
             'fetch'        => ClassMetadataInfo::FETCH_LAZY,
-            'joinColumns'  => array(array(
-                'name'                 => 'package_name',
-                'referencedColumnName' => 'name',
-                'nullable'             => true,
-                'onDelete'             => 'CASCADE',
-            )),
-        ));
+            'joinColumns'  => [
+                [
+                    'name'                 => 'package_name',
+                    'referencedColumnName' => 'name',
+                    'nullable'             => true,
+                    'onDelete'             => 'CASCADE',
+                ],
+            ],
+        ]);
 
-        $metadata->mapOneToOne(array(
+        $metadata->mapOneToOne([
             'fieldName'    => 'blob',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
             'fetch'        => ClassMetadataInfo::FETCH_EAGER,
-            'joinColumns'  => array(array(
-                'name'                 => 'blob_id',
-                'referencedColumnName' => 'id',
-                'nullable'             => true,
-                'onDelete'             => 'CASCADE',
-            )),
-        ));
+            'joinColumns'  => [
+                [
+                    'name'                 => 'blob_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'CASCADE',
+                ],
+            ],
+        ]);
     }
 }

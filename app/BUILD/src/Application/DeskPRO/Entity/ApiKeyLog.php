@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -101,55 +102,55 @@ class ApiKeyLog extends \Application\DeskPRO\Domain\DomainObject
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ApiKeyLog';
 
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name' => 'api_key_log',
-        ));
+        ]);
 
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'fieldName'  => 'id',
             'type'       => 'integer',
             'nullable'   => false,
             'columnName' => 'id',
             'id'         => true,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'fieldName'  => 'time',
             'type'       => 'integer',
             'nullable'   => false,
             'columnName' => 'time',
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'fieldName'  => 'request',
             'type'       => 'array',
             'nullable'   => false,
             'columnName' => 'request',
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'fieldName'  => 'response',
             'type'       => 'array',
             'nullable'   => false,
             'columnName' => 'response',
-        ));
+        ]);
 
-        $metadata->mapManyToOne(array(
+        $metadata->mapManyToOne([
             'fieldName'    => 'key',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\ApiKey',
             'mappedBy'     => null,
             'inversedBy'   => 'logs',
-            'joinColumns'  => array(
-                0 => array(
+            'joinColumns'  => [
+                0 => [
                     'name'                 => 'key_id',
                     'referencedColumnName' => 'id',
                     'nullable'             => false,
                     'onDelete'             => 'cascade',
-                ),
-            ),
-        ));
+                ],
+            ],
+        ]);
 
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }

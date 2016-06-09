@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -310,228 +310,228 @@ class TicketSearchActive extends DomainObject
         $metadata->inheritanceType      = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
         $metadata->changeTrackingPolicy = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->generatorType        = ClassMetadataInfo::GENERATOR_TYPE_NONE;
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name'    => 'tickets_search_active',
-            'indexes' => array(
-                'date_created_idx' => array('columns' => array('date_created')),
-                'status_idx'       => array('columns' => array('status')),
-                'person_idx'       => array('columns' => array('person_id')),
-                'agent_idx'        => array('columns' => array('agent_id')),
-                'ref_idx'          => array('columns' => array('ref')),
-            ),
-        ));
+            'indexes' => [
+                'date_created_idx' => ['columns' => ['date_created']],
+                'status_idx'       => ['columns' => ['status']],
+                'person_idx'       => ['columns' => ['person_id']],
+                'agent_idx'        => ['columns' => ['agent_id']],
+                'ref_idx'          => ['columns' => ['ref']],
+            ],
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'id',
             'fieldName'  => 'id',
             'type'       => 'integer',
             'id'         => true,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'ref',
             'fieldName'  => 'ref',
             'type'       => 'string',
             'length'     => 100,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'language_id',
             'fieldName'  => 'language_id',
             'type'       => 'integer',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'department_id',
             'fieldName'  => 'department_id',
             'type'       => 'integer',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'category_id',
             'fieldName'  => 'category_id',
             'type'       => 'integer',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'workflow_id',
             'fieldName'  => 'workflow_id',
             'type'       => 'integer',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'priority_id',
             'fieldName'  => 'priority_id',
             'type'       => 'integer',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'product_id',
             'fieldName'  => 'product_id',
             'type'       => 'integer',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'person_id',
             'fieldName'  => 'person_id',
             'type'       => 'integer',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'person_email_id',
             'fieldName'  => 'person_email_id',
             'type'       => 'integer',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'agent_id',
             'fieldName'  => 'agent_id',
             'type'       => 'integer',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'agent_team_id',
             'fieldName'  => 'agent_team_id',
             'type'       => 'integer',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'organization_id',
             'fieldName'  => 'organization_id',
             'type'       => 'integer',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'sent_to_address',
             'fieldName'  => 'sent_to_address',
             'type'       => 'string',
             'length'     => 200,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'creation_system',
             'fieldName'  => 'creation_system',
             'type'       => 'string',
             'length'     => 100,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'creation_system_option',
             'fieldName'  => 'creation_system_option',
             'type'       => 'string',
             'length'     => 1000,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'status',
             'columnName' => 'status',
             'type'       => 'string',
             'length'     => 30,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'is_hold',
             'columnName' => 'is_hold',
             'type'       => 'boolean',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'urgency',
             'columnName' => 'urgency',
             'type'       => 'integer',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'feedback_rating',
             'columnName' => 'feedback_rating',
             'type'       => 'integer',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'date_feedback_rating',
             'columnName' => 'date_feedback_rating',
             'type'       => 'datetime',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'date_created',
             'columnName' => 'date_created',
             'type'       => 'datetime',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'date_resolved',
             'columnName' => 'date_resolved',
             'type'       => 'datetime',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'date_first_agent_assign',
             'columnName' => 'date_first_agent_assign',
             'type'       => 'datetime',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'date_first_agent_reply',
             'columnName' => 'date_first_agent_reply',
             'type'       => 'datetime',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'date_last_agent_reply',
             'columnName' => 'date_last_agent_reply',
             'type'       => 'datetime',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'date_last_user_reply',
             'columnName' => 'date_last_user_reply',
             'type'       => 'datetime',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'date_agent_waiting',
             'columnName' => 'date_agent_waiting',
             'type'       => 'datetime',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'date_user_waiting',
             'columnName' => 'date_user_waiting',
             'type'       => 'datetime',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'date_status',
             'columnName' => 'date_status',
             'type'       => 'datetime',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'total_user_waiting',
             'columnName' => 'total_user_waiting',
             'type'       => 'integer',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'total_to_first_reply',
             'columnName' => 'total_to_first_reply',
             'type'       => 'integer',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'subject',
             'columnName' => 'subject',
             'type'       => 'string',
             'length'     => 255,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'original_subject',
             'columnName' => 'original_subject',
             'type'       => 'string',
             'length'     => 255,
             'nullable'   => false,
-        ));
+        ]);
     }
 }

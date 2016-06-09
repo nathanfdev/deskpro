@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -206,72 +207,80 @@ class TicketObjectUseLog extends DomainObject
         $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketObjectUseLog';
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name' => 'ticket_object_use_logs',
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'id',
             'fieldName'  => 'id',
             'type'       => 'integer',
             'id'         => true,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'object_type',
             'fieldName'  => 'object_type',
             'type'       => 'string',
             'length'     => 100,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'date_created',
             'columnName' => 'date_created',
             'type'       => 'datetime',
             'nullable'   => false,
-        ));
-        $metadata->mapManyToOne(array(
+        ]);
+        $metadata->mapManyToOne([
             'fieldName'    => 'person',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
-            'cascade'      => array(),
-            'joinColumns'  => array(array(
-                'name'                 => 'person_id',
-                'referencedColumnName' => 'id',
-                'nullable'             => true,
-                'onDelete'             => 'set null',
-            )),
-        ));
-        $metadata->mapManyToOne(array(
+            'cascade'      => [],
+            'joinColumns'  => [
+                [
+                    'name'                 => 'person_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'set null',
+                ],
+            ],
+        ]);
+        $metadata->mapManyToOne([
             'fieldName'    => 'ticket',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket',
-            'cascade'      => array(),
-            'joinColumns'  => array(array(
-                'name'                 => 'ticket_id',
-                'referencedColumnName' => 'id',
-                'nullable'             => true,
-                'onDelete'             => 'set null',
-            )),
-        ));
-        $metadata->mapManyToOne(array(
+            'cascade'      => [],
+            'joinColumns'  => [
+                [
+                    'name'                 => 'ticket_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'set null',
+                ],
+            ],
+        ]);
+        $metadata->mapManyToOne([
             'fieldName'    => 'snippet',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\TextSnippet',
-            'cascade'      => array(),
-            'joinColumns'  => array(array(
-                'name'                 => 'snippet_id',
-                'referencedColumnName' => 'id',
-                'nullable'             => true,
-                'onDelete'             => 'set null',
-            )),
-        ));
-        $metadata->mapManyToOne(array(
+            'cascade'      => [],
+            'joinColumns'  => [
+                [
+                    'name'                 => 'snippet_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'set null',
+                ],
+            ],
+        ]);
+        $metadata->mapManyToOne([
             'fieldName'    => 'macro',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMacro',
-            'cascade'      => array(),
-            'joinColumns'  => array(array(
-                'name'                 => 'macro_id',
-                'referencedColumnName' => 'id',
-                'nullable'             => true,
-                'onDelete'             => 'set null',
-            )),
-        ));
+            'cascade'      => [],
+            'joinColumns'  => [
+                [
+                    'name'                 => 'macro_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'set null',
+                ],
+            ],
+        ]);
     }
 }
