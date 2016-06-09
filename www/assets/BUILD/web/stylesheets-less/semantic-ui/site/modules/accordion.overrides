@@ -9,7 +9,7 @@
 }
 
 .ui.styled.accordion .element {
-  margin: 0 20px 20px;
+  margin: 0 0 20px 0;
 }
 
 .ui.styled.accordion .content,

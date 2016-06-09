@@ -22427,7 +22427,7 @@ ol.ui.horizontal.list li:before,
   position: relative;
   margin: 1rem 0em;
   border: 1px solid rgba(34, 36, 38, 0.15);
-  box-shadow: 0px 1px 2px 0 rgba(34, 36, 38, 0.15);
+  box-shadow: none;
   border-radius: 0;
 }
 .ui.segments:first-child {
@@ -41211,7 +41211,7 @@ a.ui.card:hover,
   background: none;
 }
 .ui.styled.accordion .element {
-  margin: 0 20px 20px;
+  margin: 0 0 20px 0;
 }
 .ui.styled.accordion .content,
 .ui.styled.accordion .accordion .content,

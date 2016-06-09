@@ -1,5 +1,11 @@
 .widget-editor {
   $inline-label-width: 250px;
+  padding: 20px;
+
+  h3 .icon {
+    font-size: 16px;
+    color: #b3b3b3;
+  }
 
   .inline-block-label {
     width: $inline-label-width;
@@ -21,8 +27,17 @@
     background: #fff;
   }
 
+  .dp-item-list .drag-handle {
+    position: inherit;
+    float: right;
+  }
+
   .ui.segments {
     border-color: #47bf61;
+
+    .embed-help-title {
+      color: #42b257;
+    }
   }
 
   .ui.attached.menu {

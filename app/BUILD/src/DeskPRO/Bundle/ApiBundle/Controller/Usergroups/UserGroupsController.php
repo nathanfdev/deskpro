@@ -28,9 +28,13 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Usergroups;
 
+use Application\DeskPRO\Entity\Usergroup;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class UserGroupsController.
@@ -42,4 +46,61 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 class UserGroupsController extends AbstractUserGroupsController
 {
     public static $isAgentGroup = false;
+
+    /**
+     * Get resource with provided id.
+     *
+     * @ApiDoc(
+     *      description="Get permissions for all groups",
+     *      requirements={
+     *         {
+     *             "name"="permName",
+     *             "requirement"="[\.-_a-zA-Z]+",
+     *             "description"="Permission name or 'all'",
+     *             "dataType"="string"
+     *         }
+     *      },
+     *      statusCodes={
+     *         200="All looks good, we found what you want",
+     *         404="Sorry we can find nothing with given parameters"
+     *      }
+     * )
+     * @Rest\Get("/permissions/{permName}")
+     *
+     * @param Request $request
+     * @param string  $permName
+     *
+     * @return View
+     */
+    public function getPermissionsAction(Request $request, $permName = 'all')
+    {
+        $qb = $this->getManager()->createQueryBuilder();
+        $qb->select('e');
+        $qb->from(static::$entity, 'e');
+
+        $this->applyListFilters($qb, 'e', $request);
+
+        $userGroups = $qb->getQuery()->getResult();
+
+        $result = [];
+
+        /** @var Usergroup $userGroup */
+        foreach ($userGroups as $userGroup) {
+            $groupPerms = $userGroup->permissions;
+            if ($permName == 'all') {
+                $result[$userGroup->getId()] = $groupPerms;
+            } else {
+                foreach ($groupPerms as $perm) {
+                    if ($perm->name == $permName) {
+                        $result[$userGroup->getId()] = (bool) $perm->value;
+                    }
+                }
+                if (!isset($result[$userGroup->getId()])) {
+                    $result[$userGroup->getId()] = false;
+                }
+            }
+        }
+
+        return View::create($this->wrap($result), Response::HTTP_OK);
+    }
 }

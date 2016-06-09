@@ -1,7 +1,5 @@
 {% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
 {% block fullpane_content %}
-    {{ ng_var('global_settings') }}<br/>
-    {{ ng_var('brand_settings') }}
     <form class="ui form widget-editor">
         <div class="ui grid">
             <div class="seven wide column">
@@ -166,22 +164,12 @@
                             <div class="field" ng-if="global_settings.chat.enabled">
                                 <label>Who can use chat</label>
                                 <p>Manage which usergroups have access to chat</p>
-                                <div class="inline field">
+                                <div class="inline field" ng-repeat="group in user_groups">
                                     <div class="ui checkbox">
-                                        <input type="checkbox" id="permission_everyone" class="hidden">
-                                        <label for="permission_everyone">Everyone</label>
-                                    </div>
-                                </div>
-                                <div class="inline field">
-                                    <div class="ui checkbox">
-                                        <input type="checkbox" id="permission_registered" class="hidden">
-                                        <label for="permission_registered">Registered</label>
-                                    </div>
-                                </div>
-                                <div class="inline field">
-                                    <div class="ui checkbox">
-                                        <input type="checkbox" id="permission_special" class="hidden">
-                                        <label for="permission_special">Special Users</label>
+                                        <input type="checkbox" id="permission_group_{{ ng_var('group.id') }}" class="hidden" ng-model="user_group_permission[group.id]"
+                                            ng-disabled="Ctrl.checkRights(group)"
+                                        >
+                                        <label for="permission_group_{{ ng_var('group.id') }}" title="{{ ng_var('group.note') }}" ng-click="Ctrl.changeRights(group)">{{ ng_var('group.title') }}</label>
                                     </div>
                                 </div>
                             </div>
@@ -198,31 +186,36 @@
                                         or require departments.</p>
                                     <div class="inline field">
                                         <div class="ui checkbox">
-                                            <input type="checkbox" id="information_name" class="hidden">
+                                            <input type="checkbox" id="information_name" disabled="disabled" checked="checked" class="hidden">
                                             <label for="information_name">Name</label>
                                         </div>
                                     </div>
                                     <div class="inline field">
                                         <div class="ui checkbox">
-                                            <input type="checkbox" id="information_email" class="hidden">
+                                            <input type="checkbox" id="information_email" disabled="disabled" checked="checked" class="hidden">
                                             <label for="information_email">Email address</label>
                                         </div>
                                     </div>
-                                    <div class="inline field">
+                                    <div class="inline field" ng-show="departments.length > 1">
                                         <div class="ui checkbox">
-                                            <input type="checkbox" id="information_department" class="hidden">
+                                            <input type="checkbox" id="information_department" disabled="disabled" checked="checked" class="hidden">
                                             <label for="information_department">Department</label>
                                         </div>
                                     </div>
-                                    <div class="inline field">
-                                        <div class="ui checkbox">
-                                            <input type="checkbox" id="information_order" class="hidden">
-                                            <label for="information_order">Order number</label>
+                                    <div class="dp-item-list">
+                                        <div class="inline field with-drag-handle" ng-repeat="field in custom_fields">
+                                            <div class="ui checkbox">
+                                                <input type="checkbox" id="custom_field_{{ ng_var('field.id') }}" ng-model="field.is_enabled" class="hidden">
+                                                <label for="custom_field_{{ ng_var('field.id') }}">
+                                                    {{ ng_var('field.title') }}
+                                                </label>
+                                            </div>
+                                            <i class="fa fa-bars drag-handle"></i>
                                         </div>
                                     </div>
-                                    <button class="ui basic button">
+                                    <a href="#/chat/fields" class="ui basic button">
                                         <i class="icon plus"></i> ADD CUSTOM FIELDS
-                                    </button>
+                                    </a>
                                 </div>
                                 <div class="field">
                                     <label>Begin chat mode (automated)</label>
@@ -262,7 +255,7 @@
                                 <p>Having proactive chat enabled switched on enabled a popup that encourages users to
                                     chat with you</p>
                             </div>
-                            <div class="field" ng-if="brand_settings.chat.proactive">
+                            <div class="field" ng-show="brand_settings.chat.proactive">
                                 <label>Proactive chat widget style</label>
                                 <div class="ui grid">
                                     <div class="three column row">
@@ -430,7 +423,7 @@
                         <h3>Add widget &amp; chat to your site</h3>
                         Get instructions and help on how to add the widget to your website
                     </div>
-                    <div class="ui segment" ng-if="show_embed_help">
+                    <div class="ui segment" ng-show="show_embed_help">
                         <label>Embed code</label>
                         <div class="inline fields">
                             <div class="ui twelve wide field">
@@ -488,7 +481,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="ui segment" ng-if="show_embed_help">
+                    <div class="ui segment" ng-show="show_embed_help">
                         <h3>Need more help?</h3>
                         <p>Use the form below and we'll email a member of your team who manages the technical side of things,
                             we'll send them the code and setup instructions.</p>
@@ -501,7 +494,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="ui segment" ng-if="show_embed_help">
+                    <div class="ui segment" ng-show="show_embed_help">
                         <h3>Advanced settings and overrides.</h3>
                         <p>If you'd like more control over how your widget works and it's appearance on different pages, brands
                             etc please visit the following knowledgebase articles to get you started:</p>
@@ -520,7 +513,7 @@
                     </div>
                 </div>
 
-                <div class="widget-editor-live-demo-container"  ng-if="!show_embed_help">
+                <div class="widget-editor-live-demo-container"  ng-hide="show_embed_help">
                     <div class="widget-editor-live-demo-loader" ng-hide="widgetLoaded"><i></i></div>
                     <iframe id="live-demo" ng-show="widgetLoaded"></iframe>
                 </div>

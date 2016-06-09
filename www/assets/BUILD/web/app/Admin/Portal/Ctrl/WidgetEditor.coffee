@@ -11,6 +11,11 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
       @$scope.company = {}
       @$scope.brand_settings = {}
       @$scope.global_settings = {}
+      @$scope.custom_fields = []
+      @$scope.user_groups = []
+      @$scope.everyone_group = false
+      @$scope.reg_group = false
+      @$scope.user_group_permission = []
 
       @$scope.enabled_on_portal = false
 
@@ -43,6 +48,10 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
         @$scope.enabled_on_portal = data.enabled_on_portal;
 
         @initLiveDemo()
+        @getChatCustomFields(savedSettings)
+        @getUserGroups()
+        @loadEditUserGroupData()
+
         @$scope.saving_code = true
         @loadCode().then (codeResponse) =>
           @$scope.code = codeResponse.data
@@ -61,6 +70,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
 
       @$scope.$watch('brand_settings', updateLiveDemoDebounce, true)
       @$scope.$watch('global_settings', updateLiveDemoDebounce, true)
+      @$scope.$watch('custom_fields', updateLiveDemoDebounce, true)
 
       return @$q.all([setupPromise, departmentsPromise, languagesPromise])
 
@@ -94,6 +104,35 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
             return false
 
         return true
+        
+    getChatCustomFields: (savedSettings) ->
+      if savedSettings.custom_fields && !jQuery.isEmptyObject savedSettings.custom_fields
+        @$scope.custom_fields = savedSettings.custom_fields
+      else
+        @Api.sendDataGet([
+          '/chat_fields'
+        ]).then( (res) =>
+          @$scope.custom_fields = []
+          for f in res.data.api_chat_fields.custom_fields
+            @$scope.custom_fields.push(f)
+        )
+
+    getUserGroups: ->
+      @Api2.sendGet('/user_groups').then( (res) =>
+        @$scope.user_groups = res.data.data
+        for g in res.data.data
+          if g.sys_name == 'everyone'
+            @$scope.everyone_group = g
+          if g.sys_name == 'registered'
+            @$scope.reg_group = g
+
+      )
+
+    loadEditUserGroupData: () ->
+
+      @Api2.sendGet('/user_groups/permissions/chat.use').then( (res) =>
+        @$scope.user_group_permission = res.data.data
+      )
 
     addButtonTranslation: (languageId) ->
       if not languageId
@@ -125,8 +164,33 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
 
     getSaveData: -> {
       global: @$scope.global_settings,
-      brand: @$scope.brand_settings
+      brand: @$scope.brand_settings,
+      custom_fields: @$scope.custom_fields
     }
+
+    changeRights: (group) ->
+      everyone = @$scope.everyone_group.id
+      reg = @$scope.reg_group.id
+      if group.id == everyone && !@$scope.user_group_permission[group.id]
+        for id,g of @$scope.user_group_permission
+          if `id != everyone`
+            @$scope.user_group_permission[id] = true
+        return true
+      if group.id == reg && !@$scope.user_group_permission[group.id]
+        for id,g of @$scope.user_group_permission
+          if `id != everyone && id != reg`
+            @$scope.user_group_permission[id] = true
+        return true
+      return true
+
+    checkRights: (group) ->
+      if !@$scope.user_group_permission
+        return false
+      if @$scope.everyone_group.id == group.id
+        return false
+      if @$scope.reg_group.id == group.id
+        return @$scope.user_group_permission[@$scope.everyone_group.id]
+      return @$scope.user_group_permission[@$scope.reg_group.id]
 
     applyPortalWidgetSettings: ->
       @$scope.applying_to_portal = true
@@ -157,12 +221,14 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
       @$scope.code = ''
       @$scope.saving_code = true
 
-      @Api2.sendPostJson('/widget/setup', @getSaveData(), null, headers: {
+      saveData = @getSaveData()
+      @Api2.sendPostJson('/widget/setup', {global: saveData.global, brand: saveData.brand}, null, headers: {
         'X-Agent-Request': 'true'
       }).then(
         () => @loadCode().then (codeResponse) =>
           @$scope.code = codeResponse.data
           @$scope.saving_code = false
+          localStorage.removeItem 'widgetSettings'
         ,
         (response) =>
           @$scope.formErrors = response.data?.errors?.fields

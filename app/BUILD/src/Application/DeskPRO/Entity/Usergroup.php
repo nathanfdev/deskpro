@@ -45,12 +45,12 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 /**
  * A usergroup is any way to group related users together. Not necessarily just for permissions.
  *
- * @property int $id
- * @property string $title
- * @property string $note
- * @property bool $is_agent_group
- * @property string $sys_name
- * @property bool $is_enabled
+ * @property int                          $id
+ * @property string                       $title
+ * @property string                       $note
+ * @property bool                         $is_agent_group
+ * @property string                       $sys_name
+ * @property bool                         $is_enabled
  * @property Permission[]|ArrayCollection $permissions
  * @JMS\ExclusionPolicy("all")
  */
@@ -258,7 +258,7 @@ class Usergroup extends DomainObject
      */
     public static function generateUsergroupSetKey(array $usergroups)
     {
-        $usergroup_ids = array();
+        $usergroup_ids = [];
 
         foreach ($usergroups as $ug) {
             if (is_object($ug)) {
@@ -272,7 +272,7 @@ class Usergroup extends DomainObject
             $usergroup_ids = array_unique($usergroup_ids, \SORT_NUMERIC);
             sort($usergroup_ids, \SORT_NUMERIC);
         } else {
-            $usergroup_ids = array(0);
+            $usergroup_ids = [0];
         }
 
         return md5(implode(',', $usergroup_ids));
