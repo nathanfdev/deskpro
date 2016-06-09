@@ -31,7 +31,9 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		var messageTextarea = this.getEl('replybox_txt');
 
 		var sendMsg = function() {
-			var msg = messageTextarea.val().trim();
+			var msg = messageTextarea.val();
+			msg = msg.replace(/(&nbsp;|\s)+$/g, '');
+			msg = msg.replace(/^(&nbsp;|\s)+/g, '');
 
 			if (messageTextarea.data('redactor')) {
 				messageTextarea.setCode('');
