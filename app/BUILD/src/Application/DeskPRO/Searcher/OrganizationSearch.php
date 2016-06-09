@@ -121,7 +121,6 @@ class OrganizationSearch extends SearcherAbstract
         $sql .= 'WHERE ';
 
         if ($parts['wheres']) {
-            $sql .= 'WHERE ';
             $sql .= implode(' AND ', $parts['wheres']);
         }
         if (!empty($parts['wheres_any'])) {
