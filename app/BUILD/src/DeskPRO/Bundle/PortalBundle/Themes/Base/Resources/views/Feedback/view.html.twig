@@ -6,20 +6,9 @@
         {% show breadcrumbs %}
     </div>
     <article class="feedback main-feedback" id="feedback_view">
-        {% if lockout %}
-            {% if lockout %}
-                {{  macros.user_notice(
-                        'auth',
-                        phrase('portal.account.comment-lockout'),
-                        lockout_time ? phrase('portal.account.lockout_time', {time: lockout_time} ) : false
-                    )
-                }}
-            {% endif %}
-        {% endif %}
+        {{  macros.lockout_notice(phrase('portal.account.comment-lockout'), lockout, lockout_time) }}
         <div class="feedback-item">
             {%  include 'Theme:Feedback:items_controls_partial.html.twig' with {'item': item} %}
-
-
             <div class="feedback-item-content">
                 <span class="feedback-status">
                     {% if item.status_category %}

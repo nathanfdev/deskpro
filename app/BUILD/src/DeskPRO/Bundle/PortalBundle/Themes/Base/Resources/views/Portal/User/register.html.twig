@@ -12,14 +12,7 @@
     </header>
 
     <section class="padded">
-        {% if lockout %}
-            {{  macros.user_notice(
-                    'auth',
-                    phrase('portal.account.register-lockout'),
-                    lockout_time ? phrase('portal.account.lockout_time', {time: lockout_time} ) : false
-                )
-            }}
-        {% endif %}
+        {{  macros.lockout_notice(phrase('portal.account.register-lockout'), lockout, lockout_time) }}
         <div class="form-ticket dpx-form">
             {{ form_start(form) }}
             {{ form_widget(form) }}

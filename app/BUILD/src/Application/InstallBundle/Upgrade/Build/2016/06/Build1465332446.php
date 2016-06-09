@@ -33,16 +33,7 @@ class Build1465332446 extends AbstractBuild
     public function run()
     {
         $this->out('Update rate_limit_log ip');
-        // I really don't know why the set `ip` = INET_NTOA(CAST(`id` AS INTEGER)) wont work properply
-        $connection = $this->getDbConnection('default');
-        $logs       = $connection->fetchAll('SELECT * FROM `rate_limit_log`');
+        $this->execDbQuery('TRUNCATE TABLE `rate_limit_log`');
         $this->execDbQuery('default', 'ALTER TABLE `rate_limit_log` CHANGE `ip` `ip` VARCHAR(255) NOT NULL');
-        $sql = <<<SQL
-        UPDATE `rate_limit_log` SET `ip` = :ip WHERE `id` = :id
-SQL;
-        $statement = $connection->prepare($sql);
-        foreach ($logs as $log) {
-            $statement->execute(['ip' => long2ip($log['ip']), 'id' => $log['id']]);
-        }
     }
 }

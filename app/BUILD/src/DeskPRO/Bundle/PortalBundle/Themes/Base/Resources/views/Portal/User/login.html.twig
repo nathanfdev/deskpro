@@ -27,14 +27,7 @@
                 {{ macros.user_notice('auth', phrase('portal.account.login-invalid')) }}
             {% endif %}
 
-            {% if lockout_error %}
-                {{  macros.user_notice(
-                        'auth',
-                        phrase('portal.account.login-lockout'),
-                        lockout_time ? phrase('portal.account.lockout_time', {time: lockout_time} ) : false
-                    )
-                }}
-            {% endif %}
+            {{  macros.lockout_notice(phrase('portal.account.login-lockout'), lockout_error, lockout_time) }}
 
             {% if login_captcha_failed %}
                 {{ macros.user_notice('auth', phrase('portal.account.login-captcha-failed')) }}
