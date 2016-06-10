@@ -362,6 +362,6 @@ BODY;
         #------------------------------
         # Cleanup rate limit logs
         #------------------------------
-        $db->executeQuery('DELETE * FROM `rate_limit_log` WHERE `date_created` < (NOW() - INTERVAL 1 DAY)');
+        $db->executeQuery('DELETE FROM `rate_limit_log` WHERE `date_created` < (NOW() - INTERVAL 1 DAY)');
     }
 }
