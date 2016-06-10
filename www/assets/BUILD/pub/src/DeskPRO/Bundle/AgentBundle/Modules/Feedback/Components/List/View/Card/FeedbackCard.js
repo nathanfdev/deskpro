@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import createFragment from 'react-addons-create-fragment';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 import jQuery from 'jquery';
 import Immutable from 'immutable';

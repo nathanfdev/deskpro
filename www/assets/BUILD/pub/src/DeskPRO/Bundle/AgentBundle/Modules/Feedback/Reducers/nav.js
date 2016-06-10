@@ -32,29 +32,34 @@ export const feedbackNavInitialState = {
 };
 
 export default createReducer(feedbackNavInitialState, {
-  [actions.feedbackToValidateCounter]: async({
-    success: (state, payload) =>
-               state.setIn(['toValidateCount'], payload.data.count)
-  }),
+  [actions.feedbackToValidateCounter]: async(
+    {
+      success: (state, payload) =>
+                 state.setIn(['toValidateCount'], payload.data.count)
+    }),
 
-  [commentsActions.commentsToReviewCounter]: async({
-    success: (state, payload) => state.setIn(['commentsToReviewCount'], payload.data.count)
-  }),
+  [commentsActions.commentsToReviewCounter]: async(
+    {
+      success: (state, payload) => state.setIn(['commentsToReviewCount'], Immutable.fromJS(payload.data))
+    }),
 
-  [actions.feedbackTypes]: async({
-    success: (state, payload) => state.set('types', Immutable.fromJS(payload.data))
-  }),
+  [actions.feedbackTypes]: async(
+    {
+      success: (state, payload) => state.set('types', Immutable.fromJS(payload.data))
+    }),
 
-  [actions.feedbackCustomCategories]: async({
-    success: (state, payload) =>
-               state.setIn(['customCategories'], Immutable.fromJS(payload.data.nested))
-  }),
+  [actions.feedbackCustomCategories]: async(
+    {
+      success: (state, payload) =>
+                 state.setIn(['customCategories'], Immutable.fromJS(payload.data.nested))
+    }),
 
   [actions.loadLabels]: async({ success: setFullPayload('labels') }),
 
-  [actions.initialLoad]: async({
-    success: mergeFullPayload(),
-    start:   setValue('async.done', false),
-    done:    setValue('async.done', true)
-  })
+  [actions.initialLoad]: async(
+    {
+      success: mergeFullPayload(),
+      start:   setValue('async.done', false),
+      done:    setValue('async.done', true)
+    })
 });

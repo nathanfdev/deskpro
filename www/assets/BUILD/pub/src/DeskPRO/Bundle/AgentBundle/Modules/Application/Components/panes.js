@@ -23,7 +23,7 @@ function getWorkspaceClasses(workspace, classes = []) {
 }))
 export class AppPane extends React.Component {
   static propTypes = {
-    workspace: PropTypes.object.isRequired,
+    workspace:     PropTypes.object.isRequired,
     workspaceDims: PropTypes.object.isRequired
   };
 
@@ -38,7 +38,6 @@ export class AppPane extends React.Component {
         </div>
       </div>
     );
-
   }
 }
 
@@ -48,7 +47,7 @@ export class AppPane extends React.Component {
 }))
 export class NavPane extends React.Component {
   static propTypes = {
-    workspace: PropTypes.object.isRequired,
+    workspace:     PropTypes.object.isRequired,
     workspaceDims: PropTypes.object.isRequired
   };
 
@@ -68,7 +67,7 @@ export class NavPane extends React.Component {
 
     this.timeout = window.setTimeout(() => {
       this.timeout = null;
-      this.setState({isHover: true});
+      this.setState({ isHover: true });
     }, 350);
   };
 
@@ -77,11 +76,11 @@ export class NavPane extends React.Component {
       window.clearTimeout(this.timeout);
       this.timeout = null;
     }
-    this.setState({isHover: false});
+    this.setState({ isHover: false });
   };
 
   onClick = () => {
-    this.setState({isHover: true});
+    this.setState({ isHover: true });
   };
 
   render() {
@@ -93,7 +92,12 @@ export class NavPane extends React.Component {
     }
 
     return (
-      <div className={classes.join(' ')} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave} onClick={this.onClick}>
+      <div
+        className={classes.join(' ')}
+        onMouseEnter={this.onMouseEnter}
+        onMouseLeave={this.onMouseLeave}
+        onClick={this.onClick}
+      >
         <div className="dp-collapsed-placeholder"></div>
         <div className="dp-panes-nav-body">{this.props.children}</div>
       </div>
@@ -107,7 +111,7 @@ export class NavPane extends React.Component {
 }))
 export class ListPane extends React.Component {
   static propTypes = {
-    workspace: PropTypes.object.isRequired,
+    workspace:     PropTypes.object.isRequired,
     workspaceDims: PropTypes.object.isRequired
   };
 
@@ -129,7 +133,7 @@ export class ListPane extends React.Component {
 }))
 export class TabBodyPane extends React.Component {
   static propTypes = {
-    workspace: PropTypes.object.isRequired,
+    workspace:     PropTypes.object.isRequired,
     workspaceDims: PropTypes.object.isRequired
   };
 
@@ -138,7 +142,7 @@ export class TabBodyPane extends React.Component {
     const classes = getWorkspaceClasses(workspace, ['dp-panes-tabbody']);
 
     return (
-      <div className={classes.join(' ')} style={{left: workspaceDims.appPaneSize}}>
+      <div className={classes.join(' ')} style={{ left: workspaceDims.appPaneSize + 55 }}>
         {this.props.children}
       </div>
     );
