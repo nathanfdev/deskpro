@@ -29,13 +29,13 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback;
 
 use Application\DeskPRO\Entity\CustomDataFeedback;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ContentAbstract;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\Content;
 use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class Feedback.
  */
-class Feedback extends ContentAbstract
+class Feedback extends Content
 {
     /**
      * Category the feedback belongs to.

@@ -32,7 +32,7 @@ use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\News;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ContentAbstract as ContentModel;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\Content as ContentModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ContentCsv;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 

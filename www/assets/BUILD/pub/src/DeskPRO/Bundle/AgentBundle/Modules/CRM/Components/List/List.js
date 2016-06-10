@@ -27,6 +27,7 @@ export class List extends Component {
             currentListParams, currentViewMode, selected, isLoaded, pagination, content, handlePageClick,
             peopleFields, orgFields
           } = this.props;
+
     const exportedFields = content === 'people' ? peopleFields.get(currentViewMode) : orgFields.get(currentViewMode);
     const repositoryName = content === 'people' ? 'Person' : 'Organization';
 

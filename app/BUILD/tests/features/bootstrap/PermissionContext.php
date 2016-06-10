@@ -29,9 +29,9 @@
 /**
  * DeskPRO.
  */
-
 namespace DpBehat;
 
+use Application\DeskPRO\Entity\Permission;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usergroup;
 use DpBehat\Api\AuthContext;
@@ -133,6 +133,25 @@ class PermissionContext extends BaseContext
             'INSERT IGNORE INTO department_permissions SET department_id = ?, person_id = ?, app = ?, name="full", value=1, is_active=1',
             [$departmentId, $person->getId(), $app]
         );
+    }
+
+    /**
+     * @Given I have permissions to use :entity
+     *
+     * @param string $entity
+     */
+    public function iHavePermissionsToUse($entity)
+    {
+        /** @var Person $person */
+        $person     = DataContext::getReference('me');
+        $permission = new Permission();
+        $permission
+            ->setValue(true)
+            ->setName(strtolower($entity).'.use')
+            ->setPerson($person);
+
+        $this->em()->persist($permission);
+        $this->em()->flush();
     }
 
     /**

@@ -31,7 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Content;
 use Application\DeskPRO\Entity\ContentAbstract as ContentEntity;
 use JMS\Serializer\Annotation as JMS;
 
-class ContentCsv extends ContentAbstract
+class ContentCsv extends Content
 {
     /**
      * Person created this content first time.

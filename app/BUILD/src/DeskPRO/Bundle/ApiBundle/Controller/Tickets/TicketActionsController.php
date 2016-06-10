@@ -69,7 +69,7 @@ class TicketActionsController extends BaseController
      *      }
      * )
      *
-     * @Rest\PUT("/lock")
+     * @Rest\Put("/lock")
      *
      * @param Request $request
      * @param Ticket  $ticket
@@ -110,7 +110,7 @@ class TicketActionsController extends BaseController
      *      }
      * )
      *
-     * @Rest\PUT("/unlock")
+     * @Rest\Put("/unlock")
      *
      * @param Request $request
      * @param Ticket  $ticket

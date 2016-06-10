@@ -7,6 +7,7 @@ jest.dontMock('~List/List');
 import React from 'react';
 import { renderInTicketsApp } from '../../tickets.test-helper';
 import { toImmutable } from 'Helpers';
+import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 describe('List', () => {
   const ListFrameContainer     = require('~ListFrame/frame').ListFrameContainer;
@@ -19,11 +20,36 @@ describe('List', () => {
   const fakeState = {};
 
   const renderList = (viewMode = 'card', pagination = null) => {
-    renderInTicketsApp(fakeState, <List elements={[]}
-                                        selected={[]}
-                                        viewMode={viewMode}
-                                        pagination={pagination}
-                                        loaded />);
+    const fieldList = toImmutable(
+      {
+        [constants.VIEW_MODE_CARD]: [
+          { id: 'id', title: 'ID', visible: true },
+          { id: 'urgency', title: 'Urgency', visible: true },
+          { id: 'date_created', title: 'Date Created', visible: true },
+          { id: 'labels', title: 'Labels', visible: true }
+        ],
+
+        [constants.VIEW_MODE_TABLE]: [
+          { id: 'id', title: 'ID', visible: true },
+          { id: 'urgency', title: 'Urgency', visible: true },
+          { id: 'person', title: 'Person', visible: true },
+          { id: 'agent', title: 'Agent', visible: true },
+          { id: 'subject', title: 'Subject', visible: true },
+          { id: 'status', title: 'Status', visible: true },
+          { id: 'date_created', title: 'Date Created', visible: true },
+          { id: 'labels', title: 'Labels', visible: true }
+        ]
+      });
+
+    renderInTicketsApp(fakeState,
+      <List
+        elements={[]}
+        selected={[]}
+        viewMode={viewMode}
+        pagination={pagination}
+        fieldsConfig={fieldList}
+        loaded
+      />);
   };
 
   it('should render ListFrameContainer', () => {

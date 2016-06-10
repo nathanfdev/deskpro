@@ -46,6 +46,13 @@ class TicketCsv extends Ticket
     private $agent;
 
     /**
+     * Name af assigned agent team.
+     *
+     * @JMS\Type("string")
+     */
+    private $agentTeam;
+
+    /**
      * Name af assigned person.
      *
      * @JMS\Type("string")
@@ -74,6 +81,13 @@ class TicketCsv extends Ticket
     private $department;
 
     /**
+     * Organization.
+     *
+     * @JMS\Type("string")
+     */
+    private $organization;
+
+    /**
      * Department.
      *
      * @JMS\Type("string")
@@ -88,13 +102,6 @@ class TicketCsv extends Ticket
     private $product;
 
     /**
-     * Agent team.
-     *
-     * @JMS\Type("string")
-     */
-    private $team;
-
-    /**
      * Constructor.
      *
      * @param TicketEntity $ticket
@@ -102,13 +109,14 @@ class TicketCsv extends Ticket
     public function __construct(TicketEntity $ticket)
     {
         parent::__construct($ticket);
-        $this->agent      = $ticket->getAgent() ? $ticket->getAgent()->getName() : '';
-        $this->person     = $ticket->getPerson() ? $ticket->getPerson()->getName() : '';
-        $this->workflow   = $ticket->getWorkflow() ? $ticket->getWorkflow()->getTitle() : '';
-        $this->language   = $ticket->getLanguage() ? $ticket->getLanguage()->getTitle() : '';
-        $this->department = $ticket->getDepartment() ? $ticket->getDepartment()->getTitle() : '';
-        $this->category   = $ticket->getCategory() ? $ticket->getCategory()->getTitle() : '';
-        $this->product    = $ticket->getProduct() ? $ticket->getProduct()->getTitle() : '';
-        $this->team       = $ticket->getAgentTeam() ? $ticket->getAgentTeam()->getName() : '';
+        $this->agent        = $ticket->getAgent() ? $ticket->getAgent()->getName() : '';
+        $this->agentTeam    = $ticket->getAgentTeam() ? $ticket->getAgentTeam()->getName() : '';
+        $this->person       = $ticket->getPerson() ? $ticket->getPerson()->getName() : '';
+        $this->workflow     = $ticket->getWorkflow() ? $ticket->getWorkflow()->getTitle() : '';
+        $this->organization = $ticket->getOrganization() ? $ticket->getOrganization()->getName() : '';
+        $this->language     = $ticket->getLanguage() ? $ticket->getLanguage()->getTitle() : '';
+        $this->department   = $ticket->getDepartment() ? $ticket->getDepartment()->getTitle() : '';
+        $this->category     = $ticket->getCategory() ? $ticket->getCategory()->getTitle() : '';
+        $this->product      = $ticket->getProduct() ? $ticket->getProduct()->getTitle() : '';
     }
 }

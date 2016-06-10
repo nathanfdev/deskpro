@@ -32,7 +32,6 @@ use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Entity\Ticket;
@@ -45,7 +44,7 @@ use DpBehat\Data\DataContext;
 class CommonFactories
 {
     /**
-     * @param array  $data
+     * @param array $data
      *
      * @return Ticket
      */
@@ -78,17 +77,17 @@ class CommonFactories
 
     /**
      * @param string $type
-     * @param array $data
+     * @param array  $data
      *
      * @return CustomDefAbstract
      */
     public static function customDef($type, array $data = [])
     {
         $type = [
-            'ticket' => CustomDefTicket::class,
-            'organization' => CustomDefOrganization::class,
-        ][$type];
-        $def = new $type;
+                    'ticket'       => CustomDefTicket::class,
+                    'organization' => CustomDefOrganization::class,
+                ][$type];
+        $def = new $type();
 
         // Type to handler class
         array_key_exists('type', $data) or $data['type'] = '';
