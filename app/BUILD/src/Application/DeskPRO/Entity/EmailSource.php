@@ -149,6 +149,11 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var string
      */
+    protected $header_cc = '';
+
+    /**
+     * @var string
+     */
     protected $header_from = '';
 
     /**
@@ -484,6 +489,14 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
             'scale'      => 0,
             'nullable'   => false,
             'columnName' => 'header_to',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'header_cc',
+            'type'       => 'text',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'header_cc',
         ]);
         $metadata->mapField([
             'fieldName'  => 'header_from',

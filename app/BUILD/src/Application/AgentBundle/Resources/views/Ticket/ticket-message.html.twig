@@ -126,6 +126,16 @@
 							</td>
 						</tr>
 					{% endif %}
+					{% if message.email_source.header_cc %}
+						<tr>
+							<th>{{ phrase('agent.general.ccs') }}:</th>
+							<td style="overflow: hidden;">
+								{% for email in message.email_source.header_cc|split(',') %}
+									<span title="{{ email|trim }}">{{ email|trim }}</span><br />
+								{% endfor %}
+							</td>
+						</tr>
+					{% endif %}
 					{% if message.ip_address %}
 						<tr>
 							<th>{{ phrase('agent.general.ip_address') }}:</th>

@@ -135,6 +135,9 @@ class RunnerExecSource
         if ($h = $reader->getHeader('To')) {
             $this->source->header_to = implode(', ', $h->getAllParts());
         }
+        if ($h = $reader->getHeader('Cc')) {
+            $this->source->header_cc = implode(', ', $h->getAllParts());
+        }
         if ($h = $reader->getHeader('Subject')) {
             $this->source->header_subject = implode(', ', $h->getAllParts());
         }
