@@ -657,7 +657,7 @@ class OrganizationController extends AbstractController
         $org = $this->getOrgOr404($organization_id);
 
         $domain    = $this->in->getString('domain');
-        $orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(array('organization' => $org, 'domain' => $domain));
+        $orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->findOneBy(['organization' => $org, 'domain' => $domain]);
 
         if ($orgdomain) {
             $org_domain_manager = $this->container->getSystemService('org_email_domain_manager');
@@ -680,7 +680,7 @@ class OrganizationController extends AbstractController
         $org_domain_manager = $this->container->getSystemService('org_email_domain_manager');
         $domain             = $this->in->getString('domain');
 
-        $orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(array('organization' => $org, 'domain' => $domain));
+        $orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->findOneBy(['organization' => $org, 'domain' => $domain]);
 
         if ($orgdomain) {
             $org_domain_manager->moveNonCompanyUsers($orgdomain);
@@ -702,7 +702,7 @@ class OrganizationController extends AbstractController
         $org_domain_manager = $this->container->getSystemService('org_email_domain_manager');
 
         $domain    = $this->in->getString('domain');
-        $orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->find(array('organization' => $org, 'domain' => $domain));
+        $orgdomain = $this->em->getRepository('DeskPRO:OrganizationEmailDomain')->findOneBy(['organization' => $org, 'domain' => $domain]);
 
         if (!$orgdomain) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
