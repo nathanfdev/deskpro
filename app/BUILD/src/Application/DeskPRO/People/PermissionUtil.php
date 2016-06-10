@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\DeskPRO\People;
 
 use Application\DeskPRO\App;
@@ -139,7 +140,7 @@ class PermissionUtil
 
                 $dep_id_assign_perms = $db->fetchAllCol("
                     SELECT department_permissions.department_id
-                    FROM department_permissions.department_permissions
+                    FROM department_permissions
                     WHERE department_permissions.name = 'assign'
                       AND department_permissions.is_active = 1
                       AND department_permissions.usergroup_id IN (?)
