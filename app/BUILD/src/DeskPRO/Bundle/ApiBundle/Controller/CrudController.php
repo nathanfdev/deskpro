@@ -269,6 +269,20 @@ abstract class CrudController extends BaseController
     }
 
     /**
+     * Get data for export to CSV.
+     *
+     * @Rest\Get("/csv")
+     *
+     * @param Request $request
+     *
+     * @return \FOS\RestBundle\View\View
+     */
+    public function csvAction(Request $request)
+    {
+        return $this->listAction($request);
+    }
+
+    /**
      * You can create new resource. Just provide well formed request.
      * Look into requirements for details.
      *
