@@ -81,7 +81,7 @@ class ProjectMember implements EntityInterface, NotifyPropertyChanged
     /**
      * Project entity.
      *
-     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskProject")
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskProject", inversedBy="members")
      * @ORM\JoinColumn(name="project_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotNull()
      * @Assert\Valid()
@@ -96,7 +96,7 @@ class ProjectMember implements EntityInterface, NotifyPropertyChanged
     /**
      * A person attached to a project.
      *
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person", inversedBy="project_members")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      *
      * @JMS\Expose()
@@ -109,7 +109,7 @@ class ProjectMember implements EntityInterface, NotifyPropertyChanged
     /**
      * An agent team attached to project.
      *
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\AgentTeam")
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\AgentTeam", inversedBy="project_members")
      * @ORM\JoinColumn(name="team_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      *
      * @JMS\Expose()
@@ -122,7 +122,7 @@ class ProjectMember implements EntityInterface, NotifyPropertyChanged
     /**
      * A department attached to project.
      *
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Department")
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Department", inversedBy="project_members")
      * @ORM\JoinColumn(name="department_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      *
      * @JMS\Expose()

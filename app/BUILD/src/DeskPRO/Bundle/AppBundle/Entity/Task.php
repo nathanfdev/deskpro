@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam;
@@ -160,7 +161,7 @@ class Task implements EntityInterface
     /**
      * @var TaskProject
      *
-     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskProject")
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskProject", inversedBy="tasks")
      * @ORM\JoinColumn(name="project_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      */
     protected $project;
@@ -168,7 +169,7 @@ class Task implements EntityInterface
     /**
      * @var TaskList
      *
-     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskList")
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TaskList", inversedBy="tasks")
      * @ORM\JoinColumn(name="list_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $list;

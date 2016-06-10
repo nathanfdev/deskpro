@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
@@ -475,7 +476,7 @@ class News extends ContentAbstract implements HighlightableModelInterface
                 'fieldName'    => 'category',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\NewsCategory',
                 'mappedBy'     => null,
-                'inversedBy'   => null,
+                'inversedBy'   => 'articles',
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'category_id',

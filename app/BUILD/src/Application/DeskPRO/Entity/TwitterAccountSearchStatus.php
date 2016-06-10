@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -71,20 +72,61 @@ class TwitterAccountSearchStatus extends \Application\DeskPRO\Domain\DomainObjec
     # Doctrine Metadata
     ############################################################################
 
-
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name'    => 'twitter_accounts_searches_statuses',
-            'indexes' => array(
-                'search_date_idx' => array('columns' => array('search_id', 'date_created')),
-            ),
-        ));
+            'indexes' => [
+                'search_date_idx' => [
+                    'columns' => [
+                        'search_id',
+                        'date_created',
+                    ],
+                ],
+            ],
+        ]);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
-        $metadata->mapManyToOne(array('fieldName' => 'account_status', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountStatus', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'account_status_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => null)), 'id' => true));
-        $metadata->mapManyToOne(array('fieldName' => 'search', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountSearch', 'mappedBy' => null, 'inversedBy' => 'search_statuses', 'joinColumns' => array(0 => array('name' => 'search_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => null)), 'id' => true));
+        $metadata->mapField([
+            'fieldName'  => 'date_created',
+            'type'       => 'datetime',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'date_created',
+        ]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'account_status',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountStatus',
+            'mappedBy'     => null,
+            'inversedBy'   => null,
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'account_status_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => false,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+            'id' => true,
+        ]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'search',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccountSearch',
+            'mappedBy'     => null,
+            'inversedBy'   => 'search_statuses',
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'search_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => false,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+            'id' => true,
+        ]);
     }
 }

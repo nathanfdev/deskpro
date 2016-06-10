@@ -117,7 +117,30 @@ class OrganizationEmailDomain extends \Application\DeskPRO\Domain\DomainObject
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\OrganizationEmailDomain';
         $metadata->setPrimaryTable(['name' => 'organization_email_domains']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(['fieldName' => 'domain', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'domain', 'id' => true]);
-        $metadata->mapManyToOne(['fieldName' => 'organization', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => [0 => ['name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null]]]);
+        $metadata->mapField([
+            'fieldName'  => 'domain',
+            'type'       => 'string',
+            'length'     => 255,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'domain',
+            'id'         => true,
+        ]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'organization',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Organization',
+            'mappedBy'     => null,
+            'inversedBy'   => 'email_domains',
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'organization_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
     }
 }

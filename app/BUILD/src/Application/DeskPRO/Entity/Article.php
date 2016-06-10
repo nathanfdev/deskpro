@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\ObjectTranslatable;
@@ -632,6 +633,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
                 'fieldName'    => 'categories',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\ArticleCategory',
                 'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
+                'inversedBy'   => 'articles',
                 'joinTable'    => [
                     'name'        => 'article_to_categories',
                     'schema'      => null,

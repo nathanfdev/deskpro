@@ -332,16 +332,80 @@ class Product extends CategoryAbstract implements HasPhraseName
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Product';
-        $metadata->setPrimaryTable(array('name' => 'products'));
+        $metadata->setPrimaryTable(['name' => 'products']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title'));
-        $metadata->mapField(array('fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order'));
-        $metadata->mapField(array('fieldName' => 'depth', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'depth'));
-        $metadata->mapField(array('fieldName' => 'root', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'root'));
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'title',
+            'type'       => 'string',
+            'length'     => 255,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'title',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'display_order',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'display_order',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'depth',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'depth',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'root',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'root',
+        ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array('fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Product', 'mappedBy' => null, 'inversedBy' => 'children', 'joinColumns' => array(0 => array('name' => 'parent_id', 'referencedColumnName' => 'id'))));
-        $metadata->mapOneToMany(array('fieldName' => 'children', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Product', 'mappedBy' => 'parent',  'orderBy' => array('display_order' => 'ASC')));
-        $metadata->mapOneToMany(array('fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataProduct', 'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'product', 'orphanRemoval' => true,  'dpApi' => false));
+        $metadata->mapManyToOne([
+            'fieldName'    => 'parent',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Product',
+            'mappedBy'     => null,
+            'inversedBy'   => 'children',
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'parent_id',
+                    'referencedColumnName' => 'id',
+                ],
+            ],
+        ]);
+        $metadata->mapOneToMany([
+            'fieldName'    => 'children',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Product',
+            'mappedBy'     => 'parent',
+            'orderBy'      => ['display_order' => 'ASC'],
+        ]);
+        $metadata->mapOneToMany([
+            'fieldName'    => 'custom_data',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataProduct',
+            'cascade'      => [
+                0 => 'remove',
+                1 => 'persist',
+                3 => 'merge',
+            ],
+            'mappedBy'      => 'product',
+            'orphanRemoval' => true,
+            'dpApi'         => false,
+        ]);
     }
 }

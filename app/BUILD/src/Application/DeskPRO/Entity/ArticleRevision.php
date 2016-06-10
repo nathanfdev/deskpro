@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -76,15 +77,80 @@ class ArticleRevision extends RevisionAbstract
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ArticleRevision';
-        $metadata->setPrimaryTable(array('name' => 'article_revisions'));
+        $metadata->setPrimaryTable(['name' => 'article_revisions']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'title', 'type' => 'string', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title'));
-        $metadata->mapField(array('fieldName' => 'content', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'content'));
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'status', 'type' => 'string', 'length' => 30, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status'));
-        $metadata->mapField(array('fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
+        $metadata->mapField([
+            'fieldName'  => 'title',
+            'type'       => 'string',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'title',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'content',
+            'type'       => 'text',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'content',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'status',
+            'type'       => 'string',
+            'length'     => 30,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'status',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'date_created',
+            'type'       => 'datetime',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'date_created',
+        ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array('fieldName' => 'article', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Article', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'article_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
-        $metadata->mapManyToOne(array('fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null))));
+        $metadata->mapManyToOne([
+            'fieldName'    => 'article',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Article',
+            'mappedBy'     => null,
+            'inversedBy'   => 'revisions',
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'article_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'person',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+            'mappedBy'     => null,
+            'inversedBy'   => null,
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'person_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'set null',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -348,84 +349,84 @@ class EmailAccount extends DomainObject
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
         $metadata->customRepositoryClassName = 'Application\\DeskPRO\\EntityRepository\\EmailAccount';
 
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name' => 'email_accounts',
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'id',
             'fieldName'  => 'id',
             'type'       => 'integer',
             'id'         => true,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'account_type',
             'fieldName'  => 'account_type',
             'type'       => 'string',
             'length'     => 255,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'incoming_account',
             'fieldName'  => 'incoming_account',
             'type'       => 'dp_json_obj',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'outgoing_account',
             'fieldName'  => 'outgoing_account',
             'type'       => 'dp_json_obj',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'is_enabled',
             'fieldName'  => 'is_enabled',
             'type'       => 'boolean',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'address',
             'fieldName'  => 'address',
             'type'       => 'string',
             'length'     => 255,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'other_addresses',
             'fieldName'  => 'other_addresses',
             'type'       => 'simple_array',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'options',
             'fieldName'  => 'options',
             'type'       => 'json_array',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'date_created',
             'fieldName'  => 'date_created',
             'type'       => 'datetime',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'date_read_start',
             'fieldName'  => 'date_read_start',
             'type'       => 'datetime',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'date_last_incoming',
             'fieldName'  => 'date_last_incoming',
             'type'       => 'datetime',
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'is_read_active',
             'fieldName'  => 'is_read_active',
             'type'       => 'boolean',
             'nullable'   => false,
-        ));
+        ]);
     }
 }

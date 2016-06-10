@@ -98,13 +98,75 @@ class TicketMessageTranslated extends \Application\DeskPRO\Domain\DomainObject
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketMessageTranslated';
         $metadata->setPrimaryTable(['name' => 'tickets_messages_translated']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(['fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true]);
-        $metadata->mapField(['fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created']);
-        $metadata->mapField(['fieldName' => 'from_lang_code', 'type' => 'string', 'length' => 80, 'nullable' => false, 'columnName' => 'from_lang_code']);
-        $metadata->mapField(['fieldName' => 'lang_code', 'type' => 'string', 'length' => 80, 'nullable' => false, 'columnName' => 'lang_code']);
-        $metadata->mapField(['fieldName' => 'message', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'message']);
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'date_created',
+            'type'       => 'datetime',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'date_created',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'from_lang_code',
+            'type'       => 'string',
+            'length'     => 80,
+            'nullable'   => false,
+            'columnName' => 'from_lang_code',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'lang_code',
+            'type'       => 'string',
+            'length'     => 80,
+            'nullable'   => false,
+            'columnName' => 'lang_code',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'message',
+            'type'       => 'text',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'message',
+        ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(['fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => [0 => ['name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null]]]);
-        $metadata->mapManyToOne(['fieldName' => 'ticket_message', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessage', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => [0 => ['name' => 'message_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null]]]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'ticket',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket',
+            'mappedBy'     => null,
+            'inversedBy'   => null,
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'ticket_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'ticket_message',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessage',
+            'mappedBy'     => null,
+            'inversedBy'   => null,
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'message_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
     }
 }

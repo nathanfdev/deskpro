@@ -505,91 +505,95 @@ class LegacyTicketFilter extends DomainObject
         $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name'              => 'ticket_filters',
-            'uniqueConstraints' => array('sys_name_unique' => array('columns' => array('sys_name'))),
-        ));
+            'uniqueConstraints' => ['sys_name_unique' => ['columns' => ['sys_name']]],
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'id'         => true,
             'columnName' => 'id',
             'fieldName'  => 'id',
             'type'       => 'integer',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'is_global',
             'fieldName'  => 'is_global',
             'type'       => 'boolean',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'title',
             'fieldName'  => 'title',
             'type'       => 'string',
             'length'     => 255,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'is_enabled',
             'fieldName'  => 'is_enabled',
             'type'       => 'boolean',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'sys_name',
             'fieldName'  => 'sys_name',
             'type'       => 'string',
             'length'     => 50,
             'nullable'   => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'terms',
             'fieldName'  => 'terms',
             'type'       => 'json_array',
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'group_by',
             'fieldName'  => 'group_by',
             'type'       => 'string',
             'length'     => 255,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'order_by',
             'fieldName'  => 'order_by',
             'type'       => 'string',
             'length'     => 255,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'display_order',
             'fieldName'  => 'display_order',
             'type'       => 'integer',
             'nullable'   => false,
-        ));
-        $metadata->mapManyToOne(array(
+        ]);
+        $metadata->mapManyToOne([
             'fieldName'    => 'person',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
             'dpApi'        => true,
-            'joinColumns'  => array(array(
-                'name'                 => 'person_id',
-                'referencedColumnName' => 'id',
-                'nullable'             => true,
-                'onDelete'             => 'cascade',
-            )),
-        ));
-        $metadata->mapManyToOne(array(
+            'joinColumns'  => [
+                [
+                    'name'                 => 'person_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                ],
+            ],
+        ]);
+        $metadata->mapManyToOne([
             'fieldName'    => 'agent_team',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
             'dpApi'        => true,
-            'joinColumns'  => array(array(
-                'name'                 => 'agent_team_id',
-                'referencedColumnName' => 'id',
-                'nullable'             => true,
-                'onDelete'             => 'cascade',
-            )),
-        ));
+            'joinColumns'  => [
+                [
+                    'name'                 => 'agent_team_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                ],
+            ],
+        ]);
     }
 }

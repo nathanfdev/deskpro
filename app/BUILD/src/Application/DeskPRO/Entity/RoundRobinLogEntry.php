@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -101,44 +102,46 @@ class RoundRobinLogEntry extends DomainObject
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->setPrimaryTable(array('name' => 'round_robin_log'));
+        $metadata->setPrimaryTable(['name' => 'round_robin_log']);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'fieldName'  => 'id',
             'columnName' => 'id',
             'type'       => 'integer',
             'id'         => true,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'fieldName'  => 'ticketId',
             'columnName' => 'ticket_id',
             'type'       => 'integer',
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'fieldName'  => 'ticketSubject',
             'columnName' => 'ticket_subject',
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'fieldName'  => 'actions',
             'columnName' => 'actions',
             'type'       => 'array',
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'fieldName'  => 'created',
             'columnName' => 'created',
             'type'       => 'datetime',
-        ));
+        ]);
 
-        $metadata->mapManyToOne(array(
+        $metadata->mapManyToOne([
             'fieldName'    => 'rr',
             'targetEntity' => 'Application\DeskPRO\Entity\RoundRobin',
-            'joinColumns'  => array(array(
-                'onDelete' => 'cascade',
-            )),
-        ));
+            'joinColumns'  => [
+                [
+                    'onDelete' => 'cascade',
+                ],
+            ],
+        ]);
     }
 }

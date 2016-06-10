@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomDataChangeListener;
@@ -152,16 +153,27 @@ class CustomDataTicket extends CustomDataAbstract
             [
                 'name'    => 'custom_data_ticket',
                 'indexes' => [
-                    'field_id_idx' => ['columns' => [0 => 'field_id', 1 => 'ticket_id']],
+                    'field_id_idx' => [
+                        'columns' => [
+                            0 => 'field_id',
+                            1 => 'ticket_id',
+                        ],
+                    ],
                 ],
                 'uniqueConstraints' => [
-                    'unique_idx' => ['columns' => ['field_id', 'ticket_id', 'root_field_id']],
+                    'unique_idx' => [
+                        'columns' => [
+                            'field_id',
+                            'ticket_id',
+                            'root_field_id',
+                        ],
+                    ],
                 ],
             ]
         );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'id',
                 'type'       => 'integer',
                 'precision'  => 0,
@@ -169,74 +181,74 @@ class CustomDataTicket extends CustomDataAbstract
                 'nullable'   => false,
                 'columnName' => 'id',
                 'id'         => true,
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'value',
                 'type'       => 'integer',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'value',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'input',
                 'type'       => 'text',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'input',
-            )
+            ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'ticket',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket',
                 'inversedBy'   => 'custom_data',
-                'joinColumns'  => array(
-                    0 => array(
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'ticket_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
-                    ),
-                ),
-            )
+                    ],
+                ],
+            ]
         );
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'field',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefTicket',
-                'joinColumns'  => array(
-                    0 => array(
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'field_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
-                    ),
-                ),
-            )
+                    ],
+                ],
+            ]
         );
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'root_field',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefTicket',
-                'joinColumns'  => array(
-                    0 => array(
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'root_field_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
-                    ),
-                ),
-            )
+                    ],
+                ],
+            ]
         );
 
         $metadata->addEntityListener(Events::postPersist, CustomDataChangeListener::class, Events::postPersist);

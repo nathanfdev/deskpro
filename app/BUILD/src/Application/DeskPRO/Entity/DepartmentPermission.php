@@ -165,31 +165,103 @@ class DepartmentPermission extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\DepartmentPermission';
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name'    => 'department_permissions',
-            'indexes' => array(
-                'is_active_idx' => array('columns' => array('is_active')),
-            ),
-        ));
+            'indexes' => [
+                'is_active_idx' => ['columns' => ['is_active']],
+            ],
+        ]);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'app', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'app'));
-        $metadata->mapField(array('fieldName' => 'name', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name'));
-        $metadata->mapField(array('fieldName' => 'value', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'value'));
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'app',
+            'type'       => 'string',
+            'length'     => 50,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'app',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'name',
+            'type'       => 'string',
+            'length'     => 50,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'name',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'value',
+            'type'       => 'text',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'value',
+        ]);
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'is_active',
                 'type'       => 'boolean',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
-                'options'    => array('default' => '1'),
+                'options'    => ['default' => '1'],
                 'columnName' => 'is_active',
-            )
+            ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array('fieldName' => 'department', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'department_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
-        $metadata->mapManyToOne(array('fieldName' => 'usergroup', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'usergroup_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
-        $metadata->mapManyToOne(array('fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => 'departmentPermissions', 'joinColumns' => array(0 => array('name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade'))));
+        $metadata->mapManyToOne([
+            'fieldName'    => 'department',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Department',
+            'mappedBy'     => null,
+            'inversedBy'   => null,
+            'joinColumns'  => [
+                [
+                    'name'                 => 'department_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'usergroup',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
+            'mappedBy'     => null,
+            'inversedBy'   => null,
+            'joinColumns'  => [
+                [
+                    'name'                 => 'usergroup_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'person',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+            'mappedBy'     => null,
+            'inversedBy'   => 'department_permissions',
+            'joinColumns'  => [
+                [
+                    'name'                 => 'person_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                ],
+            ],
+        ]);
     }
 }

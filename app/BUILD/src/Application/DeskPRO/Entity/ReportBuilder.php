@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -326,116 +326,116 @@ class ReportBuilder extends DomainObject
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ReportBuilder';
         $metadata->setPrimaryTable(
-            array(
-                 'name'              => 'report_builder',
-                 'uniqueConstraints' => array(
-                     'unique_key_idx' => array('columns' => array('unique_key')),
-                 ),
-            )
+            [
+                'name'              => 'report_builder',
+                'uniqueConstraints' => [
+                    'unique_key_idx' => ['columns' => ['unique_key']],
+                ],
+            ]
         );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
         $metadata->mapField(
-            array(
-                 'fieldName'  => 'id',
-                 'type'       => 'integer',
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'id',
-                 'id'         => true,
-            )
+            [
+                'fieldName'  => 'id',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'id',
+                'id'         => true,
+            ]
         );
         $metadata->mapField(
-            array(
-                 'fieldName'  => 'unique_key',
-                 'type'       => 'string',
-                 'length'     => 50,
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => true,
-                 'columnName' => 'unique_key',
-            )
+            [
+                'fieldName'  => 'unique_key',
+                'type'       => 'string',
+                'length'     => 50,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'unique_key',
+            ]
         );
         $metadata->mapField(
-            array(
-                 'fieldName'  => 'title',
-                 'type'       => 'string',
-                 'length'     => 255,
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'title',
-            )
+            [
+                'fieldName'  => 'title',
+                'type'       => 'string',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'title',
+            ]
         );
         $metadata->mapField(
-            array(
-                 'fieldName'  => 'description',
-                 'type'       => 'text',
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'description',
-            )
+            [
+                'fieldName'  => 'description',
+                'type'       => 'text',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'description',
+            ]
         );
         $metadata->mapField(
-            array(
-                 'fieldName'  => 'query',
-                 'type'       => 'text',
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'query',
-            )
+            [
+                'fieldName'  => 'query',
+                'type'       => 'text',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'query',
+            ]
         );
         $metadata->mapField(
-            array(
-                 'fieldName'  => 'is_custom',
-                 'type'       => 'boolean',
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'is_custom',
-            )
+            [
+                'fieldName'  => 'is_custom',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_custom',
+            ]
         );
         $metadata->mapField(
-            array(
-                 'fieldName'  => 'category',
-                 'type'       => 'string',
-                 'length'     => 25,
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => true,
-                 'columnName' => 'category',
-            )
+            [
+                'fieldName'  => 'category',
+                'type'       => 'string',
+                'length'     => 25,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'category',
+            ]
         );
         $metadata->mapField(
-            array(
-                 'fieldName'  => 'display_order',
-                 'type'       => 'integer',
-                 'precision'  => 0,
-                 'scale'      => 0,
-                 'nullable'   => false,
-                 'columnName' => 'display_order',
-            )
+            [
+                'fieldName'  => 'display_order',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'display_order',
+            ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 
         $metadata->mapManyToOne(
-            array(
-                 'fieldName'    => 'parent',
-                 'targetEntity' => 'Application\\DeskPRO\\Entity\\ReportBuilder',
-                 'mappedBy'     => null,
-                 'inversedBy'   => null,
-                 'joinColumns'  => array(
-                     0 => array(
-                         'name'                 => 'parent_id',
-                         'referencedColumnName' => 'id',
-                         'nullable'             => true,
-                         'onDelete'             => 'set null',
-                         'columnDefinition'     => null,
-                     ),
-                 ),
-            )
+            [
+                'fieldName'    => 'parent',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\ReportBuilder',
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'parent_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+            ]
         );
     }
 }

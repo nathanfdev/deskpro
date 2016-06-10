@@ -82,7 +82,7 @@ class TaskList implements EntityInterface, NotifyPropertyChanged
      * @JMS\Expose()
      * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\TaskProject>")
      *
-     * @ORM\ManyToOne(targetEntity="TaskProject")
+     * @ORM\ManyToOne(targetEntity="TaskProject", inversedBy="lists")
      * @ORM\JoinColumn(name="project_id", referencedColumnName="id", onDelete="CASCADE")
      *
      * @Assert\NotNull()

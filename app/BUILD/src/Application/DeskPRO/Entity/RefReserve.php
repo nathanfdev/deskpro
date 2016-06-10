@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -74,31 +75,31 @@ class RefReserve extends DomainObject
         $metadata->inheritanceType      = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
         $metadata->changeTrackingPolicy = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->generatorType        = ClassMetadataInfo::GENERATOR_TYPE_NONE;
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name' => 'ref_reserve',
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'obj_type',
             'fieldName'  => 'obj_type',
             'type'       => 'string',
             'length'     => 50,
             'nullable'   => false,
             'id'         => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'columnName' => 'ref',
             'fieldName'  => 'ref',
             'type'       => 'string',
             'length'     => 255,
             'nullable'   => false,
             'id'         => true,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'date_created',
             'columnName' => 'date_created',
             'type'       => 'datetime',
             'nullable'   => false,
-        ));
+        ]);
     }
 }

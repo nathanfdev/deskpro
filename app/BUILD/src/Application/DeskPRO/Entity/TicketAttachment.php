@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -203,13 +204,13 @@ class TicketAttachment extends DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketAttachment';
-        $metadata->setPrimaryTable(array('name' => 'tickets_attachments'));
+        $metadata->setPrimaryTable(['name' => 'tickets_attachments']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 
         $metadata->addLifecycleCallback('prePersist', 'prePersist');
 
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'id',
                 'type'       => 'integer',
                 'precision'  => 0,
@@ -217,95 +218,95 @@ class TicketAttachment extends DomainObject
                 'nullable'   => false,
                 'columnName' => 'id',
                 'id'         => true,
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'is_agent_note',
                 'type'       => 'boolean',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'is_agent_note',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'is_inline',
                 'type'       => 'boolean',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'is_inline',
-            )
+            ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'ticket',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket',
                 'mappedBy'     => null,
-                'inversedBy'   => null,
-                'joinColumns'  => array(
-                    0 => array(
+                'inversedBy'   => 'attachments',
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'ticket_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
-                    ),
-                ),
-            )
+                    ],
+                ],
+            ]
         );
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'person',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
                 'mappedBy'     => null,
                 'inversedBy'   => null,
-                'joinColumns'  => array(
-                    0 => array(
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'person_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'set null',
                         'columnDefinition'     => null,
-                    ),
-                ),
-            )
+                    ],
+                ],
+            ]
         );
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'blob',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
                 'mappedBy'     => null,
                 'inversedBy'   => null,
-                'joinColumns'  => array(
-                    0 => array(
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'blob_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
-                    ),
-                ),
+                    ],
+                ],
                 'dpApi' => true,
-            )
+            ]
         );
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'message',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessage',
                 'inversedBy'   => 'attachments',
-                'joinColumns'  => array(
-                    array(
+                'joinColumns'  => [
+                    [
                         'name'                 => 'message_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'cascade',
-                    ),
-                ),
-            )
+                    ],
+                ],
+            ]
         );
     }
 }

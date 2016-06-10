@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -64,13 +65,49 @@ class ApiTokenRateLimit extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name' => 'api_token_rate_limit',
-        ));
+        ]);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'hits', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'hits'));
-        $metadata->mapField(array('fieldName' => 'created_stamp', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'created_stamp'));
-        $metadata->mapField(array('fieldName' => 'reset_stamp', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'reset_stamp'));
-        $metadata->mapManyToOne(array('fieldName' => 'api_token', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ApiToken', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'api_token_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => null)), 'id' => true));
+        $metadata->mapField([
+            'fieldName'  => 'hits',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'hits',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'created_stamp',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'created_stamp',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'reset_stamp',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'reset_stamp',
+        ]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'api_token',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\ApiToken',
+            'mappedBy'     => null,
+            'inversedBy'   => null,
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'api_token_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => false,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+            'id' => true,
+        ]);
     }
 }

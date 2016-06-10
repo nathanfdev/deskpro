@@ -443,7 +443,7 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
             ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(
+        $metadata->mapOneToOne(
             [
                 'fieldName'    => 'user',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser',
@@ -486,6 +486,7 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
             [
                 'fieldName'    => 'persons',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+                'inversedBy'   => 'twitter_accounts',
                 'joinTable'    => [
                     'name'        => 'twitter_accounts_person',
                     'schema'      => null,

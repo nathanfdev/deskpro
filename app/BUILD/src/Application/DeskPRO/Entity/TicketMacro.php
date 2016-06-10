@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -310,12 +311,64 @@ class TicketMacro extends DomainObject
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketMacro';
         $metadata->setPrimaryTable(['name' => 'ticket_macros']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(['fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true]);
-        $metadata->mapField(['fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title']);
-        $metadata->mapField(['fieldName' => 'is_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_enabled']);
-        $metadata->mapField(['fieldName' => 'is_global', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_global']);
-        $metadata->mapField(['fieldName' => 'actions', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'actions']);
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'title',
+            'type'       => 'string',
+            'length'     => 255,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'title',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'is_enabled',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'is_enabled',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'is_global',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'is_global',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'actions',
+            'type'       => 'array',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'actions',
+        ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(['fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => [0 => ['name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => null]], 'dpApi' => true]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'person',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+            'mappedBy'     => null,
+            'inversedBy'   => null,
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'person_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'set null',
+                    'columnDefinition'     => null,
+                ],
+            ],
+            'dpApi' => true,
+        ]);
     }
 }

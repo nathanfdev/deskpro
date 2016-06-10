@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -126,20 +127,94 @@ class TaskQueue extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TaskQueue';
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name' => 'task_queue',
-        ));
+        ]);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'runner_class', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'runner_class'));
-        $metadata->mapField(array('fieldName' => 'task_data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'task_data'));
-        $metadata->mapField(array('fieldName' => 'date_runnable', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_runnable'));
-        $metadata->mapField(array('fieldName' => 'task_group', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'task_group'));
-        $metadata->mapField(array('fieldName' => 'status', 'type' => 'string', 'length' => 25, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status'));
-        $metadata->mapField(array('fieldName' => 'date_started', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_started'));
-        $metadata->mapField(array('fieldName' => 'date_completed', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_completed'));
-        $metadata->mapField(array('fieldName' => 'error_text', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'error_text'));
-        $metadata->mapField(array('fieldName' => 'run_status', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'run_status'));
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'runner_class',
+            'type'       => 'string',
+            'length'     => 255,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'runner_class',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'task_data',
+            'type'       => 'array',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'task_data',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'date_runnable',
+            'type'       => 'datetime',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'date_runnable',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'task_group',
+            'type'       => 'string',
+            'length'     => 50,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'task_group',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'status',
+            'type'       => 'string',
+            'length'     => 25,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'status',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'date_started',
+            'type'       => 'datetime',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'date_started',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'date_completed',
+            'type'       => 'datetime',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'date_completed',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'error_text',
+            'type'       => 'text',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'error_text',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'run_status',
+            'type'       => 'text',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'run_status',
+        ]);
 
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }

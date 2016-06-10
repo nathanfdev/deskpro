@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -65,10 +66,36 @@ class SearchStickyResult extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\SearchStickyResult';
-        $metadata->setPrimaryTable(array('name' => 'search_sticky_result'));
+        $metadata->setPrimaryTable(['name' => 'search_sticky_result']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'word', 'type' => 'string', 'length' => 150, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'word', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'object_type', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_type', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'object_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_id', 'id' => true));
+        $metadata->mapField([
+            'fieldName'  => 'word',
+            'type'       => 'string',
+            'length'     => 150,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'word',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'object_type',
+            'type'       => 'string',
+            'length'     => 100,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'object_type',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'object_id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'object_id',
+            'id'         => true,
+        ]);
     }
 }

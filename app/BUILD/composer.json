@@ -74,7 +74,7 @@
     "symfony/assetic-bundle": "^2.7",
     "bugsnag/bugsnag": "2.*",
     "doctrine/mongodb-odm-bundle": "~3.0",
-    "doctrine/mongodb-odm": "dev-master",
+    "doctrine/mongodb-odm": "1.0.x-dev",
     "mongofill/mongofill": "dev-master",
     "mpdf/mpdf": "^6.1"
   },

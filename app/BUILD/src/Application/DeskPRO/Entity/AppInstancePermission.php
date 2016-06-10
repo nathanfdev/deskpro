@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -92,50 +93,56 @@ class AppInstancePermission extends \Application\DeskPRO\Domain\DomainObject
         $metadata->inheritanceType      = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
         $metadata->changeTrackingPolicy = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->generatorType        = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name' => 'app_instance_permissions',
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'id',
             'fieldName'  => 'id',
             'type'       => 'integer',
             'id'         => true,
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapManyToOne(array(
+        $metadata->mapManyToOne([
             'fieldName'    => 'app_instance',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\AppInstance',
             'fetch'        => ClassMetadataInfo::FETCH_LAZY,
-            'joinColumns'  => array(array(
-                'name'                 => 'app_instance_id',
-                'referencedColumnName' => 'id',
-                'nullable'             => true,
-                'onDelete'             => 'CASCADE',
-            )),
-        ));
+            'joinColumns'  => [
+                [
+                    'name'                 => 'app_instance_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'CASCADE',
+                ],
+            ],
+        ]);
 
-        $metadata->mapManyToOne(array(
+        $metadata->mapManyToOne([
             'fieldName'    => 'usergroup',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
-            'joinColumns'  => array(array(
-                'name'                 => 'usergroup_id',
-                'referencedColumnName' => 'id',
-                'nullable'             => true,
-                'onDelete'             => 'CASCADE',
-            )),
-        ));
+            'joinColumns'  => [
+                [
+                    'name'                 => 'usergroup_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'CASCADE',
+                ],
+            ],
+        ]);
 
-        $metadata->mapManyToOne(array(
+        $metadata->mapManyToOne([
             'fieldName'    => 'person',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
-            'joinColumns'  => array(array(
-                'name'                 => 'person_id',
-                'referencedColumnName' => 'id',
-                'nullable'             => true,
-                'onDelete'             => 'CASCADE',
-            )),
-        ));
+            'joinColumns'  => [
+                [
+                    'name'                 => 'person_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'CASCADE',
+                ],
+            ],
+        ]);
     }
 }

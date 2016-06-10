@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Validator\HasValidationMetadataInterface;
@@ -122,10 +123,10 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\FeedbackCategory';
-        $metadata->setPrimaryTable(array('name' => 'feedback_categories'));
+        $metadata->setPrimaryTable(['name' => 'feedback_categories']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'id',
                 'type'       => 'integer',
                 'precision'  => 0,
@@ -133,10 +134,10 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
                 'nullable'   => false,
                 'columnName' => 'id',
                 'id'         => true,
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'title',
                 'type'       => 'string',
                 'length'     => 255,
@@ -144,96 +145,105 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'title',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
-                'fieldName' => 'slug', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0,
-                'nullable'  => false, 'columnName' => 'slug', 'unique' => true,
-            )
+            [
+                'fieldName'  => 'slug',
+                'type'       => 'string',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'slug',
+                'unique'     => true,
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'display_order',
                 'type'       => 'integer',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'display_order',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'depth',
                 'type'       => 'integer',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'depth',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'root',
                 'type'       => 'integer',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'root',
-            )
+            ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'parent',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackCategory',
                 'mappedBy'     => null,
                 'inversedBy'   => 'children',
-                'joinColumns'  => array(
-                    0 => array(
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'parent_id',
                         'referencedColumnName' => 'id',
                         'onDelete'             => 'set null',
-                    ),
-                ),
-            )
+                    ],
+                ],
+            ]
         );
         $metadata->mapOneToMany(
-            array(
+            [
                 'fieldName'    => 'children',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackCategory',
                 'mappedBy'     => 'parent',
-                'orderBy'      => array('display_order' => 'ASC'),
-            )
+                'orderBy'      => ['display_order' => 'ASC'],
+            ]
         );
         $metadata->mapManyToMany(
-            array(
-                 'fieldName'    => 'usergroups',
-                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
-                 'cascade'      => array('persist', 'merge'),
-                 'joinTable'    => array(
-                     'name'        => 'feedback_category2usergroup',
-                     'schema'      => null,
-                     'joinColumns' => array(
-                         0 => array(
-                             'name'                 => 'category_id',
-                             'referencedColumnName' => 'id',
-                             'nullable'             => true,
-                             'columnDefinition'     => null,
-                             'onDelete'             => 'cascade',
-                         ),
-                     ),
-                     'inverseJoinColumns' => array(
-                         0 => array(
-                             'name'                 => 'usergroup_id',
-                             'onDelete'             => 'cascade',
-                             'nullable'             => true,
-                             'columnDefinition'     => null,
-                             'referencedColumnName' => 'id',
-                         ),
-                     ),
-                 ),
-            )
+            [
+                'fieldName'    => 'usergroups',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
+                'cascade'      => [
+                    'persist',
+                    'merge',
+                ],
+                'joinTable' => [
+                    'name'        => 'feedback_category2usergroup',
+                    'schema'      => null,
+                    'joinColumns' => [
+                        0 => [
+                            'name'                 => 'category_id',
+                            'referencedColumnName' => 'id',
+                            'nullable'             => true,
+                            'columnDefinition'     => null,
+                            'onDelete'             => 'cascade',
+                        ],
+                    ],
+                    'inverseJoinColumns' => [
+                        0 => [
+                            'name'                 => 'usergroup_id',
+                            'onDelete'             => 'cascade',
+                            'nullable'             => true,
+                            'columnDefinition'     => null,
+                            'referencedColumnName' => 'id',
+                        ],
+                    ],
+                ],
+            ]
         );
     }
 }

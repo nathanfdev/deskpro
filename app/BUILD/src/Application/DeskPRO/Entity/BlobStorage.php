@@ -108,11 +108,36 @@ class BlobStorage extends \Application\DeskPRO\Domain\DomainObject
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->setPrimaryTable(['name' => 'blobs_storage', 'indexes' => ['blob_id_idx' => ['columns' => [0 => 'blob_id']]]]);
+        $metadata->setPrimaryTable([
+            'name'    => 'blobs_storage',
+            'indexes' => ['blob_id_idx' => ['columns' => [0 => 'blob_id']]],
+        ]);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(['fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true]);
-        $metadata->mapField(['fieldName' => 'blob_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'blob_id']);
-        $metadata->mapField(['fieldName' => 'data', 'type' => 'dpblob_file', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data']);
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'blob_id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'blob_id',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'data',
+            'type'       => 'dpblob_file',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'data',
+        ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }
 }

@@ -31,10 +31,12 @@
  *
  * @category Entities
  */
+
 namespace DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem;
 
 use Application\DeskPRO\Entity\Article;
 use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
+use DeskPRO\Bundle\AppBundle\Entity\Task;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -46,9 +48,24 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @UniqueEntity(fields={"task", "article"}, errorPath="article")
  */
-class TaskLinkedArticle extends TaskLinkedItem
+class TaskLinkedArticle extends AbstractTaskLinkedItem
 {
     use NotifyPropertyChangedTrait;
+
+    /**
+     * Related task.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\Task>")
+     *
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task", inversedBy="linked_articles")
+     * @ORM\JoinColumn(name="task_id", referencedColumnName="id", nullable=false)
+     * @Assert\NotNull()
+     * @Assert\Valid()
+     *
+     * @var Task
+     */
+    protected $task;
 
     /**
      * The article attached to the task.
@@ -56,7 +73,7 @@ class TaskLinkedArticle extends TaskLinkedItem
      * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\Article>")
      *
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Article")
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Article", inversedBy="task_links")
      * @ORM\JoinColumn(name="article_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      *
      * @Assert\NotBlank()

@@ -91,7 +91,7 @@ class TaskSubtask implements EntityInterface, NotifyPropertyChanged
     /**
      * Task entity with which this subtask is associated.
      *
-     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task", inversedBy="subtasks")
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      *
      * @Assert\NotNull()

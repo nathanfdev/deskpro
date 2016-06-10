@@ -136,11 +136,61 @@ class TwitterStatusMention extends \Application\DeskPRO\Domain\DomainObject
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
         $metadata->setPrimaryTable(['name' => 'twitter_statuses_mentions']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(['fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true]);
-        $metadata->mapField(['fieldName' => 'starts', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'starts']);
-        $metadata->mapField(['fieldName' => 'ends', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ends']);
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'starts',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'starts',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'ends',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'ends',
+        ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(['fieldName' => 'status', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => null, 'inversedBy' => 'mentions', 'joinColumns' => [0 => ['name' => 'status_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => null]]]);
-        $metadata->mapManyToOne(['fieldName' => 'user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => null, 'inversedBy' => 'mentions', 'joinColumns' => [0 => ['name' => 'user_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => null]]]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'status',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus',
+            'mappedBy'     => null,
+            'inversedBy'   => 'mentions',
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'status_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => false,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'user',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser',
+            'mappedBy'     => null,
+            'inversedBy'   => 'mentions',
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'user_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => false,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -57,34 +58,34 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
             $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
             $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\LabelChatConversation';
             $metadata->setPrimaryTable(
-                array(
+                [
                      'name'    => 'labels_chat_conversations',
-                     'indexes' => array(
-                         'label_idx' => array('columns' => array('label')),
-                     ),
-                )
+                     'indexes' => [
+                         'label_idx' => ['columns' => ['label']],
+                     ],
+                ]
             );
             $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
             $metadata->mapManyToOne(
-                array(
+                [
                      'fieldName'    => 'chat',
                      'id'           => true,
                      'targetEntity' => 'Application\\DeskPRO\\Entity\\ChatConversation',
                      'mappedBy'     => null,
-                     'inversedBy'   => null,
-                     'joinColumns'  => array(
-                         0 => array(
+                     'inversedBy'   => 'labels',
+                     'joinColumns'  => [
+                         [
                              'name'                 => 'chat_id',
                              'referencedColumnName' => 'id',
                              'nullable'             => true,
                              'onDelete'             => 'cascade',
                              'columnDefinition'     => null,
-                         ),
-                     ),
-                )
+                         ],
+                     ],
+                ]
             );
             $metadata->mapField(
-                array(
+                [
                      'fieldName'  => 'label',
                      'type'       => 'string',
                      'length'     => 255,
@@ -93,7 +94,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
                      'nullable'   => false,
                      'columnName' => 'label',
                      'id'         => true,
-                )
+                ]
             );
         }
     }

@@ -289,13 +289,55 @@ class TicketCategory extends DomainObject implements HasPhraseName
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketCategory';
-        $metadata->setPrimaryTable(array('name' => 'ticket_categories'));
+        $metadata->setPrimaryTable(['name' => 'ticket_categories']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title'));
-        $metadata->mapField(array('fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order'));
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'title',
+            'type'       => 'string',
+            'length'     => 255,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'title',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'display_order',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'display_order',
+        ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array('fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketCategory', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => array(0 => array('name' => 'parent_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null))));
-        $metadata->mapOneToMany(array('fieldName' => 'children', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketCategory', 'mappedBy' => 'parent',  'orderBy' => array('display_order' => 'ASC')));
+        $metadata->mapManyToOne([
+            'fieldName'    => 'parent',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketCategory',
+            'mappedBy'     => null,
+            'inversedBy'   => 'children',
+            'joinColumns'  => [
+                [
+                    'name'                 => 'parent_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
+        $metadata->mapOneToMany([
+            'fieldName'    => 'children',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketCategory',
+            'mappedBy'     => 'parent',
+            'orderBy'      => ['display_order' => 'ASC'],
+        ]);
     }
 }

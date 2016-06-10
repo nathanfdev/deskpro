@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -150,7 +151,7 @@ class DataStore extends \Application\DeskPRO\Domain\DomainObject
             return $this->data;
         }
 
-        return (isset($this->data[$key]) ? $this->data[$key] : $default);
+        return isset($this->data[$key]) ? $this->data[$key] : $default;
     }
 
     /**
@@ -209,17 +210,48 @@ class DataStore extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\DataStore';
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name'    => 'datastore',
-            'indexes' => array(
-                'name_idx' => array('columns' => array('name')),
-            ),
-        ));
+            'indexes' => [
+                'name_idx' => ['columns' => ['name']],
+            ],
+        ]);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'name'));
-        $metadata->mapField(array('fieldName' => 'auth', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth'));
-        $metadata->mapField(array('fieldName' => 'data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data'));
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'name',
+            'type'       => 'string',
+            'length'     => 100,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'name',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'auth',
+            'type'       => 'string',
+            'length'     => 15,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'auth',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'data',
+            'type'       => 'array',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'data',
+        ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }
 }

@@ -36,6 +36,7 @@ namespace DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem;
 
 use Application\DeskPRO\Entity\ChatConversation;
 use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
+use DeskPRO\Bundle\AppBundle\Entity\Task;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -47,9 +48,24 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @UniqueEntity(fields={"task", "chat"}, errorPath="chat")
  */
-class TaskLinkedChat extends TaskLinkedItem
+class TaskLinkedChat extends AbstractTaskLinkedItem
 {
     use NotifyPropertyChangedTrait;
+
+    /**
+     * Related task.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\Task>")
+     *
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task", inversedBy="linked_chats")
+     * @ORM\JoinColumn(name="task_id", referencedColumnName="id", nullable=false)
+     * @Assert\NotNull()
+     * @Assert\Valid()
+     *
+     * @var Task
+     */
+    protected $task;
 
     /**
      * Chat linked to task.

@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -645,7 +646,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
                 'fieldName'    => 'category',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\DownloadCategory',
                 'mappedBy'     => null,
-                'inversedBy'   => null,
+                'inversedBy'   => 'downloads',
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'category_id',

@@ -29,7 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Task\LinkedItem;
 
 use DeskPRO\Bundle\AppBundle\Entity\Task;
-use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedItem;
+use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\AbstractTaskLinkedItem;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -67,7 +67,7 @@ class TaskLinkedItemType extends AbstractType
      */
     public function onSetTask(FormEvent $event)
     {
-        /** @var TaskLinkedItem $data */
+        /** @var AbstractTaskLinkedItem $data */
         $data = $event->getData();
         $data->setTask($event->getForm()->getConfig()->getOption('task'));
     }

@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -232,27 +233,27 @@ class PersonPref extends DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PersonPref';
-        $metadata->setPrimaryTable(array('name' => 'people_prefs'));
+        $metadata->setPrimaryTable(['name' => 'people_prefs']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapManyToOne(
-            array(
+            [
                 'fieldName'    => 'person',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
                 'mappedBy'     => null,
                 'inversedBy'   => 'preferences',
-                'joinColumns'  => array(
-                    0 => array(
+                'joinColumns'  => [
+                    0 => [
                         'name'                 => 'person_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'cascade',
                         'columnDefinition'     => null,
-                    ),
-                ),
-            )
+                    ],
+                ],
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'name',
                 'type'       => 'string',
                 'length'     => 255,
@@ -261,38 +262,41 @@ class PersonPref extends DomainObject
                 'nullable'   => false,
                 'columnName' => 'name',
                 'id'         => true,
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'value_str',
                 'type'       => 'text',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'value_str',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'value_array',
                 'type'       => 'array',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'value_array',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                 'fieldName'  => 'date_expire',
                 'type'       => 'datetime',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'date_expire',
-            )
+            ]
         );
-        $metadata->setIdentifier(array('person', 'name'));
+        $metadata->setIdentifier([
+            'person',
+            'name',
+        ]);
     }
 }

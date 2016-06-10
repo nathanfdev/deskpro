@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -129,21 +129,54 @@ class ArticleSlugHistory extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ArticleSlugHistory';
-        $metadata->setPrimaryTable(array('name' => 'articles_slug_history'));
+        $metadata->setPrimaryTable(['name' => 'articles_slug_history']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
-            array(
-                'fieldName'  => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false,
+            [
+                'fieldName'  => 'date_created',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
                 'columnName' => 'date_created',
-            )
+            ]
         );
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
-        $metadata->mapField(array('fieldName' => 'slug', 'type' => 'string', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'slug', 'unique' => true));
-        $metadata->mapManyToOne(array(
-            'fieldName'   => 'article', 'targetEntity' => 'Application\DeskPRO\Entity\Article',
-            'cascade'     => array('remove', 'persist', 'merge'), 'inversedBy' => 'slug_history',
-            'joinColumns' => array(array('name' => 'article_id', 'referencedColumnName' => 'id', 'onDelete' => 'cascade', 'nullable' => false)),
-        ));
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'slug',
+            'type'       => 'string',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'slug',
+            'unique'     => true,
+        ]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'article',
+            'targetEntity' => 'Application\DeskPRO\Entity\Article',
+            'cascade'      => [
+                'remove',
+                'persist',
+                'merge',
+            ],
+            'inversedBy'  => 'slug_history',
+            'joinColumns' => [
+                [
+                    'name'                 => 'article_id',
+                    'referencedColumnName' => 'id',
+                    'onDelete'             => 'cascade',
+                    'nullable'             => false,
+                ],
+            ],
+        ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }
 }

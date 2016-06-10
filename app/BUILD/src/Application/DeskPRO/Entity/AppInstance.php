@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -245,74 +246,76 @@ class AppInstance extends DomainObject
         $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\AppInstance';
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name' => 'app_instances',
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'id',
             'fieldName'  => 'id',
             'type'       => 'integer',
             'id'         => true,
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'perm_type',
             'fieldName'  => 'perm_type',
             'type'       => 'string',
             'length'     => 15,
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'title',
             'fieldName'  => 'title',
             'type'       => 'string',
             'length'     => 255,
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'secret_key',
             'fieldName'  => 'secret_key',
             'type'       => 'string',
             'length'     => 40,
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'auth_key',
             'fieldName'  => 'auth_key',
             'type'       => 'string',
             'length'     => 40,
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'settings',
             'fieldName'  => 'settings',
             'type'       => 'json_array',
             'nullable'   => true,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'date_created',
             'fieldName'  => 'date_created',
             'type'       => 'datetime',
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapManyToOne(array(
+        $metadata->mapManyToOne([
             'fieldName'    => 'package',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\AppPackage',
             'fetch'        => ClassMetadataInfo::FETCH_LAZY,
-            'joinColumns'  => array(array(
-                'name'                 => 'package_name',
-                'referencedColumnName' => 'name',
-                'nullable'             => true,
-                'onDelete'             => 'CASCADE',
-            )),
-        ));
+            'joinColumns'  => [
+                [
+                    'name'                 => 'package_name',
+                    'referencedColumnName' => 'name',
+                    'nullable'             => true,
+                    'onDelete'             => 'CASCADE',
+                ],
+            ],
+        ]);
     }
 }

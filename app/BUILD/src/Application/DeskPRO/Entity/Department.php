@@ -593,10 +593,10 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Department';
-        $metadata->setPrimaryTable(array('name' => 'departments'));
+        $metadata->setPrimaryTable(['name' => 'departments']);
 
         $metadata->mapField(
-            array(
+            [
                  'fieldName'  => 'id',
                  'type'       => 'integer',
                  'precision'  => 0,
@@ -604,10 +604,10 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
                  'nullable'   => false,
                  'columnName' => 'id',
                  'id'         => true,
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                  'fieldName'  => 'title',
                  'type'       => 'string',
                  'length'     => 255,
@@ -615,10 +615,10 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
                  'scale'      => 0,
                  'nullable'   => false,
                  'columnName' => 'title',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                  'fieldName'  => 'user_title',
                  'type'       => 'string',
                  'length'     => 255,
@@ -626,91 +626,91 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
                  'scale'      => 0,
                  'nullable'   => false,
                  'columnName' => 'user_title',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                  'fieldName'  => 'is_tickets_enabled',
                  'type'       => 'boolean',
                  'precision'  => 0,
                  'scale'      => 0,
                  'nullable'   => false,
                  'columnName' => 'is_tickets_enabled',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                  'fieldName'  => 'is_chat_enabled',
                  'type'       => 'boolean',
                  'precision'  => 0,
                  'scale'      => 0,
                  'nullable'   => false,
                  'columnName' => 'is_chat_enabled',
-            )
+            ]
         );
         $metadata->mapField(
-            array(
+            [
                  'fieldName'  => 'display_order',
                  'type'       => 'integer',
                  'precision'  => 0,
                  'scale'      => 0,
                  'nullable'   => false,
                  'columnName' => 'display_order',
-            )
+            ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(
-            array(
+            [
                  'fieldName'    => 'parent',
                  'targetEntity' => 'Application\\DeskPRO\\Entity\\Department',
                  'mappedBy'     => null,
                  'inversedBy'   => 'children',
                  'fetch'        => ClassMetadataInfo::FETCH_EAGER,
-                 'joinColumns'  => array(
-                     0 => array(
+                 'joinColumns'  => [
+                     0 => [
                          'name'                 => 'parent_id',
                          'referencedColumnName' => 'id',
                          'nullable'             => true,
                          'onDelete'             => 'cascade',
                          'columnDefinition'     => null,
-                     ),
-                 ),
-            )
+                     ],
+                 ],
+            ]
         );
         $metadata->mapOneToMany(
-            array(
+            [
                  'fieldName'    => 'children',
                  'targetEntity' => 'Application\\DeskPRO\\Entity\\Department',
                  'mappedBy'     => 'parent',
-                 'orderBy'      => array('display_order' => 'ASC'),
+                 'orderBy'      => ['display_order' => 'ASC'],
                  'indexBy'      => 'id',
-            )
+            ]
         );
 
         $metadata->mapOneToMany(
-            array(
+            [
                 'fieldName'    => 'project_members',
                 'targetEntity' => 'DeskPRO\\Bundle\\AppBundle\\Entity\\ProjectMember',
                 'mappedBy'     => 'department',
-            )
+            ]
         );
 
-        $metadata->mapManyToOne(array(
+        $metadata->mapManyToOne([
             'fieldName'    => 'avatar',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
             'mappedBy'     => null,
             'inversedBy'   => null,
             'fetch'        => ClassMetadataInfo::FETCH_EAGER,
-            'joinColumns'  => array(
-                0 => array(
+            'joinColumns'  => [
+                0 => [
                     'name'                 => 'avatar_blob_id',
                     'referencedColumnName' => 'id',
                     'nullable'             => true,
                     'onDelete'             => 'cascade',
                     'columnDefinition'     => null,
-                ),
-            ),
+                ],
+            ],
             'dpApi' => true,
-        ));
+        ]);
     }
 }

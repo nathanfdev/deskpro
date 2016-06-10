@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -65,26 +66,26 @@ class SessData extends \Application\DeskPRO\Domain\DomainObject
 
         $builder->setTable('sess_data');
 
-        $builder->createField('sess_id', 'string', array(
+        $builder->createField('sess_id', 'string', [
                 'nullable' => false,
-            )
+            ]
         )->isPrimaryKey()->build();
-        $builder->addField('sess_time', 'integer', array(
+        $builder->addField('sess_time', 'integer', [
                 'unsigned' => true,
                 'nullable' => false,
-            )
+            ]
         );
-        $builder->addField('visitor_id', 'string', array(
+        $builder->addField('visitor_id', 'string', [
                 'nullable' => true,
-            )
+            ]
         );
-        $builder->addField('person_id', 'integer', array(
+        $builder->addField('person_id', 'integer', [
                 'nullable' => true,
-            )
+            ]
         );
-        $builder->addField('sess_data', 'text', array(
+        $builder->addField('sess_data', 'text', [
                 'nullable' => false,
-            )
+            ]
         );
     }
 }

@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
@@ -164,48 +165,50 @@ class ApiToken extends DomainObject
         $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 
-        $metadata->setPrimaryTable(array(
+        $metadata->setPrimaryTable([
             'name' => 'api_token',
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'columnName' => 'id',
             'fieldName'  => 'id',
             'type'       => 'integer',
             'id'         => true,
             'nullable'   => false,
-        ));
+        ]);
 
-        $metadata->mapField(array(
+        $metadata->mapField([
             'fieldName'  => 'token',
             'columnName' => 'token',
             'type'       => 'string',
             'length'     => 25,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'scope',
             'columnName' => 'scope',
             'type'       => 'string',
             'length'     => 50,
             'nullable'   => false,
-        ));
-        $metadata->mapField(array(
+        ]);
+        $metadata->mapField([
             'fieldName'  => 'date_expires',
             'columnName' => 'date_expires',
             'type'       => 'datetime',
             'nullable'   => true,
-        ));
+        ]);
 
-        $metadata->mapManyToOne(array(
+        $metadata->mapManyToOne([
             'fieldName'    => 'person',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
-            'joinColumns'  => array(array(
-                'name'                 => 'person_id',
-                'referencedColumnName' => 'id',
-                'nullable'             => false,
-                'onDelete'             => 'cascade',
-            )),
-        ));
+            'joinColumns'  => [
+                [
+                    'name'                 => 'person_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => false,
+                    'onDelete'             => 'cascade',
+                ],
+            ],
+        ]);
     }
 }
