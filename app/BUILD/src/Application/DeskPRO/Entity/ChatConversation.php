@@ -184,6 +184,10 @@ class ChatConversation extends DomainObject
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
+     *
+     * @JMS\Type("custom_data<array>")
+     * @JMS\SerializedName("fields")
+     * @JMS\Expose()
      */
     protected $custom_data;
 
@@ -1153,6 +1157,14 @@ class ChatConversation extends DomainObject
         if ($change) {
             $this->_onPropertyChanged('custom_data', null, $this->participants);
         }
+    }
+
+    /**
+     * @return ArrayCollection|CustomDataChat[]
+     */
+    public function getCustomData()
+    {
+        return $this->custom_data;
     }
 
     /**

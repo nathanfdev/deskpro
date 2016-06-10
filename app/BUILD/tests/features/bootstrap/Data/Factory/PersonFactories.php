@@ -88,9 +88,10 @@ class PersonFactories
             ]);
 
             $em->persist($group);
+            $em->flush($group);
+
             DataContext::setReference("{$data['sys_name']}_group", $group);
         }
-        $em->flush();
     }
 
     /**
@@ -109,6 +110,7 @@ class PersonFactories
             'can_admin'    => true,
             'password'     => 'password',
         ]);
+
         $admin->setEmail($email, true);
         $admin->addUsergroup(self::getUsergroup(Usergroup::EVERYONE));
         $admin->addUsergroup(self::getUsergroup(Usergroup::REGISTERED));

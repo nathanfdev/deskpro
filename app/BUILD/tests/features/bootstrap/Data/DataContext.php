@@ -28,9 +28,8 @@
 
 namespace DpBehat\Data;
 
-use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Entity\CustomDefAbstract;
 use Behat\Gherkin\Node\TableNode;
-use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DpBehat\BaseContext;
 
 /**
@@ -64,12 +63,21 @@ class DataContext extends BaseContext
     }
 
     /**
+     * Store data object ref.
+     * We create entities implicit way so keep just class/id ref not full object.
+     *
      * @param string $name
      * @param object $object
+     *
+     * @throws \Exception
      */
     public static function setReference($name, $object)
     {
-        self::$references[$name] = $object;
+        if (!$object->getId()) {
+            throw new \Exception('Unable to set reference of not persisted object');
+        }
+
+        self::$references[$name] = [get_class($object), $object->getId()];
     }
 
     /**
@@ -109,11 +117,9 @@ class DataContext extends BaseContext
             return;
         }
 
-        if (self::$references[$name] instanceof DomainObject || self::$references[$name] instanceof EntityInterface) {
-            return self::getEm()->merge(self::$references[$name]);
-        }
+        list($class, $id) = self::$references[$name];
 
-        return self::$references[$name];
+        return self::getEm()->find($class, $id);
     }
 
     /**
@@ -220,6 +226,9 @@ class DataContext extends BaseContext
      * @Given I add the following :type records:
      * @Given I have the following :type records:
      * @Given I have this :type records:
+     *
+     * @param string    $type
+     * @param TableNode $table
      */
     public function theFollowingRecordsExist($type, TableNode $table)
     {
@@ -239,24 +248,164 @@ class DataContext extends BaseContext
 
             $record = $this->om()->create($type, $data);
 
-            // Track the record reference
-            if ($reference) {
-                self::$references[$reference] = $record;
-            }
-
             $this->em()->persist($record);
             $this->em()->flush();
+            $this->em()->clear();
+
+            // Track the record reference
+            if ($reference) {
+                $this->setReference($reference, $record);
+            }
         }
     }
 
     /**
      * @Given only the following :type records exist:
+     *
+     * @param string    $type
+     * @param TableNode $table
      */
     public function onlyTheFollowingRecordsExist($type, TableNode $table)
     {
         $this->noRecordsExist($type);
         $this->theFollowingRecordsExist($type, $table);
     }
+
+    /**
+     * @Given the object :entityRef has custom data :customDefRef with only value :value
+     *
+     * @param string $entityRef
+     * @param string $customDefRef
+     * @param string $value
+     *
+     * @throws \Exception
+     */
+    public function theObjectWithReferenceHasCustomDataWithOnlyValue($entityRef, $customDefRef, $value)
+    {
+        /** @var CustomDefAbstract $customDef */
+        $customDef = $this->getReference($customDefRef);
+        $entity    = $this->getReference($entityRef);
+        $value     = self::replace($value);
+
+        if (!method_exists($entity, 'getCustomData') || !method_exists($entity, 'addCustomData')) {
+            throw new \Exception("$entityRef doesn't support custom data");
+        }
+
+        if ($customDef->isChoiceType()) {
+            foreach (explode(',', $value) as $choiceId) {
+                $choiceDef = $customDef->getChildById($choiceId);
+                if (!$choiceDef) {
+                    throw new \Exception("$customDefRef doesn't have choice $choiceId");
+                }
+
+                $customData = $customDef->createNewDataInstance();
+                $customData->setField($choiceDef);
+                $customData->setValue(1);
+
+                $entity->addCustomData($customData);
+            }
+        } else {
+            $customData = $customDef->createNewDataInstance();
+
+            if ($customDef->getWidgetType() === CustomDefAbstract::TYPE_TOGGLE) {
+                $customData->setValue($value);
+            } elseif ($customDef->isDateType()) {
+                $date = new \DateTime($value);
+                if ($customDef->getWidgetType() === CustomDefAbstract::TYPE_DATE) {
+                    $date->modify('midnight');
+                }
+
+                $customData->setValue($date->getTimestamp());
+            } else {
+                $customData->setData($value);
+            }
+
+            $entity->addCustomData($customData);
+        }
+
+        $this->persistAndFlush($entity);
+    }
+
+    // ConcreteDataContext ---------------------------------------------------------------------------------------------
+
+    /**
+     * @Given there are no Blob records in the DB
+     */
+    public function noBlobs()
+    {
+        $this->noRecordsExist('TaskAttachment');
+        $this->noRecordsExist('Blob');
+    }
+
+    /**
+     * @Given there are no custom ticket fields defined
+     */
+    public function noCustomTicketFieldsExist()
+    {
+        $this->noRecordsExist('CustomDefTicket');
+    }
+
+    /**
+     * @Given the following custom ticket fields exist:
+     *
+     * @param TableNode $table
+     */
+    public function theFollowingCustomTicketFieldsExist(TableNode $table)
+    {
+        $this->theFollowingRecordsExist('CustomDefTicket', $table);
+    }
+
+    /**
+     * @Given only the following custom ticket fields exist:
+     *
+     * @param TableNode $table
+     */
+    public function onlyTheFollowingCustomTicketFieldsExist(TableNode $table)
+    {
+        $this->onlyTheFollowingRecordsExist('CustomDefTicket', $table);
+    }
+
+    /**
+     * @Given only the following custom organization fields exist:
+     *
+     * @param TableNode $table
+     */
+    public function onlyTheFollowingCustomOrganizationFieldsExist(TableNode $table)
+    {
+        $this->onlyTheFollowingRecordsExist('CustomDefOrganization', $table);
+    }
+
+    /**
+     * @Given only the following custom feedback fields exist:
+     *
+     * @param TableNode $table
+     */
+    public function onlyTheFollowingCustomFeedbackFieldsExist(TableNode $table)
+    {
+        $this->onlyTheFollowingRecordsExist('CustomDefFeedback', $table);
+    }
+
+    /**
+     * @Given only the following custom person fields exist:
+     *
+     * @param TableNode $table
+     */
+    public function onlyTheFollowingCustomPersonFieldsExist(TableNode $table)
+    {
+        $this->onlyTheFollowingRecordsExist('CustomDefPerson', $table);
+    }
+
+    /**
+     * @Given only the following custom chat fields exist:
+     *
+     * @param TableNode $table
+     */
+    public function onlyTheFollowingCustomChatFieldsExist(TableNode $table)
+    {
+        $this->onlyTheFollowingRecordsExist('CustomDefChat', $table);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * @param string $ref
@@ -333,6 +482,7 @@ class DataContext extends BaseContext
             if (!$reflectionObject->hasProperty($prop)) {
                 throw new \Exception("Property $prop doesn't exist");
             }
+
             $reflectionProperty = $reflectionObject->getProperty($prop);
             $reflectionProperty->setAccessible(true);
 
@@ -342,51 +492,9 @@ class DataContext extends BaseContext
         if (!$isJson) {
             $content = preg_replace_callback('/\{(.+)\}/U', $callback, $content);
         }
+
         $content = preg_replace_callback('/\~(.+)\~/U', $callback, $content);
 
         return $content;
-    }
-
-    // ConcreteDataContext ---------------------------------------------------------------------------------------------
-
-    /**
-     * @Given there are no Blob records in the DB
-     */
-    public function noBlobs()
-    {
-        $this->noRecordsExist('TaskAttachment');
-        $this->noRecordsExist('Blob');
-    }
-
-    /**
-     * @Given there are no custom ticket fields defined
-     */
-    public function noCustomTicketFieldsExist()
-    {
-        $this->noRecordsExist('CustomDefTicket');
-    }
-
-    /**
-     * @Given the following custom ticket fields exist:
-     */
-    public function theFollowingCustomTicketFieldsExist($table)
-    {
-        $this->theFollowingRecordsExist('CustomDefTicket', $table);
-    }
-
-    /**
-     * @Given only the following custom ticket fields exist:
-     */
-    public function onlyTheFollowingCustomTicketFieldsExist($table)
-    {
-        $this->onlyTheFollowingRecordsExist('CustomDefTicket', $table);
-    }
-
-    /**
-     * @Given only the following custom organization fields exist:
-     */
-    public function onlyTheFollowingCustomOrganizationFieldsExist($table)
-    {
-        $this->onlyTheFollowingRecordsExist('CustomDefOrganization', $table);
     }
 }

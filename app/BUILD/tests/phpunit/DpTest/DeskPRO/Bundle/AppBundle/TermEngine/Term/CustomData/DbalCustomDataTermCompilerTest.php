@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
@@ -44,7 +41,7 @@ class DbalCustomDataTermCompilerTest extends AbstractDbalTicketFilterTermCompile
      */
     public function it_should_be_instantiable()
     {
-        $this->assertInstanceOf(DbalCustomDataTermCompiler::class, new DbalCustomDataTermCompiler());
+        $this->assertInstanceOf(DbalCustomDataTermCompiler::class, new DbalCustomDataTermCompiler($this->getContainer()->get('doctrine.orm.default_entity_manager')));
     }
 
     /**

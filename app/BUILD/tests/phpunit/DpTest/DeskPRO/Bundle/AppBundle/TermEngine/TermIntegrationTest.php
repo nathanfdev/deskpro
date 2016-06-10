@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine;
 
 use Application\DeskPRO\Entity\CustomDataTicket;
@@ -199,8 +200,8 @@ abstract class TermIntegrationTest extends ApiTestCase
      * @param string          $value
      *
      * @throws \Exception
-     * @return CustomDataTicket
      *
+     * @return CustomDataTicket
      */
     protected function dummyCustomDataTicket(Ticket $ticket, CustomDefTicket $def, $type, $value)
     {
@@ -209,6 +210,7 @@ abstract class TermIntegrationTest extends ApiTestCase
         }
         $data = new CustomDataTicket();
         $data->setTicket($ticket);
+        $data->setRootField($def);
         $data->setField($def);
         if ($type === 'value') {
             $data->setValue($value);

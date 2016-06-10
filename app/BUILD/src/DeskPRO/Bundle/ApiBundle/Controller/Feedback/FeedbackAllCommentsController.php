@@ -66,6 +66,14 @@ use Symfony\Component\HttpFoundation\Request;
  *          {"name"="hidden_status", "dataType"="string", "description"="an integer value represents current hidden_status"},
  *          {"name"="created_from", "dataType"="datetime", "description"="a datetime string to search comments since"},
  *          {"name"="created_to", "dataType"="datetime", "description"="a datetime string to search comments until"},
+ *          {
+ *              "name"="feedback_field.{id}",
+ *              "description"="
+ *                  Custom feedback field filter. To filter by a custom field with ID=1 you need to add
+ *                  ?feedback_field.1=value to the query string",
+ *              "dataType"="string",
+ *              "pattern"="\d+|\w"
+ *          }
  *      }
  * )
  */

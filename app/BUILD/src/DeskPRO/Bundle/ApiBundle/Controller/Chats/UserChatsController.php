@@ -29,8 +29,10 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Chats;
 
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\CustomDefChat;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\CustomDataHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\DateHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
@@ -52,7 +54,15 @@ use Symfony\Component\HttpFoundation\Request;
  *          {"name"="date_created", "dataType"="string", "pattern"="Y-m-d:Y-m-d"},
  *          {"name"="date_period", "dataType"="string", "pattern"="today|yesterday|etc"},
  *          {"name"="agent", "dataType"="integer", "pattern"="\d+"},
- *          {"name"="department", "dataType"="integer", "pattern"="\d+"}
+ *          {"name"="department", "dataType"="integer", "pattern"="\d+"},
+ *          {
+ *              "name"="chat_field.{id}",
+ *              "description"="
+ *                  Custom chat field filter. To filter by a custom field with ID=1 you need to add
+ *                  ?chat_field.1=value to the query string",
+ *              "dataType"="string",
+ *              "pattern"="\d+|\w"
+ *          }
  *     }
  * )
  * @ApiDoc(
@@ -98,6 +108,7 @@ class UserChatsController extends CrudController
         DateHelper::applyDateRangeFilter($context, 'date_created', 'created_from', 'created_to');
         DateHelper::applyDatePeriodFilter($context, 'date_created', 'date_created');
         ListHelper::applyInListFilter($context, 'department');
+        CustomDataHelper::applyCustomDataFilters($context, 'chat', CustomDefChat::class);
 
         $agent = $request->get('agent');
         if ($agent) {

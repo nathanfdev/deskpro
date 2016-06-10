@@ -112,7 +112,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
      *
      * @var string
      */
-    protected $title;
+    protected $title = '';
 
     /**
      * The main content for the item. This should be HTML!

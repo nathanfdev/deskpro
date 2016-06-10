@@ -33,7 +33,10 @@ use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\CustomDefChat;
+use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\CustomDefOrganization;
+use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Download;
@@ -187,6 +190,9 @@ class ObjectsManager
             'Chat'                   => [Factory\SimpleFactory::class, 'create', ChatConversation::class],
             'CustomDefOrganization'  => [Factory\CommonFactories::class, 'customDef', 'organization'],
             'CustomDefTicket'        => [Factory\CommonFactories::class, 'customDef', 'ticket'],
+            'CustomDefPerson'        => [Factory\CommonFactories::class, 'customDef', 'person'],
+            'CustomDefChat'          => [Factory\CommonFactories::class, 'customDef', 'conversation'],
+            'CustomDefFeedback'      => [Factory\CommonFactories::class, 'customDef', 'feedback'],
             'Department'             => [Factory\CommonFactories::class, 'department'],
             'Download'               => [Factory\SimpleFactory::class, 'create', Download::class],
             'DownloadCategory'       => [Factory\SimpleFactory::class, 'create', DownloadCategory::class],
@@ -194,12 +200,12 @@ class ObjectsManager
             'FeedbackCategory'       => [Factory\SimpleFactory::class, 'create', FeedbackCategory::class],
             'FeedbackStatusCategory' => [Factory\SimpleFactory::class, 'create', FeedbackStatusCategory::class],
             'GlossaryWord'           => [Factory\SimpleFactory::class, 'create', GlossaryWord::class],
+            'Task'                   => [Factory\CommonFactories::class, 'task'],
             'GlossaryWordDefinition' => [Factory\SimpleFactory::class, 'create', GlossaryWordDefinition::class],
             'News'                   => [Factory\SimpleFactory::class, 'create', News::class],
             'NewsCategory'           => [Factory\SimpleFactory::class, 'create', NewsCategory::class],
             'Organization'           => [Factory\SimpleFactory::class, 'create', Organization::class],
             'Product'                => [Factory\CommonFactories::class, 'product'],
-            'Task'                   => [Factory\CommonFactories::class, 'task'],
             'Ticket'                 => [Factory\CommonFactories::class, 'ticket'],
             'TicketPriority'         => [Factory\SimpleFactory::class, 'create', TicketPriority::class],
             'TicketCategory'         => [Factory\SimpleFactory::class, 'create', TicketCategory::class],
@@ -225,6 +231,9 @@ class ObjectsManager
             'Department'             => [$this, 'find', Department::class],
             'CustomDefTicket'        => [$this, 'find', CustomDefTicket::class],
             'CustomDefOrganization'  => [$this, 'find', CustomDefOrganization::class],
+            'CustomDefPerson'        => [$this, 'find', CustomDefPerson::class],
+            'CustomDefChat'          => [$this, 'find', CustomDefChat::class],
+            'CustomDefFeedback'      => [$this, 'find', CustomDefFeedback::class],
             'Task'                   => [$this, 'find', Task::class],
             'Person'                 => [$this, 'find', Person::class],
             'Article'                => [$this, 'find', Article::class],

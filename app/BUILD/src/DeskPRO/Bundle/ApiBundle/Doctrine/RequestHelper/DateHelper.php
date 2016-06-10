@@ -50,19 +50,31 @@ class DateHelper
      * Get period select DQL clause for a given target field.
      *
      * @param string $targetField
+     * @param string $format      Could be 'date' or 'timestamp'
      *
      * @return string
      */
-    public static function getDatePeriodCaseWhenDql($targetField)
+    public static function getDatePeriodCaseWhenDql($targetField, $format = 'date')
     {
-        $today               = date('Y-m-d', strtotime('today'));
-        $yesterday           = date('Y-m-d', strtotime('yesterday'));
-        $firstDayOfThisWeek  = date('Y-m-d', strtotime('monday this week'));
-        $firstDayOfThisMonth = date('Y-m-d', strtotime('first day of this month'));
-        $firstDayOfLastMonth = date('Y-m-d', strtotime('first day of -1 month'));
-        $firstDayOfThisYear  = date('Y-01-01');
+        $today               = strtotime('today');
+        $yesterday           = strtotime('yesterday');
+        $firstDayOfThisWeek  = strtotime('monday this week');
+        $firstDayOfThisMonth = strtotime('first day of this month');
+        $firstDayOfLastMonth = strtotime('first day of -1 month');
+        $firstDayOfThisYear  = strtotime('first day of this year');
 
-        $target = "DATE($targetField)";
+        $target = $targetField;
+
+        if ($format === 'date') {
+            $today               = date('Y-m-d', strtotime('today'));
+            $yesterday           = date('Y-m-d', strtotime('yesterday'));
+            $firstDayOfThisWeek  = date('Y-m-d', strtotime('monday this week'));
+            $firstDayOfThisMonth = date('Y-m-d', strtotime('first day of this month'));
+            $firstDayOfLastMonth = date('Y-m-d', strtotime('first day of -1 month'));
+            $firstDayOfThisYear  = date('Y-m-d', $firstDayOfThisYear);
+
+            $target = "DATE($targetField)";
+        }
 
         $groupSelectDql = "(CASE
             WHEN $target  = '$today' THEN 'today'
@@ -91,14 +103,14 @@ class DateHelper
 
         $minValue = $request->get($minQueryParam);
         if ($minValue) {
-            $qb->andWhere("$alias.$property >= DATE(:$minQueryParam)");
-            $qb->setParameter($minQueryParam, $minValue);
+            $qb->andWhere("$alias.$property >= DATE(:$alias$minQueryParam)");
+            $qb->setParameter($alias.$minQueryParam, $minValue);
         }
 
         $maxValue = $request->get($maxQueryParam);
         if ($maxValue) {
-            $qb->andWhere("$alias.$property <= DATE(:$maxQueryParam)");
-            $qb->setParameter($maxQueryParam, $maxValue);
+            $qb->andWhere("$alias.$property <= DATE(:$alias$maxQueryParam)");
+            $qb->setParameter($alias.$maxQueryParam, $maxValue);
         }
     }
 
@@ -106,18 +118,20 @@ class DateHelper
      * @param RequestQueryContext $context
      * @param string              $property
      * @param string              $queryParam
+     * @param string              $format
      */
-    public static function applyDatePeriodFilter(RequestQueryContext $context, $property, $queryParam)
+    public static function applyDatePeriodFilter(RequestQueryContext $context, $property, $queryParam, $format = 'date')
     {
+        $alias = $context->getAlias();
         $value = $context->getRequest()->get($queryParam);
         if (!$value) {
             return;
         }
 
-        $periodDql = self::getDatePeriodCaseWhenDql("{$context->getAlias()}.$property");
+        $periodDql = self::getDatePeriodCaseWhenDql("$alias.$property", $format);
 
-        $context->getQb()->andWhere("$periodDql = :$queryParam");
-        $context->getQb()->setParameter($queryParam, $value);
+        $context->getQb()->andWhere("$periodDql = :$alias$queryParam");
+        $context->getQb()->setParameter($alias.$queryParam, $value);
     }
 
     /**

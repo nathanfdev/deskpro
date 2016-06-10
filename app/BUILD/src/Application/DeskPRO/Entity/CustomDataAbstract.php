@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 /**
@@ -152,6 +153,8 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
      * @param string $def  Def table alias
      *
      * @return string
+     *
+     * @deprecated
      */
     public static function getDataSql($data = 'custom_data_ticket', $def = 'custom_def_ticket')
     {

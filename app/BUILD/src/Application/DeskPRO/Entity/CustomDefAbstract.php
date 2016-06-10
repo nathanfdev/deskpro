@@ -587,6 +587,31 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
+     * @return mixed
+     */
+    public function getCustomDataClass()
+    {
+        return str_replace('Def', 'Data', get_class($this));
+    }
+
+    /**
+     * @return CustomDataAbstract
+     */
+    public function createNewDataInstance()
+    {
+        /* @var CustomDataAbstract $customData */
+        $className  = $this->getCustomDataClass();
+        $customData = new $className();
+        $customData->setRootField($this);
+
+        if (!$this->isChoiceType()) {
+            $customData->setField($this);
+        }
+
+        return $customData;
+    }
+
+    /**
      * Get the value of an option, or a default value if none is set.
      *
      * @param      $name
