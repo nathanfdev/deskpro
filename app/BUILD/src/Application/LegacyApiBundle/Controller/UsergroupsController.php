@@ -211,4 +211,32 @@ class UsergroupsController extends AbstractController implements ProtectedContro
             return $this->createApiSuccessResponse();
         }
     }
+
+    public function savePermissionsAction($type)
+    {
+        $newPermissions = $this->in->getCleanValueArray('permissions');
+
+        $userGroups = $this->container->getUserGroups()->getAll();
+
+        $perms = new GroupsDbLoader($userGroups, $this->em);
+
+        $db_persister = new GroupDbPersister($this->em);
+
+        list($permissionType, $permissionAction) = explode('.', $type);
+
+        foreach ($userGroups as $userGroup) {
+            $permissions = $perms->getGroupPermissions($userGroup->getId());
+            if (!isset($permissions->$permissionType->$permissionAction)) {
+                return $this->createApiErrorResponse('unknown_permission', 'The permission '.$type.' does not exists');
+            }
+            if (!empty($newPermissions[$userGroup->getId()])) {
+                $permissions->$permissionType->$permissionAction = true;
+            } else {
+                $permissions->$permissionType->$permissionAction = false;
+            }
+            $db_persister->savePerms($userGroup, $permissions);
+        }
+
+        return $this->createApiSuccessResponse();
+    }
 }

@@ -6426,6 +6426,16 @@ $collection->create(
     ]
 );
 
+$collection->create(
+    'api_user_groups_save',
+    [
+        'path'         => '/user_groups/permissions/{type}',
+        'controller'   => 'LegacyApiBundle:Usergroups:savePermissions',
+        'requirements' => ['type' => '([-\._a-z0-9]+)'],
+        'methods'      => ['PUT'],
+    ]
+);
+
 ########################################################################################################################
 # CRM Import CSV
 ########################################################################################################################

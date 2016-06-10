@@ -37,11 +37,11 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
         savedSettings = localStorage.getItem 'widgetSettings'
         if savedSettings
           savedSettings = JSON.parse savedSettings
-        if savedSettings.global && !jQuery.isEmptyObject savedSettings.global
+        if savedSettings.global? && !jQuery.isEmptyObject savedSettings.global
           @$scope.global_settings = savedSettings.global
         else
           @$scope.global_settings = data.settings.global;
-        if savedSettings.brand && !jQuery.isEmptyObject savedSettings.brand
+        if savedSettings.brand? && !jQuery.isEmptyObject savedSettings.brand
           @$scope.brand_settings = savedSettings.brand
         else
           @$scope.brand_settings = data.settings.brand;
@@ -50,7 +50,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
         @initLiveDemo()
         @getChatCustomFields(savedSettings)
         @getUserGroups()
-        @loadEditUserGroupData()
+        @loadEditUserGroupPermissions(savedSettings)
 
         @$scope.saving_code = true
         @loadCode().then (codeResponse) =>
@@ -71,6 +71,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
       @$scope.$watch('brand_settings', updateLiveDemoDebounce, true)
       @$scope.$watch('global_settings', updateLiveDemoDebounce, true)
       @$scope.$watch('custom_fields', updateLiveDemoDebounce, true)
+      @$scope.$watch('user_group_permission', updateLiveDemoDebounce, true)
 
       return @$q.all([setupPromise, departmentsPromise, languagesPromise])
 
@@ -87,7 +88,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
     reset: ->
       if confirm("Current edit on the settings will be overridden. Are your sure?")
         localStorage.removeItem 'widgetSettings'
-        @initialLoad()
+        @initialLoad().then( =>
+          @Growl.success "Settings reseted"
+        )
 
     getLanguage: (translation) ->
       for language in @$scope.languages
@@ -106,7 +109,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
         return true
         
     getChatCustomFields: (savedSettings) ->
-      if savedSettings.custom_fields && !jQuery.isEmptyObject savedSettings.custom_fields
+      if savedSettings.custom_fields? && !jQuery.isEmptyObject savedSettings.custom_fields
         @$scope.custom_fields = savedSettings.custom_fields
       else
         @Api.sendDataGet([
@@ -128,11 +131,13 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
 
       )
 
-    loadEditUserGroupData: () ->
-
-      @Api2.sendGet('/user_groups/permissions/chat.use').then( (res) =>
-        @$scope.user_group_permission = res.data.data
-      )
+    loadEditUserGroupPermissions: (savedSettings) ->
+      if savedSettings.user_group_permission? && !jQuery.isEmptyObject savedSettings.user_group_permission
+        @$scope.user_group_permission = savedSettings.user_group_permission
+      else
+        @Api2.sendGet('/user_groups/permissions/chat.use').then( (res) =>
+          @$scope.user_group_permission = res.data.data
+        )
 
     addButtonTranslation: (languageId) ->
       if not languageId
@@ -165,7 +170,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
     getSaveData: -> {
       global: @$scope.global_settings,
       brand: @$scope.brand_settings,
-      custom_fields: @$scope.custom_fields
+      custom_fields: @$scope.custom_fields,
+      user_group_permission: @$scope.user_group_permission
     }
 
     changeRights: (group) ->
@@ -222,17 +228,31 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
       @$scope.saving_code = true
 
       saveData = @getSaveData()
-      @Api2.sendPostJson('/widget/setup', {global: saveData.global, brand: saveData.brand}, null, headers: {
+      permissionPromise = @Api.sendPutJson(
+        '/user_groups/permissions/chat.use',
+        JSON.stringify({permissions: saveData.user_group_permission}), null, headers: {
+          'X-Agent-Request': 'true'
+        })
+      widgetPromise = @Api2.sendPostJson('/widget/setup', {global: saveData.global, brand: saveData.brand}, null, headers: {
         'X-Agent-Request': 'true'
       }).then(
         () => @loadCode().then (codeResponse) =>
           @$scope.code = codeResponse.data
           @$scope.saving_code = false
-          localStorage.removeItem 'widgetSettings'
         ,
         (response) =>
           @$scope.formErrors = response.data?.errors?.fields
           @$scope.saving_code = false
+      )
+
+      @startSpinner('saving')
+      @$q.all([permissionPromise, widgetPromise]).then( =>
+        @stopSpinner('saving')
+        localStorage.removeItem 'widgetSettings'
+        @Growl.success "Settings saved"
+      , (info) =>
+        @stopSpinner('saving', true)
+        @applyErrorResponseToView(info)
       )
 
     initLiveDemo: ->
