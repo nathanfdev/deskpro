@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api\PortalDesigner;
 
 use Application\DeskPRO\Entity\Template;
@@ -96,12 +97,16 @@ class TemplatesController extends AbstractApiController
             throw new BadRequestHttpException('Request body must contain "code" or "revert" props');
         }
 
-        if (!empty($data['revert'])) {
-            $this->getManager()->remove($template);
-        } else {
-            $template->template_code     = $data['code'];
-            $template->template_compiled = $this->get('twig')->compileSource($template->template_code, $template_name);
-            $this->getManager()->persist($template);
+        try {
+            if (!empty($data['revert'])) {
+                $this->getManager()->remove($template);
+            } else {
+                $template->template_code     = $data['code'];
+                $template->template_compiled = $this->get('twig')->compileSource($template->template_code, $template_name);
+                $this->getManager()->persist($template);
+            }
+        } catch (\Twig_Error $e) {
+            throw new BadRequestHttpException('Template compilation error: '.$e->getMessage());
         }
 
         $this->getManager()->flush();

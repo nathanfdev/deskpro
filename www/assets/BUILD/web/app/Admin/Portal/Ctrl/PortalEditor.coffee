@@ -216,10 +216,14 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         url: '/portal/api/style/edit-theme-set/template-sources?template=' + @selected_template,
         data: angular.toJson({code: @selected_template_info.code})
       })
+      .success(
+        () =>
+          @selected_template = null
+          @selected_template_info_loaded = false
+      )
       .error(@serverError)
 
-      @selected_template = null
-      @selected_template_info_loaded = false
+
 
     revertTemplateEditor: () =>
       @$http({
