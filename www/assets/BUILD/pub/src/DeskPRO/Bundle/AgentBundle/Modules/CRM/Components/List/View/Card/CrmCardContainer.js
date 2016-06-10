@@ -77,7 +77,7 @@ export class CrmCardContainer extends Component {
 
   render() {
     const { elements, content } = this.props;
-    if (content === 'organizations') {
+    if (content === 'Organization') {
       return (
         <div>
           {elements.map((id, index) => this.renderOrganizationCard(id, index))}

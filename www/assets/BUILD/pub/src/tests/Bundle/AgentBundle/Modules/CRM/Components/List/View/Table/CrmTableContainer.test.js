@@ -21,7 +21,7 @@ describe('CRM: CrmTableContainer', () => {
     spyOn(OrganizationsTable.prototype, 'render').and.callThrough();
     spyOn(PeopleTable.prototype, 'render').and.callThrough();
 
-    render('organizations');
+    render('Organization');
 
     expect(OrganizationsTable.prototype.render).toHaveBeenCalled();
     expect(PeopleTable.prototype.render).not.toHaveBeenCalled();

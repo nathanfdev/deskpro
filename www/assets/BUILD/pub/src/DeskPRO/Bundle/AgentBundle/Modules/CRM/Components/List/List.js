@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
-import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
+import { ListFrameContainer, SaveAsCsv } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ListFrameMenu';
 import { ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ListFrameContents';
 import { PaginationBoxView } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Pagination/PaginationBoxView';
@@ -11,41 +11,53 @@ import { MassActionContainer } from './ControlBar/MassActionContainer';
 
 export class List extends Component {
   static propTypes = {
-    selected:        PropTypes.object.isRequired,
-    currentViewMode: PropTypes.string.isRequired,
-    content:         PropTypes.string.isRequired,
-    handlePageClick: PropTypes.func.isRequired,
-    isLoaded:        PropTypes.bool,
-    pagination:      PropTypes.object,
-    peopleFields:    PropTypes.object.isRequired,
-    orgFields:       PropTypes.object.isRequired
+    selected:          PropTypes.object.isRequired,
+    currentListParams: PropTypes.object.isRequired,
+    currentViewMode:   PropTypes.string.isRequired,
+    content:           PropTypes.string.isRequired,
+    handlePageClick:   PropTypes.func.isRequired,
+    isLoaded:          PropTypes.bool,
+    pagination:        PropTypes.object,
+    peopleFields:      PropTypes.object.isRequired,
+    orgFields:         PropTypes.object.isRequired
   };
 
   render() {
-    const { currentViewMode, selected, isLoaded, pagination, content, handlePageClick, peopleFields,
-            orgFields } = this.props;
+    const {
+            currentListParams, currentViewMode, selected, isLoaded, pagination, content, handlePageClick,
+            peopleFields, orgFields
+          } = this.props;
+
+    const exportedFields = content === 'people' ? peopleFields.get(currentViewMode) : orgFields.get(currentViewMode);
+    const repositoryName = content === 'people' ? 'Person' : 'Organization';
 
     return (
       <ListFrameContainer>
         <ListFrameMenu>
-          {!selected.size && <ControlBarContainer key="1"/>}
-          {selected.size && <MassActionContainer key="2"/>}
+          {!selected.size && <ControlBarContainer key="1" />}
+          {selected.size && <MassActionContainer key="2" />}
         </ListFrameMenu>
         <ListFrameContents isLoaded={isLoaded}>
-          {currentViewMode === constants.VIEW_MODE_CARD
-            ? <CrmCardContainer
-                content={content}
-                peopleFields={peopleFields.get(constants.VIEW_MODE_CARD)}
-                orgFields={orgFields.get(constants.VIEW_MODE_CARD)}
-              />
-            : <CrmTableContainer
-                content={content}
-                peopleFields={peopleFields.get(constants.VIEW_MODE_TABLE)}
-                orgFields={orgFields.get(constants.VIEW_MODE_TABLE)}
-              />
+          <SaveAsCsv
+            currentListParams={currentListParams}
+            exportedFields={exportedFields.toArray()}
+            content={repositoryName}
+          />
+          {currentViewMode === constants.VIEW_MODE_CARD ?
+            <CrmCardContainer
+              content={content}
+              peopleFields={peopleFields.get(constants.VIEW_MODE_CARD)}
+              orgFields={orgFields.get(constants.VIEW_MODE_CARD)}
+            />
+            :
+            <CrmTableContainer
+              content={content}
+              peopleFields={peopleFields.get(constants.VIEW_MODE_TABLE)}
+              orgFields={orgFields.get(constants.VIEW_MODE_TABLE)}
+            />
           }
-          {pagination && pagination.get('total_pages') > 1 &&
-          <PaginationBoxView
+          {pagination && pagination.get('total_pages') > 1
+          && <PaginationBoxView
             breakLabel={<li><span className="pagination-dots">&hellip;</span></li>}
             pageNum={pagination.get('total_pages')}
             currentPage={pagination.get('current_page')}

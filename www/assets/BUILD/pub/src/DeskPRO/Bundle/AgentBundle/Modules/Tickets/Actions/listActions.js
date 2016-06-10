@@ -1,7 +1,7 @@
 import { createAction } from 'Ampliflux';
+import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { listParamsSelector } from '../Selectors/list';
 import { setCollection, releaseCollection } from '../../../../AppBundle/Modules/RecordsStore';
-import { repository } from '../../../../AppBundle/DAL';
 
 // Private -------------------------------------------------------------------------------------------------------------
 
@@ -13,11 +13,12 @@ const loadList = createAction(
   'TICKETS_LIST_LOAD_LIST',
   (params) => dispatch => {
     dispatch(releaseCollection('Ticket', 'list'));
-    repository('Ticket').search(params).then(response => {
+    repository('Ticket').search(params, 'person').then(response => {
       const res = response.getData();
       const ids = res.data.map(item => item.id);
-      dispatch(setCollection('Ticket', 'list', response.getData().data));
-      dispatch(setPagination(response.getData().meta.pagination));
+      dispatch(setCollection('Ticket', 'list', res.data));
+      dispatch(setCollection('Person', 'tickets', res.linked.person));
+      dispatch(setPagination(res.meta.pagination));
       dispatch(setElements(ids));
     });
   }
@@ -57,7 +58,7 @@ export const applyListParams = createAction(
 
 // Public (control bar) ------------------------------------------------------------------------------------------------
 
-export const setOrderBy                 = createAction(
+export const setOrderBy            = createAction(
   'TICKETS_LIST_SET_ORDER_BY',
   orderBy => dispatch => dispatch(applyListParams({ order_by: orderBy }))
 );

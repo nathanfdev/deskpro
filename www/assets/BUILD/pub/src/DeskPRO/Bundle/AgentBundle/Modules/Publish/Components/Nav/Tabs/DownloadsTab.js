@@ -21,6 +21,8 @@ export class DownloadsTab extends Component {
     this.state = { expanded: false };
   }
 
+  getAttachTarget = () => this.refs.downloads;
+
   render = () => {
     const { downloads, toggleGroupingVisibility, closeGroupingVisibility } = this.props;
     const toggle = toggleGroupingVisibility.bind(this);
@@ -32,7 +34,7 @@ export class DownloadsTab extends Component {
           <SectionGroupedHeader label="Downloads" ref="downloads" count={downloads.get('count')} callback={toggle} />
           <NestedList content="downloads" items={downloads.get('nested').toJS()} />
           <NavGroupingPopup
-            attachTo={this.refs.downloads}
+            attachTo={this.getAttachTarget}
             content="downloads"
             visible={this.state.expanded}
             closeGroupingVisibility={close}

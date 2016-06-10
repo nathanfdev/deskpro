@@ -26,14 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Model;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Content;
 
 use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class ContentAbstract.
  */
-abstract class ContentAbstract
+class Content
 {
     /**
      * The unique ID.
@@ -163,6 +163,23 @@ abstract class ContentAbstract
     protected $dateUpdated;
 
     /**
+     * Vote stats object, like {"up": 1, "down": 1}.
+     *
+     * @JMS\Type("array")
+     */
+    protected $vote_stats;
+
+    /**
+     * Revisions of this article.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\ArticleRevision>>")
+     *
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $revisions;
+
+    /**
      * Constructor.
      *
      * @param \Application\DeskPRO\Entity\ContentAbstract $entity
@@ -183,6 +200,8 @@ abstract class ContentAbstract
         $this->hiddenStatus = $entity->getHiddenStatus();
         $this->dateCreated  = $entity->getDateCreated();
         $this->dateUpdated  = $entity->getDateUpdated();
+        $this->vote_stats   = $entity->getVoteStats();
+        $this->revisions    = $entity->getRevisions();
     }
 
     /**

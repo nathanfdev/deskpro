@@ -16,6 +16,11 @@ export const listParamsSelector = createSelector(
   state => state.get('listParams')
 );
 
+export const fieldsSelector = createSelector(
+  stateSelector,
+  state => state.get('fields')
+);
+
 export const tableFieldsSelector = createSelector(
   stateSelector,
   state => state.getIn(['fields', constants.VIEW_MODE_TABLE])

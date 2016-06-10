@@ -7,22 +7,38 @@ jest.dontMock('~List/List');
 import React from 'react';
 import { renderInCrmApp } from '../../crm.test-helper';
 import { toImmutable } from 'Helpers';
+import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 describe('CRM: List', () => {
-  const ListFrameContainer = require('~ListFrame/frame').ListFrameContainer;
-  const ListFrameMenu = require('~ListFrame/ListFrameMenu').ListFrameMenu;
-  const ListFrameContents = require('~ListFrame/ListFrameContents').ListFrameContents;
-  const List = require('~List/List').List;
-  const PaginationBoxView = require('~Pagination/PaginationBoxView').PaginationBoxView;
+  const ListFrameContainer  = require('~ListFrame/frame').ListFrameContainer;
+  const ListFrameMenu       = require('~ListFrame/ListFrameMenu').ListFrameMenu;
+  const ListFrameContents   = require('~ListFrame/ListFrameContents').ListFrameContents;
+  const List                = require('~List/List').List;
+  const PaginationBoxView   = require('~Pagination/PaginationBoxView').PaginationBoxView;
   const ControlBarContainer = require('~List/ControlBar/ControlBarContainer').ControlBarContainer;
   const MassActionContainer = require('~List/ControlBar/MassActionContainer').MassActionContainer;
-  const CrmCardContainer = require('~List/View/Card/CrmCardContainer').CrmCardContainer;
-  const CrmTableContainer = require('~List/View/Table/CrmTableContainer').CrmTableContainer;
-  const fakeState = {};
+  const CrmCardContainer    = require('~List/View/Card/CrmCardContainer').CrmCardContainer;
+  const CrmTableContainer   = require('~List/View/Table/CrmTableContainer').CrmTableContainer;
+  const fakeState           = {};
 
   const renderList = (viewMode = 'card', selected = toImmutable([]), isComments = false, pagination = null) => {
+    const fieldList = toImmutable(
+      {
+        [constants.VIEW_MODE_CARD]: [
+          { id: 'date_created', title: 'Date Created', visible: true },
+          { id: 'language', title: 'Language', visible: true }
+        ],
 
-    const emptyList = toImmutable([]);
+        [constants.VIEW_MODE_TABLE]: [
+          { id: 'id', title: 'ID', visible: true },
+          { id: 'timezone', title: 'Timezone', visible: true },
+          { id: 'first_name', title: 'First Name', visible: true },
+          { id: 'last_name', title: 'Last Name', visible: true },
+          { id: 'primary_email', title: 'Email', visible: true },
+          { id: 'date_created', title: 'Date Created', visible: true },
+          { id: 'date_last_login', title: 'Last Login', visible: true }
+        ]
+      });
 
     renderInCrmApp(
       fakeState,
@@ -32,8 +48,8 @@ describe('CRM: List', () => {
         currentViewMode={viewMode}
         isComments={isComments}
         pagination={pagination}
-        peopleFields={emptyList}
-        orgFields={emptyList}
+        peopleFields={fieldList}
+        orgFields={fieldList}
         loaded
       />
     );
@@ -104,7 +120,7 @@ describe('CRM: List', () => {
   it('shouldn\'t render PaginationBoxView when the pagination passed with total_pages === 1', () => {
     spyOn(PaginationBoxView.prototype, 'render').and.callThrough();
 
-    renderList('card', toImmutable([]), false, toImmutable({total_pages: 1}));
+    renderList('card', toImmutable([]), false, toImmutable({ total_pages: 1 }));
 
     expect(PaginationBoxView.prototype.render).not.toHaveBeenCalled();
   });
@@ -112,7 +128,7 @@ describe('CRM: List', () => {
   it('should render PaginationBoxView when the pagination passed with total_pages > 1', () => {
     spyOn(PaginationBoxView.prototype, 'render').and.callThrough();
 
-    renderList('card', toImmutable([]), false, toImmutable({total_pages: 2}));
+    renderList('card', toImmutable([]), false, toImmutable({ total_pages: 2 }));
 
     expect(PaginationBoxView.prototype.render).toHaveBeenCalled();
   });

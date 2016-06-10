@@ -17,6 +17,7 @@ export class KBTab extends Component {
     super(props);
     this.state = { expanded: false };
   }
+  getAttachTarget = () => this.refs.articles;
 
   render = () => {
     const { articles, toggleGroupingVisibility, closeGroupingVisibility } = this.props;
@@ -35,7 +36,7 @@ export class KBTab extends Component {
             />
             <NestedList content="articles" items={articles.get('nested').toJS()} />
             <NavGroupingPopup
-              attachTo={this.refs.articles}
+              attachTo={this.getAttachTarget}
               content="articles"
               visible={this.state.expanded}
               closeGroupingVisibility={close}

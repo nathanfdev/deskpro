@@ -141,6 +141,20 @@ class PeopleController extends CrudController
         die('v 20151231');
     }
 
+    /**
+     * Get data for export to CSV.
+     *
+     * @Rest\Get("/csv")
+     *
+     * @param Request $request
+     *
+     * @return \FOS\RestBundle\View\View
+     */
+    public function csvAction(Request $request)
+    {
+        return $this->listAction($request);
+    }
+
     // #################################################################################################################
 
     /**

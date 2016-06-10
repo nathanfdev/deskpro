@@ -52,7 +52,7 @@ export const load = createAction(
       params = { ...params, ...navItem };
     }
     dispatch(toggleMassAction());
-    if (params.content === 'organizations') {
+    if (params.content === 'Organization') {
       dispatch(loadOrganizations(params));
     } else {
       dispatch(loadPeople(params));

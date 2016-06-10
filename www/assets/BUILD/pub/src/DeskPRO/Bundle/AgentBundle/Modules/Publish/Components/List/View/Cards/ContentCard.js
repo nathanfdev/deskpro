@@ -32,7 +32,7 @@ export class ContentCard extends Component {
 
   renderLabels = () => {
     const labels = this.props.element.get('labels');
-    if (labels.size) {
+    if (labels && labels.size) {
       return (
         <CardLine>
           <CardLineItem>

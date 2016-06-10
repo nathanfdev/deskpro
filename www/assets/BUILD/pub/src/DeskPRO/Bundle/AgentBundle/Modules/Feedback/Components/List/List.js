@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
-import { ListFrameContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
+import {
+  ListFrameContainer, ListFrameContents, SaveAsCsv
+} from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 import { ListFrameMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ListFrameMenu';
-import { ListFrameContents } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame/ListFrameContents';
 import { PaginationBoxView } from '../../../Common/Components/Pagination/PaginationBoxView';
 import { ControlBarContainer } from './ControlBar/ControlBarContainer';
 import { MassActionContainer } from './ControlBar/MassActionContainer';
@@ -13,16 +14,17 @@ import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 export class List extends Component {
   static propTypes = {
-    isLoaded:        PropTypes.bool,
-    isComments:      PropTypes.bool,
-    selected:        PropTypes.object.isRequired,
-    pagination:      PropTypes.object,
-    toggleSelected:  PropTypes.func.isRequired,
-    handlePageClick: PropTypes.func.isRequired,
-    currentViewMode: PropTypes.string.isRequired,
-    cardFields:      PropTypes.object.isRequired,
-    tableFields:     PropTypes.object.isRequired,
-    elements:        PropTypes.object.isRequired
+    isLoaded:          PropTypes.bool,
+    isComments:        PropTypes.bool,
+    selected:          PropTypes.object.isRequired,
+    currentListParams: PropTypes.object.isRequired,
+    pagination:        PropTypes.object,
+    toggleSelected:    PropTypes.func.isRequired,
+    handlePageClick:   PropTypes.func.isRequired,
+    currentViewMode:   PropTypes.string.isRequired,
+    cardFields:        PropTypes.object.isRequired,
+    tableFields:       PropTypes.object.isRequired,
+    elements:          PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -63,7 +65,10 @@ export class List extends Component {
   }
 
   render() {
-    const { isLoaded, pagination, selected, handlePageClick } = this.props;
+    const { isLoaded, pagination, selected, handlePageClick, isComments } = this.props;
+    const { currentListParams, currentViewMode, cardFields, tableFields } = this.props;
+    const exportedFields = currentViewMode === constants.VIEW_MODE_CARD ? cardFields : tableFields;
+    const content = isComments ? 'FeedbackComment' : 'Feedback';
 
     return (
       <ListFrameContainer>
@@ -72,9 +77,14 @@ export class List extends Component {
           {selected.size && <MassActionContainer key="2" />}
         </ListFrameMenu>
         <ListFrameContents isLoaded={isLoaded}>
+          <SaveAsCsv
+            currentListParams={currentListParams}
+            exportedFields={exportedFields.toArray()}
+            content={content}
+          />
           {this.contentChoice()}
-          {pagination && pagination.get('total_pages') > 1 &&
-          <PaginationBoxView
+          {pagination && pagination.get('total_pages') > 1
+          && <PaginationBoxView
             breakLabel={<li><span className="pagination-dots">&hellip;</span></li>}
             pageNum={pagination.get('total_pages')}
             currentPage={pagination.get('current_page')}

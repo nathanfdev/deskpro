@@ -38,6 +38,9 @@ use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackCategory;
+use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\GlossaryWord;
 use Application\DeskPRO\Entity\GlossaryWordDefinition;
 use Application\DeskPRO\Entity\News;
@@ -178,31 +181,34 @@ class ObjectsManager
     private function initTypeFactories()
     {
         $this->typeFactories = [
+            'AgentTeam'              => [Factory\SimpleFactory::class, 'create', AgentTeam::class],
+            'Article'                => [Factory\SimpleFactory::class, 'create', Article::class],
+            'ArticleCategory'        => [Factory\SimpleFactory::class, 'create', ArticleCategory::class],
+            'Chat'                   => [Factory\SimpleFactory::class, 'create', ChatConversation::class],
+            'CustomDefOrganization'  => [Factory\CommonFactories::class, 'customDef', 'organization'],
+            'CustomDefTicket'        => [Factory\CommonFactories::class, 'customDef', 'ticket'],
+            'Department'             => [Factory\CommonFactories::class, 'department'],
+            'Download'               => [Factory\SimpleFactory::class, 'create', Download::class],
+            'DownloadCategory'       => [Factory\SimpleFactory::class, 'create', DownloadCategory::class],
+            'Feedback'               => [Factory\SimpleFactory::class, 'create', Feedback::class],
+            'FeedbackCategory'       => [Factory\SimpleFactory::class, 'create', FeedbackCategory::class],
+            'FeedbackStatusCategory' => [Factory\SimpleFactory::class, 'create', FeedbackStatusCategory::class],
+            'GlossaryWord'           => [Factory\SimpleFactory::class, 'create', GlossaryWord::class],
+            'GlossaryWordDefinition' => [Factory\SimpleFactory::class, 'create', GlossaryWordDefinition::class],
+            'News'                   => [Factory\SimpleFactory::class, 'create', News::class],
+            'NewsCategory'           => [Factory\SimpleFactory::class, 'create', NewsCategory::class],
+            'Organization'           => [Factory\SimpleFactory::class, 'create', Organization::class],
+            'Product'                => [Factory\CommonFactories::class, 'product'],
+            'Task'                   => [Factory\CommonFactories::class, 'task'],
             'Ticket'                 => [Factory\CommonFactories::class, 'ticket'],
             'TicketPriority'         => [Factory\SimpleFactory::class, 'create', TicketPriority::class],
             'TicketCategory'         => [Factory\SimpleFactory::class, 'create', TicketCategory::class],
             'TicketWorkflow'         => [Factory\SimpleFactory::class, 'create', TicketWorkflow::class],
             'TicketParticipant'      => [Factory\SimpleFactory::class, 'create', TicketParticipant::class],
-            'Organization'           => [Factory\SimpleFactory::class, 'create', Organization::class],
-            'Chat'                   => [Factory\SimpleFactory::class, 'create', ChatConversation::class],
-            'AgentTeam'              => [Factory\SimpleFactory::class, 'create', AgentTeam::class],
-            'Article'                => [Factory\SimpleFactory::class, 'create', Article::class],
-            'News'                   => [Factory\SimpleFactory::class, 'create', News::class],
-            'Download'               => [Factory\SimpleFactory::class, 'create', Download::class],
-            'ArticleCategory'        => [Factory\SimpleFactory::class, 'create', ArticleCategory::class],
-            'NewsCategory'           => [Factory\SimpleFactory::class, 'create', NewsCategory::class],
-            'DownloadCategory'       => [Factory\SimpleFactory::class, 'create', DownloadCategory::class],
-            'Usergroup'              => [Factory\SimpleFactory::class, 'create', Usergroup::class],
-            'GlossaryWordDefinition' => [Factory\SimpleFactory::class, 'create', GlossaryWordDefinition::class],
-            'GlossaryWord'           => [Factory\SimpleFactory::class, 'create', GlossaryWord::class],
-            'Department'             => [Factory\CommonFactories::class, 'department'],
-            'CustomDefTicket'        => [Factory\CommonFactories::class, 'customDef', 'ticket'],
-            'CustomDefOrganization'  => [Factory\CommonFactories::class, 'customDef', 'organization'],
-            'Task'                   => [Factory\CommonFactories::class, 'task'],
-            'Product'                => [Factory\CommonFactories::class, 'product'],
             'Sla'                    => [Factory\CommonFactories::class, 'sla'],
             'SLA'                    => [Factory\CommonFactories::class, 'sla'],
             'User'                   => [Factory\PersonFactories::class, 'create', 'user'],
+            'Usergroup'              => [Factory\SimpleFactory::class, 'create', Usergroup::class],
         ];
     }
 

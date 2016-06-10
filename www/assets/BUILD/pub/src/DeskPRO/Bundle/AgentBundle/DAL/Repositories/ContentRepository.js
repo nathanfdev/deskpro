@@ -71,6 +71,18 @@ export class ContentRepository {
   }
 
   /**
+   * @param {object} params Additional parameters to request
+   * @returns {Promise} promise
+   */
+  loadCsv(params) {
+    const { content } = params;
+    const newParams = { ...params };
+    delete newParams.content;
+
+    return this.api.sendGet(`DP_API/${ContentRepository.validateTarget(content)}/csv?${compileParams(newParams)}`);
+  }
+
+  /**
    * Validates and returns target content
    *
    * @param target

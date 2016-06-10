@@ -56,6 +56,14 @@ export class ApiRepository {
   }
 
   /**
+   * @param {object} params Additional parameters to request
+   * @returns {Promise} promise
+   */
+  loadCsv(params) {
+    return this.api.sendGet(`DP_API/${this.url}/csv?` + this.compileParams(params));
+  }
+
+  /**
    * @param {object} record Model of record to create at server side
    * @returns {Promise} promise
    */

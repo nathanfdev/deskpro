@@ -28,29 +28,30 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
-use Application\DeskPRO\Entity\Organization;
-use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Organization\Organization as SerializedOrganization;
+use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ContentAbstract;
+use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\News;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\Content as ContentModel;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ContentCsv;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
-/**
- * Class OrganizationHandler.
- */
-class OrganizationHandler extends AbstractEntityHandler
+class ContentHandler extends AbstractEntityHandler
 {
     /**
-     * @var ChatDataService
+     * {@inheritdoc}
+     * 
+     * @param ContentAbstract $entity
      */
-    private $chat_data_service;
-
-    /**
-     * Constructor.
-     *
-     * @param ChatDataService $chat_data_service
-     */
-    public function __construct(ChatDataService $chat_data_service)
+    protected function createModel($entity, SideloadSerializationContext $context)
     {
-        $this->chat_data_service = $chat_data_service;
+        $serializerClass = $context->getMappedClass(get_class($entity));
+
+        if ($serializerClass === ContentCsv::class) {
+            return new ContentCsv($entity);
+        }
+
+        return new ContentModel($entity);
     }
 
     /**
@@ -58,19 +59,6 @@ class OrganizationHandler extends AbstractEntityHandler
      */
     public static function getClassNames()
     {
-        return Organization::class;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @param Organization $entity
-     */
-    protected function createModel($entity, SideloadSerializationContext $context)
-    {
-        return new SerializedOrganization(
-            $entity,
-            $this->chat_data_service->getChatsCountForOrganization($entity)
-        );
+        return [Article::class, News::class, Download::class];
     }
 }

@@ -42,12 +42,12 @@ use Orb\Util\Numbers;
 /**
  * Permissions are flags applied groups or specific users.
  *
- * @property int $id
- * @property string $name
+ * @property int       $id
+ * @property string    $name
  * @property Usergroup $usergroup
- * @property Person $person
- * @property bool $value
- * @property bool $is_active
+ * @property Person    $person
+ * @property bool      $value
+ * @property bool      $is_active
  */
 class Permission extends DomainObject
 {
@@ -163,6 +163,36 @@ class Permission extends DomainObject
         return $effective_perms;
     }
 
+    public function setValue($value)
+    {
+        $this->setModelField('value', $value);
+
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return Permission
+     */
+    public function setName($name)
+    {
+        $this->setModelField('name', $name);
+
+        return $this;
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return Permission
+     */
+    public function setPerson(Person $person)
+    {
+        $this->setModelField('person', $person);
+
+        return $this;
+    }
     ############################################################################
     # Doctrine Metadata
     ############################################################################

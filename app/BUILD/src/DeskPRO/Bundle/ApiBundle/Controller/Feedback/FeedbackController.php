@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
@@ -87,6 +88,23 @@ class FeedbackController extends AbstractFeedbackController
     ];
 
     /**
+     * Get data for export to CSV.
+     *
+     * @Rest\Get("/csv")
+     * @SerializerView(mapping={
+     *     "Application\DeskPRO\Entity\Feedback": "DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\FeedbackCsv"
+     * })
+     *
+     * @param Request $request
+     *
+     * @return \FOS\RestBundle\View\View
+     */
+    public function csvAction(Request $request)
+    {
+        return $this->listAction($request);
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
@@ -110,8 +128,7 @@ class FeedbackController extends AbstractFeedbackController
                     ->addSelect("{$alias}.hidden_status as title")
                     ->andWhere("{$alias}.hidden_status IS NOT NULL")
                     ->andWhere("{$alias}.hidden_status <> ''")
-                    ->groupBy('group_name')
-                ;
+                    ->groupBy('group_name');
 
                 break;
             case 'custom_category':
@@ -123,8 +140,7 @@ class FeedbackController extends AbstractFeedbackController
                     ->addSelect('def.id as group_name')
                     ->andWhere('parent.sys_name = :cat')
                     ->setParameter('cat', 'cat')
-                    ->groupBy('group_name')
-                ;
+                    ->groupBy('group_name');
 
                 break;
             case 'category':
@@ -132,8 +148,7 @@ class FeedbackController extends AbstractFeedbackController
                     ->join("{$alias}.category", 'category')
                     ->addSelect('category.title as title')
                     ->addSelect('category.id as group_name')
-                    ->groupBy('group_name')
-                ;
+                    ->groupBy('group_name');
 
                 break;
             case 'status_category':
@@ -141,8 +156,7 @@ class FeedbackController extends AbstractFeedbackController
                     ->join("{$alias}.status_category", 'statusCategory')
                     ->addSelect('statusCategory.title as title')
                     ->addSelect('statusCategory.id as group_name')
-                    ->groupBy('group_name')
-                ;
+                    ->groupBy('group_name');
 
                 break;
         }

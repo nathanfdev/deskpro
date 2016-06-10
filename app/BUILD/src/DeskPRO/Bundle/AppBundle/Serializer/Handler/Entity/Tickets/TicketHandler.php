@@ -37,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayou
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket as TicketModel;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketCsv;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use Doctrine\ORM\EntityManager;
@@ -212,6 +213,12 @@ class TicketHandler extends AbstractEntityHandler
      */
     protected function createModel($entity, SideloadSerializationContext $context)
     {
+        $serializerClass = $context->getMappedClass(TicketEntity::class);
+
+        if ($serializerClass === TicketCsv::class) {
+            return new TicketCsv($entity);
+        }
+
         return new TicketModel($entity);
     }
 }

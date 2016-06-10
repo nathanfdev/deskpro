@@ -26,51 +26,38 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Content;
 
-use Application\DeskPRO\Entity\Organization;
-use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Organization\Organization as SerializedOrganization;
-use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use Application\DeskPRO\Entity\ContentAbstract as ContentEntity;
+use JMS\Serializer\Annotation as JMS;
 
-/**
- * Class OrganizationHandler.
- */
-class OrganizationHandler extends AbstractEntityHandler
+class ContentCsv extends Content
 {
     /**
-     * @var ChatDataService
+     * Person created this content first time.
+     *
+     * @JMS\Type("string")
      */
-    private $chat_data_service;
+    protected $person;
+
+    /**
+     * Person created this content first time.
+     *
+     * @JMS\Type("string")
+     */
+    protected $language;
 
     /**
      * Constructor.
      *
-     * @param ChatDataService $chat_data_service
+     * @param \Application\DeskPRO\Entity\ContentAbstract $entity
      */
-    public function __construct(ChatDataService $chat_data_service)
+    public function __construct(ContentEntity $entity)
     {
-        $this->chat_data_service = $chat_data_service;
-    }
+        parent::__construct($entity);
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function getClassNames()
-    {
-        return Organization::class;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @param Organization $entity
-     */
-    protected function createModel($entity, SideloadSerializationContext $context)
-    {
-        return new SerializedOrganization(
-            $entity,
-            $this->chat_data_service->getChatsCountForOrganization($entity)
-        );
+        $this->person   = $entity->getPerson() ? $entity->getPerson()->getName() : '';
+        $this->language = $entity->getLanguage() ? $entity->getLanguage()->getTitle() : '';
+        $this->content  = mb_substr($entity->getContentPlain(), 0, 50);
     }
 }

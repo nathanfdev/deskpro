@@ -199,6 +199,14 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
     /**
      * {@inheritdoc}
      */
+    public function getRevisions()
+    {
+        return $this->revisions;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function clearLabels()
     {
         foreach ($this->labels as $data) {
