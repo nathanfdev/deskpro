@@ -14,6 +14,7 @@ export class CommentCard extends Component {
     comment:        PropTypes.object.isRequired,
     feedback:       PropTypes.object.isRequired,
     toggleSelected: PropTypes.func.isRequired,
+    openModal:      PropTypes.func.isRequired,
     author:         PropTypes.object.isRequired,
     selected:       PropTypes.bool
   };
@@ -48,7 +49,7 @@ export class CommentCard extends Component {
   }
 
   render() {
-    const { comment, author, selected, toggleSelected } = this.props;
+    const { comment, author, selected, toggleSelected, openModal } = this.props;
 
     const feedback       = this.props.feedback || Immutable.fromJS({});
     const containerWidth = jQuery('.dp-list-frame-contents').innerWidth();
@@ -57,9 +58,12 @@ export class CommentCard extends Component {
     return (
       <Card type="feedback" width={cardWidth} additionalClasses="dpmw--single-card-requires-validation">
 
-        <CommentReviewBarContainer comment={comment}
-                                   toggleEditMode={this.toggleEditMode}
-                                   isEditingNow={this.state.isEditingNow} />
+        <CommentReviewBarContainer
+          comment={comment}
+          openModal={openModal}
+          toggleEditMode={this.toggleEditMode}
+          isEditingNow={this.state.isEditingNow}
+        />
 
         <CardCheckbox selected={selected} onClick={toggleSelected(comment.get('id'))} />
 

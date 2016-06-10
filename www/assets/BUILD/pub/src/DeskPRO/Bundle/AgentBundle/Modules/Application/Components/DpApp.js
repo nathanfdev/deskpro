@@ -14,15 +14,15 @@ import { setActiveApp, togglePreferences, toggleWorkspace, windowResize } from '
 import $ from 'jquery';
 
 @connect(state => ({
-  user: meSelector(state),
-  dpWindow: state.Application.dpWindow,
+  user:          meSelector(state),
+  dpWindow:      state.Application.dpWindow,
   workspaceDims: workspaceDimsSelector(state)
 }))
 @DragDropContext(HTML5Backend)
 export class DpApp extends React.Component {
 
   static propTypes = {
-    user: PropTypes.object.isRequired,
+    user:     PropTypes.object.isRequired,
     children: PropTypes.object.isRequired,
     dpWindow: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
@@ -68,11 +68,11 @@ export class DpApp extends React.Component {
 
         <div className="dp-panes-middle">
           {children}
-
-          <TabBodyPane>
-            <TabFrame dpWindow={dpWindow} />
-          </TabBodyPane>
         </div>
+
+        <TabBodyPane>
+          <TabFrame dpWindow={dpWindow} />
+        </TabBodyPane>
         <NotificationsContainer />
       </div>
     );
