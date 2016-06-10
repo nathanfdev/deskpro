@@ -22,7 +22,7 @@ export class NestedList extends BaseNestedList {
     return (
       <ListItemContainer key={`${depth}-${key}`} label={label} listOptions={listOptions}>
         <ListItem label={label} count={count}>
-          {this.renderNested(item, depth)}
+          {this.renderNested(Object.assign(item, { depth: depth + 1 }))}
         </ListItem>
       </ListItemContainer>
     );
