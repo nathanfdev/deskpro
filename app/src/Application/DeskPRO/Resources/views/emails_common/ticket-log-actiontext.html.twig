@@ -458,6 +458,20 @@
 		</ul>
 	{% elseif log.action_type == 'feedback_rating' %}
 		User set feedback rating to {{ log.details.rating }}
+	{% elseif log.action_type == 'deleted_attachments' %}
+		<span class="new-val expand" data-set=".set-detail">
+			Deleted {{ log.details.deleted|length }} attachment{% if log.details.deleted|length > 1 %}s{% endif %}:
+		</span>
+
+		<div class="expand-set set-detail" style="display: none">
+			<ul>
+				{% for del in log.details.deleted %}
+					<li>
+						{{ del.filename }} ({{ del.filesize }}) from message #{{ del.message }}
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
 	{% elseif not hide_unknow%}
 		Unknown action type: {{ log.action_type }}
 	{% endif %}

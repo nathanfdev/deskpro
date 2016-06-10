@@ -17,12 +17,15 @@
 
 # vendors and build files
 /app/vendor
+/app/BUILD/vendor
 /web/node_modules
 /web/bower_components
 /web/app/node_modules
 /web/app/bower_components
 /web/app-build
 /web/loader-build
+app/BUILD/sys/config/template-map.php
+app/BUILD/tests/config/config.all.php
 
 # cache and log files
 /app/sys/cache/*

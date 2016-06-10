@@ -157,6 +157,11 @@ define [
       })
 
       options.push({
+        title: 'Delete Ticket Attachments',
+        value: 'DeleteAttachments'
+      })
+
+      options.push({
         title: 'Add Agent Reply',
         value: 'AddAgentReply'
       })
@@ -1532,3 +1537,50 @@ define [
             note_text: model.text
             by_assigned_agent: model.by_assigned_agent || false
             by_agent_id: parseInt(model.by_agent_id || 0) || 0
+
+    getDeleteAttachments: (options = {}) ->
+      me = @
+      return {
+        getTemplate: ->
+          return me.dpTemplateManager.get('OptionBuilder/type-actions-delete-attachments.html')
+
+        getData: ->
+          return {}
+
+        getDataFormatter: ->
+          return {
+            getViewValue: (value = {}, data) ->
+              options = value.options || {}
+
+              if options.must_match?.length
+                options.must_match_value = options.must_match
+                options.must_match = true
+              else
+                options.must_match = false
+
+              if options.must_not_match?.length
+                options.must_not_match_value = options.must_not_match
+                options.must_not_match = true
+              else
+                options.must_not_match = false
+
+              if options.at_least?
+                options.at_least_value = options.at_least
+                options.at_least = true
+              else
+                options.at_least = false
+
+              return options
+
+            getValue: (model = {}, data) ->
+              value = {}
+              value.type = 'DeleteAttachments'
+              value.options = {
+                must_match: if model.must_match then model.must_match_value else ''
+                must_not_match: if model.must_not_match then model.must_not_match_value else ''
+                at_least: if model.at_least then model.at_least_value else ''
+                skip_inline: model.skip_inline
+              }
+              return value
+          }
+      }

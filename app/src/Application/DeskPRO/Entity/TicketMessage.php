@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -609,6 +610,11 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         $attach['message'] = $this;
     }
 
+    public function removeAttachment(TicketAttachment $attach)
+    {
+        $this->attachments->removeElement($attach);
+    }
+
     public function setVisitor(Visitor $visitor = null)
     {
         $this->_onPropertyChanged('visitor', $this->visitor, $visitor);
@@ -965,12 +971,13 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         );
         $metadata->mapOneToMany(
             array(
-                'fieldName'    => 'attachments',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketAttachment',
-                'cascade'      => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
-                'mappedBy'     => 'message',
-                'dpApi'        => true,
-                'dpApiDeep'    => true,
+                'fieldName'     => 'attachments',
+                'targetEntity'  => 'Application\\DeskPRO\\Entity\\TicketAttachment',
+                'cascade'       => array('remove', 'persist', 'merge'),
+                'orphanRemoval' => true,
+                'mappedBy'      => 'message',
+                'dpApi'         => true,
+                'dpApiDeep'     => true,
             )
         );
 

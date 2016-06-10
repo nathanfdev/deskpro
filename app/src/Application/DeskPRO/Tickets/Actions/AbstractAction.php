@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Orb\Util\CheckedOptionsArray;
@@ -110,7 +111,7 @@ abstract class AbstractAction implements ActionDefinitionInterface
     /**
      * Get's an array of options.
      *
-     * @return array
+     * @return CheckedOptionsArray
      */
     public function getActionOptions()
     {

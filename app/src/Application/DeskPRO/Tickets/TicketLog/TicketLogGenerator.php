@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Tickets\TicketLog;
 
 use Application\DeskPRO\Entity\CustomDefTicket;
@@ -405,7 +406,7 @@ class TicketLogGenerator
                         'action_type' => 'changed_user_participants',
                         'added'       => array_map(function ($part) { $p = $part->person;
 
-return array('id'                 => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $added_users),
+return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $added_users),
                         'removed' => array_map(function ($part) { $p = $part->person;
 
 return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $removed_users),
@@ -416,7 +417,7 @@ return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_ad
                         'action_type' => 'changed_agent_participants',
                         'added'       => array_map(function ($part) { $p = $part->person;
 
-return array('id'                 => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $added_agents),
+return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $added_agents),
                         'removed' => array_map(function ($part) { $p = $part->person;
 
 return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address); }, $removed_agents),
@@ -494,7 +495,7 @@ return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_ad
                 return array(
                     'action_type' => 'changed_slas',
                     'added'       => array_map(function ($ts) { return array('id' => $ts->sla->id, 'title' => $ts->sla->title); }, $added),
-                    'removed'                                                     => array_map(function ($ts) { return array('id' => $ts->sla->id, 'title' => $ts->sla->title); }, $removed),
+                    'removed' => array_map(function ($ts) { return array('id' => $ts->sla->id, 'title' => $ts->sla->title); }, $removed),
                 );
                 break;
 
@@ -676,6 +677,12 @@ return array('id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_ad
             case 'webhook':
                 $data                = $change instanceof ChangeData ? $change->getData() : array();
                 $data['action_type'] = 'webhook';
+
+                return $data;
+
+            case 'deleted_attachments':
+                $data                = $change instanceof ChangeData ? $change->getData() : array();
+                $data['action_type'] = 'deleted_attachments';
 
                 return $data;
 

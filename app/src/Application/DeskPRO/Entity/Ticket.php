@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -1423,7 +1424,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
         $now = new \DateTime();
         if ($message->person['is_agent'] && !(defined('DP_INTERFACE') && DP_INTERFACE == 'user')) {
-            if (!!$this->_is_new) {
+            if ((bool) $this->_is_new) {
                 if (!$this->date_last_agent_reply || $this->date_last_agent_reply < $now) {
                     $this['date_last_agent_reply'] = $now;
                 }
@@ -1456,6 +1457,22 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
         $this->_onPropertyChanged('attachments', null, $this->attachments);
         $this->getStateChangeRecorder()->record('attachments', null, $attach);
+    }
+
+    /**
+     * @param TicketAttachment $attach
+     */
+    public function removeAttachment(TicketAttachment $attach)
+    {
+        $this->attachments->removeElement($attach);
+        $attach->message->removeAttachment($attach);
+
+        $this->_onPropertyChanged('attachments', null, $this->attachments);
+        $this->getStateChangeRecorder()->record('attachments', $attach, null);
+
+        if ($this->attachments->isEmpty()) {
+            $this->setModelField('has_attachments', false);
+        }
     }
 
     /**
@@ -3337,7 +3354,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public function getProperty($key, $default = null)
     {
-        return ($this->properties !== null && isset($this->properties[$key]) ? $this->properties[$key] : $default);
+        return $this->properties !== null && isset($this->properties[$key]) ? $this->properties[$key] : $default;
     }
 
     /**
@@ -4031,13 +4048,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             )),
         ));
         $metadata->mapOneToMany(array(
-            'fieldName'    => 'attachments',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketAttachment',
-            'cascade'      => array('remove', 'persist', 'merge'),
-            'mappedBy'     => 'ticket',
-            'fetch'        => 'EXTRA_LAZY',
-            'dpApi'        => true,
-            'dpApiDeep'    => true,
+            'fieldName'     => 'attachments',
+            'targetEntity'  => 'Application\\DeskPRO\\Entity\\TicketAttachment',
+            'cascade'       => array('remove', 'persist', 'merge'),
+            'orphanRemoval' => true,
+            'mappedBy'      => 'ticket',
+            'fetch'         => 'EXTRA_LAZY',
+            'dpApi'         => true,
+            'dpApiDeep'     => true,
         ));
         $metadata->mapOneToMany(array(
             'fieldName'    => 'access_codes',
