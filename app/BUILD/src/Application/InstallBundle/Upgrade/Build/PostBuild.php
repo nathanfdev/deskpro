@@ -90,15 +90,21 @@ class PostBuild extends AbstractBuild
         # Data
         #------------------------------
 
+        $this->out('Syncing default data');
+
         $dataProcessor = new DefaultDataProcessor($this->container);
         if ($this->logger) {
             $dataProcessor->setLogger($this->logger);
         }
         $dataProcessor->runSync();
 
+        $this->out('.. done syncing default data');
+
         #------------------------------
         # Apps
         #------------------------------
+
+        $this->out('Syncing apps');
 
         $appSyncer = new NativeAppsSync(
             $this->container,
@@ -116,6 +122,8 @@ class PostBuild extends AbstractBuild
         $appSyncer->runUpdates();
         $appSyncer->runSync();
 
+        $this->out('.. done syncing apps');
+
         #------------------------------
         # Clear error logs
         #------------------------------
@@ -132,11 +140,15 @@ class PostBuild extends AbstractBuild
         # Recompile tempaltes
         #------------------------------
 
+        $this->out('Recompiling templates');
         $this->recompileCustomTemplates();
+        $this->out('.. done rRecompiling templates');
 
         #------------------------------
         # Compile Custom Scss
         #------------------------------
+
+        $this->out('Recompiling CSS');
 
         $em = $this->container->getEm();
 
@@ -173,6 +185,8 @@ class PostBuild extends AbstractBuild
                 }
             }
         }
+
+        $this->out('.. doe recompiling CSS');
 
         $this->out('Post upgrade done');
     }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\App\Package;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
@@ -259,7 +260,8 @@ class PackageInstaller
             }
         }
         foreach ($package->getHtmlAssets() as $asset_info) {
-            if ($this->isAssetBlobChanged($def, $asset_info['path'], $asset_info['real_path'])) {
+            $asset_info['asset_content'] = $this->compileHtmlTemplate($package, $asset_info);
+            if ($this->isAssetBlobChanged($def, $asset_info['path'], md5($asset_info['asset_content']), true)) {
                 $asset = $this->_addAssetFromInfo($package, $def, $asset_info, 'html', $old_blobs);
                 $this->em->persist($asset);
             }
@@ -324,6 +326,31 @@ class PackageInstaller
     }
 
     /**
+     * @param Package $package
+     * @param array   $asset_info
+     *
+     * @return string
+     */
+    private function compileHtmlTemplate(Package $package, array $asset_info)
+    {
+        $content = file_get_contents($asset_info['real_path']);
+        $content = preg_replace_callback('/<!\-\-#include\s+file="([a-zA-Z0-9_\-\.\/]+)"\s+\-\->/', function ($m) use ($package) {
+            $path = @realpath($package->getPath().'/html/'.$m[1]);
+            $path_std = str_replace('\\', '/', $path);
+
+            if (!$path || !is_file($path) || strpos($path_std, str_replace('\\', '/', $package->getPath())) !== 0) {
+                return '<!-- Invalid include file: '.$m[1].' -->';
+            }
+
+            $inc_content = @SafeFile::fileGetContents($path, dirname($path));
+
+            return $inc_content;
+        }, $content);
+
+        return $content;
+    }
+
+    /**
      * @param Package    $package
      * @param AppPackage $def
      * @param array      $asset_info
@@ -336,23 +363,9 @@ class PackageInstaller
     {
         $mimetype = ContentTypes::getContentTypeFromFilename($asset_info['name']);
 
-        if ($tag == 'html') {
-            $content = file_get_contents($asset_info['real_path']);
-            $content = preg_replace_callback('/<!\-\-#include\s+file="([a-zA-Z0-9_\-\.\/]+)"\s+\-\->/', function ($m) use ($package) {
-                $path = @realpath($package->getPath().'/html/'.$m[1]);
-                $path_std = str_replace('\\', '/', $path);
-
-                if (!$path || !is_file($path) || strpos($path_std, str_replace('\\', '/', $package->getPath())) !== 0) {
-                    return '<!-- Invalid include file: '.$m[1].' -->';
-                }
-
-                $inc_content = @SafeFile::fileGetContents($path, dirname($path));
-
-                return $inc_content;
-            }, $content);
-
+        if (isset($asset_info['asset_content'])) {
             $blob = $this->blob_storage->createBlobRecordFromString(
-                $content,
+                $asset_info['asset_content'],
                 $asset_info['name'],
                 $mimetype
             );

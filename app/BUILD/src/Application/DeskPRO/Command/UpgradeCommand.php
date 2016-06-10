@@ -83,7 +83,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         App::getDb()->exec('TRUNCATE TABLE cache');
         @unlink(dp_get_tmp_dir().DIRECTORY_SEPARATOR.'dql.cache');
 
-        $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
+        $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
 
         $logger          = new Logger('upgrade');
         $console_handler = new ConsoleHandler($output);
