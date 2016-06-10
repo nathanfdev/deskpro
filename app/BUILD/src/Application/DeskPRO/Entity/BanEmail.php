@@ -68,6 +68,11 @@ class BanEmail extends DomainObject
         return new self();
     }
 
+    public function getId()
+    {
+        return $this->banned_email;
+    }
+
     /**
      * @param string $email
      */

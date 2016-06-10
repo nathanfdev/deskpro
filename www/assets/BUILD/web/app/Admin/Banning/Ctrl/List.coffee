@@ -157,12 +157,12 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
     deleteBan: (for_ban) ->
 
-      if for_ban.banned_ip then key = 'ip'
-      if for_ban.banned_email then key = 'email'
+      if for_ban.banned_ip then key = 'ip'; prop = 'id';
+      if for_ban.banned_email then key = 'email'; prop = 'banned_email';
 
-      @banData.deleteBanById(for_ban['banned_' + key]).success( =>
+      @banData.deleteBanById(for_ban[prop]).success( =>
 
-        if @$state.current.name == ('crm.banning.edit_' + key) and @$state.params.ban == for_ban['banned_' + key]
+        if @$state.current.name == ('crm.banning.edit_' + key) and @$state.params.ban == for_ban[prop]
           @$state.go('crm.banning')
 
       ).error((info, code) =>

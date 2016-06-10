@@ -84,7 +84,7 @@ define [
     setType: (type) ->
 
       @type = type
-      @idProp = 'banned_' + @type # there is no 'id' in database, primary key is another field
+      @idProp = if @type == 'email' then 'banned_' + @type else 'id'
 
     ###
     # Get the form mapper
@@ -178,9 +178,10 @@ define [
 
       sendData = {}
       sendData[@type + '_ban'] = postData
-
+      
       if model['banned_' + @type]
-        promise = @Api.sendPostJson('/banning_' + @type + '/' + window.encodeURIComponent(model['banned_' + @type]), sendData).success( (data) =>
+        url = '/banning_' + @type + '/' + window.encodeURIComponent(if @type == 'email' then model['banned_' + @type] else model['id'])
+        promise = @Api.sendPostJson(url, sendData).success((data) =>
           model['banned_' + @type] = data['banned_' + @type]
         )
       else

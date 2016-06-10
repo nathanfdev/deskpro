@@ -17,7 +17,7 @@
 										   ng-model="EditCtrl.form.banned_ip"
 										   style="width: 50%;" required autofocus/>
 									<span class="help-block">
-										Examples: 192.168.1.1 or 192.168.*
+										Examples: 192.168.1.1, 192.168.*, 192.168.1.0/24, 2000:ff90::0/32
 									</span>
 								</div>
 							</div>
@@ -37,7 +37,7 @@
 
 					<div class="dp-delete-control" ng-if="EditCtrl.ip_ban.banned_ip" ng-hide="form_props.$attempted && form_props.$invalid">
 						<button class="btn btn-danger"
-								ng-click="$event.preventDefault(); $parent.ListCtrl.startDelete(EditCtrl.ip_ban.banned_ip);">
+								ng-click="$event.preventDefault(); $parent.ListCtrl.startDelete(EditCtrl.ip_ban.id);">
 							Delete
 						</button>
 					</div>

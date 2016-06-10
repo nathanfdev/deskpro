@@ -24,8 +24,7 @@ define [
     ###
 
     applyFormToModel: (model, formModel) ->
-
-      # we use data from backend, so no need in applying of form data to list model
+      formModel = model
 
     ###
       #

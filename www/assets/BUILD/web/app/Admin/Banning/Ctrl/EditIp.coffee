@@ -1,7 +1,7 @@
 define [
-  'Admin/Main/Ctrl/Base'
+  'Admin/Main/Ctrl/Base', 'angular'
 ], (
-  Admin_Ctrl_Base
+  Admin_Ctrl_Base, angular
 ) ->
   class Admin_Banning_Ctrl_EditIp extends Admin_Ctrl_Base
     @CTRL_ID   = 'Admin_Banning_Ctrl_EditIp'
@@ -41,6 +41,7 @@ define [
       @startSpinner('saving')
       promise.then( =>
         @stopSpinner('saving', true).then(=>
+          @form = angular.copy(@ip_ban)
           @Growl.success("Saved")
         )
 
@@ -48,7 +49,7 @@ define [
         if is_new
           @$state.go('crm.banning.gocreate_ip')
         else
-          @$state.go('crm.banning.edit_ip', {ban: @ip_ban.banned_ip})
+          @$state.go('crm.banning.edit_ip', {ban: @ip_ban.id})
       )
 
   Admin_Banning_Ctrl_EditIp.EXPORT_CTRL()
