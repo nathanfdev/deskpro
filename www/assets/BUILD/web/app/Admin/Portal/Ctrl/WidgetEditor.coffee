@@ -28,20 +28,23 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
       @$scope.show_embed_help = true
       @$scope.formErrors = {}
 
-    initialLoad: ->
+    initialLoad: (reset = false) ->
       setupPromise = @Api2.sendGet('/widget/setup').then (response) =>
         data = response.data.data
 
         @$scope.url = data.url;
         @$scope.company = data.company;
-        savedSettings = localStorage.getItem 'widgetSettings'
-        if savedSettings
-          savedSettings = JSON.parse savedSettings
-        if savedSettings.global? && !jQuery.isEmptyObject savedSettings.global
+        if !reset
+          savedSettings = localStorage.getItem 'widgetSettings'
+          if savedSettings
+            savedSettings = JSON.parse savedSettings
+        else
+          savedSettings = null
+        if savedSettings && savedSettings.global? && !jQuery.isEmptyObject savedSettings.global
           @$scope.global_settings = savedSettings.global
         else
           @$scope.global_settings = data.settings.global;
-        if savedSettings.brand? && !jQuery.isEmptyObject savedSettings.brand
+        if savedSettings && savedSettings.brand? && !jQuery.isEmptyObject savedSettings.brand
           @$scope.brand_settings = savedSettings.brand
         else
           @$scope.brand_settings = data.settings.brand;
@@ -88,7 +91,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
     reset: ->
       if confirm("Current edit on the settings will be overridden. Are your sure?")
         localStorage.removeItem 'widgetSettings'
-        @initialLoad().then( =>
+        @initialLoad(true).then( =>
           @Growl.success "Settings reseted"
         )
 
@@ -109,9 +112,13 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
         return true
         
     getChatCustomFields: (savedSettings) ->
-      if savedSettings.custom_fields? && !jQuery.isEmptyObject savedSettings.custom_fields
+      if savedSettings && savedSettings.custom_fields? && !jQuery.isEmptyObject savedSettings.custom_fields
+        console.log 'from LS'
+        console.log savedSettings
+        console.log savedSettings.custom_fields
         @$scope.custom_fields = savedSettings.custom_fields
       else
+        console.log 'from DB'
         @Api.sendDataGet([
           '/chat_fields'
         ]).then( (res) =>
@@ -132,7 +139,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
       )
 
     loadEditUserGroupPermissions: (savedSettings) ->
-      if savedSettings.user_group_permission? && !jQuery.isEmptyObject savedSettings.user_group_permission
+      if savedSettings && savedSettings.user_group_permission? && !jQuery.isEmptyObject savedSettings.user_group_permission
         @$scope.user_group_permission = savedSettings.user_group_permission
       else
         @Api2.sendGet('/user_groups/permissions/chat.use').then( (res) =>
@@ -233,6 +240,13 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
         JSON.stringify({permissions: saveData.user_group_permission}), null, headers: {
           'X-Agent-Request': 'true'
         })
+
+      customFieldsPromise = @Api.sendPutJson(
+        '/chat_fields/batch',
+        JSON.stringify({custom_fields: saveData.custom_fields}), null, headers: {
+          'X-Agent-Request': 'true'
+        })
+
       widgetPromise = @Api2.sendPostJson('/widget/setup', {global: saveData.global, brand: saveData.brand}, null, headers: {
         'X-Agent-Request': 'true'
       }).then(
@@ -246,7 +260,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
       )
 
       @startSpinner('saving')
-      @$q.all([permissionPromise, widgetPromise]).then( =>
+      @$q.all([permissionPromise, customFieldsPromise, widgetPromise]).then( =>
         @stopSpinner('saving')
         localStorage.removeItem 'widgetSettings'
         @Growl.success "Settings saved"

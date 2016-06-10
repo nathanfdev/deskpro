@@ -5776,6 +5776,15 @@ $collection->create(
 );
 
 $collection->create(
+    'api_chat_fields_save_batch',
+    [
+        'path'       => '/chat_fields/batch',
+        'controller' => 'LegacyApiBundle:ChatFields:saveBatchCustomField',
+        'methods'    => ['PUT'],
+    ]
+);
+
+$collection->create(
     'api_chat_fields',
     [
         'path'       => '/chat_fields',
