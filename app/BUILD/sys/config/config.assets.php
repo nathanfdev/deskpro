@@ -114,7 +114,7 @@ $CONFIG['agent_vendors'] = array(
         'vendor/jquery/fileupload/jquery.iframe-transport.js',
         'vendor/jquery/qtip/jquery.qtip.min.js',
         'vendor/mootools/mootools-core.min.js',
-        'vendor/tinycon/tinycon.min.js',
+        'bower_components/tinycon/tinycon.min.js',
         'vendor/select2/select2.js',
         'vendor/ZeroClipboard/ZeroClipboard.min.js',
         'vendor/idbstore/idbstore.min.js',
