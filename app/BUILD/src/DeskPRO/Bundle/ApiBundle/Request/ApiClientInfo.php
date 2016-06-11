@@ -63,6 +63,7 @@ class ApiClientInfo
      *
      * Examples:
      *  - ios (v1.0.3)
+     *  - iOS (v1.0.92)
      *  - android (v0.5)
      *
      * Defaults to 'standard' if none specified.
@@ -78,6 +79,7 @@ class ApiClientInfo
         }
 
         $header = $request->headers->get('X-DeskPRO-API-ClientType', 'standard');
+        $header = strtolower($header);
 
         if ($m = RegexUtils::getMatches('/^(?P<clientType>\w+)(\s*\(v?(?P<clientVersion>.*?)\))?$/', $header)) {
             return new self($m['clientType'], !empty($m['clientVersion']) ? $m['clientVersion'] : '0');
