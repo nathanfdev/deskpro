@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
-import { SectionHeader, NestedList } from '../../../../Common/Components/NavFrame';
+import { ListItemContainer } from './ListItemContainer';
+import { SectionHeader, ListItem } from '../../../../Common/Components/NavFrame';
 
 export class StarsTab extends Component {
   static propTypes = {
@@ -7,17 +8,22 @@ export class StarsTab extends Component {
     onStarClick: PropTypes.func.isRequired
   };
 
+  renderItem = (item, index) =>
+    <ListItemContainer
+      key={index}
+      label={item.get('title')}
+      listOptions={{ star: item.get('id') }}
+    >
+      <ListItem count={item.get('count')} label={item.get('title')} />
+    </ListItemContainer>;
+
   render() {
-    const { starsCount, onStarClick } = this.props;
+    const { starsCount } = this.props;
 
     return (
       <div>
         <SectionHeader>Stars</SectionHeader>
-
-        <NestedList
-          items={starsCount.toJS()}
-          onClick={onStarClick}
-        />
+        {starsCount.map((item, index) => this.renderItem(item, index))}
       </div>
     );
   }

@@ -57,14 +57,14 @@ export class ListItemContainer extends Component {
     return label || '—';
   }
 
+  getAttachTarget = () => this.refs.item;
+
   startFilterEditing(filterId) {
     return () => this.props.dispatch(startFilterEditing(filterId));
   }
 
-  getAttachTarget = () => this.refs.item;
-
   render() {
-    const { dispatch, count, id, type, notDoneFilters, isTopLevel, listFilters, children } = this.props;
+    const { dispatch, count, id, type, notDoneFilters, isTopLevel, listFilters, children, title } = this.props;
     const props = {
       count,
       children,
@@ -73,7 +73,7 @@ export class ListItemContainer extends Component {
       onItemControlClick: isTopLevel ? this.startFilterEditing(id) : null,
       groupId:            'nav',
       itemId:             this.itemId,
-      label:              this.props.title
+      label:              title
     };
 
     let label                 = this.getItemLabel();
