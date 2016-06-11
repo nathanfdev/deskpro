@@ -10,6 +10,7 @@ jest.dontMock('~List/View/Table/ChatsTableContainer');
 jest.dontMock('~List/ControlBar/ControlBarContainer');
 
 import React from 'react';
+import { toImmutable } from 'Helpers';
 import { renderChatsInRedux } from '../../chats.test-helper';
 
 describe('List', () => {
@@ -20,7 +21,15 @@ describe('List', () => {
   const ChatsTableContainer = require('~List/View/Table/ChatsTableContainer').ChatsTableContainer;
 
   const renderList = (viewMode = 'card') => {
-    renderChatsInRedux(0, <List elements={[]} viewMode={viewMode} loaded />);
+    const emptyList = toImmutable([]);
+    renderChatsInRedux(0,
+      <List
+        elements={[]}
+        viewMode={viewMode}
+        loaded
+        cardFields={emptyList}
+        tableFields={emptyList}
+      />);
   };
 
   it('should render ListFrameContainer', () => {

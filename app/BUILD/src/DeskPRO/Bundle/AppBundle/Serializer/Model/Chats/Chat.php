@@ -173,6 +173,16 @@ class Chat
      */
     protected $date_transcript_sent = null;
 
+    /**
+     * Date when transcript was sent.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
+     * @var \DateTime
+     */
+    protected $need_validate_email = null;
+
     public function __construct(ChatConversation $chat)
     {
         $this->id                     = $chat->getId();
@@ -188,5 +198,6 @@ class Chat
         $this->ended_by               = $chat->getEndedBy();
         $this->should_send_transcript = $chat->getShouldSendTranscript();
         $this->date_transcript_sent   = $chat->getDateTranscriptSent();
+        $this->need_validate_email    = $chat->getNeedValidateEmail();
     }
 }
