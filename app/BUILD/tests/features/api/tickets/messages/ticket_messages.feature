@@ -202,8 +202,8 @@ Feature: /tickets/{id}/messages endpoint
     And the JSON node "errors.fields.ticket.fields.user_fields.fields.user_fields_6.errors[0].code" should be equal to "required"
     And the JSON node "errors.fields.ticket.fields.user_fields.fields.user_fields_6.errors[0].message" should contain "This value should not be blank."
 
-  Scenario: I check ios purify
-    Given I add "x-deskpro-api-clienttype" header equal to "ios"
+  Scenario Outline: I check ios purify
+    Given I add "x-deskpro-api-clienttype" header equal to "<client_type>"
     When I send a POST request to "/api/v2/tickets/{ticket}/messages" with body:
     """
 {
@@ -214,3 +214,8 @@ Feature: /tickets/{id}/messages endpoint
     Then the response status code should be 201
     And the JSON node "data.message" should contain "Test<br><br>"
     And the JSON node "data.message" should contain "</p>"
+
+    Examples:
+      | client_type   |
+      | ios           |
+      | iOS (v1.0.92) |

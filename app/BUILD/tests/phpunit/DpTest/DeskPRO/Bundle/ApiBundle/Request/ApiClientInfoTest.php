@@ -110,4 +110,17 @@ class ApiClientInfoTest extends DeskProTestCase
         $this->assertEquals('0', $apiClientInfo->getClientVersion());
         $this->assertFalse($apiClientInfo->isIos());
     }
+
+    public function it_should_modify_header_to_lower_case()
+    {
+        $requestStack     = \Mockery::mock(RequestStack::class);
+        $request          = \Mockery::mock(Request::class);
+        $request->headers = new HeaderBag();
+        $request->headers->set('X-DeskPRO-API-ClientType', 'iOS (v1.0.92)');
+
+        $apiClientInfo = ApiClientInfo::createFromRequestStack($requestStack);
+        $this->assertEquals('ios', $apiClientInfo->getClientType());
+        $this->assertEquals('1.0.92', $apiClientInfo->getClientVersion());
+        $this->assertTrue($apiClientInfo->isIos());
+    }
 }
