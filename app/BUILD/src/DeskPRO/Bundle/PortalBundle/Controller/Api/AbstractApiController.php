@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\DataStore;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use Doctrine\ORM\EntityManager;
@@ -98,6 +99,16 @@ abstract class AbstractApiController extends FOSRestController
         $session = $this->getDoctrine()->getRepository(Session::class)->find($this->getToken()->getCredentials());
         if (!$session) {
             throw new AccessDeniedHttpException('Invalid token');
+        }
+        $ss = $this->getContainer()->getSession();
+        if ($ss->has('impersonate')) {
+            $person = $this->getContainer()->get('doctrine.orm.default_entity_manager')->find(
+                Person::class,
+                $ss->get('impersonate')
+            );
+            if ($person) {
+                $session->setPerson($person);
+            }
         }
 
         return $session;
