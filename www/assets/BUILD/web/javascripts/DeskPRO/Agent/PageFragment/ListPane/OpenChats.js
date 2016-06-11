@@ -30,7 +30,7 @@ DeskPRO.Agent.PageFragment.ListPane.OpenChats = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat.reassigned', function(data) {
 			if (data.old_agent_id && data.old_agent_id == agentId) {
 				removeConvo(data.conversation_id);
-			} else if (data.agent_id && data.agent_id == agentId) {
+			} else if (data.agent_id && data.agent_id == agentId && data.agent_id === DESKPRO_PERSON_ID) {
 				addConvo(data.conversation_id);
 			}
 		}, this);

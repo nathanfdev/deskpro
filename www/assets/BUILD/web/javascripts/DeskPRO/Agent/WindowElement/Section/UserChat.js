@@ -37,11 +37,12 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		DeskPRO_Window.getSectionData('chat_section', (function(data) {
 			this._initSection(data);
 		}).bind(this));
+
+		this.refreshCountInterval = setInterval(this.handleUpdateCounts.bind(this), 2*60*1000);
 	},
 
 	_initSection: function(data) {
 
-		var self = this;
 
 		var lastSelectedId = null;
 		if (this.contentEl) {
@@ -55,31 +56,12 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		}
 
 		this.hasSectionInitialised = true;
-		var self = this;
-
 		this.setHasInitialLoaded();
 		this.contentEl.html(data.section_html);
 
-		/*
-		this.filterGroupEditor = new DeskPRO.Agent.Widget.FilterGroupEditor({
-			containerElement: '#chat_outline',
-			listElement: '#chats_outline_sys_filters',
-			triggerElement: '#chat_filter_launch_editor',
-			controlElement: '#chat_filter_group_editor',
-			useIntId: false,
-			onGroupingChanged: function(data) {
-				self.refreshFilterGrouping(data);
-			},
-			onSetMarginTop: function(evData) {
-				evData.marginTop = $('#chats_outline_sys_filters').position().top;
-			}
-		});
-		this.filterGroupEditor._initControl();
-		*/
 		this.updateGroupingVars();
 
 		this._lastLoaded = new Date();
-        this.handleUpdateCounts();
 
 		if (lastSelectedId) {
 			$('#' + lastSelectedId).closest('.is-nav-item').addClass('nav-selected');
@@ -407,7 +389,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 				dataType: 'json',
 				success: function(data) {
 
-					$('#userchat_deplist_all').find('span.list-counter').each(function() {
+					$('#userchat_deplist_all').find('.list-counter').each(function() {
 						var key, subkey, count;
 						key = $(this).data('count-key').split('.');
 						subkey = key[1];
@@ -524,14 +506,9 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	handleUpdateCounts: function(data) {
-		var count = parseInt($('#userchat_deplist_0_counter').text());
-		this.updateBadge(count);
-
-		if (!count) {
-			$('#userchat_deplist_all').find('.nav-list').removeClass('show');
-		} else {
-			$('#userchat_deplist_all').find('.nav-list').addClass('show');
-		}
+		DeskPRO_Window.getSectionData('chat_section', (function(data) {
+			this._initSection(data);
+		}).bind(this));
 	},
 
 	isChatOpen: function(convoId) {
@@ -548,27 +525,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	modListingCount: function(id, op, count) {
-		var el = $('#userchat_list_' + (id != '0'?id:'allagents') + '_counter');
-		var oldCount = parseInt(el.text().trim()) || 0;
-		var newCount = DeskPRO_Window.util.modCountEl(el, op, count);
 
-		if (id != '0') {
-			var row = el.closest('li');
-
-			if(newCount) {
-				row.show();
-			}
-			else {
-				row.hide();
-			}
-
-			this.modListingCount(0, op, count);
-		}
-		else {
-			this.handleUpdateCounts();
-		}
-
-		var newCount = parseInt(el.text().trim()) || 0;
 
 		if (oldCount != newCount) {
 			if (this.isVisible()) {
@@ -603,16 +560,6 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	handleDepChange: function(data) {
-		if (!data.agent_id) {
-			if (data.old_department_id) {
-				this.modDepListingCount(data.old_department_id, '-');
-			}
-
-			if (data.department_id) {
-				this.modDepListingCount(data.department_id, '+');
-			}
-		}
-
 		this.handleUpdateCounts();
 	},
 
@@ -640,16 +587,6 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			window.clearTimeout(this.openingChatTimeout[data.conversation_id]);
 			delete this.openingChatTimeout[data.conversation_id];
 			DeskPRO_Window.faviconBadge.disableCrazyMode();
-		}
-
-		if (data.agent_id) {
-			if (parseInt(data.agent_id) == DESKPRO_PERSON_ID) {
-				DeskPRO_Window.util.modCountEl($('#userchat_mine_count'), '+');
-			} else {
-				DeskPRO_Window.util.modCountEl($('#userchat_assigned_count'), '+');
-			}
-		} else {
-			DeskPRO_Window.util.modCountEl($('#userchat_missed_count'), '+');
 		}
 
 		this.handleUpdateCounts();
@@ -719,12 +656,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			return;
 		}
 
-		this.modListingCount(data.old_agent_id, '-');
 		this.handleUpdateCounts();
-
-		if (data.old_agent_id) {
-			this.modDepListingCount(data.department_id, '+');
-		}
 
 		// Means we were the agent, but unassassigned ourselves
 		if (data.old_agent_id && data.old_agent_id == DESKPRO_PERSON_ID) {
@@ -786,13 +718,6 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 		if (!this.isDepAllowed(data.department_id) && data.agent_id != DESKPRO_PERSON_ID) {
 			return;
-		}
-
-		this.handleUpdateCounts();
-		this.modListingCount(data.agent_id, '+');
-
-		if (data.agent_id && !data.old_agent_id) {
-			this.modDepListingCount(data.department_id, '-');
 		}
 
 		// Means we were the agent, but unassassigned ourselves
