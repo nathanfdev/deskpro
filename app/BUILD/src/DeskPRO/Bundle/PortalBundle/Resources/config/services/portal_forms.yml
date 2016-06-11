@@ -63,7 +63,7 @@ services:
 
   form.ticket_reply:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\TicketReplyType
-    arguments: ["@language_manager"]
+    arguments: ["@language_manager", "@doctrine.orm.default_entity_manager"]
     tags:
       - { name: form.type, alias: ticket_reply }
 
