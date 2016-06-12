@@ -10,7 +10,7 @@ import { renderInTicketsApp } from '../../../tickets.test-helper';
 
 describe('Tickets Navigation: StarsTab component', () => {
   const StarsTab   = require('~components/StarsTab').StarsTab;
-  const NestedList = require('~common/Lists/NestedList').NestedList;
+  const ListItemContainer = require('~components/ListItemContainer').ListItemContainer;
 
   function render() {
     const props = {
@@ -21,8 +21,8 @@ describe('Tickets Navigation: StarsTab component', () => {
   }
 
   it('should render NestedList', () => {
-    spyOn(NestedList.prototype, 'render');
+    spyOn(ListItemContainer.prototype, 'render');
     render();
-    expect(NestedList.prototype.render).toHaveBeenCalled();
+    expect(ListItemContainer.prototype.render).toHaveBeenCalled();
   });
 });
