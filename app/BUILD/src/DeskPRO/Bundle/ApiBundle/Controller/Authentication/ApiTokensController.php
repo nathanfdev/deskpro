@@ -62,6 +62,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * @ApiModes("all")
  * @Rest\Route("/api_tokens")
  * @ApiUserContext("open")
+ * @ApiDoc(target="all", section="Auth")
  */
 class ApiTokensController extends BaseController
 {

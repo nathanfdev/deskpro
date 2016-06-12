@@ -41,6 +41,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @ApiModes("all")
  * @Rest\Route("/article_pending_creates")
+ * @ApiDoc(target="all", section="Content")
  * @ApiDoc(
  *     target="listAction,countAction",
  *     filters={
@@ -50,7 +51,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiDoc(
  *     target="listAction",
  *     filters={
- *          {"name"="order_by", "pattern"="date_created|assigned_person", "description"="how to order result", "dataType"="string"},
+ *         {"name"="order_by", "pattern"="date_created|assigned_person", "description"="how to order result", "dataType"="string"},
  *         {"name"="order_dir", "pattern"="asc|desc", "description"="order direction", "dataType"="string"}
  *     }
  * )
