@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,6 +32,8 @@
 
 namespace DeskPRO\Bundle\ApiBundle\DependencyInjection\Compiler;
 
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor\CachingApiDocExtractor;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor\Formatter\HtmlFormatter;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -43,8 +45,11 @@ class ApiDocPass implements CompilerPassInterface
         $def = $container->getDefinition('nelmio_api_doc.extractor.api_doc_extractor');
 
         if (strpos($def->getClass(), 'CachingApiDocExtractor') !== false) {
-            $def->setClass('DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor\CachingApiDocExtractor');
+            $def->setClass(CachingApiDocExtractor::class);
         }
+
+        $def = $container->getDefinition('nelmio_api_doc.formatter.html_formatter');
+        $def->setClass(HtmlFormatter::class);
 
         $definition = $container->getDefinition('nelmio_api_doc.extractor.api_doc_extractor');
         $definition->removeMethodCall('addParser');
