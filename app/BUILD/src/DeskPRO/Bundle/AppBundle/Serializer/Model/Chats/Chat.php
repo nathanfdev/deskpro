@@ -44,6 +44,16 @@ class Chat
     protected $id;
 
     /**
+     * BC property.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    protected $conversationId;
+
+    /**
      * Subject of the chat conversation.
      *
      * @JMS\Expose()
@@ -52,6 +62,16 @@ class Chat
      * @var string
      */
     protected $subject;
+
+    /**
+     * BC property.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $subjectLine;
 
     /**
      * If this is a user conversation, this is the user who started the chat.
@@ -71,7 +91,7 @@ class Chat
      *
      * @var string
      */
-    protected $person_name = '';
+    protected $personName = '';
 
     /**
      * User chat: The users email, if they aren`t a person.
@@ -81,7 +101,7 @@ class Chat
      *
      * @var string
      */
-    protected $person_email = '';
+    protected $personEmail = '';
 
     /**
      * If this is a user conversation, this is the agent assigned.
@@ -114,6 +134,26 @@ class Chat
     protected $department = null;
 
     /**
+     * BC property.
+     *
+     * @JMS\Type("integer")
+     * @JMS\Expose()
+     *
+     * @var string
+     */
+    protected $departmentId = 0;
+
+    /**
+     * BC property.
+     *
+     * @JMS\Type("string")
+     * @JMS\Expose()
+     *
+     * @var string
+     */
+    protected $departmentName = '';
+
+    /**
      * Date when chat was started.
      *
      * @JMS\Type("DateTime")
@@ -121,7 +161,7 @@ class Chat
      *
      * @var \DateTime
      */
-    protected $date_created;
+    protected $dateСreated;
 
     /**
      * Date when agent typed last time.
@@ -131,7 +171,7 @@ class Chat
      *
      * @var \DateTime
      */
-    protected $date_agent_typing;
+    protected $dateAgentTyping;
 
     /**
      * Date when chat was ended.
@@ -141,7 +181,7 @@ class Chat
      *
      * @var \DateTime
      */
-    protected $date_ended;
+    protected $dateEnded;
 
     /**
      * Who ended the chat.
@@ -151,7 +191,7 @@ class Chat
      *
      * @var string
      */
-    protected $ended_by = '';
+    protected $endedBy = '';
 
     /**
      * True if transcript should be send.
@@ -161,7 +201,7 @@ class Chat
      *
      * @var bool
      */
-    protected $should_send_transcript = false;
+    protected $shouldSendTranscript = false;
 
     /**
      * Date when transcript was sent.
@@ -171,7 +211,7 @@ class Chat
      *
      * @var \DateTime
      */
-    protected $date_transcript_sent = null;
+    protected $dateTranscriptSent = null;
 
     /**
      * Date when transcript was sent.
@@ -181,23 +221,27 @@ class Chat
      *
      * @var \DateTime
      */
-    protected $need_validate_email = null;
+    protected $needValidateEmail = null;
 
     public function __construct(ChatConversation $chat)
     {
         $this->id                     = $chat->getId();
+        $this->conversationId         = $chat->getId();
         $this->subject                = $chat->getSubjectLine();
+        $this->subjectLine            = $chat->getSubjectLine();
         $this->department             = $chat->getDepartment();
+        $this->department_id          = $chat->getDepartment() ? $chat->getDepartment()->getId() : 0;
+        $this->departmentName         = $chat->getDepartment() ? $chat->getDepartment()->getFullTitle() : '';
         $this->person                 = $chat->getPerson();
         $this->agent                  = $chat->getAgent();
-        $this->person_name            = $chat->getPersonName();
-        $this->person_email           = $chat->getPersonEmail();
-        $this->date_created           = $chat->getDateCreated();
-        $this->date_agent_typing      = $chat->getDateAgentTyping();
-        $this->date_ended             = $chat->getDateEnded();
-        $this->ended_by               = $chat->getEndedBy();
+        $this->personName             = $chat->getPersonName();
+        $this->personEmail            = $chat->getPersonEmail();
+        $this->dateCreated            = $chat->getDateCreated();
+        $this->dateAgentTyping        = $chat->getDateAgentTyping();
+        $this->dateEnded              = $chat->getDateEnded();
+        $this->endedBy                = $chat->getEndedBy();
         $this->should_send_transcript = $chat->getShouldSendTranscript();
-        $this->date_transcript_sent   = $chat->getDateTranscriptSent();
-        $this->need_validate_email    = $chat->getNeedValidateEmail();
+        $this->dateTranscript_sent    = $chat->getDateTranscriptSent();
+        $this->needValidateEmail      = $chat->getEmailValidationCode() && !$chat->getEmailValidated();
     }
 }
