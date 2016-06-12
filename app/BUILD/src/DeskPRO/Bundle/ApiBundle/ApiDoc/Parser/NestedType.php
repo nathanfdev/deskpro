@@ -50,6 +50,7 @@
  *
  * ~ Thanks, Everyone at Team DeskPRO
  */
+
 namespace DeskPRO\Bundle\ApiBundle\ApiDoc\Parser;
 
 use Nelmio\ApiDocBundle\DataTypes;
@@ -63,6 +64,7 @@ class NestedType
     const ENTITY                = 'entity';
     const STRING_REP_COLLECTION = 'string_collection';
     const STRING_REP            = 'string_rep';
+    const CUSTOM_DATA           = 'custom_data';
 
     /**
      * @var array
@@ -72,6 +74,7 @@ class NestedType
         self::ENTITY_COLLECTION     => 'array of integer ids (%s)',
         self::STRING_REP            => 'string representation (%s)',
         self::STRING_REP_COLLECTION => 'array of string representations (%s)',
+        self::CUSTOM_DATA           => 'dynamically declared custom fields (%s)',
     ];
 
     /**
@@ -82,6 +85,7 @@ class NestedType
         self::ENTITY_COLLECTION     => DataTypes::COLLECTION,
         self::STRING_REP            => DataTypes::STRING,
         self::STRING_REP_COLLECTION => DataTypes::COLLECTION,
+        self::CUSTOM_DATA           => DataTypes::COLLECTION,
     ];
 
     /**

@@ -50,6 +50,7 @@
  *
  * ~ Thanks, Everyone at Team DeskPRO
  */
+
 namespace DeskPRO\Bundle\ApiBundle\ApiDoc\Parser;
 
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\SerializerTypes;
@@ -100,6 +101,8 @@ class NestedConfiguration
                 return new static(NestedType::ENTITY, NestedType::ENTITY_COLLECTION, $type);
             case SerializerTypes::TYPE_TO_STRING:
                 return new static(NestedType::STRING_REP, NestedType::STRING_REP_COLLECTION, $type);
+            case SerializerTypes::TYPE_CUSTOM_DATA:
+                return new static(NestedType::CUSTOM_DATA, NestedType::CUSTOM_DATA, $type);
             default:
                 throw new \InvalidArgumentException();
         }

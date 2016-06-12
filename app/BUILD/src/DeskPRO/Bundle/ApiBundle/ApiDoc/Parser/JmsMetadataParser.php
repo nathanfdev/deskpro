@@ -50,6 +50,8 @@ class JmsMetadataParser extends \Nelmio\ApiDocBundle\Parser\JmsMetadataParser
      */
     protected function processDataType(PropertyMetadata $item)
     {
+        $item->type = $this->sliceDeferred($item->type); // we should just remove deferred wrapper for type
+
         if ($item->type['name'] === SerializerTypes::TYPE_COLLECTION) {
             $item->type['name'] = 'array';
         }
@@ -74,13 +76,12 @@ class JmsMetadataParser extends \Nelmio\ApiDocBundle\Parser\JmsMetadataParser
      */
     protected function checkCustom(PropertyMetadata $item, NestedConfiguration $config)
     {
-        $type = $this->sliceDeferred($item->type); // we should just remove deferred wrapper for type
+        $type = $item->type;
 
         if ($this->checkArray($type)) {
             $type        = $this->sliceType($type);
             $nested_type = $config->getCollectionType();
         } else {
-            $type        = $item->type;
             $nested_type = $config->getType();
         }
         try {
@@ -123,6 +124,7 @@ class JmsMetadataParser extends \Nelmio\ApiDocBundle\Parser\JmsMetadataParser
         return [
             SerializerTypes::TYPE_ENTITY,
             SerializerTypes::TYPE_TO_STRING,
+            SerializerTypes::TYPE_CUSTOM_DATA,
         ];
     }
 
