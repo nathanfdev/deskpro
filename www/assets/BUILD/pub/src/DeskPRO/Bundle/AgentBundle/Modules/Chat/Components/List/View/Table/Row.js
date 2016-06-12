@@ -28,13 +28,13 @@ export class Row extends Component {
         return <Td key={fieldId}><PersonInTable person={author} /></Td>;
 
       case 'agent':
-        return <Td className="agent-col" key={fieldId}><PersonInTable person={agent} /></Td>;
+        return <Td key={fieldId} className="agent-col"><PersonInTable person={agent} /></Td>;
 
       case 'department':
         return <Td key={fieldId}>{department ? department.get('title') : ''}</Td>;
 
       case 'subject':
-        return <Td className="item-title">{element.get(fieldId)}</Td>;
+        return <Td key={fieldId} className="item-title">{element.get(fieldId)}</Td>;
 
       default:
         return <Td key={fieldId}>{element.get(fieldId)}</Td>;

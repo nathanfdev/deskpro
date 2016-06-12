@@ -59,6 +59,11 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.chat:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\ChatConversationHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
   api_serializer.handler.department:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\DepartmentHandler
     arguments:

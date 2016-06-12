@@ -7,27 +7,21 @@ export class TableHeader extends Component {
     fields: PropTypes.object.isRequired
   };
 
-  renderFieldHeader(field) {
+  renderFieldHeader = field => {
     if (!field || !field.get('visible')) {
       return null;
     }
-
-    const fieldId = field.get('id');
-
-    switch (fieldId) {
-      default:
-        return <Th key={fieldId}>{field.get(fieldId)}</Th>;
-    }
-  }
+    return <Th key={field.get('id')} title={field.get('title')} />;
+  };
 
   render() {
     const { fields } = this.props;
 
     return (
       <thead>
-        <tr>
-          {fields.map(field => this.renderFieldHeader(field))}
-        </tr>
+      <tr>
+        {fields.map(field => this.renderFieldHeader(field))}
+      </tr>
       </thead>
     );
   }

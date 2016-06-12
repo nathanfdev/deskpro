@@ -10,26 +10,27 @@ const initialState = {
     order_by:  'date_created',
     order_dir: constants.ORDER_DESC
   },
-  elements:          [],
-  selected:          [],
-  fields:            {
+
+  elements: [],
+  selected: [],
+
+  fields: {
     [constants.VIEW_MODE_CARD]: [
       { id: 'id', title: 'ID', visible: true },
-      { id: 'urgency', title: 'Urgency', visible: true },
       { id: 'person', title: 'Person', visible: true },
       { id: 'agent', title: 'Agent', visible: true },
-      { id: 'subject', title: 'Subject', visible: true },
       { id: 'status', title: 'Status', visible: true },
-      { id: 'date_created', title: 'Date Created', visible: true },
-      { id: 'labels', title: 'Labels', visible: true }
+      { id: 'subject', title: 'Subject', visible: true },
+      { id: 'date_created', title: 'Date Created', visible: true }
     ],
+
     [constants.VIEW_MODE_TABLE]: [
       { id: 'id', title: 'ID', visible: true },
-      { id: 'subject', title: 'Subject', visible: true },
-      { id: 'urgency', title: 'Urgency', visible: true },
       { id: 'person', title: 'Person', visible: true },
-      { id: 'date_created', title: 'Date Created', visible: true },
-      { id: 'labels', title: 'Labels', visible: true }
+      { id: 'agent', title: 'Agent', visible: true },
+      { id: 'status', title: 'Status', visible: true },
+      { id: 'subject', title: 'Subject', visible: true },
+      { id: 'date_created', title: 'Date Created', visible: true }
     ]
   }
 };
@@ -53,10 +54,10 @@ export default createReducer(initialState, {
 
   [actions.changeFieldOrder]: (state, { type, from, to }) => {
     const fromField = state.getIn(['fields', type, from]);
-    const toField = state.getIn(['fields', type, to]);
+    const toField   = state.getIn(['fields', type, to]);
     if (undefined === fromField || undefined === toField) return state;
     return state
-    .setIn(['fields', type, from], toField)
-    .setIn(['fields', type, to], fromField);
+      .setIn(['fields', type, from], toField)
+      .setIn(['fields', type, to], fromField);
   }
 });

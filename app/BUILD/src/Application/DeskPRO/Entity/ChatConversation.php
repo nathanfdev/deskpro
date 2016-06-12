@@ -31,7 +31,6 @@
  *
  * @category Entities
  */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -1250,6 +1249,14 @@ class ChatConversation extends DomainObject
         $this->setModelField('date_transcript_sent', $date);
 
         return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
     }
 
     /**

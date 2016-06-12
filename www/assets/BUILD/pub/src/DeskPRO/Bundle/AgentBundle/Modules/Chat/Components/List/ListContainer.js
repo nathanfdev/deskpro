@@ -1,26 +1,31 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { paginationSelector, viewModeSelector, elementsSelector, cardFieldsSelector, tableFieldsSelector,
-  isLoadedSelector } from '../../Selectors/list';
+import {
+  paginationSelector, viewModeSelector, elementsSelector, cardFieldsSelector, tableFieldsSelector,
+  isLoadedSelector, currentListParamsSelector
+} from '../../Selectors/list';
 import { List } from './List';
 import { toggleSelectedAction } from '../../../Application/Actions/massActions';
 import { applyParams } from '../../Actions/chatListActions';
-import { setCollection, releaseCollection }
+import {
+  setCollection, releaseCollection
+}
   from '../../../../../AppBundle/Modules/RecordsStore';
 
 @connect(state => ({
-  isLoaded:   isLoadedSelector(state),
-  pagination: paginationSelector(state),
-  viewMode:   viewModeSelector(state),
-  elements:   elementsSelector(state),
-  cardFields: cardFieldsSelector(state),
-  tableFields: tableFieldsSelector(state)
+  isLoaded:          isLoadedSelector(state),
+  pagination:        paginationSelector(state),
+  viewMode:          viewModeSelector(state),
+  elements:          elementsSelector(state),
+  currentListParams: currentListParamsSelector(state),
+  cardFields:        cardFieldsSelector(state),
+  tableFields:       tableFieldsSelector(state)
 }), {
-  setCollection,
-  releaseCollection,
-  toggleSelectedAction,
-  applyParams
-})
+           setCollection,
+           releaseCollection,
+           toggleSelectedAction,
+           applyParams
+         })
 
 export class ListContainer extends Component {
   static propTypes = {
@@ -44,11 +49,11 @@ export class ListContainer extends Component {
 
   toggleSelected = id => () => this.props.toggleSelectedAction(id);
 
-  handlePageClick = page => this.props.applyParams({page});
+  handlePageClick = page => this.props.applyParams({ page });
 
   render() {
     return (
-      <List {...this.props} toggleSelected={this.toggleSelected} handlePageClick={this.handlePageClick}/>
+      <List {...this.props} toggleSelected={this.toggleSelected} handlePageClick={this.handlePageClick} />
     );
   }
 }
