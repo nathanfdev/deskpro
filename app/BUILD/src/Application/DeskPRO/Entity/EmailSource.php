@@ -440,8 +440,6 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
             'fieldName'  => 'uid',
             'type'       => 'string',
             'length'     => 100,
-            'precision'  => 0,
-            'scale'      => 0,
             'nullable'   => true,
             'columnName' => 'uid',
         ]);
@@ -449,8 +447,6 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
             'fieldName'  => 'object_type',
             'type'       => 'string',
             'length'     => 50,
-            'precision'  => 0,
-            'scale'      => 0,
             'nullable'   => false,
             'columnName' => 'object_type',
         ]);
@@ -477,40 +473,30 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField([
             'fieldName'  => 'headers',
             'type'       => 'text',
-            'precision'  => 0,
-            'scale'      => 0,
             'nullable'   => false,
             'columnName' => 'headers',
         ]);
         $metadata->mapField([
             'fieldName'  => 'header_to',
             'type'       => 'text',
-            'precision'  => 0,
-            'scale'      => 0,
             'nullable'   => false,
             'columnName' => 'header_to',
         ]);
         $metadata->mapField([
             'fieldName'  => 'header_cc',
             'type'       => 'text',
-            'precision'  => 0,
-            'scale'      => 0,
             'nullable'   => false,
             'columnName' => 'header_cc',
         ]);
         $metadata->mapField([
             'fieldName'  => 'header_from',
             'type'       => 'text',
-            'precision'  => 0,
-            'scale'      => 0,
             'nullable'   => false,
             'columnName' => 'header_from',
         ]);
         $metadata->mapField([
             'fieldName'  => 'header_subject',
             'type'       => 'text',
-            'precision'  => 0,
-            'scale'      => 0,
             'nullable'   => false,
             'columnName' => 'header_subject',
         ]);
@@ -518,8 +504,6 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
             'fieldName'  => 'status',
             'type'       => 'string',
             'length'     => 15,
-            'precision'  => 0,
-            'scale'      => 0,
             'nullable'   => false,
             'columnName' => 'status',
         ]);
@@ -535,32 +519,24 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
             'fieldName'  => 'error_code',
             'type'       => 'string',
             'length'     => 80,
-            'precision'  => 0,
-            'scale'      => 0,
             'nullable'   => true,
             'columnName' => 'error_code',
         ]);
         $metadata->mapField([
             'fieldName'  => 'source_info',
             'type'       => 'array',
-            'precision'  => 0,
-            'scale'      => 0,
             'nullable'   => true,
             'columnName' => 'source_info',
         ]);
         $metadata->mapField([
             'fieldName'  => 'date_status',
             'type'       => 'datetime',
-            'precision'  => 0,
-            'scale'      => 0,
             'nullable'   => false,
             'columnName' => 'date_status',
         ]);
         $metadata->mapField([
             'fieldName'  => 'date_created',
             'type'       => 'datetime',
-            'precision'  => 0,
-            'scale'      => 0,
             'nullable'   => false,
             'columnName' => 'date_created',
         ]);
