@@ -36,12 +36,13 @@
 {% macro person_inline(person, include_email = false) %}
     {% if person %}
         <span class="agent-avatar agent-avatar-mid" style="background-image: url({{ avatar_url(person, 36) }});"></span>
+        <span class="ticket-owner-name">{{ person.display_name_user }}</span>
+        {% if include_email or person.isAgent() %}
+            <span class="ticket-owner-email">({{ person.primary_email_address }})</span>
+        {% endif %}
     {% else %}
-        <span class="agent-avatar agent-avatar-blank" style=""></span>
-    {% endif %}
-    <span class="ticket-owner-name">{{ person.display_name_user }}</span>
-    {% if include_email or person.isAgent() %}
-        <span class="ticket-owner-email">({{ person.primary_email_address }})</span>
+        <span class="ticket-owner-name">Helpdesk system</span>
+        <span class="agent-avatar agent-avatar-blank agent-avatar-mid" style=""></span>
     {% endif %}
 {% endmacro %}
 {% macro attachment_inline(ticket_attachment) %}
