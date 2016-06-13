@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\UseSectionVoter;
 use DeskPRO\Bundle\PortalBundle\Model\WidgetSession;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -68,6 +69,11 @@ class AuthController extends AbstractApiController
         // try to get session from widget dpsid
         $session = $repository->getSessionFromCode($request->request->get('dpsid'));
 
+        $impersonateToken = null;
+        $token            = $this->get('security.token_storage')->getToken();
+        if ($token instanceof AgentImpersonateToken) {
+            $impersonateToken = $token;
+        }
         // try to get session from portal session
         if (!$session && $request->getSession() && $request->getSession()->getId()) {
             $authCode = substr($request->getSession()->getId(), 0, 15);
@@ -88,6 +94,12 @@ class AuthController extends AbstractApiController
         }
         if (!$session->getPerson() && $this->getUser()) {
             $session->setPerson($this->getUser());
+            $changed = true;
+        }
+
+        if ($impersonateToken) {
+            $ss = $this->getContainer()->getSession();
+            $ss->set('impersonate', $impersonateToken->getUser()->getId());
             $changed = true;
         }
 

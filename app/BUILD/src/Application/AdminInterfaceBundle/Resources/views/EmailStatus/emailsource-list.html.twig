@@ -123,6 +123,7 @@
 						<th>Date</th>
 						<th>From</th>
 						<th>To</th>
+						<th>Cc</th>
 						<th>Account</th>
 						<th>Subject</th>
 						<th>Ticket</th>
@@ -136,6 +137,7 @@
 						<td style="white-space: nowrap" nowrap dp-date="result.date_created"></td>
 						<td class="overflow-ellipsis">{{ ng_var('result.header_from') }}</td>
 						<td class="overflow-ellipsis">{{ ng_var('result.header_to') }}</td>
+						<td class="overflow-ellipsis">{{ ng_var('result.header_cc') }}</td>
 						<td class="overflow-ellipsis">
 							<a href="{{ ng_href('tickets.ticket_accounts.edit', '{id: result.email_account.id}') }}">
 								{{ ng_var('result.email_account.use_email_address') }}
