@@ -26,7 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\UpgradeBundle;
+namespace DeskPRO\Bundle\UpgradeBundle\Instance;
+
+use DpRun\BuildScanner;
 
 class InstanceStatus
 {
@@ -46,6 +48,11 @@ class InstanceStatus
     private $kernelCachePath;
 
     /**
+     * @var BuildScanner
+     */
+    private $buildScanner;
+
+    /**
      * InstanceStatus constructor.
      *
      * @param string $appPath
@@ -57,6 +64,7 @@ class InstanceStatus
         $this->appPath         = $this->getRealAppPath($appPath);
         $this->wwwPath         = $this->getRealAppPath($wwwPath);
         $this->kernelCachePath = $this->getRealAppPath($kernelCachePath);
+        $this->buildScanner    = new BuildScanner($appPath);
     }
 
     /**
@@ -66,12 +74,11 @@ class InstanceStatus
      */
     private function getRealAppPath($path)
     {
-        $real = realpath($path);
-        if (!$real) {
+        if (!is_dir($path)) {
             throw new \InvalidArgumentException("Invalid path: $path");
         }
 
-        return $real;
+        return $path;
     }
 
     /**
@@ -79,12 +86,16 @@ class InstanceStatus
      *
      * @return string
      */
-    public function getAppPath($forBuildId = null)
+    public function getAppPath($forBuildId)
     {
-        if ($forBuildId) {
-            return $this->appPath.DIRECTORY_SEPARATOR.$forBuildId;
-        }
+        return $this->appPath.DIRECTORY_SEPARATOR.$forBuildId;
+    }
 
+    /**
+     * @return string
+     */
+    public function getAppBasePath()
+    {
         return $this->appPath;
     }
 
@@ -93,12 +104,16 @@ class InstanceStatus
      *
      * @return string
      */
-    public function getWwwPath($forBuildId = null)
+    public function getWwwPath($forBuildId)
     {
-        if ($forBuildId) {
-            return $this->wwwPath.DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.$forBuildId;
-        }
+        return $this->wwwPath.DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.$forBuildId;
+    }
 
+    /**
+     * @return string
+     */
+    public function getWwwBasePath()
+    {
         return $this->wwwPath;
     }
 
@@ -107,16 +122,36 @@ class InstanceStatus
      *
      * @return string
      */
-    public function getKernelCachePath($forBuildId = null)
+    public function getKernelCachePath($forBuildId)
     {
-        if ($forBuildId) {
-            return $this->kernelCachePath.DIRECTORY_SEPARATOR.$forBuildId;
-        }
+        return $this->kernelCachePath.DIRECTORY_SEPARATOR.$forBuildId;
+    }
 
+    /**
+     * @return string
+     */
+    public function getKernelCacheBasePath()
+    {
         return $this->kernelCachePath;
     }
 
+    /**
+     * Check if a certain build is installed.
+     *
+     * @param $buildId
+     *
+     * @return bool
+     */
     public function hasBuild($buildId)
     {
+        return is_dir($this->getAppPath($buildId));
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBuilds()
+    {
+        return $this->buildScanner->getAvailableBuilds();
     }
 }

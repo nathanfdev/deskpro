@@ -29,6 +29,11 @@ services:
     tags:
       - { name: kernel.cache_warmer, priority: 100 }
 
+  deskpro.zippy:
+    class: "Alchemy\\Zippy\\Zippy"
+    factory: ["AppBundle\\Zippy\\ZippyFactory", "getZippy"]
+    arguments: ["@service_container"]
+
   ######################################################################################################################
   # Apps
   ######################################################################################################################

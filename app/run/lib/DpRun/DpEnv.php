@@ -34,6 +34,7 @@ require_once __DIR__ . '/ConfigReader.php';
 require_once __DIR__ . '/DatManagerInterface.php';
 require_once __DIR__ . '/DatManager.php';
 
+require_once __DIR__ . '/BuildScanner.php';
 require_once __DIR__ . '/BuildFinder.php';
 
 /**

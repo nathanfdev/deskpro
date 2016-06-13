@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -44,11 +44,15 @@ class ExceptionUtils
      * @param array    $errorInfo Error info will be placed into this array
      *
      * @throws $ex If $run_fn throws, this will throw
+     *
      * @return mixed
      *
+     * @todo Hmm, doens't actually appear to work?!
      */
     public static function detectSuppressedError($run_fn, &$errorInfo)
     {
+        $old = error_reporting(E_ALL);
+
         // This causes a suppressed error that we
         // know about, so we can test if the $run_fn
         // has it's own error
@@ -62,8 +66,10 @@ class ExceptionUtils
             $ex = $e;
         }
 
+        error_reporting($old);
+
         $einfo = error_get_last();
-        if (strpos($einfo['message'], 'dp_clear_last_error')) {
+        if ($einfo && strpos($einfo['message'], 'dp_clear_last_error') !== false) {
             // The last error was our own marker, so we can ignore it
             $einfo = null;
         }

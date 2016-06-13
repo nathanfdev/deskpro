@@ -78,6 +78,8 @@
     "doctrine/mongodb-odm": "1.1.x-dev",
     "mongofill/mongofill": "dev-master",
     "mpdf/mpdf": "^6.1",
+    "alchemy/zippy": "^0.3.5",
+    "mikey179/vfsStream": "^1.6,
     "geoip2/geoip2": "~2.4",
     "egulias/email-validator": "~1.2"
   },

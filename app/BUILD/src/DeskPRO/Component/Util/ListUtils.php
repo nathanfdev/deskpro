@@ -32,6 +32,8 @@
 
 namespace DeskPRO\Component\Util;
 
+use Symfony\Component\Validator\Tests\Fixtures\Countable;
+
 /**
  * Utility methods used with plain arrays/collections (i.e., numerically indexed).
  *
@@ -427,5 +429,55 @@ class ListUtils
         });
 
         return $array2;
+    }
+
+    /**
+     * @param \Traversable|array $array
+     *
+     * @return mixed
+     */
+    public static function first($array)
+    {
+        if (!is_array($array) && !$array instanceof \ArrayAccess) {
+            $array = iterator_to_array($array, false);
+        }
+
+        if (empty($array)) {
+            throw new \InvalidArgumentException('Array is empty');
+        }
+
+        // This casts a map to a list
+        if (!array_key_exists(0, $array)) {
+            $array = array_values($array);
+        }
+
+        return $array[0];
+    }
+
+    /**
+     * Get the last element of a list.
+     *
+     * @param \Traversable|array $array
+     *
+     * @return mixed
+     */
+    public static function last($array)
+    {
+        if (!is_array($array) && !($array instanceof \ArrayAccess && $array instanceof Countable)) {
+            $array = iterator_to_array($array, false);
+        }
+
+        if (empty($array)) {
+            throw new \InvalidArgumentException('Array is empty');
+        }
+
+        // This casts a map to a list
+        if (!array_key_exists(0, $array)) {
+            $array = array_values($array);
+        }
+
+        $len = count($array);
+
+        return $array[$len - 1];
     }
 }
