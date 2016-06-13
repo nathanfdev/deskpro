@@ -11,8 +11,6 @@ Feature: Ticket logs
     And there are no CustomDefTicket records
     And agent@deskpro.com and user@deskpro.com exist
 
-  @skip-ci
-  # No changed_agent_participants ticket log found
   Scenario: I delete a ticket follower and verify logs
     Given I add the following TicketParticipant records:
       | Ticket        | Person  |
@@ -40,9 +38,6 @@ Feature: Ticket logs
       | changed_person     |
       | changed_agent      |
 
-  @skip-ci
-  # For some reason there is a changed_department log, debug shows that change set contains id_before=NULL
-  # even though department is initialized.
   Scenario: I modify a ticket and check its' logs
     Given I reset the "{demo_ticket}" ticket logs
     When I send a PUT request to "/api/v2/tickets/{demo_ticket}" with body:
