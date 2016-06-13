@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Designer;
 
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
@@ -90,14 +91,18 @@ class PortalCustomizationsTwigExtension extends \Twig_Extension
 
         $text_direction = strtoupper($text_direction);
 
-        $blob_storage = $this->isPreviewMode()
-                      ? $this->getStylesManager()->getEditThemeSetCssBlobStorage($text_direction)
-                      : $this->getStylesManager()->getCssBlobStorage($text_direction);
+        $blob = $this->isPreviewMode()
+                ? $this->getStylesManager()->getEditThemeSetCssBlob($text_direction)
+                : $this->getStylesManager()->getCssBlob($text_direction);
 
-        if ($blob_storage) {
+        if ($blob) {
             return $this->getRouter()->generate(
-                $text_direction === 'RTL' ? 'dp_portal_designer_custom_css_rtl' : 'dp_portal_designer_custom_css',
-                ['version' => $blob_storage->getId(), 'preview' => intval($this->isPreviewMode())],
+                'serve_blob',
+                [
+                    'filename'     => $blob->getFilenameSafe(),
+                    'blob_auth_id' => $blob->getAuthId(),
+                    'local'        => true,
+                ],
                 RouterInterface::ABSOLUTE_URL
             );
         } else {
@@ -129,10 +134,7 @@ class PortalCustomizationsTwigExtension extends \Twig_Extension
             : $this->getAssetsManager()->getLogoAsset();
 
         if ($asset) {
-            /** @var RouterInterface $router */
-            $router = $this->container->get('router');
-
-            return $router->generate('dp_portal_custom_asset', ['name' => $asset->getName()], RouterInterface::ABSOLUTE_URL);
+            return $asset->getBlob()->getDownloadUrl(true);
         }
 
         return;

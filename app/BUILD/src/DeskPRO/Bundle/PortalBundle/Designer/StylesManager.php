@@ -33,7 +33,6 @@
 namespace DeskPRO\Bundle\PortalBundle\Designer;
 
 use Application\DeskPRO\Entity\Blob;
-use Application\DeskPRO\Entity\BlobStorage;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use Doctrine\ORM\EntityManager;
@@ -90,30 +89,6 @@ class StylesManager
     }
 
     /**
-     * @param string $direction Stylesheet for which direction? LTR or RTL
-     *
-     * @return BlobStorage|null
-     */
-    public function getCssBlobStorage($direction = 'LTR')
-    {
-        if ($blob = $this->getCssBlob($direction)) {
-            return $this->em->getRepository(BlobStorage::class)->findOneBy(['blob_id' => $blob->getId()]);
-        }
-    }
-
-    /**
-     * @param string $direction Stylesheet for which direction? LTR or RTL
-     *
-     * @return BlobStorage|null
-     */
-    public function getEditThemeSetCssBlobStorage($direction = 'LTR')
-    {
-        if ($blob = $this->getEditThemeSetCssBlob($direction)) {
-            return $this->em->getRepository(BlobStorage::class)->findOneBy(['blob_id' => $blob->getId()]);
-        }
-    }
-
-    /**
      * @param bool $addDefault
      *
      * @return array
@@ -155,7 +130,7 @@ class StylesManager
      *
      * @return Blob|null
      */
-    private function getCssBlob($direction = 'LTR')
+    public function getCssBlob($direction = 'LTR')
     {
         $direction = strtoupper($direction);
 
@@ -177,7 +152,7 @@ class StylesManager
      *
      * @return Blob|null
      */
-    private function getEditThemeSetCssBlob($direction = 'LTR')
+    public function getEditThemeSetCssBlob($direction = 'LTR')
     {
         $direction = strtoupper($direction);
 

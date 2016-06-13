@@ -102,6 +102,10 @@ class ServeFileScript extends LowScriptAbstract
                 $pathinfo         = preg_replace('#^/local/#', '/', $pathinfo);
             }
 
+            if (isset($_GET['local'])) {
+                $this->local_mode = true;
+            }
+
             if (preg_match('#^/size/([0-9]+)/#', $pathinfo, $m)) {
                 $_GET['s'] = $m[1];
                 $pathinfo  = str_replace($m[0], '/', $pathinfo);
@@ -122,6 +126,10 @@ class ServeFileScript extends LowScriptAbstract
             // Default org avatar: /o-avatar/default
             } elseif (preg_match('#^/o-avatar/default#', $pathinfo)) {
                 $this->defaultOrgAvatarAction();
+
+            // A standard asset
+            } elseif (preg_match('#^/dp-asset/([a-zA-Z0-9_\.\-]+)$#', $pathinfo, $m)) {
+                $this->dpAsset($m[1]);
 
             // A standard asset
             } elseif (preg_match('#^/dp-asset/([a-zA-Z0-9_\.\-]+)$#', $pathinfo, $m)) {

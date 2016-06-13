@@ -385,7 +385,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         // We are specifically requestinga local url,
         // make sure serve_file doesn't redirect.
         if ($this->file_url && !$use_file_url) {
-            $url = Strings::strReplaceOne('file.php/', 'file.php/local/', $url);
+            $url .= strpos($url, '?') ? '&local' : '?local';
         }
 
         return $url;

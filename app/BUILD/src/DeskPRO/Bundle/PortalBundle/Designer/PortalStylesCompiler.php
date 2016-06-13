@@ -32,8 +32,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Designer;
 
-use Application\DeskPRO\Entity\Blob;
-use Application\DeskPRO\Entity\BlobStorage;
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use Doctrine\ORM\EntityManager;
@@ -56,6 +55,11 @@ class PortalStylesCompiler
     private $em;
 
     /**
+     * @var DeskproBlobStorage
+     */
+    private $bs;
+
+    /**
      * @var string path to the portal SCSS file
      */
     private $stylesLrtFilePath;
@@ -76,21 +80,25 @@ class PortalStylesCompiler
     private $customScss;
 
     /**
-     * @param EntityManager $em
-     * @param string        $stylesLrtFilePath
-     * @param string        $stylesRtlFilePath
-     * @param string        $customScss
+     * @param EntityManager      $em
+     * @param DeskproBlobStorage $bd
+     * @param string             $stylesLrtFilePath
+     * @param string             $stylesRtlFilePath
+     * @param string             $customScss
      *
      * @throws \Exception
      */
     public function __construct(
         EntityManager $em,
+        DeskproBlobStorage $bs,
         $stylesLrtFilePath,
         $stylesRtlFilePath,
         $mainScss,
         $customScss
     ) {
         $this->em = $em;
+        $this->bs = $bs;
+
         if (!$this->stylesLrtFilePath = realpath($stylesLrtFilePath)) {
             throw new \Exception("Can't resolve a file from the given path: {$this->stylesLrtFilePath}");
         }
@@ -125,53 +133,34 @@ class PortalStylesCompiler
      * @param string   $direction LTR or RTL
      * @param array    $variables
      * @param ThemeSet $themeSet
-     *
-     * @internal param bool $preview
      */
     private function doRecompile($direction, array $variables, ThemeSet $themeSet)
     {
         $css = $this->compileCss($direction, $variables);
 
-        // Find existing or create a new blob storage for the custom Css
-        $blobStorage = $this->getCssBlobStorage($themeSet, $direction);
-        if (!$blobStorage) {
-            $blob = new Blob();
-            $blob->setFilename($direction === 'RTL' ? 'portal-rtl.css' : 'portal.css');
-            $blob->blob_hash = md5($css);
-            $this->em->persist($blob);
-            $this->em->flush();
+        $name = $direction === 'RTL' ? 'portal-rtl.css' : 'portal.css';
+        $tag  = $direction === 'RTL' ? 'portal_rtl_css' : 'portal_css';
 
-            $asset = new ThemeSetAsset();
-            $asset->setName($direction === 'RTL' ? 'portal-rtl.css' : 'portal.css');
-            $asset->setThemeSet($themeSet);
-            $asset->setTags([$direction === 'RTL' ? 'portal_rtl_css' : 'portal_css']);
-            $asset->setBlob($blob);
-            $this->em->persist($asset);
-            $this->em->flush();
+        $asset   = $this->getCssAsset($themeSet, $direction);
+        $oldBlob = null;
+
+        if ($asset) {
+            $oldBlob = $asset->getBlob();
         } else {
-            // Saving in a new BlobStorage instance to use its' $id as CSS version to bypass caches
-            $blob = $this->getCssBlob($themeSet, $direction);
-            $this->em->remove($blobStorage);
-            $this->em->flush();
+            $asset = new ThemeSetAsset();
         }
 
-        $blobStorage = new BlobStorage();
-        $blobStorage->setBlobId($blob->getId());
-        $blobStorage->setData($css);
-        $this->em->persist($blobStorage);
-        $this->em->flush();
-    }
+        $blob = $this->bs->createBlobRecordFromString($css, $name, 'text/css', ['tag' => 'brand_asset.'.$tag]);
+        $asset->setName($name);
+        $asset->setThemeSet($themeSet);
+        $asset->setTags([$tag]);
+        $asset->setBlob($blob);
 
-    /**
-     * @param ThemeSet $themeSet
-     * @param string   $direction
-     *
-     * @return null|object
-     */
-    public function getCssBlobStorage(ThemeSet $themeSet, $direction = 'LTR')
-    {
-        if ($blob = $this->getCssBlob($themeSet, $direction)) {
-            return $this->em->getRepository(BlobStorage::class)->findOneBy(['blob_id' => $blob->getId()]);
+        $this->em->persist($asset);
+        $this->em->flush();
+
+        if ($oldBlob) {
+            $this->bs->deleteBlobRecord($oldBlob);
         }
     }
 
@@ -199,9 +188,9 @@ class PortalStylesCompiler
      * @param ThemeSet $themeSet
      * @param string   $direction Stylesheet for which direction? LTR or RTL
      *
-     * @return Blob|null
+     * @return ThemeSetAsset|null
      */
-    private function getCssBlob(ThemeSet $themeSet, $direction = 'LTR')
+    private function getCssAsset(ThemeSet $themeSet, $direction = 'LTR')
     {
         $direction = strtoupper($direction);
 
@@ -209,11 +198,8 @@ class PortalStylesCompiler
             'theme_set' => $themeSet,
             'name'      => $direction === 'RTL' ? 'portal-rtl.css' : 'portal.css',
         ];
-        if ($asset = $this->em->getRepository(ThemeSetAsset::class)->findOneBy($criteria)) {
-            return $asset->getBlob();
-        }
 
-        return;
+        return $this->em->getRepository(ThemeSetAsset::class)->findOneBy($criteria);
     }
 
     /**

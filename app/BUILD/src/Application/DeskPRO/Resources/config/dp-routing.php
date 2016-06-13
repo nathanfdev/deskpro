@@ -72,7 +72,7 @@ $collection->create('serve_file_root', array(
 $collection->create('serve_brand_asset', array(
     'path'         => '/file.php/brand-{brand_id}/{file}',
     'controller'   => '(see: serve_file.php)',
-    'requirements' => array('brand_id' => '[0-9]+', 'file' => '.*+'),
+    'requirements' => array('brand_id' => '[0-9]+', 'blob_auth_id' => '\w+', 'filename' => '.*+'),
 ));
 
 $collection->create('serve_blob', array(
