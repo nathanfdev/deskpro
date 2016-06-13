@@ -6289,9 +6289,10 @@ $collection->create(
 $collection->create(
     'api_banning_ip_get',
     [
-        'path'       => '/banning_ip/{id}',
-        'controller' => 'LegacyApiBundle:Banning:getIp',
-        'methods'    => ['GET'],
+        'path'         => '/banning_ip/{id}',
+        'controller'   => 'LegacyApiBundle:Banning:getIp',
+        'requirements' => ['id' => '\\d+'],
+        'methods'      => ['GET'],
     ]
 );
 
@@ -6345,9 +6346,10 @@ $collection->create(
 $collection->create(
     'api_banning_ip_remove',
     [
-        'path'       => '/banning_ip/{id}',
-        'controller' => 'LegacyApiBundle:Banning:removeIp',
-        'methods'    => ['DELETE'],
+        'path'         => '/banning_ip/{id}',
+        'controller'   => 'LegacyApiBundle:Banning:removeIp',
+        'requirements' => ['id' => '\\d+'],
+        'methods'      => ['DELETE'],
     ]
 );
 

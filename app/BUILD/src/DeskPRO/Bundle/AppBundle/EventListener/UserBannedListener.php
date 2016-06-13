@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,12 +29,15 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
+use Application\DeskPRO\Entity\BanIp;
 use DeskPRO\Bundle\AppBundle\Request\InterfaceInfo;
 use DeskPRO\Bundle\AppBundle\Request\RequestUtils;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\IpUtils;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -85,17 +88,16 @@ final class UserBannedListener implements EventSubscriberInterface
             return;
         }
 
-        $db = $this->container->get('database_connection');
+        $db              = $this->container->get('database_connection');
+        $ip              = $event->getRequest()->getClientIp();
+        $banIpRepository = $this->container->get('doctrine.orm.default_entity_manager')->getRepository(BanIp::class);
+        $banned          = (bool) $banIpRepository->findOneBy(['banned_ip' => $ip]);
 
-        $ip      = $event->getRequest()->getClientIp();
-        $ip_long = sprintf('%u', ip2long($ip));
-
-        $banned = $db->fetchColumn('
-            SELECT banned_ip
-            FROM ban_ips
-            WHERE banned_ip = ? OR (ip_start <= ? AND ip_end >= ?)
-            LIMIT 1
-        ', array($ip, $ip_long, $ip_long));
+        if (!$banned) {
+            $query  = $db->executeQuery('SELECT `banned_ip` FROM `ban_ips` WHERE `is_range` = 1');
+            $ips    = $query->fetchAll(\PDO::FETCH_COLUMN);
+            $banned = IpUtils::checkIp($ip, $ips);
+        }
 
         if ($banned) {
             $page_html = file_get_contents(DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/Resources/views/kernel/banned.html');
