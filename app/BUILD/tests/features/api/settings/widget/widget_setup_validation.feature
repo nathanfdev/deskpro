@@ -76,13 +76,13 @@ Feature: Widget Setup
   Scenario: I check tickets default department
     When I send a POST request to "/api/v2/widget/setup" with body:
     """
-    {
-      "brand": {
-        "ticket": {
-          "select_department": "default"
-        }
-      }
+{
+  "brand": {
+    "ticket": {
+      "select_department": "default"
     }
+  }
+}
     """
     Then the response status code should be 400
     And the JSON node "errors.fields.brand.fields.ticket.fields.default_department.errors[0].code" should be equal to "required"
@@ -90,29 +90,29 @@ Feature: Widget Setup
 
     When I send a POST request to "/api/v2/widget/setup" with body:
     """
-    {
-      "brand": {
-        "ticket": {
-          "select_department": "custom"
-        }
-      }
+{
+  "brand": {
+    "ticket": {
+      "select_department": "custom"
     }
+  }
+}
     """
     Then the JSON node "errors.fields.brand.fields.ticket.fields.default_department.errors[0].code" should not exist
 
   Scenario: I validate is numeric check
     When I send a POST request to "/api/v2/widget/setup" with body:
     """
-    {
-      "brand": {
-        "widget": {
-          "agent_polling_timeout": "text"
-        },
-        "chat": {
-          "waiting_timeout": "text"
-        }
-      }
+{
+  "brand": {
+    "widget": {
+      "agent_polling_timeout": "text"
+    },
+    "chat": {
+      "waiting_timeout": "text"
     }
+  }
+}
     """
     Then the response status code should be 400
     And the JSON node "errors.fields.brand.fields.widget.fields.agent_polling_timeout.errors[0].code" should be equal to "numeric"
@@ -123,36 +123,36 @@ Feature: Widget Setup
   Scenario: I validate duplicate translations
     When I send a POST request to "/api/v2/widget/setup" with body:
     """
-    {
-      "brand": {
-        "button": {
-          "translations": [
-            {
-              "name": "Help"
-            },
-            {
-              "name": "Help"
-            }
-          ]
+{
+  "brand": {
+    "button": {
+      "translations": [
+        {
+          "name": "Help"
         },
-        "chat": {
-          "popup": {
-            "translations": [
-              {
-                "language": 2,
-                "title": "Title",
-                "message": "Message"
-              },
-              {
-                "language": 2,
-                "title": "Title",
-                "message": "Message"
-              }
-            ]
-          }
+        {
+          "name": "Help"
         }
+      ]
+    },
+    "chat": {
+      "popup": {
+        "translations": [
+          {
+            "language": 2,
+            "title": "Title",
+            "message": "Message"
+          },
+          {
+            "language": 2,
+            "title": "Title",
+            "message": "Message"
+          }
+        ]
       }
     }
+  }
+}
     """
     Then the response status code should be 400
     And print last JSON response

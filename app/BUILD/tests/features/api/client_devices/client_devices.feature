@@ -14,12 +14,12 @@ Feature: Client devices
   Scenario: I create a new device
     When I send a POST request to "/api/v2/client_devices/mobile" with body:
     """
-    {
-      "device_id": "my_device",
-      "device_type": "ios.iphone",
-      "device_agent": "my device agent string",
-      "device_name": "device alpha"
-    }
+{
+  "device_id": "my_device",
+  "device_type": "ios.iphone",
+  "device_agent": "my device agent string",
+  "device_name": "device alpha"
+}
     """
     Then the response status code should be 201
 
@@ -39,9 +39,9 @@ Feature: Client devices
   Scenario: I update the device
     When I send a PUT request to "/api/v2/client_devices/mobile/my_device" with body:
     """
-    {
-      "device_agent": "my NEW device agent string"
-    }
+{
+  "device_agent": "my NEW device agent string"
+}
     """
     Then the response should be empty
     And the response status code should be 204
@@ -62,9 +62,9 @@ Feature: Client devices
   Scenario: I update the device via PUT to register
     When I send a PUT request to "/api/v2/client_devices/mobile/register/my_device" with body:
     """
-    {
-      "device_agent": "my OTHER NEW device agent string"
-    }
+{
+  "device_agent": "my OTHER NEW device agent string"
+}
     """
     Then the response should be empty
     And the response status code should be 204
@@ -85,11 +85,11 @@ Feature: Client devices
   Scenario: I register a new device via PUT to register
     When I send a PUT request to "/api/v2/client_devices/mobile/register/1FE0BD4C-EED3-4BDC-8C17-A2C1025D51C3" with body:
     """
-    {
-      "device_type": "ios.iphone",
-      "device_agent": "my device agent string",
-      "device_name": "device beta"
-    }
+{
+  "device_type": "ios.iphone",
+  "device_agent": "my device agent string",
+  "device_name": "device beta"
+}
     """
     Then the response status code should be 201
 
@@ -115,9 +115,9 @@ Feature: Client devices
   Scenario: I enable notifications on a device
     When I send a PUT request to "/api/v2/client_devices/mobile/1FE0BD4C-EED3-4BDC-8C17-A2C1025D51C3" with body:
     """
-    {
-      "notification_token": "FOOBAR"
-    }
+{
+  "notification_token": "FOOBAR"
+}
     """
     Then the response status code should be 204
 
@@ -131,9 +131,9 @@ Feature: Client devices
   Scenario: I update a device via PUT to register
     When I send a PUT request to "/api/v2/client_devices/mobile/register/1FE0BD4C-EED3-4BDC-8C17-A2C1025D51C3" with body:
     """
-    {
-      "notification_token": "FOOBARBAZ"
-    }
+{
+  "notification_token": "FOOBARBAZ"
+}
     """
     Then the response status code should be 204
 
@@ -147,12 +147,12 @@ Feature: Client devices
   Scenario: I attempt to create a duplicate device
     When I send a POST request to "/api/v2/client_devices/mobile" with body:
     """
-    {
-      "device_id": "my_device",
-      "device_type": "ios.iphone",
-      "device_agent": "my device agent string",
-      "device_name": "device alpha"
-    }
+{
+  "device_id": "my_device",
+  "device_type": "ios.iphone",
+  "device_agent": "my device agent string",
+  "device_name": "device alpha"
+}
     """
     Then the response status code should be 400
 

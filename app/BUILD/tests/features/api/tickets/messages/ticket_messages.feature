@@ -28,12 +28,12 @@ Feature: /tickets/{id}/messages endpoint
     Given I create an image blob with auth code "IMGAAAAAAAAAAAAAAA"
     When I send a POST request to "/api/v2/tickets/{ticket}/messages" with body:
     """
-    {
-      "message": "My Message [attach:image:IMGAAAAAAAAAAAAAAA:image.jpg]",
-      "attachments": [
-        { "blob_auth": "IMGAAAAAAAAAAAAAAA" }
-      ]
-    }
+{
+  "message": "My Message [attach:image:IMGAAAAAAAAAAAAAAA:image.jpg]",
+  "attachments": [
+    { "blob_auth": "IMGAAAAAAAAAAAAAAA" }
+  ]
+}
     """
     Then the response status code should be 201
     And the JSON node "data.person" should be equal to 1
@@ -45,9 +45,9 @@ Feature: /tickets/{id}/messages endpoint
 
     When I send a POST request to "/api/v2/tickets/{ticket}/messages" with body:
     """
-    {
-      "message": "<span>my html message</span>"
-    }
+{
+  "message": "<span>my html message</span>"
+}
     """
     Then the response status code should be 201
     And the JSON node "data.person" should be equal to 1
@@ -56,10 +56,10 @@ Feature: /tickets/{id}/messages endpoint
 
     When I send a POST request to "/api/v2/tickets/{ticket}/messages" with body:
     """
-    {
-      "message": "<span>my html message</span>",
-      "format": "text"
-    }
+{
+  "message": "<span>my html message</span>",
+  "format": "text"
+}
     """
     Then the response status code should be 201
     And the JSON node "data.person" should be equal to 1
@@ -69,11 +69,11 @@ Feature: /tickets/{id}/messages endpoint
 
     When I send a POST request to "/api/v2/tickets/{ticket}/messages" with body:
     """
-    {
-      "message": "<span>my note</span>",
-      "format": "html",
-      "is_note": true
-    }
+{
+  "message": "<span>my note</span>",
+  "format": "html",
+  "is_note": true
+}
     """
     Then the JSON node "data.person" should be equal to 1
     And the JSON node "data.is_agent_note" should be equal to 1
@@ -99,14 +99,14 @@ Feature: /tickets/{id}/messages endpoint
     Given I create blob with auth code "BBBBBBBBBBBBBBBBBB"
     When I send a POST request to "/api/v2/tickets/{ticket}/messages" with body:
     """
-    {
-      "message": "<span>my message with attachments</span>",
-      "format": "html",
-      "attachments": [
-        {"blob_auth": "AAAAAAAAAAAAAAAAAA"},
-        {"blob_auth": "BBBBBBBBBBBBBBBBBB", "is_inline": true}
-      ]
-    }
+{
+  "message": "<span>my message with attachments</span>",
+  "format": "html",
+  "attachments": [
+    {"blob_auth": "AAAAAAAAAAAAAAAAAA"},
+    {"blob_auth": "BBBBBBBBBBBBBBBBBB", "is_inline": true}
+  ]
+}
     """
     Then the response status code should be 201
     And the JSON node "data.attachments" should have 2 elements
@@ -118,12 +118,12 @@ Feature: /tickets/{id}/messages endpoint
 
   Scenario: I reset ticket message attachments
     When I send a PUT request to "/api/v2/tickets/{ticket}/messages/{lastCreatedId}" with body:
-      """
-    {
-      "message": "<span>my edited message without attachments</span>",
-      "format": "text",
-      "attachments": []
-    }
+    """
+{
+  "message": "<span>my edited message without attachments</span>",
+  "format": "text",
+  "attachments": []
+}
     """
     Then the response status code should be 204
 
@@ -135,11 +135,11 @@ Feature: /tickets/{id}/messages endpoint
   Scenario: I create a text message with is_note = false
     When I send a POST request to "/api/v2/tickets/{ticket}/messages" with body:
     """
-    {
-      "message": "<p style=\" \"><font face=\".SF UI Text\"  style=\" font-size:14px; \" >Test Note<\/font><\/p>",
-      "format": "html",
-      "is_note": false
-    }
+{
+  "message": "<p style=\" \"><font face=\".SF UI Text\"  style=\" font-size:14px; \" >Test Note<\/font><\/p>",
+  "format": "html",
+  "is_note": false
+}
     """
     Then the response status code should be 201
     And the JSON node "data.message" should contain "Test Note"
@@ -148,11 +148,11 @@ Feature: /tickets/{id}/messages endpoint
   Scenario: I create a text message with is_note = 0
     When I send a POST request to "/api/v2/tickets/{ticket}/messages" with body:
     """
-    {
-      "message": "<p style=\" \"><font face=\".SF UI Text\"  style=\" font-size:14px; \" >Test Note<\/font><\/p>",
-      "format": "html",
-      "is_note": 0
-    }
+{
+  "message": "<p style=\" \"><font face=\".SF UI Text\"  style=\" font-size:14px; \" >Test Note<\/font><\/p>",
+  "format": "html",
+  "is_note": 0
+}
     """
     Then the response status code should be 201
     And the JSON node "data.message" should contain "Test Note"
@@ -161,11 +161,11 @@ Feature: /tickets/{id}/messages endpoint
   Scenario: I create a note with is_note = 1
     When I send a POST request to "/api/v2/tickets/{ticket}/messages" with body:
     """
-    {
-      "message": "<p style=\" \"><font face=\".SF UI Text\"  style=\" font-size:14px; \" >Test Note<\/font><\/p>",
-      "format": "html",
-      "is_note": 1
-    }
+{
+  "message": "<p style=\" \"><font face=\".SF UI Text\"  style=\" font-size:14px; \" >Test Note<\/font><\/p>",
+  "format": "html",
+  "is_note": 1
+}
     """
     Then the response status code should be 201
     And the JSON node "data.message" should contain "Test Note"

@@ -16,22 +16,22 @@ Feature: Adding custom header, footer, SCSS and javascript
   Scenario: I modify header, footer, SCSS and javascript
     When I send a PUT request to "/portal/api/style/edit-theme-set/advanced-edits" with body:
     """
-      {
-        "header": "header", "footer": "footer", "custom_scss": "div {color: #fff;}", "javascript": "javascript"
-      }
+{
+  "header": "header", "footer": "footer", "custom_scss": "div {color: #fff;}", "javascript": "javascript"
+}
     """
     Then the response status code should be 204
 
   Scenario: I retrieve modified header, footer, SCSS and javascript
     And I send a PUT request to "/portal/api/style/edit-theme-set/advanced-edits" with body:
     """
-      {
-        "header": "<h1>Header</h1>",
-        "footer": "<i>Footer</i>",
-        "main_scss": "body {background: white;}",
-        "custom_scss": "body {color: red;}",
-        "javascript": "alert('hello')"
-      }
+{
+  "header": "<h1>Header</h1>",
+  "footer": "<i>Footer</i>",
+  "main_scss": "body {background: white;}",
+  "custom_scss": "body {color: red;}",
+  "javascript": "alert('hello')"
+}
     """
     When I go to "/portal/api/style/edit-theme-set/advanced-edits"
     Then the response status code should be 200
@@ -44,9 +44,9 @@ Feature: Adding custom header, footer, SCSS and javascript
   Scenario: I preview a custom header
     When I send a PUT request to "/portal/api/style/edit-theme-set/advanced-edits" with body:
     """
-      {
-        "header": "Just edited custom header"
-      }
+{
+  "header": "Just edited custom header"
+}
     """
     Then the response status code should be 204
     And the response should be empty
@@ -56,9 +56,9 @@ Feature: Adding custom header, footer, SCSS and javascript
   Scenario: I check portal doesn't contain a not yet committed custom header
     When I send a PUT request to "/portal/api/style/edit-theme-set/advanced-edits" with body:
     """
-      {
-        "header": "Just edited custom header"
-      }
+{
+  "header": "Just edited custom header"
+}
     """
     Then the response status code should be 204
     And the response should be empty
@@ -68,9 +68,9 @@ Feature: Adding custom header, footer, SCSS and javascript
   Scenario: I check portal contain committed custom header
     When I send a PUT request to "/portal/api/style/edit-theme-set/advanced-edits" with body:
     """
-      {
-        "header": "Just edited custom header I commit"
-      }
+{
+  "header": "Just edited custom header I commit"
+}
     """
     Then the response status code should be 204
     And the response should be empty
@@ -84,9 +84,9 @@ Feature: Adding custom header, footer, SCSS and javascript
   Scenario: I discard a custom header
     When I send a PUT request to "/portal/api/style/edit-theme-set/advanced-edits" with body:
     """
-      {
-        "header": "Just edited custom header I discard"
-      }
+{
+  "header": "Just edited custom header I discard"
+}
     """
     Then the response status code should be 204
     And the response should be empty
@@ -100,15 +100,11 @@ Feature: Adding custom header, footer, SCSS and javascript
   Scenario: I check custom SCSS is applied to the portal
     And I send a PUT request to "/portal/api/style/edit-theme-set/advanced-edits" with body:
     """
-      {
-        "custom_scss": ".my-important-custom-css-class {color: red;}"
-      }
+{
+  "custom_scss": ".my-important-custom-css-class {color: red;}"
+}
     """
-    And I send a PUT request to "/portal/api/style/edit-theme-set/variable-values" with body:
-    """
-    {
-    }
-    """
+    And I send a PUT request to "/portal/api/style/edit-theme-set/variable-values"
     And I go to "/portal/api/style/edit-theme-set/commit"
     When I go to "/portal/api/style/portal.css"
     Then the response should contain ".my-important-custom-css-class"
@@ -116,9 +112,9 @@ Feature: Adding custom header, footer, SCSS and javascript
   Scenario: I check custom JS is applied to the portal
     And I send a PUT request to "/portal/api/style/edit-theme-set/advanced-edits" with body:
     """
-      {
-        "javascript": "var custom_js = 1 + 1;"
-      }
+{
+  "javascript": "var custom_js = 1 + 1;"
+}
     """
     And I go to "/portal/api/style/edit-theme-set/commit"
     When I go to "/"
