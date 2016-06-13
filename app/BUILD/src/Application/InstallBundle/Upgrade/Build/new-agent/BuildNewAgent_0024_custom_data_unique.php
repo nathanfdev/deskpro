@@ -51,3 +51,5 @@ class BuildNewAgent_0024_custom_data_unique extends AbstractBuild
             ADD UNIQUE INDEX `unique_idx` (`field_id` ASC, `product_id` ASC, `root_field_id` ASC);');
     }
 }
+
+//[[build:1460678411]]

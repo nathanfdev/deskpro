@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 class BuildNewAgent_0023_ticketlayouts extends AbstractBuild
@@ -111,3 +112,5 @@ class BuildNewAgent_0023_ticketlayouts extends AbstractBuild
         ];
     }
 }
+
+//[[build:1460678410]]

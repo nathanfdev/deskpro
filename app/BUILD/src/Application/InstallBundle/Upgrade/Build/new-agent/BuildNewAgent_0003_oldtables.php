@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\InstallBundle\Upgrade\Build;
 
 class BuildNewAgent_0003_oldtables extends AbstractBuild
@@ -44,4 +45,4 @@ class BuildNewAgent_0003_oldtables extends AbstractBuild
     }
 }
 
-//[[build:1456790403]]
+//[[build:1460678403]]

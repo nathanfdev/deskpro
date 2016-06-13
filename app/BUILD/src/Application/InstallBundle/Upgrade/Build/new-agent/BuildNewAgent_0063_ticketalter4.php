@@ -36,3 +36,5 @@ class BuildNewAgent_0063_ticketalter4 extends AbstractBuild
             ADD UNIQUE INDEX `unique_idx` (`field_id` ASC, `ticket_id` ASC, `root_field_id` ASC);');
     }
 }
+
+//[[build:1460678422]]
