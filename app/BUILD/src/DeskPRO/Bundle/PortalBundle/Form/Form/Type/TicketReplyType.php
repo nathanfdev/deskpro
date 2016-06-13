@@ -29,14 +29,23 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\NewSettings\SettingsBag;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * Class TicketReplyType.
@@ -49,13 +58,19 @@ class TicketReplyType extends AbstractType
     private $language_manager;
 
     /**
+     * @var EntityManager
+     */
+    protected $em;
+
+    /**
      * Constructor.
      *
      * @param LanguageManager $language_manager
      */
-    public function __construct(LanguageManager $language_manager)
+    public function __construct(LanguageManager $language_manager, EntityManager $em)
     {
         $this->language_manager = $language_manager;
+        $this->em               = $em;
     }
 
     /**
@@ -91,6 +106,26 @@ class TicketReplyType extends AbstractType
         ;
     }
 
+    public function checkForDupes($value, ExecutionContextInterface $context)
+    {
+        if (!isset($value['ticket_message'])) {
+            return;
+        }
+
+        /** @var Form $form */
+        $form   = $context->getRoot();
+        $ticket = $form->getConfig()->getOption('ticket');
+
+        /** @var \Application\DeskPRO\EntityRepository\TicketMessage $rep */
+        $rep = $this->em->getRepository('DeskPRO:TicketMessage');
+        if ($rep->checkDupeMessage($value['ticket_message'], $ticket, 5 * 60)) {
+            $context
+                ->buildViolation('Duplicate message')
+                ->atPath('ticket_message')
+                ->addViolation();
+        }
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -107,15 +142,18 @@ class TicketReplyType extends AbstractType
         $resolver
             ->setDefaults([
                 'message_label' => false,
+                'constraints'   => array(
+                    new Callback(array($this, 'checkForDupes')),
+                ),
             ])
             ->setRequired([
                 'person', 'ticket', 'ticket_message', 'settings',
             ])
             ->setAllowedTypes([
-                'ticket'         => 'Application\\DeskPRO\\Entity\\Ticket',
-                'ticket_message' => 'Application\\DeskPRO\\Entity\\TicketMessage',
-                'settings'       => 'Application\\DeskPRO\\NewSettings\\SettingsBag',
-                'person'         => 'Application\\DeskPRO\\Entity\\Person',
+                'ticket'         => Ticket::class,
+                'ticket_message' => TicketMessage::class,
+                'settings'       => SettingsBag::class,
+                'person'         => Person::class,
             ])
         ;
     }

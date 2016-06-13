@@ -211,7 +211,7 @@ class TicketMessage extends AbstractEntityRepository
             return false;
         }
 
-        $timesnip = date_create('-'.$secs_ago.' seconds');
+        $timesnip = new \DateTime('-'.$secs_ago.' seconds');
 
         if ($ticket) {
             if ($logger) {
@@ -220,9 +220,12 @@ class TicketMessage extends AbstractEntityRepository
             $check_matches = $this->_em->createQuery('
                 SELECT m
                 FROM DeskPRO:TicketMessage m
-                LEFT JOIN m.ticket t
-                WHERE m.message_hash = ?0 AND m.date_created > ?1 AND m.ticket = ?2
-            ')->setParameters(array($message['message_hash'], $timesnip, $ticket))->getResult();
+                JOIN m.ticket t
+                WHERE m.message_hash = ?0 AND m.date_created > ?1 AND m.ticket = ?2 AND m.person = ?3
+                ORDER BY m.id DESC
+            ')->setMaxResults(1)->setParameters(array(
+                $message['message_hash'], $timesnip, $ticket, $message->person,
+            ))->getResult();
         } else {
             if ($logger) {
                 $logger->logDebug("[EntityRepository:TicketMessage] Checking {$message['id']} for dupes in any previous ticket (-$secs_ago s)");
@@ -230,9 +233,11 @@ class TicketMessage extends AbstractEntityRepository
             $check_matches = $this->_em->createQuery('
                 SELECT m
                 FROM DeskPRO:TicketMessage m
-                LEFT JOIN m.ticket AS t
-                WHERE m.message_hash = ?0 AND m.date_created > ?1 AND t.subject = ?2
-            ')->setParameters(array($message['message_hash'], $timesnip, $message->withNewSubject))->getResult();
+                JOIN m.ticket AS t
+                WHERE m.message_hash = ?0 AND m.date_created > ?1 AND t.subject = ?2 AND m.person = ?3
+            ')->setParameters(array(
+                $message['message_hash'], $timesnip, $message->withNewSubject, $message->person,
+            ))->getResult();
         }
 
         $ids = array();
