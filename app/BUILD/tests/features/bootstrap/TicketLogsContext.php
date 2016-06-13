@@ -100,6 +100,23 @@ class TicketLogsContext extends BaseContext
     }
 
     /**
+     * @Then the ":ticketId" ticket should not have ":actionType" log
+     *
+     * @param int    $ticketId
+     * @param string $actionType
+     *
+     * @throws \Exception
+     */
+    public function ticketLogDoesntHaveAction($ticketId, $actionType)
+    {
+        $ticketId = DataContext::replace($ticketId);
+        $result   = $this->getTicketLogActions($ticketId, [$actionType]);
+        if (!empty($result)) {
+            throw new \Exception("$actionType ticket log found");
+        }
+    }
+
+    /**
      * @Then the ":ticketId" ticket should have ":actionType" log with detail ":detailName" = ":expectedValue"
      *
      * @param int    $ticketId

@@ -28,7 +28,6 @@ Feature: Ticket link endpoint
     Then the response status code should be 204
     And the response should be empty
     And the header "Location" should be equal to "/api/v2/tickets/{ticket_1}/links"
-    And the "{ticket_2}" ticket should have "parent_ticket" log
 
     When I send a GET request to "/api/v2/tickets/{ticket_1}/links"
     Then the JSON node "data.children[0].id" should be equal to "{ticket_2}"
@@ -117,8 +116,6 @@ Feature: Ticket link endpoint
     """
     Then the response status code should be 204
     And the response should be empty
-    And the "{ticket_4}" ticket should have "parent_ticket" log
-
 
     When I send a "POST" request to "/api/v2/tickets/{ticket_5}/links" with body:
     """
@@ -129,7 +126,6 @@ Feature: Ticket link endpoint
     """
     Then the response status code should be 204
     And the response should be empty
-    And the "{ticket_5}" ticket should have "parent_ticket" log
 
     When I send a "GET" request to "/api/v2/tickets/{ticket_4}/links"
     Then the JSON node "data.parent.id" should be equal to "{ticket_6}"
@@ -146,8 +142,6 @@ Feature: Ticket link endpoint
     And the JSON node "data.children[0].id" should be equal to "{ticket_4}"
     And the JSON node "data.children[1].id" should be equal to "{ticket_5}"
 
-    Given I reset the "{ticket_4}" ticket logs
-    Given I reset the "{ticket_5}" ticket logs
     When I send a "DELETE" request to "/api/v2/tickets/{ticket_5}/links" with body:
     """
 {
@@ -163,7 +157,6 @@ Feature: Ticket link endpoint
     Then the response status code should be 200
     And the JSON node "data.children" should have 1 element
     And the JSON node "data.children[0].id" should be equal to "{ticket_4}"
-    And the "{ticket_5}" ticket should have "parent_ticket" log
 
     When I send a "DELETE" request to "/api/v2/tickets/{ticket_6}/links" with body:
     """
@@ -176,7 +169,6 @@ Feature: Ticket link endpoint
     When I send a "GET" request to "/api/v2/tickets/{ticket_6}/links"
     Then the response status code should be 200
     And the JSON node "data.children" should have 0 elements
-    And the "{ticket_4}" ticket should have "parent_ticket" log
 
   Scenario Outline: I try to link non-existing ticket
     When I send a "POST" request to "/api/v2/tickets/{ticket_4}/links" with body:
