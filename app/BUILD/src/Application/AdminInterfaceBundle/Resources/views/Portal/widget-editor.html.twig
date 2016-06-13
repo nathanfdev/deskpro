@@ -267,8 +267,9 @@
                                 <div class="ui grid">
                                     <div class="three column row">
                                         <div class="column">
-                                            <div class="ui checkbox image field">
+                                            <div class="ui checkbox image field proactive-style">
                                                 <input type="radio" name="widget_style"
+                                                       ng-model="brand_settings.chat.popup.style"
                                                        id="proactive_style_agent_text_input" class="hidden"
                                                        value="agent_text_input">
                                                 <label for="proactive_style_agent_text_input">
@@ -280,9 +281,11 @@
                                             </div>
                                         </div>
                                         <div class="column">
-                                            <div class="ui checkbox image field">
-                                                <input type="radio" name="widget_style" id="proactive_style_text_button"
-                                                       class="hidden" value="text_button">
+                                            <div class="ui checkbox image field proactive-style">
+                                                <input type="radio" name="widget_style"
+                                                       ng-model="brand_settings.chat.popup.style"
+                                                       id="proactive_style_text_button" class="hidden"
+                                                       value="text_button">
                                                 <label for="proactive_style_text_button">
                                                     Agent with text and button
                                                     <div class="ui divider"></div>
@@ -292,8 +295,9 @@
                                             </div>
                                         </div>
                                         <div class="column">
-                                            <div class="ui checkbox image field">
+                                            <div class="ui checkbox image field proactive-style">
                                                 <input type="radio" name="widget_style"
+                                                       ng-model="brand_settings.chat.popup.style"
                                                        id="proactive_style_agents_button" class="hidden"
                                                        value="agents_button">
                                                 <label for="proactive_style_agents_button">
@@ -307,8 +311,9 @@
                                     </div>
                                     <div class="three column row">
                                         <div class="column">
-                                            <div class="ui checkbox image field">
+                                            <div class="ui checkbox image field proactive-style">
                                                 <input type="radio" name="widget_style"
+                                                       ng-model="brand_settings.chat.popup.style"
                                                        id="proactive_style_agent_text_button" class="hidden"
                                                        value="agent_text_button">
                                                 <label for="proactive_style_agent_text_button">
@@ -320,8 +325,10 @@
                                             </div>
                                         </div>
                                         <div class="column">
-                                            <div class="ui checkbox image field">
-                                                <input type="radio" name="widget_style" id="proactive_style_text_input"
+                                            <div class="ui checkbox image field proactive-style">
+                                                <input type="radio" name="widget_style"
+                                                       ng-model="brand_settings.chat.popup.style"
+                                                       id="proactive_style_text_input"
                                                        class="hidden" value="text_input">
                                                 <label for="proactive_style_text_input">
                                                     Text only with text input
@@ -332,8 +339,9 @@
                                             </div>
                                         </div>
                                         <div class="column">
-                                            <div class="ui checkbox image field">
+                                            <div class="ui checkbox image field proactive-style">
                                                 <input type="radio" name="widget_style"
+                                                       ng-model="brand_settings.chat.popup.style"
                                                        id="proactive_style_widget_button_agent" class="hidden"
                                                        value="widget_button_agent">
                                                 <label for="proactive_style_widget_button_agent">
@@ -368,7 +376,7 @@
                                 <label>Subheading</label>
                                 <div class="inline fields">
                                     <div class="thirteen wide field">
-                                        <textarea rows="3"></textarea>
+                                        <textarea rows="3" ng-model="brand_settings.chat.popup.translations[0].message"></textarea>
                                     </div>
                                     <div class="three wide field">
                                         <div class="ui left labeled language button">

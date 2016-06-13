@@ -9,7 +9,13 @@ export class ChatPopup extends React.Component {
     small:           PropTypes.bool,
     widgetPosition:  PropTypes.string,
     children:        PropTypes.any,
-    liveDemo:        PropTypes.bool
+    liveDemo:        PropTypes.bool,
+    onClose:         PropTypes.func
+  };
+
+  onClose = event => {
+    event.preventDefault();
+    this.props.onClose();
   };
 
   render() {
@@ -25,12 +31,11 @@ export class ChatPopup extends React.Component {
           'hidden-popup':                 hiddenPopup
         })}
       >
-        <div
-          className={classNames('preemtive-chat', { small, 'position-left': widgetPosition === 'bottom.left' })}
-          style={{ borderColor: backgroundColor }}
-        >
+        <div className={classNames('preemtive-chat', { small, 'position-left': widgetPosition === 'bottom.left' })}>
+          <a href="#" className="close-panel" onClick={this.onClose}>
+            <i className="fa fa-times" />
+          </a>
           {children}
-          <div className="pointer" style={{ borderTopColor: backgroundColor }}></div>
         </div>
       </div>
     );

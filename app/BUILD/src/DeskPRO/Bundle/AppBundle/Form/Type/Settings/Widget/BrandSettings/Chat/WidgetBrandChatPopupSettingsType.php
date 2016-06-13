@@ -32,6 +32,7 @@ use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSet
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -60,6 +61,7 @@ class WidgetBrandChatPopupSettingsType extends AbstractType
                     WidgetBrandChatPopupSettings::REPLY_TYPE_BUTTONS,
                 ],
             ])
+            ->add('style', TextType::class)
         ;
     }
 

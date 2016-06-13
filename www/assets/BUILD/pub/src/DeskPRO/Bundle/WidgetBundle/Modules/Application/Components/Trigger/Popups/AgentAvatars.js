@@ -25,7 +25,6 @@ export class AgentAvatars extends React.Component {
             </li>
           )}
         </ul>
-        {primaryAgent && <hr />}
       </div>
     );
   }

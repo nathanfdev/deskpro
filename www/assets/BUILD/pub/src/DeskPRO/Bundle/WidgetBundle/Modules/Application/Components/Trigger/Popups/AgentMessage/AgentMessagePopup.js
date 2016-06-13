@@ -24,12 +24,11 @@ export class AgentMessagePopup extends React.Component {
           <div className="dpdesignportal-chat-header">
             <AgentAvatars primaryAgent={primaryAgent} />
 
-            <h1><span>{primaryAgent.get('name')}</span></h1>
+            <h1><span>{primaryAgent.get('display_name')}</span></h1>
             <h2>{helpPopupTitle}</h2>
             {helpPopupMessage && <p className="quote">{helpPopupMessage}</p>}
           </div>
         </div>
-        <hr />
         <div className="preemtive-chat-content">
           <div className="preemtive-chat-footer">
             {React.cloneElement(children, { ...childProps, primaryAgent })}

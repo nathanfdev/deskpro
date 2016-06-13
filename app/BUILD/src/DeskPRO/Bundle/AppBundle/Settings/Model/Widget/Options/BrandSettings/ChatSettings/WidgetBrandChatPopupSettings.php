@@ -61,6 +61,14 @@ class WidgetBrandChatPopupSettings
     private $replyType = self::REPLY_TYPE_BUTTONS;
 
     /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     * @Assert\NotBlank()
+     */
+    private $style;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -94,5 +102,25 @@ class WidgetBrandChatPopupSettings
     public function getTranslations()
     {
         return $this->translations;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStyle()
+    {
+        return $this->style;
+    }
+
+    /**
+     * @param string $style
+     * 
+     * @return $this
+     */
+    public function setStyle($style)
+    {
+        $this->style = $style;
+
+        return $this;
     }
 }
