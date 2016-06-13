@@ -28,8 +28,10 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
+use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\CustomDataHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\DateHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\LabelHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
@@ -103,5 +105,6 @@ abstract class AbstractFeedbackController extends CrudController
 
         ListHelper::applyInListFilter($context, 'status');
         ListHelper::applyInListFilter($context, 'hidden_status');
+        CustomDataHelper::applyCustomDataFilters($context, 'feedback', CustomDefFeedback::class);
     }
 }

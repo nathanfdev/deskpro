@@ -105,7 +105,17 @@ class JsonContext extends \Sanpi\Behatch\Context\JsonContext
         if (is_string($value)) {
             $value = DataContext::replace($value);
         }
+
         parent::theJsonNodeShouldBeEqualTo($node, $value);
+    }
+
+    /**
+     * @override
+     */
+    public function theJsonNodeShouldBeEqualToTheString($node, $text)
+    {
+        $node = DataContext::replace($node);
+        parent::theJsonNodeShouldBeEqualTo($node, $text);
     }
 
     /**

@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
@@ -41,14 +42,11 @@ use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Strings;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * A conversation between one or more people.
- *
- * @JMS\ExclusionPolicy("all")
  *
  * @property string $person_name
  * @property string $person_email
@@ -68,18 +66,12 @@ class ChatConversation extends DomainObject
     /**
      * The unique id of chat conversation.
      *
-     * @JMS\Expose()
-     * @JMS\Type("integer")
-     *
      * @var int
      */
     protected $id = null;
 
     /**
      * Department which chat was assigned.
-     *
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Department>")
-     * @JMS\Expose()
      *
      * @var \Application\DeskPRO\Entity\Department
      */
@@ -96,9 +88,6 @@ class ChatConversation extends DomainObject
     /**
      * Subject of the chat conversation.
      *
-     * @JMS\Expose()
-     * @JMS\Type("string")
-     *
      * @var string
      */
     protected $subject = '';
@@ -106,18 +95,12 @@ class ChatConversation extends DomainObject
     /**
      * Status of the chat conversation.
      *
-     * @JMS\Expose()
-     * @JMS\Type("string")
-     *
      * @var string
      */
     protected $status = 'open';
 
     /**
      * If this is a user conversation, this is the agent assigned.
-     *
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
-     * @JMS\Expose()
      *
      * @var \Application\DeskPRO\Entity\Person
      */
@@ -132,9 +115,6 @@ class ChatConversation extends DomainObject
 
     /**
      * If this is a user conversation, this is the user who started the chat.
-     *
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
-     * @JMS\Expose()
      *
      * @var \Application\DeskPRO\Entity\Person
      */
@@ -155,18 +135,12 @@ class ChatConversation extends DomainObject
     /**
      * User chat: The users name, if they arent a person.
      *
-     * @JMS\Type("string")
-     * @JMS\Expose()
-     *
      * @var string
      */
     protected $person_name = '';
 
     /**
      * User chat: The users email, if they aren`t a person.
-     *
-     * @JMS\Type("string")
-     * @JMS\Expose()
      *
      * @var string
      */
@@ -220,9 +194,6 @@ class ChatConversation extends DomainObject
     /**
      * Date when chat was started.
      *
-     * @JMS\Type("DateTime")
-     * @JMS\Expose()
-     *
      * @var \DateTime
      */
     protected $date_created;
@@ -242,9 +213,6 @@ class ChatConversation extends DomainObject
     /**
      * Date when agent typed last time.
      *
-     * @JMS\Type("DateTime")
-     * @JMS\Expose()
-     *
      * @var \DateTime
      */
     protected $date_agent_typing;
@@ -256,9 +224,6 @@ class ChatConversation extends DomainObject
 
     /**
      * Date when chat was ended.
-     *
-     * @JMS\Type("DateTime")
-     * @JMS\Expose()
      *
      * @var \DateTime
      */
@@ -272,9 +237,6 @@ class ChatConversation extends DomainObject
     /**
      * Who ended the chat.
      *
-     * @JMS\Expose()
-     * @JMS\Type("string")
-     *
      * @var string
      */
     protected $ended_by = '';
@@ -282,18 +244,12 @@ class ChatConversation extends DomainObject
     /**
      * True if transcript should be send.
      *
-     * @JMS\Expose()
-     * @JMS\Type("boolean")
-     *
      * @var bool
      */
     protected $should_send_transcript = false;
 
     /**
      * Date when transcript was sent.
-     *
-     * @JMS\Type("DateTime")
-     * @JMS\Expose()
      *
      * @var \DateTime
      */
@@ -430,9 +386,6 @@ class ChatConversation extends DomainObject
     /**
      * Backward compatibility alias for id.
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("integer")
-     *
      * @return int
      */
     public function getConversationId()
@@ -442,9 +395,6 @@ class ChatConversation extends DomainObject
 
     /**
      * Is there need to validate email?
-     *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("boolean")
      *
      * @return bool
      */
@@ -849,9 +799,6 @@ class ChatConversation extends DomainObject
     /**
      * Department identity which chat was assigned.
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("integer")
-     *
      * @return int
      */
     public function getDepartmentId()
@@ -874,9 +821,6 @@ class ChatConversation extends DomainObject
     /**
      * Department name which chat was assigned.
      *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("string")
-     *
      * @return string
      */
     public function getDepartmentName()
@@ -896,9 +840,6 @@ class ChatConversation extends DomainObject
 
     /**
      * Subject line for sending purposes.
-     *
-     * @JMS\Type("string")
-     * @JMS\VirtualProperty()
      *
      * @return string
      */
@@ -1153,6 +1094,14 @@ class ChatConversation extends DomainObject
         if ($change) {
             $this->_onPropertyChanged('custom_data', null, $this->participants);
         }
+    }
+
+    /**
+     * @return ArrayCollection|CustomDataChat[]
+     */
+    public function getCustomData()
+    {
+        return $this->custom_data;
     }
 
     /**

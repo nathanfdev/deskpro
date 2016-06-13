@@ -29,13 +29,16 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\ApiBundle\Controller\People;
 
+use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\CustomDataHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\DateHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\LabelHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
@@ -63,7 +66,15 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  *          {"name"="not_me", "description"="exclude yourself filter", "dataType"="boolean"},
  *          {"name"="agent_team", "description"="agent teams filter", "dataType"="array|integer|null", "pattern"="[\d+,]+"},
  *          {"name"="user_group", "description"="usergroups filter", "dataType"="array|integer|null", "pattern"="[\d+,]+"},
- *          {"name"="labels", "description"="labels filter option", "dataType"="array", "pattern"="[\w+,]+"}
+ *          {"name"="labels", "description"="labels filter option", "dataType"="array", "pattern"="[\w+,]+"},
+ *          {
+ *              "name"="person_field.{id}",
+ *              "description"="
+ *                  Custom person field filter. To filter by a custom field with ID=1 you need to add
+ *                  ?person_field.1=value to the query string",
+ *              "dataType"="string",
+ *              "pattern"="\d+|\w"
+ *          }
  *     }
  * )
  */
@@ -178,6 +189,7 @@ class PeopleController extends CrudController
         UsergroupsHelper::applyUsergroupsFilters($context);
         ListHelper::applyInListFilter($context, 'organization');
         LabelHelper::applyLabelFilters($context, static::$entity);
+        CustomDataHelper::applyCustomDataFilters($context, 'person', CustomDefPerson::class);
 
         if (null !== $request->get('is_agent')) {
             $qb->andWhere("$alias.is_agent = :is_agent");

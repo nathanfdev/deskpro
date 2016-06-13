@@ -28,10 +28,12 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Organizations;
 
+use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\Organization;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\CustomDataHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\DateHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\LabelHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
@@ -54,7 +56,15 @@ use Symfony\Component\HttpFoundation\Request;
  *     filters={
  *          {"name"="period_created", "description"="period created filter", "dataType"="string", "pattern"="\w+"},
  *          {"name"="user_group", "description"="usergroups filter", "dataType"="array|integer|null", "pattern"="[\d+,]+"},
- *          {"name"="labels", "description"="labels filter option", "dataType"="array", "pattern"="[\w+,]+"}
+ *          {"name"="labels", "description"="labels filter option", "dataType"="array", "pattern"="[\w+,]+"},
+ *          {
+ *              "name"="org_field.{id}",
+ *              "description"="
+ *                  Custom organization field filter. To filter by a custom field with ID=1 you need to add
+ *                  ?org_field.1=value to the query string",
+ *              "dataType"="string",
+ *              "pattern"="\d+|\w"
+ *          }
  *     }
  * )
  */
@@ -118,6 +128,7 @@ class OrganizationsController extends CrudController
         DateHelper::applyDatePeriodFilter($context, 'date_created', 'period_created');
         UsergroupsHelper::applyUsergroupsFilters($context);
         LabelHelper::applyLabelFilters($context, static::$entity);
+        CustomDataHelper::applyCustomDataFilters($context, 'org', CustomDefOrganization::class);
     }
 
     /**

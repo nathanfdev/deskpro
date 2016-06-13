@@ -73,7 +73,7 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
      *
      * @Assert\NotBlank()
      */
-    protected $name = null;
+    protected $name = '';
 
     /**
      * The summary field as filled in by agents.

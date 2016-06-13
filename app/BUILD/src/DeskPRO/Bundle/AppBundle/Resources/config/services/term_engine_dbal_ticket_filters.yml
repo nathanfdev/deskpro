@@ -107,6 +107,7 @@ services:
   term_engine.dbal_ticket_filters.compiler.custom_data:
       class: DeskPRO\Bundle\AppBundle\TermEngine\Term\CustomData\DbalCustomDataTermCompiler
       parent: term_engine.dbal_ticket_filters.term_compiler
+      arguments: ["@doctrine.orm.default_entity_manager"]
       tags:
         ticket_filter:
           name: dbal_ticket_filter_compiler

@@ -29,7 +29,10 @@
 namespace DpBehat\Data\Factory;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\CustomDefChat;
+use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\CustomDefOrganization;
+use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Product;
@@ -83,15 +86,15 @@ class CommonFactories
      */
     public static function customDef($type, array $data = [])
     {
-        $type = [
-                    'ticket'       => CustomDefTicket::class,
-                    'organization' => CustomDefOrganization::class,
-                ][$type];
-        $def = new $type();
+        $types = [
+            'ticket'       => CustomDefTicket::class,
+            'organization' => CustomDefOrganization::class,
+            'person'       => CustomDefPerson::class,
+            'conversation' => CustomDefChat::class,
+            'feedback'     => CustomDefFeedback::class,
+        ];
 
-        // Type to handler class
-        array_key_exists('type', $data) or $data['type'] = '';
-        $typeToHandler                                   = [
+        $typeToHandler = [
             ''              => null,
             'text'          => 'Application\DeskPRO\CustomFields\Handler\Text',
             'textarea'      => 'Application\DeskPRO\CustomFields\Handler\Textarea',
@@ -99,7 +102,17 @@ class CommonFactories
             'datetime'      => 'Application\DeskPRO\CustomFields\Handler\DateTime',
             'multi_choice'  => 'Application\DeskPRO\CustomFields\Handler\Choice',
             'single_choice' => 'Application\DeskPRO\CustomFields\Handler\Choice',
+            'toggle'        => 'Application\DeskPRO\CustomFields\Handler\Toggle',
+            'hidden'        => 'Application\DeskPRO\CustomFields\Handler\Hidden',
         ];
+
+        $def = new $types[$type]();
+
+        // Type to handler class
+        if (!array_key_exists('type', $data)) {
+            $data['type'] = '';
+        }
+
         $data['handler_class']                               = $typeToHandler[$data['type']];
         $data['type'] !== 'multi_choice' or $data['options'] = ['multiple' => true, 'expanded' => true];
         unset($data['type']);

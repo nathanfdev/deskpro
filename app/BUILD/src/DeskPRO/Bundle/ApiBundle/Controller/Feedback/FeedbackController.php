@@ -56,7 +56,15 @@ use Symfony\Component\HttpFoundation\Request;
  *         {"name"="no_labels", "pattern"="1", "description"="select feedback have no label", "dataType"="boolean"},
  *         {"name"="ids", "pattern"="\d,\d...\d", "description"="comma separated ids list", "dataType"="string"},
  *         {"name"="created_from", "pattern"="YYYY-mm-dd H:i:s", "description"="limit by date, interval`s start", "dataType"="date"},
- *         {"name"="created_to", "pattern"="YYYY-mm-dd H:i:s", "description"="lmit by date, interval`s end", "dataType"="date"}
+ *         {"name"="created_to", "pattern"="YYYY-mm-dd H:i:s", "description"="limit by date, interval`s end", "dataType"="date"},
+ *         {
+ *              "name"="feedback_field.{id}",
+ *              "description"="
+ *                  Custom feedback field filter. To filter by a custom field with ID=1 you need to add
+ *                  ?feedback_field.1=value to the query string",
+ *              "dataType"="string",
+ *              "pattern"="\d+|\w"
+ *          }
  *     }
  * )
  * @ApiDoc(
