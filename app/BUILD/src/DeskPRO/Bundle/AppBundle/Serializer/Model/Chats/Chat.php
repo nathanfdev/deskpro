@@ -31,12 +31,14 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Chats;
 use Application\DeskPRO\Entity\ChatConversation;
 use JMS\Serializer\Annotation as JMS;
 
+/**
+ * Class Chat.
+ */
 class Chat
 {
     /**
      * The unique id of chat conversation.
      *
-     * @JMS\Expose()
      * @JMS\Type("integer")
      *
      * @var int
@@ -56,7 +58,6 @@ class Chat
     /**
      * Subject of the chat conversation.
      *
-     * @JMS\Expose()
      * @JMS\Type("string")
      *
      * @var string
@@ -77,7 +78,6 @@ class Chat
      * If this is a user conversation, this is the user who started the chat.
      *
      * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
-     * @JMS\Expose()
      *
      * @var \Application\DeskPRO\Entity\Person
      */
@@ -87,7 +87,6 @@ class Chat
      * User chat: The users name, if they arent a person.
      *
      * @JMS\Type("string")
-     * @JMS\Expose()
      *
      * @var string
      */
@@ -97,7 +96,6 @@ class Chat
      * User chat: The users email, if they aren`t a person.
      *
      * @JMS\Type("string")
-     * @JMS\Expose()
      *
      * @var string
      */
@@ -107,7 +105,6 @@ class Chat
      * If this is a user conversation, this is the agent assigned.
      *
      * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
-     * @JMS\Expose()
      *
      * @var \Application\DeskPRO\Entity\Person
      */
@@ -116,7 +113,6 @@ class Chat
     /**
      * Status of the chat conversation.
      *
-     * @JMS\Expose()
      * @JMS\Type("string")
      *
      * @var string
@@ -127,7 +123,6 @@ class Chat
      * Department which chat was assigned.
      *
      * @JMS\Type("entity<Application\DeskPRO\Entity\Department>")
-     * @JMS\Expose()
      *
      * @var \Application\DeskPRO\Entity\Department
      */
@@ -157,7 +152,6 @@ class Chat
      * Date when chat was started.
      *
      * @JMS\Type("DateTime")
-     * @JMS\Expose()
      *
      * @var \DateTime
      */
@@ -167,7 +161,6 @@ class Chat
      * Date when agent typed last time.
      *
      * @JMS\Type("DateTime")
-     * @JMS\Expose()
      *
      * @var \DateTime
      */
@@ -177,7 +170,6 @@ class Chat
      * Date when chat was ended.
      *
      * @JMS\Type("DateTime")
-     * @JMS\Expose()
      *
      * @var \DateTime
      */
@@ -186,7 +178,6 @@ class Chat
     /**
      * Who ended the chat.
      *
-     * @JMS\Expose()
      * @JMS\Type("string")
      *
      * @var string
@@ -196,7 +187,6 @@ class Chat
     /**
      * True if transcript should be send.
      *
-     * @JMS\Expose()
      * @JMS\Type("boolean")
      *
      * @var bool
@@ -207,11 +197,17 @@ class Chat
      * Date when transcript was sent.
      *
      * @JMS\Type("DateTime")
-     * @JMS\Expose()
      *
      * @var \DateTime
      */
     protected $dateTranscriptSent = null;
+
+    /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     *
+     * @JMS\Type("custom_data<array>")
+     */
+    protected $fields;
 
     /**
      * Date when transcript was sent.
@@ -223,6 +219,11 @@ class Chat
      */
     protected $needValidateEmail = null;
 
+    /**
+     * Constructor.
+     *
+     * @param ChatConversation $chat
+     */
     public function __construct(ChatConversation $chat)
     {
         $this->id                     = $chat->getId();
@@ -243,5 +244,6 @@ class Chat
         $this->should_send_transcript = $chat->getShouldSendTranscript();
         $this->dateTranscript_sent    = $chat->getDateTranscriptSent();
         $this->needValidateEmail      = $chat->getEmailValidationCode() && !$chat->getEmailValidated();
+        $this->fields                 = $chat->getCustomData();
     }
 }
