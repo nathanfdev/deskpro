@@ -80,7 +80,7 @@ class OrganizationsController extends CrudController
      *         200="Everything is OK",
      *         400="Malformed request"
      *     },
-     *     output="array<DeskPRO\AppBundle\Serializer\Model\Tickets\Ticket>"
+     *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket>"
      * )
      * @Rest\Get("/{id}/tickets")
      *

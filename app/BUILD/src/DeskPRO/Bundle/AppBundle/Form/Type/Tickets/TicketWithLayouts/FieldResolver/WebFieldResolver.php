@@ -160,6 +160,7 @@ class WebFieldResolver extends AbstractFieldResolver
             'name'    => FormFields::USER_NAME,
             'type'    => TextType::class,
             'options' => [
+                'attr'          => ['autofocus' => 'autofocus'],
                 'property_path' => 'person.name',
                 'label'         => $this->phrase('portal.forms.label_name'),
                 'empty_data'    => $context->getPerson()->getDisplayName(false),

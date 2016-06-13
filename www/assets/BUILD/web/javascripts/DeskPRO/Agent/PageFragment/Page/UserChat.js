@@ -121,6 +121,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat.ended', function(data) {
 		  if (this.meta.conversation_id == data.conversation_id) {
 			this.chatStatus = 'ended';
+		  self.getEl('create_ticket_btn2').show();
 			self.getEl('replybox').hide();
 			self.getEl('messages_box').css('bottom', 0);
 		  }

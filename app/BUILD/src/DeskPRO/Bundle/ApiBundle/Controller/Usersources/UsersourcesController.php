@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Usersources;
 
 use Application\DeskPRO\Entity\Usersource;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Doctrine\ORM\QueryBuilder;
@@ -40,6 +41,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @ApiModes("all")
  * @Rest\Route("/user_sources/{context}", requirements={"context": "(agent|user)"})
+ * @ApiDoc(target="all", section="Usersources")
  */
 class UsersourcesController extends CrudController
 {
