@@ -68,9 +68,11 @@ class WidgetLoader
     }
 
     /**
+     * @param bool $withOptions
+     *
      * @return string
      */
-    public function getWidgetCode()
+    public function getWidgetCode($withOptions = false)
     {
         $urlSettings = $this->settingsResolver->getWidgetUrlSettings();
 
@@ -84,17 +86,21 @@ class WidgetLoader
         // override options
         $options = $this->serializer->toArray($this->settingsResolver->getWidgetBrandOptions());
         $options = MapUtils::prependItem($options, 'helpdeskUrl', $urlSettings->getHelpdesk());
+        $options = MapUtils::prependItem($options, 'noFetchSettings', true);
         $options = json_encode($options, \JSON_PRETTY_PRINT);
 
         $code   = [];
         $code[] = '<!--DESKPRO_WIDGET_LOADER::BEGIN-->';
-        $code[] = "<script type=\"text/javascript\">\nwindow.DESKPRO_WIDGET_OPTIONS = $options;\n</script>";
+        if ($withOptions) {
+            $code[] = "<script type=\"text/javascript\">\nwindow.DESKPRO_WIDGET_OPTIONS = $options;\n</script>";
+        }
 
         if ($this->appEnv->getEnvId() === 'dev') {
             $code[] = "<script type=\"text/javascript\">\nwindow.DESKPRO_ASSETS_URL = '$assetsUrl';\n</script>";
         }
 
-        $code[] = "<script type=\"text/javascript\" src=\"$loaderSrc\"></script>";
+        $code[] = '<script type="text/javascript" id="dp-widget-loader" src="'.$loaderSrc.'" data-helpdesk-url="'
+            .$urlSettings->getHelpdesk().'"></script>';
         $code[] = '<!--DESKPRO_WIDGET_LOADER::END-->';
 
         return implode("\n", $code);

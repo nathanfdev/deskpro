@@ -541,7 +541,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
      */
     public function getWidgetLoader()
     {
-        return $this->container->get('widget_loader_code_renderer')->getWidgetCode();
+        return $this->container->get('widget_loader_code_renderer')->getWidgetCode(true);
     }
 
     /**

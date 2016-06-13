@@ -113,12 +113,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
         
     getChatCustomFields: (savedSettings) ->
       if savedSettings && savedSettings.custom_fields? && !jQuery.isEmptyObject savedSettings.custom_fields
-        console.log 'from LS'
-        console.log savedSettings
-        console.log savedSettings.custom_fields
         @$scope.custom_fields = savedSettings.custom_fields
       else
-        console.log 'from DB'
         @Api.sendDataGet([
           '/chat_fields'
         ]).then( (res) =>
