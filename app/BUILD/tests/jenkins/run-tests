@@ -262,7 +262,7 @@ if [[ ${phpunit_portal} =~ "FAILURES" ]] || [[ ! ${phpunit_portal} =~ "OK (" ]] 
 fi
 
 phpspec_failed=0
-if [[ ${phpspec} =~ "failed" ]] || [[ ! ${phpspec} =~ "passed" ]] ; then
+if [[ ${phpspec} =~ "failed" ]] || [[ ${phpspec} =~ "broken" ]] || [[ ! ${phpspec} =~ "passed)" ]] ; then
     phpspec_failed=1
     mv "$LOGS_DIR/phpspec.txt" "$LOGS_DIR/FAILED-phpspec.txt"
     echo "- PHPSpec failed"
