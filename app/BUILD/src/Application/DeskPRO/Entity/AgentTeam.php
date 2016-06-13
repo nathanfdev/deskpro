@@ -74,7 +74,7 @@ class AgentTeam extends DomainObject implements PersonList, AvatarOwner
      * @JMS\Expose()
      * @JMS\Type("string")
      */
-    protected $name;
+    protected $name = '';
 
     /**
      * @Assert\All({

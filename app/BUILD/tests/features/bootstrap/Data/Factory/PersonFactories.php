@@ -48,20 +48,25 @@ class PersonFactories
      */
     public static function create($role, array $data)
     {
-        $email = array_key_exists('email', $data) ? $data['email'] : uniqid().'@deskpro.com';
-
         switch ($role) {
             case 'admin':
-                $person = self::createAdmin($email);
+                $person = self::createAdmin();
                 break;
             case 'agent':
-                $person = self::createAgent($email);
+                $person = self::createAgent();
                 break;
             case 'user':
-                $person = self::createuser($email);
+                $person = self::createUser();
                 break;
             default:
                 throw new \Exception("Unknown role $role");
+        }
+
+        $email = array_key_exists('email', $data) ? $data['email'] : uniqid().'@deskpro.com';
+        $person->setEmail($email, true);
+
+        if (isset($data['name'])) {
+            $person->setName($data['name']);
         }
 
         return $person;
@@ -97,10 +102,10 @@ class PersonFactories
     /**
      * @return Person
      */
-    private static function createAdmin($email)
+    private static function createAdmin()
     {
-        /** @var Person $admin */
-        $admin = SimpleFactory::create(Person::class, [
+        /** @var Person $person */
+        $person = SimpleFactory::create(Person::class, [
             'first_name'   => 'Admin',
             'last_name'    => 'Admin',
             'is_user'      => true,
@@ -111,22 +116,21 @@ class PersonFactories
             'password'     => 'password',
         ]);
 
-        $admin->setEmail($email, true);
-        $admin->addUsergroup(self::getUsergroup(Usergroup::EVERYONE));
-        $admin->addUsergroup(self::getUsergroup(Usergroup::REGISTERED));
-        $admin->addUsergroup(self::getUsergroup(Usergroup::AGENT_ALL_SAFE_PERM));
-        $admin->addUsergroup(self::getUsergroup(Usergroup::AGENT_ALL_PERM));
+        $person->addUsergroup(self::getUsergroup(Usergroup::EVERYONE));
+        $person->addUsergroup(self::getUsergroup(Usergroup::REGISTERED));
+        $person->addUsergroup(self::getUsergroup(Usergroup::AGENT_ALL_SAFE_PERM));
+        $person->addUsergroup(self::getUsergroup(Usergroup::AGENT_ALL_PERM));
 
-        return $admin;
+        return $person;
     }
 
     /**
      * @return Person
      */
-    private static function createAgent($email)
+    private static function createAgent()
     {
-        /** @var Person $agent */
-        $agent = SimpleFactory::create(Person::class, [
+        /** @var Person $person */
+        $person = SimpleFactory::create(Person::class, [
             'first_name'   => 'Agent',
             'last_name'    => 'Agent',
             'is_user'      => true,
@@ -136,21 +140,21 @@ class PersonFactories
             'can_admin'    => false,
             'password'     => 'password',
         ]);
-        $agent->setEmail($email, true);
-        $agent->addUsergroup(self::getUsergroup(Usergroup::EVERYONE));
-        $agent->addUsergroup(self::getUsergroup(Usergroup::REGISTERED));
-        $agent->addUsergroup(self::getUsergroup(Usergroup::AGENT_ALL_SAFE_PERM));
 
-        return $agent;
+        $person->addUsergroup(self::getUsergroup(Usergroup::EVERYONE));
+        $person->addUsergroup(self::getUsergroup(Usergroup::REGISTERED));
+        $person->addUsergroup(self::getUsergroup(Usergroup::AGENT_ALL_SAFE_PERM));
+
+        return $person;
     }
 
     /**
      * @return Person
      */
-    private static function createUser($email)
+    private static function createUser()
     {
-        /* @var Person $agent */
-        $user = SimpleFactory::create(Person::class, [
+        /* @var Person $person */
+        $person = SimpleFactory::create(Person::class, [
             'first_name'   => 'User',
             'last_name'    => 'User',
             'is_user'      => true,
@@ -160,11 +164,11 @@ class PersonFactories
             'can_admin'    => false,
             'password'     => 'password',
         ]);
-        $user->setEmail($email, true);
-        $user->addUsergroup(self::getUsergroup(Usergroup::EVERYONE));
-        $user->addUsergroup(self::getUsergroup(Usergroup::REGISTERED));
 
-        return $user;
+        $person->addUsergroup(self::getUsergroup(Usergroup::EVERYONE));
+        $person->addUsergroup(self::getUsergroup(Usergroup::REGISTERED));
+
+        return $person;
     }
 
     /**
