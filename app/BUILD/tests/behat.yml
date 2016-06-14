@@ -115,6 +115,7 @@ portal:
                 - DpBehat\Api\JsonContext
                 - DpBehat\Api\RestContext
                 - DpBehat\LanguageContext
+                - DpBehat\PeopleContext
                 - DpBehat\Portal\PortalModeContext
                 - DpBehat\Portal\PortalBrandThemeContext
                 - DpBehat\Portal\AuthContext
