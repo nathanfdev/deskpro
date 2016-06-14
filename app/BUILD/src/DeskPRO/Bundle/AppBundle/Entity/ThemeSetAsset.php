@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Doctrine\Common\NotifyPropertyChanged;
@@ -67,7 +64,7 @@ class ThemeSetAsset implements EntityInterface, NotifyPropertyChanged
      *
      * @var array
      */
-    protected $tags = array();
+    protected $tags = [];
 
     /**
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\ThemeSet")

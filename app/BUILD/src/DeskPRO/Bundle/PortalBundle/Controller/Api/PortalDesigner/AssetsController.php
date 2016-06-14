@@ -26,17 +26,16 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api\PortalDesigner;
 
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use DeskPRO\Bundle\PortalBundle\Controller\Api\AbstractApiController;
+use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class AssetsController.
@@ -57,6 +56,10 @@ class AssetsController extends AbstractApiController
     /**
      * @Route("/portal/api/style/edit-theme-set/assets")
      * @Method({"POST"})
+     *
+     * @param Request $request
+     *
+     * @return View
      */
     public function uploadEditThemeSetAssetAction(Request $request)
     {
@@ -67,9 +70,15 @@ class AssetsController extends AbstractApiController
      * @Route("/portal/api/style/edit-theme-set/assets/{id}", requirements={"id"="\d+"})
      * @Method({"DELETE"})
      * @ParamConverter("asset", class="App:ThemeSetAsset")
+     *
+     * @param ThemeSetAsset $asset
+     *
+     * @return View
      */
     public function deleteEditThemeSetAssetAction(ThemeSetAsset $asset)
     {
-        return $this->wrap($this->getAssetsManager()->deleteEditThemeSetAsset($asset));
+        $this->getAssetsManager()->deleteEditThemeSetAsset($asset);
+
+        return new Response(null, Response::HTTP_OK);
     }
 }

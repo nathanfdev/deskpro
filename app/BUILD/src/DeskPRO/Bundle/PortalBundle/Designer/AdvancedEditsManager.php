@@ -84,17 +84,17 @@ class AdvancedEditsManager
      *
      * @param EntityManager      $em
      * @param DeskproBlobStorage $bs
-     * @param ThemeSet           $theme_set
-     * @param ThemeSet           $edit_theme_set
+     * @param ThemeSet           $themeSet
+     * @param ThemeSet           $editThemeSet
      * @param \Twig_Environment  $twig
      * @param string             $mainScssPath
      */
-    public function __construct(EntityManager $em, DeskproBlobStorage $bs, ThemeSet $theme_set, ThemeSet $edit_theme_set, \Twig_Environment $twig, $mainScssPath)
+    public function __construct(EntityManager $em, DeskproBlobStorage $bs, ThemeSet $themeSet, ThemeSet $editThemeSet, \Twig_Environment $twig, $mainScssPath)
     {
         $this->em             = $em;
         $this->bs             = $bs;
-        $this->theme_set      = $theme_set;
-        $this->edit_theme_set = $edit_theme_set;
+        $this->theme_set      = $themeSet;
+        $this->edit_theme_set = $editThemeSet;
         $this->twig           = $twig;
         $this->mainScssPath   = $mainScssPath;
     }
@@ -142,7 +142,7 @@ class AdvancedEditsManager
      */
     public function getMainScss()
     {
-        $blob = $this->findBlob(self::MAIN_SCSS_ASSET_NAME);
+        $blob = $this->findBlob(self::MAIN_SCSS_ASSET_NAME, $this->edit_theme_set);
 
         if ($blob) {
             return $this->bs->copyBlobRecordToString($blob);
@@ -156,7 +156,7 @@ class AdvancedEditsManager
      */
     public function getEditThemeSetScss()
     {
-        $blob = $this->findBlob(self::CUSTOM_SCSS_ASSET_NAME);
+        $blob = $this->findBlob(self::CUSTOM_SCSS_ASSET_NAME, $this->edit_theme_set);
 
         if ($blob) {
             return $this->bs->copyBlobRecordToString($blob);
@@ -171,7 +171,6 @@ class AdvancedEditsManager
     
     Read more about SCSS here: http://sass-lang.com/guide
 */
-
 
 CODE;
 
@@ -233,16 +232,16 @@ CODE;
     /**
      * @param string $name
      * @param string $tag
-     * @param string $mime_type
+     * @param string $mimeType
      * @param string $code
      *
      * @return ThemeSetAsset
      */
-    private function saveThemeSetAsset($name, $tag, $mime_type, $code)
+    private function saveThemeSetAsset($name, $tag, $mimeType, $code)
     {
         $theme_set = $this->edit_theme_set;
 
-        $blob    = $this->bs->createBlobRecordFromString($code, $name, $mime_type, ['tag' => 'brand_asset.'.$tag]);
+        $blob    = $this->bs->createBlobRecordFromString($code, $name, $mimeType, ['tag' => 'brand_asset.'.$tag]);
         $oldBlob = null;
 
         // Find existing or create a new ThemeSetAsset
@@ -277,10 +276,8 @@ CODE;
     private function findBlob($name, ThemeSet $theme_set = null)
     {
         /** @var ThemeSetAsset $asset */
-        if ($asset = $this->em->getRepository(ThemeSetAsset::class)->findOneBy(compact('name', 'theme_set'))) {
-            return $asset->getBlob();
-        }
+        $asset = $this->em->getRepository(ThemeSetAsset::class)->findOneBy(compact('name', 'theme_set'));
 
-        return;
+        return $asset ? $asset->getBlob() : null;
     }
 }

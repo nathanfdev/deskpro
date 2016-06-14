@@ -68,6 +68,8 @@ class StylesManager
     private $sassDocParser;
 
     /**
+     * Constructor.
+     *
      * @param EntityManager          $em
      * @param ThemeSetCopyingService $themeSetCopyingService
      * @param SassDocParser          $sassDocParser
@@ -75,11 +77,11 @@ class StylesManager
      * @param ThemeSet               $editThemeSet
      */
     public function __construct(
-        EntityManager $em,
+        EntityManager          $em,
         ThemeSetCopyingService $themeSetCopyingService,
-        SassDocParser $sassDocParser,
-        ThemeSet $themeSet,
-        ThemeSet $editThemeSet
+        SassDocParser          $sassDocParser,
+        ThemeSet               $themeSet,
+        ThemeSet               $editThemeSet
     ) {
         $this->em                     = $em;
         $this->themeSetCopyingService = $themeSetCopyingService;

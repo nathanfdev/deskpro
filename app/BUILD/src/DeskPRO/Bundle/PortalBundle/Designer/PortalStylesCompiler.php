@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Designer;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
@@ -80,8 +76,10 @@ class PortalStylesCompiler
     private $customScss;
 
     /**
+     * Constructor.
+     *
      * @param EntityManager      $em
-     * @param DeskproBlobStorage $bd
+     * @param DeskproBlobStorage $bs
      * @param string             $stylesLrtFilePath
      * @param string             $stylesRtlFilePath
      * @param string             $customScss
@@ -89,7 +87,7 @@ class PortalStylesCompiler
      * @throws \Exception
      */
     public function __construct(
-        EntityManager $em,
+        EntityManager      $em,
         DeskproBlobStorage $bs,
         $stylesLrtFilePath,
         $stylesRtlFilePath,
@@ -108,6 +106,24 @@ class PortalStylesCompiler
 
         $this->mainScss   = $mainScss;
         $this->customScss = $customScss;
+    }
+
+    /**
+     * @param ThemeSet $themeSet
+     * @param string   $direction Stylesheet for which direction? LTR or RTL
+     *
+     * @return ThemeSetAsset|null
+     */
+    public function getCssAsset(ThemeSet $themeSet, $direction = 'LTR')
+    {
+        $direction = strtoupper($direction);
+
+        $criteria = [
+            'theme_set' => $themeSet,
+            'name'      => $direction === 'RTL' ? 'portal-rtl.css' : 'portal.css',
+        ];
+
+        return $this->em->getRepository(ThemeSetAsset::class)->findOneBy($criteria);
     }
 
     /**
@@ -182,24 +198,6 @@ class PortalStylesCompiler
             $this->mainScss,
             $this->customScss
         );
-    }
-
-    /**
-     * @param ThemeSet $themeSet
-     * @param string   $direction Stylesheet for which direction? LTR or RTL
-     *
-     * @return ThemeSetAsset|null
-     */
-    private function getCssAsset(ThemeSet $themeSet, $direction = 'LTR')
-    {
-        $direction = strtoupper($direction);
-
-        $criteria = [
-            'theme_set' => $themeSet,
-            'name'      => $direction === 'RTL' ? 'portal-rtl.css' : 'portal.css',
-        ];
-
-        return $this->em->getRepository(ThemeSetAsset::class)->findOneBy($criteria);
     }
 
     /**

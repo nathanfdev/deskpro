@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,11 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DpTest\DeskPRO\Bundle\PortalBundle\Designer;
 
+use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\BlobStorage;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use DeskPRO\Bundle\PortalBundle\Designer\ThemeSetCopyingService;
@@ -181,15 +180,11 @@ class ThemeSetCopyingServiceIntegrationTest extends PortalTestCase
      */
     public function it_should_copy_blobs_together_with_blob_storage()
     {
-        $asset   = $this->persistDummyThemeSetAsset($this->source);
-        $blob    = $asset->getBlob();
-        $storage = $this->findBlobStorage($blob);
-
+        $asset = $this->persistDummyThemeSetAsset($this->source);
         $this->copy();
+        $asset2 = $this->findAssets($this->destination)[0];
 
-        $blob2    = $this->findAssets($this->destination)[0]->getBlob();
-        $storage2 = $this->findBlobStorage($blob2);
-        $this->assertEquals($storage->getData(), $storage2->getData());
+        $this->assertEquals($this->getBlobData($asset->getBlob()), $this->getBlobData($asset2->getBlob()));
     }
 
     /**
@@ -197,15 +192,11 @@ class ThemeSetCopyingServiceIntegrationTest extends PortalTestCase
      */
     public function it_should_copy_blob_storage_as_new_entity()
     {
-        $asset   = $this->persistDummyThemeSetAsset($this->source);
-        $blob    = $asset->getBlob();
-        $storage = $this->findBlobStorage($blob);
-
+        $asset = $this->persistDummyThemeSetAsset($this->source);
         $this->copy();
+        $asset2 = $this->findAssets($this->destination)[0];
 
-        $blob2    = $this->findAssets($this->destination)[0]->getBlob();
-        $storage2 = $this->findBlobStorage($blob2);
-        $this->assertNotEquals($storage->getId(), $storage2->getId());
+        $this->assertNotEquals($this->findBlobStorage($asset->getBlob())->getId(), $this->findBlobStorage($asset2->getBlob())->getId());
     }
 
     /**
@@ -262,5 +253,25 @@ class ThemeSetCopyingServiceIntegrationTest extends PortalTestCase
     private function copy()
     {
         $this->service->copy($this->source, $this->destination);
+    }
+
+    /**
+     * @param Blob $blob
+     *
+     * @return null|string
+     */
+    private function getBlobData(Blob $blob)
+    {
+        return $this->getContainer()->get('blob.storage')->copyBlobRecordToString($blob);
+    }
+
+    /**
+     * @param Blob $blob
+     *
+     * @return BlobStorage
+     */
+    private function findBlobStorage(Blob $blob)
+    {
+        return $this->getRepository(BlobStorage::class)->findOneBy(['blob_id' => $blob->getId()]);
     }
 }

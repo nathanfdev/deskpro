@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2015, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2016, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DpBehat\Portal\PortalDesigner;
 
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
@@ -88,13 +85,43 @@ class AssetsContext extends BasePortalContext
     }
 
     /**
-     * @When I send a GET request to just uploaded file URL
+     * @Then created blob content should contain :expectedText
+     *
+     * @param string $expectedText
+     *
+     * @throws \Exception
      */
-    public function iSendAGetRequestToJustUploadedFileUrl()
+    public function createdBlobContentShouldContain($expectedText)
     {
-        /** @var \Symfony\Bundle\FrameworkBundle\Client $client */
-        $client = $this->getMink()->getSession()->getDriver()->getClient();
-        $url    = $this->http_context->getLastFileUploadResponse()['data']['url'];
-        $client->request('GET', $url);
+        $id = $this->http_context->getLastFileUploadResponse()['data']['id'];
+
+        /** @var ThemeSetAsset $asset */
+        $asset = $this->em()->getRepository(ThemeSetAsset::class)->find($id);
+        if (!$asset) {
+            throw new \Exception("Asset $id not found");
+        }
+
+        $content = $this->container()->get('blob.storage')->copyBlobRecordToString($asset->getBlob());
+
+        if (strpos($content, $expectedText) === -1) {
+            throw new \Exception("Uploaded file doesn't contain $expectedText");
+        }
+    }
+
+    /**
+     * @Then the portal theme set css should contain :expectedText
+     *
+     * @param string $expectedText
+     *
+     * @throws \Exception
+     */
+    public function portalThemeSetCssContains($expectedText)
+    {
+        $styleManager = $this->container()->get('dp.portal.designer.styles_manager');
+        $css          = $this->container()->get('blob.storage')->copyBlobRecordToString($styleManager->getCssBlob());
+
+        if (strpos($css, $expectedText) === -1) {
+            throw new \Exception("Portal theme css doesn't contain $expectedText");
+        }
     }
 }

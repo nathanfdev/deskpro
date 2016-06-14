@@ -26,9 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api\PortalDesigner;
 
 use DeskPRO\Bundle\PortalBundle\Controller\Api\AbstractApiController;
@@ -62,6 +59,10 @@ class ThemeSetController extends AbstractApiController
     /**
      * @Route("/portal/api/style/edit-theme-set/info")
      * @Method({"PUT"})
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
      */
     public function setThemeSetAction(Request $request)
     {
@@ -93,7 +94,9 @@ class ThemeSetController extends AbstractApiController
      */
     public function commitEditThemeSetAction()
     {
-        return new JsonResponse($this->getStylesManager()->commitEditThemeSet());
+        $this->getStylesManager()->commitEditThemeSet();
+
+        return new JsonResponse();
     }
 
     /**
@@ -102,6 +105,8 @@ class ThemeSetController extends AbstractApiController
      */
     public function discardEditThemeSetAction()
     {
-        return new JsonResponse($this->getStylesManager()->discardEditThemeSet());
+        $this->getStylesManager()->discardEditThemeSet();
+
+        return new JsonResponse();
     }
 }

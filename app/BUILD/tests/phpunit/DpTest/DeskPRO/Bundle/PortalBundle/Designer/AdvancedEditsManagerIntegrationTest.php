@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DpTest\DeskPRO\Bundle\PortalBundle\Designer;
 
 use Application\DeskPRO\Entity\BlobStorage;
@@ -84,7 +80,14 @@ class AdvancedEditsManagerIntegrationTest extends PortalTestCase
         $this->em->persist($this->edit_theme_set);
         $this->em->flush();
 
-        $this->service = new AdvancedEditsManager($this->em, new ThemeSet(), $this->edit_theme_set, $twig, __DIR__.'/scss/main.scss');
+        $this->service = new AdvancedEditsManager(
+            $this->em,
+            $this->getContainer()->get('blob.storage'),
+            new ThemeSet(),
+            $this->edit_theme_set,
+            $twig,
+            __DIR__.'/scss/main.scss'
+        );
     }
 
     /**
