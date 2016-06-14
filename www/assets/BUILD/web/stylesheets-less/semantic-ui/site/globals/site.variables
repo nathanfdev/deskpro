@@ -57,7 +57,7 @@
 
 @fontName : 'Open Sans';
 @fontPath: '../../../../fonts';
-@googleFontSizes   : '400,600,700,400italic,700italic';
+@googleFontSizes   : '300,400,600,700,400italic,700italic';
 @pageFont: 'Open Sans', 'Helvetica Neue', Arial, Helvetica, sans-serif;
 @headerFont: 'Open Sans', 'Helvetica Neue', Arial, Helvetica, sans-serif;
 

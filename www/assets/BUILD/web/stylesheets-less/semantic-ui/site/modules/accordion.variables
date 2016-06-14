@@ -9,3 +9,4 @@
 @styledActiveTitleBackground: @styledBackground;
 @styledTitleBorder: solid 1px @dp-greyscale-250;
 @styledTitlePadding: 20px 15px;
+@styledTitleFontWeight: 600;

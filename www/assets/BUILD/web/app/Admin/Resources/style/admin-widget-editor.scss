@@ -19,17 +19,25 @@
     margin-left: $inline-label-width;
   }
 
+  .ui.button.add-custom-field {
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+
   .errors {
     color: red;
   }
 
-  .sp-input {
-    background: #fff;
+  .sp-replacer {
+    border: none;
+    background: #fcfcfc;
   }
 
   .dp-item-list .drag-handle {
     position: inherit;
     float: right;
+    margin-right: 20px;
+    top: 0;
   }
 
   .ui.segments {
@@ -78,4 +86,7 @@
       left: 0;
     }
   }
+}
+.sp-input {
+  background: #fff;
 }

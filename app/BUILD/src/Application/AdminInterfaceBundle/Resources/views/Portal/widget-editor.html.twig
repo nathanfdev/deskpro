@@ -6,11 +6,11 @@
                 <h3><i class="icon setting"></i>{{ phrase('admin.widget.settings_heading') }}</h3>
                 <div class="ui styled fluid accordion">
                     <div class="element">
-                        <div class="active title">
+                        <div class="title" ng-class="{'active': section == 'button_settings'}">
                             <i class="dropdown icon"></i>
                             {{ phrase('admin.widget.button_settings') }}
                         </div>
-                        <div class="active content">
+                        <div class="content" ng-class="{'active': section == 'button_settings'}" data-target="button_settings">
                             <div class="field">
                                 <label for="label">Label</label>
                                 <div class="inline fields">
@@ -40,21 +40,27 @@
                                         <div class="ui radio checkbox">
                                             <input type="radio" name="size" id="button_size_small"
                                                    ng-model="brand_settings.button.size" value="small" class="hidden">
-                                            <label for="button_size_small">{{ phrase('admin.widget.button_size_small') }}</label>
+                                            <label for="button_size_small">
+                                                {{ phrase('admin.widget.button_size_small') }}
+                                            </label>
                                         </div>
                                     </div>
                                     <div class="field">
                                         <div class="ui radio checkbox">
                                             <input type="radio" name="size" id="button_size_medium"
                                                    ng-model="brand_settings.button.size" value="medium" class="hidden">
-                                            <label for="button_size_medium">{{ phrase('admin.widget.button_size_medium') }}</label>
+                                            <label for="button_size_medium">
+                                                {{ phrase('admin.widget.button_size_medium') }}
+                                            </label>
                                         </div>
                                     </div>
                                     <div class="field">
                                         <div class="ui radio checkbox">
                                             <input type="radio" name="size" id="button_size_large"
                                                    ng-model="brand_settings.button.size" value="large" class="hidden">
-                                            <label for="button_size_large">{{ phrase('admin.widget.button_size_large') }}</label>
+                                            <label for="button_size_large">
+                                                {{ phrase('admin.widget.button_size_large') }}
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
@@ -147,11 +153,11 @@
                         </div>
                     </div>
                     <div class="element">
-                        <div class="title">
+                        <div class="title" ng-class="{'active': section == 'chat_settings'}">
                             <i class="dropdown icon"></i>
                             {{ phrase('admin.widget.chat_settings') }}
                         </div>
-                        <div class="content">
+                        <div class="content" ng-class="{'active': section == 'chat_settings'}" data-target="chat_settings">
                             <div class="field">
                                 <div class="inline field">
                                     <div class="ui toggle checkbox">
@@ -181,63 +187,89 @@
                                     <div class="ui toggle checkbox">
                                         <input type="checkbox" id="require_informations"
                                                ng-model="brand_settings.chat.request_user_info" class="hidden right">
-                                        <label for="require_informations">Require information before chat
-                                            commences</label>
+                                        <label for="require_informations">
+                                            Require information before chat commences
+                                        </label>
                                     </div>
-                                    <p>Require users to provide their name and email address as well as adding custom
-                                        fields
-                                        or require departments.</p>
-                                    <div class="inline field">
+                                </div>
+                                <p>
+                                    Require users to provide their name and email address as well as adding custom
+                                    fields or require departments.
+                                </p>
+                                <div class="dp-item-list">
+                                    <div class="inline field with-drag-handle">
                                         <div class="ui checkbox">
                                             <input type="checkbox" id="information_name" disabled="disabled"
                                                    checked="checked" class="hidden">
-                                            <label for="information_name">Name</label>
+                                            <label for="information_name">
+                                                Name
+                                                <i class="fa fa-bars drag-handle"></i>
+                                            </label>
                                         </div>
                                     </div>
-                                    <div class="inline field">
+                                    <div class="inline field with-drag-handle">
                                         <div class="ui checkbox">
                                             <input type="checkbox" id="information_email" disabled="disabled"
                                                    checked="checked" class="hidden">
-                                            <label for="information_email">Email address</label>
+                                            <label for="information_email">
+                                                Email address
+                                                <i class="fa fa-bars drag-handle"></i>
+                                            </label>
                                         </div>
                                     </div>
-                                    <div class="inline field" ng-show="departments.length > 1">
+                                    <div class="inline field with-drag-handle" ng-show="departments.length > 1">
                                         <div class="ui checkbox">
                                             <input type="checkbox" id="information_department" disabled="disabled"
                                                    checked="checked" class="hidden">
-                                            <label for="information_department">Department</label>
+                                            <label for="information_department">
+                                                Department
+                                                <i class="fa fa-bars drag-handle"></i>
+                                            </label>
                                         </div>
                                     </div>
-                                    <div class="dp-item-list">
-                                        <div class="inline field with-drag-handle" ng-repeat="field in custom_fields">
-                                            <div class="ui checkbox">
-                                                <input type="checkbox" id="custom_field_{{ ng_var('field.id') }}"
-                                                       ng-model="field.is_enabled" class="hidden">
-                                                <label for="custom_field_{{ ng_var('field.id') }}">
-                                                    {{ ng_var('field.title') }}
-                                                </label>
-                                            </div>
-                                            <i class="fa fa-bars drag-handle"></i>
+                                    <div class="inline field with-drag-handle" ng-repeat="field in custom_fields">
+                                        <div class="ui checkbox">
+                                            <input type="checkbox" id="custom_field_{{ ng_var('field.id') }}"
+                                                   ng-model="field.is_enabled" class="hidden">
+                                            <label for="custom_field_{{ ng_var('field.id') }}">
+                                                {{ ng_var('field.title') }}
+                                                <i class="fa fa-bars drag-handle"></i>
+                                            </label>
                                         </div>
                                     </div>
-                                    <a href="#/chat/fields" class="ui basic button">
-                                        <i class="icon plus"></i> ADD CUSTOM FIELDS
-                                    </a>
                                 </div>
+                                <a href="#/chat/fields" class="ui basic button add-custom-field">
+                                    <i class="icon plus"></i> ADD CUSTOM FIELD
+                                </a>
                                 <div class="field">
                                     <label>Begin chat mode (automated)</label>
                                     <div class="inline fields">
                                         <div class="eight wide field">
-                                            <div class="ui radio checkbox">
-                                                <input type="radio" name="chat_mode" id="chat_mode_form" class="hidden">
-                                                <label for="chat_mode_form">Form Style</label>
+                                            <div class="ui checkbox image field proactive-style">
+                                                <input type="radio" name="chat_mode"
+                                                       ng-model="brand_settings.chat.popup.reply_type"
+                                                       id="chat_mode_form" class="hidden"
+                                                       value="buttons">
+                                                <label for="chat_mode_form">
+                                                    {{ phrase('admin.widget.proactive_chat_reply_form') }}
+                                                    <div class="ui divider"></div>
+                                                    <img src="{{ asset('images/admin/chat-widget/form-illustration.png') }}"
+                                                         alt="form illustration"/>
+                                                </label>
                                             </div>
                                         </div>
                                         <div class="eight wide field">
-                                            <div class="ui radio checkbox">
-                                                <input type="radio" name="chat_mode" id="chat_mode_conversation"
-                                                       class="hidden">
-                                                <label for="chat_mode_conversation">Conversation Style</label>
+                                            <div class="ui checkbox image field proactive-style">
+                                                <input type="radio" name="chat_mode"
+                                                       ng-model="brand_settings.chat.popup.reply_type"
+                                                       id="chat_mode_conversation" class="hidden"
+                                                       value="reply">
+                                                <label for="chat_mode_conversation">
+                                                    {{ phrase('admin.widget.proactive_chat_reply_button') }}
+                                                    <div class="ui divider"></div>
+                                                    <img src="{{ asset('images/admin/chat-widget/chat-illustration.png') }}"
+                                                         alt="chat illustration"/>
+                                                </label>
                                             </div>
                                         </div>
                                     </div>
@@ -246,11 +278,11 @@
                         </div>
                     </div>
                     <div class="element">
-                        <div class="title">
+                        <div class="title" ng-class="{'active': section == 'proactive_settings'}">
                             <i class="dropdown icon"></i>
                             Proactive chat settings
                         </div>
-                        <div class="content">
+                        <div class="content" ng-class="{'active': section == 'proactive_settings'}" data-target="proactive_settings">
                             <div class="field">
                                 <div class="inline field">
                                     <div class="ui toggle checkbox">
@@ -259,8 +291,10 @@
                                         <label for="proactive_chat_enabled">Proactive chat enabled</label>
                                     </div>
                                 </div>
-                                <p>Having proactive chat enabled switched on enabled a popup that encourages users to
-                                    chat with you</p>
+                                <p>
+                                    Having proactive chat enabled switched on enabled a popup that encourages users to
+                                    chat with you
+                                </p>
                             </div>
                             <div class="field" ng-show="brand_settings.chat.proactive">
                                 <label>Proactive chat widget style</label>
@@ -275,7 +309,7 @@
                                                 <label for="proactive_style_agent_text_input">
                                                     Agent with text and input field
                                                     <div class="ui divider"></div>
-                                                    <img src="{{ asset('images/admin/chat-widget-style/agent-text-input.png') }}"
+                                                    <img src="{{ asset('images/admin/chat-widget/agent-text-input.png') }}"
                                                          alt="agent text and input"/>
                                                 </label>
                                             </div>
@@ -284,12 +318,12 @@
                                             <div class="ui checkbox image field proactive-style">
                                                 <input type="radio" name="widget_style"
                                                        ng-model="brand_settings.chat.popup.style"
-                                                       id="proactive_style_text_button" class="hidden"
-                                                       value="text_button">
-                                                <label for="proactive_style_text_button">
+                                                       id="proactive_style_agent_text_button" class="hidden"
+                                                       value="agent_text_button">
+                                                <label for="proactive_style_agent_text_button">
                                                     Agent with text and button
                                                     <div class="ui divider"></div>
-                                                    <img src="{{ asset('images/admin/chat-widget-style/text-button.png') }}"
+                                                    <img src="{{ asset('images/admin/chat-widget/agent-text-button.png') }}"
                                                          alt="agent text and input"/>
                                                 </label>
                                             </div>
@@ -303,7 +337,7 @@
                                                 <label for="proactive_style_agents_button">
                                                     Agent(s) images only with button
                                                     <div class="ui divider"></div>
-                                                    <img src="{{ asset('images/admin/chat-widget-style/agents-button.png') }}"
+                                                    <img src="{{ asset('images/admin/chat-widget/agents-button.png') }}"
                                                          alt="agent text and input"/>
                                                 </label>
                                             </div>
@@ -314,12 +348,12 @@
                                             <div class="ui checkbox image field proactive-style">
                                                 <input type="radio" name="widget_style"
                                                        ng-model="brand_settings.chat.popup.style"
-                                                       id="proactive_style_agent_text_button" class="hidden"
-                                                       value="agent_text_button">
-                                                <label for="proactive_style_agent_text_button">
+                                                       id="proactive_style_text_button" class="hidden"
+                                                       value="text_button">
+                                                <label for="proactive_style_text_button">
                                                     Text only with button
                                                     <div class="ui divider"></div>
-                                                    <img src="{{ asset('images/admin/chat-widget-style/agent-text-button.png') }}"
+                                                    <img src="{{ asset('images/admin/chat-widget/text-button.png') }}"
                                                          alt="agent text and input"/>
                                                 </label>
                                             </div>
@@ -333,7 +367,7 @@
                                                 <label for="proactive_style_text_input">
                                                     Text only with text input
                                                     <div class="ui divider"></div>
-                                                    <img src="{{ asset('images/admin/chat-widget-style/text-input.png') }}"
+                                                    <img src="{{ asset('images/admin/chat-widget/text-input.png') }}"
                                                          alt="agent text and input"/>
                                                 </label>
                                             </div>
@@ -347,7 +381,7 @@
                                                 <label for="proactive_style_widget_button_agent">
                                                     Agent with widget button
                                                     <div class="ui divider"></div>
-                                                    <img src="{{ asset('images/admin/chat-widget-style/widget-button-agent.png') }}"
+                                                    <img src="{{ asset('images/admin/chat-widget/widget-button-agent.png') }}"
                                                          alt="agent text and input"/>
                                                 </label>
                                             </div>
@@ -440,11 +474,11 @@
                         </div>
                     </div>
                     <div class="element">
-                        <div class="title">
+                        <div class="title" ng-class="{'active': section == 'ticket_settings'}">
                             <i class="dropdown icon"></i>
                             {{ phrase('admin.widget.ticket_settings') }}
                         </div>
-                        <div class="content">
+                        <div class="content" ng-class="{'active': section == 'ticket_settings'}" data-target="ticket_settings">
                             <div class="field">
                                 <div class="inline field">
                                     <div class="ui toggle checkbox">
@@ -601,6 +635,10 @@
     </form>
     <script src="/assets/BUILD/web/node_modules/semantic-ui-less/definitions/modules/accordion.js"></script>
     <script type="application/javascript">
-        $('.ui.accordion').accordion();
+        $('.ui.accordion').accordion({
+            onOpen: function() {
+                history.replaceState(undefined, undefined, window.location.hash.replace(/widget_editor(#.+)?$/, 'widget_editor#' + this.getAttribute('data-target')));
+            }
+        });
     </script>
 {% endblock %}

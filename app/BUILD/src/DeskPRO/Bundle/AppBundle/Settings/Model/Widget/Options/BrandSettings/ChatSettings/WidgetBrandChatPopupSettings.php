@@ -66,7 +66,7 @@ class WidgetBrandChatPopupSettings
      * @JMS\Type("string")
      * @Assert\NotBlank()
      */
-    private $style;
+    private $style = 'agent_text_button';
 
     /**
      * Constructor.

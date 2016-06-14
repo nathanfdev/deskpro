@@ -2,7 +2,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
   class Admin_Portal_Ctrl_WidgetEditor extends Admin_Ctrl_Base
     @CTRL_ID = 'Admin_Portal_Ctrl_WidgetEditor'
     @CTRL_AS = 'Ctrl'
-    @DEPS    = ['$http']
+    @DEPS    = ['$http', '$location']
 
     init: ->
       @$scope.code = ''
@@ -27,6 +27,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
       @$scope.applying_to_portal = false
       @$scope.show_embed_help = true
       @$scope.formErrors = {}
+
+      @$scope.section = @$location.hash()
+      @$scope.section or= 'button_settings'
 
     initialLoad: (reset = false) ->
       setupPromise = @Api2.sendGet('/widget/setup').then (response) =>
