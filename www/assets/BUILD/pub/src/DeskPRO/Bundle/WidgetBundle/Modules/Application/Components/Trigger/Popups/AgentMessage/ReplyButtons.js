@@ -6,7 +6,6 @@ export class ReplyButtons extends React.Component {
   static propTypes = {
     backgroundColor: PropTypes.string,
     textColor:       PropTypes.string,
-    primaryAgent:    PropTypes.object,
     onClick:         PropTypes.func
   };
 
@@ -16,9 +15,7 @@ export class ReplyButtons extends React.Component {
   };
 
   render() {
-    const { backgroundColor, textColor, primaryAgent } = this.props;
-    const displayName = primaryAgent.get('display_name') || 'Agent';
-    const firstName = displayName.split(' ')[0];
+    const { backgroundColor, textColor } = this.props;
 
     return (
       <div className="preemtive-chat-footer">
@@ -31,7 +28,7 @@ export class ReplyButtons extends React.Component {
               color: textColor
             }}
           >
-            {portalPhrases.get('portal.chat.start_conversation', { '{firstName}': firstName })}
+            {portalPhrases.get('portal.chat.start_conversation')}
           </a>
         </div>
       </div>

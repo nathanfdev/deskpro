@@ -138,6 +138,7 @@ class LanguageController extends AbstractApiController
             'portal.chat.transcript_desc',
             'portal.chat.transcript_title',
             'portal.chat.transcript_action',
+            'portal.chat.type_message_to',
             'portal.chat.upload_file',
             'user.chat.email',
             'user.chat.ended-no-agent',

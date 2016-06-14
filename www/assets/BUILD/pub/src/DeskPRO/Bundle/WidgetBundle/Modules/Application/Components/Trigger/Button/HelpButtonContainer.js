@@ -13,13 +13,11 @@ import {
   widgetProactiveChatSelector,
   widgetOpenedSelector,
   widgetPositionSelector,
+  widgetPopupStyleSelector,
   helpButtonSizeSelector,
   helpButtonNameSelector,
   helpButtonBackgroundColorSelector,
   helpButtonTextColorSelector,
-  helpPopupTitleSelector,
-  helpPopupMessageSelector,
-  helpPopupReplyTypeSelector,
   agentPollingTimeoutSelector,
   triggerPopupOpenedSelector,
   liveDemoSelector
@@ -30,6 +28,7 @@ import { widgetHasChatSelector } from '../../../Selectors/bootstrap';
 @connect(state => ({
   hasChat:             widgetHasChatSelector(state),
   proactiveChat:       widgetProactiveChatSelector(state),
+  popupStyle:          widgetPopupStyleSelector(state),
   triggerPopupOpened:  triggerPopupOpenedSelector(state),
   widgetOpened:        widgetOpenedSelector(state),
   widgetPosition:      widgetPositionSelector(state),
@@ -37,9 +36,6 @@ import { widgetHasChatSelector } from '../../../Selectors/bootstrap';
   name:                helpButtonNameSelector(state),
   backgroundColor:     helpButtonBackgroundColorSelector(state),
   textColor:           helpButtonTextColorSelector(state),
-  helpPopupTitle:      helpPopupTitleSelector(state),
-  helpPopupMessage:    helpPopupMessageSelector(state),
-  helpPopupReplyType:  helpPopupReplyTypeSelector(state),
   agentsCount:         onlineAgentsCountSelector(state),
   agentPollingTimeout: agentPollingTimeoutSelector(state),
   liveDemo:            liveDemoSelector(state)
@@ -51,11 +47,9 @@ export class HelpButtonContainer extends React.Component {
     proactiveChat:       PropTypes.bool,
     triggerPopupOpened:  PropTypes.bool,
     widgetOpened:        PropTypes.bool,
+    popupStyle:          PropTypes.string,
     widgetPosition:      PropTypes.string,
     dispatch:            PropTypes.func,
-    helpPopupTitle:      PropTypes.string,
-    helpPopupMessage:    PropTypes.string,
-    helpPopupReplyType:  PropTypes.string,
     backgroundColor:     PropTypes.string,
     borderColor:         PropTypes.string,
     textColor:           PropTypes.string,
@@ -121,22 +115,23 @@ export class HelpButtonContainer extends React.Component {
   }
 
   renderPopup() {
-    const { widgetPosition, helpPopupTitle, helpPopupMessage, helpPopupReplyType } = this.props;
-    const { backgroundColor, textColor, borderColor, liveDemo } = this.props;
+    const { widgetPosition } = this.props;
+    const { backgroundColor, textColor, borderColor, liveDemo, popupStyle } = this.props;
     const popupProps = {
       widgetPosition,
       backgroundColor,
       textColor,
       borderColor,
       liveDemo,
+      popupStyle,
       onClick: this.onClick,
       onClose: this.onClosePopup
     };
 
-    if (helpPopupTitle && helpPopupMessage) {
+    if (popupStyle !== 'agents_button') {
       return (
         <AgentMessagePopupContainer {...popupProps}>
-          {helpPopupReplyType === 'buttons'
+          {popupStyle.match(/_button$/)
             ? <ReplyButtons {...popupProps} />
             : <ReplyForm {...popupProps} />
           }

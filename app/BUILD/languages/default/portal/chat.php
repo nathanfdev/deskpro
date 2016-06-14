@@ -111,6 +111,7 @@ return [
     'portal.chat.support_powered_by'         => 'Support powered by {{DeskPRO}}',
     'portal.chat.start'                      => 'Start a new chat',
     'portal.chat.start_conversation'         => 'Start a conversation',
+    'portal.chat.type_message_to'            => 'Type your message to {{firstName}}',
     'portal.chat.label-name'                 => 'Your Name',
     'portal.chat.details-placeholder'        => 'First name, Last name',
     'portal.chat.screen_share'               => 'Screen Share',

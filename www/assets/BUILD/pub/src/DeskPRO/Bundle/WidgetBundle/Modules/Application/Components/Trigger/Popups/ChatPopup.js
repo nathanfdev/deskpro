@@ -5,12 +5,12 @@ import $ from 'jquery';
 export class ChatPopup extends React.Component {
 
   static propTypes = {
-    backgroundColor: PropTypes.string,
     small:           PropTypes.bool,
     widgetPosition:  PropTypes.string,
     children:        PropTypes.any,
     liveDemo:        PropTypes.bool,
-    onClose:         PropTypes.func
+    onClose:         PropTypes.func,
+    popupStyle:      PropTypes.string
   };
 
   onClose = event => {
@@ -19,7 +19,7 @@ export class ChatPopup extends React.Component {
   };
 
   render() {
-    const { small, widgetPosition, backgroundColor, children, liveDemo } = this.props;
+    const { small, widgetPosition, children, liveDemo, popupStyle } = this.props;
     const parentWidth = $(window.parent.document).width();
     const hiddenPopup = !liveDemo && parentWidth < 760;
 
@@ -31,7 +31,7 @@ export class ChatPopup extends React.Component {
           'hidden-popup':                 hiddenPopup
         })}
       >
-        <div className={classNames('preemtive-chat', { small, 'position-left': widgetPosition === 'bottom.left' })}>
+        <div className={classNames('preemtive-chat', { small, 'position-left': widgetPosition === 'bottom.left' }, popupStyle)}>
           <a href="#" className="close-panel" onClick={this.onClose}>
             <i className="fa fa-times" />
           </a>

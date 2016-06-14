@@ -67,6 +67,26 @@ class WidgetBrandChatPopupTranslation
     private $message = 'Need help? Just reply to start a live chat with one of our team.';
 
     /**
+     * Translation title.
+     *
+     * @var string
+     *
+     * @JMS\Type("string")
+     * @Assert\NotBlank()
+     */
+    private $heading = 'Ask us a question!';
+
+    /**
+     * Translation message.
+     *
+     * @var string
+     *
+     * @JMS\Type("string")
+     * @Assert\NotBlank()
+     */
+    private $subheading = 'Our team are online and ready to help with your enquiries. Send us a message to get started.';
+
+    /**
      * @return int
      */
     public function getLanguage()
@@ -122,6 +142,46 @@ class WidgetBrandChatPopupTranslation
     public function setMessage($message)
     {
         $this->message = $message;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHeading()
+    {
+        return $this->heading;
+    }
+
+    /**
+     * @param string $heading
+     *
+     * @return $this
+     */
+    public function setHeading($heading)
+    {
+        $this->heading = $heading;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSubheading()
+    {
+        return $this->subheading;
+    }
+
+    /**
+     * @param string $subheading
+     *
+     * @return $this
+     */
+    public function setSubheading($subheading)
+    {
+        $this->subheading = $subheading;
 
         return $this;
     }

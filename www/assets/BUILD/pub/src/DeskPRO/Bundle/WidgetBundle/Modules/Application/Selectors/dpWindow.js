@@ -160,9 +160,21 @@ export const helpPopupMessageSelector = createSelector(
   translationsSelectorFactory('message', 'Need help? Just reply to start a live chat with one of our team.')
 );
 
-export const helpPopupReplyTypeSelector = createSelector(
+export const helpPopupHeadingSelector = createSelector(
   helpPopupSelector,
-  options => options.get('reply_type')
+  widgetLanguageSelector,
+  translationsSelectorFactory('heading', 'Ask us a question!')
+);
+
+export const helpPopupSubheadingSelector = createSelector(
+  helpPopupSelector,
+  widgetLanguageSelector,
+  translationsSelectorFactory('subheading', 'Our team are online and ready to help with your enquiries. Send us a message to get started.')
+);
+
+export const widgetPopupStyleSelector = createSelector(
+  helpPopupSelector,
+  options => options.get('style')
 );
 
 export const agentAcceptTimeoutSelector = createSelector(
