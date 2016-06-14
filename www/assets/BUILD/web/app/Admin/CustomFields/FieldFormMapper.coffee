@@ -150,9 +150,9 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
           when "toggle"
             formTypeOpts.label_text = fieldModel.options.label_text || ''
 
-            if fieldModel.options.required
+            if fieldModel.options.validation_type
               formTypeOpts.user_validation = 'required'
-            if fieldModel.options.agent_required
+            if fieldModel.options.agent_validation_type
               formTypeOpts.agent_validation = 'required'
               if fieldModel.options.agent_validation_resolve
                 formTypeOpts.agent_validation_resolve = true
