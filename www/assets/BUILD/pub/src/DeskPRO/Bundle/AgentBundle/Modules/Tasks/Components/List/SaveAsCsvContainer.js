@@ -1,29 +1,47 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { SaveAsCsv } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
-import { currentListParamsSelector, currentViewModeSelector, fieldsSelector } from '../../Selectors/list';
+import {
+  currentViewModeSelector, fieldsSelector, listParamsNavSelector, listParamsFiltersSelector, currentOrderBySelector,
+  currentOrderDirSelector
+} from '../../Selectors/list';
 
 @connect(
   state => ({
-    currentListParams: currentListParamsSelector(state),
-    currentViewMode:   currentViewModeSelector(state),
-    fields:            fieldsSelector(state)
+    navState:        listParamsNavSelector(state),
+    filtersState:    listParamsFiltersSelector(state),
+    orderBy:         currentOrderBySelector(state),
+    orderDir:        currentOrderDirSelector(state),
+    currentViewMode: currentViewModeSelector(state),
+    fields:          fieldsSelector(state)
   })
 )
 export class SaveAsCsvContainer extends Component {
 
   static propTypes = {
-    currentListParams: PropTypes.object.isRequired,
-    currentViewMode:   PropTypes.string.isRequired,
-    fields:            PropTypes.object.isRequired
+    filtersState:    PropTypes.object.isRequired,
+    navState:        PropTypes.object.isRequired,
+    currentViewMode: PropTypes.string.isRequired,
+    orderBy:         PropTypes.string.isRequired,
+    orderDir:        PropTypes.string.isRequired,
+    fields:          PropTypes.object.isRequired
   };
 
   render() {
-    const { currentListParams, currentViewMode, fields } = this.props;
+    const { currentViewMode, fields, navState, filtersState, orderBy, orderDir } = this.props;
+
+    const navParams     = navState.toJS();
+    const filtersParams = filtersState.toJS();
+    const params        = {
+      ...navParams,
+      ...filtersParams,
+      order_by:  orderBy,
+      order_dir: orderDir
+    };
 
     return (
       <SaveAsCsv
-        currentListParams={currentListParams}
+        currentListParams={params}
         exportedFields={fields.get(currentViewMode).toArray()}
         content="Tasks"
       />

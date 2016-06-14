@@ -23,6 +23,13 @@ export class List extends Component {
   render() {
     const { isLoaded, pagination, selected, fields, content, currentViewMode, currentListParams } = this.props;
     const exportedFields = fields.get(content).get(currentViewMode);
+    let params = currentListParams.toJS();
+    const { navItem } = params;
+    if (navItem) {
+      delete params.navItem;
+      params = { ...params, ...navItem };
+    }
+
     const checkbox       = {
       count:  selected.size,
       action: () => {
@@ -37,9 +44,9 @@ export class List extends Component {
         </ListFrameMenu>
         <ListFrameContents isLoaded={isLoaded}>
           <SaveAsCsv
-            currentListParams={currentListParams}
+            currentListParams={params}
             exportedFields={exportedFields.toArray()}
-            content={'Content'}
+            content="Content"
           />
           {currentViewMode === constants.VIEW_MODE_TABLE ? <TableContainer /> : <CardsContainer />}
           {pagination && pagination.total_pages > 1 && <PaginationContainer />}

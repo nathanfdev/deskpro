@@ -30,6 +30,12 @@ export class List extends Component {
 
     const exportedFields = content === 'people' ? peopleFields.get(currentViewMode) : orgFields.get(currentViewMode);
     const repositoryName = content === 'people' ? 'Person' : 'Organization';
+    let params = currentListParams.toJS();
+    const { navItem } = params;
+    if (navItem) {
+      delete params.navItem;
+      params = { ...params, ...navItem };
+    }
 
     return (
       <ListFrameContainer>
@@ -39,7 +45,7 @@ export class List extends Component {
         </ListFrameMenu>
         <ListFrameContents isLoaded={isLoaded}>
           <SaveAsCsv
-            currentListParams={currentListParams}
+            currentListParams={params}
             exportedFields={exportedFields.toArray()}
             content={repositoryName}
           />
