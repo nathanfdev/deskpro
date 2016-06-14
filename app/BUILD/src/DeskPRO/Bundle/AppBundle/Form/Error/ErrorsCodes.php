@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Error;
 
 /**
@@ -84,6 +85,7 @@ final class ErrorsCodes
     const NOT_AGENT                   = 'person_not_agent';
     const NOT_USER                    = 'person_not_user';
     const NUMERIC                     = 'numeric';
+    const NOT_CHECKED                 = 'not_checked';
 
     /** Term Engine Specific */
     const TERM_TYPE_DOES_NOT_EXIST = 'term_type_does_not_exist';

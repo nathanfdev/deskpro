@@ -29,6 +29,7 @@
 /**
  * DeskPRO.
  */
+
 namespace DeskPRO\Bundle\AppBundle\Form\Error;
 
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -79,6 +80,7 @@ class ValidatorErrorCodeFactory
         Assert\Count::TOO_MANY_ERROR             => ErrorsCodes::TOO_MANY_ELEMENTS,
         Assert\Url::INVALID_URL_ERROR            => ErrorsCodes::INVALID_URL,
         Assert\GreaterThanOrEqual::TOO_LOW_ERROR => ErrorsCodes::TOO_LOW,
+        Assert\IsTrue::NOT_TRUE_ERROR            => ErrorsCodes::NOT_CHECKED,
     ];
 
     /**
