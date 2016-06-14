@@ -19,9 +19,9 @@ export class TableHeader extends Component {
 
     return (
       <thead>
-      <tr>
-        {fields.map(field => this.renderFieldHeader(field))}
-      </tr>
+        <tr>
+          {fields.map(field => this.renderFieldHeader(field))}
+        </tr>
       </thead>
     );
   }

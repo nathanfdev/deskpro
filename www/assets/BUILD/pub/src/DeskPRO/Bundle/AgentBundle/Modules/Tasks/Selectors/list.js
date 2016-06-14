@@ -4,10 +4,20 @@ import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 
 const stateSelector = state => state.Tasks.list;
 
-export const currentNavSelector = hashStateSelectorFactory(['nav', 'active']);
+export const currentNavSelector      = hashStateSelectorFactory(['nav', 'active']);
 export const currentViewModeSelector = hashStateSelectorFactory(['list', 'view'], 'card');
-export const currentOrderBySelector = hashStateSelectorFactory(['list', 'order_by'], 'date_created');
+export const currentOrderBySelector  = hashStateSelectorFactory(['list', 'order_by'], 'date_created');
 export const currentOrderDirSelector = hashStateSelectorFactory(['list', 'order_dir'], 'desc');
+
+export const currentListParamsSelector = createSelector(
+  stateSelector,
+  state => state.get('listParams')
+);
+
+export const paginationSelector = createSelector(
+  stateSelector,
+  state => state.get('pagination')
+);
 
 export const listParamsNavSelector = createSelector(
   stateSelector,
@@ -17,6 +27,11 @@ export const listParamsNavSelector = createSelector(
 export const listParamsFiltersSelector = createSelector(
   stateSelector,
   state => state.getIn(['listParams', 'filters'])
+);
+
+export const fieldsSelector = createSelector(
+  stateSelector,
+  state => state.get('fields')
 );
 
 export const tableFieldsSelector = createSelector(
