@@ -3,9 +3,22 @@
 
   const options = window.DESKPRO_WIDGET_OPTIONS;
 
+  // Polyfill for adding CustomEvent
+  // https://developer.mozilla.org/fr/docs/Web/API/CustomEvent
+  // http://stackoverflow.com/questions/25579986/uncaugth-reference-error-custom-event-not-defind-in-the-file-ratchet
+  function WidgetEvent(type, params = { bubbles: false, cancelable: false, detail: undefined }) {
+    const event = document.createEvent('CustomEvent');
+    event.initCustomEvent(type, params.bubbles, params.cancelable, params.detail);
+
+    return event;
+  }
+
+  WidgetEvent.prototype = window.Event.prototype;
+  window.WidgetEvent = WidgetEvent;
+
   // DpWidget api
   window.addEventListener('message', event => {
-    window.dispatchEvent(new CustomEvent(getEventName(event.data.type), { detail: event.data.options }));
+    window.dispatchEvent(new WidgetEvent(getEventName(event.data.type), { detail: event.data.options }));
   }, false);
 
   const getEventName = type => `dpwidget${type}`;
@@ -137,5 +150,4 @@
 
     onReadyState(loadFn, window, document);
   });
-
 })(window, document);
