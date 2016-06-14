@@ -33,7 +33,7 @@
 namespace DpTest\DeskPRO\Bundle\UpgradeBundle\Distro;
 
 use DeskPRO\Bundle\UpgradeBundle\Distro\DistroDownloader;
-use DeskPRO\Bundle\UpgradeBundle\Distro\Manifest\DistroReleaseDetail;
+use DeskPRO\Bundle\UpgradeBundle\Distro\Manifest\DistroRelease;
 use DpTest\DeskProTestCase;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7;
@@ -61,7 +61,7 @@ class DistroDownloaderTest extends DeskProTestCase
         $response->shouldReceive('getBody')->andReturn(Psr7\stream_for(file_get_contents($this->getDistroZipPath())));
 
         $dl     = new DistroDownloader($client);
-        $detail = \Mockery::mock(DistroReleaseDetail::class);
+        $detail = \Mockery::mock(DistroRelease::class);
         $detail->shouldReceive('getZipUrl')->andReturn('https://example.com/foobar.zip');
         $detail->shouldReceive('getSha256')->andReturn(hash_file('sha256', $this->getDistroZipPath()));
 
@@ -84,7 +84,7 @@ class DistroDownloaderTest extends DeskProTestCase
         $response->shouldReceive('getBody')->andReturn(Psr7\stream_for(file_get_contents($this->getDistroZipPath())));
 
         $dl     = new DistroDownloader($client);
-        $detail = \Mockery::mock(DistroReleaseDetail::class);
+        $detail = \Mockery::mock(DistroRelease::class);
         $detail->shouldReceive('getZipUrl')->andReturn('https://example.com/foobar.zip');
         $detail->shouldReceive('getSha256')->andReturn(hash('sha256', 'foo'));
 

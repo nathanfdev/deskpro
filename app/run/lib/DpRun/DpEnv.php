@@ -136,6 +136,15 @@ class DpEnv
      */
     private $dp_root;
 
+    /**
+     * @var string
+     */
+    private $root_kernel_cache_dir;
+
+    /**
+     * @var string
+     */
+    private $root_app_dir;
 
     /**
      * @var string
@@ -233,6 +242,7 @@ class DpEnv
 
         $this->dp_root = realpath($dp_root);
         $baseapp_dir = $this->dp_root.DIRECTORY_SEPARATOR.'app';
+        $this->root_app_dir = $baseapp_dir;
 
         #------------------------------
         # Prepare config reader
@@ -287,6 +297,7 @@ class DpEnv
         }
 
         $kernel_cache_dir          = $this->resolveCustomPath('kernel_cache', $sys_var_dir.DIRECTORY_SEPARATOR.'kernel_cache');
+        $this->root_kernel_cache_dir = $kernel_cache_dir;
 
         $this->user_files_dir      = $this->resolveCustomPath('attachments', $user_dir.DIRECTORY_SEPARATOR.'attachments');
         $this->user_backups_dir    = $this->resolveCustomPath('backups', $user_dir.DIRECTORY_SEPARATOR.'backups');
@@ -434,6 +445,30 @@ class DpEnv
     public function getAppDir()
     {
         return $this->app_dir;
+    }
+
+    /**
+     * Gets the path to the root app builds dir.
+     *
+     * Example: /path/to/deskpro/app
+     *
+     * @return string
+     */
+    public function getBuildDirRoot()
+    {
+        return $this->root_app_dir;
+    }
+
+    /**
+     * Gets the base path to the kernel cache dir.
+     *
+     * Example: /path/to/deskpro/var/kernel_cache
+     *
+     * @return string
+     */
+    public function getKernelCacheDirRoot()
+    {
+        return $this->root_kernel_cache_dir;
     }
 
     /**

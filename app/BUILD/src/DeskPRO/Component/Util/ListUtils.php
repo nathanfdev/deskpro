@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Component\Util;
 
+use DeskPRO\Component\Collections\ReverseIterator;
 use Symfony\Component\Validator\Tests\Fixtures\Countable;
 
 /**
@@ -433,51 +434,73 @@ class ListUtils
 
     /**
      * @param \Traversable|array $array
+     * @param callable|null      $fn    Optionally a function to filter the results by.
      *
      * @return mixed
      */
-    public static function first($array)
+    public static function first($array, $fn = null)
     {
-        if (!is_array($array) && !$array instanceof \ArrayAccess) {
-            $array = iterator_to_array($array, false);
-        }
+        if ($fn) {
+            foreach ($array as $v) {
+                if (call_user_func($fn, $v)) {
+                    return $v;
+                }
+            }
 
-        if (empty($array)) {
-            throw new \InvalidArgumentException('Array is empty');
-        }
+            return;
+        } else {
+            if (!is_array($array) && !$array instanceof \ArrayAccess) {
+                $array = iterator_to_array($array, false);
+            }
 
-        // This casts a map to a list
-        if (!array_key_exists(0, $array)) {
-            $array = array_values($array);
-        }
+            if (empty($array)) {
+                throw new \InvalidArgumentException('Array is empty');
+            }
 
-        return $array[0];
+            // This casts a map to a list
+            if (!array_key_exists(0, $array)) {
+                $array = array_values($array);
+            }
+
+            return $array[0];
+        }
     }
 
     /**
      * Get the last element of a list.
      *
      * @param \Traversable|array $array
+     * @param callable|null      $fn    Optionally a function to filter the results by.
      *
      * @return mixed
      */
-    public static function last($array)
+    public static function last($array, $fn = null)
     {
-        if (!is_array($array) && !($array instanceof \ArrayAccess && $array instanceof Countable)) {
-            $array = iterator_to_array($array, false);
+        if ($fn) {
+            foreach (new ReverseIterator($array) as $v) {
+                if (call_user_func($fn, $v)) {
+                    return $v;
+                }
+            }
+
+            return;
+        } else {
+            if (!is_array($array) && !($array instanceof \ArrayAccess && $array instanceof Countable)) {
+                $array = iterator_to_array($array, false);
+            }
+
+            if (empty($array)) {
+                throw new \InvalidArgumentException('Array is empty');
+            }
+
+            // This casts a map to a list
+            if (!array_key_exists(0, $array)) {
+                $array = array_values($array);
+            }
+
+            $len = count($array);
+
+            return $array[$len - 1];
         }
-
-        if (empty($array)) {
-            throw new \InvalidArgumentException('Array is empty');
-        }
-
-        // This casts a map to a list
-        if (!array_key_exists(0, $array)) {
-            $array = array_values($array);
-        }
-
-        $len = count($array);
-
-        return $array[$len - 1];
     }
 }

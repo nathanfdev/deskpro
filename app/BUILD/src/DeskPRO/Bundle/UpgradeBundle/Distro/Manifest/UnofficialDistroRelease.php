@@ -28,55 +28,27 @@
 
 namespace DeskPRO\Bundle\UpgradeBundle\Distro\Manifest;
 
-class DistroReleaseDetail
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+class UnofficialDistroRelease extends DistroRelease
 {
-    private $release;
-
     /**
-     * @var string
+     * {@inheritdoc}
      */
-    private $zipUrl;
-
-    /**
-     * @var string
-     */
-    private $sha256;
-
-    /**
-     * DistroReleaseDetail constructor.
-     *
-     * @param DistroRelease $release
-     * @param string        $zipUrl
-     * @param string        $sha256
-     */
-    public function __construct(DistroRelease $release, $zipUrl, $sha256)
+    protected function configureOptions(OptionsResolver $resolver)
     {
-        $this->release = $release;
-        $this->zipUrl  = $zipUrl;
-        $this->sha256  = $sha256;
-    }
-
-    /**
-     * @return DistroRelease
-     */
-    public function getRelease()
-    {
-        return $this->release;
-    }
-
-    /**
-     * @return string
-     */
-    public function getZipUrl()
-    {
-        return $this->zipUrl;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSha256()
-    {
-        return $this->sha256;
+        parent::configureOptions($resolver);
+        $resolver->setDefaults([
+            'id'         => 'BUILD',
+            'detail_url' => 'https://deskpro.github.io/releases/info/unknown-release.html',
+            'zip_url'    => 'https://deskpro.github.io/releases/info/unknown-release.html',
+            'date'       => new \DateTime(),
+            'filesize'   => 0,
+            'checksums'  => [
+                'sha256' => hash('sha256', ''),
+            ],
+            'commit' => 'unknown',
+            'track'  => 'stable',
+        ]);
     }
 }

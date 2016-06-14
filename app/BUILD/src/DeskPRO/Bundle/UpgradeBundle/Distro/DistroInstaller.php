@@ -29,11 +29,11 @@
 namespace DeskPRO\Bundle\UpgradeBundle\Distro;
 
 use Alchemy\Zippy\Zippy;
-use DeskPRO\Bundle\UpgradeBundle\Instance\InstanceStatus;
-use DeskPRO\Component\Exception\Filesystem\FileWriteException;
+use DeskPRO\Bundle\UpgradeBundle\Instance\InstanceReader;
 use DeskPRO\Component\Filesystem\TmpDir;
-use DeskPRO\Component\Util\ExceptionUtils;
 use DpRun\BuildScanner;
+use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\Filesystem\Filesystem;
 
 class DistroInstaller
 {
@@ -43,7 +43,7 @@ class DistroInstaller
     private $zippy;
 
     /**
-     * @var \DeskPRO\Bundle\UpgradeBundle\Instance\InstanceStatus
+     * @var \DeskPRO\Bundle\UpgradeBundle\Instance\InstanceReader
      */
     private $instanceStatus;
 
@@ -56,10 +56,10 @@ class DistroInstaller
      * DistroInstaller constructor.
      *
      * @param Zippy          $zippy
-     * @param InstanceStatus $instanceStatus
+     * @param InstanceReader $instanceStatus
      * @param null           $tmpDir
      */
-    public function __construct(Zippy $zippy, InstanceStatus $instanceStatus, $tmpDir = null)
+    public function __construct(Zippy $zippy, InstanceReader $instanceStatus, $tmpDir = null)
     {
         $this->zippy          = $zippy;
         $this->instanceStatus = $instanceStatus;
@@ -68,9 +68,13 @@ class DistroInstaller
 
     /**
      * @param string $zipPath
+     *
+     * @throws IOException
      */
     public function installFromZip($zipPath)
     {
+        $fs = new Filesystem();
+
         $scratchDir = TmpDir::makeTmpDir($this->tmpDir);
         $zip        = $this->zippy->open($zipPath);
 
@@ -93,27 +97,7 @@ class DistroInstaller
         ];
 
         foreach ($moves as $from => $to) {
-            if (file_exists($to)) {
-                throw new FileWriteException("Target build path already exists: $to");
-            }
-
-            $err = null;
-            if (!ExceptionUtils::detectSuppressedError(function () use ($from, $to) {
-                return @rename($from, $to);
-            }, $err)) {
-                if (!$err) {
-                    $err = ['type' => E_WARNING, 'message' => 'File operation failed'];
-                }
-            }
-
-            if ($err) {
-                throw new FileWriteException(
-                    sprintf('Failed to install %s directory: %s', basename($from), sprintf($err['message'])),
-                    $err['type'],
-                    null,
-                    $err['message']
-                );
-            }
+            $fs->rename($from, $to);
         }
     }
 
@@ -121,9 +105,13 @@ class DistroInstaller
      * Given a build that has already been installed, this installs the 'run' directory as well.
      *
      * @param string $buildId
+     *
+     * @throws IOException
      */
     public function enableRunFromBuild($buildId)
     {
+        $fs = new Filesystem();
+
         if (!$this->instanceStatus->hasBuild($buildId)) {
             throw new \InvalidArgumentException("Cannot enable run for $buildId: Build is not installed");
         }
@@ -139,31 +127,25 @@ class DistroInstaller
             $newRunPath = "$scratchDir/app/run";
         }
 
-        $runPath = $this->instanceStatus->getAppBasePath().'/run';
+        $runPath    = $this->instanceStatus->getAppBasePath().'/run';
+        $oldRunPath = $runPath.'.'.uniqid('');
 
         $moves = [
-            $runPath    => $runPath.'.'.uniqid(''),
+            $runPath    => $oldRunPath,
             $newRunPath => $runPath,
         ];
 
         foreach ($moves as $from => $to) {
-            $err = null;
-            if (!ExceptionUtils::detectSuppressedError(function () use ($from, $to) {
-                return @rename($from, $to);
-            }, $err)) {
-                if (!$err) {
-                    $err = ['type' => E_WARNING, 'message' => 'File operation failed'];
-                }
-            }
+            $fs->rename($from, $to);
+        }
 
-            if ($err) {
-                throw new FileWriteException(
-                    sprintf('Failed to move %s directory: %s', basename($to), sprintf($err['message'])),
-                    $err['type'],
-                    null,
-                    $err['message']
-                );
-            }
+        // Remove the old one
+        try {
+            $fs->remove($oldRunPath);
+        } catch (\Exception $e) {
+            // We just ignore an exception here.
+            // It is unlikely to occur, and it's not a
+            // big issue if it does.
         }
     }
 }

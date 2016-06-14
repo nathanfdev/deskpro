@@ -32,40 +32,24 @@
 
 namespace DpTest\DeskPRO\Bundle\UpgradeBundle\Distro;
 
-use DeskPRO\Bundle\UpgradeBundle\Distro\Manifest\DistroRelease;
-use DeskPRO\Bundle\UpgradeBundle\Distro\Manifest\DistroReleaseCollection;
 use DeskPRO\Bundle\UpgradeBundle\Instance\InstanceReader;
-use DeskPRO\Bundle\UpgradeBundle\Instance\InstanceStatus;
 use DpTest\DeskProTestCase;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 
-class InstanceStatusTest extends DeskProTestCase
+class InstanceReaderTest extends DeskProTestCase
 {
     /**
      * @var vfsStreamDirectory
      */
     private $root;
 
-    /**
-     * @var DistroReleaseCollection
-     */
-    private $releases;
-
     public function setUp()
     {
         $this->root = vfsStream::setup('instance_test');
         vfsStream::create(require(__DIR__.'/../data/app_structure.php'), $this->root);
-
-        $data           = json_decode(file_get_contents(__DIR__.'/../data/example_manifest.json'), true);
-        $this->releases = new DistroReleaseCollection(array_map(function ($r) {
-            return new DistroRelease($r);
-        }, $data['releases']));
     }
 
-    /**
-     * @return InstanceReader
-     */
     private function getInstanceReader()
     {
         return new InstanceReader(
@@ -77,42 +61,57 @@ class InstanceStatusTest extends DeskProTestCase
     }
 
     /**
-     * @return InstanceStatus
-     */
-    private function getInstanceStatus()
-    {
-        $reader = $this->getInstanceReader();
-        $status = $reader->getInstanceStatus($this->releases);
-
-        return $status;
-    }
-
-    /**
      * @test
      */
     public function it_instantiates()
     {
-        $this->getInstanceStatus();
+        $this->getInstanceReader();
+    }
+
+    /**
+     * @test
+     * @expectedException InvalidArgumentException
+     */
+    public function it_throws_exception_on_invalid_path()
+    {
+        new InstanceReader(
+            '15741.0',
+            $this->root->url().'/foo',
+            $this->root->getChild('www')->url(),
+            $this->root->getChild('var/kernel_cache')->url()
+        );
     }
 
     /**
      * @test
      */
-    public function it_has_correct_releases()
+    public function it_returns_correct_paths()
     {
-        $status = $this->getInstanceStatus();
-        $this->assertEquals('15741.0', $status->getCurrentRelease()->getId(), 'Current release');
-        $this->assertEquals('15742.0', $status->getLatestRelease()->getId(), 'Latest release');
-        $this->assertTrue($status->isOutdated());
+        $inst = $this->getInstanceReader();
+
+        $this->assertEquals($this->root->url().'/app', $inst->getAppBasePath());
+        $this->assertEquals($this->root->url().'/app/FOO', $inst->getAppPath('FOO'));
+
+        $this->assertEquals($this->root->url().'/var/kernel_cache', $inst->getKernelCacheBasePath());
+        $this->assertEquals($this->root->url().'/var/kernel_cache/FOO', $inst->getKernelCachePath('FOO'));
+
+        $this->assertEquals($this->root->url().'/www', $inst->getWwwBasePath());
+        $this->assertEquals($this->root->url().'/www/assets/FOO', $inst->getWwwPath('FOO'));
     }
 
     /**
      * @test
      */
-    public function it_has_correct_counts()
+    public function it_detects_build_dirs()
     {
-        $status = $this->getInstanceStatus();
-        $this->assertEquals(1, $status->getNumBetween(), 'Number of releases between');
-        $this->assertEquals(1, $status->getDaysOld(), 'Number of days since last release');
+        $inst = $this->getInstanceReader();
+
+        $this->assertEquals([
+            1465734864 => '15740.0',
+            1465734865 => '15741.0',
+        ], $inst->getBuilds());
+
+        $this->assertTrue($inst->hasBuild('15740.0'));
+        $this->assertFalse($inst->hasBuild('Foo'));
     }
 }

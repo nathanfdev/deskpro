@@ -28,130 +28,82 @@
 
 namespace DeskPRO\Bundle\UpgradeBundle\Instance;
 
-use DpRun\BuildScanner;
+use DeskPRO\Bundle\UpgradeBundle\Distro\Manifest\DistroRelease;
 
 class InstanceStatus
 {
     /**
-     * @var string
+     * @var DistroRelease
      */
-    private $appPath;
+    private $currentRelease;
 
     /**
-     * @var string
+     * @var DistroRelease
      */
-    private $wwwPath;
+    private $latestRelease;
 
     /**
-     * @var string
+     * @var int
      */
-    private $kernelCachePath;
+    private $numBetween;
 
     /**
-     * @var BuildScanner
-     */
-    private $buildScanner;
-
-    /**
-     * InstanceStatus constructor.
+     * InstanceState constructor.
      *
-     * @param string $appPath
-     * @param string $wwwPath
-     * @param string $kernelCachePath
+     * @param DistroRelease $currentRelease
+     * @param DistroRelease $latestRelease
+     * @param int           $numBetween
      */
-    public function __construct($appPath, $wwwPath, $kernelCachePath)
+    public function __construct(DistroRelease $currentRelease, DistroRelease $latestRelease, $numBetween)
     {
-        $this->appPath         = $this->getRealAppPath($appPath);
-        $this->wwwPath         = $this->getRealAppPath($wwwPath);
-        $this->kernelCachePath = $this->getRealAppPath($kernelCachePath);
-        $this->buildScanner    = new BuildScanner($appPath);
+        $this->currentRelease = $currentRelease;
+        $this->latestRelease  = $latestRelease;
+        $this->numBetween     = $numBetween;
     }
 
     /**
-     * @param string $path
-     *
-     * @return string
+     * @return DistroRelease
      */
-    private function getRealAppPath($path)
+    public function getCurrentRelease()
     {
-        if (!is_dir($path)) {
-            throw new \InvalidArgumentException("Invalid path: $path");
-        }
-
-        return $path;
+        return $this->currentRelease;
     }
 
     /**
-     * @param string $forBuildId
-     *
-     * @return string
+     * @return DistroRelease
      */
-    public function getAppPath($forBuildId)
+    public function getLatestRelease()
     {
-        return $this->appPath.DIRECTORY_SEPARATOR.$forBuildId;
+        return $this->latestRelease;
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getAppBasePath()
+    public function getNumBetween()
     {
-        return $this->appPath;
+        return $this->numBetween;
     }
 
     /**
-     * @param string $forBuildId
-     *
-     * @return string
-     */
-    public function getWwwPath($forBuildId)
-    {
-        return $this->wwwPath.DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.$forBuildId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getWwwBasePath()
-    {
-        return $this->wwwPath;
-    }
-
-    /**
-     * @param string $forBuildId
-     *
-     * @return string
-     */
-    public function getKernelCachePath($forBuildId)
-    {
-        return $this->kernelCachePath.DIRECTORY_SEPARATOR.$forBuildId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getKernelCacheBasePath()
-    {
-        return $this->kernelCachePath;
-    }
-
-    /**
-     * Check if a certain build is installed.
-     *
-     * @param $buildId
-     *
      * @return bool
      */
-    public function hasBuild($buildId)
+    public function isOutdated()
     {
-        return is_dir($this->getAppPath($buildId));
+        return $this->currentRelease->getDate() < $this->latestRelease->getDate();
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getBuilds()
+    public function getDaysOld()
     {
-        return $this->buildScanner->getAvailableBuilds();
+        if (!$this->isOutdated()) {
+            return 0;
+        }
+
+        $interval = $this->latestRelease->getDate()->diff($this->currentRelease->getDate());
+
+        return max(1, (int) $interval->format('%d'));
     }
 }

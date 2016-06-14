@@ -29,13 +29,12 @@
 namespace DeskPRO\Bundle\UpgradeBundle\Distro;
 
 use DeskPRO\Bundle\UpgradeBundle\Distro\Manifest\DistroRelease;
-use DeskPRO\Bundle\UpgradeBundle\Distro\Manifest\DistroReleaseDetail;
-use DeskPRO\Component\Util\ListUtils;
+use DeskPRO\Bundle\UpgradeBundle\Distro\Manifest\DistroReleaseCollection;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\RequestOptions;
 
-class DistroVersions
+class DistroManifestLoader
 {
     const VERSION_API_ROOT  = 'https://deskpro.github.io/';
     const MANIFEST_ENDPOINT = 'releases/manifest.json';
@@ -44,16 +43,6 @@ class DistroVersions
      * @var ClientInterface
      */
     private $client;
-
-    /**
-     * @var DistroRelease[]
-     */
-    private $releases;
-
-    /**
-     * @var DistroReleaseDetail[]
-     */
-    private $releaseInfoCache = [];
 
     /**
      * @param string $versionApiRoot
@@ -83,14 +72,10 @@ class DistroVersions
     }
 
     /**
-     * @return Manifest\DistroRelease[]
+     * @return DistroReleaseCollection
      */
-    public function getReleases()
+    public function loadReleases()
     {
-        if ($this->releases !== null) {
-            return $this->releases;
-        }
-
         $request = $this->client->request('GET', self::MANIFEST_ENDPOINT);
         $data    = @json_decode($request->getBody()->getContents(), true);
 
@@ -102,7 +87,16 @@ class DistroVersions
                             "id": "15742.0",
                             "date": "2016-06-10 11:40:00",
                             "track": "stable",
-                            "info_url": "https://deskpro.github.io/releases/stable/2016-06/15742.0/release.json"
+                            "commit": "67f6ad54857b5190c5e5acc96a4ba9aabb807cee",
+                            "detail_url": "https://deskpro.github.io/releases/stable/2016-06/15742.0/release.json",
+                            "zip_url": "https://github.com/DeskPRO/deskpro.github.io/blob/master/releases/stable/2016-06/15742.0/deskpro.zip?raw=true",
+                            "filesize": 165581571,
+                            "checksums": {
+                                "crc32": "b66232ec",
+                                "md5": "7b3bf315bb82edfc252cbaf1fe373a13",
+                                "sha1": "cf8b35352e0cbdac0f12e7f44d2eb18b6bab19e1",
+                                "sha256": "05c5cc03182ff6a89c847173a3e538c38d939ad73208a7414ef30e196e4771cd"
+                            }
                         }
                     ]
                 }
@@ -112,16 +106,11 @@ class DistroVersions
             throw new \RuntimeException('Invalid service result');
         }
 
-        $this->releases = array_map(function ($r) {
-            return new DistroRelease(
-                $r['id'],
-                $r['date'],
-                $r['track'],
-                $r['info_url']
-            );
+        $releases = array_map(function ($r) {
+            return new DistroRelease($r);
         }, $data['releases']);
 
-        usort($this->releases, function (DistroRelease $ra, DistroRelease $rb) {
+        usort($releases, function (DistroRelease $ra, DistroRelease $rb) {
             $a = $ra->getDate();
             $b = $rb->getDate();
 
@@ -132,60 +121,6 @@ class DistroVersions
             return $a < $b ? -1 : 1;
         });
 
-        return $this->releases;
-    }
-
-    /**
-     * @return DistroRelease
-     */
-    public function getLatestRelease()
-    {
-        return ListUtils::last($this->getReleases());
-    }
-
-    /**
-     * @param DistroRelease $release
-     *
-     * @return DistroReleaseDetail
-     */
-    public function getReleaseDetails(DistroRelease $release)
-    {
-        if (isset($this->releaseInfoCache[$release->getId()])) {
-            return $this->releaseInfoCache[$release->getId()];
-        }
-
-        $request = $this->client->request('GET', $release->getInfoUrl());
-        $data    = @json_decode($request->getBody()->getContents(), true);
-
-        /*
-            We expect a payload like:
-                {
-                    "id": "15742.0",
-                    "date": "2016-06-10 11:40:00",
-                    "track": "stable",
-                    "commit": "67f6ad54857b5190c5e5acc96a4ba9aabb807cee",
-                    "zip_url": "https://github.com/DeskPRO/deskpro.github.io/blob/master/releases/stable/2016-06/15742.0/deskpro.zip?raw=true",
-                    "checksums": {
-                        "crc32": "b66232ec",
-                        "md5": "7b3bf315bb82edfc252cbaf1fe373a13",
-                        "sha1": "cf8b35352e0cbdac0f12e7f44d2eb18b6bab19e1",
-                        "sha256": "05c5cc03182ff6a89c847173a3e538c38d939ad73208a7414ef30e196e4771cd"
-                    }
-                }
-         */
-
-        if (!$data || empty($data) || empty($data['zip_url'])) {
-            throw new \RuntimeException('Invalid service result');
-        }
-
-        $detail = new DistroReleaseDetail(
-            $release,
-            $data['zip_url'],
-            $data['checksums']['sha256']
-        );
-
-        $this->releaseInfoCache[$release->getId()] = $detail;
-
-        return $detail;
+        return new DistroReleaseCollection($releases);
     }
 }

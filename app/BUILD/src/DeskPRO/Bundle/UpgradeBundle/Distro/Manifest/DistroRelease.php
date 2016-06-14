@@ -28,6 +28,9 @@
 
 namespace DeskPRO\Bundle\UpgradeBundle\Distro\Manifest;
 
+use Symfony\Component\OptionsResolver\Options;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
 class DistroRelease
 {
     /**
@@ -43,27 +46,63 @@ class DistroRelease
     /**
      * @var string
      */
-    private $track;
+    private $detailUrl;
 
     /**
      * @var string
      */
-    private $infoUrl;
+    private $zipUrl;
 
     /**
-     * DistroManifestRelease constructor.
-     *
-     * @param string $id
-     * @param string $date
-     * @param string $track
-     * @param string $infoUrl
+     * @var int
      */
-    public function __construct($id, $date, $track, $infoUrl)
+    private $filesize;
+
+    /**
+     * @var string
+     */
+    private $sha256;
+
+    /**
+     * @param array $props
+     */
+    public function __construct(array $props)
     {
-        $this->id      = $id;
-        $this->date    = \DateTime::createFromFormat('Y-m-d H:i:s', $date, new \DateTimeZone('UTC'));
-        $this->track   = $track;
-        $this->infoUrl = $infoUrl;
+        $resolver = new OptionsResolver();
+        $this->configureOptions($resolver);
+
+        $props = $resolver->resolve($props);
+
+        $this->id        = $props['id'];
+        $this->date      = $props['date'];
+        $this->detailUrl = $props['detail_url'];
+        $this->zipUrl    = $props['zip_url'];
+        $this->filesize  = $props['filesize'];
+        $this->sha256    = $props['checksums']['sha256'];
+    }
+
+    /**
+     * @param OptionsResolver $resolver
+     */
+    protected function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setRequired([
+            'id', 'date', 'detail_url',
+            'zip_url', 'filesize', 'checksums',
+
+            // and we dont use this at the moment:
+            'commit', 'track',
+        ]);
+        $resolver->setAllowedValues('checksums', function ($v) {
+            return is_array($v) && !empty($v['sha256']);
+        });
+        $resolver->setNormalizer('date', function (Options $options, $v) {
+            if ($v instanceof \DateTime) {
+                return $v;
+            }
+
+            return \DateTime::createFromFormat('Y-m-d H:i:s', $v, new \DateTimeZone('UTC'));
+        });
     }
 
     /**
@@ -85,16 +124,32 @@ class DistroRelease
     /**
      * @return string
      */
-    public function getTrack()
+    public function getDetailUrl()
     {
-        return $this->track;
+        return $this->detailUrl;
     }
 
     /**
      * @return string
      */
-    public function getInfoUrl()
+    public function getZipUrl()
     {
-        return $this->infoUrl;
+        return $this->zipUrl;
+    }
+
+    /**
+     * @return int
+     */
+    public function getFilesize()
+    {
+        return $this->filesize;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSha256()
+    {
+        return $this->sha256;
     }
 }

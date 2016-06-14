@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\UpgradeBundle\Distro;
 
-use DeskPRO\Bundle\UpgradeBundle\Distro\Manifest\DistroReleaseDetail;
+use DeskPRO\Bundle\UpgradeBundle\Distro\Manifest\DistroRelease;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7;
@@ -63,10 +63,10 @@ class DistroDownloader
     }
 
     /**
-     * @param DistroReleaseDetail $releaseDetail
-     * @param string              $targetPath
+     * @param DistroRelease $releaseDetail
+     * @param string        $targetPath
      */
-    public function download(DistroReleaseDetail $releaseDetail, $targetPath)
+    public function download(DistroRelease $releaseDetail, $targetPath)
     {
         $targetFp     = Psr7\try_fopen($targetPath, 'w');
         $targetStream = Psr7\stream_for($targetFp);

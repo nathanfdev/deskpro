@@ -34,10 +34,11 @@ namespace DpTest\DeskPRO\Bundle\UpgradeBundle\Distro;
 
 use Alchemy\Zippy\Zippy;
 use DeskPRO\Bundle\UpgradeBundle\Distro\DistroInstaller;
-use DeskPRO\Bundle\UpgradeBundle\Instance\InstanceStatus;
+use DeskPRO\Bundle\UpgradeBundle\Instance\InstanceReader;
 use DpTest\DeskProTestCase;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
+use Symfony\Component\Filesystem\Filesystem;
 
 class DistroInstallerTest extends DeskProTestCase
 {
@@ -88,10 +89,18 @@ class DistroInstallerTest extends DeskProTestCase
         $this->cleanupTempDirs();
     }
 
+    /**
+     * Removes temp dirs we have created.
+     */
     public function cleanupTempDirs()
     {
+        $fs = new Filesystem();
+
         foreach ($this->cleanupTmps as $d) {
-            //todo
+            try {
+                $fs->remove($d);
+            } catch (\Exception $e) {
+            }
         }
 
         $this->cleanupTmps = [];
@@ -137,7 +146,7 @@ class DistroInstallerTest extends DeskProTestCase
     {
         $tmpDir = $this->tmpAppStructure();
 
-        $instance = new InstanceStatus(
+        $instance = new InstanceReader(
             $tmpDir.'/app',
             $tmpDir.'/www',
             $tmpDir.'/var/kernel_cache'
@@ -158,7 +167,7 @@ class DistroInstallerTest extends DeskProTestCase
 
     /**
      * @test
-     * @expectedException DeskPRO\Component\Exception\Filesystem\FileWriteException
+     * @expectedException Symfony\Component\Filesystem\Exception\IOException
      */
     public function it_throws_exception_on_perm_error()
     {
@@ -166,7 +175,7 @@ class DistroInstallerTest extends DeskProTestCase
 
         chmod($tmpDir.'/app', 0555);
 
-        $instance = new InstanceStatus(
+        $instance = new InstanceReader(
             $tmpDir.'/app',
             $tmpDir.'/www',
             $tmpDir.'/var/kernel_cache'
