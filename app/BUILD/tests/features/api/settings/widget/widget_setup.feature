@@ -49,57 +49,57 @@ Feature: Widget Setup
   Scenario: I update global widget configuration
     When I send a POST request to "/api/v2/widget/setup" with body:
     """
-    {
-      "global": {
-        "chat": {
-          "enabled": true,
-          "email_validation": true,
-          "require_login": true
-        }
-      },
-      "brand": {
-        "widget": {
-          "type": "bubble",
-          "position": "left",
-          "agent_polling_timeout": 400
-        },
-        "button": {
-          "translations": [
-            {
-              "language": 1,
-              "name": "Help (edited)"
-            },
-            {
-              "language": 2,
-              "name": "Help (fr)"
-            }
-          ],
-          "size": "medium"
-        },
-        "chat": {
-          "begin_mode": "form",
-          "waiting_timeout": 40,
-          "popup": {
-            "translations": [
-              {
-                "language": 1,
-                "title": "Customer Support (edited)",
-                "message": "Need help? Just reply to start a live chat with one of our team. (edited)"
-              },
-              {
-                "language": 2,
-                "title": "Customer Support (fr)",
-                "message": "Need help? Just reply to start a live chat with one of our team. (fr)"
-              }
-            ],
-            "reply_type": "buttons"
-          }
-        },
-        "ticket": {
-          "select_department": "custom"
-        }
-      }
+{
+  "global": {
+    "chat": {
+      "enabled": true,
+      "email_validation": true,
+      "require_login": true
     }
+  },
+  "brand": {
+    "widget": {
+      "type": "bubble",
+      "position": "left",
+      "agent_polling_timeout": 400
+    },
+    "button": {
+      "translations": [
+        {
+          "language": 1,
+          "name": "Help (edited)"
+        },
+        {
+          "language": 2,
+          "name": "Help (fr)"
+        }
+      ],
+      "size": "medium"
+    },
+    "chat": {
+      "begin_mode": "form",
+      "waiting_timeout": 40,
+      "popup": {
+        "translations": [
+          {
+            "language": 1,
+            "title": "Customer Support (edited)",
+            "message": "Need help? Just reply to start a live chat with one of our team. (edited)"
+          },
+          {
+            "language": 2,
+            "title": "Customer Support (fr)",
+            "message": "Need help? Just reply to start a live chat with one of our team. (fr)"
+          }
+        ],
+        "reply_type": "buttons"
+      }
+    },
+    "ticket": {
+      "select_department": "custom"
+    }
+  }
+}
     """
     Then the response status code should be 204
     And the response should be empty
@@ -134,49 +134,49 @@ Feature: Widget Setup
   Scenario: I apply chat widget to the portal
     When I send a POST request to "/api/v2/widget/portal/apply" with body:
     """
-    {
-      "global": {
-        "chat": {
-          "enabled": false,
-          "email_validation": false,
-          "require_login": false
-        }
-      },
-      "brand": {
-        "widget": {
-          "type": "column",
-          "position": "right",
-          "agent_polling_timeout": 400
-        },
-        "button": {
-          "translations": [
-            {
-              "language": 1,
-              "name": "Help (edited)"
-            }
-          ],
-          "size": "large"
-        },
-        "chat": {
-          "begin_mode": "conversation",
-          "waiting_timeout": 40,
-          "popup": {
-            "translations": [
-              {
-                "language": 1,
-                "title": "Customer Support (edited)",
-                "message": "Need help? Just reply to start a live chat with one of our team. (edited)"
-              }
-            ],
-            "reply_type": "buttons"
-          }
-        },
-        "ticket": {
-          "select_department": "default",
-          "default_department": 2
-        }
-      }
+{
+  "global": {
+    "chat": {
+      "enabled": false,
+      "email_validation": false,
+      "require_login": false
     }
+  },
+  "brand": {
+    "widget": {
+      "type": "column",
+      "position": "right",
+      "agent_polling_timeout": 400
+    },
+    "button": {
+      "translations": [
+        {
+          "language": 1,
+          "name": "Help (edited)"
+        }
+      ],
+      "size": "large"
+    },
+    "chat": {
+      "begin_mode": "conversation",
+      "waiting_timeout": 40,
+      "popup": {
+        "translations": [
+          {
+            "language": 1,
+            "title": "Customer Support (edited)",
+            "message": "Need help? Just reply to start a live chat with one of our team. (edited)"
+          }
+        ],
+        "reply_type": "buttons"
+      }
+    },
+    "ticket": {
+      "select_department": "default",
+      "default_department": 2
+    }
+  }
+}
     """
     Then the response status code should be 204
 

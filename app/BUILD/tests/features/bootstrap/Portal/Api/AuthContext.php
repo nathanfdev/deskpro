@@ -32,6 +32,7 @@
 
 namespace DpBehat\Portal\Api;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Session;
 use DpBehat\BaseContext;
 use DpBehat\Data\DataContext;
@@ -56,11 +57,7 @@ class AuthContext extends BaseContext
         $session = new Session();
         $session->setAuth($code);
 
-        $this->em()->persist($session);
-        $this->em()->flush();
-
-        self::$sessions[$code] = $session;
-        DataContext::setPlaceholder("sid_{$code}", $session->getSessionCode());
+        $this->registerSession($code, $session);
     }
 
     /**
@@ -75,11 +72,7 @@ class AuthContext extends BaseContext
         $session->setAuth($code);
         $session->setPerson($this->findPerson($email));
 
-        $this->em()->persist($session);
-        $this->em()->flush();
-
-        self::$sessions[$code] = $session;
-        DataContext::setPlaceholder("sid_{$code}", $session->getSessionCode());
+        $this->registerSession($code, $session);
     }
 
     /**
@@ -90,7 +83,7 @@ class AuthContext extends BaseContext
     public function findPerson($email)
     {
         /** @var \Application\DeskPRO\EntityRepository\Person $repository */
-        $repository = $this->repository('DeskPRO:Person');
+        $repository = $this->repository(Person::class);
         $person     = $repository->findOneByEmail($email);
 
         if (!$person) {
@@ -98,5 +91,20 @@ class AuthContext extends BaseContext
         }
 
         return $person;
+    }
+
+    /**
+     * @param $code
+     * @param Session $session
+     */
+    private function registerSession($code, Session $session)
+    {
+        $this->em()->persist($session);
+        $this->em()->flush();
+
+        self::$sessions[$code] = $session;
+
+        DataContext::setPlaceholder("sid_{$code}", $session->getSessionCode());
+        DataContext::setReference("sid_{$code}", $session);
     }
 }

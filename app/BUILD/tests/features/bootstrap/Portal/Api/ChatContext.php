@@ -35,6 +35,7 @@ namespace DpBehat\Portal\Api;
 use Application\DeskPRO\Entity\ChatConversation;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use DpBehat\BaseContext;
+use DpBehat\Data\DataContext;
 
 /**
  * Class ChatContext.
@@ -58,14 +59,16 @@ class ChatContext extends BaseContext
     }
 
     /**
-     * @Given I set chat email validation code :code for chat :chat_id
+     * @Given I set chat email validation code :code for chat :chatId
      *
-     * @param int    $chat_id
+     * @param int    $chatId
      * @param string $code
      */
-    public function iSetChatEmailValidationCode($chat_id, $code)
+    public function iSetChatEmailValidationCode($chatId, $code)
     {
-        $conversation = $this->findConversation($chat_id);
+        $chatId = DataContext::replace($chatId);
+
+        $conversation = $this->findConversation($chatId);
         $conversation->setEmailValidationCode($code);
 
         $this->em()->persist($conversation);
@@ -73,13 +76,15 @@ class ChatContext extends BaseContext
     }
 
     /**
-     * @Given I reset chat user info for chat :chat_id
+     * @Given I reset chat user info for chat :chatId
      *
-     * @param int $chat_id
+     * @param int $chatId
      */
-    public function iResetChatUserInfo($chat_id)
+    public function iResetChatUserInfo($chatId)
     {
-        $conversation = $this->findConversation($chat_id);
+        $chatId = DataContext::replace($chatId);
+
+        $conversation = $this->findConversation($chatId);
         $conversation->setPerson(null);
 
         $this->em()->persist($conversation);
@@ -89,12 +94,13 @@ class ChatContext extends BaseContext
     /**
      * @Given I set chat user :email for chat :chat_id
      *
-     * @param int    $chat_id
+     * @param int    $chatId
      * @param string $email
      */
-    public function iSetChatUser($chat_id, $email)
+    public function iSetChatUser($chatId, $email)
     {
-        $conversation = $this->findConversation($chat_id);
+        $chatId       = DataContext::replace($chatId);
+        $conversation = $this->findConversation($chatId);
 
         try {
             $conversation->setPerson($this->auth_context->findPerson($email));
@@ -107,13 +113,15 @@ class ChatContext extends BaseContext
     }
 
     /**
-     * @Given I reset chat should send transcript for chat :chat_id
+     * @Given I reset chat should send transcript for chat :chatId
      *
-     * @param int $chat_id
+     * @param int $chatId
      */
-    public function iResetChatShouldSendTranscript($chat_id)
+    public function iResetChatShouldSendTranscript($chatId)
     {
-        $conversation = $this->findConversation($chat_id);
+        $chatId = DataContext::replace($chatId);
+
+        $conversation = $this->findConversation($chatId);
         $conversation->setShouldSendTranscript(false);
 
         $this->em()->persist($conversation);
@@ -121,17 +129,18 @@ class ChatContext extends BaseContext
     }
 
     /**
-     * @Then chat property :property should be equal to :expected for chat :chat_id
+     * @Then chat property :property should be equal to :expected for chat :chatId
      *
      * @param string $property
      * @param int    $expected
-     * @param int    $chat_id
+     * @param int    $chatId
      *
      * @throws \Exception
      */
-    public function chatPropertyShouldBeEqual($property, $expected, $chat_id)
+    public function chatPropertyShouldBeEqual($property, $expected, $chatId)
     {
-        $conversation = $this->findConversation($chat_id);
+        $chatId       = DataContext::replace($chatId);
+        $conversation = $this->findConversation($chatId);
         $actual       = $conversation->$property;
 
         if ($actual != $expected) {
@@ -142,40 +151,43 @@ class ChatContext extends BaseContext
     }
 
     /**
-     * @Then chat property :property should be null for chat :chat_id
+     * @Then chat property :property should be null for chat :chatId
      *
      * @param string $property
-     * @param int    $chat_id
+     * @param int    $chatId
      */
-    public function chatPropertyShouldBeNull($property, $chat_id)
+    public function chatPropertyShouldBeNull($property, $chatId)
     {
-        $conversation = $this->findConversation($chat_id);
+        $chatId       = DataContext::replace($chatId);
+        $conversation = $this->findConversation($chatId);
+
         expect($conversation->$property)->toBe(null);
     }
 
     /**
-     * @Then chat property :property should not be null for chat :chat_id
+     * @Then chat property :property should not be null for chat :chatId
      *
      * @param string $property
-     * @param int    $chat_id
+     * @param int    $chatId
      */
-    public function chatPropertyShouldNotBeNull($property, $chat_id)
+    public function chatPropertyShouldNotBeNull($property, $chatId)
     {
-        $conversation = $this->findConversation($chat_id);
+        $chatId       = DataContext::replace($chatId);
+        $conversation = $this->findConversation($chatId);
+
         expect($conversation->$property)->notToBe(null);
     }
 
     /**
-     * @param int $chat_id
+     * @param int $chatId
      *
      * @return ChatConversation
      */
-    protected function findConversation($chat_id)
+    protected function findConversation($chatId)
     {
-        /** @var ChatConversation $conversation */
-        $conversation = $this->repository('DeskPRO:ChatConversation')->find($chat_id);
+        $conversation = $this->repository(ChatConversation::class)->find($chatId);
         if (!$conversation) {
-            throw new \RuntimeException(sprintf('Conversation with id `%s` not found', $chat_id));
+            throw new \RuntimeException(sprintf('Conversation with id `%s` not found', $chatId));
         }
 
         return $conversation;

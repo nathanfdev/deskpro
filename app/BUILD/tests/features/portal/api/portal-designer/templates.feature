@@ -22,9 +22,9 @@ Feature: Editing portal templates
     Given I am authenticated as admin
     When I send a PUT request to "/portal/api/style/edit-theme-set/template-sources?template=Theme::layout.html.twig" with body:
     """
-      {
-        "code": "Custom layout.html.twig"
-      }
+{
+  "code": "Custom layout.html.twig"
+}
     """
     Then the response status code should be 204
 
@@ -32,9 +32,9 @@ Feature: Editing portal templates
     Given I am authenticated as admin
     And I send a PUT request to "/portal/api/style/edit-theme-set/template-sources?template=Theme::layout.html.twig" with body:
     """
-      {
-        "code": "Custom layout.html.twig content"
-      }
+{
+  "code": "Custom layout.html.twig content"
+}
     """
     When I send a GET request to "/portal/api/style/edit-theme-set/template-info?template=Theme::layout.html.twig"
     Then the response status code should be 200

@@ -20,9 +20,9 @@ Feature: Editing SCSS variables
     Given I am authenticated as admin
     And I send a PUT request to "/portal/api/style/edit-theme-set/variable-values" with body:
     """
-    {
-      "font-default": "Test Font"
-    }
+{
+  "font-default": "Test Font"
+}
     """
     When I send a GET request to "/portal/api/style/edit-theme-set/variable-values"
     Then the response status code should be 200

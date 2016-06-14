@@ -26,14 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
 use Application\DeskPRO\Entity\ChatConversation;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
@@ -52,13 +50,13 @@ class ChatFeedbackType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('helpful', 'number', [
+            ->add('helpful', NumberType::class, [
                 'property_path' => 'rating_overall',
                 'constraints'   => [
                     new Assert\NotBlank(),
                 ],
             ])
-            ->add('comment', 'text', [
+            ->add('comment', TextType::class, [
                 'property_path' => 'rating_comment',
                 'required'      => false,
             ])

@@ -35,6 +35,7 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 use Application\DeskPRO\Entity\ChatConversation;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
@@ -51,7 +52,7 @@ class ChatValidateEmailType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('code', 'text', [
+        $builder->add('code', TextType::class, [
             'property_path' => 'email_validation_code',
         ]);
 
@@ -77,15 +78,15 @@ class ChatValidateEmailType extends AbstractType
         $data = $event->getData();
         $form = $event->getForm();
 
+        /** @var ChatConversation $conversation */
+        $conversation = $form->getParent()->getData();
+
         // No validation code in chat entity, no need to validate
-        if (!$form->getData()) {
+        if (!$conversation->getPersonEmail()) {
             $form->addError(new FormError('Email should not be validated.'));
 
             return;
         }
-
-        /** @var ChatConversation $conversation */
-        $conversation = $form->getParent()->getData();
 
         if ($conversation->getEmailValidated()) {
             $form->addError(new FormError(ErrorsCodes::EMAIL_ALREADY_VALIDATED));

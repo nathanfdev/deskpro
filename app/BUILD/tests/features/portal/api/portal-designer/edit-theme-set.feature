@@ -7,9 +7,9 @@ Feature: Buffering portal changes in the edit ThemeSet
   Scenario: I check SCSS variable custom value is applied to the portal
     And I send a PUT request to "/portal/api/style/edit-theme-set/variable-values" with body:
     """
-    {
-      "font-family-sans-serif": "Sans Serif Test Font"
-    }
+{
+  "font-family-sans-serif": "Sans Serif Test Font"
+}
     """
     And I send a GET request to "/portal/api/style/edit-theme-set/commit"
     When I send a GET request to "/portal/api/style/portal.css"

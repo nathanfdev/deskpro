@@ -155,7 +155,7 @@ class Chat
      *
      * @var \DateTime
      */
-    protected $dateСreated;
+    protected $dateCreated;
 
     /**
      * Date when agent typed last time.
@@ -226,24 +226,24 @@ class Chat
      */
     public function __construct(ChatConversation $chat)
     {
-        $this->id                     = $chat->getId();
-        $this->conversationId         = $chat->getId();
-        $this->subject                = $chat->getSubjectLine();
-        $this->subjectLine            = $chat->getSubjectLine();
-        $this->department             = $chat->getDepartment();
-        $this->department_id          = $chat->getDepartment() ? $chat->getDepartment()->getId() : 0;
-        $this->departmentName         = $chat->getDepartment() ? $chat->getDepartment()->getFullTitle() : '';
-        $this->person                 = $chat->getPerson();
-        $this->agent                  = $chat->getAgent();
-        $this->personName             = $chat->getPersonName();
-        $this->personEmail            = $chat->getPersonEmail();
-        $this->dateCreated            = $chat->getDateCreated();
-        $this->dateAgentTyping        = $chat->getDateAgentTyping();
-        $this->dateEnded              = $chat->getDateEnded();
-        $this->endedBy                = $chat->getEndedBy();
-        $this->should_send_transcript = $chat->getShouldSendTranscript();
-        $this->dateTranscript_sent    = $chat->getDateTranscriptSent();
-        $this->needValidateEmail      = $chat->getEmailValidationCode() && !$chat->getEmailValidated();
-        $this->fields                 = $chat->getCustomData();
+        $this->id                   = $chat->getId();
+        $this->conversationId       = $chat->getId();
+        $this->subject              = $chat->getSubjectLine();
+        $this->subjectLine          = $chat->getSubjectLine();
+        $this->department           = $chat->getDepartment();
+        $this->departmentId         = $chat->getDepartment() ? $chat->getDepartment()->getId() : 0;
+        $this->departmentName       = $chat->getDepartment() ? $chat->getDepartment()->getFullTitle() : '';
+        $this->person               = $chat->getPerson();
+        $this->agent                = $chat->getAgent();
+        $this->personName           = $chat->getPersonName();
+        $this->personEmail          = $chat->getPersonEmail();
+        $this->dateCreated          = $chat->getDateCreated();
+        $this->dateAgentTyping      = $chat->getDateAgentTyping();
+        $this->dateEnded            = $chat->getDateEnded();
+        $this->endedBy              = $chat->getEndedBy();
+        $this->shouldSendTranscript = $chat->getShouldSendTranscript();
+        $this->dateTranscript_sent  = $chat->getDateTranscriptSent();
+        $this->needValidateEmail    = $chat->getEmailValidationCode() && !$chat->getEmailValidated();
+        $this->fields               = $chat->getCustomData();
     }
 }

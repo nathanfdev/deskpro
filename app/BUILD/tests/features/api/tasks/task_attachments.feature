@@ -13,10 +13,10 @@ Feature: /tasks/{id}/attachments endpoint
     And I create a Task and reference it as task
     When I send a POST request to "/api/v2/tasks/{task}/attachments" with body:
     """
-    {
-      "comment": "my text",
-      "blob": "AAAAAAAAAAAAAAAAAA"
-    }
+{
+  "comment": "my text",
+  "blob": "AAAAAAAAAAAAAAAAAA"
+}
     """
     Then the response should be in JSON
     And the response status code should be 201

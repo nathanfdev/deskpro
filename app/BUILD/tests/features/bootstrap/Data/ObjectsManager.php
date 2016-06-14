@@ -46,6 +46,7 @@ use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\GlossaryWord;
 use Application\DeskPRO\Entity\GlossaryWordDefinition;
+use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Organization;
@@ -214,7 +215,10 @@ class ObjectsManager
             'Sla'                    => [Factory\CommonFactories::class, 'sla'],
             'SLA'                    => [Factory\CommonFactories::class, 'sla'],
             'User'                   => [Factory\PersonFactories::class, 'create', 'user'],
+            'Agent'                  => [Factory\PersonFactories::class, 'create', 'agent'],
+            'Admin'                  => [Factory\PersonFactories::class, 'create', 'admin'],
             'Usergroup'              => [Factory\SimpleFactory::class, 'create', Usergroup::class],
+            'Language'               => [Factory\SimpleFactory::class, 'create', Language::class],
         ];
     }
 
@@ -250,6 +254,7 @@ class ObjectsManager
             'TaskAttachment'         => [$this, 'find', TaskAttachment::class],
             'GlossaryWordDefinition' => [$this, 'find', GlossaryWordDefinition::class],
             'GlossaryWord'           => [$this, 'find', GlossaryWord::class],
+            'Language'               => [$this, 'find', Language::class],
         ];
     }
 }

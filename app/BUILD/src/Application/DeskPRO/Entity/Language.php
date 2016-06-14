@@ -31,6 +31,7 @@
  *
  * @category Entities
  */
+
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Translate\HasPhraseName;
@@ -69,7 +70,7 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
          *
          * @var string
          */
-        protected $sys_name;
+        protected $sys_name = '';
 
         /**
          * The three-letter ISO 639-2 code.
@@ -79,7 +80,7 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
          *
          * @var string
          */
-        protected $lang_code;
+        protected $lang_code = '';
 
         /**
          * Title of the language.
@@ -89,7 +90,7 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
          *
          * @var string
          */
-        protected $title;
+        protected $title = '';
 
         /**
          * The base filepath for default phrases for this lang.
@@ -195,6 +196,18 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
         public function getLocale()
         {
             return $this->locale;
+        }
+
+        /**
+         * @param string $sys_name
+         *
+         * @return $this
+         */
+        public function setSysName($sys_name)
+        {
+            $this->setModelField('sys_name', $sys_name);
+
+            return $this;
         }
 
         /**

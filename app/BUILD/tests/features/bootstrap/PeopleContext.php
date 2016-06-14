@@ -39,6 +39,14 @@ use DpBehat\Data\Factory\PersonFactories;
 class PeopleContext extends BaseContext
 {
     /**
+     * @Given I have usergroups
+     */
+    public function iHaveUsergroups()
+    {
+        PersonFactories::initUsergroups($this->em());
+    }
+
+    /**
      * @Given ":email" agent exists
      * @Given an agent with ":email" email exists
      */

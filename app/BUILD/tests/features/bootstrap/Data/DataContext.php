@@ -55,11 +55,10 @@ class DataContext extends BaseContext
      */
     public function ensureOm()
     {
-        try {
-            $this->om();
-        } catch (\Exception $e) {
-            self::initOm();
-        }
+        // re-create objects manager with new $em for each scenario
+        // because kernel reboots for each scenario
+
+        self::initOm();
     }
 
     /**

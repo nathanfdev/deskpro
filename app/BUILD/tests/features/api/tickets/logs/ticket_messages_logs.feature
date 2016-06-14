@@ -8,9 +8,9 @@ Feature: Ticket messages logs
   Scenario: I add a ticket message and check the logs
     When I send a POST request to "/api/v2/tickets/{ticket}/messages" with body:
     """
-    {
-      "message": "Hello"
-    }
+{
+  "message": "Hello"
+}
     """
     Then the response status code should be 201
     And the "{ticket}" ticket should have "message_created" log
@@ -18,9 +18,9 @@ Feature: Ticket messages logs
   Scenario: I remove a message and check the logs
     Given I send a POST request to "/api/v2/tickets/{ticket}/messages" with body:
     """
-    {
-      "message": "Hello"
-    }
+{
+  "message": "Hello"
+}
     """
     When I send a DELETE request to "/api/v2/tickets/{ticket}/messages/{lastCreatedId}"
     Then the response status code should be 200
